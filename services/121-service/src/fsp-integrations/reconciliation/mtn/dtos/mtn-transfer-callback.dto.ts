@@ -1,5 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class MtnTransferCallbackDto {
   @ApiProperty({
@@ -7,7 +12,7 @@ export class MtnTransferCallbackDto {
       'The external ID that was provided in the original transfer request (maps to transactionId).',
   })
   @IsNotEmpty()
-  @IsString()
+  @IsNumberString()
   readonly externalId: string;
 
   @ApiProperty({
