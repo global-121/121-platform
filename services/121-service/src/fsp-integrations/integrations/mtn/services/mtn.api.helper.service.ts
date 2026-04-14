@@ -62,7 +62,6 @@ export class MtnApiHelperService {
         `${env.EXTERNAL_121_SERVICE_URL}/api/fsps/mtn/transfer-callback`,
       );
     }
-    console.log('headers: ', headers);
     return headers;
   }
 

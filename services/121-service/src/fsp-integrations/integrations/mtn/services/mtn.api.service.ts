@@ -38,9 +38,7 @@ export class MtnApiService {
       payerMessage,
       payeeNote,
     });
-    console.log('payload: ', payload);
-    const response = await this.makeTransferCall({ payload, referenceId });
-    console.log('response: ', response);
+    await this.makeTransferCall({ payload, referenceId });
   }
 
   public async getTransferStatus({
@@ -86,15 +84,12 @@ export class MtnApiService {
       const headers = this.mtnApiHelperService.createTransferHeaders({
         referenceId,
       });
-      console.log('MTN create transfer payload: ', referenceId);
 
       const response = await this.httpService.post<AxiosResponse<void>>(
         url.toString(),
         payload,
         headers,
       );
-      console.log(response.status);
-      console.log(response.data);
 
       if (response?.status === HTTP_STATUS_CONFLICT) {
         throw new MtnApiDuplicateError(

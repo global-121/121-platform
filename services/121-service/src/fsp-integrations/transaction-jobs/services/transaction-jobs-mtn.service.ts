@@ -10,6 +10,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
@@ -19,6 +20,7 @@ export class TransactionJobsMtnService {
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly transactionsService: TransactionsService,
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
+    private readonly programRepository: ProgramRepository,
   ) {}
 
   public async processMtnTransactionJob(
@@ -47,12 +49,17 @@ export class TransactionJobsMtnService {
       `ReferenceId=${transactionJob.referenceId},TransactionId=${transactionJob.transactionId},Attempt=${failedTransactionAttempts}`,
     );
 
-    // 3. Call MTN transfer endpoint, if failure handle accordingly and return early
+    // 3. Look up program currency for the MTN API
+    const program = await this.programRepository.findByIdOrFail(
+      transactionJob.programId,
+    );
+
+    // 4. Call MTN transfer endpoint, if failure handle accordingly and return early
     try {
       await this.mtnService.createTransfer({
         referenceId: mtnReferenceId,
         amount: String(transactionJob.transferValue),
-        currency: 'EUR', // TODO: make this dynamic based on program configuration
+        currency: program.currency ?? '',
         externalId: String(transactionJob.transactionId),
         payee: {
           partyIdType: 'MSISDN',
@@ -63,7 +70,7 @@ export class TransactionJobsMtnService {
       });
     } catch (error) {
       if (error instanceof MtnApiDuplicateError) {
-        // 4a. Duplicate: this is a queue retry where the original request already went through
+        // 5a. Duplicate: this is a queue retry where the original request already went through
         // Use GetTransferStatus to determine the actual outcome
         await this.handleDuplicateTransfer({
           mtnReferenceId,
@@ -72,7 +79,7 @@ export class TransactionJobsMtnService {
         return;
       }
       if (error instanceof MtnApiError) {
-        // 4b. Other API error: store error transaction event and update transaction to 'error'
+        // 5b. Other API error: store error transaction event and update transaction to 'error'
         await this.transactionsService.saveProgress({
           context: transactionEventContext,
           description: TransactionEventDescription.mtnRequestSent,
@@ -84,7 +91,7 @@ export class TransactionJobsMtnService {
       throw error;
     }
 
-    // 5. Store success transaction event and leave transaction on 'waiting' (will go to final status on callback)
+    // 6. Store success transaction event and leave transaction on 'waiting' (will go to final status on callback)
     await this.transactionsService.saveProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.mtnRequestSent,

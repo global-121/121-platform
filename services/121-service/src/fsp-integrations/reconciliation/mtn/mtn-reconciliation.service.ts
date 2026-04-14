@@ -59,6 +59,8 @@ export class MtnReconciliationService {
         return TransactionStatusEnum.success;
       case 'FAILED':
         return TransactionStatusEnum.error;
+      case 'PENDING':
+        return TransactionStatusEnum.waiting;
       default:
         return TransactionStatusEnum.error;
     }

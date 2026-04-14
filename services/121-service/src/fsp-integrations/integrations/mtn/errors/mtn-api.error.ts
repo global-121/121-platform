@@ -1,7 +1,7 @@
 export class MtnApiError extends Error {
   constructor(message: string) {
-    super(message);
-    this.message = `MTN API Error: ${message}`;
+    super(`MTN API Error: ${message}`);
+    Object.setPrototypeOf(this, new.target.prototype);
     this.name = 'MtnApiError';
   }
 }

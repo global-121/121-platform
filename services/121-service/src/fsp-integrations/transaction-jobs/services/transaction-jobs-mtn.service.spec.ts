@@ -10,6 +10,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 
 const mockTransactionJob: MtnTransactionJobDto = {
   referenceId: 'ref-1',
@@ -29,6 +30,7 @@ describe('TransactionJobsMtnService', () => {
   let transactionEventsScopedRepository: TransactionEventsScopedRepository;
   let transactionJobsHelperService: TransactionJobsHelperService;
   let transactionsService: TransactionsService;
+  let programRepository: ProgramRepository;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -45,6 +47,7 @@ describe('TransactionJobsMtnService', () => {
       TransactionJobsHelperService,
     );
     transactionsService = unitRef.get<TransactionsService>(TransactionsService);
+    programRepository = unitRef.get<ProgramRepository>(ProgramRepository);
 
     jest
       .spyOn(transactionJobsHelperService, 'logTransactionJobStart')
@@ -56,6 +59,9 @@ describe('TransactionJobsMtnService', () => {
         'countFailedTransactionAttempts',
       )
       .mockResolvedValue(0);
+    jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
+      currency: 'UGX',
+    } as any);
   });
 
   it('should be defined', () => {
@@ -80,7 +86,7 @@ describe('TransactionJobsMtnService', () => {
     expect(mtnService.createTransfer).toHaveBeenCalledWith({
       referenceId: expect.any(String),
       amount: '100',
-      currency: 'EUR',
+      currency: 'UGX',
       externalId: '1',
       payee: {
         partyIdType: 'MSISDN',
