@@ -48,3 +48,33 @@ test('User is redirected to login when token expires', async ({ page }) => {
   await expect(sessionExpiredToast).toBeVisible();
   await expect(sessionExpiredToast).toContainText('Session expired');
 });
+
+test('User is silently redirected to login on fresh page load with already-expired token (no popup)', async ({
+  page,
+}) => {
+  // Inject an already-expired token into localStorage before the Angular app initializes.
+  // This simulates opening the app fresh the next day with a stale token.
+  // The script is passed as a string so it executes in the browser context, not in Node.js.
+  const expiredUser = JSON.stringify({
+    username: 'test@example.org',
+    isAdmin: true,
+    isEntraUser: false,
+    isOrganizationAdmin: false,
+    permissions: {},
+    // Expired 24 hours ago
+    expires: new Date(Date.now() - 24 * 60 * 60 * 1_000).toISOString(),
+  });
+  await page.addInitScript(
+    `localStorage.setItem('logged-in-user-portalicious', ${JSON.stringify(expiredUser)});`,
+  );
+
+  await page.goto('/');
+
+  // Should be silently redirected to the login page
+  await page.waitForURL((url) => url.pathname.startsWith('/en-GB/login'));
+  await expect(page).toHaveURL(/.*\/en-GB\/login/);
+
+  // The "Session expired" dialog must NOT appear — this was Scenario B (fresh open)
+  const sessionExpiredDialog = page.getByText('Session expired');
+  await expect(sessionExpiredDialog).not.toBeVisible();
+});
