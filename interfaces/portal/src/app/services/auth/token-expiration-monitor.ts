@@ -11,6 +11,9 @@ import { interval, Subscription } from 'rxjs';
  * - **Strategy-agnostic**: Delegates expiration logic to the caller via `getTimeUntilExpiration`.
  *   - BasicAuth: Returns actual time until token expires (reads from localStorage).
  *   - MSAL: Returns `Infinity` because MSAL handles token refresh automatically.
+ * - **Session tracking**: Calls `onTokenValid` whenever the token is still valid. This allows
+ *   callers to distinguish between "token expired while the app was running" (show popup) and
+ *   "token was already expired when the app started" (silent redirect to login).
  *
  * @remarks
  * The monitor never stops once started. This is intentional to keep the implementation simple
@@ -23,11 +26,13 @@ export const startTokenExpirationMonitor = ({
   forceLogoutMs,
   getTimeUntilExpiration,
   onExpired,
+  onTokenValid,
 }: {
   checkIntervalMs: number;
   forceLogoutMs: number;
   getTimeUntilExpiration: () => number;
   onExpired: () => void;
+  onTokenValid?: () => void;
 }): Subscription =>
   interval(checkIntervalMs).subscribe(() => {
     const timeUntilExpiry = getTimeUntilExpiration();
@@ -39,5 +44,7 @@ export const startTokenExpirationMonitor = ({
 
     if (timeUntilExpiry <= forceLogoutMs) {
       onExpired();
+    } else {
+      onTokenValid?.();
     }
   });

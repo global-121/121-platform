@@ -9,11 +9,13 @@ describe('startTokenExpirationMonitor', () => {
 
   let subscription: Subscription;
   let onExpired: ReturnType<typeof vi.fn<() => void>>;
+  let onTokenValid: ReturnType<typeof vi.fn<() => void>>;
   let getTimeUntilExpiration: ReturnType<typeof vi.fn<() => number>>;
 
   beforeEach(() => {
     vi.useFakeTimers();
     onExpired = vi.fn<() => void>();
+    onTokenValid = vi.fn<() => void>();
     getTimeUntilExpiration = vi.fn<() => number>().mockReturnValue(Infinity);
   });
 
@@ -132,5 +134,97 @@ describe('startTokenExpirationMonitor', () => {
     vi.advanceTimersByTime(CHECK_INTERVAL_MS * 5);
 
     expect(onExpired).toHaveBeenCalledTimes(1);
+  });
+
+  describe('onTokenValid callback', () => {
+    it('should call onTokenValid when time remaining is above the threshold', () => {
+      getTimeUntilExpiration.mockReturnValue(FORCE_LOGOUT_MS + 1);
+
+      subscription = startTokenExpirationMonitor({
+        checkIntervalMs: CHECK_INTERVAL_MS,
+        forceLogoutMs: FORCE_LOGOUT_MS,
+        getTimeUntilExpiration,
+        onExpired,
+        onTokenValid,
+      });
+
+      vi.advanceTimersByTime(CHECK_INTERVAL_MS * 3);
+
+      expect(onTokenValid).toHaveBeenCalledTimes(3);
+      expect(onExpired).not.toHaveBeenCalled();
+    });
+
+    it('should not call onTokenValid when getTimeUntilExpiration returns Infinity', () => {
+      subscription = startTokenExpirationMonitor({
+        checkIntervalMs: CHECK_INTERVAL_MS,
+        forceLogoutMs: FORCE_LOGOUT_MS,
+        getTimeUntilExpiration,
+        onExpired,
+        onTokenValid,
+      });
+
+      vi.advanceTimersByTime(CHECK_INTERVAL_MS * 3);
+
+      expect(onTokenValid).not.toHaveBeenCalled();
+      expect(onExpired).not.toHaveBeenCalled();
+    });
+
+    it('should not call onTokenValid when time remaining is below the threshold', () => {
+      getTimeUntilExpiration.mockReturnValue(FORCE_LOGOUT_MS - 1);
+
+      subscription = startTokenExpirationMonitor({
+        checkIntervalMs: CHECK_INTERVAL_MS,
+        forceLogoutMs: FORCE_LOGOUT_MS,
+        getTimeUntilExpiration,
+        onExpired,
+        onTokenValid,
+      });
+
+      vi.advanceTimersByTime(CHECK_INTERVAL_MS);
+
+      expect(onTokenValid).not.toHaveBeenCalled();
+      expect(onExpired).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call onTokenValid then switch to onExpired when token transitions from valid to expired', () => {
+      getTimeUntilExpiration.mockReturnValue(FORCE_LOGOUT_MS + 1);
+
+      subscription = startTokenExpirationMonitor({
+        checkIntervalMs: CHECK_INTERVAL_MS,
+        forceLogoutMs: FORCE_LOGOUT_MS,
+        getTimeUntilExpiration,
+        onExpired,
+        onTokenValid,
+      });
+
+      vi.advanceTimersByTime(CHECK_INTERVAL_MS * 2);
+      expect(onTokenValid).toHaveBeenCalledTimes(2);
+      expect(onExpired).not.toHaveBeenCalled();
+
+      // Token expires
+      getTimeUntilExpiration.mockReturnValue(FORCE_LOGOUT_MS - 1);
+
+      vi.advanceTimersByTime(CHECK_INTERVAL_MS);
+      expect(onTokenValid).toHaveBeenCalledTimes(2);
+      expect(onExpired).toHaveBeenCalledTimes(1);
+    });
+
+    it('should work without onTokenValid provided (backward compatible)', () => {
+      getTimeUntilExpiration.mockReturnValue(FORCE_LOGOUT_MS + 1);
+
+      // No onTokenValid passed — should not throw
+      expect(() => {
+        subscription = startTokenExpirationMonitor({
+          checkIntervalMs: CHECK_INTERVAL_MS,
+          forceLogoutMs: FORCE_LOGOUT_MS,
+          getTimeUntilExpiration,
+          onExpired,
+        });
+
+        vi.advanceTimersByTime(CHECK_INTERVAL_MS * 3);
+      }).not.toThrow();
+
+      expect(onExpired).not.toHaveBeenCalled();
+    });
   });
 });
