@@ -116,6 +116,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly serverSideTotalRecords = input<number>();
   readonly initialSortField = input<keyof TData & string>();
   readonly initialSortOrder = input<-1 | 1>(1);
+
   readonly enableSelection = input(false);
   readonly enableColumnManagement = input(false);
   readonly updateContextMenuItem = output<TData>();
@@ -131,6 +132,13 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     const key = this.localStorageKey();
     return key ? `${key}-selected-columns` : undefined;
   });
+
+  readonly scrollable = input(false);
+  readonly scrollHeight = input('400px');
+
+  readonly paginatorDropdownAppendTo = input<'body' | 'self' | HTMLElement>(
+    'self',
+  );
 
   /**
    * DISPLAY

@@ -16,6 +16,9 @@
   (contextMenuSelectionChange)="updateContextMenuItem.emit($event)"
   [globalFilterFields]="globalFilterFields()"
   [paginator]="true"
+  [scrollable]="scrollable()"
+  [scrollHeight]="scrollable() ? scrollHeight() : 'auto'"
+  [paginatorDropdownAppendTo]="paginatorDropdownAppendTo()"
   [paginatorLocale]="locale"
   [rows]="10"
   [rowsPerPageOptions]="[10, 20, 40, 80, 100]"
@@ -35,7 +38,7 @@
   data-testid="query-table"
 >
   <ng-template pTemplate="caption">
-    <div class="flex min-h-12 items-center overflow-x-auto p-1">
+    <div class="flex items-center overflow-x-auto">
       <ng-content select="[table-actions]"></ng-content>
       <span class="ms-auto"></span>
       @if (isFiltered()) {
@@ -238,7 +241,7 @@
         </td>
       }
       @for (column of visibleColumns(); track column.header) {
-        <td>
+        <td [class]="column.class ? column.class : ''">
           @if (column.component) {
             <ng-container
               *ngComponentOutlet="
