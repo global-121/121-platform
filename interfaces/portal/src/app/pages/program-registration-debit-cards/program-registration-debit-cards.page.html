@@ -6,7 +6,7 @@
     @if (currentCard()) {
       <div class="my-auto ms-auto flex justify-end gap-x-2">
         <!-- @if (canBlockCard() && currentCardHasAction()(VisaCardAction.block)) { -->
-        @if (canCloseCard()) {
+        @if (canCloseCard() && currentCardHasAction()(VisaCardAction.close)) {
           <p-button
             label="Close card"
             i18n-label="@@debit-card-actions-close-card"

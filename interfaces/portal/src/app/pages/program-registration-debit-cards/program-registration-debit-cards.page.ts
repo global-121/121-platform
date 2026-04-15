@@ -300,16 +300,22 @@ export class ProgramRegistrationDebitCardsPageComponent {
   closeCardMutation = injectMutation(() => ({
     mutationFn: () => {
       const referenceId = this.referenceId();
+      const tokenCode = this.currentCard()?.tokenCode;
 
       if (!referenceId) {
         this.toastService.showGenericError();
         throw new Error('ReferenceId is missing');
       }
 
+      if (!tokenCode) {
+        this.toastService.showGenericError();
+        throw new Error('TokenCode is missing');
+      }
+
       return this.intersolveVisaApiService.closeCard({
         programId: this.programId,
         referenceId,
-        tokenCode: this.currentCard()?.tokenCode ?? '',
+        tokenCode,
       });
     },
     onSuccess: () => {
@@ -345,7 +351,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
   readonly canCloseCard = computed(() =>
     this.authService.hasPermission({
       programId: this.programId(),
-      requiredPermission: PermissionEnum.FspDebitCardBLOCK,
+      requiredPermission: PermissionEnum.FspDebitCardCLOSE,
     }),
   );
 }
