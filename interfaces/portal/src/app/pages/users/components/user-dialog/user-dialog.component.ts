@@ -29,9 +29,9 @@ import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
-  selector: 'app-add-user-dialog',
+  selector: 'app-user-dialog',
   styles: ``,
-  templateUrl: './add-user-dialog.component.html',
+  templateUrl: './user-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ButtonModule,
@@ -42,15 +42,31 @@ import { generateFieldErrors } from '~/utils/form-validation';
     ManualLinkComponent,
   ],
 })
-export class AddUserDialogComponent {
+export class UserDialogComponent {
   private toastService = inject(ToastService);
   private userApiService = inject(UserApiService);
 
-  readonly userToEdit = input<undefined | User>();
   readonly formDialog = viewChild.required<FormDialogComponent>('formDialog');
+
+  readonly userToEdit = input<undefined | User>();
   readonly isEditing = computed(() => !!this.userToEdit());
 
   allUsers = injectQuery(this.userApiService.getAllUsers());
+
+  readonly dialogTranslations = computed(() => {
+    if (this.isEditing()) {
+      return {
+        header: $localize`Edit user`,
+        proceedLabel: $localize`Save changes`,
+        headerIcon: 'pi pi-pencil',
+      };
+    }
+    return {
+      header: $localize`Add user`,
+      proceedLabel: $localize`Create user`,
+      headerIcon: 'pi pi-plus',
+    };
+  });
 
   formGroup = new FormGroup({
     displayNameValue: new FormControl('', {
@@ -95,27 +111,23 @@ export class AddUserDialogComponent {
     },
   }));
 
-  showAddUserDialog() {
-    this.formGroup.reset();
+  addUser() {
     this.formDialog().show({
-      resetMutation: false,
       resetFormGroup: true,
     });
     this.formGroup.controls.usernameValue.enable();
   }
 
-  showEditUserDialog() {
+  editUser() {
     if (!this.userToEdit()) return;
 
     this.formGroup.patchValue({
       displayNameValue: this.userToEdit()?.displayName,
       usernameValue: this.userToEdit()?.username,
     });
-
     this.formGroup.controls.usernameValue.disable();
 
     this.formDialog().show({
-      resetMutation: false,
       resetFormGroup: false,
     });
   }

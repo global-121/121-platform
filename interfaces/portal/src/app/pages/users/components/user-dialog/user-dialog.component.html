@@ -3,11 +3,9 @@
   [formGroup]="formGroup"
   [mutation]="userMutation"
   [mutationData]="formGroup.getRawValue()"
-  [header]="isEditing() ? 'Edit user' : 'Add user'"
-  i18n-header
-  [headerIcon]="isEditing() ? 'pi pi-pencil' : 'pi pi-plus'"
-  [proceedLabel]="isEditing() ? 'Edit user' : 'Add user'"
-  i18n-proceedLabel
+  [header]="dialogTranslations().header"
+  [headerIcon]="dialogTranslations().headerIcon"
+  [proceedLabel]="dialogTranslations().proceedLabel"
 >
   @if (!isEditing()) {
     <p class="mb-4">
