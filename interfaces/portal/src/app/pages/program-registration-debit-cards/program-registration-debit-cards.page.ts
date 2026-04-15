@@ -320,7 +320,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
     },
     onSuccess: () => {
       this.toastService.showToast({
-        detail: $localize`Card successfully replaced`,
+        detail: $localize`Card successfully closed`,
       });
     },
   }));
