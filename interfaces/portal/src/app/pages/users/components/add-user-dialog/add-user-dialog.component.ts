@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   input,
   viewChild,
@@ -44,16 +43,14 @@ import { generateFieldErrors } from '~/utils/form-validation';
   ],
 })
 export class AddUserDialogComponent {
-  readonly userToEdit = input<undefined | User>();
-
-  private userApiService = inject(UserApiService);
   private toastService = inject(ToastService);
+  private userApiService = inject(UserApiService);
 
+  readonly userToEdit = input<undefined | User>();
   readonly formDialog = viewChild.required<FormDialogComponent>('formDialog');
+  readonly isEditing = computed(() => !!this.userToEdit());
 
   allUsers = injectQuery(this.userApiService.getAllUsers());
-
-  readonly isEditing = computed(() => !!this.userToEdit());
 
   formGroup = new FormGroup({
     displayNameValue: new FormControl('', {
@@ -98,24 +95,28 @@ export class AddUserDialogComponent {
     },
   }));
 
-  constructor() {
-    effect(() => {
-      const user = this.userToEdit();
-      if (user) {
-        this.formGroup.patchValue({
-          displayNameValue: user.displayName,
-          usernameValue: user.username,
-        });
-        this.formGroup.controls.usernameValue.disable();
-      } else {
-        this.formGroup.controls.usernameValue.enable();
-      }
+  showAddUserDialog() {
+    this.formGroup.reset();
+    this.formDialog().show({
+      resetMutation: false,
+      resetFormGroup: true,
     });
+    this.formGroup.controls.usernameValue.enable();
   }
 
-  show() {
+  showEditUserDialog() {
+    if (!this.userToEdit()) return;
+
+    this.formGroup.patchValue({
+      displayNameValue: this.userToEdit()?.displayName,
+      usernameValue: this.userToEdit()?.username,
+    });
+
+    this.formGroup.controls.usernameValue.disable();
+
     this.formDialog().show({
-      resetMutation: true,
+      resetMutation: false,
+      resetFormGroup: false,
     });
   }
 }

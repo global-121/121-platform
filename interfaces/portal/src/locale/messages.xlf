@@ -1481,12 +1481,6 @@
       <trans-unit id="5719725512817410618" datatype="html">
         <source>Select a user</source>
       </trans-unit>
-      <trans-unit id="788860364636836173" datatype="html">
-        <source>Add a user to the 121 platform. Fill in the fields below to create a new user account.</source>
-      </trans-unit>
-      <trans-unit id="9048541856160254605" datatype="html">
-        <source>Add user to 121</source>
-      </trans-unit>
       <trans-unit id="3063750609223607355" datatype="html">
         <source>Add to team</source>
       </trans-unit>
@@ -1495,9 +1489,6 @@
       </trans-unit>
       <trans-unit id="create-program" datatype="html">
         <source>Create program</source>
-      </trans-unit>
-      <trans-unit id="5918723526444903137" datatype="html">
-        <source>Add user</source>
       </trans-unit>
       <trans-unit id="7000649363168371045" datatype="html">
         <source>Save changes</source>
@@ -2270,6 +2261,9 @@
       </trans-unit>
       <trans-unit id="4892553839051604445" datatype="html">
         <source>Payment</source>
+      </trans-unit>
+      <trans-unit id="4421433274861560863" datatype="html">
+        <source>Add a user to the 121 platform. Fill in the fields below to create a new user account.</source>
       </trans-unit>
     </body>
   </file>

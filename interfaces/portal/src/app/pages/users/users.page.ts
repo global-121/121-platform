@@ -93,6 +93,7 @@ export class UsersPageComponent {
       },
     }),
   );
+
   readonly contextMenuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`:@@generic-edit:Edit`,
@@ -129,8 +130,10 @@ export class UsersPageComponent {
       },
     },
   ]);
+
   openForm(formMode: 'add' | 'edit') {
     this.formMode.set(formMode);
-    this.addUserDialog().show();
+    if (formMode === 'edit') this.addUserDialog().showEditUserDialog();
+    if (formMode === 'add') this.addUserDialog().showAddUserDialog();
   }
 }

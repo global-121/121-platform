@@ -17,7 +17,7 @@
       />
       <app-add-user-dialog
         #addUserDialog
-        [userToEdit]="formMode() === 'edit' ? selectedUser() : undefined"
+        [userToEdit]="selectedUser()"
       />
     }
   </div>
