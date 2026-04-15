@@ -133,7 +133,13 @@ export class UsersPageComponent {
   openForm(formMode: 'add' | 'edit') {
     this.formMode.set(formMode);
 
-    if (formMode === 'edit') this.userDialog().editUser();
-    if (formMode === 'add') this.userDialog().addUser();
+    if (formMode === 'edit') {
+      console.log('Editing user', this.selectedUser());
+      this.userDialog().editUser();
+      return;
+    }
+
+    this.selectedUser.set(undefined);
+    this.userDialog().addUser();
   }
 }

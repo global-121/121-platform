@@ -63,7 +63,7 @@ export class UserDialogComponent {
     }
     return {
       header: $localize`Add user`,
-      proceedLabel: $localize`Create user`,
+      proceedLabel: $localize`Add user`,
       headerIcon: 'pi pi-plus',
     };
   });
@@ -112,7 +112,9 @@ export class UserDialogComponent {
   }));
 
   addUser() {
+    this.formGroup.reset();
     this.formDialog().show({
+      resetMutation: false,
       resetFormGroup: true,
     });
     this.formGroup.controls.usernameValue.enable();
@@ -125,9 +127,11 @@ export class UserDialogComponent {
       displayNameValue: this.userToEdit()?.displayName,
       usernameValue: this.userToEdit()?.username,
     });
+
     this.formGroup.controls.usernameValue.disable();
 
     this.formDialog().show({
+      resetMutation: false,
       resetFormGroup: false,
     });
   }
