@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/transaction-job-service.interface';
 import { IntersolveVoucherTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
@@ -9,7 +10,9 @@ import { TransactionsService } from '@121-service/src/payments/transactions/tran
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 @Injectable()
-export class TransactionJobsIntersolveVoucherService {
+export class TransactionJobsIntersolveVoucherService
+  implements TransactionJobService
+{
   constructor(
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -59,5 +62,11 @@ export class TransactionJobsIntersolveVoucherService {
       newTransactionStatus: sendIndividualPaymentResult.status,
       errorMessage: sendIndividualPaymentResult.message ?? undefined,
     });
+  }
+
+  public async processTransactionJob(data: unknown): Promise<void> {
+    await this.processIntersolveVoucherTransactionJob(
+      data as IntersolveVoucherTransactionJobDto,
+    );
   }
 }

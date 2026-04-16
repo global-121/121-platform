@@ -8,6 +8,7 @@ import { NedbankService } from '@121-service/src/fsp-integrations/integrations/n
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/transaction-job-service.interface';
 import { NedbankTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/nedbank-transaction-job.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -18,7 +19,7 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
-export class TransactionJobsNedbankService {
+export class TransactionJobsNedbankService implements TransactionJobService {
   constructor(
     private readonly nedbankService: NedbankService,
     private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
@@ -176,5 +177,9 @@ export class TransactionJobsNedbankService {
       '',
     ); // All non-alphanumeric characters (except hyphens) are removed because the nedbank API does not accept them
     return `${sanitizedPaymentReferencePrefix.slice(0, 18)}-${phoneNumber}`;
+  }
+
+  public async processTransactionJob(data: unknown): Promise<void> {
+    await this.processNedbankTransactionJob(data as NedbankTransactionJobDto);
   }
 }

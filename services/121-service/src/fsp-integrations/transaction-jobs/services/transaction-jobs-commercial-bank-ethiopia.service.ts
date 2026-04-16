@@ -5,6 +5,7 @@ import { CbeTransferScopedRepository } from '@121-service/src/fsp-integrations/i
 import { CbeTransferEntity } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia-transfer.entity';
 import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/transaction-job-service.interface';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
@@ -13,7 +14,9 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 
 @Injectable()
-export class TransactionJobsCommercialBankEthiopiaService {
+export class TransactionJobsCommercialBankEthiopiaService
+  implements TransactionJobService
+{
   constructor(
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -90,5 +93,11 @@ export class TransactionJobsCommercialBankEthiopiaService {
       newCbeTransfer.transactionId = transactionJob.transactionId;
       await this.cbeTransferScopedRepository.save(newCbeTransfer);
     }
+  }
+
+  public async processTransactionJob(data: unknown): Promise<void> {
+    await this.processCommercialBankEthiopiaTransactionJob(
+      data as CommercialBankEthiopiaTransactionJobDto,
+    );
   }
 }

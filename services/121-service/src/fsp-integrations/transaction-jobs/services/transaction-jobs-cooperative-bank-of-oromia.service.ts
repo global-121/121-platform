@@ -6,6 +6,7 @@ import { CooperativeBankOfOromiaError } from '@121-service/src/fsp-integrations/
 import { CooperativeBankOfOromiaService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/transaction-job-service.interface';
 import { CooperativeBankOfOromiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/cooperative-bank-of-oromia-transaction-job.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -14,7 +15,9 @@ import { TransactionsService } from '@121-service/src/payments/transactions/tran
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 @Injectable()
-export class TransactionJobsCooperativeBankOfOromiaService {
+export class TransactionJobsCooperativeBankOfOromiaService
+  implements TransactionJobService
+{
   constructor(
     private readonly cooperativeBankOfOromiaService: CooperativeBankOfOromiaService,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
@@ -111,5 +114,11 @@ export class TransactionJobsCooperativeBankOfOromiaService {
       .digest('hex');
 
     return messageId.slice(0, 12); // Cooperative Bank of Oromia requires max 12 alpha numeric chars
+  }
+
+  public async processTransactionJob(data: unknown): Promise<void> {
+    await this.processCooperativeBankOfOromiaTransactionJob(
+      data as CooperativeBankOfOromiaTransactionJobDto,
+    );
   }
 }

@@ -7,6 +7,7 @@ import { OnafriqError } from '@121-service/src/fsp-integrations/integrations/ona
 import { OnafriqService } from '@121-service/src/fsp-integrations/integrations/onafriq/services/onafriq.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/transaction-job-service.interface';
 import { OnafriqTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/onafriq-transaction-job.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -19,7 +20,7 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
-export class TransactionJobsOnafriqService {
+export class TransactionJobsOnafriqService implements TransactionJobService {
   constructor(
     private readonly onafriqService: OnafriqService,
     @Inject(getScopedRepositoryProviderName(OnafriqTransactionEntity))
@@ -163,5 +164,9 @@ export class TransactionJobsOnafriqService {
         (c) => c.name === FspConfigurationProperties.uniqueKeyOnafriq,
       )?.value as string,
     };
+  }
+
+  public async processTransactionJob(data: unknown): Promise<void> {
+    await this.processOnafriqTransactionJob(data as OnafriqTransactionJobDto);
   }
 }
