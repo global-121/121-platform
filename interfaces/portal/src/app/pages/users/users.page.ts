@@ -57,7 +57,6 @@ export class UsersPageComponent {
   users = injectQuery(this.userApiService.getAllUsers());
 
   readonly selectedUser = signal<undefined | User>(undefined);
-  readonly formMode = signal<'add' | 'edit'>('add');
 
   readonly columns = computed<QueryTableColumn<User>[]>(() => [
     {
@@ -131,10 +130,7 @@ export class UsersPageComponent {
   ]);
 
   openForm(formMode: 'add' | 'edit') {
-    this.formMode.set(formMode);
-
     if (formMode === 'edit') {
-      console.log('Editing user', this.selectedUser());
       this.userDialog().editUser();
       return;
     }
