@@ -17,6 +17,8 @@ import { CreateMutationResult } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 
+import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
+
 import { FileUploadControlComponent } from '~/components/file-upload-control/file-upload-control.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
@@ -26,12 +28,8 @@ import { generateFieldErrors } from '~/utils/form-validation';
 export type ImportFileDialogFormGroup =
   (typeof ImportFileDialogComponent)['prototype']['formGroup'];
 
-interface DetailedImportError {
+interface DetailedImportError extends ValidateRegistrationErrorObject {
   id: number;
-  column: string;
-  error: string;
-  lineNumber: number;
-  value: string;
 }
 
 @Component({
@@ -74,13 +72,13 @@ export class ImportFileDialogComponent {
       Array.isArray(error.cause.error)
     ) {
       // We need to add a ID because the table expects it, without <app-query-table> throws a typescript error
-      const detailedErrorsWithIndexedIds = error.cause.error.map(
-        (error, idx) =>
-          ({
+      const detailedErrorsWithIndexedIds: DetailedImportError[] =
+        error.cause.error.map(
+          (error: ValidateRegistrationErrorObject, index: number) => ({
             ...error,
-            id: idx,
-          }) as DetailedImportError,
-      );
+            id: index,
+          }),
+        );
 
       return detailedErrorsWithIndexedIds;
     }
@@ -92,7 +90,7 @@ export class ImportFileDialogComponent {
     QueryTableColumn<DetailedImportError>[]
   >(() => [
     {
-      field: 'lineNumber',
+      field: 'column',
       header: $localize`Line number`,
     },
     {
