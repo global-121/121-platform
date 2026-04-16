@@ -382,9 +382,13 @@ describe('Payment in progress', () => {
       accessToken,
     });
 
-    const getProgramPaymentsPvResult = (
-      await getProgramPaymentsStatus(programIdPV, accessToken)
-    ).body;
+    const multiEndpointPaymentProgressPv =
+      await getPaymentProgressStatusForMultipleEndpoints({
+        programId: programIdPV,
+        accessToken,
+        paymentId: paymentIdPv,
+      });
+
     const getProgramPaymentsOcwResult = (
       await getProgramPaymentsStatus(programIdOCW, accessToken)
     ).body;
@@ -396,17 +400,8 @@ describe('Payment in progress', () => {
       accessToken,
     });
 
-    const multiEndpointPaymentProgressPv =
-      await getPaymentProgressStatusForMultipleEndpoints({
-        programId: programIdPV,
-        accessToken,
-        paymentId: paymentIdPv,
-      });
-
     // Assert
-    expect(getProgramPaymentsPvResult.inProgress).toBe(true);
     expect(getProgramPaymentsOcwResult.inProgress).toBe(false);
-
     expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.CREATED);
     expect(multiEndpointPaymentProgressPv).toMatchObject({
       paymentIsInProgress: true,
