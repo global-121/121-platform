@@ -157,15 +157,9 @@ export class QueuesRegistryService implements OnModuleInit {
   async emptyAllQueues(): Promise<void> {
     // Bull queues involve complex data structures and Bull maintains various metadata for job management.
     // Therefore the data of the Bull queue and the ioredis queue are deleted separately
-    const queues = Object.values(this.allQueues);
-
-    await Promise.all(queues.map((queue) => queue.pause(true)));
-    await Promise.all(queues.map((queue) => queue.whenCurrentJobsFinished()));
-
-    for (const queue of queues) {
+    for (const queue of Object.values(this.allQueues)) {
       await queue.empty();
     }
-    
     const redisClient = createRedisClient();
     // Prefix is needed here because .keys does not take into account the prefix of the redis client
     const keys = await redisClient.keys(`${env.REDIS_PREFIX}:*`);
@@ -176,8 +170,6 @@ export class QueuesRegistryService implements OnModuleInit {
       await this.batchDeleteKeys(redisClient, keysWithoutPrefix);
     }
     await redisClient.keys(`${env.REDIS_PREFIX}:*`);
-
-    await Promise.all(queues.map((queue) => queue.resume(true)));
   }
 
   // This is prevent this error when deleting large amount of keys: RangeError: Maximum call stack size exceeded
