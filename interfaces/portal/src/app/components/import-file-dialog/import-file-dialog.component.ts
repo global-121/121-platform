@@ -16,8 +16,6 @@ import {
 import { CreateMutationResult } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { ScrollPanelModule } from 'primeng/scrollpanel';
-import { TableModule } from 'primeng/table';
 
 import { FileUploadControlComponent } from '~/components/file-upload-control/file-upload-control.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
@@ -44,9 +42,7 @@ interface DetailedImportError {
     ButtonModule,
     FormErrorComponent,
     FileUploadControlComponent,
-    ScrollPanelModule,
     QueryTableComponent,
-    TableModule,
   ],
   templateUrl: './import-file-dialog.component.html',
   styles: ``,

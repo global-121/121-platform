@@ -35,7 +35,7 @@
   (onFilter)="resetSelection()"
   [columns]="visibleColumns()"
   [dataKey]="'id'"
-  data-testid="query-table"
+  [attr.data-testid]="dataTestId()"
 >
   <ng-template pTemplate="caption">
     <div class="flex items-center overflow-x-auto">

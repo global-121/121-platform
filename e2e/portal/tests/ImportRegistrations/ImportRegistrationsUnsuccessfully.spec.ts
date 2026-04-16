@@ -33,4 +33,8 @@ test('Unsuccessfully import registrations', async ({ registrationsPage }) => {
       'Something went wrong with this import. Please fix the errors reported below and try again.',
     );
   });
+
+  await test.step('Should show table with error details', async () => {
+    await registrationsPage.validateErrorTable();
+  });
 });

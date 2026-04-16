@@ -38,6 +38,7 @@
             i18n-error
           />
           <app-query-table
+            [dataTestId]="'import-file-dialog-errors-table'"
             [paginatorDropdownAppendTo]="'body'"
             [columns]="detailedErrorsColumns()"
             [initialSortField]="'lineNumber'"

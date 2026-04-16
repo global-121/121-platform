@@ -136,6 +136,8 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly scrollable = input(false);
   readonly scrollHeight = input('400px');
 
+  readonly dataTestId = input('query-table');
+
   readonly paginatorDropdownAppendTo = input<'body' | 'self' | HTMLElement>(
     'self',
   );
