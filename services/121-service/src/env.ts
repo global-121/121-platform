@@ -301,7 +301,6 @@ export const env = createEnv({
     REDIRECT_PORTAL_URL_HOST: z
       .url()
       .pipe(z.transform((url) => withoutTrailingSlash(url))),
-    REDIRECT_PORTAL_URL_LOCALE: z.string().default('en-GB'),
 
     // Third-party: Azure ApplicationInsights
     APPLICATIONINSIGHTS_CONNECTION_STRING: z.string().optional(),

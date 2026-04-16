@@ -88,6 +88,6 @@ export class PaymentEmailsService {
   }
 
   private getPaymentUrl = (programId: number, paymentId: number): string => {
-    return `${env.REDIRECT_PORTAL_URL_HOST}/${env.REDIRECT_PORTAL_URL_LOCALE}/program/${programId}/payments/${paymentId}`;
+    return `${env.REDIRECT_PORTAL_URL_HOST}/en-GB/program/${programId}/payments/${paymentId}`;
   };
 }
