@@ -29,6 +29,7 @@ export type ImportFileDialogFormGroup =
   (typeof ImportFileDialogComponent)['prototype']['formGroup'];
 
 interface DetailedImportError extends ValidateRegistrationErrorObject {
+  lineNumber?: number;
   id: number;
 }
 
@@ -90,7 +91,7 @@ export class ImportFileDialogComponent {
     QueryTableColumn<DetailedImportError>[]
   >(() => [
     {
-      field: 'column',
+      field: 'lineNumber',
       header: $localize`Line number`,
     },
     {
