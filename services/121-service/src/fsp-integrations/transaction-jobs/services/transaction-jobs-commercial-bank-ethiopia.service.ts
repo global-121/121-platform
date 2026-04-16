@@ -26,7 +26,7 @@ export class TransactionJobsCommercialBankEthiopiaService
     private readonly cbeTransferScopedRepository: CbeTransferScopedRepository,
   ) {}
 
-  public async processCommercialBankEthiopiaTransactionJob(
+  public async processTransactionJob(
     transactionJob: CommercialBankEthiopiaTransactionJobDto,
   ): Promise<void> {
     // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
@@ -93,11 +93,5 @@ export class TransactionJobsCommercialBankEthiopiaService
       newCbeTransfer.transactionId = transactionJob.transactionId;
       await this.cbeTransferScopedRepository.save(newCbeTransfer);
     }
-  }
-
-  public async processTransactionJob(data: unknown): Promise<void> {
-    await this.processCommercialBankEthiopiaTransactionJob(
-      data as CommercialBankEthiopiaTransactionJobDto,
-    );
   }
 }

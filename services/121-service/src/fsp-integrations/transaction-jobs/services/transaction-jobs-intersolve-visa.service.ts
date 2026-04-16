@@ -29,7 +29,7 @@ export class TransactionJobsIntersolveVisaService
     private readonly intersolveVisaChildWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
   ) {}
 
-  public async processIntersolveVisaTransactionJob(
+  public async processTransactionJob(
     transactionJob: IntersolveVisaTransactionJobDto,
   ): Promise<void> {
     // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
@@ -202,12 +202,6 @@ export class TransactionJobsIntersolveVisaService
     await this.transactionRepository.update(
       { id: transactionId },
       { transferValue: value },
-    );
-  }
-
-  public async processTransactionJob(data: unknown): Promise<void> {
-    await this.processIntersolveVisaTransactionJob(
-      data as IntersolveVisaTransactionJobDto,
     );
   }
 }

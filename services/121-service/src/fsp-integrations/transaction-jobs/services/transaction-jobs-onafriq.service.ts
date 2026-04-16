@@ -31,7 +31,7 @@ export class TransactionJobsOnafriqService implements TransactionJobService {
     private readonly transactionsService: TransactionsService,
   ) {}
 
-  public async processOnafriqTransactionJob(
+  public async processTransactionJob(
     transactionJob: OnafriqTransactionJobDto,
   ): Promise<void> {
     // 1. Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
@@ -164,9 +164,5 @@ export class TransactionJobsOnafriqService implements TransactionJobService {
         (c) => c.name === FspConfigurationProperties.uniqueKeyOnafriq,
       )?.value as string,
     };
-  }
-
-  public async processTransactionJob(data: unknown): Promise<void> {
-    await this.processOnafriqTransactionJob(data as OnafriqTransactionJobDto);
   }
 }

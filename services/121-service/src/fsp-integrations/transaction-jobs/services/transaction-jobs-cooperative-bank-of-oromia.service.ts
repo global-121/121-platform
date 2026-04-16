@@ -25,7 +25,7 @@ export class TransactionJobsCooperativeBankOfOromiaService
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
-  public async processCooperativeBankOfOromiaTransactionJob(
+  public async processTransactionJob(
     transactionJob: CooperativeBankOfOromiaTransactionJobDto,
   ): Promise<void> {
     // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
@@ -114,11 +114,5 @@ export class TransactionJobsCooperativeBankOfOromiaService
       .digest('hex');
 
     return messageId.slice(0, 12); // Cooperative Bank of Oromia requires max 12 alpha numeric chars
-  }
-
-  public async processTransactionJob(data: unknown): Promise<void> {
-    await this.processCooperativeBankOfOromiaTransactionJob(
-      data as CooperativeBankOfOromiaTransactionJobDto,
-    );
   }
 }

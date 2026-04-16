@@ -96,7 +96,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
         errorMessage: null,
       });
 
-    await service.processCommercialBankEthiopiaTransactionJob(transactionJob);
+    await service.processTransactionJob(transactionJob);
 
     expect(createCreditTransferSpy).toHaveBeenCalledWith({
       inputParams: {
@@ -135,7 +135,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
         errorMessage: null,
       });
 
-    await service.processCommercialBankEthiopiaTransactionJob(
+    await service.processTransactionJob(
       transactionJobRetry,
     );
 
@@ -177,7 +177,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       .spyOn(cbeTransferScopedRepository, 'save')
       .mockResolvedValue({} as any);
 
-    await service.processCommercialBankEthiopiaTransactionJob(transactionJob);
+    await service.processTransactionJob(transactionJob);
     expect(saveCbeTransferSpy).toHaveBeenCalledTimes(1);
   });
 
@@ -208,7 +208,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       .spyOn(cbeTransferScopedRepository, 'save')
       .mockResolvedValue({} as any);
 
-    await service.processCommercialBankEthiopiaTransactionJob(
+    await service.processTransactionJob(
       transactionJobRetry,
     );
     expect(saveCbeTransferSpy).not.toHaveBeenCalled();

@@ -96,7 +96,7 @@ describe('TransactionJobsNedbankService', () => {
       .spyOn(nedbankService, 'createVoucher')
       .mockResolvedValueOnce(NedbankVoucherStatus.PENDING);
 
-    await service.processNedbankTransactionJob(mockedNedbankTransactionJob);
+    await service.processTransactionJob(mockedNedbankTransactionJob);
 
     expect(
       transactionJobsHelperService.logTransactionJobStart,
@@ -143,7 +143,7 @@ describe('TransactionJobsNedbankService', () => {
       .mockRejectedValueOnce(nedbankError);
 
     // Act
-    await service.processNedbankTransactionJob(mockedNedbankTransactionJob);
+    await service.processTransactionJob(mockedNedbankTransactionJob);
 
     // Assert
     expect(transactionsService.saveProgress).toHaveBeenCalledWith({
@@ -167,7 +167,7 @@ describe('TransactionJobsNedbankService', () => {
       .spyOn(nedbankService, 'createVoucher')
       .mockResolvedValueOnce(NedbankVoucherStatus.PENDING);
 
-    await service.processNedbankTransactionJob(mockedNedbankTransactionJob);
+    await service.processTransactionJob(mockedNedbankTransactionJob);
 
     expect(nedbankService.createVoucher).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -192,7 +192,7 @@ describe('TransactionJobsNedbankService', () => {
       .spyOn(nedbankService, 'createVoucher')
       .mockResolvedValueOnce(NedbankVoucherStatus.PENDING);
 
-    await service.processNedbankTransactionJob(mockedNedbankTransactionJob);
+    await service.processTransactionJob(mockedNedbankTransactionJob);
 
     expect(nedbankService.createVoucher).toHaveBeenCalledWith(
       expect.objectContaining({

@@ -20,7 +20,7 @@ export class TransactionJobsIntersolveVoucherService
     private readonly transactionsService: TransactionsService,
   ) {}
 
-  public async processIntersolveVoucherTransactionJob(
+  public async processTransactionJob(
     transactionJob: IntersolveVoucherTransactionJobDto,
   ): Promise<void> {
     // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
@@ -62,11 +62,5 @@ export class TransactionJobsIntersolveVoucherService
       newTransactionStatus: sendIndividualPaymentResult.status,
       errorMessage: sendIndividualPaymentResult.message ?? undefined,
     });
-  }
-
-  public async processTransactionJob(data: unknown): Promise<void> {
-    await this.processIntersolveVoucherTransactionJob(
-      data as IntersolveVoucherTransactionJobDto,
-    );
   }
 }

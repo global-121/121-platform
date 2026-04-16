@@ -1,3 +1,3 @@
 export interface TransactionJobService {
-  processTransactionJob: (data: unknown) => Promise<void>;
+  processTransactionJob: (data: any) => Promise<void>;
 }

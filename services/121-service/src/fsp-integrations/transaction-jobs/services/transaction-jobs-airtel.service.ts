@@ -24,7 +24,7 @@ export class TransactionJobsAirtelService implements TransactionJobService {
     private readonly transactionsService: TransactionsService,
   ) {}
 
-  public async processAirtelTransactionJob(
+  public async processTransactionJob(
     transactionJob: AirtelTransactionJobDto,
   ): Promise<void> {
     if (env.AIRTEL_MODE === FspMode.disabled) {
@@ -151,8 +151,4 @@ export class TransactionJobsAirtelService implements TransactionJobService {
 
     return airtelTransactionId;
   };
-
-  public async processTransactionJob(data: unknown): Promise<void> {
-    await this.processAirtelTransactionJob(data as AirtelTransactionJobDto);
-  }
 }

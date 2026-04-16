@@ -29,7 +29,7 @@ export class TransactionJobsNedbankService implements TransactionJobService {
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
   ) {}
 
-  public async processNedbankTransactionJob(
+  public async processTransactionJob(
     transactionJob: NedbankTransactionJobDto,
   ): Promise<void> {
     // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
@@ -177,9 +177,5 @@ export class TransactionJobsNedbankService implements TransactionJobService {
       '',
     ); // All non-alphanumeric characters (except hyphens) are removed because the nedbank API does not accept them
     return `${sanitizedPaymentReferencePrefix.slice(0, 18)}-${phoneNumber}`;
-  }
-
-  public async processTransactionJob(data: unknown): Promise<void> {
-    await this.processNedbankTransactionJob(data as NedbankTransactionJobDto);
   }
 }

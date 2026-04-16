@@ -14,7 +14,7 @@ export class TransactionJobsExcelService implements TransactionJobService {
     private readonly transactionsService: TransactionsService,
   ) {}
 
-  public async processExcelTransactionJob(
+  public async processTransactionJob(
     transactionJob: ExcelTransactionJobDto,
   ): Promise<void> {
     // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
@@ -33,9 +33,5 @@ export class TransactionJobsExcelService implements TransactionJobService {
       context: transactionEventContext,
       description: TransactionEventDescription.excelPreparationForExport,
     });
-  }
-
-  public async processTransactionJob(data: unknown): Promise<void> {
-    await this.processExcelTransactionJob(data as ExcelTransactionJobDto);
   }
 }

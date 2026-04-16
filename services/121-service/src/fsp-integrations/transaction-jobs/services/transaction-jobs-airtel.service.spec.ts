@@ -59,14 +59,14 @@ describe('TransactionJobsAirtelService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('processAirtelTransactionJob - happy path', () => {
+  describe('processTransactionJob - happy path', () => {
     afterEach(() => {
       jest.restoreAllMocks();
     });
 
     it('should call saveTransactionProgress with the right arguments', async () => {
       // Act
-      await service.processAirtelTransactionJob(transactionJob);
+      await service.processTransactionJob(transactionJob);
 
       // Assert
       expect(
@@ -84,7 +84,7 @@ describe('TransactionJobsAirtelService', () => {
 
     it('should call attemptOrCheckDisbursement with the right arguments', async () => {
       // Act
-      await service.processAirtelTransactionJob(transactionJob);
+      await service.processTransactionJob(transactionJob);
 
       // Assert
       // Deterministic based on input.
@@ -104,7 +104,7 @@ describe('TransactionJobsAirtelService', () => {
       ).mockResolvedValue(4);
 
       // Act
-      await service.processAirtelTransactionJob(transactionJob);
+      await service.processTransactionJob(transactionJob);
 
       // Assert
       // Different from the previous test.
@@ -119,7 +119,7 @@ describe('TransactionJobsAirtelService', () => {
 
     it('should call saveTransactionProcessingProgress with the right arguments', async () => {
       // Act
-      await service.processAirtelTransactionJob(transactionJob);
+      await service.processTransactionJob(transactionJob);
 
       // Assert
       expect(transactionsService.saveProgress).toHaveBeenCalledWith({
@@ -131,7 +131,7 @@ describe('TransactionJobsAirtelService', () => {
     });
   });
 
-  describe('processAirtelTransactionJob - unhappy path', () => {
+  describe('processTransactionJob - unhappy path', () => {
     it("should call saveTransactionProcessingProgress with certain arguments when attemptOrCheckDisbursement throws an AirtelError that's AirtelDisbursementResultEnum.ambiguous", async () => {
       // Arrange
       (airtelService.attemptOrCheckDisbursement as jest.Mock).mockRejectedValue(
@@ -142,7 +142,7 @@ describe('TransactionJobsAirtelService', () => {
       );
 
       // Act
-      await service.processAirtelTransactionJob(transactionJob);
+      await service.processTransactionJob(transactionJob);
 
       expect(transactionsService.saveProgress).toHaveBeenCalledWith({
         context: transactionEventContext,
@@ -159,7 +159,7 @@ describe('TransactionJobsAirtelService', () => {
       );
 
       // Act
-      await service.processAirtelTransactionJob(transactionJob);
+      await service.processTransactionJob(transactionJob);
 
       expect(transactionsService.saveProgress).toHaveBeenCalledWith({
         context: transactionEventContext,
@@ -180,7 +180,7 @@ describe('TransactionJobsAirtelService', () => {
 
       let error: Error | any; // The any is unfortunately needed to prevent type errors
       try {
-        await service.processAirtelTransactionJob(transactionJob);
+        await service.processTransactionJob(transactionJob);
       } catch (e) {
         error = e;
       }

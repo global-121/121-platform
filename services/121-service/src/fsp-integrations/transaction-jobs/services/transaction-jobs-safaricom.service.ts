@@ -26,7 +26,7 @@ export class TransactionJobsSafaricomService implements TransactionJobService {
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
   ) {}
 
-  public async processSafaricomTransactionJob(
+  public async processTransactionJob(
     transactionJob: SafaricomTransactionJobDto,
   ): Promise<void> {
     // 1. Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
@@ -123,11 +123,5 @@ export class TransactionJobsSafaricomService implements TransactionJobService {
     newSafaricomTransfer.originatorConversationId = originatorConversationId;
     newSafaricomTransfer.transactionId = transactionJob.transactionId;
     await this.safaricomTransferScopedRepository.save(newSafaricomTransfer);
-  }
-
-  public async processTransactionJob(data: unknown): Promise<void> {
-    await this.processSafaricomTransactionJob(
-      data as SafaricomTransactionJobDto,
-    );
   }
 }
