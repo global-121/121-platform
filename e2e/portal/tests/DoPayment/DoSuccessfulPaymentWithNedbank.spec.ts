@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NedbankProgram from '@121-service/src/seed-data/program/program-nedbank.json';
 import { runCronJobDoNedbankReconciliation } from '@121-service/test/helpers/utility.helper';
@@ -28,7 +26,6 @@ test('Do successful payment for Nedbank fsp', async ({
   const defaultMaxTransferValue = registrationsNedbank.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
@@ -37,7 +34,7 @@ test('Do successful payment for Nedbank fsp', async ({
       url.pathname.startsWith(`/en-GB/program/${programIdNedbank}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
 
@@ -54,7 +51,6 @@ test('Do successful payment for Nedbank fsp', async ({
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.navigateToProgramPage('Payments');
     await paymentsPage.validatePaymentCard({
-      date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
       successfulPaymentAmount: defaultMaxTransferValue,

@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import {
@@ -27,7 +25,6 @@ test('Do successful payment for Voucher fsp', async ({
   const defaultMaxTransferValue = registrationsVoucher.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
@@ -36,7 +33,7 @@ test('Do successful payment for Voucher fsp', async ({
       url.pathname.startsWith(`/en-GB/program/${programIdPV}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
     // also validate toast messages for just this 1 (random) FSP instead of for all
     await paymentPage.validateToastMessageAndClose('Payment created');
     await paymentPage.approvePayment();
@@ -50,7 +47,6 @@ test('Do successful payment for Voucher fsp', async ({
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.navigateToProgramPage('Payments');
     await paymentsPage.validatePaymentCard({
-      date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
       successfulPaymentAmount: defaultMaxTransferValue,

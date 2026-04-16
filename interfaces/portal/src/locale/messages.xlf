@@ -850,9 +850,6 @@
       <trans-unit id="2224540478181897692" datatype="html">
         <source>All Payments</source>
       </trans-unit>
-      <trans-unit id="4892553839051604445" datatype="html">
-        <source>Payment</source>
-      </trans-unit>
       <trans-unit id="8221183084962199390" datatype="html">
         <source>Payment not found. Please check the URL and try again.</source>
       </trans-unit>
@@ -2270,6 +2267,9 @@
       </trans-unit>
       <trans-unit id="5512472017654585017" datatype="html">
         <source>Payment creation did not return a payment reference. Please stay on this screen and refresh the payments list before trying again.</source>
+      </trans-unit>
+      <trans-unit id="4892553839051604445" datatype="html">
+        <source>Payment</source>
       </trans-unit>
     </body>
   </file>

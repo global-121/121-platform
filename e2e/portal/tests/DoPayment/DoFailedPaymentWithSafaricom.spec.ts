@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import KRCSProgram from '@121-service/src/seed-data/program/program-safaricom.json';
 import {
@@ -33,7 +31,6 @@ test('Do failed payment for Safaricom fsp', async ({
     },
     0,
   );
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
@@ -44,7 +41,7 @@ test('Do failed payment for Safaricom fsp', async ({
       ),
     );
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
   });
@@ -54,7 +51,6 @@ test('Do failed payment for Safaricom fsp', async ({
     await paymentPage.navigateToProgramPage('Payments');
     // First try to validate the payment card where system still waits for the response from the PA with Voucher payment method.
     await paymentsPage.validatePaymentCard({
-      date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
       successfulPaymentAmount: 0,

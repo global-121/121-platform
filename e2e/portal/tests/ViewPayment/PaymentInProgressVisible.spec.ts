@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDuplicateRegistrations } from '@121-service/test/helpers/utility.helper';
 import {
@@ -25,8 +23,6 @@ test('Show in progress banner and chip when payment is in progress', async ({
   paymentsPage,
   page,
 }) => {
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
-
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
@@ -35,7 +31,7 @@ test('Show in progress banner and chip when payment is in progress', async ({
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
     await page.waitForTimeout(500); // wait a bit to allow the payment to start with 2^8 registrations
   });
 

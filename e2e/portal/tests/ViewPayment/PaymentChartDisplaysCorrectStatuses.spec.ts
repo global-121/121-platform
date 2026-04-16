@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDuplicateRegistrations } from '@121-service/test/helpers/utility.helper';
 import {
@@ -26,8 +24,6 @@ test('Payment chart should reflect transaction statuses', async ({
   paymentsPage,
   page,
 }) => {
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
-
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
@@ -35,7 +31,7 @@ test('Payment chart should reflect transaction statuses', async ({
     );
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
   });
 
   await test.step('Chart displays all correct payment statuses', async () => {

@@ -141,7 +141,6 @@ class PaymentsPage extends BasePage {
   }
 
   async validatePaymentCard({
-    date,
     registrationsNumber,
     paymentAmount,
     successfulPaymentAmount,
@@ -150,7 +149,6 @@ class PaymentsPage extends BasePage {
     programId,
     paymentId = 1,
   }: {
-    date: string;
     registrationsNumber: number;
     paymentAmount: number;
     successfulPaymentAmount: number;
@@ -162,7 +160,7 @@ class PaymentsPage extends BasePage {
     // Locate the specific payment card using the payment link and then navigate to its ancestor card element
     const hrefLocatorUrl = `"/en-GB/program/${programId}/payments/${paymentId}"`;
     const cardTitleLocator = this.page.locator(`a[href=${hrefLocatorUrl}]`);
-    const paymentTitle = await cardTitleLocator.getByTitle(date).textContent();
+    await expect(cardTitleLocator.first()).toBeVisible();
     const card = this.page
       .getByTestId('card-with-link')
       .filter({ has: cardTitleLocator })
@@ -184,8 +182,6 @@ class PaymentsPage extends BasePage {
     const failedTransactionsElement = await card
       .filter({ hasText: 'Failed transactions' })
       .textContent();
-
-    expect(paymentTitle).toContain(date);
 
     expect(includedRegistrationsElement).toContain(
       registrationsNumber.toString(),
