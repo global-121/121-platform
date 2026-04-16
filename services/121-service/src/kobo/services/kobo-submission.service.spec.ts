@@ -112,7 +112,7 @@ describe('KoboSubmissionService', () => {
           provide: KoboSubmissionHelperService,
           useValue: {
             updateProgramToNewVersionIfApplicable: jest.fn(),
-            getExistingReferenceIds: jest.fn(),
+            filterAlreadyExistingSubmissionUuids: jest.fn(),
             validateAndImportAsRegistrations: jest.fn(),
           },
         },
