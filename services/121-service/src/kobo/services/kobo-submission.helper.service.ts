@@ -89,14 +89,14 @@ export class KoboSubmissionHelperService {
     );
   }
 
-  public async getExistingReferenceIds(
-    referenceIds: string[],
+  public async filterAlreadyExistingSubmissionUuids(
+    submissionUuids: string[],
   ): Promise<Set<string>> {
-    if (referenceIds.length === 0) {
+    if (submissionUuids.length === 0) {
       return new Set();
     }
     const registrations = await this.registrationRepository.find({
-      where: { referenceId: In(referenceIds) },
+      where: { referenceId: In(submissionUuids) },
       select: { referenceId: true },
     });
     return new Set(registrations.map((r) => r.referenceId));

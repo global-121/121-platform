@@ -246,7 +246,7 @@ describe('KoboSubmissionService', () => {
         count: 2,
         submissions: [mockSubmission, mockSubmission2],
       });
-      koboSubmissionHelperService.getExistingReferenceIds.mockResolvedValue(
+      koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids.mockResolvedValue(
         new Set([successSubmissionUuid]),
       );
       koboSubmissionHelperService.validateAndImportAsRegistrations.mockResolvedValue(
@@ -327,7 +327,7 @@ describe('KoboSubmissionService', () => {
         count: 1,
         submissions: [{ ...mockSubmission, __version__: newerVersionId }],
       });
-      koboSubmissionHelperService.getExistingReferenceIds.mockResolvedValue(
+      koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids.mockResolvedValue(
         new Set(),
       );
       koboSubmissionHelperService.validateAndImportAsRegistrations.mockResolvedValue(
@@ -364,7 +364,7 @@ describe('KoboSubmissionService', () => {
         count: 1,
         submissions: [mockSubmission], // __version__: 'v1' matches stored versionId: 'v1'
       });
-      koboSubmissionHelperService.getExistingReferenceIds.mockResolvedValue(
+      koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids.mockResolvedValue(
         new Set(),
       );
       koboSubmissionHelperService.validateAndImportAsRegistrations.mockResolvedValue(
@@ -394,7 +394,7 @@ describe('KoboSubmissionService', () => {
         submissions: [mockSubmission, mockSubmission2],
       });
       // Both submissions already exist
-      koboSubmissionHelperService.getExistingReferenceIds.mockResolvedValue(
+      koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids.mockResolvedValue(
         new Set([successSubmissionUuid, 'new-submission-uuid']),
       );
       koboSubmissionHelperService.validateAndImportAsRegistrations.mockResolvedValue(
@@ -442,7 +442,7 @@ describe('KoboSubmissionService', () => {
         count: 1,
         submissions: [mockSubmission],
       });
-      koboSubmissionHelperService.getExistingReferenceIds.mockResolvedValue(
+      koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids.mockResolvedValue(
         new Set(),
       );
       koboSubmissionHelperService.validateAndImportAsRegistrations.mockResolvedValue(
@@ -466,7 +466,7 @@ describe('KoboSubmissionService', () => {
         count: 2,
         submissions: [mockSubmission, mockSubmission2],
       });
-      koboSubmissionHelperService.getExistingReferenceIds.mockResolvedValue(
+      koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids.mockResolvedValue(
         new Set([successSubmissionUuid]),
       );
       koboSubmissionHelperService.validateAndImportAsRegistrations.mockResolvedValue(

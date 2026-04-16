@@ -186,7 +186,7 @@ describe('KoboSubmissionHelperService', () => {
     });
   });
 
-  describe('getExistingReferenceIds', () => {
+  describe('filter submissions ids already existing', () => {
     it('should return set of existing reference IDs', async () => {
       // Arrange
       registrationRepository.find.mockResolvedValue([
@@ -195,7 +195,7 @@ describe('KoboSubmissionHelperService', () => {
       ]);
 
       // Act
-      const result = await service.getExistingReferenceIds([
+      const result = await service.filterAlreadyExistingSubmissionUuids([
         'uuid-1',
         'uuid-2',
         'uuid-3',
@@ -207,7 +207,7 @@ describe('KoboSubmissionHelperService', () => {
 
     it('should return empty set for empty input', async () => {
       // Act
-      const result = await service.getExistingReferenceIds([]);
+      const result = await service.filterAlreadyExistingSubmissionUuids([]);
 
       // Assert
       expect(result).toEqual(new Set());

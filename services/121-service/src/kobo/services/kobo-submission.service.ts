@@ -132,7 +132,7 @@ export class KoboSubmissionService {
     const submissionUuids = submissions.map((s) => s._uuid);
 
     const existingReferenceIds =
-      await this.koboSubmissionHelperService.getExistingReferenceIds(
+      await this.koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids(
         submissionUuids,
       );
 
