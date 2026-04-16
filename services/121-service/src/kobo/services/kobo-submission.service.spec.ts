@@ -5,14 +5,11 @@ import { Repository } from 'typeorm';
 
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
-import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
-import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
+import { KoboSubmissionHelperService } from '@121-service/src/kobo/services/kobo-submission.helper.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationsCreationService } from '@121-service/src/registration/services/registrations-creation.service';
-import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 
 import '@121-service/src/utils/test-helpers/matchers/httpExceptionMatcher';
 
@@ -20,10 +17,8 @@ describe('KoboSubmissionService', () => {
   let service: KoboSubmissionService;
   let koboRepository: jest.Mocked<Repository<KoboEntity>>;
   let koboApiService: jest.Mocked<KoboApiService>;
-  let koboService: jest.Mocked<KoboService>;
   let registrationsCreationService: jest.Mocked<RegistrationsCreationService>;
-  let registrationsInputValidator: jest.Mocked<RegistrationsInputValidator>;
-  let registrationRepository: jest.Mocked<Repository<RegistrationEntity>>;
+  let koboSubmissionHelperService: jest.Mocked<KoboSubmissionHelperService>;
 
   const successSubmissionUuid = 'success-submission-uuid';
   const assetUid = 'test-asset-uid';
@@ -74,6 +69,21 @@ describe('KoboSubmissionService', () => {
     ],
   };
 
+  const mockSubmission2 = {
+    ...mockSubmission,
+    _id: 2,
+    _uuid: 'new-submission-uuid',
+    fullName: 'Jane Doe',
+    nationalId: '987654321',
+    phoneNumber: '+31698765432',
+  };
+
+  const incomingWebhook: KoboWebhookIncomingSubmission = {
+    _uuid: successSubmissionUuid,
+    _xform_id_string: assetUid,
+    __version__: mockKoboEntity.versionId!, // Same version → skips program update
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -93,29 +103,17 @@ describe('KoboSubmissionService', () => {
           },
         },
         {
-          provide: KoboService,
-          useValue: {
-            getFormDefinitionOrThrow: jest.fn(),
-            validateFormAndUpdateProgram: jest.fn(),
-          },
-        },
-        {
           provide: RegistrationsCreationService,
           useValue: {
             importRegistrations: jest.fn(),
-            importValidatedRegistrations: jest.fn(),
           },
         },
         {
-          provide: RegistrationsInputValidator,
+          provide: KoboSubmissionHelperService,
           useValue: {
-            validateAndCleanInput: jest.fn(),
-          },
-        },
-        {
-          provide: getRepositoryToken(RegistrationEntity),
-          useValue: {
-            find: jest.fn(),
+            updateProgramToNewVersionIfApplicable: jest.fn(),
+            filterAlreadyExistingSubmissionUuids: jest.fn(),
+            validateAndImportAsRegistrations: jest.fn(),
           },
         },
       ],
@@ -124,19 +122,11 @@ describe('KoboSubmissionService', () => {
     service = module.get<KoboSubmissionService>(KoboSubmissionService);
     koboRepository = module.get(getRepositoryToken(KoboEntity));
     koboApiService = module.get(KoboApiService);
-    koboService = module.get(KoboService);
     registrationsCreationService = module.get(RegistrationsCreationService);
-    registrationsInputValidator = module.get(RegistrationsInputValidator);
-    registrationRepository = module.get(getRepositoryToken(RegistrationEntity));
+    koboSubmissionHelperService = module.get(KoboSubmissionHelperService);
   });
 
-  describe('processKoboWebhookCall', () => {
-    const incomingWebhook: KoboWebhookIncomingSubmission = {
-      _uuid: successSubmissionUuid,
-      _xform_id_string: assetUid,
-      __version__: mockKoboEntity.versionId!, // Same version → skips program update
-    };
-
+  describe('when processing a Kobo webhook call', () => {
     it('should successfully process a Kobo webhook and import registration (happy flow)', async () => {
       // Arrange
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
@@ -190,19 +180,6 @@ describe('KoboSubmissionService', () => {
   });
 
   describe('handle form version in incoming submission', () => {
-    function buildMockFormDefinition(
-      overrides: Partial<KoboFormDefinition>,
-    ): KoboFormDefinition {
-      return {
-        name: 'Test Form',
-        survey: [],
-        languages: ['English (en)'],
-        dateDeployed: new Date('2025-06-01'),
-        versionId: 'mock-version-id',
-        ...overrides,
-      };
-    }
-
     beforeEach(() => {
       koboApiService.getSubmission.mockResolvedValue(mockSubmission);
       registrationsCreationService.importRegistrations.mockResolvedValue({
@@ -210,23 +187,10 @@ describe('KoboSubmissionService', () => {
       });
     });
 
-    it('should update program when incoming submission has a newer form version', async () => {
+    it('should call helper to update program version', async () => {
       // Arrange
       const newerVersionId = 'mock-id-newer-version';
-      const newerDateDeployed = new Date('2025-06-01');
-      const koboEntityWithOlderVersion = {
-        ...mockKoboEntity,
-        dateDeployed: new Date('2024-01-01'),
-      } as KoboEntity;
-
-      koboRepository.findOne.mockResolvedValue(koboEntityWithOlderVersion);
-      koboService.getFormDefinitionOrThrow.mockResolvedValue(
-        buildMockFormDefinition({
-          dateDeployed: newerDateDeployed,
-          versionId: newerVersionId,
-        }),
-      );
-      koboService.validateFormAndUpdateProgram.mockResolvedValue(undefined);
+      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
 
       // Act
       await service.processKoboWebhookCall({
@@ -236,60 +200,27 @@ describe('KoboSubmissionService', () => {
       });
 
       // Assert
-      expect(koboService.validateFormAndUpdateProgram).toHaveBeenCalledWith({
-        formDefinition: expect.objectContaining({ versionId: newerVersionId }),
+      expect(
+        koboSubmissionHelperService.updateProgramToNewVersionIfApplicable,
+      ).toHaveBeenCalledWith({
+        currentVersion: mockKoboEntity.versionId,
+        currentVersionDateDeployed: mockKoboEntity.dateDeployed,
+        formVersionFromIncomingSubmission: newerVersionId,
+        assetUid: mockKoboEntity.assetUid,
+        token: mockKoboEntity.token,
+        url: mockKoboEntity.url,
         programId: mockProgram.id,
       });
-      expect(koboRepository.update).toHaveBeenCalledWith(
-        { versionId: mockKoboEntity.versionId },
-        {
-          versionId: newerVersionId,
-          dateDeployed: newerDateDeployed,
-        },
-      );
     });
 
-    it('should not update program when incoming submission has an older form version', async () => {
+    it('should throw and not import when version update fails', async () => {
       // Arrange
-      const olderVersionId = 'mock-id-older-version';
-      koboRepository.findOne.mockResolvedValue({
-        ...mockKoboEntity,
-        dateDeployed: new Date('2025-06-01'), // Current version is newer
-      } as KoboEntity);
-      koboService.getFormDefinitionOrThrow.mockResolvedValue(
-        buildMockFormDefinition({
-          dateDeployed: new Date('2024-01-01'), // Older than current
-          versionId: olderVersionId,
-        }),
-      );
-
-      // Act
-      await service.processKoboWebhookCall({
-        _uuid: successSubmissionUuid,
-        _xform_id_string: assetUid,
-        __version__: olderVersionId,
-      });
-
-      // Assert
-      expect(koboService.validateFormAndUpdateProgram).not.toHaveBeenCalled();
-    });
-
-    it('should throw and not update program when form validation fails', async () => {
-      // Arrange
-      const newerVersionId = 'mock-id-newer-version';
       const validationError = new HttpException(
-        'Kobo form definition validation failed:\n- phoneNumber is missing a label for language English (en)',
+        'Kobo form definition validation failed',
         HttpStatus.BAD_REQUEST,
       );
-
-      koboRepository.findOne.mockResolvedValue({
-        ...mockKoboEntity,
-        dateDeployed: new Date('2024-01-01'),
-      } as KoboEntity);
-      koboService.getFormDefinitionOrThrow.mockResolvedValue(
-        buildMockFormDefinition({ versionId: newerVersionId }),
-      );
-      koboService.validateFormAndUpdateProgram.mockRejectedValue(
+      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
+      koboSubmissionHelperService.updateProgramToNewVersionIfApplicable.mockRejectedValue(
         validationError,
       );
 
@@ -298,23 +229,16 @@ describe('KoboSubmissionService', () => {
         service.processKoboWebhookCall({
           _uuid: successSubmissionUuid,
           _xform_id_string: assetUid,
-          __version__: newerVersionId,
+          __version__: 'newer-version',
         }),
       ).rejects.toThrow(validationError);
-      expect(koboService.validateFormAndUpdateProgram).toHaveBeenCalled();
+      expect(
+        registrationsCreationService.importRegistrations,
+      ).not.toHaveBeenCalled();
     });
   });
 
-  describe('import existing submissions', () => {
-    const mockSubmission2 = {
-      ...mockSubmission,
-      _id: 2,
-      _uuid: 'new-submission-uuid',
-      fullName: 'Jane Doe',
-      nationalId: '987654321',
-      phoneNumber: '+31698765432',
-    };
-
+  describe('when importing existing submissions', () => {
     it('should successfully import new submissions (happy flow)', async () => {
       // Arrange
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
@@ -322,16 +246,16 @@ describe('KoboSubmissionService', () => {
         count: 2,
         submissions: [mockSubmission, mockSubmission2],
       });
-      registrationRepository.find.mockResolvedValue([
-        { referenceId: successSubmissionUuid } as RegistrationEntity,
-      ]);
-      registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
-        validRegistrations: [],
-        errors: [],
-      });
-      registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
+      koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids.mockResolvedValue(
+        new Set([successSubmissionUuid]),
+      );
+      koboSubmissionHelperService.validateAndImportAsRegistrations.mockResolvedValue(
         {
-          aggregateImportResult: { countImported: 1 },
+          numberOfSubmissionsOnForm: 2,
+          numberOfSubmissionsImported: 1,
+          numberOfSubmissionsSkipped: 1,
+          numberOfSubmissionsFailed: 0,
+          validationErrors: [],
         },
       );
 
@@ -379,7 +303,6 @@ describe('KoboSubmissionService', () => {
         count: 1001,
         submissions: [],
       });
-      registrationRepository.find.mockResolvedValue([]);
 
       // Act
       let error: any;
@@ -399,28 +322,21 @@ describe('KoboSubmissionService', () => {
     it('should update program when submissions contain a new form version', async () => {
       // Arrange
       const newerVersionId = 'v2';
-      const newerDateDeployed = new Date('2025-06-01');
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
       koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
         count: 1,
         submissions: [{ ...mockSubmission, __version__: newerVersionId }],
       });
-      registrationRepository.find.mockResolvedValue([]);
-      koboService.getFormDefinitionOrThrow.mockResolvedValue({
-        name: 'Test Form',
-        survey: [],
-        languages: ['English (en)'],
-        dateDeployed: newerDateDeployed,
-        versionId: newerVersionId,
-      });
-      koboService.validateFormAndUpdateProgram.mockResolvedValue(undefined);
-      registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
-        validRegistrations: [],
-        errors: [],
-      });
-      registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
+      koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids.mockResolvedValue(
+        new Set(),
+      );
+      koboSubmissionHelperService.validateAndImportAsRegistrations.mockResolvedValue(
         {
-          aggregateImportResult: { countImported: 1 },
+          numberOfSubmissionsOnForm: 1,
+          numberOfSubmissionsImported: 1,
+          numberOfSubmissionsSkipped: 0,
+          numberOfSubmissionsFailed: 0,
+          validationErrors: [],
         },
       );
 
@@ -428,14 +344,17 @@ describe('KoboSubmissionService', () => {
       await service.importExistingSubmissions({ programId: 1, userId: 42 });
 
       // Assert
-      expect(koboService.validateFormAndUpdateProgram).toHaveBeenCalledWith({
-        formDefinition: expect.objectContaining({ versionId: newerVersionId }),
+      expect(
+        koboSubmissionHelperService.updateProgramToNewVersionIfApplicable,
+      ).toHaveBeenCalledWith({
+        currentVersion: mockKoboEntity.versionId,
+        currentVersionDateDeployed: mockKoboEntity.dateDeployed,
+        formVersionFromIncomingSubmission: newerVersionId,
+        assetUid: mockKoboEntity.assetUid,
+        token: mockKoboEntity.token,
+        url: mockKoboEntity.url,
         programId: mockProgram.id,
       });
-      expect(koboRepository.update).toHaveBeenCalledWith(
-        { versionId: mockKoboEntity.versionId },
-        { versionId: newerVersionId, dateDeployed: newerDateDeployed },
-      );
     });
 
     it('should not update program when all submissions have the current form version', async () => {
@@ -445,14 +364,16 @@ describe('KoboSubmissionService', () => {
         count: 1,
         submissions: [mockSubmission], // __version__: 'v1' matches stored versionId: 'v1'
       });
-      registrationRepository.find.mockResolvedValue([]);
-      registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
-        validRegistrations: [],
-        errors: [],
-      });
-      registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
+      koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids.mockResolvedValue(
+        new Set(),
+      );
+      koboSubmissionHelperService.validateAndImportAsRegistrations.mockResolvedValue(
         {
-          aggregateImportResult: { countImported: 0 },
+          numberOfSubmissionsOnForm: 1,
+          numberOfSubmissionsImported: 0,
+          numberOfSubmissionsSkipped: 0,
+          numberOfSubmissionsFailed: 0,
+          validationErrors: [],
         },
       );
 
@@ -460,8 +381,9 @@ describe('KoboSubmissionService', () => {
       await service.importExistingSubmissions({ programId: 1, userId: 42 });
 
       // Assert
-      expect(koboService.getFormDefinitionOrThrow).not.toHaveBeenCalled();
-      expect(koboService.validateFormAndUpdateProgram).not.toHaveBeenCalled();
+      expect(
+        koboSubmissionHelperService.updateProgramToNewVersionIfApplicable,
+      ).not.toHaveBeenCalled();
     });
 
     it('should filter out already existing registrations', async () => {
@@ -472,17 +394,16 @@ describe('KoboSubmissionService', () => {
         submissions: [mockSubmission, mockSubmission2],
       });
       // Both submissions already exist
-      registrationRepository.find.mockResolvedValue([
-        { referenceId: successSubmissionUuid } as RegistrationEntity,
-        { referenceId: 'new-submission-uuid' } as RegistrationEntity,
-      ]);
-      registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
-        validRegistrations: [],
-        errors: [],
-      });
-      registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
+      koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids.mockResolvedValue(
+        new Set([successSubmissionUuid, 'new-submission-uuid']),
+      );
+      koboSubmissionHelperService.validateAndImportAsRegistrations.mockResolvedValue(
         {
-          aggregateImportResult: { countImported: 0 },
+          numberOfSubmissionsOnForm: 2,
+          numberOfSubmissionsImported: 0,
+          numberOfSubmissionsSkipped: 2,
+          numberOfSubmissionsFailed: 0,
+          validationErrors: [],
         },
       );
 
@@ -491,40 +412,41 @@ describe('KoboSubmissionService', () => {
 
       // Assert
       expect(
-        registrationsInputValidator.validateAndCleanInput,
+        koboSubmissionHelperService.validateAndImportAsRegistrations,
       ).toHaveBeenCalledWith({
-        registrationInputArray: [],
-        programId: mockProgram.id,
+        registrationDataArray: [],
+        program: mockProgram,
         userId: 42,
-        typeOfInput: 'create',
-        validationConfig: {
-          validateExistingReferenceId: true,
-        },
+        numberOfSubmissionsOnForm: 2,
+        numberOfSubmissionsSkipped: 2,
       });
     });
 
-    it('should populate validationErrors when a submission fails validation', async () => {
+    it('should return result from import service with validation errors', async () => {
       // Arrange
+      const expectedResult = {
+        numberOfSubmissionsOnForm: 1,
+        numberOfSubmissionsImported: 0,
+        numberOfSubmissionsSkipped: 0,
+        numberOfSubmissionsFailed: 1,
+        validationErrors: [
+          {
+            referenceId: successSubmissionUuid,
+            column: 'programFspConfigurationName',
+            error: 'FspConfigurationName Invalid-FSP not found in program.',
+          },
+        ],
+      };
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
       koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
         count: 1,
         submissions: [mockSubmission],
       });
-      registrationRepository.find.mockResolvedValue([]);
-      registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
-        validRegistrations: [],
-        errors: [
-          {
-            index: 0,
-            referenceId: successSubmissionUuid,
-            column: 'programFspConfigurationName',
-            error: 'FspConfigurationName Invalid-FSP not found in program.',
-            value: 'Invalid-FSP',
-          },
-        ],
-      });
-      registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
-        { aggregateImportResult: { countImported: 0 } },
+      koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids.mockResolvedValue(
+        new Set(),
+      );
+      koboSubmissionHelperService.validateAndImportAsRegistrations.mockResolvedValue(
+        expectedResult,
       );
 
       // Act
@@ -534,78 +456,51 @@ describe('KoboSubmissionService', () => {
       });
 
       // Assert
-      expect(result.validationErrors).toEqual([
-        {
-          referenceId: successSubmissionUuid,
-          column: 'programFspConfigurationName',
-          error: 'FspConfigurationName Invalid-FSP not found in program.',
-        },
-      ]);
+      expect(result).toEqual(expectedResult);
     });
 
-    it('should exclude failed submissions from numberOfSubmissionsImported and count them in numberOfSubmissionsFailed', async () => {
+    it('should pass mapped registration data and counts to import service', async () => {
       // Arrange
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
       koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
         count: 2,
         submissions: [mockSubmission, mockSubmission2],
       });
-      registrationRepository.find.mockResolvedValue([]);
-      registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
-        validRegistrations: [],
-        errors: [
-          {
-            index: 0,
-            referenceId: successSubmissionUuid,
-            column: 'programFspConfigurationName',
-            error: 'FspConfigurationName Invalid-FSP not found in program.',
-            value: 'Invalid-FSP',
-          },
-        ],
-      });
-      registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
-        { aggregateImportResult: { countImported: 1 } },
+      koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids.mockResolvedValue(
+        new Set([successSubmissionUuid]),
+      );
+      koboSubmissionHelperService.validateAndImportAsRegistrations.mockResolvedValue(
+        {
+          numberOfSubmissionsOnForm: 2,
+          numberOfSubmissionsImported: 1,
+          numberOfSubmissionsSkipped: 1,
+          numberOfSubmissionsFailed: 0,
+          validationErrors: [],
+        },
       );
 
       // Act
-      const result = await service.importExistingSubmissions({
-        programId: 1,
-        userId: 42,
-      });
+      await service.importExistingSubmissions({ programId: 1, userId: 42 });
 
       // Assert
-      expect(result.numberOfSubmissionsImported).toBe(1);
-      expect(result.numberOfSubmissionsFailed).toBe(1);
-      expect(result.numberOfSubmissionsOnForm).toBe(2);
-    });
-
-    it('should throw when a validation error has no referenceId', async () => {
-      // Arrange
-      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
-      koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
-        count: 1,
-        submissions: [mockSubmission],
-      });
-      registrationRepository.find.mockResolvedValue([]);
-      registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
-        validRegistrations: [],
-        errors: [
+      expect(
+        koboSubmissionHelperService.validateAndImportAsRegistrations,
+      ).toHaveBeenCalledWith({
+        registrationDataArray: [
           {
-            index: 0,
-            referenceId: undefined,
-            column: 'phoneNumber',
-            error: 'Value is not valid',
-            value: 'invalid',
+            referenceId: 'new-submission-uuid',
+            programFspConfigurationName: fspName,
+            fullName: 'Jane Doe',
+            nationalId: '987654321',
+            phoneNumber: '+31698765432',
+            photo: photoDownloadUrl,
           },
         ],
+        program: mockProgram,
+        userId: 42,
+        numberOfSubmissionsOnForm: 2,
+        numberOfSubmissionsSkipped: 1,
       });
-
-      // Act & Assert
-      await expect(
-        service.importExistingSubmissions({ programId: 1, userId: 42 }),
-      ).rejects.toThrow(
-        "Expected referenceId on all Kobo validation errors, but column 'phoneNumber' had none",
-      );
     });
   });
 });
