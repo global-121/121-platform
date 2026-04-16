@@ -6,6 +6,7 @@ import { DuplicateOriginatorConversationIdError } from '@121-service/src/fsp-int
 import { SafaricomApiError } from '@121-service/src/fsp-integrations/integrations/safaricom/errors/safaricom-api.error';
 import { SafaricomTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomService } from '@121-service/src/fsp-integrations/integrations/safaricom/safaricom.service';
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { SafaricomTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/safaricom-transaction-job.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -16,7 +17,7 @@ import { TransactionsService } from '@121-service/src/payments/transactions/tran
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
-export class TransactionJobsSafaricomService {
+export class TransactionJobsSafaricomService implements TransactionJobService {
   constructor(
     private readonly safaricomService: SafaricomService,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
@@ -122,5 +123,11 @@ export class TransactionJobsSafaricomService {
     newSafaricomTransfer.originatorConversationId = originatorConversationId;
     newSafaricomTransfer.transactionId = transactionJob.transactionId;
     await this.safaricomTransferScopedRepository.save(newSafaricomTransfer);
+  }
+
+  public async processTransactionJob(data: unknown): Promise<void> {
+    await this.processSafaricomTransactionJob(
+      data as SafaricomTransactionJobDto,
+    );
   }
 }

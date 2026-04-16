@@ -5,6 +5,7 @@ import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integr
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -16,7 +17,9 @@ import { TransactionsService } from '@121-service/src/payments/transactions/tran
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 @Injectable()
-export class TransactionJobsIntersolveVisaService {
+export class TransactionJobsIntersolveVisaService
+  implements TransactionJobService
+{
   constructor(
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -199,6 +202,12 @@ export class TransactionJobsIntersolveVisaService {
     await this.transactionRepository.update(
       { id: transactionId },
       { transferValue: value },
+    );
+  }
+
+  public async processTransactionJob(data: unknown): Promise<void> {
+    await this.processIntersolveVisaTransactionJob(
+      data as IntersolveVisaTransactionJobDto,
     );
   }
 }

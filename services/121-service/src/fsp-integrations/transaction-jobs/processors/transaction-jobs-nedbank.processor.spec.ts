@@ -21,15 +21,13 @@ const mockPaymentJob: NedbankTransactionJobDto = {
 };
 const testJob = { data: mockPaymentJob } as Job;
 
-// This processor code is the same for every FSP, so we only need to test one of them
-// REFACTOR: move common code into helper file, and put the unit test on that that one
 describe('TransactionJobsProcessorNedbank', () => {
   let transactionJobsNedbankService: jest.Mocked<TransactionJobsNedbankService>;
   let processor: TransactionJobsProcessorNedbank;
   let redisClient: jest.Mocked<Redis>;
 
   beforeEach(() => {
-    jest.clearAllMocks(); // To ensure the call count is not influenced by other tests
+    jest.clearAllMocks();
 
     const { unit, unitRef } = TestBed.create(TransactionJobsProcessorNedbank)
       .mock(TransactionJobsNedbankService)
@@ -43,19 +41,19 @@ describe('TransactionJobsProcessorNedbank', () => {
     redisClient = unitRef.get(REDIS_CLIENT);
   });
 
-  it('should call processNedbankTransactionJob and remove job from Redis set', async () => {
+  it('should call processTransactionJob and remove job from Redis set', async () => {
     // Arrange
-    transactionJobsNedbankService.processNedbankTransactionJob.mockResolvedValue();
+    transactionJobsNedbankService.processTransactionJob.mockResolvedValue();
 
     // Act
-    await processor.handleNedbankTransactionJob(testJob);
+    await processor.handleTransactionJob(testJob);
 
     // Assert
     expect(
-      transactionJobsNedbankService.processNedbankTransactionJob,
+      transactionJobsNedbankService.processTransactionJob,
     ).toHaveBeenCalledTimes(1);
     expect(
-      transactionJobsNedbankService.processNedbankTransactionJob,
+      transactionJobsNedbankService.processTransactionJob,
     ).toHaveBeenCalledWith(mockPaymentJob);
 
     expect(redisClient.srem).toHaveBeenCalledTimes(1);
@@ -64,19 +62,19 @@ describe('TransactionJobsProcessorNedbank', () => {
   it('should handle errors and still remove job from Redis set', async () => {
     // Arrange
     const error = new Error('Test error');
-    transactionJobsNedbankService.processNedbankTransactionJob.mockRejectedValue(
+    transactionJobsNedbankService.processTransactionJob.mockRejectedValue(
       error,
     );
 
     // Act & Assert
-    await expect(
-      processor.handleNedbankTransactionJob(testJob),
-    ).rejects.toThrow(error);
+    await expect(processor.handleTransactionJob(testJob)).rejects.toThrow(
+      error,
+    );
     expect(
-      transactionJobsNedbankService.processNedbankTransactionJob,
+      transactionJobsNedbankService.processTransactionJob,
     ).toHaveBeenCalledTimes(1);
     expect(
-      transactionJobsNedbankService.processNedbankTransactionJob,
+      transactionJobsNedbankService.processTransactionJob,
     ).toHaveBeenCalledWith(mockPaymentJob);
     expect(redisClient.srem).toHaveBeenCalledTimes(1);
   });
