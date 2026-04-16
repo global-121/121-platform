@@ -116,8 +116,10 @@ export class ImportFileDialogComponent {
   }
 
   handleClose(): void {
-    this.resetForm();
     this.dialogVisible.set(false);
+    setTimeout(() => {
+      this.resetForm();
+    }, 300);
   }
 
   onFormSubmit(): void {
