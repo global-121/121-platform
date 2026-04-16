@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsString,
   Matches,
+  MaxLength,
 } from 'class-validator';
 
 export class CreatePaymentDto {
@@ -12,6 +13,7 @@ export class CreatePaymentDto {
   @IsString()
   @IsNotEmpty()
   @Matches(/\S/)
+  @MaxLength(60)
   public readonly name: string;
 
   @ApiProperty({ example: 10 })

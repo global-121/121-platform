@@ -6,6 +6,9 @@ export class PaymentAggregationSummaryDto {
   @ApiProperty({ example: 1 })
   paymentId: number;
 
+  @ApiProperty({ example: 'Payment 1' })
+  name: string;
+
   @ApiProperty({ type: AggregationsPerStatusDto })
   aggregationsPerStatus: AggregationsPerStatusDto;
 

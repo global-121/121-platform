@@ -171,6 +171,7 @@ export class PaymentsReportingHelperService {
   }): PaymentAggregationSummaryDto[] {
     return paymentsAndApprovalStatusses.map((payment) => ({
       paymentId: payment.id,
+      name: payment.name,
       paymentDate: payment.created,
       isPaymentApproved: payment.isPaymentApproved,
       approvalsRequired: payment.approvalsRequired,

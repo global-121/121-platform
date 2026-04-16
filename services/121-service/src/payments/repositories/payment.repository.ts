@@ -25,6 +25,7 @@ export class PaymentRepository extends Repository<PaymentEntity> {
     {
       id: number;
       created: Date;
+      name: string;
       isPaymentApproved: boolean;
       approvalsRequired: number;
       approvalsGiven: number;
@@ -32,6 +33,7 @@ export class PaymentRepository extends Repository<PaymentEntity> {
   > {
     const query = this.createQueryBuilder('payment')
       .select('payment.id', 'id')
+      .addSelect('payment.name', 'name')
       .addSelect('payment.created', 'created')
       .leftJoin('payment.approvals', 'pa')
       .addSelect(
@@ -54,6 +56,7 @@ export class PaymentRepository extends Repository<PaymentEntity> {
 
     const results = await query.getRawMany<{
       id: number;
+      name: string;
       created: Date;
       isPaymentApproved: boolean;
       approvalsRequired: string;
@@ -63,6 +66,7 @@ export class PaymentRepository extends Repository<PaymentEntity> {
     // Convert string counts to numbers (getRawMany returns COUNT as strings)
     return results.map((result) => ({
       id: result.id,
+      name: result.name,
       created: result.created,
       isPaymentApproved: result.isPaymentApproved,
       approvalsRequired: Number(result.approvalsRequired),
