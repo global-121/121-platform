@@ -18,11 +18,6 @@
       "statusCode": 302
     },
     {
-      "route": "/program/*",
-      "redirect": "/en-GB/program/*",
-      "statusCode": 301
-    },
-    {
       "route": "*.{js,json,css,jpg,jpeg,png,svg,ico,webmanifest,tff,woff,woff2}",
       "headers": {
         "Cache-Control": "immutable, no-transform, max-age=31536000"
