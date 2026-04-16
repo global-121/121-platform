@@ -9,8 +9,8 @@ export class IntersolveVisaWalletDto {
   public balance: number;
   @ApiProperty()
   public spentThisMonth: number;
-  @ApiProperty()
-  public maxToSpendPerMonth: number;
+  @ApiProperty({ required: false })
+  public maxToSpendPerMonth?: number;
   @ApiProperty({ type: Date, nullable: true })
   public lastUsedDate: Date | null;
   @ApiProperty({ type: Date, nullable: true })
