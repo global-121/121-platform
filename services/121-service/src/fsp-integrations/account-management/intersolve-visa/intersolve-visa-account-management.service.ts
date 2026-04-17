@@ -63,12 +63,10 @@ export class IntersolveVisaAccountManagementService {
       },
     );
     const maxBalanceInCents =
-      await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
-        {
-          programFspConfigurationId: registration.programFspConfigurationId,
-          name: FspConfigurationProperties.maxBalanceInCents,
-        },
-      );
+      await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId: registration.programFspConfigurationId,
+        name: FspConfigurationProperties.maxBalanceInCents,
+      });
 
     return await this.intersolveVisaService.getWalletWithCards({
       registrationId: registration.id,
