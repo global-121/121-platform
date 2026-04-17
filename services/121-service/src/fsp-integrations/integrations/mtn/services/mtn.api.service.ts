@@ -133,7 +133,9 @@ export class MtnApiService {
         throw error;
       }
       console.error('Failed to make MTN B2C payment API call', error);
-      throw new MtnApiError(`Error: ${error.message}`);
+      throw new MtnApiError(
+        `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 }

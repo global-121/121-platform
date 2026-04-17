@@ -54,12 +54,22 @@ export class TransactionJobsMtnService {
       transactionJob.programId,
     );
 
+    if (!program.currency) {
+      await this.transactionsService.saveProgress({
+        context: transactionEventContext,
+        description: TransactionEventDescription.mtnRequestSent,
+        errorMessage: `Program ${transactionJob.programId} has no currency configured`,
+        newTransactionStatus: TransactionStatusEnum.error,
+      });
+      return;
+    }
+
     // 4. Call MTN transfer endpoint, if failure handle accordingly and return early
     try {
       await this.mtnService.createTransfer({
         referenceId: mtnReferenceId,
         amount: String(transactionJob.transferValue),
-        currency: program.currency ?? '',
+        currency: program.currency,
         externalId: String(transactionJob.transactionId),
         payee: {
           partyIdType: 'MSISDN',
@@ -119,7 +129,7 @@ export class TransactionJobsMtnService {
       newTransactionStatus: transactionStatus,
       errorMessage:
         transactionStatus === TransactionStatusEnum.error
-          ? `MTN transfer failed with reason: ${transferStatus.reason}`
+          ? `MTN transfer failed with reason: ${transferStatus.reason ?? 'unknown'}`
           : undefined,
     });
   }
