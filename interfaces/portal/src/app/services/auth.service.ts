@@ -56,7 +56,8 @@ export class AuthService {
   /**
    * Tracks whether the session was active at any point during the current browser session.
    * Intentionally NOT stored in localStorage/sessionStorage so it resets on page refresh/new tab.
-   * Set to `true` by the token expiration monitor whenever it detects a valid token.
+   * Set to `true` immediately on login and by the token expiration monitor
+   * whenever it detects a valid token (e.g. after a page refresh with a still-valid token).
    * Used in `handleTokenExpiration` to distinguish between:
    * - Token expired mid-use (sessionWasActive=true) → show "Session expired" popup
    * - Token was already expired on app start (sessionWasActive=false) → silent redirect to login
@@ -93,11 +94,10 @@ export class AuthService {
     });
   }
 
-  // Called by the token expiration monitor on each tick where the token is still valid.
-  // This is the mechanism that sets sessionWasActive to true: after login()
-  // stores the user, or when a page refresh/tab reopen finds a still-valid token,
-  // the next monitor tick detects it and marks the session as active so that a
-  // later expiration correctly shows the "Session expired" dialog.
+  // Called by login() and by the token expiration monitor on each tick where
+  // the token is still valid. login() calls it immediately so there is no gap
+  // between a successful login and the first monitor tick. The monitor still
+  // calls it to cover page refreshes where a still-valid token is found.
   private markSessionActive(): void {
     this.sessionWasActive = true;
   }
@@ -183,6 +183,7 @@ export class AuthService {
     const user = await this.authStrategy.login(credentials);
     if (user) {
       setUserInLocalStorage(user);
+      this.markSessionActive();
     }
     return this.router.navigate(['/', AppRoutes.authCallback]);
   }
