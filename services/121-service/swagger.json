@@ -21,6 +21,12 @@
   },
   {
     "method": "post",
+    "path": "/api/cronjobs/instance-reporting",
+    "params": [],
+    "returnType": "PushInstanceReportingDataResponseDto"
+  },
+  {
+    "method": "post",
     "path": "/api/cronjobs/fsps/intersolve-voucher/cancel",
     "params": []
   },

@@ -61,4 +61,48 @@ export class ExchangeRatesService {
         .getRawMany()
     ).map((el) => el.program_currency);
   }
+
+  public async getExchangeRateMap(): Promise<Map<string, number>> {
+    const rates = await this.exchangeRateRepository.find();
+
+    const rateMap = new Map<string, number>();
+    rateMap.set('EUR', 1);
+
+    for (const rate of rates) {
+      rateMap.set(rate.currency, rate.euroExchangeRate);
+    }
+
+    return rateMap;
+  }
+
+  public convertAmount({
+    amount,
+    fromCurrency,
+    toCurrency,
+    exchangeRateMap,
+  }: {
+    amount: number | null;
+    fromCurrency: string | null;
+    toCurrency: string;
+    exchangeRateMap: Map<string, number>;
+  }): number | null {
+    if (amount == null || fromCurrency == null) {
+      return null;
+    }
+
+    if (fromCurrency === toCurrency) {
+      return amount;
+    }
+
+    const fromRate = exchangeRateMap.get(fromCurrency);
+    const toRate = exchangeRateMap.get(toCurrency);
+
+    if (!fromRate || !toRate) {
+      return null;
+    }
+
+    // euroExchangeRate stores "1 unit of local currency = X EUR"
+    const amountInEuro = amount * fromRate;
+    return Math.round((amountInEuro / toRate) * 100) / 100;
+  }
 }
