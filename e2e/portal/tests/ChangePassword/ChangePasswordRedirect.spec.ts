@@ -13,8 +13,7 @@ test.beforeEach(async ({ page }) => {
 
   // Login
   const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+  await loginPage.loginAsAdmin();
 });
 
 test('Change password redirect', async ({ page }) => {

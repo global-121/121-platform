@@ -24,10 +24,7 @@ test('[Admin] View last login', async ({ usersPage, loginPage }) => {
     // Log out
     await usersPage.selectAccountOption('Logout');
     // Login
-    await loginPage.login(
-      env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-    );
+    await loginPage.loginAsAdmin();
   });
 
   await test.step('Validate last login', async () => {

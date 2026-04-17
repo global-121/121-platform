@@ -194,7 +194,6 @@ export const customSharedFixture = base.extend<Fixtures>({
 
       // Login
       const loginPage = new LoginPage(page);
-      await loginPage.goto('/');
       await loginPage.login(params.username, params.password);
 
       // Optionally navigate to a specific page after login
@@ -212,7 +211,6 @@ export const customSharedFixture = base.extend<Fixtures>({
       password?: string;
     }): Promise<void> => {
       const loginPage = new LoginPage(page);
-      await loginPage.goto('/');
       await loginPage.login(params?.username, params?.password);
     };
     await use(fn);

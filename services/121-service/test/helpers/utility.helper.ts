@@ -359,11 +359,12 @@ export async function createUserWithPermissions({
   programId: number;
   adminAccessToken: string;
   scope?: string;
-}): Promise<string> {
+}): Promise<{ username: string; password: string }> {
   // Generate unique identifiers
   const uniqueId = generateUniqueTestId();
   const roleName = `test_role_${uniqueId}`;
   const username = `test_user_${uniqueId}@example.org`;
+  const password = `test_user_${uniqueId}_password`;
   const displayName = `Test User ${uniqueId.split('_')[0]}`;
 
   await createRole({
@@ -395,7 +396,7 @@ export async function createUserWithPermissions({
     adminAccessToken,
   });
 
-  return username;
+  return { username, password };
 }
 
 export async function createAccessTokenWithPermissions({
@@ -409,13 +410,13 @@ export async function createAccessTokenWithPermissions({
   programId: number;
   scope?: string;
 }): Promise<string> {
-  const username = await createUserWithPermissions({
+  const { username, password } = await createUserWithPermissions({
     permissions,
     programId,
     adminAccessToken,
     scope,
   });
-  return getAccessToken(username, env.USERCONFIG_121_SERVICE_PASSWORD_TESTING);
+  return getAccessToken(username, password);
 }
 
 function removeNestedProperties<T extends object>(

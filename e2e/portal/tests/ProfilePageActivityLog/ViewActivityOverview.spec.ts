@@ -1,6 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-import { env } from '@121-service/src/env';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -30,12 +29,6 @@ import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 const referenceIdPV5 = registrationPV5.referenceId;
 let activitiesCount: number;
-
-const loginAs = async ({ page, username }) => {
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login(username);
-};
 let accessTokenAdmin: string;
 
 // Arrange
@@ -82,10 +75,8 @@ test.beforeEach(async () => {
 
 test.describe('as admin user', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAs({
-      page,
-      username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    });
+    const loginPage = new LoginPage(page);
+    await loginPage.loginAsAdmin();
   });
 
   test('View activity overview', async ({ page }) => {
@@ -182,7 +173,7 @@ test.describe('as user with only view paper voucher permissions', () => {
       });
 
       // Create a user with only view paper voucher permission and login
-      const username = await createUserWithPermissions({
+      const { username, password } = await createUserWithPermissions({
         permissions: [
           PermissionEnum.PaymentREAD,
           PermissionEnum.RegistrationREAD,
@@ -192,10 +183,9 @@ test.describe('as user with only view paper voucher permissions', () => {
         programId: programIdPV,
         adminAccessToken: await getAccessToken(),
       });
-      await loginAs({
-        page,
-        username,
-      });
+
+      const loginPage = new LoginPage(page);
+      await loginPage.login(username, password);
     });
 
     test('transaction rows both show current balance, but only "view voucher" button for paper PA', async ({

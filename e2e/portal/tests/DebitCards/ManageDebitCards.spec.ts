@@ -52,8 +52,7 @@ test('User can view debit cards of a registration with a single active debit car
 
   await test.step('Login', async () => {
     const loginPage = new LoginPage(page);
-    await page.goto(`/`);
-    await loginPage.login();
+    await loginPage.loginAsAdmin();
   });
 
   const debitCardPage = new RegistrationDebitCardPage(page);
@@ -100,8 +99,7 @@ test('User does not find debit card of a person without payments', async ({
 
   await test.step('Login', async () => {
     const loginPage = new LoginPage(page);
-    await page.goto(`/`);
-    await loginPage.login();
+    await loginPage.loginAsAdmin();
   });
 
   const debitCardPage = new RegistrationDebitCardPage(page);
@@ -151,8 +149,7 @@ test('User can replace a debit card and view both new and old card', async ({
 
   await test.step('Login', async () => {
     const loginPage = new LoginPage(page);
-    await page.goto(`/`);
-    await loginPage.login();
+    await loginPage.loginAsAdmin();
   });
 
   const debitCardPage = new RegistrationDebitCardPage(page);
@@ -276,8 +273,7 @@ test('User can pause and unpause a debit card', async ({ page }) => {
 
   await test.step('Login', async () => {
     const loginPage = new LoginPage(page);
-    await page.goto(`/`);
-    await loginPage.login();
+    await loginPage.loginAsAdmin();
   });
 
   const debitCardPage = new RegistrationDebitCardPage(page);

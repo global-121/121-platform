@@ -15,8 +15,7 @@ test.describe('View Privacy Notice', () => {
 
   test('when logged-in', async ({ page, loginPage }) => {
     // Arrange
-    await page.goto(`/`);
-    await loginPage.login();
+    await loginPage.loginAsAdmin();
     // Act
     await page.goto('/en-GB/privacy');
     // Assert

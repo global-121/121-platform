@@ -26,8 +26,7 @@ test('User is redirected to login when token expires', async ({ page }) => {
   });
 
   const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+  await loginPage.loginAsAdmin();
 
   // Verify we're logged in
   await page.waitForURL((url) => url.pathname.startsWith('/en-GB/programs'));

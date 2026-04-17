@@ -34,8 +34,7 @@ test.beforeEach(async ({ page }) => {
 
   // Login
   const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+  await loginPage.loginAsAdmin();
 });
 
 test('Create program successfully', async ({ page }) => {

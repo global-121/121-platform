@@ -241,7 +241,7 @@ test('Payment page should display correctly during all phases of payment with 2 
   await test.step('Start payment', async () => {
     // return to admin-user
     await paymentPage.selectAccountOption('Logout');
-    await loginPage.login();
+    await loginPage.loginAsAdmin();
     await page.goto(`/en-GB/program/${programIdOCW}/payments/${paymentId}`);
     await paymentPage.waitForPageLoad();
 

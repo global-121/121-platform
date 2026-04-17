@@ -19,11 +19,24 @@ class LoginPage extends BasePage {
     this.loginButton = this.page.getByRole('button', { name: 'Log in' });
   }
 
+  async goto(path = '/login'): Promise<void> {
+    await this.page.goto(path);
+  }
+
+  async loginAsAdmin(): Promise<void> {
+    await this.goto();
+    await this.login(
+      env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    );
+  }
+
   async login(
-    username: string = env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    password: string = env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    username?: string,
+    password?: string,
     skipUrlCheck = false,
-  ) {
+  ): Promise<void> {
+    await this.goto();
     if (!username || !password) {
       throw new Error('Username and password are required');
     }

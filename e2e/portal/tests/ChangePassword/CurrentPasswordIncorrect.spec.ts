@@ -15,7 +15,6 @@ test.beforeEach(async ({ page }) => {
 
   // Login
   const loginPage = new LoginPage(page);
-  await page.goto('/');
   await loginPage.login(
     env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
     env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
