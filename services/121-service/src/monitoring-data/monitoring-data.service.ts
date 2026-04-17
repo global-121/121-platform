@@ -48,29 +48,29 @@ export class MonitoringDataService {
   ) {}
 
   public async pushMonitoringDataToCentralStorage(): Promise<PushMonitoringDataDto> {
-    const uploadDate = this.getUploadDate();
+    const snapshotDate = this.getSnapshotDate();
     const instance = this.getInstanceName();
     const version = env.GLOBAL_121_VERSION ?? 'unknown';
 
     const registrations = await this.getRegistrations({
       instance,
       version,
-      uploadDate,
+      uploadDate: snapshotDate,
     });
     const transactions = await this.getTransactions({
       instance,
       version,
-      uploadDate,
+      uploadDate: snapshotDate,
     });
 
     await Promise.all([
       this.uploadData({
         data: registrations,
-        blobPath: `${uploadDate}/registrations/${instance}.json`,
+        blobPath: `${snapshotDate}/registrations/${instance}.json`,
       }),
       this.uploadData({
         data: transactions,
-        blobPath: `${uploadDate}/transactions/${instance}.json`,
+        blobPath: `${snapshotDate}/transactions/${instance}.json`,
       }),
     ]);
 
@@ -252,10 +252,10 @@ export class MonitoringDataService {
     });
   }
 
-  private getUploadDate(): string {
-    const uploadDate = new Date();
-    uploadDate.setUTCDate(uploadDate.getUTCDate() - 1);
-    return uploadDate.toISOString().split('T')[0];
+  private getSnapshotDate(): string {
+    const snapshotDate = new Date();
+    snapshotDate.setUTCDate(snapshotDate.getUTCDate() - 1);
+    return snapshotDate.toISOString().split('T')[0];
   }
 
   private getInstanceName(): string {

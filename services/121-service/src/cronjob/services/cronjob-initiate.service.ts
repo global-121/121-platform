@@ -138,9 +138,12 @@ export class CronjobInitiateService {
   @Cron(CronExpression.EVERY_DAY_AT_1AM, {
     disabled: !env.CRON_PUSH_MONITORING_DATA,
   })
-  public async cronPushMonitoringData(cronJobMethodName): cronReturn {
+  public async cronPushMonitoringData(
+    cronJobMethodName?: string,
+  ): cronReturn {
+    const methodName = cronJobMethodName ?? this.cronPushMonitoringData.name;
     const { baseCronUrl, headers } =
-      await this.prepareCronJobRun(cronJobMethodName);
+      await this.prepareCronJobRun(methodName);
     const url = `${baseCronUrl}/monitoring-data`;
     return await this.callEndpoint(url, 'post', headers);
   }
