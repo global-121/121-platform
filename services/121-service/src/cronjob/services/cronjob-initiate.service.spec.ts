@@ -78,6 +78,24 @@ describe('Cronjob initiation', () => {
     mockFn.mockRestore();
   });
 
+  it('should call monitoring-data cron endpoint with a POST request', async () => {
+    // Arrange
+    const mockFn = jest
+      .spyOn(cronjobInitiateService.httpService, 'post')
+      .mockResolvedValue(true);
+
+    // Act
+    await cronjobInitiateService.cronPushMonitoringData();
+
+    // Assert
+    expect(mockFn).toHaveBeenCalledTimes(1);
+    const calledUrl = `${expectedCronjobUrl}/monitoring-data`;
+    expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, testHeader);
+
+    // Cleanup
+    mockFn.mockRestore();
+  });
+
   it('that do DELETE requests should call httpService.delete and pass correct arguments', async () => {
     // Arrange
     const mockFn = jest

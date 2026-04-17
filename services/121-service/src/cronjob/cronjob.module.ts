@@ -12,6 +12,7 @@ import { IntersolveVisaReconciliationModule } from '@121-service/src/fsp-integra
 import { IntersolveVoucherReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/intersolve-voucher/intersolve-voucher-reconciliation.module';
 import { NedbankReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/nedbank/nedbank-reconciliation.module';
 import { OnafriqReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/onafriq/onafriq-reconciliation.module';
+import { MonitoringDataModule } from '@121-service/src/monitoring-data/monitoring-data.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Module({
@@ -24,6 +25,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     NedbankReconciliationModule,
     OnafriqReconciliationModule,
     ExchangeRatesModule,
+    MonitoringDataModule,
   ],
   providers: [
     CronjobInitiateService,

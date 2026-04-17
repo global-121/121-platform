@@ -135,6 +135,16 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'delete', headers);
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_1AM, {
+    disabled: !env.CRON_PUSH_MONITORING_DATA,
+  })
+  public async cronPushMonitoringData(cronJobMethodName): cronReturn {
+    const { baseCronUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
+    const url = `${baseCronUrl}/monitoring-data`;
+    return await this.callEndpoint(url, 'post', headers);
+  }
+
   // Needs to run before 8AM so that the report is ready for the Onafriq reconciliation team to review.
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
     disabled: !env.CRON_ONAFRIQ_RECONCILIATION_REPORT,

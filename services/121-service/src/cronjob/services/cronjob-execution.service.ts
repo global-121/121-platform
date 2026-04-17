@@ -10,6 +10,8 @@ import { IntersolveVisaReconciliationService } from '@121-service/src/fsp-integr
 import { IntersolveVoucherReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/intersolve-voucher/intersolve-voucher-reconciliation.service';
 import { NedbankReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/nedbank/nedbank-reconciliation.service';
 import { OnafriqReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/onafriq/onafriq-reconciliation.service';
+import { PushMonitoringDataDto } from '@121-service/src/monitoring-data/dtos/push-monitoring-data.dto';
+import { MonitoringDataService } from '@121-service/src/monitoring-data/monitoring-data.service';
 
 @Injectable()
 export class CronjobExecutionService {
@@ -23,6 +25,7 @@ export class CronjobExecutionService {
     private readonly nedbankReconciliationService: NedbankReconciliationService,
     private readonly onafriqReconciliationService: OnafriqReconciliationService,
     private readonly exchangeRatesService: ExchangeRatesService,
+    private readonly monitoringDataService: MonitoringDataService,
     private readonly cronjobExecutionHelperService: CronjobExecutionHelperService,
   ) {}
 
@@ -89,6 +92,15 @@ export class CronjobExecutionService {
     await this.cronjobExecutionHelperService.executeWithLogging(
       'cronGetDailyExchangeRates',
       () => this.exchangeRatesService.retrieveAndStoreAllExchangeRates(),
+    );
+  }
+
+  public async cronPushMonitoringData(): Promise<
+    PushMonitoringDataDto | undefined
+  > {
+    return await this.cronjobExecutionHelperService.executeWithLogging(
+      'cronPushMonitoringData',
+      () => this.monitoringDataService.pushMonitoringDataToCentralStorage(),
     );
   }
 

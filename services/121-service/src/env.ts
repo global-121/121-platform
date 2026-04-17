@@ -208,6 +208,7 @@ export const env = createEnv({
     ENV_ICON: z.url().or(z.string().startsWith('data:')).optional(),
     NODE_ENV: z.enum(['test', 'production', 'development']),
     GLOBAL_121_VERSION: z.string().optional(),
+    MONITORING_DATA_INSTANCE: z.string().optional(),
 
     // API set up
     PORT_121_SERVICE: z.coerce.number().default(8080),
@@ -296,6 +297,7 @@ export const env = createEnv({
 
     // Scheduled(cron) Activities
     CRON_GET_DAILY_EXCHANGE_RATES: z.stringbool().default(false),
+    CRON_PUSH_MONITORING_DATA: z.stringbool().default(false),
 
     // Interface(s) configuration
     REDIRECT_PORTAL_URL_HOST: z

@@ -23,6 +23,7 @@ import { CronjobInitiateService } from '@121-service/src/cronjob/services/cronjo
 import { RemoveDeprecatedImageCodesDto } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/dto/remove-deprecated-image-codes-dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { PushMonitoringDataDto } from '@121-service/src/monitoring-data/dtos/push-monitoring-data.dto';
 
 @ApiTags('cronjobs')
 @UseGuards(AuthenticatedUserGuard)
@@ -144,6 +145,23 @@ export class CronjobController {
   @Put('exchange-rates')
   public async cronGetDailyExchangeRates(): Promise<void> {
     await this.cronjobExecutionService.cronGetDailyExchangeRates();
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary:
+      '[CRON] Push daily monitoring data to central storage (returns uploaded JSON for testing)',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Monitoring data pushed to central storage.',
+    type: PushMonitoringDataDto,
+  })
+  @Post('monitoring-data')
+  public async cronPushMonitoringData(): Promise<
+    PushMonitoringDataDto | undefined
+  > {
+    return await this.cronjobExecutionService.cronPushMonitoringData();
   }
 
   @AuthenticatedUser({ isAdmin: true })

@@ -9,16 +9,17 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 export class CronjobExecutionHelperService {
   constructor(private readonly azureLogService: AzureLogService) {}
 
-  public async executeWithLogging(
+  public async executeWithLogging<T>(
     methodName: CronjobExecutionMethodName,
-    fn: () => Promise<number>,
-  ): Promise<number | undefined> {
+    fn: () => Promise<T>,
+  ): Promise<T | undefined> {
     const startMessage = this.createCronjobStartMessage(methodName);
     this.azureLogService.consoleLogAndTraceAzure(startMessage);
 
     try {
       // Execute the cron job function and await its result
-      const batchSize = await fn();
+      const result = await fn();
+      const batchSize = typeof result === 'number' ? result : undefined;
 
       // Handle the result and log the end message
       const cronjobResultMessage = this.createCronjobResultMessage({
@@ -27,7 +28,7 @@ export class CronjobExecutionHelperService {
         isError: false,
       });
       this.azureLogService.consoleLogAndTraceAzure(cronjobResultMessage);
-      return batchSize;
+      return result;
     } catch (error) {
       // 1. Log the stack trace to the Node logs
       console.error(`Error executing cron job ${methodName}:`, error);
