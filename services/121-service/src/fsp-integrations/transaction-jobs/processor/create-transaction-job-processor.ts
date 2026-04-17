@@ -20,5 +20,8 @@ export function createTransactionJobProcessor(
       super(service, redisClient);
     }
   }
+  Object.defineProperty(TransactionJobProcessor, 'name', {
+    value: `TransactionJobProcessor_${queueName}`,
+  });
   return TransactionJobProcessor;
 }
