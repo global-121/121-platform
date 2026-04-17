@@ -86,6 +86,23 @@ describe('startTokenExpirationMonitor', () => {
     expect(onExpired).toHaveBeenCalledTimes(1);
   });
 
+  it('should not call onValid when token is already expired', () => {
+    getTimeUntilExpiration.mockReturnValue(0);
+
+    subscription = startTokenExpirationMonitor({
+      checkIntervalMs: CHECK_INTERVAL_MS,
+      forceLogoutMs: FORCE_LOGOUT_MS,
+      getTimeUntilExpiration,
+      onExpired,
+      onValid,
+    });
+
+    vi.advanceTimersByTime(CHECK_INTERVAL_MS);
+
+    expect(onValid).not.toHaveBeenCalled();
+    expect(onExpired).toHaveBeenCalledTimes(1);
+  });
+
   it('should call onExpired on every tick while time remaining stays below the threshold', () => {
     getTimeUntilExpiration.mockReturnValue(FORCE_LOGOUT_MS - 1);
 
@@ -100,6 +117,8 @@ describe('startTokenExpirationMonitor', () => {
     vi.advanceTimersByTime(CHECK_INTERVAL_MS * 3);
 
     expect(onExpired).toHaveBeenCalledTimes(3);
+    // onValid also fires because token is still technically valid (> 0)
+    expect(onValid).toHaveBeenCalledTimes(3);
   });
 
   it('should stop calling onExpired after getTimeUntilExpiration returns Infinity (e.g. after session cleared)', () => {

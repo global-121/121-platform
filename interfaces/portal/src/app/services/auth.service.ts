@@ -57,7 +57,8 @@ export class AuthService {
    * Tracks whether the session was active at any point during the current browser session.
    * Intentionally NOT stored in localStorage/sessionStorage so it resets on page refresh/new tab.
    * Set to `true` immediately on login and by the token expiration monitor
-   * whenever it detects a valid token (e.g. after a page refresh with a still-valid token).
+   * whenever the token has not yet expired (timeUntilExpiry > 0), including
+   * when the token is inside the force-logout window.
    * Used in `handleTokenExpiration` to distinguish between:
    * - Token expired mid-use (sessionWasActive=true) → show "Session expired" popup
    * - Token was already expired on app start (sessionWasActive=false) → silent redirect to login
