@@ -7,7 +7,7 @@ import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.
 
 jest.mock('@121-service/src/env', () => ({
   env: {
-    MTN_MODE: FspMode.mock,
+    MTN_MODE: 'MOCK', // Default to mock mode without imported FspMode to avoid issues with jest.mock not being initialized when beforeEach is executed
     MOCK_SERVICE_URL: 'http://mock-service:3001',
     MTN_API_URL: 'https://sandbox.momodeveloper.mtn.com',
     MTN_SUBSCRIPTION_KEY: 'test-subscription-key',
