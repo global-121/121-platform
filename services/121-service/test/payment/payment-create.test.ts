@@ -63,4 +63,36 @@ describe('Create payment', () => {
     // Assert
     expect(createResponse.status).toBe(HttpStatus.BAD_REQUEST);
   });
+
+  it('should return 400 when creating a payment with name longer than 60 characters', async () => {
+    // Arrange
+    const nameWith61Characters = 'a'.repeat(61);
+
+    // Act
+    const createResponse = await createPayment({
+      programId,
+      transferValue,
+      referenceIds: [registrationPV5.referenceId],
+      accessToken,
+      name: nameWith61Characters,
+    });
+    // Assert
+    expect(createResponse.status).toBe(HttpStatus.BAD_REQUEST);
+  });
+
+  it('should return 201 when creating a payment with name of exactly 60 characters', async () => {
+    // Arrange
+    const nameWith60Characters = 'a'.repeat(60);
+
+    // Act
+    const createResponse = await createPayment({
+      programId,
+      transferValue,
+      referenceIds: [registrationPV5.referenceId],
+      accessToken,
+      name: nameWith60Characters,
+    });
+    // Assert
+    expect(createResponse.status).toBe(HttpStatus.CREATED);
+  });
 });

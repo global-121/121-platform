@@ -261,6 +261,7 @@ describe('PaymentsReportingService - getTransactions', () => {
       const mockSummaries = [
         {
           paymentId: 1,
+          name: 'Payment 15/01/24, 10:00',
           paymentDate: new Date('2024-01-15T10:00:00Z'),
           isPaymentApproved: true,
           approvalsRequired: 2,
@@ -275,6 +276,7 @@ describe('PaymentsReportingService - getTransactions', () => {
         },
         {
           paymentId: 2,
+          name: 'Payment 20/01/24, 10:00',
           paymentDate: new Date('2024-01-20T10:00:00Z'),
           isPaymentApproved: false,
           approvalsRequired: 2,
@@ -289,6 +291,7 @@ describe('PaymentsReportingService - getTransactions', () => {
         },
         {
           paymentId: 3,
+          name: 'Payment 25/01/24, 10:00',
           paymentDate: new Date('2024-01-25T10:00:00Z'),
           isPaymentApproved: false,
           approvalsRequired: 1,
@@ -339,6 +342,7 @@ describe('PaymentsReportingService - getTransactions', () => {
 
       const mockSummary = {
         paymentId: 2,
+        name: 'Payment 15/01/24, 10:00',
         paymentDate: new Date('2024-01-15T10:00:00Z'),
         isPaymentApproved: true,
         approvalsRequired: 2,
