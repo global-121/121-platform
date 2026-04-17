@@ -7,7 +7,7 @@ import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.
 
 jest.mock('@121-service/src/env', () => ({
   env: {
-    MTN_MODE: 'MOCK',
+    MTN_MODE: FspMode.mock,
     MOCK_SERVICE_URL: 'http://mock-service:3001',
     MTN_API_URL: 'https://sandbox.momodeveloper.mtn.com',
     MTN_SUBSCRIPTION_KEY: 'test-subscription-key',
@@ -47,7 +47,7 @@ describe('MtnApiHelperService', () => {
     });
 
     it('should return MTN API URL when MTN_MODE is not mock', () => {
-      (env as any).MTN_MODE = 'LIVE';
+      (env as any).MTN_MODE = FspMode.external;
       (env as any).MTN_API_URL = 'https://sandbox.momodeveloper.mtn.com';
 
       const result = mtnApiHelperService.getBaseUrl();
@@ -56,7 +56,7 @@ describe('MtnApiHelperService', () => {
     });
 
     it('should throw MtnApiError when MTN_MODE is not mock and MTN_API_URL is not set', () => {
-      (env as any).MTN_MODE = 'LIVE';
+      (env as any).MTN_MODE = FspMode.external;
       (env as any).MTN_API_URL = '';
 
       expect(() => mtnApiHelperService.getBaseUrl()).toThrow(MtnApiError);

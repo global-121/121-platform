@@ -12,19 +12,36 @@ enum MtnMockPhoneNumber {
 export class MtnMockService {
   private readonly transfers = new Map<string, MtnCreateTransferRequestDto>();
 
+  private static readonly uuidPattern =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
   public createTransfer({
     referenceId,
     subscriptionKey,
     body,
   }: {
-    referenceId: string;
-    subscriptionKey: string;
+    referenceId: string | undefined;
+    subscriptionKey: string | undefined;
     body: MtnCreateTransferRequestDto;
   }): [HttpStatus, object | undefined] {
     if (!subscriptionKey) {
       return [
         HttpStatus.UNAUTHORIZED,
         { message: 'Access denied due to missing subscription key.' },
+      ];
+    }
+
+    if (!referenceId) {
+      return [
+        HttpStatus.BAD_REQUEST,
+        { message: 'X-Reference-Id header is required.' },
+      ];
+    }
+
+    if (!MtnMockService.uuidPattern.test(referenceId)) {
+      return [
+        HttpStatus.BAD_REQUEST,
+        { message: 'X-Reference-Id must be a valid UUID.' },
       ];
     }
 
@@ -59,7 +76,7 @@ export class MtnMockService {
     subscriptionKey,
   }: {
     referenceId: string;
-    subscriptionKey: string;
+    subscriptionKey: string | undefined;
   }): [HttpStatus, MtnTransferStatusResponseDto | object] {
     if (!subscriptionKey) {
       return [

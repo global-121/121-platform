@@ -128,7 +128,7 @@ export class MtnApiService {
     } catch (error) {
       if (
         error instanceof MtnApiDuplicateError ||
-        error instanceof MtnApiError
+      error instanceof MtnApiError
       ) {
         throw error;
       }

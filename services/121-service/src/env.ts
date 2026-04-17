@@ -106,6 +106,21 @@ export const intersolveVoucherEnvVariablesSchema = {
   INTERSOLVE_URL: z.url().default(''),
 };
 
+export const mtnEnvVariablesSchema = {
+  MTN_MODE: FspModeSchema,
+
+  MTN_API_URL: z
+    .url()
+    .pipe(z.transform((url) => withoutTrailingSlash(url)))
+    .optional(),
+  MTN_PROVIDER_CALLBACK_HOST: z.string().optional(),
+  MTN_SUBSCRIPTION_KEY: z.string().optional(),
+  MTN_ACCESS_TOKEN: z.string().optional(),
+  MTN_REFERENCE_ID: z.string().optional(),
+  MTN_TARGET_ENVIRONMENT: z.string().optional(),
+  MTN_API_KEY: z.string().optional(),
+};
+
 export const nedbankEnvVariablesSchema = {
   NEDBANK_MODE: FspModeSchema,
 
@@ -144,21 +159,6 @@ export const onafriqEnvVariablesSchema = {
   ONAFRIQ_SFTP_PASSPHRASE: z.string().optional(),
   ONAFRIQ_SFTP_PORT: z.coerce.number().default(22),
   ONAFRIQ_SFTP_USERNAME: z.string().optional(),
-};
-
-export const mtnEnvVariablesSchema = {
-  MTN_MODE: FspModeSchema,
-
-  MTN_API_URL: z
-    .url()
-    .pipe(z.transform((url) => withoutTrailingSlash(url)))
-    .optional(),
-  MTN_PROVIDER_CALLBACK_HOST: z.string().optional(),
-  MTN_SUBSCRIPTION_KEY: z.string().optional(),
-  MTN_ACCESS_TOKEN: z.string().optional(),
-  MTN_REFERENCE_ID: z.string().optional(),
-  MTN_TARGET_ENVIRONMENT: z.string().optional(),
-  MTN_API_KEY: z.string().optional(),
 };
 
 export const safaricomEnvVariablesSchema = {

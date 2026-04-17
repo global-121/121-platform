@@ -59,8 +59,8 @@ export class MtnMockController {
   })
   public createTransfer(
     @Body() body: MtnCreateTransferRequestDto,
-    @Headers('x-reference-id') referenceId: string,
-    @Headers('ocp-apim-subscription-key') subscriptionKey: string,
+    @Headers('x-reference-id') referenceId: string | undefined,
+    @Headers('ocp-apim-subscription-key') subscriptionKey: string | undefined,
   ): void {
     const [status, responseBody] = this.mtnMockService.createTransfer({
       referenceId,
@@ -108,7 +108,7 @@ export class MtnMockController {
   })
   public getTransferStatus(
     @Param('referenceId') referenceId: string,
-    @Headers('ocp-apim-subscription-key') subscriptionKey: string,
+    @Headers('ocp-apim-subscription-key') subscriptionKey: string | undefined,
   ): MtnTransferStatusResponseDto | object {
     const [status, responseBody] = this.mtnMockService.getTransferStatus({
       referenceId,
