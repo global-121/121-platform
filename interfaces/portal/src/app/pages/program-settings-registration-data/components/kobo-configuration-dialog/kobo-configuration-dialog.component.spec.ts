@@ -49,7 +49,9 @@ describe('KoboConfigurationDialogComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(KoboConfigurationDialogComponent);
+    fixture.componentRef.setInput('programId', 1);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {

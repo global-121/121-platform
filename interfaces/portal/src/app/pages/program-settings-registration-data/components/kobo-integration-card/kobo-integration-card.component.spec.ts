@@ -1,3 +1,4 @@
+import type { Signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
@@ -29,9 +30,9 @@ describe('KoboIntegrationCardComponent', () => {
         {
           provide: KoboApiService,
           useValue: {
-            getKoboIntegration: (programId: number) => () =>
+            getKoboIntegration: (programId: Signal<number | string>) => () =>
               queryOptions({
-                queryKey: ['koboIntegration', programId],
+                queryKey: ['koboIntegration', programId()],
                 queryFn: () =>
                   Promise.resolve({
                     assetUid: '',
