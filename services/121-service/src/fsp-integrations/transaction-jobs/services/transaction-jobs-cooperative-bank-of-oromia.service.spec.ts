@@ -75,9 +75,9 @@ describe('TransactionJobsCooperativeBankOfOromiaService', () => {
       .mockResolvedValue(undefined);
 
     // First call
-    await service.processCooperativeBankOfOromiaTransactionJob(job1);
+    await service.processTransactionJob(job1);
     // Second call
-    await service.processCooperativeBankOfOromiaTransactionJob(job2);
+    await service.processTransactionJob(job2);
 
     // Extract the messageIds used in each call
     const mockFn = cooperativeBankOfOromiaService.initiateTransfer as jest.Mock;

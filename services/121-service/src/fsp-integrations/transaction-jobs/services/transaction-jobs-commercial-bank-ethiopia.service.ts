@@ -4,6 +4,7 @@ import { Equal } from 'typeorm';
 import { CbeTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.scoped.repository';
 import { CbeTransferEntity } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia-transfer.entity';
 import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -13,7 +14,9 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 
 @Injectable()
-export class TransactionJobsCommercialBankEthiopiaService {
+export class TransactionJobsCommercialBankEthiopiaService
+  implements TransactionJobService<CommercialBankEthiopiaTransactionJobDto>
+{
   constructor(
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -23,7 +26,7 @@ export class TransactionJobsCommercialBankEthiopiaService {
     private readonly cbeTransferScopedRepository: CbeTransferScopedRepository,
   ) {}
 
-  public async processCommercialBankEthiopiaTransactionJob(
+  public async processTransactionJob(
     transactionJob: CommercialBankEthiopiaTransactionJobDto,
   ): Promise<void> {
     // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')

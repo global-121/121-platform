@@ -5,6 +5,7 @@ import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/fsp-
 import { CooperativeBankOfOromiaError } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/errors/cooperative-bank-of-oromia.error';
 import { CooperativeBankOfOromiaService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { CooperativeBankOfOromiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/cooperative-bank-of-oromia-transaction-job.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -14,7 +15,9 @@ import { TransactionsService } from '@121-service/src/payments/transactions/tran
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 @Injectable()
-export class TransactionJobsCooperativeBankOfOromiaService {
+export class TransactionJobsCooperativeBankOfOromiaService
+  implements TransactionJobService<CooperativeBankOfOromiaTransactionJobDto>
+{
   constructor(
     private readonly cooperativeBankOfOromiaService: CooperativeBankOfOromiaService,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
@@ -22,7 +25,7 @@ export class TransactionJobsCooperativeBankOfOromiaService {
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
-  public async processCooperativeBankOfOromiaTransactionJob(
+  public async processTransactionJob(
     transactionJob: CooperativeBankOfOromiaTransactionJobDto,
   ): Promise<void> {
     // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')

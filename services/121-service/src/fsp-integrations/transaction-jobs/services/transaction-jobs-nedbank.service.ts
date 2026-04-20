@@ -7,6 +7,7 @@ import { NedbankVoucherScopedRepository } from '@121-service/src/fsp-integration
 import { NedbankService } from '@121-service/src/fsp-integrations/integrations/nedbank/services/nedbank.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { NedbankTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/nedbank-transaction-job.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -18,7 +19,7 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
-export class TransactionJobsNedbankService {
+export class TransactionJobsNedbankService implements TransactionJobService<NedbankTransactionJobDto> {
   constructor(
     private readonly nedbankService: NedbankService,
     private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
@@ -28,7 +29,7 @@ export class TransactionJobsNedbankService {
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
   ) {}
 
-  public async processNedbankTransactionJob(
+  public async processTransactionJob(
     transactionJob: NedbankTransactionJobDto,
   ): Promise<void> {
     // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')

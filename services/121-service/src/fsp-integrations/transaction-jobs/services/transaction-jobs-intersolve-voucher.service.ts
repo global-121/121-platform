@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { IntersolveVoucherTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -9,7 +10,9 @@ import { TransactionsService } from '@121-service/src/payments/transactions/tran
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 @Injectable()
-export class TransactionJobsIntersolveVoucherService {
+export class TransactionJobsIntersolveVoucherService
+  implements TransactionJobService<IntersolveVoucherTransactionJobDto>
+{
   constructor(
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -17,7 +20,7 @@ export class TransactionJobsIntersolveVoucherService {
     private readonly transactionsService: TransactionsService,
   ) {}
 
-  public async processIntersolveVoucherTransactionJob(
+  public async processTransactionJob(
     transactionJob: IntersolveVoucherTransactionJobDto,
   ): Promise<void> {
     // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
