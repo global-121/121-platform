@@ -1,20 +1,15 @@
 import { Injectable } from '@nestjs/common';
 
-import { APP_VERSION, IS_PRODUCTION } from '@121-service/src/config';
+import { IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { ExchangeRatesService } from '@121-service/src/exchange-rates/services/exchange-rates.service';
 import { InstanceReportingRegistrationDto } from '@121-service/src/instance-reporting/dtos/instance-reporting-registration.dto';
 import { InstanceReportingTransactionDto } from '@121-service/src/instance-reporting/dtos/instance-reporting-transaction.dto';
 import { PushInstanceReportingDataResponseDto } from '@121-service/src/instance-reporting/dtos/push-instance-reporting-data-response.dto';
 import { InstanceReportingBlobService } from '@121-service/src/instance-reporting/instance-reporting-blob.service';
-import {
-  InstanceReportingProgramProjection,
-  InstanceReportingRegistrationProjection,
-  InstanceReportingTransactionProjection,
-} from '@121-service/src/instance-reporting/interfaces/instance-reporting-query-result.interface';
+import { InstanceReportingDataMapper } from '@121-service/src/instance-reporting/mappers/instance-reporting-data.mapper';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { RegistrationRepository } from '@121-service/src/registration/repositories/registration.repository';
-import { ValueExtractor } from '@121-service/src/registration-events/utils/registration-events.helpers';
 
 // This service loads all registrations and transactions into memory at once.
 // With ~1M transactions this may use ~1-2GB of heap memory. This is acceptable
@@ -70,27 +65,12 @@ export class InstanceReportingService {
       await this.registrationRepository.findForInstanceReporting();
 
     return registrations.map((registration) =>
-      this.mapRegistration({ registration, instance, uploadDate }),
+      InstanceReportingDataMapper.mapRegistration({
+        registration,
+        instance,
+        uploadDate,
+      }),
     );
-  }
-
-  private mapRegistration({
-    registration,
-    instance,
-    uploadDate,
-  }: {
-    registration: InstanceReportingRegistrationProjection;
-    instance: string;
-    uploadDate: string;
-  }): InstanceReportingRegistrationDto {
-    return {
-      instance,
-      version: APP_VERSION,
-      programTitle: this.extractProgramTitle(registration.program),
-      programId: registration.program.id,
-      status: registration.registrationStatus,
-      uploadDate,
-    };
   }
 
   private async getTransactionData({
@@ -101,62 +81,23 @@ export class InstanceReportingService {
     uploadDate: string;
   }): Promise<InstanceReportingTransactionDto[]> {
     const exchangeRateMap =
-      await this.exchangeRatesService.getExchangeRateMap();
+      await this.exchangeRatesService.getExchangeRateHistoryMap();
 
     const transactions =
       await this.transactionRepository.findForInstanceReporting();
 
     return transactions.map((transaction) =>
-      this.mapTransaction({
+      InstanceReportingDataMapper.mapTransaction({
         transaction,
         instance,
-        exchangeRateMap,
+        amountEuro: this.exchangeRatesService.convertToEuro({
+          amount: transaction.transferValue,
+          fromCurrency: transaction.registration.program.currency,
+          transactionDate: transaction.created,
+          exchangeRateMap,
+        }),
         uploadDate,
       }),
-    );
-  }
-
-  private mapTransaction({
-    transaction,
-    instance,
-    exchangeRateMap,
-    uploadDate,
-  }: {
-    transaction: InstanceReportingTransactionProjection;
-    instance: string;
-    exchangeRateMap: Map<string, number>;
-    uploadDate: string;
-  }): InstanceReportingTransactionDto {
-    const program = transaction.registration.program;
-
-    return {
-      instance,
-      version: APP_VERSION,
-      programId: program.id,
-      programTitle: this.extractProgramTitle(program),
-      id: transaction.id,
-      status: transaction.status,
-      amountEuro: this.exchangeRatesService.convertAmount({
-        amount: transaction.transferValue,
-        fromCurrency: program.currency,
-        toCurrency: 'EUR',
-        exchangeRateMap,
-      }),
-      amount: transaction.transferValue,
-      localCurrency: program.currency,
-      createdDate: transaction.created.toISOString(),
-      updatedDate: transaction.updated.toISOString(),
-      registrationReferenceId: transaction.registration.referenceId,
-      uploadDate,
-    };
-  }
-
-  private extractProgramTitle(
-    program: InstanceReportingProgramProjection,
-  ): string {
-    return (
-      ValueExtractor.getLocalizedStringOrFallback(program.titlePortal) ??
-      `Program ${program.id}`
     );
   }
 

@@ -16,6 +16,9 @@ export class InstanceReportingRegistrationDto {
   @ApiProperty({ example: 'included', nullable: true })
   readonly status: string | null;
 
+  @ApiProperty({ example: 'abc-123' })
+  readonly referenceId: string;
+
   @ApiProperty({ example: '2026-03-30' })
   readonly uploadDate: string;
 }

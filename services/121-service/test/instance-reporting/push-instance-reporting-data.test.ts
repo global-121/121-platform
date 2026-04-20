@@ -49,44 +49,91 @@ describe('Push instance reporting data', () => {
     expect(response.body.transactions).toEqual([]);
   });
 
-  it('should return registration data with correct structure after seeding registrations', async () => {
-    // Arrange
+  it('should only return registrations that have at least one successful transaction', async () => {
+    // Arrange - seed registrations in two programs but only pay one
     await seedIncludedRegistrations(
-      [registrationOCW1, registrationOCW2],
+      [registrationOCW2],
       programIdOCW,
       accessToken,
     );
-    await seedIncludedRegistrations(
-      [registrationPV5],
-      programIdPV,
-      accessToken,
+    await seedPaidRegistrations({
+      registrations: [registrationOCW1],
+      programId: programIdOCW,
+      transferValue: 10,
+    });
+
+    // Act
+    const response = await pushInstanceReportingData(accessToken);
+
+    // Assert - only registrationOCW1 has a successful transaction
+    expect(response.status).toBe(HttpStatus.OK);
+    expect(response.body.registrations).toHaveLength(1);
+    expect(response.body.registrations[0]).toEqual(
+      expect.objectContaining({
+        programId: programIdOCW,
+        status: RegistrationStatusEnum.included,
+      }),
     );
+  });
+
+  it('should return registration data with correct structure', async () => {
+    // Arrange
+    await seedPaidRegistrations({
+      registrations: [registrationOCW1],
+      programId: programIdOCW,
+      transferValue: 10,
+    });
+    await seedPaidRegistrations({
+      registrations: [registrationPV5],
+      programId: programIdPV,
+      transferValue: 10,
+    });
 
     // Act
     const response = await pushInstanceReportingData(accessToken);
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
-    expect(response.body.registrations).toHaveLength(3);
 
-    for (const registration of response.body.registrations) {
-      expect(registration).toEqual(
-        expect.objectContaining({
-          instance: expect.any(String),
-          programTitle: expect.any(String),
-          programId: expect.any(Number),
-          status: RegistrationStatusEnum.included,
-          uploadDate: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
-        }),
-      );
-    }
-
-    const programIds = new Set(
-      response.body.registrations.map(
-        (r: { programId: number }) => r.programId,
-      ),
+    const sortedRegistrations = [...response.body.registrations].sort(
+      (a: { programId: number }, b: { programId: number }) =>
+        a.programId - b.programId,
     );
-    expect(programIds).toEqual(new Set([programIdOCW, programIdPV]));
+
+    expect(sortedRegistrations).toMatchInlineSnapshot(
+      [
+        {
+          instance: expect.any(String),
+          referenceId: expect.any(String),
+          uploadDate: expect.any(String),
+        },
+        {
+          instance: expect.any(String),
+          referenceId: expect.any(String),
+          uploadDate: expect.any(String),
+        },
+      ],
+      `
+     [
+       {
+         "instance": Any<String>,
+         "programId": 2,
+         "programTitle": "NLRC Direct Digital Aid Program (PV)",
+         "referenceId": Any<String>,
+         "status": "included",
+         "uploadDate": Any<String>,
+       },
+       {
+         "instance": Any<String>,
+         "programId": 3,
+         "programTitle": "NLRC OCW program",
+         "referenceId": Any<String>,
+         "status": "included",
+         "uploadDate": Any<String>,
+       },
+     ]
+    `,
+    );
   });
 
   it('should return transaction data with correct structure after making a payment', async () => {
@@ -94,7 +141,7 @@ describe('Push instance reporting data', () => {
     await retrieveAndStoreAllExchangeRates(accessToken);
     const transferValue = 25;
 
-    // Seed accross programs to verify program-specific data is returned correctly (e.g. program title, currency)
+    // Seed across programs to verify program-specific data is returned correctly (e.g. program title, currency)
     await seedPaidRegistrations({
       registrations: [registrationOCW1],
       programId: programIdOCW,

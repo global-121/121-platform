@@ -94,132 +94,157 @@ describe('ExchangeRatesService', () => {
   });
 
   describe('getting exchange rate map', () => {
-    it('should return a map with EUR set to 1 and all stored rates', async () => {
+    it('should return a map with EUR and all stored rates grouped by currency', async () => {
       mockExchangeRateRepository.find = jest.fn().mockResolvedValue([
-        { currency: 'ETB', euroExchangeRate: 59.52 },
-        { currency: 'KES', euroExchangeRate: 155.3 },
+        { currency: 'ETB', euroExchangeRate: 59.52, closeTime: '2024-01-15' },
+        { currency: 'KES', euroExchangeRate: 155.3, closeTime: '2024-01-15' },
       ]);
 
-      const result = await exchangeRateService.getExchangeRateMap();
+      const result = await exchangeRateService.getExchangeRateHistoryMap();
 
-      expect(result).toEqual(
-        new Map([
-          ['EUR', 1],
-          ['ETB', 59.52],
-          ['KES', 155.3],
-        ]),
-      );
+      expect(result.get('ETB')).toEqual([{ rate: 59.52, date: '2024-01-15' }]);
+      expect(result.get('KES')).toEqual([{ rate: 155.3, date: '2024-01-15' }]);
+    });
+
+    it('should sort rates by date descending per currency', async () => {
+      mockExchangeRateRepository.find = jest.fn().mockResolvedValue([
+        { currency: 'USD', euroExchangeRate: 0.9, closeTime: '2024-01-10' },
+        { currency: 'USD', euroExchangeRate: 0.85, closeTime: '2024-01-20' },
+      ]);
+
+      const result = await exchangeRateService.getExchangeRateHistoryMap();
+
+      expect(result.get('USD')).toEqual([
+        { rate: 0.85, date: '2024-01-20' },
+        { rate: 0.9, date: '2024-01-10' },
+      ]);
     });
 
     it('should return a map with only EUR when no rates are stored', async () => {
       mockExchangeRateRepository.find = jest.fn().mockResolvedValue([]);
 
-      const result = await exchangeRateService.getExchangeRateMap();
+      const result = await exchangeRateService.getExchangeRateHistoryMap();
 
-      expect(result.get('EUR')).toBe(1);
-      expect(result.size).toBe(1);
+      expect(result.size).toBe(0);
     });
   });
 
-  describe('converting amounts between currencies', () => {
-    it('should return the same amount when currencies are equal', () => {
-      const result = exchangeRateService.convertAmount({
+  describe('converting amounts to EUR', () => {
+    const txDate = new Date('2024-01-15');
+
+    it('should return the same amount when currency is EUR', () => {
+      const result = exchangeRateService.convertToEuro({
         amount: 100,
         fromCurrency: 'EUR',
-        toCurrency: 'EUR',
+        transactionDate: txDate,
         exchangeRateMap: new Map(),
       });
 
       expect(result).toBe(100);
     });
 
-    it('should convert from one currency to another via EUR', () => {
-      // euroExchangeRate means "1 unit of local currency = X EUR"
-      const exchangeRateMap = new Map([
-        ['EUR', 1],
-        ['USD', 0.9],
-        ['GBP', 1.2],
-      ]);
-
-      // 100 USD * 0.9 = 90 EUR
-      const result = exchangeRateService.convertAmount({
+    it('should convert from a local currency to EUR', () => {
+      const result = exchangeRateService.convertToEuro({
         amount: 100,
         fromCurrency: 'USD',
-        toCurrency: 'EUR',
-        exchangeRateMap,
+        transactionDate: txDate,
+        exchangeRateMap: new Map([
+          ['USD', [{ rate: 0.9, date: '2024-01-15' }]],
+        ]),
       });
 
+      // 100 USD * 0.9 = 90 EUR
       expect(result).toBe(90);
     });
 
-    it('should convert between two non-EUR currencies', () => {
-      // euroExchangeRate means "1 unit of local currency = X EUR"
-      const exchangeRateMap = new Map([
-        ['EUR', 1],
-        ['USD', 0.9],
-        ['GBP', 1.2],
-      ]);
-
-      // 100 USD * 0.9 = 90 EUR / 1.2 = 75 GBP
-      const result = exchangeRateService.convertAmount({
+    it('should use the rate from the matching day', () => {
+      const result = exchangeRateService.convertToEuro({
         amount: 100,
         fromCurrency: 'USD',
-        toCurrency: 'GBP',
-        exchangeRateMap,
+        transactionDate: new Date('2024-01-10'),
+        exchangeRateMap: new Map([
+          [
+            'USD',
+            [
+              { rate: 0.85, date: '2024-01-20' },
+              { rate: 0.9, date: '2024-01-10' },
+            ],
+          ],
+        ]),
       });
 
-      expect(result).toBe(75);
+      // Uses 0.9 (the rate from 2024-01-10), not 0.85
+      expect(result).toBe(90);
+    });
+
+    it('should fall back to the most recent rate before the transaction date', () => {
+      const result = exchangeRateService.convertToEuro({
+        amount: 100,
+        fromCurrency: 'USD',
+        transactionDate: new Date('2024-01-12'),
+        exchangeRateMap: new Map([
+          [
+            'USD',
+            [
+              { rate: 0.85, date: '2024-01-20' },
+              { rate: 0.9, date: '2024-01-10' },
+            ],
+          ],
+        ]),
+      });
+
+      // No rate on 2024-01-12, falls back to 2024-01-10 rate (0.9)
+      expect(result).toBe(90);
     });
 
     it('should return null when fromCurrency is not in the map', () => {
-      const exchangeRateMap = new Map([
-        ['EUR', 1],
-        ['GBP', 1.2],
-      ]);
-
-      const result = exchangeRateService.convertAmount({
+      const result = exchangeRateService.convertToEuro({
         amount: 100,
         fromCurrency: 'USD',
-        toCurrency: 'GBP',
-        exchangeRateMap,
+        transactionDate: txDate,
+        exchangeRateMap: new Map(),
       });
 
       expect(result).toBeNull();
     });
 
-    it('should return null when toCurrency is not in the map', () => {
-      const exchangeRateMap = new Map([
-        ['EUR', 1],
-        ['USD', 0.9],
-      ]);
-
-      const result = exchangeRateService.convertAmount({
-        amount: 100,
+    it('should return null when amount is null', () => {
+      const result = exchangeRateService.convertToEuro({
+        amount: null,
         fromCurrency: 'USD',
-        toCurrency: 'GBP',
-        exchangeRateMap,
+        transactionDate: txDate,
+        exchangeRateMap: new Map([
+          ['USD', [{ rate: 0.9, date: '2024-01-15' }]],
+        ]),
+      });
+
+      expect(result).toBeNull();
+    });
+
+    it('should return null when fromCurrency is null', () => {
+      const result = exchangeRateService.convertToEuro({
+        amount: 100,
+        fromCurrency: null,
+        transactionDate: txDate,
+        exchangeRateMap: new Map([
+          ['USD', [{ rate: 0.9, date: '2024-01-15' }]],
+        ]),
       });
 
       expect(result).toBeNull();
     });
 
     it('should round the result to 2 decimal places', () => {
-      // euroExchangeRate means "1 unit of local currency = X EUR"
-      const exchangeRateMap = new Map([
-        ['EUR', 1],
-        ['USD', 0.9],
-        ['GBP', 1.17],
-      ]);
-
-      // 100 USD * 0.9 = 90 EUR / 1.17 = 76.923... GBP
-      const result = exchangeRateService.convertAmount({
-        amount: 100,
-        fromCurrency: 'USD',
-        toCurrency: 'GBP',
-        exchangeRateMap,
+      const result = exchangeRateService.convertToEuro({
+        amount: 333,
+        fromCurrency: 'KES',
+        transactionDate: txDate,
+        exchangeRateMap: new Map([
+          ['KES', [{ rate: 0.007, date: '2024-01-15' }]],
+        ]),
       });
 
-      expect(result).toBe(76.92);
+      expect(result).toBe(2.33);
     });
   });
 });

@@ -62,47 +62,59 @@ export class ExchangeRatesService {
     ).map((el) => el.program_currency);
   }
 
-  public async getExchangeRateMap(): Promise<Map<string, number>> {
+  public async getExchangeRateHistoryMap(): Promise<
+    Map<string, { rate: number; date: string }[]>
+  > {
     const rates = await this.exchangeRateRepository.find();
 
-    const rateMap = new Map<string, number>();
-    rateMap.set('EUR', 1);
+    const rateMap = new Map<string, { rate: number; date: string }[]>();
 
     for (const rate of rates) {
-      rateMap.set(rate.currency, rate.euroExchangeRate);
+      const date = rate.closeTime?.split('T')[0] ?? '';
+      const entries = rateMap.get(rate.currency) ?? [];
+      entries.push({ rate: rate.euroExchangeRate, date });
+      rateMap.set(rate.currency, entries);
+    }
+
+    for (const entries of rateMap.values()) {
+      entries.sort((a, b) => b.date.localeCompare(a.date));
     }
 
     return rateMap;
   }
 
-  public convertAmount({
+  public convertToEuro({
     amount,
     fromCurrency,
-    toCurrency,
+    transactionDate,
     exchangeRateMap,
   }: {
     amount: number | null;
     fromCurrency: string | null;
-    toCurrency: string;
-    exchangeRateMap: Map<string, number>;
+    transactionDate: Date;
+    exchangeRateMap: Map<string, { rate: number; date: string }[]>;
   }): number | null {
     if (amount == null || fromCurrency == null) {
       return null;
     }
 
-    if (fromCurrency === toCurrency) {
-      return amount;
+    if (fromCurrency === 'EUR') {
+      return Math.round(amount * 100) / 100;
     }
 
-    const fromRate = exchangeRateMap.get(fromCurrency);
-    const toRate = exchangeRateMap.get(toCurrency);
+    const rates = exchangeRateMap.get(fromCurrency);
+    if (!rates?.length) {
+      return null;
+    }
 
-    if (!fromRate || !toRate) {
+    // Find the most recent rate on or before the transaction date
+    const txDate = transactionDate.toISOString().split('T')[0];
+    const matchingRate = rates.find((r) => r.date <= txDate);
+    if (!matchingRate) {
       return null;
     }
 
     // euroExchangeRate stores "1 unit of local currency = X EUR"
-    const amountInEuro = amount * fromRate;
-    return Math.round((amountInEuro / toRate) * 100) / 100;
+    return Math.round(amount * matchingRate.rate * 100) / 100;
   }
 }

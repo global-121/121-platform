@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { InstanceReportingTransactionProjection } from '@121-service/src/instance-reporting/interfaces/instance-reporting-query-result.interface';
+import { InstanceReportingTransactionRaw } from '@121-service/src/instance-reporting/interfaces/instance-reporting-transaction-raw.interface';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 
@@ -70,7 +70,7 @@ export class TransactionRepository extends Repository<TransactionEntity> {
   }
 
   public async findForInstanceReporting(): Promise<
-    InstanceReportingTransactionProjection[]
+    InstanceReportingTransactionRaw[]
   > {
     return this.createQueryBuilder('transaction')
       .select([

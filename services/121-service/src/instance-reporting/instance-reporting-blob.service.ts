@@ -1,8 +1,10 @@
 import { ContainerClient } from '@azure/storage-blob';
 import { Inject, Injectable } from '@nestjs/common';
+import { Readable } from 'node:stream';
 
 import { env } from '@121-service/src/env';
 import { PushInstanceReportingDataResponseDto } from '@121-service/src/instance-reporting/dtos/push-instance-reporting-data-response.dto';
+import { InstanceReportingCsvMapper } from '@121-service/src/instance-reporting/mappers/instance-reporting-csv.mapper';
 
 @Injectable()
 export class InstanceReportingBlobService {
@@ -18,31 +20,79 @@ export class InstanceReportingBlobService {
     data: PushInstanceReportingDataResponseDto;
     uploadDate: string;
   }): Promise<void> {
-    const instanceSlug = env.ENV_NAME!.toLowerCase().replace(/\s+/g, '-');
+    const instanceSlug = env.ENV_NAME!.replace(/\s+/g, '-');
 
     await Promise.all([
-      this.uploadJson({
-        blobPath: `${uploadDate}/registrations/${instanceSlug}.json`,
-        content: data.registrations,
+      this.uploadCsvStream({
+        blobPath: `${uploadDate}/registrations/${instanceSlug}.csv`,
+        headers: InstanceReportingCsvMapper.registrationHeaders,
+        items: data.registrations,
       }),
-      this.uploadJson({
-        blobPath: `${uploadDate}/transactions/${instanceSlug}.json`,
-        content: data.transactions,
+      this.uploadCsvStream({
+        blobPath: `${uploadDate}/transactions/${instanceSlug}.csv`,
+        headers: InstanceReportingCsvMapper.transactionHeaders,
+        items: data.transactions,
       }),
     ]);
   }
 
-  private async uploadJson({
+  private async uploadCsvStream<T extends object>({
     blobPath,
-    content,
+    headers,
+    items,
   }: {
     blobPath: string;
-    content: unknown;
+    headers: (keyof T & string)[];
+    items: T[];
   }): Promise<void> {
     const blockBlobClient = this.containerClient.getBlockBlobClient(blobPath);
-    const jsonContent = JSON.stringify(content);
-    await blockBlobClient.upload(jsonContent, Buffer.byteLength(jsonContent), {
-      blobHTTPHeaders: { blobContentType: 'application/json' },
+
+    if (items.length === 0) {
+      const headerRow = InstanceReportingCsvMapper.toCsvRow({
+        values: headers,
+      });
+      await blockBlobClient.upload(headerRow, Buffer.byteLength(headerRow), {
+        blobHTTPHeaders: { blobContentType: 'text/csv' },
+      });
+      return;
+    }
+
+    const stream = this.createCsvStream({ headers, items });
+
+    await blockBlobClient.uploadStream(stream, undefined, undefined, {
+      blobHTTPHeaders: { blobContentType: 'text/csv' },
+    });
+  }
+
+  private createCsvStream<T extends object>({
+    headers,
+    items,
+  }: {
+    headers: (keyof T & string)[];
+    items: T[];
+  }): Readable {
+    let headerSent = false;
+    let index = 0;
+
+    return new Readable({
+      read() {
+        if (!headerSent) {
+          this.push(InstanceReportingCsvMapper.toCsvRow({ values: headers }));
+          headerSent = true;
+          return;
+        }
+        if (index < items.length) {
+          this.push(
+            InstanceReportingCsvMapper.mapItemToCsvRow({
+              headers,
+              item: items[index]!,
+            }),
+          );
+          index++;
+        } else {
+          this.push(null);
+        }
+      },
     });
   }
 }
