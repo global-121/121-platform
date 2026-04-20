@@ -20,6 +20,8 @@ class PaymentsPage extends BasePage {
   readonly dateRangeStartInput: PrimeNGDatePicker;
   readonly dateRangeEndInput: PrimeNGDatePicker;
   readonly noteInput: Locator;
+  readonly paymentNameInput: Locator;
+  readonly continueToRegistrationButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -58,6 +60,10 @@ class PaymentsPage extends BasePage {
       }),
     });
     this.noteInput = this.page.locator('input[formControlName="note"]');
+    this.paymentNameInput = this.page.locator('input[formControlName="name"]');
+    this.continueToRegistrationButton = this.page.getByRole('button', {
+      name: 'Continue to registration',
+    });
   }
 
   async selectAllRegistrations() {
@@ -87,13 +93,20 @@ class PaymentsPage extends BasePage {
   }
 
   async createPayment({
+    name,
     note,
     onlyStep1 = false,
   }: {
+    name?: string;
     note?: string;
     onlyStep1?: boolean;
   }) {
     await this.createNewPaymentButton.click();
+    if (name !== undefined) {
+      await this.paymentNameInput.clear();
+      await this.paymentNameInput.fill(name);
+    }
+    await this.continueToRegistrationButton.click();
     await this.selectAllRegistrations();
     await this.addToPaymentButton.click();
     if (onlyStep1) {

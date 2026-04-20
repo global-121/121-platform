@@ -13,6 +13,7 @@
   [(dialogVisible)]="dialogVisible"
   [currentStep]="currentStep()"
   [proceedLabel]="proceedLabel()"
+  [isPending]="isPending()"
   [cannotProceed]="cannotProceed()"
   [queryParamStep]="'create-payment-step'"
   (goBack)="goBack()"
@@ -22,6 +23,44 @@
     <i class="pi pi-money-bill me-2"></i>
     <ng-container i18n="@@create-payment">Create new payment</ng-container>
     - {{ today | date: 'shortDate' }}
+  </ng-template>
+  <ng-template #step>
+    <p
+      i18n
+      class="mb-5"
+    >
+      Set up the payment's name.
+    </p>
+    <p-card>
+      <h3
+        i18n
+        class="mb-3 text-base font-medium!"
+      >
+        General information
+      </h3>
+      <form [formGroup]="paymentFormGroup">
+        <app-form-field-wrapper
+          label="Payment name"
+          i18n-label
+          [labelTooltip]="paymentNameTooltip"
+          [errorMessage]="formFieldErrors()('name')"
+        >
+          <input
+            class="w-full"
+            formControlName="name"
+            pInputText
+          />
+          <ng-container slot="details">
+            <p
+              i18n
+              class="txt-system-s mt-1 text-end"
+            >
+              Max. {{ MAX_PAYMENT_NAME_LENGTH }} characters
+            </p>
+          </ng-container>
+        </app-form-field-wrapper>
+      </form>
+    </p-card>
   </ng-template>
   <ng-template #step>
     <p

@@ -2250,6 +2250,27 @@
       <trans-unit id="session-expired-go-to-login" datatype="html">
         <source>Go to login page</source>
       </trans-unit>
+      <trans-unit id="1504719396709458010" datatype="html">
+        <source>Continue to registration</source>
+      </trans-unit>
+      <trans-unit id="2948202815374708667" datatype="html">
+        <source>General information</source>
+      </trans-unit>
+      <trans-unit id="3341509391681329837" datatype="html">
+        <source>Payments are named by date and time by default. Rename the payment for clarity if needed.</source>
+      </trans-unit>
+      <trans-unit id="4200238680914053517" datatype="html">
+        <source>Max. <x equiv-text="{{ MAX_PAYMENT_NAME_LENGTH }}" id="INTERPOLATION"/> characters</source>
+      </trans-unit>
+      <trans-unit id="4479612482450197191" datatype="html">
+        <source>Payment name</source>
+      </trans-unit>
+      <trans-unit id="6502713313006518985" datatype="html">
+        <source>Set up the payment&apos;s name.</source>
+      </trans-unit>
+      <trans-unit id="5512472017654585017" datatype="html">
+        <source>Payment creation did not return a payment reference. Please stay on this screen and refresh the payments list before trying again.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

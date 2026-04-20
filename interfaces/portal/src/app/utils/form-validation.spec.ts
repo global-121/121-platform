@@ -1,4 +1,10 @@
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 
 import { beforeEach, describe, expect, it } from 'vitest';
 
@@ -31,6 +37,19 @@ describe('Form Validation Utils', () => {
           validators: [Validators.required],
         },
       ),
+      whitespaceOnly: new FormControl('   ', {
+        validators: [
+          (
+            control: AbstractControl<null | string>,
+          ): null | ValidationErrors => {
+            const value = control.value;
+            if (typeof value !== 'string' || value.length === 0) {
+              return null;
+            }
+            return value.trim().length > 0 ? null : { whitespaceOnly: true };
+          },
+        ],
+      }),
       customValidation: new FormControl(''),
     });
 
@@ -80,6 +99,11 @@ describe('Form Validation Utils', () => {
     it('should return max error message', () => {
       const getFieldError = generateFieldErrors(formGroup)();
       expect(getFieldError('max')).toBe('This field cannot be more than 10.');
+    });
+
+    it('should return required error message for whitespace-only value', () => {
+      const getFieldError = generateFieldErrors(formGroup)();
+      expect(getFieldError('whitespaceOnly')).toBe('This field is required.');
     });
 
     it('should use custom validation function when provided', () => {

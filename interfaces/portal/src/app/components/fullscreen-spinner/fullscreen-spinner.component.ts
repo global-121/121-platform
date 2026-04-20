@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { BlockUIModule } from 'primeng/blockui';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-fullscreen-spinner',
-  imports: [BlockUIModule, ProgressSpinnerModule],
+  imports: [ProgressSpinnerModule],
   templateUrl: './fullscreen-spinner.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
