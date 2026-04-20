@@ -111,7 +111,7 @@ class BasePage {
     await expect(this.toast).toBeVisible();
     expect(await this.toast.textContent()).toContain(message);
     await expect(this.toast).toBeHidden({
-      timeout: 7000, // by default, toasts are visible for 5s, adding some buffer time to account for the fade out animation
+      timeout: 6_000, // by default, toasts are visible for 5s, adding some buffer time to account for the fade out animation
     });
   }
 
