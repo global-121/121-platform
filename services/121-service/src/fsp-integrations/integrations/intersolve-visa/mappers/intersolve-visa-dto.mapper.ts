@@ -19,7 +19,7 @@ export class IntersolveVisaDtoMapper {
     maxBalanceInCents,
   }: {
     intersolveVisaParentWalletEntity: IntersolveVisaParentWalletEntity;
-    maxBalanceInCents: number;
+    maxBalanceInCents?: number;
   }): IntersolveVisaWalletDto {
     // Sort wallets by newest first, newest = current wallet
     const sortedWallets =
