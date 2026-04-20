@@ -159,7 +159,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     programId?: number;
     relations?: string[];
   }) {
-    return await this.repository.findOne({
+    return await this.findOne({
       where: {
         referenceId: Equal(referenceId),
         ...(programId != undefined ? { programId: Equal(programId) } : {}),
@@ -309,7 +309,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   public async getDebitCardsDetailsForExport(
     programId: number,
   ): Promise<ExportVisaCardDetailsRawData[]> {
-    const wallets = await this.repository
+    const wallets = await this
       .createQueryBuilder('registration')
       .leftJoin('registration.intersolveVisaCustomer', 'customer')
       .leftJoin(
@@ -364,7 +364,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   }: {
     referenceId: string;
   }): Promise<boolean> {
-    const registrationToComplete = await this.repository
+    const registrationToComplete = await this
       .createQueryBuilder('registration')
       .andWhere('registration."paymentCount" >= registration."maxPayments"')
       .andWhere('registration."registrationStatus" != :completedStatus', {
