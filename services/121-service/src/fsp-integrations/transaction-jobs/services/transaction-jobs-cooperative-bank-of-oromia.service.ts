@@ -5,8 +5,8 @@ import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/fsp-
 import { CooperativeBankOfOromiaError } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/errors/cooperative-bank-of-oromia.error';
 import { CooperativeBankOfOromiaService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
-import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/transaction-job-service.interface';
 import { CooperativeBankOfOromiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/cooperative-bank-of-oromia-transaction-job.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -16,7 +16,7 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 
 @Injectable()
 export class TransactionJobsCooperativeBankOfOromiaService
-  implements TransactionJobService
+  implements TransactionJobService<CooperativeBankOfOromiaTransactionJobDto>
 {
   constructor(
     private readonly cooperativeBankOfOromiaService: CooperativeBankOfOromiaService,

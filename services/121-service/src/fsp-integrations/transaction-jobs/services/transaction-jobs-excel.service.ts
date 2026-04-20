@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
-import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/transaction-job-service.interface';
 import { ExcelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/excel-transaction-job.dto';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 
 @Injectable()
-export class TransactionJobsExcelService implements TransactionJobService {
+export class TransactionJobsExcelService implements TransactionJobService<ExcelTransactionJobDto> {
   constructor(
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly transactionsService: TransactionsService,
