@@ -74,8 +74,6 @@ export class ProgramRegistrationDebitCardsPageComponent {
   private readonly creditCardNumberPipe = inject(CreditCardNumberPipe);
   private readonly authService = inject(AuthService);
 
-  readonly VisaCardAction = VisaCardAction;
-
   readonly linkCardDialogVisible = model(false);
 
   registration = injectQuery(
@@ -109,8 +107,8 @@ export class ProgramRegistrationDebitCardsPageComponent {
   });
 
   readonly currentCardHasAction = computed(
-    () => (action: VisaCardAction) =>
-      this.currentCard()?.actions.includes(action),
+    () => (action: 'pause' | 'replace' | 'unpause') =>
+      this.currentCard()?.actions.includes(VisaCardAction[action]),
   );
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
@@ -297,34 +295,6 @@ export class ProgramRegistrationDebitCardsPageComponent {
     },
   }));
 
-  closeCardMutation = injectMutation(() => ({
-    mutationFn: () => {
-      const referenceId = this.referenceId();
-      const tokenCode = this.currentCard()?.tokenCode;
-
-      if (!referenceId) {
-        this.toastService.showGenericError();
-        throw new Error('ReferenceId is missing');
-      }
-
-      if (!tokenCode) {
-        this.toastService.showGenericError();
-        throw new Error('TokenCode is missing');
-      }
-
-      return this.intersolveVisaApiService.closeCard({
-        programId: this.programId,
-        referenceId,
-        tokenCode,
-      });
-    },
-    onSuccess: () => {
-      this.toastService.showToast({
-        detail: $localize`Card successfully closed`,
-      });
-    },
-  }));
-
   readonly currencyCode = computed(() => this.program.data()?.currency);
 
   readonly canReplaceCard = computed(() =>
@@ -345,13 +315,6 @@ export class ProgramRegistrationDebitCardsPageComponent {
     this.authService.hasPermission({
       programId: this.programId(),
       requiredPermission: PermissionEnum.FspDebitCardUNBLOCK,
-    }),
-  );
-
-  readonly canCloseCard = computed(() =>
-    this.authService.hasPermission({
-      programId: this.programId(),
-      requiredPermission: PermissionEnum.FspDebitCardCLOSE,
     }),
   );
 }

@@ -234,6 +234,9 @@
       <trans-unit id="debit-card-status-issued" datatype="html">
         <source>Issued</source>
       </trans-unit>
+      <trans-unit id="debit-card-status-blocked" datatype="html">
+        <source>Blocked</source>
+      </trans-unit>
       <trans-unit id="debit-card-status-paused" datatype="html">
         <source>Paused</source>
       </trans-unit>
@@ -2246,21 +2249,6 @@
       </trans-unit>
       <trans-unit id="session-expired-go-to-login" datatype="html">
         <source>Go to login page</source>
-      </trans-unit>
-      <trans-unit id="debit-card-actions-close-card" datatype="html">
-        <source>Close card</source>
-      </trans-unit>
-      <trans-unit id="1087779437885680611" datatype="html">
-        <source>Card successfully closed</source>
-      </trans-unit>
-      <trans-unit id="7267039351824245641" datatype="html">
-        <source>You&apos;re about to permanently close card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>. This means that the funds on the card will be booked back and the card will not be replaced.</source>
-      </trans-unit>
-      <trans-unit id="4392806189359216986" datatype="html">
-        <source>Please note, this action can not be undone.</source>
-      </trans-unit>
-      <trans-unit id="debit-card-status-closed" datatype="html">
-        <source>Closed</source>
       </trans-unit>
     </body>
   </file>

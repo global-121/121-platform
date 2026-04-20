@@ -143,32 +143,4 @@ export class IntersolveVisaApiService extends DomainApiService {
 
     return req;
   }
-
-  public closeCard({
-    programId,
-    referenceId,
-    tokenCode,
-  }: {
-    programId: Signal<number | string>;
-    referenceId: string;
-    tokenCode: string;
-  }) {
-    const endpoint = this.pathToQueryKey([
-      ...BASE_ENDPOINT(programId),
-      referenceId,
-      'fsps',
-      'intersolve-visa',
-      'wallet',
-      'cards',
-      tokenCode,
-      'close',
-    ]).join('/');
-
-    const req = this.httpWrapperService.perform121ServiceRequest({
-      method: 'POST',
-      endpoint,
-    });
-
-    return req;
-  }
 }

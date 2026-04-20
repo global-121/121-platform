@@ -3,7 +3,7 @@ import { VisaCard121Status } from '@121-service/src/fsp-integrations/integration
 export const VISA_CARD_STATUS_LABELS: Record<VisaCard121Status, string> = {
   [VisaCard121Status.Active]: $localize`:@@debit-card-status-active:Active`,
   [VisaCard121Status.Issued]: $localize`:@@debit-card-status-issued:Issued`,
-  [VisaCard121Status.Blocked]: $localize`:@@debit-card-status-closed:Closed`,
+  [VisaCard121Status.Blocked]: $localize`:@@debit-card-status-blocked:Blocked`,
   [VisaCard121Status.Paused]: $localize`:@@debit-card-status-paused:Paused`,
   [VisaCard121Status.SuspectedFraud]: $localize`:@@debit-card-status-suspected-fraud:Suspected fraud`,
   [VisaCard121Status.Unknown]: $localize`:@@debit-card-status-unknown:Unknown`,

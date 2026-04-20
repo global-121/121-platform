@@ -99,7 +99,7 @@ export const getChipDataByVisaCardStatus = (
       [VisaCard121Status.Active]: 'green',
       [VisaCard121Status.Issued]: 'blue',
       [VisaCard121Status.Substituted]: 'red',
-      [VisaCard121Status.Blocked]: 'grey',
+      [VisaCard121Status.Blocked]: 'red',
       [VisaCard121Status.SuspectedFraud]: 'red',
       [VisaCard121Status.CardDataMissing]: 'orange',
       [VisaCard121Status.Paused]: 'orange',
