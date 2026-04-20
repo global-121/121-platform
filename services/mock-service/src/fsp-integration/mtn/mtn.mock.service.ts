@@ -1,11 +1,15 @@
+import { HttpService } from '@nestjs/axios';
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { setTimeout } from 'node:timers/promises';
+import { lastValueFrom } from 'rxjs';
 
+import { API_PATHS, EXTERNAL_API_ROOT } from '@mock-service/src/config';
 import { MtnCreateTransferRequestDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-create-transfer-request.dto';
 import { MtnTransferStatusResponseDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-transfer-status-response.dto';
 
 enum MtnMockPhoneNumber {
-  failDuplicate = '000000001',
-  failInternalError = '000000002',
+  failDuplicate = '100000001',
+  failInternalError = '100000002',
 }
 
 @Injectable()
@@ -53,6 +57,9 @@ export class MtnMockService {
     }
 
     if (body.payee.partyId === MtnMockPhoneNumber.failDuplicate) {
+      // Simulate a queue retry: the original transfer went through, so store it,
+      // then return 409 as the MTN API would for a duplicate referenceId.
+      this.transfers.set(referenceId, body);
       return [
         HttpStatus.CONFLICT,
         { code: 'RESOURCE_ALREADY_EXIST', message: 'Duplicated reference id.' },
@@ -67,6 +74,14 @@ export class MtnMockService {
     }
 
     this.transfers.set(referenceId, body);
+
+    this.sendStatusCallback({
+      referenceId,
+      externalId: body.externalId,
+      status: 'SUCCESSFUL',
+    })
+      // eslint-disable-next-line promise/prefer-await-to-callbacks, promise/prefer-await-to-then -- We want to log errors from the callback but not fail the main request
+      .catch((error) => console.log(error));
 
     return [HttpStatus.ACCEPTED, undefined];
   }
@@ -105,5 +120,25 @@ export class MtnMockService {
 
   public reset(): void {
     this.transfers.clear();
+  }
+
+  private async sendStatusCallback({
+    referenceId,
+    externalId,
+    status,
+  }: {
+    referenceId: string;
+    externalId: string;
+    status: string;
+  }): Promise<void> {
+    await setTimeout(300);
+
+    const url = `${EXTERNAL_API_ROOT}/${API_PATHS.mtnTransferCallback}`;
+    const payload = { referenceId, externalId, status };
+
+    const httpService = new HttpService();
+    await lastValueFrom(httpService.post(url, payload)).catch((error) =>
+      console.log(error),
+    );
   }
 }

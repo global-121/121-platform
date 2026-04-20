@@ -25,6 +25,7 @@ export const programIdWesteros = 2;
 export const programIdSafaricom = 1;
 export const programIdNedbank = 1;
 export const programIdCbe = 1;
+export const programIdMtn = 1;
 
 export const registrationOCW1 = {
   referenceId: '63e62864557597e0d',
@@ -432,3 +433,15 @@ export const registrationsCooperativeBankOfOromia = [
   registrationCooperativeBankOfOromia,
   registrationCooperativeBankOfOromia1,
 ];
+
+export const registrationMtn = {
+  referenceId: 'registration-mtn-1',
+  phoneNumber: '256771234567',
+  preferredLanguage: RegistrationPreferredLanguage.en,
+  paymentAmountMultiplier: 1,
+  programFspConfigurationName: Fsps.mtn,
+  maxPayments: 3,
+  fullName: 'John Von Bon',
+};
+
+export const registrationsMtn = [registrationMtn];
