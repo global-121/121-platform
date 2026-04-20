@@ -4,8 +4,19 @@
 >
   <div class="px-2">
     @if (currentCard()) {
-      <div class="my-auto ms-auto flex">
-        @if (canPauseCard() && currentCardHasAction()('pause')) {
+      <div class="my-auto ms-auto flex justify-end gap-x-2">
+        @if (canCloseCard() && currentCardHasAction()(VisaCardAction.close)) {
+          <p-button
+            label="Close card"
+            i18n-label="@@debit-card-actions-close-card"
+            rounded
+            outlined
+            icon="pi pi-ban"
+            [iconPos]="rtlHelper.createPosition('start')()"
+            (click)="closeCardDialog.show()"
+          />
+        }
+        @if (canPauseCard() && currentCardHasAction()(VisaCardAction.pause)) {
           <p-button
             label="Pause card"
             i18n-label="@@debit-card-actions-pause-card"
@@ -13,11 +24,12 @@
             outlined
             icon="pi pi-pause"
             [iconPos]="rtlHelper.createPosition('start')()"
-            class="ms-auto"
             (click)="pauseConfirmationDialog.show()"
           />
         }
-        @if (canUnpauseCard() && currentCardHasAction()('unpause')) {
+        @if (
+          canUnpauseCard() && currentCardHasAction()(VisaCardAction.unpause)
+        ) {
           <p-button
             label="Unpause card"
             i18n-label="@@debit-card-actions-unpause-card"
@@ -25,11 +37,12 @@
             outlined
             icon="pi pi-play"
             [iconPos]="rtlHelper.createPosition('start')()"
-            class="ms-auto"
             (click)="unpauseConfirmationDialog.show()"
           />
         }
-        @if (canReplaceCard() && currentCardHasAction()('replace')) {
+        @if (
+          canReplaceCard() && currentCardHasAction()(VisaCardAction.replace)
+        ) {
           <p-button
             label="Replace card"
             i18n-label="@@debit-card-actions-replace-card"
@@ -37,7 +50,6 @@
             outlined
             icon="pi pi-refresh"
             [iconPos]="rtlHelper.createPosition('start')()"
-            class="ms-4"
             (click)="
               cardDistributionByMailEnabled()
                 ? replaceCardByMailDialog.show()
@@ -179,3 +191,22 @@
   [(dialogVisible)]="linkCardDialogVisible"
   (closeDialog)="linkCardDialogVisible.set(false)"
 ></app-link-card-dialog>
+<!-- CLOSE CARD -->
+<app-form-dialog
+  #closeCardDialog
+  headerIcon="pi pi-ban"
+  header="Close card"
+  i18n-header="@@debit-card-actions-close-card"
+  proceedLabel="Close card"
+  i18n-proceedLabel="@@debit-card-actions-close-card"
+  [mutation]="closeCardMutation"
+  [mutationData]="undefined"
+>
+  <p i18n>
+    You're about to permanently close card number
+    <code>{{ currentCard()?.tokenCode | creditCardNumber }}</code
+    >. This means that the funds on the card will be booked back and the card
+    will not be replaced.
+  </p>
+  <p i18n>Please note, this action can not be undone.</p>
+</app-form-dialog>
