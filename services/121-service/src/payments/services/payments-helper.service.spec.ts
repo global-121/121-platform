@@ -4,6 +4,8 @@ import * as fspSettingsHelpers from '@121-service/src/fsp-management/fsp-setting
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
+jest.mock('@121-service/src/fsp-management/fsp-settings.helpers');
+
 describe('PaymentsHelperService', () => {
   let service: PaymentsHelperService;
   let repo: ProgramFspConfigurationRepository;
@@ -28,7 +30,7 @@ describe('PaymentsHelperService', () => {
       properties: [],
     });
     jest
-      .spyOn(fspSettingsHelpers, 'getFspConfigurationRequiredProperties')
+      .mocked(fspSettingsHelpers.getFspConfigurationRequiredProperties)
       .mockReturnValue(['prop1']);
     await expect(
       service.checkFspConfigurationsOrThrow(1, ['ConfigA']),
@@ -41,7 +43,7 @@ describe('PaymentsHelperService', () => {
       properties: [{ name: 'prop1' }],
     });
     jest
-      .spyOn(fspSettingsHelpers, 'getFspConfigurationRequiredProperties')
+      .mocked(fspSettingsHelpers.getFspConfigurationRequiredProperties)
       .mockReturnValue(['prop1']);
     await expect(
       service.checkFspConfigurationsOrThrow(1, ['ConfigA']),
@@ -54,7 +56,7 @@ describe('PaymentsHelperService', () => {
       properties: [],
     });
     jest
-      .spyOn(fspSettingsHelpers, 'getFspConfigurationRequiredProperties')
+      .mocked(fspSettingsHelpers.getFspConfigurationRequiredProperties)
       .mockReturnValue([]);
     await expect(
       service.checkFspConfigurationsOrThrow(1, ['ConfigA']),

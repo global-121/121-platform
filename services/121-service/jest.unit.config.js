@@ -1,6 +1,5 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} */
+/** @type {import('@jest/types').Config.InitialOptions} */
 module.exports = {
-  preset: 'ts-jest',
   rootDir: '.',
   testMatch: ['<rootDir>/**/*.spec.ts'],
   setupFilesAfterEnv: [
@@ -14,7 +13,8 @@ module.exports = {
     '^@121-service/(.*)$': '<rootDir>/$1',
   },
   transform: {
-    'node_modules/@t3-oss/.+\\.js$': ['ts-jest'],
+    '^.+\\.ts$': ['@swc/jest'],
+    'node_modules/@t3-oss/.+\\.js$': ['@swc/jest'],
   },
   transformIgnorePatterns: ['node_modules/(?!@t3-oss)'],
   randomize: true,
