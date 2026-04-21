@@ -1100,18 +1100,6 @@
     ]
   },
   {
-    "method": "post",
-    "path": "/api/fsps/mtn/transfer",
-    "params": []
-  },
-  {
-    "method": "get",
-    "path": "/api/fsps/mtn/transfer/{referenceId}",
-    "params": [
-      "referenceId"
-    ]
-  },
-  {
     "method": "get",
     "path": "/api/programs/{programId}/payments/excel-reconciliation/template",
     "params": [

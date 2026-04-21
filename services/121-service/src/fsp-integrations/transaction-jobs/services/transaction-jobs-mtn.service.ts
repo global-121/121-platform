@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnApiDuplicateError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api-duplicate.error';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { MtnTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/mtn-transaction-job.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -14,7 +15,7 @@ import { ProgramRepository } from '@121-service/src/programs/repositories/progra
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
-export class TransactionJobsMtnService {
+export class TransactionJobsMtnService implements TransactionJobService<MtnTransactionJobDto> {
   constructor(
     private readonly mtnService: MtnService,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
@@ -23,7 +24,7 @@ export class TransactionJobsMtnService {
     private readonly programRepository: ProgramRepository,
   ) {}
 
-  public async processMtnTransactionJob(
+  public async processTransactionJob(
     transactionJob: MtnTransactionJobDto,
   ): Promise<void> {
     // 1. Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')

@@ -49,6 +49,7 @@ const transactionJobProcessors = [
   createTransactionJobProcessor(QueueNames.transactionJobsOnafriq, TransactionJobsOnafriqService),
   createTransactionJobProcessor(QueueNames.transactionJobsCommercialBankEthiopia, TransactionJobsCommercialBankEthiopiaService),
   createTransactionJobProcessor(QueueNames.transactionJobsExcel, TransactionJobsExcelService),
+  createTransactionJobProcessor(QueueNames.transactionJobsMtn, TransactionJobsMtnService),
 ];
 
 @Module({

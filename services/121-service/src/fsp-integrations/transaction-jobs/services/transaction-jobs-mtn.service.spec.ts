@@ -71,7 +71,7 @@ describe('TransactionJobsMtnService', () => {
   it('should log transaction job start and call createTransfer on success', async () => {
     (mtnService.createTransfer as jest.Mock).mockResolvedValue(undefined);
 
-    await service.processMtnTransactionJob(mockTransactionJob);
+    await service.processTransactionJob(mockTransactionJob);
 
     expect(
       transactionJobsHelperService.logTransactionJobStart,
@@ -110,7 +110,7 @@ describe('TransactionJobsMtnService', () => {
       new MtnApiError('Transfer failed'),
     );
 
-    await service.processMtnTransactionJob(mockTransactionJob);
+    await service.processTransactionJob(mockTransactionJob);
 
     expect(transactionsService.saveProgress).toHaveBeenCalledWith({
       context: {
@@ -132,7 +132,7 @@ describe('TransactionJobsMtnService', () => {
       status: 'SUCCESSFUL',
     });
 
-    await service.processMtnTransactionJob(mockTransactionJob);
+    await service.processTransactionJob(mockTransactionJob);
 
     expect(mtnService.getTransferStatus).toHaveBeenCalledWith({
       referenceId: expect.any(String),
@@ -157,7 +157,7 @@ describe('TransactionJobsMtnService', () => {
       status: 'PENDING',
     });
 
-    await service.processMtnTransactionJob(mockTransactionJob);
+    await service.processTransactionJob(mockTransactionJob);
 
     expect(transactionsService.saveProgress).toHaveBeenCalledWith({
       context: {
@@ -180,7 +180,7 @@ describe('TransactionJobsMtnService', () => {
       reason: 'Insufficient funds',
     });
 
-    await service.processMtnTransactionJob(mockTransactionJob);
+    await service.processTransactionJob(mockTransactionJob);
 
     expect(transactionsService.saveProgress).toHaveBeenCalledWith({
       context: {
@@ -198,7 +198,7 @@ describe('TransactionJobsMtnService', () => {
     (mtnService.createTransfer as jest.Mock).mockResolvedValue(undefined);
 
     // First call with 0 failed attempts
-    await service.processMtnTransactionJob(mockTransactionJob);
+    await service.processTransactionJob(mockTransactionJob);
     const firstReferenceId = (mtnService.createTransfer as jest.Mock).mock
       .calls[0][0].referenceId;
 
@@ -206,7 +206,7 @@ describe('TransactionJobsMtnService', () => {
     (
       transactionEventsScopedRepository.countFailedTransactionAttempts as jest.Mock
     ).mockResolvedValue(1);
-    await service.processMtnTransactionJob({
+    await service.processTransactionJob({
       ...mockTransactionJob,
       isRetry: true,
     });
@@ -219,11 +219,11 @@ describe('TransactionJobsMtnService', () => {
   it('should generate same referenceId for queue retry (same failedAttempts count)', async () => {
     (mtnService.createTransfer as jest.Mock).mockResolvedValue(undefined);
 
-    await service.processMtnTransactionJob(mockTransactionJob);
+    await service.processTransactionJob(mockTransactionJob);
     const firstReferenceId = (mtnService.createTransfer as jest.Mock).mock
       .calls[0][0].referenceId;
 
-    await service.processMtnTransactionJob(mockTransactionJob);
+    await service.processTransactionJob(mockTransactionJob);
     const secondReferenceId = (mtnService.createTransfer as jest.Mock).mock
       .calls[1][0].referenceId;
 
@@ -235,7 +235,7 @@ describe('TransactionJobsMtnService', () => {
     (mtnService.createTransfer as jest.Mock).mockRejectedValue(unexpectedError);
 
     await expect(
-      service.processMtnTransactionJob(mockTransactionJob),
+      service.processTransactionJob(mockTransactionJob),
     ).rejects.toThrow('Unexpected');
   });
 });
