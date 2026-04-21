@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -2255,6 +2255,42 @@
       </trans-unit>
       <trans-unit id="4892553839051604445" datatype="html">
         <source>Payment</source>
+      </trans-unit>
+      <trans-unit id="1200823711484456499" datatype="html">
+        <source>All is wrong</source>
+      </trans-unit>
+      <trans-unit id="1872549287181572098" datatype="html">
+        <source>Import existing registrations from your Kobo form.</source>
+      </trans-unit>
+      <trans-unit id="2159130950882492111" datatype="html">
+        <source>Cancel</source>
+      </trans-unit>
+      <trans-unit id="2168486587823521907" datatype="html">
+        <source><x equiv-text="{{ importExistingSubmissions.data()?.numberOfSubmissionsImported }}" id="INTERPOLATION"/> total submissions</source>
+      </trans-unit>
+      <trans-unit id="2200828314484557158" datatype="html">
+        <source>Import complete</source>
+      </trans-unit>
+      <trans-unit id="3851949706407638075" datatype="html">
+        <source>The system will create registrations with the status <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [label]=&quot;&apos;New&apos;&quot; [variant]=&quot;&apos;blue&apos;&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [label]=&quot;&apos;New&apos;&quot; [variant]=&quot;&apos;blue&apos;&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/></source>
+      </trans-unit>
+      <trans-unit id="4513666009026562086" datatype="html">
+        <source>Import existing reg.</source>
+      </trans-unit>
+      <trans-unit id="4680756702302858333" datatype="html">
+        <source>Import registrations</source>
+      </trans-unit>
+      <trans-unit id="4964612859944755976" datatype="html">
+        <source>Import complete with errors</source>
+      </trans-unit>
+      <trans-unit id="6245136461829083125" datatype="html">
+        <source>Import existing registrations</source>
+      </trans-unit>
+      <trans-unit id="705007315301299017" datatype="html">
+        <source>Successfully imported submissions from Kobo form ”<x equiv-text="{{ koboIntegration.data()?.name }}" id="INTERPOLATION"/>”</source>
+      </trans-unit>
+      <trans-unit id="7819314041543176992" datatype="html">
+        <source>Close</source>
       </trans-unit>
       <trans-unit id="4421433274861560863" datatype="html">
         <source>Add a user to the 121 platform. Fill in the fields below to create a new user account.</source>

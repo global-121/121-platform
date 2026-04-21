@@ -1,0 +1,81 @@
+<p-dialog
+  #confirmDialog
+  [modal]="true"
+  [(visible)]="responseDialogVisible"
+  [style]="{ width: dialogWidth() }"
+  (onHide)="closeDialogAndResetDialogState()"
+  appendTo="body"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-2">
+      <h3>
+        <i [class]="headerIcon()"></i>
+        {{ dialogTitle() }}
+      </h3>
+    </div>
+  </ng-template>
+
+  @if (this.importState() === 'NotInitiated') {
+    <div>
+      <p i18n>Import existing registrations from your Kobo form.</p>
+      <p i18n>
+        The system will create registrations with the status
+        <app-colored-chip
+          [label]="'New'"
+          [variant]="'blue'"
+        />
+      </p>
+      <p i18n>The import takes about 1 minute per 100 records.</p>
+    </div>
+
+    <div class="mt-5 flex justify-end gap-4">
+      <p-button
+        label="Cancel"
+        i18n-label
+        severity="secondary"
+        (click)="responseDialogVisible.set(false)"
+      />
+      <p-button
+        label="Import registrations"
+        i18n-label
+        (click)="importExistingSubmissions.mutate()"
+        [loading]="importExistingSubmissions.isPending()"
+      />
+    </div>
+  }
+
+  @if (this.importState() === 'ImportedWithoutErrors') {
+    <div>
+      <p i18n>
+        Successfully imported submissions from Kobo form ”{{
+          koboIntegration.data()?.name
+        }}”
+      </p>
+
+      <p
+        i18n
+        class="font-bold"
+      >
+        {{ importExistingSubmissions.data()?.numberOfSubmissionsImported }}
+        total submissions
+      </p>
+
+      <app-colored-chip
+        [label]="`imported succesfully ${importExistingSubmissions.data()?.numberOfSubmissionsImported}`"
+        [variant]="'green'"
+      />
+    </div>
+
+    <div class="mt-5 flex justify-end gap-4">
+      <p-button
+        label="Close"
+        i18n-label
+        (click)="responseDialogVisible.set(false)"
+      />
+    </div>
+  }
+
+  @if (this.importState() === 'ImportedWithErrors') {
+    <div i18n>All is wrong</div>
+  }
+</p-dialog>
