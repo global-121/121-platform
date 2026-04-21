@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 import path from 'node:path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -24,7 +23,6 @@ test('Retry payments should put failed transactions back in processing and downl
   exportDataComponent,
   page,
 }) => {
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
   const reconciliationData = path.join(
     __dirname,
     '../../../test-registration-data/test-reconciliation-Excel-pv.csv',
@@ -38,7 +36,7 @@ test('Retry payments should put failed transactions back in processing and downl
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
   });
 
   await test.step('Upload payment reconciliation data', async () => {

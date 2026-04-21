@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import {
@@ -23,8 +21,6 @@ test('Table should reflect the actual transfer values sent to the PAs in this pa
   paymentsPage,
   page,
 }) => {
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
-
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
@@ -39,7 +35,7 @@ test('Table should reflect the actual transfer values sent to the PAs in this pa
     await paymentPage.startPayment();
 
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
   });
 
   await test.step('Validate transfer value after "payment in progress" chip disappears in Payment overview', async () => {

@@ -21,7 +21,6 @@ import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TimelineModule } from 'primeng/timeline';
 
-import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
@@ -85,7 +84,6 @@ export class PageLayoutPaymentComponent {
   readonly TransactionStatusEnum = TransactionStatusEnum;
   private readonly router = inject(Router);
 
-  readonly fspSettings = signal(FSP_SETTINGS);
   private authService = inject(AuthService);
 
   readonly deletePaymentDialog = viewChild.required<FormDialogComponent>(
@@ -177,9 +175,25 @@ export class PageLayoutPaymentComponent {
     return new DatePipe(this.locale).transform(date, 'short') ?? '';
   });
 
-  readonly paymentTitle = computed(
-    () => $localize`Payment` + ' ' + this.paymentDate(),
-  );
+  readonly paymentTitle = computed(() => {
+    const localizedText = $localize`:@@page-title-program-payment:Payment`;
+
+    if (!this.payments.isSuccess()) {
+      return localizedText;
+    }
+
+    const payment = this.payments
+      .data()
+      .find((p) => p.paymentId === Number(this.paymentId()));
+
+    const name = payment?.name;
+
+    if (name) {
+      return name;
+    }
+
+    return `${localizedText} ${this.paymentDate()}`;
+  });
 
   readonly totalRegistrations = computed(() => {
     if (!this.paymentAggregate.isSuccess()) {

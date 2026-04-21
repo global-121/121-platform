@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import CbeProgram from '@121-service/src/seed-data/program/program-cbe.json';
 import {
@@ -31,14 +29,13 @@ test('Do failed payment for Cbe fsp', async ({
   const defaultMaxTransferValue = registrationsCbe.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdCbe}/payments/1`),
     );
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
     await paymentPage.validateToastMessageAndClose('Payment created.');
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
@@ -48,7 +45,6 @@ test('Do failed payment for Cbe fsp', async ({
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.navigateToProgramPage('Payments');
     await paymentsPage.validatePaymentCard({
-      date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
       successfulPaymentAmount: 0,

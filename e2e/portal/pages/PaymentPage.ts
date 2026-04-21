@@ -40,7 +40,7 @@ class PaymentPage extends BasePage {
       'form-dialog-proceed-button',
     );
     this.viewPaymentTitle = this.page.getByRole('heading', {
-      name: /Payment \d{2}\/\d{2}\/\d{4}/,
+      name: /Payment/,
     });
     this.paymentAmount = this.page.getByTestId('metric-tile-component');
     this.retryFailedTransactionsButton = this.page.getByRole('button', {
@@ -145,9 +145,9 @@ class PaymentPage extends BasePage {
     }
   }
 
-  async validatePaymentsDetailsPageByDate(date: string) {
+  async validatePaymentDetailsPageTitle() {
     const viewPaymentTitle = await this.viewPaymentTitle.textContent();
-    expect(viewPaymentTitle).toContain(date);
+    expect(viewPaymentTitle).toContain('Payment');
   }
 
   async selectPaymentExportOption({ option }: { option: string }) {

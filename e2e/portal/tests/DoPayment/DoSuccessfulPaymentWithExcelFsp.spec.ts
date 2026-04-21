@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import {
@@ -35,8 +33,6 @@ test('Do payment for excel fsp', async ({
   }, 0);
   const fsps: string[] = ['Excel Payment Instructions'];
 
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
-
   await test.step('Create payment', async () => {
     await paymentsPage.createPayment({});
     await paymentsPage.validateExcelFspInstructions();
@@ -51,7 +47,7 @@ test('Do payment for excel fsp', async ({
       url.pathname.startsWith(`/en-GB/program/${programIdPV}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
   });

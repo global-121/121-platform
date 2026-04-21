@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdOCW,
@@ -24,8 +22,6 @@ test('View payment log, including note added to payment', async ({
   paymentsPage,
   page,
 }) => {
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
-
   await test.step('Do payment with note', async () => {
     await paymentsPage.createPayment({ note });
     const paymentId = 1; // First payment in this context, so ID 1
@@ -38,7 +34,7 @@ test('View payment log, including note added to payment', async ({
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
   });
 
   await test.step('Validate payment log, including note', async () => {

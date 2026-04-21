@@ -109,12 +109,16 @@ export class PaymentSummaryCardComponent {
       new DatePipe(this.locale).transform(this.paymentDate(), 'short') ?? '',
   );
 
-  readonly paymentTitle = computed(
-    () =>
-      $localize`:@@page-title-program-payment:Payment` +
-      ' ' +
-      this.paymentCreationDate(),
-  );
+  readonly paymentTitle = computed(() => {
+    const name = this.currentPaymentData().name;
+
+    if (name) {
+      return name;
+    }
+
+    const localizedText = $localize`:@@page-title-program-payment:Payment`;
+    return `${localizedText} ${this.paymentCreationDate()}`;
+  });
 
   public readonly summaryMetrics = computed(() => [
     {

@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdOCW,
@@ -30,8 +28,6 @@ test('Table should be a filtered list of registrations included in the transacti
   paymentsPage,
   page,
 }) => {
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
-
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
@@ -40,7 +36,7 @@ test('Table should be a filtered list of registrations included in the transacti
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
   });
 
   await test.step('Validate payment table', async () => {
