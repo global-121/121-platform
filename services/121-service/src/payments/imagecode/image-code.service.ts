@@ -1,7 +1,8 @@
+import { SANS_16_BLACK } from '@jimp/plugin-print/fonts';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import bwipjs from 'bwip-js';
-import Jimp from 'jimp';
+import { Jimp, JimpMime, loadFont } from 'jimp';
 import crypto from 'node:crypto';
 import { Equal, LessThan, Repository } from 'typeorm';
 
@@ -134,39 +135,45 @@ export class ImageCodeService {
     const voucherBaseFile = './src/seed-data/voucher/ah-voucher_base.png';
     const barcodeImage = await this.generateBarCodeImage(voucherData.code);
 
-    // See Jimp documentation: https://www.npmjs.com/package/jimp/v/0.22.12
-    const voucher = await Jimp.read(voucherBaseFile).then(async (image) => {
-      // Add the generated barcode
-      await Jimp.read(barcodeImage).then(async (barcode) => {
-        image.composite(barcode, 120, 652);
-        return;
-      });
+    // See Jimp migration guide: https://jimp-dev.github.io/jimp/guides/migrate-to-v1/
+    const voucher = await Jimp.read(voucherBaseFile);
 
-      await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK).then((font) => {
-        image.print(font, 640, 79, this.formatDate(voucherData.dateTime)); // Date+time in the top-right corner
-        image.print(
-          font,
-          108,
-          614,
-          `${this.formatDecimals(
-            String(voucherData.amount),
-            false,
-          )} Albert Heijn`,
-        ); // Below "Dit ticket is geldig voor", after "€"
-        image.print(
-          font,
-          640,
-          604,
-          `Euro ${this.formatDecimals(String(voucherData.amount), true)}`,
-        ); // Below "Prijs:"
-        image.print(font, 640, 730, voucherData.pin); // Below "Pincode:"
-        image.print(font, 225, 800, voucherData.code); // Barcode numbers
-        return;
-      });
+    // Add the generated barcode
+    const barcode = await Jimp.read(barcodeImage);
+    voucher.composite(barcode, 120, 652);
 
-      return image;
-    });
+    const font = await loadFont(SANS_16_BLACK);
+    voucher.print({
+      font,
+      x: 640,
+      y: 79,
+      text: this.formatDate(voucherData.dateTime),
+    }); // Date+time in the top-right corner
+    voucher.print({
+      font,
+      x: 108,
+      y: 614,
+      text: `${this.formatDecimals(String(voucherData.amount), false)} Albert Heijn`,
+    }); // Below "Dit ticket is geldig voor", after "€"
+    voucher.print({
+      font,
+      x: 640,
+      y: 604,
+      text: `Euro ${this.formatDecimals(String(voucherData.amount), true)}`,
+    }); // Below "Prijs:"
+    voucher.print({
+      font,
+      x: 640,
+      y: 730,
+      text: voucherData.pin,
+    }); // Below "Pincode:"
+    voucher.print({
+      font,
+      x: 225,
+      y: 800,
+      text: voucherData.code,
+    }); // Barcode numbers
 
-    return await voucher.getBufferAsync(Jimp.MIME_PNG);
+    return await voucher.getBuffer(JimpMime.png);
   }
 }
