@@ -11,7 +11,8 @@ jest.mock('@121-service/src/env', () => ({
     MOCK_SERVICE_URL: 'http://mock-service:3001',
     MTN_API_URL: 'https://sandbox.momodeveloper.mtn.com',
     MTN_SUBSCRIPTION_KEY: 'test-subscription-key',
-    MTN_ACCESS_TOKEN: 'test-access-token',
+    MTN_REFERENCE_ID: 'test-reference-id',
+    MTN_API_KEY: 'test-api-key',
     MTN_TARGET_ENVIRONMENT: 'sandbox',
     EXTERNAL_121_SERVICE_URL: 'http://localhost:3000',
   },
@@ -32,7 +33,8 @@ describe('MtnApiHelperService', () => {
     (env as any).MOCK_SERVICE_URL = 'http://mock-service:3001';
     (env as any).MTN_API_URL = 'https://sandbox.momodeveloper.mtn.com';
     (env as any).MTN_SUBSCRIPTION_KEY = 'test-subscription-key';
-    (env as any).MTN_ACCESS_TOKEN = 'test-access-token';
+    (env as any).MTN_REFERENCE_ID = 'test-reference-id';
+    (env as any).MTN_API_KEY = 'test-api-key';
     (env as any).MTN_TARGET_ENVIRONMENT = 'sandbox';
     (env as any).EXTERNAL_121_SERVICE_URL = 'http://localhost:3000';
   });
@@ -123,7 +125,6 @@ describe('MtnApiHelperService', () => {
       expect(headers.get('Ocp-Apim-Subscription-Key')).toBe(
         'test-subscription-key',
       );
-      expect(headers.get('Authorization')).toBe('Bearer test-access-token');
       expect(headers.get('X-Reference-Id')).toBe('ref-uuid-123');
       expect(headers.get('X-Target-Environment')).toBe('sandbox');
     });
@@ -146,21 +147,6 @@ describe('MtnApiHelperService', () => {
       });
 
       expect(headers.get('X-Callback-Url')).toBeNull();
-    });
-
-    it('should throw MtnApiError when MTN_ACCESS_TOKEN is not set', () => {
-      (env as any).MTN_ACCESS_TOKEN = '';
-
-      expect(() =>
-        mtnApiHelperService.createTransferHeaders({
-          referenceId: 'ref-uuid-123',
-        }),
-      ).toThrow(MtnApiError);
-      expect(() =>
-        mtnApiHelperService.createTransferHeaders({
-          referenceId: 'ref-uuid-123',
-        }),
-      ).toThrow('MTN_ACCESS_TOKEN is not set');
     });
 
     it('should throw MtnApiError when MTN_TARGET_ENVIRONMENT is not set', () => {
@@ -203,7 +189,6 @@ describe('MtnApiHelperService', () => {
       expect(headers.get('Ocp-Apim-Subscription-Key')).toBe(
         'test-subscription-key',
       );
-      expect(headers.get('Authorization')).toBe('Bearer test-access-token');
       expect(headers.get('X-Target-Environment')).toBe('sandbox');
     });
 
@@ -212,17 +197,6 @@ describe('MtnApiHelperService', () => {
 
       expect(headers.get('X-Reference-Id')).toBeNull();
       expect(headers.get('X-Callback-Url')).toBeNull();
-    });
-
-    it('should throw MtnApiError when MTN_ACCESS_TOKEN is not set', () => {
-      (env as any).MTN_ACCESS_TOKEN = '';
-
-      expect(() =>
-        mtnApiHelperService.createGetTransferStatusHeaders(),
-      ).toThrow(MtnApiError);
-      expect(() =>
-        mtnApiHelperService.createGetTransferStatusHeaders(),
-      ).toThrow('MTN_ACCESS_TOKEN is not set');
     });
 
     it('should throw MtnApiError when MTN_TARGET_ENVIRONMENT is not set', () => {

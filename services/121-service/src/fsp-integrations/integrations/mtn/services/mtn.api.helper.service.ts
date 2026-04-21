@@ -44,15 +44,11 @@ export class MtnApiHelperService {
   }: {
     referenceId: string;
   }): Headers {
-    if (!env.MTN_ACCESS_TOKEN) {
-      throw new MtnApiError('MTN_ACCESS_TOKEN is not set');
-    }
     if (!env.MTN_TARGET_ENVIRONMENT) {
       throw new MtnApiError('MTN_TARGET_ENVIRONMENT is not set');
     }
 
     const headers = this.createCommonHeaders();
-    headers.set('Authorization', `Bearer ${env.MTN_ACCESS_TOKEN}`);
     headers.set('X-Reference-Id', referenceId);
     headers.set('X-Target-Environment', env.MTN_TARGET_ENVIRONMENT);
 
@@ -66,15 +62,11 @@ export class MtnApiHelperService {
   }
 
   public createGetTransferStatusHeaders(): Headers {
-    if (!env.MTN_ACCESS_TOKEN) {
-      throw new MtnApiError('MTN_ACCESS_TOKEN is not set');
-    }
     if (!env.MTN_TARGET_ENVIRONMENT) {
       throw new MtnApiError('MTN_TARGET_ENVIRONMENT is not set');
     }
 
     const headers = this.createCommonHeaders();
-    headers.set('Authorization', `Bearer ${env.MTN_ACCESS_TOKEN}`);
     headers.set('X-Target-Environment', env.MTN_TARGET_ENVIRONMENT);
 
     return headers;
@@ -87,7 +79,7 @@ export class MtnApiHelperService {
     return env.MTN_SUBSCRIPTION_KEY;
   }
 
-  private createCommonHeaders(): Headers {
+  public createCommonHeaders(): Headers {
     return new Headers({
       'Content-Type': 'application/json',
       'Cache-Control': 'no-cache',

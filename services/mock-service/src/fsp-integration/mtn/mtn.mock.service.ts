@@ -4,6 +4,7 @@ import { setTimeout } from 'node:timers/promises';
 import { lastValueFrom } from 'rxjs';
 
 import { API_PATHS, EXTERNAL_API_ROOT } from '@mock-service/src/config';
+import { MtnAuthenticateResponseDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-authenticate-response.dto';
 import { MtnCreateTransferRequestDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-create-transfer-request.dto';
 import { MtnTransferStatusResponseDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-transfer-status-response.dto';
 
@@ -12,12 +13,46 @@ enum MtnMockPhoneNumber {
   failInternalError = '100000002',
 }
 
+export const MtnAuthToken = 'mock-mtn-access-token-12345';
+
 @Injectable()
 export class MtnMockService {
   private readonly transfers = new Map<string, MtnCreateTransferRequestDto>();
 
   private static readonly uuidPattern =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+  public authenticate({
+    authorization,
+    subscriptionKey,
+  }: {
+    authorization: string | undefined;
+    subscriptionKey: string | undefined;
+  }): [HttpStatus, MtnAuthenticateResponseDto | object] {
+    if (!subscriptionKey) {
+      return [
+        HttpStatus.UNAUTHORIZED,
+        { message: 'Access denied due to missing subscription key.' },
+      ];
+    }
+
+    if (!authorization || !authorization.startsWith('Basic ')) {
+      return [
+        HttpStatus.UNAUTHORIZED,
+        { message: 'Invalid or missing Authorization header.' },
+      ];
+    }
+
+    // In production, we would validate the credentials here.
+    return [
+      HttpStatus.OK,
+      {
+        access_token: MtnAuthToken,
+        token_type: 'access_token',
+        expires_in: 3600,
+      } satisfies MtnAuthenticateResponseDto,
+    ];
+  }
 
   public createTransfer({
     referenceId,

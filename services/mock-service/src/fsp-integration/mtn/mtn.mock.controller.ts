@@ -20,6 +20,27 @@ import { MtnMockService } from '@mock-service/src/fsp-integration/mtn/mtn.mock.s
 export class MtnMockController {
   public constructor(private readonly mtnMockService: MtnMockService) {}
 
+  @ApiOperation({ summary: 'Get OAuth2 access token' })
+  @ApiHeader({
+    name: 'Authorization',
+    required: true,
+    description: 'Basic auth credentials',
+  })
+  @ApiHeader({ name: 'Ocp-Apim-Subscription-Key', required: true })
+  @Post('disbursement/token')
+  @HttpCode(HttpStatus.OK)
+  public authenticate(
+    @Headers('authorization') authorization: string | undefined,
+    @Headers('ocp-apim-subscription-key') subscriptionKey: string | undefined,
+    @Res() res: Response,
+  ): Response {
+    const [status, responseBody] = this.mtnMockService.authenticate({
+      authorization,
+      subscriptionKey,
+    });
+    return res.status(status).json(responseBody);
+  }
+
   @ApiOperation({ summary: 'Create disbursement transfer' })
   @ApiHeader({ name: 'X-Reference-Id', required: true })
   @ApiHeader({ name: 'Ocp-Apim-Subscription-Key', required: true })

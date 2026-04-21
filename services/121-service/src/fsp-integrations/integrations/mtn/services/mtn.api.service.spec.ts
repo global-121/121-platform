@@ -1,14 +1,35 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { env } from '@121-service/src/env';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnApiDuplicateError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api-duplicate.error';
 import { MtnApiHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.helper.service';
 import { MtnApiService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
+jest.mock('@121-service/src/env', () => ({
+  env: {
+    MTN_REFERENCE_ID: 'test-reference-id',
+    MTN_API_KEY: 'test-api-key',
+  },
+}));
+
 const baseUrl = new URL('https://sandbox.momodeveloper.mtn.com/');
+const tokenUrl = new URL(
+  'https://sandbox.momodeveloper.mtn.com/disbursement/token/',
+);
 const transferHeaders = new Headers({ 'X-Reference-Id': 'ref-uuid' });
 const statusHeaders = new Headers({ 'Ocp-Apim-Subscription-Key': 'key' });
+const commonHeaders = new Headers({ 'Ocp-Apim-Subscription-Key': 'key' });
+
+const mockAuthResponse = {
+  status: 200,
+  data: {
+    access_token: 'mock-access-token',
+    token_type: 'access_token',
+    expires_in: 3600,
+  },
+};
 
 const createTransferInput = {
   referenceId: '550e8400-e29b-41d4-a716-446655440000',
@@ -35,6 +56,10 @@ describe('MtnApiService', () => {
   let get: jest.Mock;
 
   beforeEach(async () => {
+    // Reset env to defaults before each test
+    (env as any).MTN_REFERENCE_ID = 'test-reference-id';
+    (env as any).MTN_API_KEY = 'test-api-key';
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MtnApiService,
@@ -51,6 +76,7 @@ describe('MtnApiService', () => {
             createGetTransferStatusHeaders: jest
               .fn()
               .mockReturnValue(statusHeaders),
+            createCommonHeaders: jest.fn().mockReturnValue(commonHeaders),
           },
         },
       ],
@@ -65,22 +91,34 @@ describe('MtnApiService', () => {
   describe('createTransfer', () => {
     it('should call POST with the correct URL, payload and headers', async () => {
       // Arrange
-      post.mockResolvedValue({ status: 202 });
+      post
+        .mockResolvedValueOnce(mockAuthResponse) // authenticate() call
+        .mockResolvedValueOnce({ status: 202 }); // createTransfer() call
 
       // Act
       await mtnApiService.createTransfer(createTransferInput);
 
       // Assert
-      expect(post).toHaveBeenCalledWith(
+      expect(post).toHaveBeenCalledTimes(2);
+      expect(post).toHaveBeenNthCalledWith(
+        1,
+        tokenUrl.href,
+        {},
+        expect.any(Headers),
+      );
+      expect(post).toHaveBeenNthCalledWith(
+        2,
         'https://sandbox.momodeveloper.mtn.com/disbursement/v1_0/transfer',
         transferPayload,
-        transferHeaders,
+        expect.any(Headers),
       );
     });
 
     it('should throw MtnApiDuplicateError when the API responds with 409', async () => {
       // Arrange
-      post.mockResolvedValue({ status: 409, statusText: 'Conflict' });
+      post
+        .mockResolvedValueOnce(mockAuthResponse) // authenticate() call
+        .mockResolvedValueOnce({ status: 409, statusText: 'Conflict' }); // createTransfer() call
 
       // Act & Assert
       await expect(
@@ -90,10 +128,12 @@ describe('MtnApiService', () => {
 
     it('should throw MtnApiError when the API responds with a non-2xx status', async () => {
       // Arrange
-      post.mockResolvedValue({
-        status: 500,
-        statusText: 'Internal Server Error',
-      });
+      post
+        .mockResolvedValueOnce(mockAuthResponse) // authenticate() call
+        .mockResolvedValueOnce({
+          status: 500,
+          statusText: 'Internal Server Error',
+        }); // createTransfer() call
 
       // Act & Assert
       await expect(
@@ -103,7 +143,9 @@ describe('MtnApiService', () => {
 
     it('should throw MtnApiError when the HTTP call rejects', async () => {
       // Arrange
-      post.mockRejectedValue(new Error('Network error'));
+      post
+        .mockResolvedValueOnce(mockAuthResponse) // authenticate() call
+        .mockRejectedValueOnce(new Error('Network error')); // createTransfer() call
 
       // Act & Assert
       await expect(
@@ -113,9 +155,11 @@ describe('MtnApiService', () => {
 
     it('should rethrow MtnApiDuplicateError without wrapping when it propagates from a dependency', async () => {
       // Arrange
-      post.mockRejectedValue(
-        new MtnApiDuplicateError('Duplicate transfer request'),
-      );
+      post
+        .mockResolvedValueOnce(mockAuthResponse) // authenticate() call
+        .mockRejectedValueOnce(
+          new MtnApiDuplicateError('Duplicate transfer request'),
+        ); // createTransfer() call
 
       // Act
       let error: unknown;
@@ -133,22 +177,32 @@ describe('MtnApiService', () => {
   describe('getTransferStatus', () => {
     it('should call GET with the correct URL and headers', async () => {
       // Arrange
-      get.mockResolvedValue({ status: 200, data: { status: 'SUCCESSFUL' } });
+      post.mockResolvedValueOnce(mockAuthResponse); // authenticate() call
+      get.mockResolvedValueOnce({
+        status: 200,
+        data: { status: 'SUCCESSFUL' },
+      });
 
       // Act
       await mtnApiService.getTransferStatus({ referenceId: 'ref-uuid' });
       // For now we need can use sandbox URL in assertion as the base URL is determined by the helper service which is mocked to return sandbox URL.
       // If we want to make it more flexible we would need to also mock the helper service's getBaseUrl method to return a test-specific URL that can be asserted against here.
       // Assert
+      expect(post).toHaveBeenCalledTimes(1);
+      expect(post).toHaveBeenCalledWith(tokenUrl.href, {}, expect.any(Headers));
       expect(get).toHaveBeenCalledWith(
         'https://sandbox.momodeveloper.mtn.com/disbursement/v1_0/transfer/ref-uuid',
-        statusHeaders,
+        expect.any(Headers),
       );
     });
 
     it('should return the transfer status from the response', async () => {
       // Arrange
-      get.mockResolvedValue({ status: 200, data: { status: 'SUCCESSFUL' } });
+      post.mockResolvedValueOnce(mockAuthResponse); // authenticate() call
+      get.mockResolvedValueOnce({
+        status: 200,
+        data: { status: 'SUCCESSFUL' },
+      });
 
       // Act
       const result = await mtnApiService.getTransferStatus({
@@ -161,7 +215,12 @@ describe('MtnApiService', () => {
 
     it('should throw MtnApiError when the API responds with a non-2xx status', async () => {
       // Arrange
-      get.mockResolvedValue({ status: 404, statusText: 'Not Found', data: {} });
+      post.mockResolvedValueOnce(mockAuthResponse); // authenticate() call
+      get.mockResolvedValueOnce({
+        status: 404,
+        statusText: 'Not Found',
+        data: {},
+      });
 
       // Act & Assert
       await expect(
@@ -171,12 +230,117 @@ describe('MtnApiService', () => {
 
     it('should throw MtnApiError when the HTTP call rejects', async () => {
       // Arrange
-      get.mockRejectedValue(new Error('Network error'));
+      post.mockResolvedValueOnce(mockAuthResponse); // authenticate() call
+      get.mockRejectedValueOnce(new Error('Network error'));
 
       // Act & Assert
       await expect(
         mtnApiService.getTransferStatus({ referenceId: 'ref-uuid' }),
       ).rejects.toBeInstanceOf(MtnApiError);
+    });
+  });
+
+  describe('authenticate', () => {
+    it('should throw MtnApiError when MTN_REFERENCE_ID is not set', async () => {
+      // Arrange: need to create a new service instance with undefined env var
+      (env as any).MTN_REFERENCE_ID = undefined;
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          MtnApiService,
+          {
+            provide: CustomHttpService,
+            useValue: { post: jest.fn(), get: jest.fn() },
+          },
+          {
+            provide: MtnApiHelperService,
+            useValue: {
+              getBaseUrl: jest.fn().mockReturnValue(baseUrl),
+              createTransferPayload: jest.fn().mockReturnValue(transferPayload),
+              createTransferHeaders: jest.fn().mockReturnValue(transferHeaders),
+              createGetTransferStatusHeaders: jest
+                .fn()
+                .mockReturnValue(statusHeaders),
+              createCommonHeaders: jest.fn().mockReturnValue(commonHeaders),
+            },
+          },
+        ],
+      }).compile();
+      const testService = module.get<MtnApiService>(MtnApiService);
+
+      // Act & Assert
+      await expect(
+        testService.createTransfer(createTransferInput),
+      ).rejects.toThrow(MtnApiError);
+      await expect(
+        testService.createTransfer(createTransferInput),
+      ).rejects.toThrow('MTN_REFERENCE_ID is not set');
+
+      // Restore
+      (env as any).MTN_REFERENCE_ID = 'test-reference-id';
+    });
+
+    it('should throw MtnApiError when MTN_API_KEY is not set', async () => {
+      // Arrange: need to create a new service instance with undefined env var
+      (env as any).MTN_API_KEY = undefined;
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          MtnApiService,
+          {
+            provide: CustomHttpService,
+            useValue: { post: jest.fn(), get: jest.fn() },
+          },
+          {
+            provide: MtnApiHelperService,
+            useValue: {
+              getBaseUrl: jest.fn().mockReturnValue(baseUrl),
+              createTransferPayload: jest.fn().mockReturnValue(transferPayload),
+              createTransferHeaders: jest.fn().mockReturnValue(transferHeaders),
+              createGetTransferStatusHeaders: jest
+                .fn()
+                .mockReturnValue(statusHeaders),
+              createCommonHeaders: jest.fn().mockReturnValue(commonHeaders),
+            },
+          },
+        ],
+      }).compile();
+      const testService = module.get<MtnApiService>(MtnApiService);
+
+      // Act & Assert
+      await expect(
+        testService.createTransfer(createTransferInput),
+      ).rejects.toThrow(MtnApiError);
+      await expect(
+        testService.createTransfer(createTransferInput),
+      ).rejects.toThrow('MTN_API_KEY is not set');
+
+      // Restore
+      (env as any).MTN_API_KEY = 'test-api-key';
+    });
+
+    it('should throw MtnApiError when authentication fails', async () => {
+      // Arrange
+      post.mockRejectedValueOnce(new Error('Auth network error'));
+
+      // Act & Assert
+      await expect(
+        mtnApiService.createTransfer(createTransferInput),
+      ).rejects.toThrow(MtnApiError);
+      await expect(
+        mtnApiService.createTransfer(createTransferInput),
+      ).rejects.toThrow('authentication failed');
+    });
+
+    it('should throw MtnApiError when authentication response is unclear', async () => {
+      // Arrange
+      post.mockResolvedValueOnce({ status: 200, data: {} }); // Missing access_token
+
+      // Act & Assert
+      await expect(
+        mtnApiService.createTransfer(createTransferInput),
+      ).rejects.toThrow(MtnApiError);
+      await expect(
+        mtnApiService.createTransfer(createTransferInput),
+      ).rejects.toThrow('unclear response from MTN API');
     });
   });
 });
