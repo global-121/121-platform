@@ -15,7 +15,7 @@
     </div>
   </ng-template>
 
-  @if (this.importState() === 'NotInitiated') {
+  @if (this.importState() === ImportStates.NotInitiated) {
     <div>
       <p i18n>Import existing registrations from your Kobo form.</p>
       <p i18n>
@@ -44,7 +44,7 @@
     </div>
   }
 
-  @if (this.importState() === 'ImportedWithoutErrors') {
+  @if (this.importState() === ImportStates.ImportedWithoutErrors) {
     <div>
       <p i18n>
         Successfully imported submissions from Kobo form ”{{
@@ -52,18 +52,21 @@
         }}”
       </p>
 
-      <p
-        i18n
-        class="font-bold"
-      >
-        {{ importExistingSubmissions.data()?.numberOfSubmissionsImported }}
-        total submissions
-      </p>
+      <div class="mt-4 space-y-2">
+        <p
+          i18n
+          class="font-bold"
+        >
+          {{ importExistingSubmissions.data()?.numberOfSubmissionsImported }}
+          total submissions
+        </p>
 
-      <app-colored-chip
-        [label]="`imported succesfully ${importExistingSubmissions.data()?.numberOfSubmissionsImported}`"
-        [variant]="'green'"
-      />
+        <app-colored-chip
+          [label]="`imported succesfully ${importExistingSubmissions.data()?.numberOfSubmissionsImported}`"
+          [variant]="'green'"
+          class="block"
+        />
+      </div>
     </div>
 
     <div class="mt-5 flex justify-end gap-4">
@@ -75,7 +78,16 @@
     </div>
   }
 
-  @if (this.importState() === 'ImportedWithErrors') {
-    <div i18n>All is wrong</div>
+  @if (this.importState() === ImportStates.ImportedWithErrors) {
+    <div>
+      <div i18n>All is wrong</div>
+      <div class="mt-5 flex justify-end gap-4">
+        <p-button
+          label="Try again"
+          i18n-label
+          (click)="this.importState.set(ImportStates.NotInitiated)"
+        />
+      </div>
+    </div>
   }
 </p-dialog>

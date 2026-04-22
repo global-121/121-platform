@@ -45,7 +45,6 @@ export class KoboImportExistingRegistrationsDialogComponent {
   readonly responseDialogVisible = signal(false);
 
   readonly headerIcon = computed(() => {
-    console.log('importState', this.importState);
     switch (this.importState()) {
       case ImportState.ImportedWithErrors:
         return 'pi pi-exclamation-triangle me-2';
@@ -57,8 +56,6 @@ export class KoboImportExistingRegistrationsDialogComponent {
   });
 
   readonly dialogTitle = computed(() => {
-    console.log('importState', this.importState);
-
     switch (this.importState()) {
       case ImportState.ImportedWithErrors:
         return $localize`Import complete with errors`;
@@ -91,9 +88,17 @@ export class KoboImportExistingRegistrationsDialogComponent {
     },
   }));
 
+  public get ImportStates(): typeof ImportState {
+    return ImportState;
+  }
+
+  setToNotInitiatedState() {
+    this.importState.set(ImportState.NotInitiated);
+  }
+
   closeDialogAndResetDialogState() {
     this.responseDialogVisible.set(false);
-    this.importState.set(ImportState.NotInitiated);
+    this.setToNotInitiatedState();
     this.importExistingSubmissions.reset();
   }
 
