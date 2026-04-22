@@ -115,7 +115,7 @@ jobs:
           # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
           node-version-file: '${{ env.workingDirectory }}/.node-version'
           cache: 'npm'
-          cache-dependency-path: '${{ env.workingDirectory }}/package-lock.json'
+          cache-dependency-path: 'package-lock.json'
 
       - name: Set ENV-variables for test-environment
         run: |
@@ -123,24 +123,19 @@ jobs:
           grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
 
       - name: Install
-        working-directory: ${{ env.workingDirectory }}
         run: 'npm ci'
 
       - name: Lint
-        working-directory: ${{ env.workingDirectory }}
-        run: 'npm run lint'
+        run: 'npm run lint -w 121-service'
 
       - name: Check for dead code
-        working-directory: ${{ env.workingDirectory }}
-        run: 'npm run knip'
+        run: 'npm run knip -w 121-service'
 
       - name: Check for TS errors
-        working-directory: ${{ env.workingDirectory }}
-        run: 'npm run typecheck'
+        run: 'npm run typecheck -w 121-service'
 
       - name: Run unit tests
-        working-directory: ${{ env.workingDirectory }}
-        run: 'npm run test:unit:coverage'
+        run: 'npm run test:unit:coverage -w 121-service'
 
       - uses: actions/upload-artifact@v7
         with:

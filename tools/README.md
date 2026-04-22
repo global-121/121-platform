@@ -4,11 +4,13 @@ Various development-tools that can be used 'standalone'.
 
 ## Getting started
 
-Any external dependencies should be installed with:
+Install dependencies from the repository root with:
 
 ```shell
 npm install
 ```
+
+Then run `npm run setup -w tools` when you need to copy `.env.example` to `.env`.
 
 ## Tools
 

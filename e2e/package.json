@@ -10,7 +10,6 @@
   },
   "private": true,
   "scripts": {
-    "prepare": "npm run install:dependencies-for-portal --prefix=../services/121-service/",
     "setup": "npm install && npx playwright install",
     "typecheck": "npx tsc --noEmit",
     "prelint": "npm run typecheck",
@@ -28,7 +27,7 @@
     "@types/node": "^24.x",
     "@types/supertest": "^7.2.0",
     "eslint": "^9.39.4",
-    "eslint-config-121-platform": "file:../packages/eslint-config-121-platform/",
+    "eslint-config-121-platform": "*",
     "prettier": "^3.8.1",
     "supertest": "^7.1.4",
     "typescript": "^5.9.3",

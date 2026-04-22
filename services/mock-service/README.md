@@ -5,6 +5,7 @@
 ## Getting started / Installation
 
 See instructions to get started in the main [`README`](../../README.md#getting-started).
+Install dependencies from the repository root with `npm install`.
 
 ## API
 

@@ -64,16 +64,14 @@ jobs:
         with:
           node-version-file: '${{ env.e2eTestsPath }}/.node-version'
           cache: 'npm'
-          cache-dependency-path: '${{ env.e2eTestsPath }}/package-lock.json'
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install E2E-Tests code-dependencies
-        working-directory: ${{ env.e2eTestsPath }}
         run: |
           npm ci
 
       - name: Lint E2E-Tests code
-        working-directory: ${{ env.e2eTestsPath }}
-        run: 'npm run lint'
+        run: 'npm run lint -w e2e'
 
   test-shard-e2e:
     runs-on: ubuntu-latest
@@ -96,10 +94,9 @@ jobs:
         with:
           node-version-file: '${{ env.e2eTestsPath }}/.node-version'
           cache: 'npm'
-          cache-dependency-path: '${{ env.e2eTestsPath }}/package-lock.json'
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install E2E-Tests code-dependencies
-        working-directory: ${{ env.e2eTestsPath }}
         # We only need to install the tests' dependencies, so we can skip the `postinstall`-step
         run: |
           npm ci --ignore-scripts
@@ -119,7 +116,6 @@ jobs:
           NG_URL_121_SERVICE_API: http://localhost:3000/api
           NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: false
         run: |
-          npm ci
           cp .env.example .env
           npm run start:debug-production > run-portal-logs.txt 2>&1 &
 

@@ -11,7 +11,6 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "prepare": "npm run install:dependencies-for-portal --prefix=../../services/121-service/",
     "set-env-variables": "node --env-file-if-exists=.env ./scripts/set-env-variables.mjs",
     "build:deployment-configuration": "node --env-file-if-exists=.env ./scripts/build-deployment-configuration.mjs",
     "build:download-translations": "node --env-file-if-exists=.env ./scripts/build-download-translations.mjs",

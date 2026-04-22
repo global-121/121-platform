@@ -1,11 +1,9 @@
 FROM node:24-slim AS base
 
-# Install curl (Used by healthchecks) and procps (Used by swc)
 RUN apt-get update && apt-get install -y --no-install-recommends curl procps && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /home/node/app
+WORKDIR /home/app
 
-# This exposed port is technically not the same as the published port using Compose (we use the same number for simplicity)
 EXPOSE ${PORT_121_SERVICE}
 
 HEALTHCHECK \
@@ -15,23 +13,24 @@ HEALTHCHECK \
   --timeout=300s \
   CMD curl --fail http://0.0.0.0:${PORT_121_SERVICE}/api/health/health || exit 1
 
-# The path-references here are considered from the repository-root, NOT the current folder!
-# See: ../docker-compose(.development).yml
+# --- Dependency layer (cacheable) ---
+COPY package.json package-lock.json .npmrc ./
+COPY packages/eslint-config-121-platform/package.json packages/eslint-config-121-platform/
+COPY services/121-service/package.json services/121-service/
 
-# Include source-code of shared packages
-COPY packages /home/packages
+RUN npm ci --workspace=121-service --include-workspace-root=false
 
-# Include source-code of the service itself
-COPY services/121-service /home/node/app
+# --- Source layer ---
+COPY packages/eslint-config-121-platform packages/eslint-config-121-platform
+COPY services/121-service services/121-service
+
+WORKDIR /home/app/services/121-service
 
 FROM base AS production
 
-RUN npm ci
-
-RUN npm run build
-
-CMD ["npm", "start"]
+RUN npm run build -w 121-service
+CMD ["npm", "start", "-w", "121-service"]
 
 FROM base AS development
 
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "start:dev", "-w", "121-service"]

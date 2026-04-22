@@ -34,10 +34,11 @@ Clone the repository and run local Docker environment following the general [ins
 
 ### Install E2E-test dependencies
 
-From the `./e2e`-folder, run:
+From the repository root, install dependencies once and then install Playwright browser dependencies:
 
 ```shell
-npm install && npx playwright install
+npm install
+npx playwright install
 ```
 
 ### Set necessary Environment-variables

@@ -44,34 +44,28 @@ jobs:
         with:
           node-version-file: '${{ env.interfacePath }}/.node-version'
           cache: 'npm'
-          cache-dependency-path: '${{ env.interfacePath }}/package-lock.json'
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install
-        working-directory: ${{ env.interfacePath }}
         run: 'npm ci'
 
       - name: 'Test: Types'
-        working-directory: ${{ env.interfacePath }}
-        run: 'npm run typecheck'
+        run: 'npm run typecheck -w portal'
 
       - name: Lint
-        working-directory: ${{ env.interfacePath }}
-        run: 'npm run lint'
+        run: 'npm run lint -w portal'
 
       - name: Check for dead code
-        working-directory: ${{ env.interfacePath }}
-        run: 'npm run knip'
+        run: 'npm run knip -w portal'
 
       - name: 'Test: Deployment Configuration'
-        working-directory: ${{ env.interfacePath }}
         run: |
-          cp -vf .env.example .env
-          npm run build:deployment-configuration
-          npm run test:deployment-configuration
+          cp -vf interfaces/portal/.env.example interfaces/portal/.env
+          npm run build:deployment-configuration -w portal
+          npm run test:deployment-configuration -w portal
 
       - name: 'Test: Code'
-        working-directory: ${{ env.interfacePath }}
-        run: 'npm run test:coverage'
+        run: 'npm run test:coverage -w portal'
 
       - name: 'Upload coverage report to QLTY'
         uses: qltysh/qlty-action/coverage@141b881236146435192435eb7b0e06ea0b70b4d9
@@ -82,11 +76,10 @@ jobs:
           files: ${{ env.interfacePath }}/coverage/portal/lcov.info
 
       - name: 'Check translations output-file'
-        working-directory: ${{ env.interfacePath }}
         run: |
-          npm run set-env-variables -- --env=development
-          npm run extract-i18n
-          git diff --exit-code src/locale/messages.xlf
+          npm run set-env-variables -w portal -- --env=development
+          npm run extract-i18n -w portal
+          git diff --exit-code interfaces/portal/src/locale/messages.xlf
 
       - name: Save coverage report
         if: always()

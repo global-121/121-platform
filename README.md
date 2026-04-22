@@ -79,6 +79,8 @@ Now, make sure to run the following in the root folder to install the necessary 
 npm install
 ```
 
+> To regenerate the lockfile, run `npm install --legacy-peer-deps` due to peer-dependency conflicts from `@automock/jest@2` with `jest@30`. `npm ci` does not require this flag.
+
 Optionally, an additional `post-checkout`-hook can be enabled by running:
 
     cp .husky/.local.post-checkout.example .husky/.local.post-checkout
@@ -122,9 +124,7 @@ To verify the successful installation and setup of services, access their Swagge
 
 ## Setup Interfaces
 
-Install dependencies for the portal, run:
-
-    npm run install:portal
+Dependencies for all workspaces are installed via the root `npm install` command above.
 
 Also, make sure to set the environment-variables. Run:
 
@@ -146,7 +146,7 @@ When started, the portal will be available via: <http://localhost:8888>
 
 When you use [VS Code](https://code.visualstudio.com/), you can start multiple editor-windows at once, from the root of this repository, run:
 
-    npm run code:all
+    code ./ && npm run code:121-service && npm run code:mock-service && npm run code:portal
 
 To start an individual interface/service in VS Code:
 
