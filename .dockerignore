@@ -12,6 +12,9 @@
 # ---------------------------
 # 2. Re-include service source code
 # ---------------------------
+!package.json
+!package-lock.json
+!.npmrc
 !services/121-service/
 !services/mock-service/
 
