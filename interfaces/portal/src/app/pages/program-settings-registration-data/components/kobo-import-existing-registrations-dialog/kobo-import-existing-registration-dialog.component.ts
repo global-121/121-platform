@@ -5,7 +5,6 @@ import {
   inject,
   input,
   signal,
-  viewChild,
 } from '@angular/core';
 
 import {
@@ -13,13 +12,11 @@ import {
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
-import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { ToastService } from '~/services/toast.service';
-
 enum ImportState {
   ImportedWithErrors = 'ImportedWithErrors',
   ImportedWithoutErrors = 'ImportedWithoutErrors',
@@ -35,14 +32,12 @@ enum ImportState {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KoboImportExistingRegistrationsDialogComponent {
+  private readonly koboApiService = inject(KoboApiService);
+
   readonly importState = signal(ImportState.NotInitiated);
+  readonly responseDialogVisible = signal(false);
 
   readonly programId = input.required<number | string>();
-
-  private readonly koboApiService = inject(KoboApiService);
-  readonly confirmDialog = viewChild.required<ConfirmDialog>('confirmDialog');
-
-  readonly responseDialogVisible = signal(false);
 
   readonly headerIcon = computed(() => {
     switch (this.importState()) {
@@ -96,6 +91,7 @@ export class KoboImportExistingRegistrationsDialogComponent {
     this.importState.set(ImportState.NotInitiated);
   }
 
+  // This needs to be a close() and a reset()
   closeDialogAndResetDialogState() {
     this.responseDialogVisible.set(false);
     this.setToNotInitiatedState();
