@@ -1,7 +1,10 @@
 import { Injectable, Signal } from '@angular/core';
 
 import { DomainApiService } from '~/domains/domain-api.service';
-import { WalletWithCards } from '~/domains/fsp-account-management/intersolve-visa.model';
+import {
+  RefundedDebitCardsExport,
+  WalletWithCards,
+} from '~/domains/fsp-account-management/intersolve-visa.model';
 
 const BASE_ENDPOINT = (programId: Signal<number | string>) => [
   'programs',
@@ -170,5 +173,19 @@ export class IntersolveVisaApiService extends DomainApiService {
     });
 
     return req;
+  }
+
+  public getRefundedDebitCards(programId: Signal<number | string>) {
+    return this.generateQueryOptions<RefundedDebitCardsExport[]>({
+      path: [
+        'programs',
+        programId(),
+        'fsps',
+        'intersolve-visa',
+        'wallet-closures',
+      ],
+      method: 'GET',
+      enabled: () => !!programId(),
+    });
   }
 }
