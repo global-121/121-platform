@@ -454,7 +454,7 @@ describe('IntersolveVisaService', () => {
         fromTokenCode: parentTokenCode,
         toTokenCode: fundingTokenCode,
         amount: 25,
-        reference: `close-card-${childTokenCode}`,
+        reference: `Transfer money back to funding wallet from child wallet: ${childTokenCode}`,
       });
       expect(apiService.setTokenBlocked).toHaveBeenCalledWith(
         childTokenCode,

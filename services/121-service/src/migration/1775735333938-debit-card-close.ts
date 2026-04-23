@@ -4,25 +4,11 @@ export class DebitCardClose1775735333938 implements MigrationInterface {
   name = 'DebitCardClose1775735333938';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // Only assign the new permission to admin and program-admin roles
-    // There is no reason to add this permission to other roles since it is a intersolve visa specific permission so only relevant in the netherlands
-
+    // Not assigning the permission to a role since this will be done by the support team when the feature is enabled
+    // this permission is not relevant for our default roles and only in the netherlands
     await queryRunner.query(`
-      WITH inserted_permission AS (
-        INSERT INTO "121-service"."permission" ("name")
-        VALUES ('fsp:debit-card.close')
-        RETURNING "id"
-      ),
-      permission_to_assign AS (
-        SELECT "id" FROM inserted_permission
-        UNION ALL
-        SELECT "id" FROM "121-service"."permission" WHERE "name" = 'fsp:debit-card.close'
-        LIMIT 1
-      )
-      INSERT INTO "121-service"."user_role_permissions_permission" ("userRoleId", "permissionId")
-      SELECT ur."id", (SELECT "id" FROM permission_to_assign)
-      FROM "121-service"."user_role" ur
-      WHERE ur."role" IN ('admin', 'program-admin')
+      INSERT INTO "121-service"."permission" ("name")
+      VALUES ('fsp:debit-card.close')
     `);
 
     await queryRunner.query(
