@@ -75,6 +75,9 @@ export class ExportPaymentsComponent {
     'exportDebitCardUsageDialog',
   );
 
+  readonly exportRefundedDebitCardsDialog =
+    viewChild.required<FormDialogComponent>('exportRefundedDebitCardsDialog');
+
   ExportType = ExportType;
 
   paymentRangeFormGroup = new FormGroup({
@@ -90,6 +93,13 @@ export class ExportPaymentsComponent {
 
   exportByTypeMutation = injectMutation(() =>
     this.exportService.getExportByTypeMutation(
+      this.programId,
+      this.toastService,
+    ),
+  );
+
+  exportRefundedDebitCardsMutation = injectMutation(() =>
+    this.exportService.getExportRefundedDebitCardsMutation(
       this.programId,
       this.toastService,
     ),
@@ -167,6 +177,31 @@ export class ExportPaymentsComponent {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,
             name: 'debit-card-usage',
+          },
+        });
+      },
+    },
+
+    {
+      label: $localize`:@@export-close-cards:Refunded debit cards`,
+      visible:
+        programHasPhysicalCardSupport(this.program.data()) &&
+        (this.payments.data() ?? []).length > 0 &&
+        this.authService.hasPermission({
+          programId: this.programId(),
+          requiredPermission: PermissionEnum.FspDebitCardEXPORT,
+        }),
+      command: () => {
+        this.trackingService.trackEvent({
+          category: TrackingCategory.export,
+          action: TrackingAction.selectDropdownOption,
+          name: 'wallet-closures',
+        });
+        this.exportRefundedDebitCardsDialog().show({
+          trackingEvent: {
+            category: TrackingCategory.export,
+            action: TrackingAction.clickProceedButton,
+            name: 'wallet-closures',
           },
         });
       },
