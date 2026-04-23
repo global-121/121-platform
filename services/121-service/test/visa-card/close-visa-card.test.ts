@@ -1,6 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { VisaCardAction } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-action.enum';
 import { IntersolveVisaCardStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-status.enum';
+import { VisaCard121Status } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/wallet-status-121.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -59,6 +61,10 @@ describe('Close visa debit card', () => {
     // Assert
     expect(closeResponse.status).toBe(HttpStatus.NO_CONTENT);
 
+    // Specifically using the GET endpoint here and not the PATCH endpoint even though the PATCH endpoint is used by the portal
+    // The reason we are not using the PATCH endpoint here is because it updates the wallet and card data by calling the Intersolve API (which in CI is the mock-servie)
+    // The mock service is stateless so if we call the PATCH endpoint, the mock service will return the same data as before (with the card still active) because it does not keep track of the fact that we just closed the card.
+    // By calling the GET endpoint we can verify that the card status is actually updated to closed, which means that the close card logic in the service works correctly.
     const walletResponseAfter = await getVisaWalletsAndDetails(
       programIdVisa,
       testRegistration.referenceId,
@@ -68,6 +74,12 @@ describe('Close visa debit card', () => {
     const closedCard = walletResponseAfter.body.cards.find(
       (card) => card.tokenCode === tokenCode,
     );
+    expect(closedCard.debugInformation.intersolveVisaCardStatus).toBe(
+      IntersolveVisaCardStatus.CardClosed,
+    );
+    expect(closedCard.actions).toEqual([VisaCardAction.replace]);
+    expect(closedCard.debugInformation.isTokenBlocked).toBe(true);
+    expect(closedCard.status).toBe(VisaCard121Status.Blocked);
     expect(closedCard.debugInformation.intersolveVisaCardStatus).toBe(
       IntersolveVisaCardStatus.CardClosed,
     );

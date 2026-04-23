@@ -752,7 +752,7 @@ export class IntersolveVisaService {
         fromTokenCode: parentTokenCode,
         toTokenCode: fundingTokenCode,
         amount: balanceInCents / 100,
-        reference: `close-card-${childTokenCode}`.slice(0, 128),
+        reference: this.getCloseCardTransferReference(childTokenCode),
       });
     }
 
@@ -779,6 +779,13 @@ export class IntersolveVisaService {
       amountBookedBackInCents: balanceInCents,
     } as Partial<IntersolveVisaWalletClosureEntity>);
     await this.walletClosureScopedRepository.save(closureEntity);
+  }
+
+  private getCloseCardTransferReference(childTokenCode: string): string {
+    // Intersolve token codes are 19-digit numbers (see Intersolve Wallet Platform
+    // integration manual). Combined with the prefix this stays well below the
+    // 128-character limit on the reference field.
+    return `Transfer money back to funding wallet from child wallet: ${childTokenCode}`;
   }
 
   /**
