@@ -7,7 +7,7 @@ export const buildTemplateApprovalRequest = (
 ): EmailTemplate => {
   const { recipientName, paymentUrl } = paymentEmailInput;
 
-  const subject = '121 portal: Payment approval';
+  const subject = '121 Portal: Payment approval';
   const body = `
     <p>Dear ${recipientName},</p>
     <p>A new payment was created that requires your financial approval.</p>

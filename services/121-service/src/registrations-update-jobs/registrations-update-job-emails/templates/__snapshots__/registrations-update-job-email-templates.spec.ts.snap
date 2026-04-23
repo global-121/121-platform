@@ -20,6 +20,6 @@ exports[`Registration update job email templates should render import validation
       121 Support Team
     </p>
   ",
-  "subject": "Registration Import - Validation Failed",
+  "subject": "121 Portal: Registration Import - Validation Failed",
 }
 `;

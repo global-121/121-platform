@@ -10,6 +10,6 @@ import { AppRoutes } from '~/app.routes';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent {
-  AppRoutes = AppRoutes;
-  currentYear: number = new Date().getFullYear();
+  readonly AppRoutes = AppRoutes;
+  readonly currentYear: number = new Date().getFullYear();
 }

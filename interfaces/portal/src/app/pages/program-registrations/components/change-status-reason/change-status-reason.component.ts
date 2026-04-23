@@ -29,8 +29,6 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeStatusReasonComponent {
-  RegistrationStatusEnum = RegistrationStatusEnum;
-
   readonly status = input.required<RegistrationStatusEnum>();
   readonly reason = model.required<string | undefined>();
   readonly reasonValidationErrorMessage = input<string | undefined>();

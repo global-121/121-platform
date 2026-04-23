@@ -71,10 +71,10 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeStatusDialogComponent implements IActionDataHandler<Registration> {
+  readonly RegistrationStatusEnum = RegistrationStatusEnum;
+
   readonly programId = input.required<string>();
   readonly actionComplete = output();
-
-  RegistrationStatusEnum = RegistrationStatusEnum;
 
   private messagingService = inject(MessagingService);
   private registrationApiService = inject(RegistrationApiService);
