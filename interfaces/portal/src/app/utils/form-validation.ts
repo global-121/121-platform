@@ -32,7 +32,7 @@ const genericValidationMessage = (control: AbstractControl) => {
     return $localize`Enter a valid email address`;
   }
 
-  if (control.errors?.required) {
+  if (control.errors?.required || control.errors?.whitespaceOnly) {
     return $localize`:@@generic-required-field:This field is required.`;
   }
 

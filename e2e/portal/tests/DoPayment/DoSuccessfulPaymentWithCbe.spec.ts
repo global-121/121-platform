@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import CbeProgram from '@121-service/src/seed-data/program/program-cbe.json';
@@ -32,7 +30,6 @@ test('Do successful payment for Cbe fsp', async ({
   const defaultMaxTransferValue = registrationsCbe.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
@@ -41,7 +38,7 @@ test('Do successful payment for Cbe fsp', async ({
       url.pathname.startsWith(`/en-GB/program/${programIdCbe}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
 
@@ -58,14 +55,13 @@ test('Do successful payment for Cbe fsp', async ({
       url.pathname.startsWith(`/en-GB/program/${programIdCbe}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
   });
 
   await test.step('Validate payment card', async () => {
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.navigateToProgramPage('Payments');
     await paymentsPage.validatePaymentCard({
-      date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
       successfulPaymentAmount: defaultMaxTransferValue,

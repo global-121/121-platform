@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { ExcelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/excel-transaction-job.dto';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -7,13 +8,13 @@ import { TransactionEventCreationContext } from '@121-service/src/payments/trans
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 
 @Injectable()
-export class TransactionJobsExcelService {
+export class TransactionJobsExcelService implements TransactionJobService<ExcelTransactionJobDto> {
   constructor(
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly transactionsService: TransactionsService,
   ) {}
 
-  public async processExcelTransactionJob(
+  public async processTransactionJob(
     transactionJob: ExcelTransactionJobDto,
   ): Promise<void> {
     // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')

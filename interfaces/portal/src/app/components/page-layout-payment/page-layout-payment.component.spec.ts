@@ -29,7 +29,7 @@ const mockQueryFactory =
       initialData,
     });
 
-describe('PageLayoutPaymentComponent - canDeletePayment', () => {
+describe('PageLayoutPaymentComponent', () => {
   let mockAuthService: {
     hasAllPermissions: Mock;
     user: null;
@@ -148,5 +148,67 @@ describe('PageLayoutPaymentComponent - canDeletePayment', () => {
 
     // Assert
     expect(result).toBe(false);
+  });
+
+  it('should return localized placeholder while payments are loading', () => {
+    // Arrange – pending promise banayi taake loading state simulate ho
+    mockPaymentApiService.getPaymentAggregationsSummaries.mockReturnValue(() =>
+      queryOptions({
+        queryKey: ['mock-pending'],
+        queryFn: () =>
+          new Promise((_resolve) => {
+            // Never resolves
+          }),
+      }),
+    );
+    const fixture = createFixture();
+
+    // Act
+    const result = fixture.componentInstance.paymentTitle();
+
+    // Assert – should be the placeholder, not an empty string
+    expect(result).toBe('Payment');
+  });
+
+  it('should return payment name when available in payment summaries', () => {
+    // Arrange
+    const paymentName = 'Custom Payment Name';
+    mockPaymentApiService.getPaymentAggregationsSummaries.mockReturnValue(
+      mockQueryFactory([
+        {
+          paymentId: 1,
+          name: paymentName,
+          paymentDate: '2026-01-01T10:00:00.000Z',
+        },
+      ]),
+    );
+    const fixture = createFixture();
+
+    // Act
+    const result = fixture.componentInstance.paymentTitle();
+
+    // Assert
+    expect(result).toBe(paymentName);
+  });
+
+  it('should return localized payment fallback title when name is empty', () => {
+    // Arrange
+    mockPaymentApiService.getPaymentAggregationsSummaries.mockReturnValue(
+      mockQueryFactory([
+        {
+          paymentId: 1,
+          name: '',
+          paymentDate: '2026-01-01T10:00:00.000Z',
+        },
+      ]),
+    );
+    const fixture = createFixture();
+
+    // Act
+    const result = fixture.componentInstance.paymentTitle();
+
+    // Assert
+    expect(result).toContain('Payment');
+    expect(result).not.toBe('Payment');
   });
 });

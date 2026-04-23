@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { updateRegistration } from '@121-service/test/helpers/registration.helper';
 import { getAccessToken } from '@121-service/test/helpers/utility.helper';
@@ -11,7 +9,6 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 const paymentPageUrl = `/en-GB/program/${programIdOCW}/payments/1`;
 const registrations = [...registrationsOCW, registrationOCW6Fail];
 
@@ -29,7 +26,7 @@ test.beforeEach(
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
   },
 );
 

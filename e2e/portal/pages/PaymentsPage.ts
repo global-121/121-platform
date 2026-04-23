@@ -20,6 +20,8 @@ class PaymentsPage extends BasePage {
   readonly dateRangeStartInput: PrimeNGDatePicker;
   readonly dateRangeEndInput: PrimeNGDatePicker;
   readonly noteInput: Locator;
+  readonly paymentNameInput: Locator;
+  readonly continueToRegistrationButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -58,6 +60,10 @@ class PaymentsPage extends BasePage {
       }),
     });
     this.noteInput = this.page.locator('input[formControlName="note"]');
+    this.paymentNameInput = this.page.locator('input[formControlName="name"]');
+    this.continueToRegistrationButton = this.page.getByRole('button', {
+      name: 'Continue to registration',
+    });
   }
 
   async selectAllRegistrations() {
@@ -87,13 +93,20 @@ class PaymentsPage extends BasePage {
   }
 
   async createPayment({
+    name,
     note,
     onlyStep1 = false,
   }: {
+    name?: string;
     note?: string;
     onlyStep1?: boolean;
   }) {
     await this.createNewPaymentButton.click();
+    if (name !== undefined) {
+      await this.paymentNameInput.clear();
+      await this.paymentNameInput.fill(name);
+    }
+    await this.continueToRegistrationButton.click();
     await this.selectAllRegistrations();
     await this.addToPaymentButton.click();
     if (onlyStep1) {
@@ -128,7 +141,6 @@ class PaymentsPage extends BasePage {
   }
 
   async validatePaymentCard({
-    date,
     registrationsNumber,
     paymentAmount,
     successfulPaymentAmount,
@@ -137,7 +149,6 @@ class PaymentsPage extends BasePage {
     programId,
     paymentId = 1,
   }: {
-    date: string;
     registrationsNumber: number;
     paymentAmount: number;
     successfulPaymentAmount: number;
@@ -149,7 +160,7 @@ class PaymentsPage extends BasePage {
     // Locate the specific payment card using the payment link and then navigate to its ancestor card element
     const hrefLocatorUrl = `"/en-GB/program/${programId}/payments/${paymentId}"`;
     const cardTitleLocator = this.page.locator(`a[href=${hrefLocatorUrl}]`);
-    const paymentTitle = await cardTitleLocator.getByTitle(date).textContent();
+    await expect(cardTitleLocator.first()).toBeVisible();
     const card = this.page
       .getByTestId('card-with-link')
       .filter({ has: cardTitleLocator })
@@ -171,8 +182,6 @@ class PaymentsPage extends BasePage {
     const failedTransactionsElement = await card
       .filter({ hasText: 'Failed transactions' })
       .textContent();
-
-    expect(paymentTitle).toContain(date);
 
     expect(includedRegistrationsElement).toContain(
       registrationsNumber.toString(),

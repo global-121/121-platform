@@ -6,6 +6,7 @@ import { OnafriqApiResponseStatusType } from '@121-service/src/fsp-integrations/
 import { OnafriqError } from '@121-service/src/fsp-integrations/integrations/onafriq/errors/onafriq.error';
 import { OnafriqService } from '@121-service/src/fsp-integrations/integrations/onafriq/services/onafriq.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { OnafriqTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/onafriq-transaction-job.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -19,7 +20,7 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
-export class TransactionJobsOnafriqService {
+export class TransactionJobsOnafriqService implements TransactionJobService<OnafriqTransactionJobDto> {
   constructor(
     private readonly onafriqService: OnafriqService,
     @Inject(getScopedRepositoryProviderName(OnafriqTransactionEntity))
@@ -30,7 +31,7 @@ export class TransactionJobsOnafriqService {
     private readonly transactionsService: TransactionsService,
   ) {}
 
-  public async processOnafriqTransactionJob(
+  public async processTransactionJob(
     transactionJob: OnafriqTransactionJobDto,
   ): Promise<void> {
     // 1. Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')

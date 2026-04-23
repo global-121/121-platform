@@ -52,7 +52,7 @@ describe('TransactionJobsIntersolveVoucherService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('processIntersolveVoucherTransactionJob', () => {
+  describe('processTransactionJob', () => {
     it('should process intersolveVoucherTransactionJob successfully', async () => {
       (
         programFspConfigurationRepository.getUsernamePasswordProperties as jest.Mock
@@ -61,7 +61,7 @@ describe('TransactionJobsIntersolveVoucherService', () => {
         intersolveVoucherService.sendIndividualPayment as jest.Mock
       ).mockResolvedValue({ status: TransactionStatusEnum.success });
 
-      await service.processIntersolveVoucherTransactionJob(
+      await service.processTransactionJob(
         mockedIntersolveVoucherTransactionJob,
       );
 

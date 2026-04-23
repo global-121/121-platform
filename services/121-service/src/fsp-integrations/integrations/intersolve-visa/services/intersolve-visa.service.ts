@@ -126,7 +126,7 @@ export class IntersolveVisaService {
     maxBalanceInCents,
   }: {
     registrationId: number;
-    maxBalanceInCents: number;
+    maxBalanceInCents?: number;
   }): Promise<IntersolveVisaWalletDto> {
     const parentWallet = await this.getParentWalletOrThrow({
       registrationId,
@@ -159,7 +159,7 @@ export class IntersolveVisaService {
     maxBalanceInCents,
   }: {
     registrationId: number;
-    maxBalanceInCents: number;
+    maxBalanceInCents?: number;
   }): Promise<IntersolveVisaWalletDto> {
     const parentWallet = await this.getParentWalletOrThrow({
       registrationId,

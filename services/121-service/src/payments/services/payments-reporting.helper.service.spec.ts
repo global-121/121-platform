@@ -285,6 +285,7 @@ describe('PaymentsReportingHelperService', () => {
         {
           id: 1,
           created: new Date('2024-01-15T10:00:00Z'),
+          name: 'Payment 15/01/24, 10:00',
           isPaymentApproved: true,
           approvalsRequired: 2,
           approvalsGiven: 2,
@@ -292,6 +293,7 @@ describe('PaymentsReportingHelperService', () => {
         {
           id: 4,
           created: new Date('2024-02-05T14:00:00Z'),
+          name: 'Payment 05/02/24, 14:00',
           isPaymentApproved: true,
           approvalsRequired: 1,
           approvalsGiven: 1,
@@ -348,6 +350,7 @@ describe('PaymentsReportingHelperService', () => {
       // Check first payment
       expect(result[0]).toEqual({
         paymentId: 1,
+        name: 'Payment 15/01/24, 10:00',
         paymentDate: new Date('2024-01-15T10:00:00Z'),
         isPaymentApproved: true,
         approvalsRequired: 2,
@@ -364,6 +367,7 @@ describe('PaymentsReportingHelperService', () => {
       // Check second payment
       expect(result[1]).toEqual({
         paymentId: 4,
+        name: 'Payment 05/02/24, 14:00',
         paymentDate: new Date('2024-02-05T14:00:00Z'),
         isPaymentApproved: true,
         approvalsRequired: 1,
@@ -383,6 +387,7 @@ describe('PaymentsReportingHelperService', () => {
       const paymentsAndApprovalStatuses = [
         {
           id: 3,
+          name: 'Payment 01/02/24, 10:00',
           created: new Date('2024-02-01T10:00:00Z'),
           isPaymentApproved: false,
           approvalsRequired: 1,
@@ -390,6 +395,7 @@ describe('PaymentsReportingHelperService', () => {
         },
         {
           id: 4,
+          name: 'Payment 05/02/24, 14:00',
           created: new Date('2024-02-05T14:00:00Z'),
           isPaymentApproved: true,
           approvalsRequired: 1,
@@ -418,6 +424,7 @@ describe('PaymentsReportingHelperService', () => {
       // Both payments should have zero counts and values for all statuses
       expect(result[0]).toEqual({
         paymentId: 3,
+        name: 'Payment 01/02/24, 10:00',
         paymentDate: new Date('2024-02-01T10:00:00Z'),
         isPaymentApproved: false,
         approvalsRequired: 1,
@@ -427,6 +434,7 @@ describe('PaymentsReportingHelperService', () => {
 
       expect(result[1]).toEqual({
         paymentId: 4,
+        name: 'Payment 05/02/24, 14:00',
         paymentDate: new Date('2024-02-05T14:00:00Z'),
         isPaymentApproved: true,
         approvalsRequired: 1,

@@ -10,11 +10,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     // Transaction job queues
     BullModule.registerQueue({
       name: QueueNames.transactionJobsIntersolveVisa,
-      processors: [
-        {
-          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-intersolve-visa.processor.ts',
-        },
-      ],
       limiter: {
         max: 5, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
@@ -22,11 +17,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     }),
     BullModule.registerQueue({
       name: QueueNames.transactionJobsNedbank,
-      processors: [
-        {
-          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-nedbank.processor.ts',
-        },
-      ],
       limiter: {
         max: 5, // Max number of jobs processed -> 5 is a conservative limit, we can increase this later if needed
         duration: 1000, // per duration in milliseconds
@@ -34,11 +24,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     }),
     BullModule.registerQueue({
       name: QueueNames.transactionJobsSafaricom,
-      processors: [
-        {
-          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-safaricom.processor.ts',
-        },
-      ],
       limiter: {
         max: 20, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
@@ -46,11 +31,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     }),
     BullModule.registerQueue({
       name: QueueNames.transactionJobsOnafriq,
-      processors: [
-        {
-          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-onafriq.processor.ts',
-        },
-      ],
       limiter: {
         max: 20, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
@@ -58,11 +38,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     }),
     BullModule.registerQueue({
       name: QueueNames.transactionJobsAirtel,
-      processors: [
-        {
-          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-airtel.processor.ts',
-        },
-      ],
       limiter: {
         max: 20, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
@@ -70,11 +45,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     }),
     BullModule.registerQueue({
       name: QueueNames.transactionJobsCooperativeBankOfOromia,
-      processors: [
-        {
-          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-cooperative-bank-of-oromia.processor.ts',
-        },
-      ],
       limiter: {
         max: 20, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
@@ -82,11 +52,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     }),
     BullModule.registerQueue({
       name: QueueNames.transactionJobsCommercialBankEthiopia,
-      processors: [
-        {
-          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-commercial-bank-ethiopia.processor.ts',
-        },
-      ],
       limiter: {
         max: 5, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
@@ -94,11 +59,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     }),
     BullModule.registerQueue({
       name: QueueNames.transactionJobsIntersolveVoucher,
-      processors: [
-        {
-          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-intersolve-voucher.processor.ts',
-        },
-      ],
       limiter: {
         max: 5, // Max number of jobs processed -> relatively low because of all the message traffic related to one transaction
         duration: 1000, // per duration in milliseconds
@@ -106,11 +66,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     }),
     BullModule.registerQueue({
       name: QueueNames.transactionJobsExcel,
-      processors: [
-        {
-          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-excel.processor.ts',
-        },
-      ],
       limiter: {
         max: 100, // Max number of jobs processed - processor just stores waiting transactions internally, so can be high
         duration: 1000, // per duration in milliseconds

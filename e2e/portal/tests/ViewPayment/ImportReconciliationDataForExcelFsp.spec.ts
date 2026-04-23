@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 import path from 'node:path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -23,7 +22,6 @@ test('[Excel fsp]: Import reconciliation data should work similar to import regi
   paymentsPage,
   page,
 }) => {
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
   const reconciliationData = path.resolve(
     __dirname,
     '../../../test-registration-data/test-reconciliation-Excel-pv.csv',
@@ -37,7 +35,7 @@ test('[Excel fsp]: Import reconciliation data should work similar to import regi
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentDetailsPageTitle();
   });
 
   await test.step('Upload payment reconciliation data via UI', async () => {
