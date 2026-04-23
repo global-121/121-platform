@@ -100,3 +100,13 @@
     external update.
   </p>
 </app-form-dialog>
+<app-form-dialog
+  #exportRefundedDebitCardsDialog
+  header="Export refunded debit cards"
+  i18n-header
+  headerIcon="pi pi-upload"
+  [mutation]="exportRefundedDebitCardsMutation"
+  [mutationData]="undefined"
+>
+  <p i18n>This will download an Excel file showing all refunded debit cards.</p>
+</app-form-dialog>
