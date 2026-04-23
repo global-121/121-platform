@@ -1,11 +1,9 @@
 FROM node:24-slim AS base
 
-# Install curl (Used by healthchecks) and procps (Used by swc)
 RUN apt-get update && apt-get install -y --no-install-recommends curl procps && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /home/node/app
+WORKDIR /home/app
 
-# This exposed port is technically not the same as the published port using Compose (we use the same number for simplicity)
 EXPOSE ${PORT_MOCK_SERVICE}
 
 HEALTHCHECK \
@@ -15,23 +13,24 @@ HEALTHCHECK \
   --timeout=300s \
   CMD curl --fail http://0.0.0.0:${PORT_MOCK_SERVICE}/api/instance/version || exit 1
 
-# The path-references here are considered from the repository-root, NOT the current folder!
-# See: ../docker-compose(.development).yml
+# --- Dependency layer (cacheable) ---
+COPY package.json package-lock.json .npmrc ./
+COPY packages/eslint-config-121-platform/package.json packages/eslint-config-121-platform/
+COPY services/mock-service/package.json services/mock-service/
 
-# Include source-code of shared packages
-COPY packages /home/packages
+RUN npm ci --workspace=mock-service --include-workspace-root=false
 
-# Include source-code of the service itself
-COPY services/mock-service /home/node/app
+# --- Source layer ---
+COPY packages/eslint-config-121-platform packages/eslint-config-121-platform
+COPY services/mock-service services/mock-service
+
+WORKDIR /home/app/services/mock-service
 
 FROM base AS production
 
-RUN npm ci
-
-RUN npm run build
-
-CMD ["npm", "start"]
+RUN npm run build -w mock-service
+CMD ["npm", "start", "-w", "mock-service"]
 
 FROM base AS development
 
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "start:dev", "-w", "mock-service"]

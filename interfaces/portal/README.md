@@ -18,6 +18,8 @@ Set all ENV-variables in a local `.env`-file, based on: [`.env.example`](.env.ex
 
 ## Development
 
+Install dependencies from the repository root with `npm install`.
+
 Run `npm start`. Navigate to <http://localhost:4200>. The application will automatically reload if you change any of the source files.
 
 Run `npm run fix` to automatically fix code-style and syntax issues.

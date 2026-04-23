@@ -11,13 +11,11 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "prepare": "npm install --prefix=../../packages/eslint-config-121-platform/",
     "lint": "eslint \"**/*.{ts,js,mjs}\" --cache",
     "fix": "npm run lint -- --fix",
     "test": "npm run lint && npm run typecheck && echo 'No tests available' && exit 0",
     "build": "nest build --path=tsconfig.json",
     "start": "GLOBAL_121_VERSION=$(test -f \"VERSION.txt\" && cat VERSION.txt || echo $GLOBAL_121_VERSION)  node dist/main.js",
-    "prestart:dev": "npm install",
     "start:dev": "nest start --require=tsconfig-paths/register --builder=swc --watch --path=tsconfig.json --debug=0.0.0.0:9230",
     "typecheck": "tsc --noEmit",
     "typecheck:dev": "tsc --noEmit --watch"
@@ -51,7 +49,7 @@
     "@types/node": "^24.x",
     "chokidar": "^5.0.0",
     "eslint": "^9.39.4",
-    "eslint-config-121-platform": "file:../../packages/eslint-config-121-platform/",
+    "eslint-config-121-platform": "*",
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
     "eslint-plugin-regexp": "^3.1.0",
     "prettier": "^3.8.1",

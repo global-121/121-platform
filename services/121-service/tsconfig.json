@@ -23,18 +23,18 @@
     "incremental": true,
     "outDir": "./dist",
     "types": ["express", "node", "jest"],
-    "typeRoots": ["./node_modules/@types"],
+    "typeRoots": ["./node_modules/@types", "../../node_modules/@types"],
     "resolveJsonModule": true,
     "paths": {
       "@121-service/*": ["./*"],
-      "typeorm/*": ["./node_modules/typeorm/*"] // Add explicit location of custom TypeORM fork
+      "typeorm/*": ["./node_modules/typeorm/*", "../../node_modules/typeorm/*"] // Add explicit location of custom TypeORM fork
     }
   },
   "watchOptions": {
     "watchFile": "fixedPollingInterval",
     "excludeDirectories": ["node_modules", "dist"]
   },
-  "files": ["node_modules/jest-extended/types/index.d.ts"],
+  "files": ["../../node_modules/jest-extended/types/index.d.ts"],
   "include": ["src/**/*.ts", "test/**/*.ts"],
   "exclude": ["node_modules"]
 }

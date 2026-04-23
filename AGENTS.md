@@ -23,8 +23,10 @@ The 121 Platform is an open-source humanitarian aid platform built by the Nether
 ### Install dependencies
 
 ```bash
-npm run install:all
+npm install
 ```
+
+To regenerate the lockfile, run `npm install --legacy-peer-deps` due to peer-dependency conflicts from `@automock/jest@2` with `jest@30`. `npm ci` does not require this flag.
 
 ### Run application
 

@@ -1,9 +1,8 @@
 {
-  "name": "121-platform-tools",
+  "name": "tools",
   "private": true,
   "scripts": {
     "setup": "cp -i .env.example .env",
-    "postinstall": "npm run setup",
     "check-versions": "node check-versions.mjs",
     "download-logs": "node --env-file-if-exists=.env download-logs.mjs"
   },

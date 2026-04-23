@@ -7,6 +7,7 @@ The 121-Service is the backend where 121-programs can be created and monitored, 
 ## Getting started / Installation
 
 See instructions to get started in the main [`README`](../../README.md#getting-started).
+Install dependencies from the repository root with `npm install`.
 
 ## Database
 
@@ -58,7 +59,7 @@ To update TypeORM:
 - Go to the forked repo and create a new version as described in the [README](https://github.com/global-121/typeorm/)
 - Change the version number of TypeORM `"typeorm": "npm:@global121/typeorm@<version-number>",` in `services/121-service/package.json` according to the new release.
   - We cannot use `"@global121/typeorm": "<version-number>",` in the `package.json` because the TypeORM package is also a dependency in other packages. This configuration "tricks" npm into treating our fork as if it were the original `typeorm` so that, anywhere in our codebase (including in the `node_modules`), `import ... from 'typeorm'` will use our fork instead of the original `typeorm`
-- Run `npm i` and commit both the changes to the `services/121-service/package.json` and the `services/121-service/package-lock.json`
+- Run `npm i` from the repository root and commit both the changes to `services/121-service/package.json` and the root `package-lock.json`
 
 ---
 

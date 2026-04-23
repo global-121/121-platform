@@ -42,9 +42,9 @@ jobs:
         uses: actions/setup-node@v6
         with:
           # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
-          node-version-file: '${{ env.workingDirectory }}/.node-version'
+          node-version-file: '.node-version'
           cache: 'npm'
-          cache-dependency-path: '${{ env.workingDirectory }}/package-lock.json'
+          cache-dependency-path: 'package-lock.json'
 
       - name: Set ENV-variables for test-environment
         run: |
@@ -52,7 +52,6 @@ jobs:
           grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
 
       - name: Install
-        working-directory: ${{ env.workingDirectory }}
         run: |
           npm ci
 
@@ -61,9 +60,8 @@ jobs:
           npm run start:services:ci:production
 
       - name: 'Run "Restart Service"-test only (outside of Docker-container)'
-        working-directory: ${{ env.workingDirectory }}
         run: |
-          npm run test:integration:only-restart-service
+          npm run test:integration:only-restart-service -w 121-service
 
       - name: Docker logs
         if: always()

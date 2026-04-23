@@ -38,22 +38,18 @@ jobs:
         uses: actions/setup-node@v6
         with:
           # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
-          node-version-file: '${{ env.workingDirectory }}/.node-version'
+          node-version-file: '.node-version'
           cache: 'npm'
-          cache-dependency-path: '${{ env.workingDirectory }}/package-lock.json'
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install
-        working-directory: ${{ env.workingDirectory }}
         run: 'npm ci'
 
       - name: Lint
-        working-directory: ${{ env.workingDirectory }}
-        run: 'npm run lint'
+        run: 'npm run lint -w mock-service'
 
       - name: Check for TS errors
-        working-directory: ${{ env.workingDirectory }}
-        run: 'npm run typecheck'
+        run: 'npm run typecheck -w mock-service'
 
       - name: Test
-        working-directory: ${{ env.workingDirectory }}
-        run: 'npm run test'
+        run: 'npm run test -w mock-service'
