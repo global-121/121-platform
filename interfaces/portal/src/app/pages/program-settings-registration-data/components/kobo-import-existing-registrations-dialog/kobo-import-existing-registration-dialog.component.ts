@@ -65,6 +65,7 @@ export class KoboImportExistingRegistrationsDialogComponent {
         return 'pi pi-download me-2';
     }
   });
+
   readonly dialogTitle = computed(() => {
     switch (this.importState()) {
       case ImportState.ImportedWithErrors:
@@ -84,12 +85,13 @@ export class KoboImportExistingRegistrationsDialogComponent {
     return {
       totalSubmissions: $localize`${this.importExistingSubmissions.data()?.numberOfSubmissionsOnForm ?? 0}:count: total submission(s)`,
       numberOfSubmissionsImportedChipLabel: $localize`Imported successfully: ${this.importExistingSubmissions.data()?.numberOfSubmissionsImported ?? 0}:count:`,
+      // TODO: What is `numberOfSubmissionsSkipped` supposed to be?
       // numberOfSubmissionsSkippedChipLabel: $localize`Submissions skipped: ${this.importExistingSubmissions.data()?.numberOfSubmissionsSkipped ?? 0}:count:`,
       numberOfSubmissionsFailedChipLabel: $localize`Submissions failed: ${this.importExistingSubmissions.data()?.numberOfSubmissionsFailed ?? 0}:count:`,
     };
   });
 
-  // TODO: ADD SUBMISSIONS SKIPPED STATE
+  // TODO: ADD SUBMISSIONS SKIPPED STATE (?)
 
   readonly koboIntegration = injectQuery(() => ({
     ...this.koboApiService.getKoboIntegration(this.programId)(),
@@ -106,6 +108,8 @@ export class KoboImportExistingRegistrationsDialogComponent {
 
       if (response.validationErrors.length === 0)
         this.importState.set(ImportState.ImportedWithoutErrors);
+
+      // TODO: ADD SUBMISSIONS SKIPPED STATE (?)
     },
     onError: () => {
       this.toastService.showToast({
@@ -137,7 +141,7 @@ export class KoboImportExistingRegistrationsDialogComponent {
   >(() => [
     {
       field: 'referenceId',
-      header: $localize`Reference IDs`,
+      header: $localize`Reference ID`,
     },
     {
       field: 'column',
