@@ -183,7 +183,7 @@ export class ExportPaymentsComponent {
     },
 
     {
-      label: $localize`:@@export-close-cards:Refunded debit cards`,
+      label: $localize`:@@export-refunded-debit-cards:Refunded debit cards`,
       visible:
         programHasPhysicalCardSupport(this.program.data()) &&
         (this.payments.data() ?? []).length > 0 &&

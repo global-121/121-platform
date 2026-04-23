@@ -2298,7 +2298,7 @@
       <trans-unit id="7541862285009254523" datatype="html">
         <source>This will download an Excel file showing all refunded debit cards.</source>
       </trans-unit>
-      <trans-unit id="export-close-cards" datatype="html">
+      <trans-unit id="export-refunded-debit-cards" datatype="html">
         <source>Refunded debit cards</source>
       </trans-unit>
     </body>
