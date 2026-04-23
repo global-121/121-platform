@@ -27,6 +27,8 @@
     }
   ],
   "eslint.workingDirectories": [{ "mode": "auto" }],
+  "js/ts.tsdk.path": "./node_modules/typescript/lib",
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
   "regexrobin.rules": [
     {
       "regex": "AB#(\\d+)",
@@ -38,7 +40,5 @@
         }
       ]
     }
-  ],
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  ]
 }

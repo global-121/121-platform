@@ -28,6 +28,8 @@
   ],
   "eslint.workingDirectories": [{ "mode": "auto" }],
   "css.customData": [".vscode/tailwind.json"],
+  "js/ts.tsdk.path": "./node_modules/typescript/lib",
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
   "regexrobin.rules": [
     {
       "regex": "AB#(\\d+)",
@@ -49,8 +51,6 @@
     "ngClass",
     "class:list"
   ],
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
   "XLF: State": true,
   "XLF: Xml Format": "prettify-xml"
 }
