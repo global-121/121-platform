@@ -10,7 +10,7 @@ Install dependencies from the repository root with:
 npm install
 ```
 
-Then run `npm run setup -w tools` when you need to copy `.env.example` to `.env`.
+Then run `npm run setup -w tools` to create a baseline for ENV-variables, based on: `.env.example`.
 
 ## Tools
 

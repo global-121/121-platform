@@ -38,7 +38,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
-          node-version-file: '${{ env.workingDirectory }}/.node-version'
+          node-version-file: '.node-version'
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
 

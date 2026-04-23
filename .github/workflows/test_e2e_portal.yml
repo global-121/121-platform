@@ -62,7 +62,7 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v6
         with:
-          node-version-file: '${{ env.e2eTestsPath }}/.node-version'
+          node-version-file: '.node-version'
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
 
@@ -92,7 +92,7 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v6
         with:
-          node-version-file: '${{ env.e2eTestsPath }}/.node-version'
+          node-version-file: '.node-version'
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
 

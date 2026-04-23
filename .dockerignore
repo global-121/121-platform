@@ -42,7 +42,3 @@
 **/.git
 **/.DS_Store
 **/.vscode
-downloads
-e2e/test-results
-e2e/playwright-report
-services/azurite_data
