@@ -16,7 +16,7 @@
     </div>
   </ng-template>
 
-  @if (this.importState() === ImportStates.NotInitiated) {
+  @if (importState() === ImportStates.NotInitiated) {
     <div>
       <p i18n>Import existing registrations from your Kobo form.</p>
       <p i18n>
@@ -46,8 +46,8 @@
   }
 
   @if (
-    this.importState() === ImportStates.ImportedWithoutErrors ||
-    this.importState() === ImportStates.ImportedWithErrors
+    importState() === ImportStates.ImportedWithoutErrors ||
+    importState() === ImportStates.ImportedWithErrors
   ) {
     <div>
       <p>
@@ -77,17 +77,16 @@
     </div>
   }
 
-  @if (this.importState() === ImportStates.ImportedWithoutErrors) {
+  @if (importState() === ImportStates.ImportedWithoutErrors) {
     <div class="mt-5 flex justify-end gap-4">
       <p-button
-        label="Close"
-        i18n-label
+        i18n-label="@@generic-close"
         (click)="closeDialog()"
       />
     </div>
   }
 
-  @if (this.importState() === ImportStates.ImportedWithErrors) {
+  @if (importState() === ImportStates.ImportedWithErrors) {
     <div>
       <div class="mt-4 space-y-2">
         <app-colored-chip
@@ -113,9 +112,9 @@
       </app-query-table>
       <div class="mt-5 flex justify-end gap-4">
         <p-button
+          (click)="importState.set(ImportStates.NotInitiated)"
           label="Try again"
           i18n-label
-          (click)="this.importState.set(ImportStates.NotInitiated)"
         />
       </div>
     </div>

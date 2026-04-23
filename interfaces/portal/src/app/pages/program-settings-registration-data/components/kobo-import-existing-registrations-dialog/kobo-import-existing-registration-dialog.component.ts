@@ -49,6 +49,7 @@ interface ValidationErrorTableRow extends ValidationError {
 })
 export class KoboImportExistingRegistrationsDialogComponent {
   private readonly koboApiService = inject(KoboApiService);
+  private readonly toastService = inject(ToastService);
 
   readonly importState = signal(ImportState.NotInitiated);
   readonly responseDialogVisible = signal(false);
@@ -105,6 +106,12 @@ export class KoboImportExistingRegistrationsDialogComponent {
 
       if (response.validationErrors.length === 0)
         this.importState.set(ImportState.ImportedWithoutErrors);
+    },
+    onError: () => {
+      this.toastService.showToast({
+        severity: 'error',
+        detail: $localize`Error while importing existing Kobo registrations`,
+      });
     },
   }));
 

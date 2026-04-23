@@ -2283,9 +2283,6 @@
       <trans-unit id="6245136461829083125" datatype="html">
         <source>Import existing registrations</source>
       </trans-unit>
-      <trans-unit id="7819314041543176992" datatype="html">
-        <source>Close</source>
-      </trans-unit>
       <trans-unit id="1519954996184640001" datatype="html">
         <source>Error</source>
       </trans-unit>
@@ -2328,6 +2325,9 @@
       <trans-unit id="7761072359529249164" datatype="html">
         <source>Line number</source>
       </trans-unit>
+      <trans-unit id="7703736032933423612" datatype="html">
+        <source>Error while importing existing Kobo registrations</source>
+	  </trans-unit>
       <trans-unit id="debit-card-actions-close-card" datatype="html">
         <source>Close card</source>
       </trans-unit>
