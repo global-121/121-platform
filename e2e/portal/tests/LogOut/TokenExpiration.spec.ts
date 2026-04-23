@@ -64,8 +64,10 @@ test('User is silently redirected to login on fresh page load with already-expir
   const localStorageKey = 'logged-in-user-portalicious';
   /* eslint-disable n/no-unsupported-features/node-builtins -- page.evaluate runs in the browser, not Node */
   await page.evaluate((key) => {
+    const expiredTimeStamp = `1970-01-01T00:00:00.000Z`;
+
     const user = JSON.parse(localStorage.getItem(key)!);
-    user.expires = new Date(Date.now() - 24 * 60 * 60 * 1_000).toISOString();
+    user.expires = expiredTimeStamp;
     localStorage.setItem(key, JSON.stringify(user));
   }, localStorageKey);
   /* eslint-enable n/no-unsupported-features/node-builtins -- re-enable after browser-context block */
@@ -73,15 +75,16 @@ test('User is silently redirected to login on fresh page load with already-expir
   // Full page reload simulates reopening the browser to a bookmarked page.
   // sessionWasActive resets to false (in-memory only), but the expired token
   // is still in localStorage.
-  await page.goto('/en-GB/programs/2');
+  await page.goto('/en-GB/program/2/registrations');
 
-  // Should be silently redirected to the login page
-  await page.waitForURL((url) => url.pathname.startsWith('/en-GB/login'));
-  await expect(page).toHaveURL(/.*\/en-GB\/login/);
-
-  // The "Session expired" dialog must NOT appear — this was Scenario B (fresh open)
+  // The "Session expired" dialog must NOT appear
   const sessionExpiredDialog = page.getByText('Session expired');
   await expect(sessionExpiredDialog).not.toBeVisible();
+  // After logging back in, the user should land on the originally requested URL.
+  await loginPage.login(undefined, undefined, true);
+  await page.waitForURL((url) =>
+    url.pathname.endsWith('/program/2/registrations'),
+  );
 });
 
 test('User with a valid (non-expired) token is not redirected to login on page reload', async ({

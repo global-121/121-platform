@@ -119,18 +119,27 @@ export class AuthService {
     }
 
     if (!this.sessionWasActive) {
-      // Token was already expired when the app started — skip the popup and
-      // redirect silently so the user is not confused by a stale "session expired" message.
-      await this.clearSession();
-      await this.router.navigate(['/', AppRoutes.login]);
-      return;
+      await this.redirectToLoginSilently();
+    } else {
+      await this.expireSessionWithDialog();
     }
+  }
 
-    const currentUrl = this.router.url;
+  // Token was already expired when the app started — skip the popup and
+  // redirect silently so the user is not confused by a stale "session expired" message.
+  private async redirectToLoginSilently(): Promise<void> {
+    const returnUrl = this.router.url;
+    await this.clearSession();
+    await this.router.navigate(['/', AppRoutes.login], {
+      queryParams: { returnUrl },
+    });
+  }
 
+  private async expireSessionWithDialog(): Promise<void> {
+    const returnUrl = this.router.url;
     this.showSessionExpiredDialog.set(true);
     await this.clearSession();
-    this.sessionExpiredReturnUrl.set(currentUrl);
+    this.sessionExpiredReturnUrl.set(returnUrl);
   }
 
   public get isLoggedIn(): boolean {
