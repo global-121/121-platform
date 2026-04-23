@@ -15,9 +15,9 @@
         [iconPos]="rtlHelper.createPosition('start')()"
         (click)="openForm('add')"
       />
-      <app-add-user-dialog
-        #addUserDialog
-        [userToEdit]="formMode() === 'edit' ? selectedUser() : undefined"
+      <app-user-dialog
+        #userDialog
+        [userToEdit]="selectedUser()"
       />
     }
   </div>
