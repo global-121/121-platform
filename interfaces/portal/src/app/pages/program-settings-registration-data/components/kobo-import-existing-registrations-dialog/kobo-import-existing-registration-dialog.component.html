@@ -3,7 +3,7 @@
   [modal]="true"
   [(visible)]="responseDialogVisible"
   [style]="{ width: dialogWidth() }"
-  (onHide)="closeDialogAndResetDialogState()"
+  (onHide)="resetDialogState()"
   appendTo="body"
 >
   <ng-template pTemplate="header">
@@ -73,7 +73,7 @@
       <p-button
         label="Close"
         i18n-label
-        (click)="responseDialogVisible.set(false)"
+        (click)="closeDialog()"
       />
     </div>
   }

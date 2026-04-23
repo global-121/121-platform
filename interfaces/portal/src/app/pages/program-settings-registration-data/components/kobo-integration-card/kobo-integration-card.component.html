@@ -9,6 +9,7 @@
   [subtitle]="cardSubtitle()"
   [image]="'assets/registration-data/kobo-toolbox.svg'"
   [enableLink]="!isKoboIntegrated()"
+  [attr.data-testid]="'kobo-integration-card'"
 >
   <ng-container card-content>
     @if (isKoboIntegrated()) {

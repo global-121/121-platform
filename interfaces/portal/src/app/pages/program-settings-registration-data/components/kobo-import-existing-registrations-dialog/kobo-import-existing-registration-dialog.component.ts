@@ -36,7 +36,6 @@ export class KoboImportExistingRegistrationsDialogComponent {
 
   readonly importState = signal(ImportState.NotInitiated);
   readonly responseDialogVisible = signal(false);
-
   readonly programId = input.required<number | string>();
 
   readonly headerIcon = computed(() => {
@@ -87,15 +86,13 @@ export class KoboImportExistingRegistrationsDialogComponent {
     return ImportState;
   }
 
-  setToNotInitiatedState() {
+  resetDialogState() {
     this.importState.set(ImportState.NotInitiated);
+    this.importExistingSubmissions.reset();
   }
 
-  // This needs to be a close() and a reset()
-  closeDialogAndResetDialogState() {
+  closeDialog() {
     this.responseDialogVisible.set(false);
-    this.setToNotInitiatedState();
-    this.importExistingSubmissions.reset();
   }
 
   show() {
