@@ -23,11 +23,13 @@ export const startTokenExpirationMonitor = ({
   forceLogoutMs,
   getTimeUntilExpiration,
   onExpired,
+  onValid,
 }: {
   checkIntervalMs: number;
   forceLogoutMs: number;
   getTimeUntilExpiration: () => number;
   onExpired: () => void;
+  onValid: () => void;
 }): Subscription =>
   interval(checkIntervalMs).subscribe(() => {
     const timeUntilExpiry = getTimeUntilExpiration();
@@ -35,6 +37,14 @@ export const startTokenExpirationMonitor = ({
     if (timeUntilExpiry === Infinity) {
       // Strategy doesn't require expiration monitoring
       return;
+    }
+
+    // Mark the session as valid whenever the token hasn't actually expired yet.
+    // This covers the edge case where the app boots with a token inside the
+    // force-logout window (0 < timeUntilExpiry <= forceLogoutMs): the token is
+    // still valid, so the session should be considered active before forcing logout.
+    if (timeUntilExpiry > 0) {
+      onValid();
     }
 
     if (timeUntilExpiry <= forceLogoutMs) {
