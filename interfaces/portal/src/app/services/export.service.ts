@@ -267,14 +267,10 @@ export class ExportService {
           this.intersolveVisaApiService.getRefundedDebitCards(programId)(),
         );
       },
-      onSuccess: (closedCards) => {
-        const exportFileName = ExportService.toExportFileName(
-          'refunded-debit-cards',
-          'xlsx',
-        );
+      onSuccess: (refundedDebitCards) => {
         void this.downloadService.downloadArrayToXlsx({
-          data: closedCards,
-          fileName: exportFileName,
+          data: refundedDebitCards,
+          fileName: 'refunded-debit-cards',
         });
       },
     };

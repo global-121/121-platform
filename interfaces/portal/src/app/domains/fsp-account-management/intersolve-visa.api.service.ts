@@ -179,7 +179,7 @@ export class IntersolveVisaApiService extends DomainApiService {
     return this.generateQueryOptions<RefundedDebitCardsExport[]>({
       path: [
         'programs',
-        programId(),
+        programId,
         'fsps',
         'intersolve-visa',
         'wallet-closures',
