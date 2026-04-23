@@ -24,7 +24,7 @@ import {
 } from '~/components/query-table/query-table.types';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
-import { AddUserDialogComponent } from '~/pages/users/components/add-user-dialog/add-user-dialog.component';
+import { UserDialogComponent } from '~/pages/users/components/user-dialog/user-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
@@ -37,7 +37,7 @@ import { ToastService } from '~/services/toast.service';
     CardModule,
     QueryTableComponent,
     FormDialogComponent,
-    AddUserDialogComponent,
+    UserDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './users.page.html',
@@ -52,13 +52,11 @@ export class UsersPageComponent {
 
   readonly resetPasswordConfirmationDialog =
     viewChild.required<FormDialogComponent>('resetPasswordConfirmationDialog');
-  readonly addUserDialog =
-    viewChild.required<AddUserDialogComponent>('addUserDialog');
+  readonly userDialog = viewChild.required<UserDialogComponent>('userDialog');
 
   users = injectQuery(this.userApiService.getAllUsers());
 
   readonly selectedUser = signal<undefined | User>(undefined);
-  readonly formMode = signal<'add' | 'edit'>('add');
 
   readonly columns = computed<QueryTableColumn<User>[]>(() => [
     {
@@ -93,6 +91,7 @@ export class UsersPageComponent {
       },
     }),
   );
+
   readonly contextMenuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`:@@generic-edit:Edit`,
@@ -129,8 +128,14 @@ export class UsersPageComponent {
       },
     },
   ]);
+
   openForm(formMode: 'add' | 'edit') {
-    this.formMode.set(formMode);
-    this.addUserDialog().show();
+    if (formMode === 'edit') {
+      this.userDialog().editUser();
+      return;
+    }
+
+    this.selectedUser.set(undefined);
+    this.userDialog().addUser();
   }
 }
