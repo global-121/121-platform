@@ -139,7 +139,7 @@ export async function getAccessTokenScoped(
 ): Promise<string> {
   return await getAccessToken(
     `${defaultScope}@example.org`,
-    env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
   );
 }
 
