@@ -6,17 +6,7 @@ Thanks for helping out!
 
 We try to follow the "[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)" convention, combined with the "[Angular Commit Message format](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format)".
 
-When committing your changes, provide a commit message(-subject) that starts with an appropriate keyword:
-
-- `feat`: new feature for the user
-- `fix`: bug fix for the user
-- `docs`: changes to the documentation
-- `style`: formatting, missing semi colons, etc; no production code change
-- `refactor`: refactoring production code, eg. renaming a variable
-- `test`: adding missing tests, refactoring tests; no production code change
-- `chore`: cleanups, version updates etc; no production code change
-
-Let the message be an _*imperative*_ description of the changes. (Don't tell what _you did_, but what this commit will **do** when applied to the code.)  
+When committing your changes, provide a commit message(-subject) with an _*imperative*_ description of the changes. (Don't tell what _you did_, but what this commit will **do** when applied to the code.)  
 So in your head, finish the sentence: "**This commit will... `<verb> <subject> ...`**".
 
 Some examples:
@@ -25,16 +15,6 @@ Some examples:
 - `docs:` (This commit will) `Remove confusing/inconsistent terms from helper-functions examples`
 - `refactor:` (This commit will) `Load the program-list fast again`
 - `fix:` (This commit will) `Prevent the user from submitting an empty form`
-
-Also add an Azure DevOps task-ID in the body(after the first line) of the commit message. This will make it a clickable link on GitHub. A mention in the title only gives a one-way link from DevOps to GitHub, not vice-versa.
-
-For example:
-
-```txt
-feat: Add transaction-history to the profile page
-
-See AB#123456
-```
 
 Some additional reading:
 
@@ -75,8 +55,8 @@ Please submit changes through [pull requests](http://help.github.com/pull-reques
 - **PR targeting main**:
   - Include one of the [labels we use for auto-generating release notes](../.github/release.yml)
   - Follow the naming conventions from the [Committing section](#committing):
-    - Title with keyword (e.g., `feat: ignore duplicates`)
-    - Description with DevOps-item reference
+    - Title with a descriptive sentence. Consider that the PR title will be in the auto-generated release notes, so make it something that you think can be read by our non-developer stakeholders.
+    - Description with DevOps-item reference `AB#XXXX`. This will make it a clickable link on GitHub. A mention in the title only gives a one-way link from DevOps to GitHub, not vice-versa.
 - **PRs targeting non-main branches**:
   - If the target branch is under review, keep the PR in draft until the target branch merges to main.
 
@@ -100,6 +80,9 @@ We avoid "feature branches" (long-lived branches with multiple/no owners). For P
 - **Separate frontend and backend changes** when possible:
   - Exception: When backend changes break frontend compatibility, include both in one PR.
   - Rule of thumb: If API changes are backward compatible, separate the PRs; if not, combine them.
+- **Prefer to merge test and feature code together**
+  - We prefer to not have untested code in the main branch as it
+  - Exceptions could be if the feature code is behind a feature switch or a permission, that is not yet available for a user
 
 ---
 
