@@ -38,6 +38,12 @@ jobs:
             121-service/package-lock.json
             mock-service/package-lock.json
 
+      - name: Install root dependencies
+        working-directory: './'
+        env:
+          HUSKY: 0
+        run: npm ci --ignore-scripts
+
       - name: Install shared ESLint-config dependencies
         working-directory: './packages/eslint-config-121-platform'
         run: npm ci --ignore-scripts
