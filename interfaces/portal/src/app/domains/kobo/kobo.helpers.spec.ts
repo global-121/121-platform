@@ -75,7 +75,7 @@ describe('buildKoboFormUrl', () => {
     });
 
     expect(result).toBe(
-      'https://kobo.example.org//#/forms/asset-id-123/summary',
+      'https://kobo.example.org/#/forms/asset-id-123/summary',
     );
   });
 

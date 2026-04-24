@@ -22,7 +22,8 @@ export const buildKoboFormUrl = ({
 }: {
   serverUrl: string;
   assetUid: string;
-}): string => `${serverUrl}/#/${KOBO_URL_FORMS_PREFIX}/${assetUid}/summary`;
+}): string =>
+  `${serverUrl.replace(/\/$/, '')}/#/${KOBO_URL_FORMS_PREFIX}/${assetUid}/summary`;
 
 export const extractServerAndAssetIdFromUrl = (
   rawUrl: string,
