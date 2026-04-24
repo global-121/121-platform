@@ -108,6 +108,10 @@ jobs:
         run: |
           cp services/.env.example services/.env
 
+      - name: Convert user-credentials to be unique
+        run: |
+          sed -E -i 's/^(USERCONFIG_121_SERVICE_PASSWORD_[A-Z0-9_]+)=.*/\1=\1/' services/.env
+
       - name: Run Services with Docker
         run: |
           npm run start:services:ci:production
