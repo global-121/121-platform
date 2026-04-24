@@ -38,21 +38,25 @@ jobs:
             121-service/package-lock.json
             mock-service/package-lock.json
 
+      - name: Install shared ESLint-config dependencies
+        working-directory: './packages/eslint-config-121-platform'
+        run: npm ci --ignore-scripts
+
       - name: Install E2E-Test dependencies
         working-directory: './e2e'
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Install Portal dependencies
         working-directory: './interfaces/portal'
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Install 121-Service dependencies
         working-directory: './services/121-service'
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Install Mock-Service dependencies
         working-directory: './services/mock-service'
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Prepare ENV-variables
         run: |
