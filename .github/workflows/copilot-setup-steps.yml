@@ -35,8 +35,8 @@ jobs:
             e2e/package-lock.json
             packages/eslint-config-121-platform/package-lock.json
             interfaces/portal/package-lock.json
-            121-service/package-lock.json
-            mock-service/package-lock.json
+            services/121-service/package-lock.json
+            services/mock-service/package-lock.json
 
       - name: Install root dependencies
         working-directory: './'
