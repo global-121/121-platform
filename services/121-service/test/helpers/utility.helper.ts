@@ -295,9 +295,7 @@ export async function findUserByUsername({
     searchUserResponse.status !== HttpStatus.OK ||
     !searchUserResponse.body.length
   ) {
-    throw new Error(
-      `Failed to find created user: ${searchUserResponse.status}`,
-    );
+    throw new Error(`Failed to find user: ${searchUserResponse.status}`);
   }
 
   return searchUserResponse.body[0].id;
@@ -349,6 +347,35 @@ export async function assignUserToProgram({
   }
 }
 
+export async function setUserPassword({
+  username,
+  currentPassword = env.USERCONFIG_121_SERVICE_PASSWORD_TESTING,
+  newPassword,
+  adminAccessToken,
+}: {
+  username: string;
+  currentPassword?: string;
+  newPassword: string;
+  adminAccessToken: string;
+}): Promise<{ id: number }> {
+  const response = await getServer()
+    .post('/users/password')
+    .set('Cookie', [adminAccessToken])
+    .send({
+      username,
+      password: currentPassword,
+      newPassword,
+    });
+
+  if (response.status !== HttpStatus.CREATED) {
+    throw new Error(
+      `Failed to set user password: ${response.status} - ${JSON.stringify(response.body)}`,
+    );
+  }
+
+  return { id: response.body.user.id };
+}
+
 export async function createUserWithPermissions({
   permissions,
   programId,
@@ -381,11 +408,13 @@ export async function createUserWithPermissions({
     adminAccessToken,
   });
 
-  const userId = await findUserByUsername({
-    programId,
+  // Reset created user's password to its own unique value
+  const createdUser = await setUserPassword({
     username,
+    newPassword: password,
     adminAccessToken,
   });
+  const userId = createdUser.id;
 
   // Assign user to program with the custom role
   await assignUserToProgram({
