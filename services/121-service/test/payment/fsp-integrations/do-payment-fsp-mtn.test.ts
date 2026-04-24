@@ -57,10 +57,7 @@ describe('Do payment with FSP: MTN', () => {
       paymentId,
       accessToken,
       maxWaitTimeMs: 10_000,
-      completeStatuses: [
-        TransactionStatusEnum.success,
-        TransactionStatusEnum.error,
-      ],
+      completeStatuses: [TransactionStatusEnum.success],
     });
 
     // Assert
@@ -95,6 +92,7 @@ describe('Do payment with FSP: MTN', () => {
       TransactionEventDescription.approval,
       TransactionEventDescription.initiated,
       TransactionEventDescription.mtnRequestSent,
+      TransactionEventDescription.mtnCallbackReceived,
     ]);
   });
 
@@ -244,10 +242,7 @@ describe('Do payment with FSP: MTN', () => {
       paymentId,
       accessToken,
       maxWaitTimeMs: 10_000,
-      completeStatuses: [
-        TransactionStatusEnum.error,
-        TransactionStatusEnum.success,
-      ],
+      completeStatuses: [TransactionStatusEnum.error],
     });
 
     // Update registration to a working phone number
@@ -293,6 +288,7 @@ describe('Do payment with FSP: MTN', () => {
       TransactionEventDescription.mtnRequestSent,
       TransactionEventDescription.retry,
       TransactionEventDescription.mtnRequestSent,
+      TransactionEventDescription.mtnCallbackReceived,
     ]);
   });
 });
