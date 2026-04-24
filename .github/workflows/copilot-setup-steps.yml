@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/customize-the-agent-environment
 
-name: "Copilot Setup Steps"
+name: 'Copilot Setup Steps'
 
 on:
   workflow_dispatch:
@@ -30,10 +30,29 @@ jobs:
         with:
           node-version-file: '.node-version'
           cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            e2e/package-lock.json
+            packages/eslint-config-121-platform/package-lock.json
+            interfaces/portal/package-lock.json
+            121-service/package-lock.json
+            mock-service/package-lock.json
 
-      - name: Install All Dependencies
-        run: |
-          npm run install:local:all
+      - name: Install E2E-Test dependencies
+        working-directory: './e2e'
+        run: npm ci
+
+      - name: Install Portal dependencies
+        working-directory: './interfaces/portal'
+        run: npm ci
+
+      - name: Install 121-Service dependencies
+        working-directory: './services/121-service'
+        run: npm ci
+
+      - name: Install Mock-Service dependencies
+        working-directory: './services/mock-service'
+        run: npm ci
 
       - name: Prepare ENV-variables
         run: |
