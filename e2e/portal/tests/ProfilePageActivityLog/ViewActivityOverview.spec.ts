@@ -185,7 +185,10 @@ test.describe('as user with only view paper voucher permissions', () => {
       });
 
       const loginPage = new LoginPage(page);
-      await loginPage.login(username, password);
+      await loginPage.login({
+        username,
+        password,
+      });
     });
 
     test('transaction rows both show current balance, but only "view voucher" button for paper PA', async ({

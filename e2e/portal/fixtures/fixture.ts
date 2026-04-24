@@ -202,17 +202,15 @@ export const customSharedFixture = base.extend<Fixtures>({
       // Login
       const loginPage = new LoginPage(page);
       if (params?.userCredentials) {
-        await loginPage.login(
-          params.userCredentials.username,
-          params.userCredentials.password,
-        );
+        await loginPage.login({
+          username: params.userCredentials.username,
+          password: params.userCredentials.password,
+          returnUrl: params?.navigateToPage ?? undefined,
+        });
       } else {
-        await loginPage.loginAsAdmin();
-      }
-
-      // Optionally navigate to a specific page after login
-      if (params?.navigateToPage) {
-        await loginPage.goto(params.navigateToPage);
+        await loginPage.loginAsAdmin({
+          returnUrl: params?.navigateToPage ?? undefined,
+        });
       }
     };
 
@@ -226,10 +224,10 @@ export const customSharedFixture = base.extend<Fixtures>({
     }): Promise<void> => {
       const loginPage = new LoginPage(page);
       if (userCredentials) {
-        await loginPage.login(
-          userCredentials.username,
-          userCredentials.password,
-        );
+        await loginPage.login({
+          username: userCredentials.username,
+          password: userCredentials.password,
+        });
       } else {
         await loginPage.loginAsAdmin();
       }

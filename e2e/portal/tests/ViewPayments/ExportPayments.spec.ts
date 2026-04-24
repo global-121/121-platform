@@ -104,10 +104,10 @@ test('View available actions for a "view only" user', async ({
   loginPage,
 }) => {
   await homePage.selectAccountOption('Logout');
-  await loginPage.login(
-    env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
-    env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
-  );
+  await loginPage.login({
+    username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+    password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+  });
 
   await test.step('Validate hidden buttons', async () => {
     await paymentsPage.exportButton.waitFor({ state: 'hidden' });

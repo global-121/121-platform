@@ -19,25 +19,34 @@ class LoginPage extends BasePage {
     this.loginButton = this.page.getByRole('button', { name: 'Log in' });
   }
 
-  async goto(path = '/login'): Promise<void> {
-    await this.page.goto(path);
+  async loginAsAdmin({
+    returnUrl,
+  }: { returnUrl?: string } = {}): Promise<void> {
+    await this.login({
+      username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+      skipUrlCheck: true,
+      returnUrl,
+    });
   }
 
-  async loginAsAdmin(): Promise<void> {
-    await this.goto();
-    await this.login(
-      env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-      true,
-    );
-  }
-
-  async login(
-    username: string,
-    password: string,
+  async login({
+    username,
+    password,
     skipUrlCheck = false,
-  ): Promise<void> {
-    await this.goto();
+    returnUrl,
+  }: {
+    username: string;
+    password: string;
+    skipUrlCheck?: boolean;
+    returnUrl?: string;
+  }): Promise<void> {
+    let path = '/login';
+    if (returnUrl) {
+      path = `${path}?returnUrl=${encodeURIComponent(`/en-GB/${returnUrl}`)}`;
+    }
+    await super.goto(path);
+
     if (!username || !password) {
       throw new Error('Username and password are required');
     }
