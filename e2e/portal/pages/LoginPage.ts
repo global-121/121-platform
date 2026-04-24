@@ -45,6 +45,10 @@ class LoginPage extends BasePage {
     skipNavigateToLogin?: boolean;
     skipUrlCheck?: boolean;
   }): Promise<void> {
+    if (!username || !password) {
+      throw new Error('Username and password are required.');
+    }
+
     if (!skipNavigateToLogin) {
       await super.goto('/login');
     }
