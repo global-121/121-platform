@@ -28,12 +28,13 @@ class LoginPage extends BasePage {
     await this.login(
       env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+      true,
     );
   }
 
   async login(
-    username?: string,
-    password?: string,
+    username: string,
+    password: string,
     skipUrlCheck = false,
   ): Promise<void> {
     await this.goto();

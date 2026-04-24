@@ -51,12 +51,17 @@ interface Fixtures {
     seedWithStatus?: RegistrationStatusEnum;
     seedPaidRegistrations?: boolean;
     transferValue?: number;
-    username?: string;
-    password?: string;
+    userCredentials?: {
+      username: string;
+      password: string;
+    };
     includeRegistrationEvents?: boolean;
     approverMode?: ApproverSeedMode;
   }) => Promise<void>;
-  login: (params?: { username?: string; password?: string }) => Promise<void>;
+  login: (userCredentials?: {
+    username: string;
+    password: string;
+  }) => Promise<void>;
   onlyResetAndSeedRegistrations: (params) => Promise<void>;
   exportDataComponent: ExportData;
   tableComponent: TableComponent;
@@ -173,9 +178,11 @@ export const customSharedFixture = base.extend<Fixtures>({
       skipSeedRegistrations?: boolean;
       transferValue?: number;
       // For logging and navigation afterwards.
+      userCredentials?: {
+        username: string;
+        password: string;
+      };
       navigateToPage?: string;
-      username?: string;
-      password?: string;
     }): Promise<void> => {
       await resetDatabase({
         approverMode: params.approverMode,
@@ -194,10 +201,17 @@ export const customSharedFixture = base.extend<Fixtures>({
 
       // Login
       const loginPage = new LoginPage(page);
-      await loginPage.login(params.username, params.password);
+      if (params?.userCredentials) {
+        await loginPage.login(
+          params.userCredentials.username,
+          params.userCredentials.password,
+        );
+      } else {
+        await loginPage.loginAsAdmin();
+      }
 
       // Optionally navigate to a specific page after login
-      if (params.navigateToPage) {
+      if (params?.navigateToPage) {
         await loginPage.goto(params.navigateToPage);
       }
     };
@@ -206,12 +220,19 @@ export const customSharedFixture = base.extend<Fixtures>({
   },
 
   login: async ({ page }, use) => {
-    const fn = async (params?: {
-      username?: string;
-      password?: string;
+    const fn = async (userCredentials?: {
+      username: string;
+      password: string;
     }): Promise<void> => {
       const loginPage = new LoginPage(page);
-      await loginPage.login(params?.username, params?.password);
+      if (userCredentials) {
+        await loginPage.login(
+          userCredentials.username,
+          userCredentials.password,
+        );
+      } else {
+        await loginPage.loginAsAdmin();
+      }
     };
     await use(fn);
   },

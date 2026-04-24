@@ -14,8 +14,10 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.testMultiple,
     skipSeedRegistrations: true,
-    username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
-    password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+    userCredentials: {
+      username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+    },
   });
 });
 
