@@ -205,12 +205,16 @@ export const customSharedFixture = base.extend<Fixtures>({
         await loginPage.login({
           username: params.userCredentials.username,
           password: params.userCredentials.password,
-          returnUrl: params?.navigateToPage ?? undefined,
+          skipUrlCheck: params?.navigateToPage ? true : false,
         });
       } else {
         await loginPage.loginAsAdmin({
-          returnUrl: params?.navigateToPage ?? undefined,
+          skipUrlCheck: params?.navigateToPage ? true : false,
         });
+      }
+
+      if (params.navigateToPage) {
+        await loginPage.goto(params.navigateToPage);
       }
     };
 

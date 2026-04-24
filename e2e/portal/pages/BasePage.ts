@@ -33,9 +33,7 @@ class BasePage {
     });
     this.programHeader = this.page.getByTestId('program-header');
     this.sidebar = this.page.getByTestId('sidebar');
-    this.sidebarToggle = this.page
-      .getByTestId('sidebar-toggle')
-      .getByRole('button');
+    this.sidebarToggle = this.page.getByTestId('sidebar-toggle');
     this.accountDropdown = this.page.getByRole('button', { name: 'Account' });
     this.formError = this.page.getByTestId('form-error');
     this.toast = this.page.getByRole('alert');
@@ -49,9 +47,7 @@ class BasePage {
   }
 
   async openSidebar() {
-    await this.sidebarToggle.click({
-      delay: 100,
-    });
+    await this.sidebarToggle.getByRole('button', { name: 'Menu' }).click();
   }
 
   async navigateToPage(pageName: string) {

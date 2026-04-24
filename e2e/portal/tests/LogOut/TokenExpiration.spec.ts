@@ -79,7 +79,10 @@ test('User is silently redirected to login on fresh page load with already-expir
   const sessionExpiredDialog = page.getByText('Session expired');
   await expect(sessionExpiredDialog).not.toBeVisible();
   // After logging back in, the user should land on the originally requested URL.
-  await loginPage.loginAsAdmin();
+  await loginPage.loginAsAdmin({
+    skipNavigateToLogin: true,
+    skipUrlCheck: true,
+  });
   await page.waitForURL((url) =>
     url.pathname.endsWith('/program/2/registrations'),
   );
