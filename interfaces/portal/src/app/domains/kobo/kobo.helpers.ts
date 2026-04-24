@@ -1,4 +1,5 @@
 import { CreateQueryResult } from '@tanstack/angular-query-experimental';
+import { withoutTrailingSlash } from 'ufo';
 
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 
@@ -23,7 +24,7 @@ export const buildKoboFormUrl = ({
   serverUrl: string;
   assetUid: string;
 }): string =>
-  `${serverUrl.replace(/\/$/, '')}/#/${KOBO_URL_FORMS_PREFIX}/${assetUid}/summary`;
+  `${withoutTrailingSlash(serverUrl)}/#/${KOBO_URL_FORMS_PREFIX}/${assetUid}/summary`;
 
 export const extractServerAndAssetIdFromUrl = (
   rawUrl: string,
