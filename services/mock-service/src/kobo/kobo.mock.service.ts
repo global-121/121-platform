@@ -509,6 +509,10 @@ export class KoboMockService {
       });
     }
 
+    if (uid_asset.includes('without-submissions')) {
+      return { count: 0, next: null, previous: null, results: [] };
+    }
+
     return { count: results.length, next: null, previous: null, results };
   }
 
