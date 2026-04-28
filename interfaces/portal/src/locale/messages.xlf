@@ -1253,9 +1253,6 @@
       <trans-unit id="4970172669399649769" datatype="html">
         <source>Make sure to match the required format of the template CSV-file.</source>
       </trans-unit>
-      <trans-unit id="6554222446236271125" datatype="html">
-        <source>The import takes about 1 minute per 100 records.</source>
-      </trans-unit>
       <trans-unit id="download-template" datatype="html">
         <source>Download the template</source>
       </trans-unit>
@@ -2267,6 +2264,21 @@
       </trans-unit>
       <trans-unit id="5918723526444903137" datatype="html">
         <source>Add user</source>
+      </trans-unit>
+      <trans-unit id="1519954996184640001" datatype="html">
+        <source>Error</source>
+      </trans-unit>
+      <trans-unit id="3077263560424048384" datatype="html">
+        <source>The import takes about 1 minute per 100 records.</source>
+      </trans-unit>
+      <trans-unit id="6555318547274416232" datatype="html">
+        <source>Value</source>
+      </trans-unit>
+      <trans-unit id="763982378603811482" datatype="html">
+        <source>Column</source>
+      </trans-unit>
+      <trans-unit id="7761072359529249164" datatype="html">
+        <source>Line number</source>
       </trans-unit>
     </body>
   </file>

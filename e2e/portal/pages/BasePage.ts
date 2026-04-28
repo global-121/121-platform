@@ -178,6 +178,26 @@ class BasePage {
     await expect(errorElement).toContainText(errorMessage);
   }
 
+  async validateErrorTable() {
+    const fileDialogErrorTable = new TableComponent(
+      this.page,
+      'import-file-dialog-errors-table',
+    );
+
+    const columnHeaders = await fileDialogErrorTable.getTextArrayFromHeader();
+    const rows = await fileDialogErrorTable.tableRows
+      .locator('td')
+      .allInnerTexts();
+
+    expect(columnHeaders).toEqual(['Line number', 'Column', 'Value', 'Error']);
+    expect(rows).toEqual([
+      '13',
+      'addressCity',
+      '',
+      'Cannot update/set addressCity with a nullable value as it is required for the FSP: Intersolve-visa',
+    ]);
+  }
+
   /**
    * Downloads a file triggered by a specific action on the page.
    *

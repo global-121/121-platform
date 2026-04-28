@@ -3,7 +3,8 @@
   [closeOnEscape]="false"
   [(visible)]="dialogVisible"
   (onShow)="resetForm()"
-  styleClass="max-w-[46rem]"
+  class="w-full max-w-184"
+  (onHide)="handleClose()"
 >
   <ng-template pTemplate="header">
     <h3>
@@ -12,13 +13,14 @@
     </h3>
   </ng-template>
 
+  <ng-content select="[pre-file-input]"></ng-content>
+
   <form
     class="space-y-3"
     [formGroup]="formGroup"
     (ngSubmit)="onFormSubmit()"
   >
-    <ng-content select="[pre-file-input]"></ng-content>
-    <div>
+    <div class="mt-5">
       <app-file-upload-control
         formControlName="file"
         [accept]="accept()"
@@ -26,23 +28,26 @@
       ></app-file-upload-control>
       <app-form-error [error]="formFieldErrors()('file')" />
     </div>
-    @if (mutation().isError() || detailedImportErrors()) {
-      <div class="mt-4">
-        @let detailedErrors = detailedImportErrors();
+    @if (mutation().isError()) {
+      @let detailedErrors = detailedImportErrors();
 
+      <div class="mt-4">
         @if (detailedErrors) {
           <app-form-error
             error="Something went wrong with this import. Please fix the errors reported below and try again."
             i18n-error
           />
-
-          <p-scrollPanel
-            styleClass="border-grey-300 bg-grey-100 max-h-60 w-full border p-4"
+          <app-query-table
+            [dataTestId]="'import-file-dialog-errors-table'"
+            [paginatorDropdownAppendTo]="'body'"
+            [columns]="detailedErrorsColumns()"
+            [initialSortField]="'lineNumber'"
+            [items]="detailedErrors"
+            [scrollHeight]="'400px'"
+            [isPending]="false"
+            [scrollable]="true"
           >
-            @for (error of detailedErrors; track $index) {
-              <pre class="whitespace-pre-wrap">{{ error | json }}</pre>
-            }
-          </p-scrollPanel>
+          </app-query-table>
         } @else {
           <app-form-error [error]="mutation().failureReason()?.message" />
         }
@@ -56,7 +61,7 @@
         rounded
         outlined
         severity="contrast"
-        (click)="dialogVisible.set(false)"
+        (click)="handleClose()"
         [disabled]="mutation().isPending()"
       />
       <p-button
@@ -64,6 +69,7 @@
         i18n-label
         type="submit"
         rounded
+        [disabled]="formGroup.value.file === null"
         [loading]="mutation().isPending()"
       />
     </div>

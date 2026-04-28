@@ -24,10 +24,9 @@ class TableComponent {
   readonly datePicker: Locator;
   readonly filterModeDropdown: Locator;
 
-  constructor(page: Page) {
+  constructor(page: Page, dataTestId?: string) {
     this.page = page;
-    // We assume there's only one of these at a time.
-    this.table = this.page.getByTestId('query-table');
+    this.table = this.page.getByTestId(dataTestId ?? 'query-table');
     this.tableEmpty = this.table.getByTestId('query-table-empty');
     this.tableLoading = this.table.getByTestId('query-table-loading');
     this.tableRows = this.table.locator('tbody tr');

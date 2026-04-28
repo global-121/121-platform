@@ -22,6 +22,7 @@ export type QueryTableColumn<TData, TField = Leaves<TData> & string> = {
   disableFiltering?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- couldn't find a way to avoid any here
   component?: Type<TableCellComponent<TData, any>>;
+  class?: string;
 } & (
   | {
       type: QueryTableColumnType.MULTISELECT;

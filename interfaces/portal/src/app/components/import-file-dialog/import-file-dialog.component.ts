@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -17,14 +16,22 @@ import {
 import { CreateMutationResult } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { ScrollPanelModule } from 'primeng/scrollpanel';
+
+import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 
 import { FileUploadControlComponent } from '~/components/file-upload-control/file-upload-control.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
+import { QueryTableComponent } from '~/components/query-table/query-table.component';
+import { QueryTableColumn } from '~/components/query-table/query-table.types';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 export type ImportFileDialogFormGroup =
   (typeof ImportFileDialogComponent)['prototype']['formGroup'];
+
+interface DetailedImportError extends ValidateRegistrationErrorObject {
+  lineNumber?: number;
+  id: number;
+}
 
 @Component({
   selector: 'app-import-file-dialog',
@@ -34,8 +41,7 @@ export type ImportFileDialogFormGroup =
     ButtonModule,
     FormErrorComponent,
     FileUploadControlComponent,
-    ScrollPanelModule,
-    JsonPipe,
+    QueryTableComponent,
   ],
   templateUrl: './import-file-dialog.component.html',
   styles: ``,
@@ -66,15 +72,53 @@ export class ImportFileDialogComponent {
       error?.cause instanceof HttpErrorResponse &&
       Array.isArray(error.cause.error)
     ) {
-      return error.cause.error as unknown[];
+      // We need to add a ID because the table expects it, without <app-query-table> throws a typescript error
+      const detailedErrorsWithIndexedIds: DetailedImportError[] =
+        error.cause.error.map(
+          (error: ValidateRegistrationErrorObject, index: number) => ({
+            ...error,
+            id: index,
+          }),
+        );
+
+      return detailedErrorsWithIndexedIds;
     }
 
     return undefined;
   });
 
+  readonly detailedErrorsColumns = computed<
+    QueryTableColumn<DetailedImportError>[]
+  >(() => [
+    {
+      field: 'lineNumber',
+      header: $localize`Line number`,
+    },
+    {
+      field: 'column',
+      header: $localize`Column`,
+    },
+    {
+      field: 'value',
+      header: $localize`Value`,
+    },
+    {
+      field: 'error',
+      header: $localize`Error`,
+      class: 'max-w-md',
+    },
+  ]);
+
   resetForm(): void {
     this.formGroup.reset();
     this.mutation().reset();
+  }
+
+  handleClose(): void {
+    this.dialogVisible.set(false);
+    setTimeout(() => {
+      this.resetForm();
+    }, 300);
   }
 
   onFormSubmit(): void {
