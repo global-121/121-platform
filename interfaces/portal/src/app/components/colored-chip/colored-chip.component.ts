@@ -40,7 +40,8 @@ export class ColoredChipComponent {
 
     // Do not replace with something like `bg-${this.variant()}-100` as it would not work with tailwind's JIT compiler
     // https://tailwindcss.com/docs/just-in-time-mode
-    switch (this.variant()) {
+    const variant = this.variant();
+    switch (variant) {
       case 'blue':
         return `${baseClass} bg-blue-100 text-blue-700`;
       case 'green':
@@ -58,7 +59,8 @@ export class ColoredChipComponent {
       case 'contrast':
         return `${baseClass} bg-grey-50 text-grey-900`;
       default:
-        return '';
+        variant satisfies never;
+        return;
     }
   });
 }
