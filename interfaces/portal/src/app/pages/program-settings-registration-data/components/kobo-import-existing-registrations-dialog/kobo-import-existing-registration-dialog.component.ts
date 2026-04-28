@@ -95,8 +95,6 @@ export class KoboImportExistingRegistrationsDialogComponent {
     };
   });
 
-  // TODO: ADD SUBMISSIONS SKIPPED STATE (?)
-
   readonly koboIntegration = injectQuery(() => ({
     ...this.koboApiService.getKoboIntegration(this.programId)(),
     enabled: !!this.programId(),
@@ -115,8 +113,6 @@ export class KoboImportExistingRegistrationsDialogComponent {
 
       if (response.numberOfSubmissionsOnForm === 0)
         this.importState.set(ImportState.ImportedWithoutSubmissions);
-
-      // TODO: ADD SUBMISSIONS SKIPPED STATE (?)
     },
     onError: () => {
       this.toastService.showToast({
