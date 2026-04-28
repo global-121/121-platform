@@ -55,8 +55,10 @@ Please submit changes through [pull requests](http://help.github.com/pull-reques
 - **PR targeting main**:
   - Include one of the [labels we use for auto-generating release notes](../.github/release.yml)
   - Follow the naming conventions from the [Committing section](#committing):
-    - Title with a descriptive sentence. Consider that the PR title will be in the auto-generated release notes, so make it something that you think can be read by our non-developer stakeholders.
-    - Description with DevOps-item reference `AB#XXXX`. This will make it a clickable link on GitHub. A mention in the title only gives a one-way link from DevOps to GitHub, not vice-versa.
+    - Title with a descriptive sentence.  
+      Consider that the PR title will be in the auto-generated release notes, so make it something that you think can be read by our non-developer stakeholders.
+    - Description with DevOps-item reference `AB#XXXX`.  
+      This will make it a clickable link on GitHub and a link in Azure DevOps. (A mention in the title only gives a one-way link from DevOps to GitHub, not vice-versa.)
 - **PRs targeting non-main branches**:
   - If the target branch is under review, keep the PR in draft until the target branch merges to main.
 
@@ -80,9 +82,10 @@ We avoid "feature branches" (long-lived branches with multiple/no owners). For P
 - **Separate frontend and backend changes** when possible:
   - Exception: When backend changes break frontend compatibility, include both in one PR.
   - Rule of thumb: If API changes are backward compatible, separate the PRs; if not, combine them.
-- **Prefer to merge test and feature code together**
-  - We prefer to not have untested code in the main branch as it
-  - Exceptions could be if the feature code is behind a feature switch or a permission, that is not yet available for a user
+- **Prefer to merge test- and feature-code together**
+  - We prefer to not have untested code in the main branch, so that we can "release + deploy at any time"
+  - Possible exception: If the feature-code is behind a feature-switch or a (rare) permission, so it is not widely available to end-users
+  - Possible exception: E2E-tests that depend on more features that are in-progress in the current sprint
 
 ---
 
