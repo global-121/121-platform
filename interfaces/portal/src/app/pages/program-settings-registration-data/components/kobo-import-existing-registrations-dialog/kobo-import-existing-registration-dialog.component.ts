@@ -24,6 +24,7 @@ import { ToastService } from '~/services/toast.service';
 enum ImportState {
   ImportedWithErrors = 'ImportedWithErrors',
   ImportedWithoutErrors = 'ImportedWithoutErrors',
+  ImportedWithoutSubmissions = 'ImportedWithoutSubmissions',
   NotInitiated = 'NotInitiated',
 }
 interface ValidationError {
@@ -63,6 +64,8 @@ export class KoboImportExistingRegistrationsDialogComponent {
         return 'pi pi-check me-2';
       case ImportState.NotInitiated:
         return 'pi pi-download me-2';
+      case ImportState.ImportedWithoutSubmissions:
+        return 'pi pi-exclamation-circle me-2';
     }
   });
 
@@ -74,6 +77,8 @@ export class KoboImportExistingRegistrationsDialogComponent {
         return $localize`Import complete`;
       case ImportState.NotInitiated:
         return $localize`Import existing registrations`;
+      case ImportState.ImportedWithoutSubmissions:
+        return $localize`No submissions found`;
     }
   });
 
@@ -85,8 +90,7 @@ export class KoboImportExistingRegistrationsDialogComponent {
     return {
       totalSubmissions: $localize`${this.importExistingSubmissions.data()?.numberOfSubmissionsOnForm ?? 0}:count: total submission(s)`,
       numberOfSubmissionsImportedChipLabel: $localize`Imported successfully: ${this.importExistingSubmissions.data()?.numberOfSubmissionsImported ?? 0}:count:`,
-      // TODO: What is `numberOfSubmissionsSkipped` supposed to be?
-      // numberOfSubmissionsSkippedChipLabel: $localize`Submissions skipped: ${this.importExistingSubmissions.data()?.numberOfSubmissionsSkipped ?? 0}:count:`,
+      numberOfSubmissionsSkippedChipLabel: $localize`Submissions skipped: ${this.importExistingSubmissions.data()?.numberOfSubmissionsSkipped ?? 0}:count:`,
       numberOfSubmissionsFailedChipLabel: $localize`Submissions failed: ${this.importExistingSubmissions.data()?.numberOfSubmissionsFailed ?? 0}:count:`,
     };
   });
@@ -108,6 +112,9 @@ export class KoboImportExistingRegistrationsDialogComponent {
 
       if (response.validationErrors.length === 0)
         this.importState.set(ImportState.ImportedWithoutErrors);
+
+      if (response.numberOfSubmissionsOnForm === 0)
+        this.importState.set(ImportState.ImportedWithoutSubmissions);
 
       // TODO: ADD SUBMISSIONS SKIPPED STATE (?)
     },

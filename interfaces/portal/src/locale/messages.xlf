@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -2262,9 +2262,6 @@
       <trans-unit id="2159130950882492111" datatype="html">
         <source>Cancel</source>
       </trans-unit>
-      <trans-unit id="2168486587823521907" datatype="html">
-        <source><x equiv-text="{{ importExistingSubmissions.data()?.numberOfSubmissionsImported }}" id="INTERPOLATION"/> total submissions</source>
-      </trans-unit>
       <trans-unit id="2200828314484557158" datatype="html">
         <source>Import complete</source>
       </trans-unit>
@@ -2307,17 +2304,11 @@
       <trans-unit id="5918723526444903137" datatype="html">
         <source>Add user</source>
       </trans-unit>
-      <trans-unit id="1519954996184640001" datatype="html">
-        <source>Error</source>
-      </trans-unit>
       <trans-unit id="3077263560424048384" datatype="html">
         <source>The import takes about 1 minute per 100 records.</source>
       </trans-unit>
       <trans-unit id="6555318547274416232" datatype="html">
         <source>Value</source>
-      </trans-unit>
-      <trans-unit id="763982378603811482" datatype="html">
-        <source>Column</source>
       </trans-unit>
       <trans-unit id="7761072359529249164" datatype="html">
         <source>Line number</source>
@@ -2339,6 +2330,21 @@
       </trans-unit>
       <trans-unit id="debit-card-status-closed" datatype="html">
         <source>Closed</source>
+      </trans-unit>
+      <trans-unit id="123437398532695378" datatype="html">
+        <source>Submissions skipped: <x equiv-text="this.importExistingSubmissions.data()?.numberOfSubmissionsSkipped ?? 0" id="count"/></source>
+      </trans-unit>
+      <trans-unit id="4686419033610227407" datatype="html">
+        <source>No submissions found</source>
+      </trans-unit>
+      <trans-unit id="6554222446236271125" datatype="html">
+        <source>The import takes about 1 minute per 100 records.</source>
+      </trans-unit>
+      <trans-unit id="7819314041543176992" datatype="html">
+        <source>Close</source>
+      </trans-unit>
+      <trans-unit id="9098487756295934908" datatype="html">
+        <source>Kobo form ”25042025 Prototype Sprint” does not have existing registrations. New registrations will be synced to the program automatically.</source>
       </trans-unit>
       <trans-unit id="2986249053713735246" datatype="html">
         <source>Export refunded debit cards</source>

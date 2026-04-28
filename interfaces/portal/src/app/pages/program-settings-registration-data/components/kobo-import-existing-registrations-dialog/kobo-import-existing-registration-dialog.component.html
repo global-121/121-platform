@@ -47,6 +47,23 @@
     </div>
   }
 
+  @if (importState() === ImportStates.ImportedWithoutSubmissions) {
+    <p i18n>
+      Kobo form ”25042025 Prototype Sprint” does not have existing
+      registrations. New registrations will be synced to the program
+      automatically.
+    </p>
+
+    <div class="mt-5 flex justify-end gap-4">
+      <p-button
+        label="Close"
+        i18n-label
+        (click)="closeDialog()"
+        [rounded]="true"
+      />
+    </div>
+  }
+
   @if (
     importState() === ImportStates.ImportedWithoutErrors ||
     importState() === ImportStates.ImportedWithErrors
@@ -58,23 +75,39 @@
       </p>
 
       <div class="mt-4 space-y-2">
-        <p
-          i18n
-          class="font-bold"
-        >
-          {{ importExistingSubmissions.data()?.numberOfSubmissionsImported }}
-          total submissions
+        <p class="font-bold">
+          {{ submissionCountTranslations().totalSubmissions }}
         </p>
 
-        <app-colored-chip
-          [label]="
-            submissionCountTranslations().numberOfSubmissionsImportedChipLabel
-          "
-          [variant]="'green'"
-          [icon]="'pi pi-check'"
-          class="block"
-          i18n-icon
-        />
+        @if (
+          this.importExistingSubmissions.data()?.numberOfSubmissionsSkipped !==
+          0
+        ) {
+          <app-colored-chip
+            [label]="
+              submissionCountTranslations().numberOfSubmissionsSkippedChipLabel
+            "
+            [variant]="'grey'"
+            [icon]="'pi pi-check'"
+            class="block"
+            i18n-icon
+          />
+        }
+
+        @if (
+          this.importExistingSubmissions.data()?.numberOfSubmissionsImported !==
+          0
+        ) {
+          <app-colored-chip
+            [label]="
+              submissionCountTranslations().numberOfSubmissionsImportedChipLabel
+            "
+            [variant]="'green'"
+            [icon]="'pi pi-check'"
+            class="block"
+            i18n-icon
+          />
+        }
       </div>
     </div>
   }
@@ -83,7 +116,7 @@
     <div class="mt-5 flex justify-end gap-4">
       <p-button
         label="Close"
-        i18n-label="@@generic-close"
+        i18n-label
         (click)="closeDialog()"
         [rounded]="true"
       />
@@ -110,16 +143,21 @@
       <app-query-table
         [items]="detailedImportErrors() ?? []"
         [columns]="detailedErrorsColumns()"
-        [initialSortField]="'id'"
+        [initialSortField]="'referenceId'"
         [isPending]="false"
+        [dataTestId]="'kobo-import-existing-registration-dialog-errors-table'"
+        [paginatorDropdownAppendTo]="'body'"
+        [scrollHeight]="'400px'"
+        [scrollable]="true"
       >
       </app-query-table>
+
       <div class="mt-5 flex justify-end gap-4">
         <p-button
           (click)="importState.set(ImportStates.NotInitiated)"
           label="Try again"
-          i18n-label
           [rounded]="true"
+          i18n-label
         />
       </div>
     </div>
