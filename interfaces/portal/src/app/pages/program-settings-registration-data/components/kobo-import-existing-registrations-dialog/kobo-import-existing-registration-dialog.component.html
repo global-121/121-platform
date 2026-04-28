@@ -2,6 +2,7 @@
   [(visible)]="responseDialogVisible"
   [style]="{ width: dialogWidth() }"
   (onHide)="resetDialogState()"
+  [attr.data-testid]="'import-existing-kobo-registrations-dialog'"
   [draggable]="false"
   appendTo="body"
   #confirmDialog
@@ -33,8 +34,8 @@
       <p-button
         (click)="responseDialogVisible.set(false)"
         severity="secondary"
-        label="Cancel"
         [rounded]="true"
+        label="Cancel"
         i18n-label
       />
       <p-button
