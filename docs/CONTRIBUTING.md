@@ -85,7 +85,7 @@ We avoid "feature branches" (long-lived branches with multiple/no owners). For P
   - Exception: When backend changes break frontend compatibility, include both in one PR.
   - Rule of thumb: If API changes are backward compatible, separate the PRs; if not, combine them.
 - **Prefer to merge test- and feature-code together**
-  - We prefer to not have untested code in the main branch, so that we can "release + deploy at any time"
+  - We prefer to not have untested code in the main branch, so that we can "release + deploy at any time" (this includes unit, integration and e2e tests)
   - Possible exception: If the feature-code is behind a feature-switch or a (rare) permission, so it is not widely available to end-users
   - Possible exception: E2E-tests that depend on more features that are in-progress in the current sprint
 
