@@ -4,17 +4,19 @@ Thanks for helping out!
 
 ## Committing
 
-We try to follow the "[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)" convention, combined with the "[Angular Commit Message format](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format)".
+We try to follow the "[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)" convention".
 
 When committing your changes, provide a commit message(-subject) with an _*imperative*_ description of the changes. (Don't tell what _you did_, but what this commit will **do** when applied to the code.)  
 So in your head, finish the sentence: "**This commit will... `<verb> <subject> ...`**".
 
 Some examples:
 
-- `feat:` (This commit will) `Add info-button to Profile-page header`
-- `docs:` (This commit will) `Remove confusing/inconsistent terms from helper-functions examples`
-- `refactor:` (This commit will) `Load the program-list fast again`
-- `fix:` (This commit will) `Prevent the user from submitting an empty form`
+- (This commit will) `Add info-button to Profile-page header`
+- (This commit will) `Remove confusing/inconsistent terms from helper-functions examples`
+- (This commit will) `Load the program-list fast again`
+- (This commit will) `Prevent the user from submitting an empty form`
+
+Optionally, you can prefix the message with one of the types listed above (e.g. `feat:`, `fix:`, `docs:`, `refactor:`) if you find it helpful for scanning the commit history. This is not required, since the change-type is also captured via PR labels.
 
 Some additional reading:
 
