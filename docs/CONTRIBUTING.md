@@ -16,7 +16,7 @@ Some examples:
 - (This commit will) `Load the program-list fast again`
 - (This commit will) `Prevent the user from submitting an empty form`
 
-Optionally, you can prefix the message with one of the types listed above (e.g. `feat:`, `fix:`, `docs:`, `refactor:`) if you find it helpful for scanning the commit history. This is not required, since the change-type is also captured via PR labels.
+Optionally, you can prefix the message with a type (e.g. `feat:`, `fix:`, `docs:`, `refactor:`) if you find it helpful for scanning the commit history. This is not required, since the change-type is also captured via PR labels.
 
 Some additional reading:
 
