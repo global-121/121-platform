@@ -20,6 +20,7 @@ import { TransferRequestIntersolveApiDto } from '@121-service/src/fsp-integratio
 import { TransferResponseIntersolveApiDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/intersolve-api/transfer-response-intersolve-api.dto';
 import { IntersolveBlockTokenReasonCodeEnum } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-block-token-reason-code.enum';
 import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
+import { IntersolveVisaCardStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { CreateCustomerResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/create-customer-result.interface';
 import { GetPhysicalCardResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/get-physical-card-result.interface';
 import { GetTokenResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/get-token-result.interface';
@@ -234,6 +235,16 @@ export class IntersolveVisaApiService {
       status: getPhysicalCardResponseDto.data.data.status,
     };
     return getPhysicalCardReturnDto;
+  }
+
+  public async closeCard({ tokenCode }: { tokenCode: string }): Promise<void> {
+    await this.intersolveApiRequest<void>({
+      errorPrefix: IntersolveVisa121ErrorText.closeCardError,
+      method: 'POST',
+      payload: { status: IntersolveVisaCardStatus.CardClosed },
+      apiPath: 'payment-instrument-payment',
+      endpoint: `tokens/${tokenCode}/change-status`,
+    });
   }
 
   public async getTransactionInformation(

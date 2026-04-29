@@ -26,6 +26,7 @@ import {
 import { TokenCodeDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/token-code.dto';
 import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/intersolve-visa-account-management.service';
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
+import { ExportVisaWalletClosure } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-wallet-closure.interface';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -225,6 +226,34 @@ export class IntersolveVisaAccountManagementController {
     );
   }
 
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCLOSE] })
+  @ApiOperation({
+    summary: '[SCOPED] Close Intersolve Visa Card',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description:
+      'Card closed. - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
+  @Post(
+    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet/cards/:tokenCode/close',
+  )
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async closeCard(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('referenceId') referenceId: string,
+    @Param('tokenCode') tokenCode: string,
+  ): Promise<void> {
+    await this.intersolveVisaAccountManagementService.closeCard({
+      referenceId,
+      programId,
+      tokenCode,
+    });
+  }
+
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({
     summary: 'Replace a physical debit card for a registration',
@@ -250,5 +279,24 @@ export class IntersolveVisaAccountManagementController {
       programId,
       tokenCode,
     });
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardEXPORT] })
+  @ApiOperation({
+    summary:
+      '[SCOPED] Export a list of all closed debit cards with the amount booked back',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'List of wallet closures exported',
+  })
+  @Get('programs/:programId/fsps/intersolve-visa/wallet-closures')
+  public async getWalletClosuresExport(
+    @Param('programId', ParseIntPipe) programId: number,
+  ): Promise<ExportVisaWalletClosure[]> {
+    return await this.intersolveVisaAccountManagementService.getWalletClosuresExport(
+      { programId },
+    );
   }
 }

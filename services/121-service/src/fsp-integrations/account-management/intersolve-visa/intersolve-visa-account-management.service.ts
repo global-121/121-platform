@@ -1,12 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Equal } from 'typeorm';
 
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
+import { IntersolveVisaCardStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-status.enum';
+import { ExportVisaWalletClosure } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-wallet-closure.interface';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
+import { IntersolveVisaWalletClosureScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-wallet-closure.scoped.repository';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
@@ -26,6 +30,7 @@ export class IntersolveVisaAccountManagementService {
     private readonly registrationsService: RegistrationsService,
     private readonly intersolveVisaDataSynchronizationService: IntersolveVisaDataSynchronizationService,
     private readonly intersolveVisaChildWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
+    private readonly walletClosureScopedRepository: IntersolveVisaWalletClosureScopedRepository,
   ) {}
 
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
@@ -332,6 +337,72 @@ export class IntersolveVisaAccountManagementService {
     return updatedWallet;
   }
 
+  public async closeCard({
+    referenceId,
+    programId,
+    tokenCode,
+  }: {
+    referenceId: string;
+    programId: number;
+    tokenCode: string;
+  }): Promise<void> {
+    const registration = await this.registrationsService.getRegistrationOrThrow(
+      {
+        referenceId,
+        programId,
+      },
+    );
+
+    const wallet = await this.intersolveVisaChildWalletScopedRepository.findOne(
+      {
+        where: {
+          tokenCode: Equal(tokenCode),
+          intersolveVisaParentWallet: {
+            intersolveVisaCustomer: {
+              registrationId: Equal(registration.id),
+            },
+          },
+        },
+        relations: ['intersolveVisaParentWallet'],
+      },
+    );
+    if (!wallet) {
+      throw new HttpException(
+        `Wallet with token code ${tokenCode} not found`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (wallet.cardStatus === IntersolveVisaCardStatus.CardClosed) {
+      throw new HttpException('Card is already closed', HttpStatus.BAD_REQUEST);
+    }
+
+    const fundingTokenCode =
+      await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
+        {
+          programFspConfigurationId: registration.programFspConfigurationId,
+          name: FspConfigurationProperties.fundingTokenCode,
+        },
+      );
+    try {
+      await this.intersolveVisaService.closeCardOrThrow({
+        childWalletId: wallet.id,
+        childTokenCode: wallet.tokenCode,
+        isChildTokenBlocked: wallet.isTokenBlocked,
+        parentTokenCode: wallet.intersolveVisaParentWallet.tokenCode,
+        fundingTokenCode,
+      });
+    } catch (error) {
+      if (error instanceof IntersolveVisaApiError) {
+        throw new HttpException(
+          error.message,
+
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      throw error;
+    }
+  }
+
   public async getRegistrationAndSendContactInformationToIntersolve(
     referenceId: string,
     programId: number,
@@ -391,5 +462,21 @@ export class IntersolveVisaAccountManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+
+  public async getWalletClosuresExport({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<ExportVisaWalletClosure[]> {
+    const rawData =
+      await this.walletClosureScopedRepository.getForExport(programId);
+
+    return rawData.map((row) => ({
+      referenceId: row.referenceId,
+      cardNumber: row.cardNumber,
+      closedDate: row.closedDate,
+      amountBookedBack: row.amountBookedBackInCents / 100,
+    }));
   }
 }

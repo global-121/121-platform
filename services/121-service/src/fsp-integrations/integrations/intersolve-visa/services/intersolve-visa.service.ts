@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
@@ -7,6 +7,7 @@ import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integ
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
+import { IntersolveVisaWalletClosureEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-wallet-closure.entity';
 import { IntersolveVisaCardStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { CreatePhysicalCardParams } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/create-physical-card-params.interface';
@@ -26,6 +27,8 @@ import { IntersolveVisaCustomerScopedRepository } from '@121-service/src/fsp-int
 import { IntersolveVisaParentWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-parent-wallet.scoped.repository';
 import { IntersolveVisaApiService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.api.service';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class IntersolveVisaService {
@@ -34,6 +37,8 @@ export class IntersolveVisaService {
     private readonly intersolveVisaCustomerScopedRepository: IntersolveVisaCustomerScopedRepository,
     private readonly intersolveVisaParentWalletScopedRepository: IntersolveVisaParentWalletScopedRepository,
     private readonly intersolveVisaChildWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
+    @Inject(getScopedRepositoryProviderName(IntersolveVisaWalletClosureEntity))
+    private readonly walletClosureScopedRepository: ScopedRepository<IntersolveVisaWalletClosureEntity>,
   ) {}
 
   /**
@@ -723,6 +728,64 @@ export class IntersolveVisaService {
     await this.intersolveVisaApiService.setTokenBlocked(tokenCode, pause);
     wallet.isTokenBlocked = pause;
     return await this.intersolveVisaChildWalletScopedRepository.save(wallet);
+  }
+
+  public async closeCardOrThrow({
+    childWalletId,
+    childTokenCode,
+    isChildTokenBlocked,
+    parentTokenCode,
+    fundingTokenCode,
+  }: {
+    childWalletId: number;
+    childTokenCode: string;
+    isChildTokenBlocked: boolean;
+    parentTokenCode: string;
+    fundingTokenCode: string;
+  }): Promise<void> {
+    const tokenResult =
+      await this.intersolveVisaApiService.getToken(parentTokenCode);
+    const balanceInCents = tokenResult.balance;
+
+    if (balanceInCents > 0) {
+      await this.intersolveVisaApiService.transfer({
+        fromTokenCode: parentTokenCode,
+        toTokenCode: fundingTokenCode,
+        amount: balanceInCents / 100,
+        reference: this.getCloseCardTransferReference(childTokenCode),
+      });
+    }
+
+    if (!isChildTokenBlocked) {
+      await this.intersolveVisaApiService.setTokenBlocked(childTokenCode, true);
+      await this.intersolveVisaChildWalletScopedRepository.updateUnscoped(
+        childWalletId,
+        {
+          isTokenBlocked: true,
+        },
+      );
+    }
+
+    await this.intersolveVisaApiService.closeCard({
+      tokenCode: childTokenCode,
+    });
+    await this.intersolveVisaChildWalletScopedRepository.updateUnscoped(
+      childWalletId,
+      { cardStatus: IntersolveVisaCardStatus.CardClosed },
+    );
+
+    const closureEntity = this.walletClosureScopedRepository.create({
+      intersolveVisaChildWalletId: childWalletId,
+      amountBookedBackInCents: balanceInCents,
+    } as Partial<IntersolveVisaWalletClosureEntity>);
+    await this.walletClosureScopedRepository.save(closureEntity);
+  }
+
+  private getCloseCardTransferReference(childTokenCode: string): string {
+    // Intersolve token codes are 19-digit numbers (see Intersolve Wallet Platform
+    // integration manual). Combined with the prefix this stays well below the
+    // 128-character limit on the reference field.
+    return `Transfer money back to funding wallet from child wallet: ${childTokenCode}`;
   }
 
   /**

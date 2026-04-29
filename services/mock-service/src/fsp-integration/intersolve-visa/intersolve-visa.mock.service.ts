@@ -78,6 +78,7 @@ export class IntersolveVisaMockService {
       lastName.includes('mock-fail-load-balance') ||
       lastName.includes('mock-fail-get-wallet') ||
       lastName.includes('mock-fail-get-card') ||
+      lastName.includes('mock-fail-close-card') ||
       lastName.includes('mock-spent') ||
       lastName.includes('mock-current-balance')
     ) {
@@ -210,6 +211,7 @@ export class IntersolveVisaMockService {
       holderId?.toLowerCase().includes('mock-fail-load-balance') ||
       holderId?.toLowerCase().includes('mock-fail-get-wallet') ||
       holderId?.toLowerCase().includes('mock-fail-get-card') ||
+      holderId?.toLowerCase().includes('mock-fail-close-card') ||
       holderId?.toLowerCase().includes('mock-spent') ||
       holderId?.toLowerCase().includes('mock-current-balance')
     ) {
@@ -807,6 +809,42 @@ export class IntersolveVisaMockService {
         success: true,
       },
       errors: [],
+    };
+  }
+
+  public changeCardStatusMock({
+    tokenCode,
+  }: {
+    tokenCode: string;
+  }): IntersolveVisaMockResponseDto {
+    if (tokenCode.toLowerCase().includes('mock-fail-close-card')) {
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        statusText: 'Internal Server Error',
+        data: {
+          success: false,
+          errors: [
+            {
+              code: 'UNEXPECTED_ERROR',
+              field: 'tokenCode',
+              description:
+                'We mocked that changing card status failed unexpectedly',
+            },
+          ],
+          code: 'UNEXPECTED_ERROR',
+          correlationId: 'mock-correlation-id',
+        },
+      };
+    }
+    return {
+      status: HttpStatus.OK,
+      statusText: 'OK',
+      data: {
+        success: true,
+        errors: [],
+        code: 'OK',
+        correlationId: 'mock-correlation-id',
+      },
     };
   }
 

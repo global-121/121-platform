@@ -3,6 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
+import { IntersolveVisaWalletClosureEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-wallet-closure.entity';
+import { IntersolveVisaCardStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
@@ -10,6 +12,8 @@ import { IntersolveVisaCustomerScopedRepository } from '@121-service/src/fsp-int
 import { IntersolveVisaParentWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-parent-wallet.scoped.repository';
 import { IntersolveVisaApiService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.api.service';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 const mockedToken = {
   blocked: false,
@@ -41,6 +45,9 @@ describe('IntersolveVisaService', () => {
   let customerRepo: IntersolveVisaCustomerScopedRepository;
   let parentWalletRepo: IntersolveVisaParentWalletScopedRepository;
   let childWalletRepo: IntersolveVisaChildWalletScopedRepository;
+  let walletClosureRepo: jest.Mocked<
+    ScopedRepository<IntersolveVisaWalletClosureEntity>
+  >;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -51,6 +58,10 @@ describe('IntersolveVisaService', () => {
           useValue: {
             getToken: jest.fn(),
             getTransactionInformation: jest.fn(),
+            transfer: jest.fn(),
+            closeCard: jest.fn(),
+            setTokenBlocked: jest.fn(),
+            getAuthenticationToken: jest.fn().mockResolvedValue('mock-token'),
           },
         },
         {
@@ -74,6 +85,15 @@ describe('IntersolveVisaService', () => {
             findOneOrFail: jest.fn(),
           },
         },
+        {
+          provide: getScopedRepositoryProviderName(
+            IntersolveVisaWalletClosureEntity,
+          ),
+          useValue: {
+            create: jest.fn().mockImplementation((dto) => dto),
+            save: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -90,6 +110,9 @@ describe('IntersolveVisaService', () => {
     childWalletRepo = module.get(
       IntersolveVisaChildWalletScopedRepository,
     ) as jest.Mocked<IntersolveVisaChildWalletScopedRepository>;
+    walletClosureRepo = module.get(
+      getScopedRepositoryProviderName(IntersolveVisaWalletClosureEntity),
+    );
 
     // Set mocks
     jest
@@ -405,6 +428,154 @@ describe('IntersolveVisaService', () => {
       await expect(service.retrieveAndUpdateAllWalletsAndCards()).resolves.toBe(
         9,
       );
+    });
+  });
+
+  describe('close card', () => {
+    const childWalletId = 42;
+    const childTokenCode = 'child-token-123';
+    const parentTokenCode = 'parent-token-456';
+    const fundingTokenCode = 'funding-token-789';
+
+    it('should transfer balance back and close card when balance > 0', async () => {
+      jest
+        .spyOn(apiService, 'getToken')
+        .mockResolvedValue({ ...mockedToken, balance: 2500 });
+
+      await service.closeCardOrThrow({
+        childWalletId,
+        childTokenCode,
+        isChildTokenBlocked: false,
+        parentTokenCode,
+        fundingTokenCode,
+      });
+
+      expect(apiService.transfer).toHaveBeenCalledWith({
+        fromTokenCode: parentTokenCode,
+        toTokenCode: fundingTokenCode,
+        amount: 25,
+        reference: `Transfer money back to funding wallet from child wallet: ${childTokenCode}`,
+      });
+      expect(apiService.setTokenBlocked).toHaveBeenCalledWith(
+        childTokenCode,
+        true,
+      );
+      expect(childWalletRepo.updateUnscoped).toHaveBeenCalledWith(
+        childWalletId,
+        { isTokenBlocked: true },
+      );
+      expect(apiService.closeCard).toHaveBeenCalledWith({
+        tokenCode: childTokenCode,
+      });
+      expect(childWalletRepo.updateUnscoped).toHaveBeenCalledWith(
+        childWalletId,
+        { cardStatus: IntersolveVisaCardStatus.CardClosed },
+      );
+      expect(walletClosureRepo.create).toHaveBeenCalledWith({
+        intersolveVisaChildWalletId: childWalletId,
+        amountBookedBackInCents: 2500,
+      });
+      expect(walletClosureRepo.save).toHaveBeenCalled();
+    });
+
+    it('should skip transfer when balance is 0', async () => {
+      jest
+        .spyOn(apiService, 'getToken')
+        .mockResolvedValue({ ...mockedToken, balance: 0 });
+
+      await service.closeCardOrThrow({
+        childWalletId,
+        childTokenCode,
+        isChildTokenBlocked: false,
+        parentTokenCode,
+        fundingTokenCode,
+      });
+
+      expect(apiService.transfer).not.toHaveBeenCalled();
+      expect(apiService.setTokenBlocked).toHaveBeenCalledWith(
+        childTokenCode,
+        true,
+      );
+      expect(apiService.closeCard).toHaveBeenCalledWith({
+        tokenCode: childTokenCode,
+      });
+      expect(childWalletRepo.updateUnscoped).toHaveBeenCalledWith(
+        childWalletId,
+        { cardStatus: IntersolveVisaCardStatus.CardClosed },
+      );
+      expect(walletClosureRepo.create).toHaveBeenCalledWith({
+        intersolveVisaChildWalletId: childWalletId,
+        amountBookedBackInCents: 0,
+      });
+    });
+
+    it('should skip blocking when card is already blocked', async () => {
+      jest
+        .spyOn(apiService, 'getToken')
+        .mockResolvedValue({ ...mockedToken, balance: 0 });
+
+      await service.closeCardOrThrow({
+        childWalletId,
+        childTokenCode,
+        isChildTokenBlocked: true,
+        parentTokenCode,
+        fundingTokenCode,
+      });
+
+      expect(apiService.setTokenBlocked).not.toHaveBeenCalled();
+      expect(childWalletRepo.updateUnscoped).not.toHaveBeenCalledWith(
+        childWalletId,
+        { isTokenBlocked: true },
+      );
+      expect(apiService.closeCard).toHaveBeenCalledWith({
+        tokenCode: childTokenCode,
+      });
+    });
+
+    it('should propagate IntersolveVisaApiError when closeCard API fails', async () => {
+      jest
+        .spyOn(apiService, 'getToken')
+        .mockResolvedValue({ ...mockedToken, balance: 0 });
+      jest
+        .spyOn(apiService, 'closeCard')
+        .mockRejectedValue(new IntersolveVisaApiError('close failed'));
+
+      await expect(
+        service.closeCardOrThrow({
+          childWalletId,
+          childTokenCode,
+          isChildTokenBlocked: false,
+          parentTokenCode,
+          fundingTokenCode,
+        }),
+      ).rejects.toThrow(IntersolveVisaApiError);
+
+      expect(apiService.setTokenBlocked).toHaveBeenCalledWith(
+        childTokenCode,
+        true,
+      );
+    });
+
+    it('should propagate IntersolveVisaApiError when transfer fails', async () => {
+      jest
+        .spyOn(apiService, 'getToken')
+        .mockResolvedValue({ ...mockedToken, balance: 2500 });
+      jest
+        .spyOn(apiService, 'transfer')
+        .mockRejectedValue(new IntersolveVisaApiError('transfer failed'));
+
+      await expect(
+        service.closeCardOrThrow({
+          childWalletId,
+          childTokenCode,
+          isChildTokenBlocked: false,
+          parentTokenCode,
+          fundingTokenCode,
+        }),
+      ).rejects.toThrow(IntersolveVisaApiError);
+
+      expect(apiService.setTokenBlocked).not.toHaveBeenCalled();
+      expect(apiService.closeCard).not.toHaveBeenCalled();
     });
   });
 });

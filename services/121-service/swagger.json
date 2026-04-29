@@ -1180,10 +1180,26 @@
   },
   {
     "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/{tokenCode}/close",
+    "params": [
+      "programId",
+      "referenceId",
+      "tokenCode"
+    ]
+  },
+  {
+    "method": "post",
     "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/on-site/replace",
     "params": [
       "programId",
       "referenceId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsps/intersolve-visa/wallet-closures",
+    "params": [
+      "programId"
     ]
   },
   {
