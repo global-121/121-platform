@@ -45,6 +45,7 @@ export class FormDialogComponent<TMutationData = unknown> {
   readonly headerIcon = input('pi pi-question');
   readonly proceedLabel = input($localize`:@@generic-proceed:Proceed`);
   readonly formGroup = input<FormGroup>();
+  readonly disableSubmit = input(false);
 
   readonly confirmDialog = viewChild.required<ConfirmDialog>('confirmDialog');
 

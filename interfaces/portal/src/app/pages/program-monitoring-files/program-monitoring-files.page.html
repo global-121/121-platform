@@ -29,6 +29,7 @@
   [mutation]="deleteFileMutation"
   [mutationData]="selectedFile()?.id!"
   [formGroup]="deleteFileFormGroup"
+  [disableSubmit]="!deleteFileFormGroup.get('confirmAction')?.value"
 >
   <p i18n>
     You are about to <b>delete</b> {{ selectedFile()?.filename }}.,
