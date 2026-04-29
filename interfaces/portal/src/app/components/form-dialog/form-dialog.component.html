@@ -54,7 +54,7 @@
             [label]="proceedLabel()"
             rounded
             [loading]="mutation().isPending()"
-            [disabled]="disableSubmit()"
+            [disabled]="disableSubmit() || mutation().isPending()"
             type="submit"
             data-testid="form-dialog-proceed-button"
           />
