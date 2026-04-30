@@ -28,73 +28,71 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-for (let i = 1; i <= 30; i++) {
-  test(`[Run ${i}/10] After the data change of 1 out of 3 duplicates, only 1 registration gets unique badge`, async ({
-    registrationsPage,
-    registrationActivityLogPage,
-    registrationPersonalInformationPage,
-  }) => {
-    await test.step('Wait for registrations to load', async () => {
-      const allRegistrationsCount = seededRegistrations.length;
-      await registrationsPage.waitForLoaded(allRegistrationsCount);
+test('After the data change of 1 out of 3 duplicates, only 1 registration gets unique badge', async ({
+  registrationsPage,
+  registrationActivityLogPage,
+  registrationPersonalInformationPage,
+}) => {
+  await test.step('Wait for registrations to load', async () => {
+    const allRegistrationsCount = seededRegistrations.length;
+    await registrationsPage.waitForLoaded(allRegistrationsCount);
+  });
+
+  await test.step('Verify we have three duplicate registrations', async () => {
+    await registrationsPage.assertDuplicateColumnValues([
+      'Unique',
+      'Duplicate',
+      'Duplicate',
+      'Unique',
+      'Duplicate',
+    ]);
+  });
+
+  await test.step('Open registration page and verify banner is present', async () => {
+    await registrationsPage.goToRegistrationByName({
+      registrationName: duplicateRegistration.fullName,
     });
 
-    await test.step('Verify we have three duplicate registrations', async () => {
-      await registrationsPage.assertDuplicateColumnValues([
-        'Unique',
-        'Duplicate',
-        'Duplicate',
-        'Unique',
-        'Duplicate',
-      ]);
+    await expect(registrationActivityLogPage.duplicatesBanner).toBeVisible();
+  });
+
+  await test.step('Edit registration to make it unique', async () => {
+    await registrationActivityLogPage.goToRegistrationPage(
+      'Personal information',
+    );
+
+    await registrationPersonalInformationPage.editRegistration({
+      field: 'Phone Number',
+      value: '11111',
     });
 
-    await test.step('Open registration page and verify banner is present', async () => {
-      await registrationsPage.goToRegistrationByName({
-        registrationName: duplicateRegistration.fullName,
-      });
-
-      await expect(registrationActivityLogPage.duplicatesBanner).toBeVisible();
-    });
-
-    await test.step('Edit registration to make it unique', async () => {
-      await registrationActivityLogPage.goToRegistrationPage(
-        'Personal information',
-      );
-
-      await registrationPersonalInformationPage.editRegistration({
-        field: 'Phone Number',
-        value: '11111',
-      });
-
-      await registrationPersonalInformationPage.editRegistration({
-        field: 'WhatsApp Nr.',
-        value: '11111',
-      });
-    });
-
-    await test.step('Verify banner has disappeared and registration is now unique', async () => {
-      await expect(
-        registrationActivityLogPage.duplicatesBanner,
-      ).not.toBeVisible();
-
-      await registrationActivityLogPage.assertDuplicateStatus({
-        status: 'Unique',
-      });
-    });
-
-    await test.step('Navigate back to registrations table', async () => {
-      await registrationActivityLogPage.navigateToProgramPage('Registrations');
-    });
-
-    await test.step('Verify that we now have 2 duplicate registrations', async () => {
-      await registrationsPage.assertDuplicateColumnValues([
-        'Unique',
-        'Unique',
-        'Duplicate',
-        'Unique',
-        'Duplicate',
-      ]);
+    await registrationPersonalInformationPage.editRegistration({
+      field: 'WhatsApp Nr.',
+      value: '11111',
     });
   });
-}
+
+  await test.step('Verify banner has disappeared and registration is now unique', async () => {
+    await expect(
+      registrationActivityLogPage.duplicatesBanner,
+    ).not.toBeVisible();
+
+    await registrationActivityLogPage.assertDuplicateStatus({
+      status: 'Unique',
+    });
+  });
+
+  await test.step('Navigate back to registrations table', async () => {
+    await registrationActivityLogPage.navigateToProgramPage('Registrations');
+  });
+
+  await test.step('Verify that we now have 2 duplicate registrations', async () => {
+    await registrationsPage.assertDuplicateColumnValues([
+      'Unique',
+      'Unique',
+      'Duplicate',
+      'Unique',
+      'Duplicate',
+    ]);
+  });
+});

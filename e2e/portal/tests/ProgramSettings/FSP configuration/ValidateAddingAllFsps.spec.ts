@@ -42,45 +42,47 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Add all available FSPs', async ({
-  homePage,
-  registrationsPage,
-  fspSettingsPage,
-}) => {
-  await test.step('Navigate to program', async () => {
-    await homePage.selectProgram('NLRC OCW program');
-  });
+for (let i = 1; i <= 10; i++) {
+  test(`[Run ${i}/10] Add all available FSPs`, async ({
+    homePage,
+    registrationsPage,
+    fspSettingsPage,
+  }) => {
+    await test.step('Navigate to program', async () => {
+      await homePage.selectProgram('NLRC OCW program');
+    });
 
-  await test.step('Navigate to FSP configuration', async () => {
-    await registrationsPage.navigateToProgramPage('Settings');
-    await fspSettingsPage.clickEditFspSection();
-  });
+    await test.step('Navigate to FSP configuration', async () => {
+      await registrationsPage.navigateToProgramPage('Settings');
+      await fspSettingsPage.clickEditFspSection();
+    });
 
-  await test.step('Delete All FSPs', async () => {
-    await fspSettingsPage.deleteFsp({
-      fspName: fspsToDelete,
+    await test.step('Delete All FSPs', async () => {
+      await fspSettingsPage.deleteFsp({
+        fspName: fspsToDelete,
+      });
+    });
+
+    await test.step('Validate all FSPs are ready for configuration', async () => {
+      await fspSettingsPage.validateFspVisibility({
+        fspNames: availableFsps,
+      });
+    });
+
+    await test.step('Add FSPs that do not match Kobo form configuration', async () => {
+      await fspSettingsPage.validateFspConfigurationIsNotPresent({
+        fspNames: fspsNotConfigurableForOcwProgram,
+      });
+    });
+
+    await test.step('Add all available FSPs that match Kobo form configuration', async () => {
+      await fspSettingsPage.addFsp({ fspNames: fspsConfiguredInKobo });
+    });
+
+    await test.step('Validate that only selected FSPs were configured', async () => {
+      await fspSettingsPage.validateVisibilityOfOnlyConfiguredFsps({
+        fspNames: fspsConfiguredInKobo,
+      });
     });
   });
-
-  await test.step('Validate all FSPs are ready for configuration', async () => {
-    await fspSettingsPage.validateFspVisibility({
-      fspNames: availableFsps,
-    });
-  });
-
-  await test.step('Add FSPs that do not match Kobo form configuration', async () => {
-    await fspSettingsPage.validateFspConfigurationIsNotPresent({
-      fspNames: fspsNotConfigurableForOcwProgram,
-    });
-  });
-
-  await test.step('Add all available FSPs that match Kobo form configuration', async () => {
-    await fspSettingsPage.addFsp({ fspNames: fspsConfiguredInKobo });
-  });
-
-  await test.step('Validate that only selected FSPs were configured', async () => {
-    await fspSettingsPage.validateVisibilityOfOnlyConfiguredFsps({
-      fspNames: fspsConfiguredInKobo,
-    });
-  });
-});
+}
