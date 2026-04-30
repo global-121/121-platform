@@ -17,13 +17,13 @@
     </div>
   </ng-template>
 
-  @if (importState() === ImportStates.NotInitiated) {
+  @if (importState() === DialogState.NotInitiated) {
     <div>
       <p i18n>Import existing registrations from your Kobo form.</p>
       <p i18n>
         The system will create registrations with the status
         <app-colored-chip
-          [variant]="'blue'"
+          [variant]="chipsColors.new"
           [label]="'New'"
         />
       </p>
@@ -48,26 +48,22 @@
     </div>
   }
 
-  @if (importState() === ImportStates.ImportedWithoutSubmissions) {
-    <p i18n>
-      Kobo form ”25042025 Prototype Sprint” does not have existing
-      registrations. New registrations will be synced to the program
-      automatically.
-    </p>
+  @if (importState() === DialogState.ImportedWithoutSubmissions) {
+    <p>{{ noExistingSubmissionsTranslation() }}</p>
 
     <div class="mt-5 flex justify-end gap-4">
       <p-button
-        label="Close"
-        i18n-label
         (click)="closeDialog()"
         [rounded]="true"
+        label="Close"
+        i18n-label
       />
     </div>
   }
 
   @if (
-    importState() === ImportStates.ImportedWithoutErrors ||
-    importState() === ImportStates.ImportedWithErrors
+    importState() === DialogState.ImportedWithoutErrors ||
+    importState() === DialogState.ImportedWithErrors
   ) {
     <div>
       <p>
@@ -84,15 +80,23 @@
           this.importExistingSubmissions.data()?.numberOfSubmissionsSkipped !==
           0
         ) {
-          <app-colored-chip
-            [label]="
-              submissionCountTranslations().numberOfSubmissionsSkippedChipLabel
-            "
-            [variant]="'grey'"
-            [icon]="'pi pi-check'"
-            class="block"
-            i18n-icon
-          />
+          <div class="flex items-center gap-1">
+            <app-colored-chip
+              [label]="
+                submissionCountTranslations()
+                  .numberOfSubmissionsSkippedChipLabel
+              "
+              [variant]="chipsColors.numberOfSubmissionsSkipped"
+              [icon]="'pi pi-fast-forward'"
+              class="block"
+              i18n-icon
+            />
+            <app-info-tooltip
+              i18n-tooltip
+              message="Submissions that have been added to the program already are skipped to avoid duplications."
+              i18n-message
+            />
+          </div>
         }
 
         @if (
@@ -103,7 +107,7 @@
             [label]="
               submissionCountTranslations().numberOfSubmissionsImportedChipLabel
             "
-            [variant]="'green'"
+            [variant]="chipsColors.numberOfSubmissionsImported"
             [icon]="'pi pi-check'"
             class="block"
             i18n-icon
@@ -113,7 +117,7 @@
     </div>
   }
 
-  @if (importState() === ImportStates.ImportedWithoutErrors) {
+  @if (importState() === DialogState.ImportedWithoutErrors) {
     <div class="mt-5 flex justify-end gap-4">
       <p-button
         label="Close"
@@ -124,14 +128,14 @@
     </div>
   }
 
-  @if (importState() === ImportStates.ImportedWithErrors) {
+  @if (importState() === DialogState.ImportedWithErrors) {
     <div>
       <div class="mt-4 space-y-2">
         <app-colored-chip
           [label]="
             submissionCountTranslations().numberOfSubmissionsFailedChipLabel
           "
-          [variant]="'red'"
+          [variant]="chipsColors.numberOfSubmissionsFailed"
           [icon]="'pi pi-exclamation-triangle'"
           class="block"
         />
@@ -155,7 +159,7 @@
 
       <div class="mt-5 flex justify-end gap-4">
         <p-button
-          (click)="importState.set(ImportStates.NotInitiated)"
+          (click)="importState.set(DialogState.NotInitiated)"
           label="Try again"
           [rounded]="true"
           i18n-label
