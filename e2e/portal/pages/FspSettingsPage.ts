@@ -143,8 +143,10 @@ class FspSettingsPage extends BasePage {
             .nth(i + 1)
             .click();
           await this.page.keyboard.press('Escape'); // Close dropdown
-          // Wait for dropdown to be fully closed
-          await this.page.waitForTimeout(150);
+          // Wait for the PrimeNG dropdown overlay/listbox to be fully closed
+          await this.page
+            .locator('.p-select-overlay, [role="listbox"]')
+            .waitFor({ state: 'hidden' });
         }
       } else {
         for (let i = 1; i < inputCount; i++) {
