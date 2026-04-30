@@ -2315,7 +2315,7 @@
       </trans-unit>
       <trans-unit id="7703736032933423612" datatype="html">
         <source>Error while importing existing Kobo registrations</source>
-	  </trans-unit>
+      </trans-unit>
       <trans-unit id="debit-card-actions-close-card" datatype="html">
         <source>Close card</source>
       </trans-unit>
