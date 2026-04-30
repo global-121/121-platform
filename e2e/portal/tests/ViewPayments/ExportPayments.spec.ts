@@ -83,6 +83,7 @@ test('View available actions for admin', async ({ page, paymentsPage }) => {
       'Payments',
       'Unused vouchers',
       'Debit card usage',
+      'Refunded debit cards',
     ];
 
     // This part is to wait for the menu items to be visible before asserting

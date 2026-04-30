@@ -2292,6 +2292,15 @@
       <trans-unit id="debit-card-status-closed" datatype="html">
         <source>Closed</source>
       </trans-unit>
+      <trans-unit id="2986249053713735246" datatype="html">
+        <source>Export refunded debit cards</source>
+      </trans-unit>
+      <trans-unit id="7541862285009254523" datatype="html">
+        <source>This will download an Excel file showing all refunded debit cards.</source>
+      </trans-unit>
+      <trans-unit id="export-refunded-debit-cards" datatype="html">
+        <source>Refunded debit cards</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

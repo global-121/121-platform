@@ -12,6 +12,8 @@ import { CooperativeBankOfOromiaAccountValidationReportDto } from '@121-service/
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 
+import { IntersolveVisaApiService } from '~/domains/fsp-account-management/intersolve-visa.api.service';
+import { RefundedDebitCardsExport } from '~/domains/fsp-account-management/intersolve-visa.model';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
@@ -43,6 +45,7 @@ export class ExportService {
   private metricApiService = inject(MetricApiService);
   private paymentApiService = inject(PaymentApiService);
   private programApiService = inject(ProgramApiService);
+  private intersolveVisaApiService = inject(IntersolveVisaApiService);
 
   private generateExportParams({
     format,
@@ -247,6 +250,27 @@ export class ExportService {
       onSuccess: (filesToExport) => {
         filesToExport.forEach((fileToExport) => {
           void this.downloadService.downloadArrayToXlsx(fileToExport);
+        });
+      },
+    };
+  }
+
+  getExportRefundedDebitCardsMutation(
+    programId: Signal<number | string>,
+    toastService: ToastService,
+  ): CreateMutationOptions<RefundedDebitCardsExport[]> {
+    return {
+      mutationFn: async () => {
+        this.showStartExportToast(toastService);
+
+        return await this.queryClient.fetchQuery(
+          this.intersolveVisaApiService.getRefundedDebitCards(programId)(),
+        );
+      },
+      onSuccess: (refundedDebitCards) => {
+        void this.downloadService.downloadArrayToXlsx({
+          data: refundedDebitCards,
+          fileName: 'refunded-debit-cards',
         });
       },
     };
