@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test';
+
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -25,7 +27,7 @@ test('Import existing Kobo registrations', async ({
   });
 
   await test.step('Add Kobo integration', async () => {
-    await registrationDataPage.addKoboIntergration(koboIntegrationDetails);
+    await registrationDataPage.addKoboIntegration(koboIntegrationDetails);
   });
 
   await test.step('Import existing Kobo registrations', async () => {
@@ -34,10 +36,12 @@ test('Import existing Kobo registrations', async ({
   });
 
   await test.step('Validate success message after importing existing Kobo registrations', async () => {
-    await registrationDataPage.importDialog.getByText('1 total submission(s)');
-    await registrationDataPage.importDialog.getByText(
-      'Imported successfully: 1',
-    );
+    await expect(
+      registrationDataPage.importDialog.getByText('1 total submission(s)'),
+    ).toBeVisible();
+    await expect(
+      registrationDataPage.importDialog.getByText('Imported successfully: 1'),
+    ).toBeVisible();
   });
 
   await test.step('Skip importing existing Kobo registrations when there are no new registrations to import', async () => {
@@ -45,7 +49,12 @@ test('Import existing Kobo registrations', async ({
     await registrationDataPage.openImportExistingKoboRegistrationsDialog();
     await registrationDataPage.initiateImportButton.click();
 
-    await registrationDataPage.importDialog.getByText('1 total submission(s)');
-    await registrationDataPage.importDialog.getByText('Submissions skipped: 1');
+    await expect(
+      registrationDataPage.importDialog.getByText('1 total submission(s)'),
+    ).toBeVisible();
+
+    await expect(
+      registrationDataPage.importDialog.getByText('Submissions skipped: 1'),
+    ).toBeVisible();
   });
 });

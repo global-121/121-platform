@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   input,
+  model,
   signal,
 } from '@angular/core';
 
@@ -59,7 +60,7 @@ export class KoboImportExistingRegistrationsDialogComponent {
   private readonly toastService = inject(ToastService);
 
   readonly importState = signal(DialogState.NotInitiated);
-  readonly responseDialogVisible = signal(false);
+  readonly dialogVisible = model(false);
   readonly programId = input.required<number | string>();
 
   readonly headerIcon = computed(() => {
@@ -182,16 +183,16 @@ export class KoboImportExistingRegistrationsDialogComponent {
 
   // Methods
 
-  resetDialogState() {
+  resetDialogState(): void {
     this.importState.set(DialogState.NotInitiated);
     this.importExistingSubmissions.reset();
   }
 
-  closeDialog() {
-    this.responseDialogVisible.set(false);
+  closeDialog(): void {
+    this.dialogVisible.set(false);
   }
 
-  show() {
-    this.responseDialogVisible.set(true);
+  show(): void {
+    this.dialogVisible.set(true);
   }
 }

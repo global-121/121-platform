@@ -13,6 +13,7 @@ class RegistrationDataPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
+    this.koboCard = this.page.getByTestId('kobo-integration-card');
     this.addKoboToolboxButton = this.page
       .getByTestId('card-with-link')
       .getByTitle('KoboToolbox');
@@ -29,7 +30,7 @@ class RegistrationDataPage extends BasePage {
     });
   }
 
-  async addKoboIntergration(koboIntegrationDetails: {
+  async addKoboIntegration(koboIntegrationDetails: {
     url: string;
     apiKey: string;
   }) {
@@ -93,7 +94,7 @@ class RegistrationDataPage extends BasePage {
   }
 
   async openImportExistingKoboRegistrationsDialog() {
-    const ellipsisMenuButton = await this.page.getByTestId(
+    const ellipsisMenuButton = this.koboCard.getByTestId(
       'ellipsis-menu-button',
     );
 

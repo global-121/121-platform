@@ -46,7 +46,7 @@ test('Add Kobo integration successfully', async ({
   });
 
   await test.step('Add Kobo integration', async () => {
-    await registrationDataPage.addKoboIntergration(koboIntegrationDetails);
+    await registrationDataPage.addKoboIntegration(koboIntegrationDetails);
   });
 
   await test.step('Validate Kobo integration details on Registrations page', async () => {
