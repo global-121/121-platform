@@ -167,9 +167,7 @@ class FspSettingsPage extends BasePage {
       }
       // Ensure any dropdowns or overlays are closed before clicking
       await this.page.keyboard.press('Escape');
-      await this.page
-        .locator('.p-select-overlay, .p-multiselect-overlay')
-        .waitFor({ state: 'hidden' });
+      await this.page.waitForTimeout(150);
       await this.integrateFspButton.waitFor({ state: 'visible' });
       await this.integrateFspButton.click();
     }
