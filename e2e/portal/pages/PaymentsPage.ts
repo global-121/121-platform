@@ -135,8 +135,8 @@ class PaymentsPage extends BasePage {
     expectedValue: number,
   ) {
     if (!elementText) throw new Error('Element text is null');
-    const extractedValue = elementText.replace(/[^0-9.]/g, '');
-    const actualNumber = parseFloat(extractedValue);
+    const extractedValue = elementText.replaceAll(/[^0-9.]/g, '');
+    const actualNumber = Number.parseFloat(extractedValue);
     expect(actualNumber).toBeCloseTo(expectedValue, 2);
   }
 
