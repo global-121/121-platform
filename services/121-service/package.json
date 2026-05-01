@@ -57,6 +57,7 @@
     "npm": ">=11"
   },
   "dependencies": {
+    "@azure/identity": "^4.11.1",
     "@azure/storage-blob": "^12.31.0",
     "@jimp/plugin-print": "^1.6.1",
     "@nestjs/axios": "^4.0.1",
