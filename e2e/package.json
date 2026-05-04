@@ -18,7 +18,8 @@
     "fix": "npm run lint -- --fix",
     "test": "playwright test --config=playwright.config.ts",
     "test:update-snapshots": "npm run test -- --update-snapshots",
-    "test:update-snapshots:specific": "npm run test -- --update-snapshots --grep"
+    "test:update-snapshots:specific": "npm run test -- --update-snapshots --grep",
+    "test:find-flaky": "playwright test --config=playwright.config.ts --fail-on-flaky-tests --retries=0 --repeat-each 30 -x --trace retain-on-failure --reporter=html"
   },
   "devDependencies": {
     "@playwright/test": "^1.59.1",
