@@ -8,7 +8,7 @@
     "download-logs": "node --env-file-if-exists=.env download-logs.mjs"
   },
   "dependencies": {
-    "@azure/identity": "^4.5.0",
+    "@azure/identity": "^4.13.1",
     "node-html-parser": "^6.1.13"
   },
   "engines": {
