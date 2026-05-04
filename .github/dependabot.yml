@@ -75,6 +75,7 @@ updates:
       - dependency-name: 'applicationinsights'
         update-types: ['version-update:semver-major']
       - dependency-name: 'bwip-js'
+        update-types: ['version-update:semver-major']
       - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
       - dependency-name: 'jimp'
