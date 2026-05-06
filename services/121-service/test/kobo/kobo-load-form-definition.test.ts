@@ -170,6 +170,7 @@ describe('Import a Kobo form definition', () => {
 
     expect(firstAttributeSnapshot).toMatchInlineSnapshot(`
      {
+       "customLabel": null,
        "isRequired": false,
        "label": {
          "en": "What is your name (text)?",
