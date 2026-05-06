@@ -335,6 +335,7 @@ exports[`Create program should post a program: Create program response for progr
   "paymentAmountMultiplierFormula": null,
   "programRegistrationAttributes": [
     {
+      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 29,
@@ -354,6 +355,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
+      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 31,
@@ -374,6 +376,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
+      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 26,
@@ -393,6 +396,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
+      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 30,
@@ -427,6 +431,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "dropdown",
     },
     {
+      "customLabel": null,
       "duplicateCheck": true,
       "editableInPortal": true,
       "id": 28,
@@ -446,6 +451,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
+      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 27,
@@ -830,6 +836,7 @@ exports[`Create program should post a program: Create program response for progr
   "paymentAmountMultiplierFormula": null,
   "programRegistrationAttributes": [
     {
+      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 25,
@@ -848,6 +855,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
+      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 22,
@@ -866,6 +874,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
+      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 23,
@@ -884,6 +893,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
+      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 24,
@@ -902,6 +912,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
+      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 21,
@@ -920,6 +931,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
+      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 18,
@@ -938,6 +950,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
+      "customLabel": null,
       "duplicateCheck": true,
       "editableInPortal": false,
       "id": 19,
@@ -958,6 +971,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "tel",
     },
     {
+      "customLabel": null,
       "duplicateCheck": true,
       "editableInPortal": true,
       "id": 20,
