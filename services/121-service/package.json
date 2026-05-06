@@ -107,7 +107,7 @@
     "typeorm": "npm:@global121/typeorm@1.0.4",
     "typescript": "^5.9.3",
     "ufo": "^1.6.3",
-    "uuid": "^11.1.0",
+    "uuid": "^14.0.0",
     "validator": "^13.15.26",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "xml-js": "^1.6.11",
