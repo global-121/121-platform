@@ -43,7 +43,6 @@ export class MtnMockService {
       ];
     }
 
-    // In production, we would validate the credentials here.
     return [
       HttpStatus.OK,
       {
