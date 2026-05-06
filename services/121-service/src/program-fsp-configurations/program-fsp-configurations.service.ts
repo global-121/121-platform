@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
+import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-types.const';
 import {
   FspConfigurationPropertyVisibility,
@@ -48,7 +49,41 @@ export class ProgramFspConfigurationsService {
     programFspConfigurationDto: CreateProgramFspConfigurationDto,
   ): Promise<ProgramFspConfigurationResponseDto> {
     await this.validate(programId, programFspConfigurationDto);
-    return this.createEntity(programId, programFspConfigurationDto);
+    const properties = await this.checkForMissingRequiredAttributes(
+      programFspConfigurationDto,
+    );
+
+    console.log('what am I', {
+      ...programFspConfigurationDto,
+      properties,
+    });
+
+    return this.createEntity(programId, {
+      ...programFspConfigurationDto,
+      properties,
+    });
+  }
+
+  private async checkForMissingRequiredAttributes(
+    programFspConfigurationDto: CreateProgramFspConfigurationDto,
+  ): Promise<any> {
+    const requiredAttributesForFSP = FSP_SETTINGS[
+      programFspConfigurationDto.fspName
+    ].attributes
+      .filter((attribute) => attribute.isRequired)
+      .map((attribute) => {
+        return {
+          name: attribute.name,
+          value: `${attribute.name}`,
+        };
+      });
+
+    const properties = [
+      ...(programFspConfigurationDto.properties ?? []),
+      ...requiredAttributesForFSP,
+    ];
+
+    return properties;
   }
 
   private async validate(
