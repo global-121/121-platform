@@ -22,9 +22,11 @@
         <p i18n>Import existing registrations from your Kobo form.</p>
         <p i18n>
           The system will create registrations with the status
+          <!-- This is a one off label for this view -->
           <app-colored-chip
-            [variant]="chipsColors.new"
-            [label]="'New'"
+            [variant]="'blue'"
+            label="'New'"
+            i18n-label
           />
         </p>
         <p i18n>The import takes about 1 minute per 100 records.</p>
@@ -67,13 +69,14 @@
     ) {
       <div>
         <p>
-          <span i18n> Successfully imported submissions from Kobo form </span>
+          <span i18n>Successfully imported submissions from Kobo form</span
+          >&nbsp;
           <span>”{{ koboIntegration.data()?.name }}”</span>
         </p>
 
         <div class="mt-4 space-y-2">
           <p class="font-bold">
-            {{ submissionCountTranslations().totalSubmissions }}
+            {{ totalSubmissionsTranslation() }}
           </p>
 
           @if (
@@ -82,11 +85,8 @@
           ) {
             <div class="flex items-center gap-1">
               <app-colored-chip
-                [label]="
-                  submissionCountTranslations()
-                    .numberOfSubmissionsSkippedChipLabel
-                "
-                [variant]="chipsColors.numberOfSubmissionsSkipped"
+                [label]="`${getChipLabelBySubmissionKey(SubmissionKey.Skipped)}: ${importExistingSubmissions.data()?.numberOfSubmissionsSkipped ?? 0}`"
+                [variant]="getChipVariantBySubmissionKey(SubmissionKey.Skipped)"
                 [icon]="'pi pi-fast-forward'"
                 class="block"
                 i18n-icon
@@ -104,11 +104,8 @@
               ?.numberOfSubmissionsImported !== 0
           ) {
             <app-colored-chip
-              [label]="
-                submissionCountTranslations()
-                  .numberOfSubmissionsImportedChipLabel
-              "
-              [variant]="chipsColors.numberOfSubmissionsImported"
+              [label]="`${getChipLabelBySubmissionKey(SubmissionKey.Imported)}: ${importExistingSubmissions.data()?.numberOfSubmissionsImported ?? 0}`"
+              [variant]="getChipVariantBySubmissionKey(SubmissionKey.Imported)"
               [icon]="'pi pi-check'"
               class="block"
               i18n-icon
@@ -133,10 +130,8 @@
       <div>
         <div class="mt-4 space-y-2">
           <app-colored-chip
-            [label]="
-              submissionCountTranslations().numberOfSubmissionsFailedChipLabel
-            "
-            [variant]="chipsColors.numberOfSubmissionsFailed"
+            [label]="`${getChipLabelBySubmissionKey(SubmissionKey.Failed)}: ${importExistingSubmissions.data()?.numberOfSubmissionsFailed ?? 0}`"
+            [variant]="getChipVariantBySubmissionKey(SubmissionKey.Failed)"
             [icon]="'pi pi-exclamation-triangle'"
             class="block"
           />

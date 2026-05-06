@@ -15,6 +15,10 @@ import {
   REGISTRATION_STATUS_LABELS,
 } from '~/domains/registration/registration.helper';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
+import {
+  SUBMISSION_RESULT_LABELS,
+  SubmissionKey,
+} from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
 
 export interface ChipData {
   chipLabel: string;
@@ -115,5 +119,18 @@ export const getChipDataByDuplicateStatus = (
     chipVariants: {
       [DuplicateStatus.unique]: 'green',
       [DuplicateStatus.duplicate]: 'red',
+    },
+  });
+
+export const getChipDataBySubmissionsKey = (
+  status?: null | SubmissionKey,
+): ChipData =>
+  mapValueToChipData({
+    value: status,
+    labels: SUBMISSION_RESULT_LABELS,
+    chipVariants: {
+      [SubmissionKey.Failed]: 'red',
+      [SubmissionKey.Imported]: 'green',
+      [SubmissionKey.Skipped]: 'orange',
     },
   });

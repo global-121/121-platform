@@ -2266,7 +2266,7 @@
         <source>Import complete</source>
       </trans-unit>
       <trans-unit id="3851949706407638075" datatype="html">
-        <source>The system will create registrations with the status <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;chipsColors.new&quot; [label]=&quot;&apos;New&apos;&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;chipsColors.new&quot; [label]=&quot;&apos;New&apos;&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/></source>
+        <source>The system will create registrations with the status <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;&apos;blue&apos;&quot; label=&quot;&apos;New&apos;&quot; i18n-label /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;&apos;blue&apos;&quot; label=&quot;&apos;New&apos;&quot; i18n-label /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/></source>
       </trans-unit>
       <trans-unit id="4513666009026562086" datatype="html">
         <source>Import existing reg.</source>
@@ -2283,20 +2283,11 @@
       <trans-unit id="1519954996184640001" datatype="html">
         <source>Error</source>
       </trans-unit>
-      <trans-unit id="3615628700898095994" datatype="html">
-        <source>Imported successfully: <x equiv-text="this.importExistingSubmissions.data()?.numberOfSubmissionsImported ?? 0" id="count"/></source>
-      </trans-unit>
       <trans-unit id="4135275683761793881" datatype="html">
         <source><x equiv-text="this.importExistingSubmissions.data()?.numberOfSubmissionsOnForm ?? 0" id="count"/> total submission(s)</source>
       </trans-unit>
       <trans-unit id="763982378603811482" datatype="html">
         <source>Column</source>
-      </trans-unit>
-      <trans-unit id="8692166966874863401" datatype="html">
-        <source>Successfully imported submissions from Kobo form</source>
-      </trans-unit>
-      <trans-unit id="8807448248336812904" datatype="html">
-        <source>Submissions failed: <x equiv-text="this.importExistingSubmissions.data()?.numberOfSubmissionsFailed ?? 0" id="count"/></source>
       </trans-unit>
       <trans-unit id="4421433274861560863" datatype="html">
         <source>Add a user to the 121 platform. Fill in the fields below to create a new user account.</source>
@@ -2331,9 +2322,6 @@
       <trans-unit id="debit-card-status-closed" datatype="html">
         <source>Closed</source>
       </trans-unit>
-      <trans-unit id="123437398532695378" datatype="html">
-        <source>Submissions skipped: <x equiv-text="this.importExistingSubmissions.data()?.numberOfSubmissionsSkipped ?? 0" id="count"/></source>
-      </trans-unit>
       <trans-unit id="4686419033610227407" datatype="html">
         <source>No submissions found</source>
       </trans-unit>
@@ -2357,6 +2345,20 @@
       </trans-unit>
       <trans-unit id="export-refunded-debit-cards" datatype="html">
         <source>Refunded debit cards</source>
+      <trans-unit id="3443177849607577586" datatype="html">
+        <source>Successfully imported submissions from Kobo form</source>
+      </trans-unit>
+      <trans-unit id="4033651697146421557" datatype="html">
+        <source>&apos;New&apos;</source>
+      </trans-unit>
+      <trans-unit id="submission-result-failed" datatype="html">
+        <source>Submissions failed</source>
+      </trans-unit>
+      <trans-unit id="submission-result-imported" datatype="html">
+        <source>Imported successfully</source>
+      </trans-unit>
+      <trans-unit id="submission-result-skipped" datatype="html">
+        <source>Submissions skipped</source>
       </trans-unit>
     </body>
   </file>

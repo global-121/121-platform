@@ -15,7 +15,11 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 
-import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import {
+  ChipVariant,
+  ColoredChipComponent,
+} from '~/components/colored-chip/colored-chip.component';
+import { getChipDataBySubmissionsKey } from '~/components/colored-chip/colored-chip.helper';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
@@ -34,12 +38,17 @@ interface ValidationErrorTableRow extends ValidationError {
   id: number;
 }
 
-const dialogChipColors = {
-  new: 'blue',
-  numberOfSubmissionsFailed: 'red',
-  numberOfSubmissionsImported: 'green',
-  numberOfSubmissionsSkipped: 'orange',
-} as const;
+export enum SubmissionKey {
+  Failed = 'numberOfSubmissionsFailed',
+  Imported = 'numberOfSubmissionsImported',
+  Skipped = 'numberOfSubmissionsSkipped',
+}
+
+export const SUBMISSION_RESULT_LABELS: Record<SubmissionKey, string> = {
+  [SubmissionKey.Failed]: $localize`:@@submission-result-failed:Submissions failed`,
+  [SubmissionKey.Imported]: $localize`:@@submission-result-imported:Imported successfully`,
+  [SubmissionKey.Skipped]: $localize`:@@submission-result-skipped:Submissions skipped`,
+};
 
 @Component({
   selector: 'app-kobo-import-existing-registration-dialog',
@@ -97,13 +106,8 @@ export class KoboImportExistingRegistrationsDialogComponent {
     return $localize`Kobo form ”${this.koboIntegration.data()?.name}” does not have existing registrations. New registrations will be synced to the program automatically.`;
   });
 
-  readonly submissionCountTranslations = computed(() => {
-    return {
-      totalSubmissions: $localize`${this.importExistingSubmissions.data()?.numberOfSubmissionsOnForm ?? 0}:count: total submission(s)`,
-      numberOfSubmissionsImportedChipLabel: $localize`Imported successfully: ${this.importExistingSubmissions.data()?.numberOfSubmissionsImported ?? 0}:count:`,
-      numberOfSubmissionsSkippedChipLabel: $localize`Submissions skipped: ${this.importExistingSubmissions.data()?.numberOfSubmissionsSkipped ?? 0}:count:`,
-      numberOfSubmissionsFailedChipLabel: $localize`Submissions failed: ${this.importExistingSubmissions.data()?.numberOfSubmissionsFailed ?? 0}:count:`,
-    };
+  readonly totalSubmissionsTranslation = computed(() => {
+    return $localize`${this.importExistingSubmissions.data()?.numberOfSubmissionsOnForm ?? 0}:count: total submission(s)`;
   });
 
   // Kobo integration and import existing submissions mutations
@@ -177,11 +181,19 @@ export class KoboImportExistingRegistrationsDialogComponent {
     return DialogState;
   }
 
-  public get chipsColors(): typeof dialogChipColors {
-    return dialogChipColors;
+  public get SubmissionKey(): typeof SubmissionKey {
+    return SubmissionKey;
   }
 
   // Methods
+
+  getChipLabelBySubmissionKey(submissionKey: SubmissionKey): string {
+    return getChipDataBySubmissionsKey(submissionKey).chipLabel;
+  }
+
+  getChipVariantBySubmissionKey(submissionKey: SubmissionKey): ChipVariant {
+    return getChipDataBySubmissionsKey(submissionKey).chipVariant;
+  }
 
   resetDialogState(): void {
     this.importState.set(DialogState.NotInitiated);
