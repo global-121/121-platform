@@ -1,4 +1,4 @@
-<p-card>
+<p-card [class]="isEditing() ? 'outline-purple outline-2' : ''">
   <form
     (ngSubmit)="onFormSubmit()"
     (keydown.control.enter)="onFormSubmit()"
@@ -6,7 +6,7 @@
     pFocusTrap
     [pFocusTrapDisabled]="!isEditing()"
   >
-    <div class="flex min-h-12 items-center gap-x-2">
+    <div class="mb-5 flex min-h-12 items-center gap-x-2">
       <h2>{{ header() }}</h2>
       @if (canEdit()) {
         <div class="ms-auto space-x-2">
