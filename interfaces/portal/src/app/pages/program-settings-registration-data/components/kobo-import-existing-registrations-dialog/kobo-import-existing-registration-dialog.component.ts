@@ -24,6 +24,7 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import { QueryTableColumn } from '~/components/query-table/query-table.types';
+import { ImportExistingSubmissionsResultKey } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { DialogState } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/KoboImportExistingRegistrationsDialogState.enum';
 import { ToastService } from '~/services/toast.service';
@@ -37,13 +38,6 @@ interface ValidationError {
 interface ValidationErrorTableRow extends ValidationError {
   id: number;
 }
-
-export enum SubmissionKey {
-  Failed = 'numberOfSubmissionsFailed',
-  Imported = 'numberOfSubmissionsImported',
-  Skipped = 'numberOfSubmissionsSkipped',
-}
-
 @Component({
   selector: 'app-kobo-import-existing-registration-dialog',
   imports: [
@@ -169,24 +163,28 @@ export class KoboImportExistingRegistrationsDialogComponent {
     },
   ]);
 
-  // Exposing the enum and chip colors to the template
-
   public get DialogState(): typeof DialogState {
     return DialogState;
   }
 
-  public get SubmissionKey(): typeof SubmissionKey {
-    return SubmissionKey;
+  public get importExistingSubmissionsResultKey(): typeof ImportExistingSubmissionsResultKey {
+    return ImportExistingSubmissionsResultKey;
   }
 
   // Methods
 
-  getChipLabelBySubmissionKey(submissionKey: SubmissionKey): string {
-    return getChipDataBySubmissionsKey(submissionKey).chipLabel;
+  getChipLabelBySubmissionKey(
+    importExistingSubmissionsResultKey: ImportExistingSubmissionsResultKey,
+  ): string {
+    return getChipDataBySubmissionsKey(importExistingSubmissionsResultKey)
+      .chipLabel;
   }
 
-  getChipVariantBySubmissionKey(submissionKey: SubmissionKey): ChipVariant {
-    return getChipDataBySubmissionsKey(submissionKey).chipVariant;
+  getChipVariantBySubmissionKey(
+    importExistingSubmissionsResultKey: ImportExistingSubmissionsResultKey,
+  ): ChipVariant {
+    return getChipDataBySubmissionsKey(importExistingSubmissionsResultKey)
+      .chipVariant;
   }
 
   resetDialogState(): void {

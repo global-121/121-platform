@@ -85,8 +85,12 @@
           ) {
             <div class="flex items-center gap-1">
               <app-colored-chip
-                [label]="`${getChipLabelBySubmissionKey(SubmissionKey.Skipped)}: ${importExistingSubmissions.data()?.numberOfSubmissionsSkipped ?? 0}`"
-                [variant]="getChipVariantBySubmissionKey(SubmissionKey.Skipped)"
+                [label]="`${getChipLabelBySubmissionKey(importExistingSubmissionsResultKey.numberOfSubmissionsSkipped)}: ${importExistingSubmissions.data()?.numberOfSubmissionsSkipped ?? 0}`"
+                [variant]="
+                  getChipVariantBySubmissionKey(
+                    importExistingSubmissionsResultKey.numberOfSubmissionsSkipped
+                  )
+                "
                 [icon]="'pi pi-fast-forward'"
                 class="block"
                 i18n-icon
@@ -104,8 +108,12 @@
               ?.numberOfSubmissionsImported !== 0
           ) {
             <app-colored-chip
-              [label]="`${getChipLabelBySubmissionKey(SubmissionKey.Imported)}: ${importExistingSubmissions.data()?.numberOfSubmissionsImported ?? 0}`"
-              [variant]="getChipVariantBySubmissionKey(SubmissionKey.Imported)"
+              [label]="`${getChipLabelBySubmissionKey(importExistingSubmissionsResultKey.numberOfSubmissionsImported)}: ${importExistingSubmissions.data()?.numberOfSubmissionsImported ?? 0}`"
+              [variant]="
+                getChipVariantBySubmissionKey(
+                  importExistingSubmissionsResultKey.numberOfSubmissionsImported
+                )
+              "
               [icon]="'pi pi-check'"
               class="block"
               i18n-icon
@@ -130,8 +138,12 @@
       <div>
         <div class="mt-4 space-y-2">
           <app-colored-chip
-            [label]="`${getChipLabelBySubmissionKey(SubmissionKey.Failed)}: ${importExistingSubmissions.data()?.numberOfSubmissionsFailed ?? 0}`"
-            [variant]="getChipVariantBySubmissionKey(SubmissionKey.Failed)"
+            [label]="`${getChipLabelBySubmissionKey(importExistingSubmissionsResultKey.numberOfSubmissionsFailed)}: ${importExistingSubmissions.data()?.numberOfSubmissionsFailed ?? 0}`"
+            [variant]="
+              getChipVariantBySubmissionKey(
+                importExistingSubmissionsResultKey.numberOfSubmissionsFailed
+              )
+            "
             [icon]="'pi pi-exclamation-triangle'"
             class="block"
           />

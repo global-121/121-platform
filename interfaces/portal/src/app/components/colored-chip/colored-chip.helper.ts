@@ -5,7 +5,10 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 
 import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
 import { VISA_CARD_STATUS_LABELS } from '~/domains/fsp-account-management/intersolve-visa.helper';
-import { SUBMISSION_RESULT_LABELS } from '~/domains/kobo/kobo.helpers';
+import {
+  ImportExistingSubmissionsResultKey,
+  SUBMISSION_RESULT_LABELS,
+} from '~/domains/kobo/kobo.helpers';
 import {
   convertTwilioMessageStatusToMessageStatus,
   MESSAGE_STATUS_LABELS,
@@ -16,7 +19,6 @@ import {
   REGISTRATION_STATUS_LABELS,
 } from '~/domains/registration/registration.helper';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
-import { SubmissionKey } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
 
 export interface ChipData {
   chipLabel: string;
@@ -121,14 +123,14 @@ export const getChipDataByDuplicateStatus = (
   });
 
 export const getChipDataBySubmissionsKey = (
-  status?: null | SubmissionKey,
+  status?: ImportExistingSubmissionsResultKey | null,
 ): ChipData =>
   mapValueToChipData({
     value: status,
     labels: SUBMISSION_RESULT_LABELS,
     chipVariants: {
-      [SubmissionKey.Failed]: 'red',
-      [SubmissionKey.Imported]: 'green',
-      [SubmissionKey.Skipped]: 'orange',
+      [ImportExistingSubmissionsResultKey.numberOfSubmissionsFailed]: 'red',
+      [ImportExistingSubmissionsResultKey.numberOfSubmissionsImported]: 'green',
+      [ImportExistingSubmissionsResultKey.numberOfSubmissionsSkipped]: 'orange',
     },
   });
