@@ -25,7 +25,7 @@ export class ProgramRegistrationAttributeEntity extends Base121Entity {
   public label: RegistrationPreferredLanguageTranslation;
 
   @Column('json', { nullable: true })
-  public customLabel: RegistrationPreferredLanguageTranslation;
+  public customLabel: RegistrationPreferredLanguageTranslation | null;
 
   @Column({ type: 'character varying' })
   public type: RegistrationAttributeTypes;
