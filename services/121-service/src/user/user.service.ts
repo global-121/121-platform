@@ -795,6 +795,7 @@ export class UserService {
         lastLogin: user.lastLogin,
         roles,
         scope: user.scope,
+        isEligiblePaymentApprover: user.scope === '',
       };
     });
 

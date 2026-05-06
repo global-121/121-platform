@@ -19,6 +19,9 @@ export class GetUserReponseDto {
   @ApiProperty()
   scope: string;
 
+  @ApiProperty({ example: true })
+  isEligiblePaymentApprover: boolean;
+
   @ApiProperty()
   roles: {
     id: number;
