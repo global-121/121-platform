@@ -44,12 +44,6 @@ export enum SubmissionKey {
   Skipped = 'numberOfSubmissionsSkipped',
 }
 
-export const SUBMISSION_RESULT_LABELS: Record<SubmissionKey, string> = {
-  [SubmissionKey.Failed]: $localize`:@@submission-result-failed:Submissions failed`,
-  [SubmissionKey.Imported]: $localize`:@@submission-result-imported:Imported successfully`,
-  [SubmissionKey.Skipped]: $localize`:@@submission-result-skipped:Submissions skipped`,
-};
-
 @Component({
   selector: 'app-kobo-import-existing-registration-dialog',
   imports: [

@@ -3,6 +3,8 @@ import { withoutTrailingSlash } from 'ufo';
 
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 
+import { SubmissionKey } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
+
 const KOBO_URL_FORMS_PREFIX = 'forms';
 
 export const isKoboIntegrated = (
@@ -52,4 +54,10 @@ export const extractServerAndAssetIdFromUrl = (
   }
 
   return {};
+};
+
+export const SUBMISSION_RESULT_LABELS: Record<SubmissionKey, string> = {
+  [SubmissionKey.Failed]: $localize`:@@submission-result-failed:Submissions failed`,
+  [SubmissionKey.Imported]: $localize`:@@submission-result-imported:Imported successfully`,
+  [SubmissionKey.Skipped]: $localize`:@@submission-result-skipped:Submissions skipped`,
 };

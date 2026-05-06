@@ -5,6 +5,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 
 import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
 import { VISA_CARD_STATUS_LABELS } from '~/domains/fsp-account-management/intersolve-visa.helper';
+import { SUBMISSION_RESULT_LABELS } from '~/domains/kobo/kobo.helpers';
 import {
   convertTwilioMessageStatusToMessageStatus,
   MESSAGE_STATUS_LABELS,
@@ -15,10 +16,7 @@ import {
   REGISTRATION_STATUS_LABELS,
 } from '~/domains/registration/registration.helper';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
-import {
-  SUBMISSION_RESULT_LABELS,
-  SubmissionKey,
-} from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
+import { SubmissionKey } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
 
 export interface ChipData {
   chipLabel: string;
