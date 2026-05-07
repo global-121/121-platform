@@ -74,6 +74,16 @@ Extra options:
 - To update snapshot files: `npm run test:update-snapshots`
 - To combine the 2 options above: `npm run test:update-snapshots:specific <substringMatchingFilename>`
 
+### Flaky tests
+
+Flaky tests can be hard to find, reproduce and debug. But you can try to reproduce it by using the following command:
+
+```shell
+npm run test:find-flaky <substringMatchingFilename>
+```
+
+This hunts for flaky tests by running each test 30 times, stops as soon as flakiness is detected, and keeps a trace of the failing run for debugging. It will also open the report after a failed run.
+
 ### Using the VS Code-extension
 
 Use the built-in runner of the VS Code-extension: [`#ms-playwright.playwright`](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright)
