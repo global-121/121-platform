@@ -2345,6 +2345,7 @@
       </trans-unit>
       <trans-unit id="export-refunded-debit-cards" datatype="html">
         <source>Refunded debit cards</source>
+      </trans-unit>
       <trans-unit id="3443177849607577586" datatype="html">
         <source>Successfully imported submissions from Kobo form</source>
       </trans-unit>
