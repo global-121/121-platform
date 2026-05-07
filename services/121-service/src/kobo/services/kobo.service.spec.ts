@@ -10,6 +10,7 @@ import { KoboValidationService } from '@121-service/src/kobo/services/kobo.valid
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
 import { KoboSurveyProcessorService } from '@121-service/src/kobo/services/kobo-survey-processor.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
@@ -21,6 +22,7 @@ describe('KoboService', () => {
   let koboApiService: KoboApiService;
   let koboValidationService: KoboValidationService;
   let programService: ProgramService;
+  let programRegistrationAttributesService: ProgramRegistrationAttributesService;
   let programRepository: ProgramRepository;
   let programFspConfigurationRepository: ProgramFspConfigurationRepository;
   let koboSurveyProcessorService: KoboSurveyProcessorService;
@@ -126,6 +128,12 @@ describe('KoboService', () => {
             findByIdOrFail: jest.fn(),
           },
         },
+        {
+          provide: ProgramRegistrationAttributesService,
+          useValue: {
+            upsertProgramRegistrationAttributes: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -135,6 +143,10 @@ describe('KoboService', () => {
       KoboValidationService,
     );
     programService = module.get<ProgramService>(ProgramService);
+    programRegistrationAttributesService =
+      module.get<ProgramRegistrationAttributesService>(
+        ProgramRegistrationAttributesService,
+      );
     programRepository = module.get<ProgramRepository>(ProgramRepository);
     programFspConfigurationRepository =
       module.get<ProgramFspConfigurationRepository>(
@@ -165,7 +177,7 @@ describe('KoboService', () => {
       },
     ]);
     (
-      programService.upsertProgramRegistrationAttributes as jest.Mock
+      programRegistrationAttributesService.upsertProgramRegistrationAttributes as jest.Mock
     ).mockResolvedValue(undefined);
     (koboApiService.getExistingKoboWebhooks as jest.Mock) = jest
       .fn()
@@ -361,7 +373,7 @@ describe('KoboService', () => {
         .mockReturnValue(mockAttributes);
 
       const upsertSpy = jest.spyOn(
-        programService,
+        programRegistrationAttributesService,
         'upsertProgramRegistrationAttributes',
       );
 

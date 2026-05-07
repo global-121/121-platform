@@ -10,7 +10,7 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -32,7 +32,7 @@ const defaultMessageJob = {
 describe('MessageQueuesService', () => {
   let queueMessageService: MessageQueuesService;
   let queuesService: QueuesRegistryService;
-  let programAttributesService: ProgramAttributesService;
+  let programRegistrationAttributesService: ProgramRegistrationAttributesService;
   let messageTemplateRepository: Repository<MessageTemplateEntity>;
   let registrationDataService: RegistrationDataService;
 
@@ -48,7 +48,9 @@ describe('MessageQueuesService', () => {
 
     queueMessageService = unit;
     queuesService = unitRef.get(QueuesRegistryService);
-    programAttributesService = unitRef.get(ProgramAttributesService);
+    programRegistrationAttributesService = unitRef.get(
+      ProgramRegistrationAttributesService,
+    );
     registrationDataService = unitRef.get(RegistrationDataService);
     messageTemplateRepository = unitRef.get(
       getRepositoryToken(MessageTemplateEntity) as any,
@@ -148,7 +150,7 @@ describe('MessageQueuesService', () => {
     it('should get the placeholders from custom message text', async () => {
       // Arrange
       jest
-        .spyOn(programAttributesService as any, 'getAttributes')
+        .spyOn(programRegistrationAttributesService as any, 'getAttributes')
         .mockImplementation(() => {
           return [{ name: 'fullName' }, { name: 'namePartnerOrganization' }];
         });
@@ -167,7 +169,7 @@ describe('MessageQueuesService', () => {
 
     it('should get the placeholders from a message that comes from messageTemplateRepository', async () => {
       jest
-        .spyOn(programAttributesService as any, 'getAttributes')
+        .spyOn(programRegistrationAttributesService as any, 'getAttributes')
         .mockImplementation(() => {
           return [{ name: 'fullName' }, { name: 'namePartnerOrganization' }];
         });

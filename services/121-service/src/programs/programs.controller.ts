@@ -30,7 +30,7 @@ import { env } from '@121-service/src/env';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { KoboConnectService } from '@121-service/src/kobo-connect/kobo-connect.service';
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import {
   ProgramRegistrationAttributeDto,
@@ -53,7 +53,7 @@ import { RequestHelper } from '@121-service/src/utils/request-helper/request-hel
 export class ProgramController {
   public constructor(
     private readonly programService: ProgramService,
-    private readonly programAttributesService: ProgramAttributesService,
+    private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
     private readonly koboConnectService: KoboConnectService,
   ) {}
 
@@ -237,10 +237,12 @@ You can also leave the body empty.`,
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<ProgramRegistrationAttributeDto> {
-    return await this.programService.createProgramRegistrationAttribute({
-      programId,
-      createProgramRegistrationAttributeDto: programRegistrationAttribute,
-    });
+    return await this.programRegistrationAttributesService.createProgramRegistrationAttribute(
+      {
+        programId,
+        createProgramRegistrationAttributeDto: programRegistrationAttribute,
+      },
+    );
   }
 
   @AuthenticatedUser({
@@ -271,11 +273,14 @@ You can also leave the body empty.`,
     @Param('programRegistrationAttributeName')
     programRegistrationAttributeName: string,
   ): Promise<ProgramRegistrationAttributeEntity> {
-    return await this.programService.updateProgramRegistrationAttribute({
-      programId,
-      programRegistrationAttributeName,
-      updateProgramRegistrationAttribute: updateProgramRegistrationAttributeDto,
-    });
+    return await this.programRegistrationAttributesService.updateProgramRegistrationAttribute(
+      {
+        programId,
+        programRegistrationAttributeName,
+        updateProgramRegistrationAttribute:
+          updateProgramRegistrationAttributeDto,
+      },
+    );
   }
 
   @AuthenticatedUser({
@@ -298,7 +303,7 @@ You can also leave the body empty.`,
     @Param('programRegistrationAttributeId', ParseIntPipe)
     programRegistrationAttributeId: number,
   ): Promise<ProgramRegistrationAttributeEntity> {
-    return await this.programService.deleteProgramRegistrationAttribute(
+    return await this.programRegistrationAttributesService.deleteProgramRegistrationAttribute(
       programId,
       programRegistrationAttributeId,
     );
@@ -361,7 +366,7 @@ You can also leave the body empty.`,
         return [];
       }
     }
-    const attr = await this.programAttributesService.getAttributes({
+    const attr = await this.programRegistrationAttributesService.getAttributes({
       programId,
       includeProgramRegistrationAttributes,
       includeTemplateDefaultAttributes,

@@ -61,6 +61,7 @@ graph LR
   IntersolveVoucherReconciliationModule-->ProgramModule
   KoboModule-->ProgramFspConfigurationsModule
   KoboModule-->ProgramModule
+  KoboModule-->ProgramRegistrationAttributesModule
   KoboModule-->RegistrationsModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->IntersolveVoucherModule
@@ -77,10 +78,10 @@ graph LR
   MessageModule-->ProgramModule
   MessageModule-->SmsModule
   MessageModule-->WhatsappModule
-  MessageQueuesModule-->ProgramAttributesModule
+  MessageQueuesModule-->ProgramRegistrationAttributesModule
   MessageQueuesModule-->QueuesRegistryModule
   MessageQueuesModule-->RegistrationDataModule
-  MessageTemplateModule-->ProgramAttributesModule
+  MessageTemplateModule-->ProgramRegistrationAttributesModule
   MessageTemplateModule-->UserModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
@@ -129,8 +130,8 @@ graph LR
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAidworkerAssignmentsModule
   ProgramModule-->ProgramAttachmentsModule
-  ProgramModule-->ProgramAttributesModule
   ProgramModule-->ProgramFspConfigurationsModule
+  ProgramModule-->ProgramRegistrationAttributesModule
   ProgramModule-->UserModule
   RegistrationEventsModule-->UserModule
   RegistrationUtilsModule-->RegistrationDataModule

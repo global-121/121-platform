@@ -8,7 +8,7 @@ import {
   UpdateTemplateBodyDto,
 } from '@121-service/src/notifications/message-template/dto/message-template.dto';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class MessageTemplateService {
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
 
   constructor(
-    private readonly programAttributesService: ProgramAttributesService,
+    private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
   ) {}
 
   public async getMessageTemplatesByProgramId(
@@ -169,7 +169,7 @@ export class MessageTemplateService {
     message: string,
   ): Promise<void> {
     const availableAttributes =
-      await this.programAttributesService.getAttributes({
+      await this.programRegistrationAttributesService.getAttributes({
         programId,
         includeProgramRegistrationAttributes: true,
         includeTemplateDefaultAttributes: true,

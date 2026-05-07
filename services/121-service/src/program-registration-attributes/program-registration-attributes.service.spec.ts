@@ -1,19 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DataSource, Repository } from 'typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
-import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
-import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
-import { ProgramService } from '@121-service/src/programs/programs.service';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { UserService } from '@121-service/src/user/user.service';
+import { generateMockCreateQueryBuilder } from '@121-service/src/utils/test-helpers/createQueryBuilderMock.helper';
 
-describe('ProgramService', () => {
-  let service: ProgramService;
+describe('ProgramRegistrationAttributesService', () => {
   let programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
+  let programRegistrationAttributesService: ProgramRegistrationAttributesService;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- TypeORM method requires this
+  const programRepositoryToken: string | Function =
+    getRepositoryToken(ProgramEntity);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- TypeORM method requires this
+  const programRegistrationAttributeToken: string | Function =
+    getRepositoryToken(ProgramRegistrationAttributeEntity);
 
   const createAttributeDto = (
     overrides: Partial<ProgramRegistrationAttributeDto> = {},
@@ -51,71 +56,73 @@ describe('ProgramService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ProgramService,
+        ProgramRegistrationAttributesService,
         {
-          provide: 'ProgramEntityRepository',
-          useValue: {
-            findOne: jest.fn(),
-            save: jest.fn(),
-            remove: jest.fn(),
-          },
+          provide: programRegistrationAttributeToken,
+          useClass: Repository,
         },
         {
-          provide: 'ProgramRegistrationAttributeEntityRepository',
-          useValue: {
-            find: jest.fn(),
-            findOne: jest.fn(),
-            save: jest.fn(),
-            remove: jest.fn(),
-          },
-        },
-        {
-          provide: DataSource,
-          useValue: {
-            createQueryRunner: jest.fn(),
-          },
-        },
-        {
-          provide: UserService,
-          useValue: {
-            canActivate: jest.fn(),
-            assignAidworkerToProgram: jest.fn(),
-          },
-        },
-        {
-          provide: ProgramAttachmentsService,
-          useValue: {
-            deleteAllProgramAttachments: jest.fn(),
-          },
-        },
-        {
-          provide: ProgramAttributesService,
-          useValue: {
-            getPaEditableAttributes: jest.fn(),
-            getAttributes: jest.fn(),
-            getFilterableAttributes: jest.fn(),
-          },
-        },
-        {
-          provide: ProgramFspConfigurationRepository,
-          useValue: {
-            find: jest.fn(),
-            getByProgramIdAndFspName: jest.fn(),
-          },
-        },
-        {
-          provide: IntersolveVisaService,
-          useValue: {
-            getWallet: jest.fn(),
-          },
+          provide: programRepositoryToken,
+          useClass: Repository,
         },
       ],
     }).compile();
 
-    service = module.get<ProgramService>(ProgramService);
+    programRegistrationAttributesService =
+      module.get<ProgramRegistrationAttributesService>(
+        ProgramRegistrationAttributesService,
+      );
     programRegistrationAttributeRepository = module.get<
       Repository<ProgramRegistrationAttributeEntity>
-    >('ProgramRegistrationAttributeEntityRepository');
+    >(programRegistrationAttributeToken);
+  });
+
+  describe('getAttributes', () => {
+    it('should return only program registration attributes if includeProgramRegistrationAttributes === true and includeTemplateDefaultAttributes === false', async () => {
+      const dbQueryResult = [
+        {
+          name: 'test name #1',
+          type: 'text',
+          label: 'label for test name #1',
+        },
+      ];
+      const createQueryBuilder: any = generateMockCreateQueryBuilder(
+        dbQueryResult,
+        {
+          useGetMany: true,
+        },
+      );
+
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'createQueryBuilder')
+        .mockImplementation(() => createQueryBuilder) as any;
+
+      const result = await programRegistrationAttributesService.getAttributes({
+        programId: 1,
+        includeProgramRegistrationAttributes: true,
+        includeTemplateDefaultAttributes: false,
+      });
+
+      const includeTemplateDefaultAttributes: (keyof RegistrationViewEntity)[] =
+        [
+          'paymentAmountMultiplier',
+          'programFspConfigurationLabel',
+          'programFspConfigurationLabel',
+          'paymentCountRemaining',
+        ];
+
+      const resultPropertyNames = result.map((r) => r.name);
+
+      expect(result).toBeDefined();
+      // Test the mapping
+      expect(result[0].label).toBe(dbQueryResult[0].label);
+      expect(
+        resultPropertyNames.every(
+          (name) =>
+            !includeTemplateDefaultAttributes.map(String).includes(name),
+        ),
+      ).toBe(true);
+    });
   });
 
   describe('update registration attributes', () => {
@@ -135,10 +142,12 @@ describe('ProgramService', () => {
         .mockImplementation(async (entities: any) => entities);
 
       // Act
-      await service.upsertProgramRegistrationAttributes({
-        programId,
-        programRegistrationAttributes: attributes,
-      });
+      await programRegistrationAttributesService.upsertProgramRegistrationAttributes(
+        {
+          programId,
+          programRegistrationAttributes: attributes,
+        },
+      );
 
       // Assert
       const savedEntities = saveSpy.mock.calls[0][0];
@@ -172,10 +181,12 @@ describe('ProgramService', () => {
         .mockImplementation(async (entities: any) => entities);
 
       // Act
-      await service.upsertProgramRegistrationAttributes({
-        programId,
-        programRegistrationAttributes: [updateDto],
-      });
+      await programRegistrationAttributesService.upsertProgramRegistrationAttributes(
+        {
+          programId,
+          programRegistrationAttributes: [updateDto],
+        },
+      );
 
       // Assert
       const savedEntities = saveSpy.mock.calls[0][0];

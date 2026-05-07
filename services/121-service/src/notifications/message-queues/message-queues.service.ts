@@ -19,7 +19,7 @@ import {
 } from '@121-service/src/notifications/message-queue-mapping.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
@@ -36,7 +36,7 @@ export class MessageQueuesService {
 
   public constructor(
     private readonly registrationDataService: RegistrationDataService,
-    private readonly programAttributesService: ProgramAttributesService,
+    private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
     private readonly queuesService: QueuesRegistryService,
   ) {
     this.queueNameToQueueMap = {
@@ -145,11 +145,12 @@ export class MessageQueuesService {
       }
       messageText = messageTemplate.message;
     }
-    const placeholders = await this.programAttributesService.getAttributes({
-      programId,
-      includeProgramRegistrationAttributes: true,
-      includeTemplateDefaultAttributes: true,
-    });
+    const placeholders =
+      await this.programRegistrationAttributesService.getAttributes({
+        programId,
+        includeProgramRegistrationAttributes: true,
+        includeTemplateDefaultAttributes: true,
+      });
     const usedPlaceholders: string[] = [];
     for (const placeholder of placeholders) {
       const regex = new RegExp(`{{${placeholder.name}}}`, 'g');
