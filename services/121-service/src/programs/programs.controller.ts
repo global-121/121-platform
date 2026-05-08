@@ -282,6 +282,37 @@ You can also leave the body empty.`,
     permissions: [PermissionEnum.ProgramUPDATE],
   })
   @ApiOperation({
+    summary: 'Update program registration attribute in batch',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Return program registration attributes updated in batch',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Provided program registration attribute name not found',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Patch(':programId/registration-attributes-batch')
+  public async updateBatchProgramRegistrationAttributeLabel(
+    @Body()
+    attributesToUpdate: {
+      programRegistrationAttributeName: string;
+      updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
+    }[],
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<ProgramRegistrationAttributeEntity[]> {
+    return await this.programService.updateBatchProgramRegistrationAttributes({
+      programId,
+      attributesToUpdate,
+    });
+  }
+
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramUPDATE],
+  })
+  @ApiOperation({
     summary:
       'Delete Registration Attribute for a Program. Also deletes the data of this Attribute for the Registrations in this Program.',
   })

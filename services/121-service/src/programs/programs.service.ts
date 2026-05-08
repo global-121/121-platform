@@ -483,6 +483,30 @@ export class ProgramService {
     return programRegistrationAttribute;
   }
 
+  public async updateBatchProgramRegistrationAttributes({
+    programId,
+    attributesToUpdate,
+  }: {
+    programId: number;
+    attributesToUpdate: {
+      programRegistrationAttributeName: string;
+      updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
+    }[];
+  }): Promise<ProgramRegistrationAttributeEntity[]> {
+    const updatedAttributes: ProgramRegistrationAttributeEntity[] = [];
+    for (const attribute of attributesToUpdate) {
+      const updatedAttribute = await this.updateProgramRegistrationAttribute({
+        programId,
+        programRegistrationAttributeName:
+          attribute.programRegistrationAttributeName,
+        updateProgramRegistrationAttribute:
+          attribute.updateProgramRegistrationAttribute,
+      });
+      updatedAttributes.push(updatedAttribute);
+    }
+    return updatedAttributes;
+  }
+
   public async deleteProgramRegistrationAttribute(
     programId: number,
     programRegistrationAttributeId: number,

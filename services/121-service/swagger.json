@@ -355,6 +355,13 @@
     "returnType": "ProgramRegistrationAttributeEntity"
   },
   {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registration-attributes-batch",
+    "params": [
+      "programId"
+    ]
+  },
+  {
     "method": "delete",
     "path": "/api/programs/{programId}/registration-attributes/{programRegistrationAttributeId}",
     "params": [
