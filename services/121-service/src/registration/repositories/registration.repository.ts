@@ -39,6 +39,8 @@ export class RegistrationRepository extends Repository<RegistrationEntity> {
         'transaction.status = :status',
         { status: TransactionStatusEnum.success },
       )
+      .orderBy('program.id', 'ASC')
+      .addOrderBy('registration.created', 'ASC')
       .getMany();
   }
 }

@@ -87,6 +87,8 @@ export class TransactionRepository extends Repository<TransactionEntity> {
       ])
       .innerJoin('transaction.registration', 'registration')
       .innerJoin('registration.program', 'program')
+      .orderBy('program.id', 'ASC')
+      .addOrderBy('transaction.created', 'ASC')
       .getMany();
   }
 }

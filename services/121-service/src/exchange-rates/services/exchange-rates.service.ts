@@ -99,7 +99,7 @@ export class ExchangeRatesService {
     }
 
     if (fromCurrency === 'EUR') {
-      return Math.round(amount * 100) / 100;
+      return this.roundToTwoDecimals(amount);
     }
 
     const rates = exchangeRateMap.get(fromCurrency);
@@ -109,12 +109,16 @@ export class ExchangeRatesService {
 
     // Find the most recent rate on or before the transaction date
     const txDate = transactionDate.toISOString().split('T')[0];
-    const matchingRate = rates.find((r) => r.date <= txDate);
-    if (!matchingRate) {
+    const closestPrecedingRate = rates.find((r) => r.date <= txDate);
+    if (!closestPrecedingRate) {
       return null;
     }
 
     // euroExchangeRate stores "1 unit of local currency = X EUR"
-    return Math.round(amount * matchingRate.rate * 100) / 100;
+    return this.roundToTwoDecimals(amount * closestPrecedingRate.rate);
+  }
+
+  private roundToTwoDecimals(value: number): number {
+    return Math.round(value * 100) / 100;
   }
 }

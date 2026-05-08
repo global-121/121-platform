@@ -28,18 +28,6 @@ export class InstanceReportingService {
     private readonly instanceReportingBlobService: InstanceReportingBlobService,
   ) {}
 
-  public async getInstanceReportingData(): Promise<PushInstanceReportingDataResponseDto> {
-    const instance = this.getInstanceName();
-    const uploadDate = this.getUploadDate();
-
-    const [registrations, transactions] = await Promise.all([
-      this.getRegistrationData({ instance, uploadDate }),
-      this.getTransactionData({ instance, uploadDate }),
-    ]);
-
-    return { registrations, transactions };
-  }
-
   public async pushInstanceReportingData(): Promise<PushInstanceReportingDataResponseDto | void> {
     const data = await this.getInstanceReportingData();
     await this.instanceReportingBlobService.uploadReportingData({
@@ -52,6 +40,18 @@ export class InstanceReportingService {
     if (!IS_PRODUCTION) {
       return data;
     }
+  }
+
+  public async getInstanceReportingData(): Promise<PushInstanceReportingDataResponseDto> {
+    const instance = this.getInstanceName();
+    const uploadDate = this.getUploadDate();
+
+    const [registrations, transactions] = await Promise.all([
+      this.getRegistrationData({ instance, uploadDate }),
+      this.getTransactionData({ instance, uploadDate }),
+    ]);
+
+    return { registrations, transactions };
   }
 
   private async getRegistrationData({

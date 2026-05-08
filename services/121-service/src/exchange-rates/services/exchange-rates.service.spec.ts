@@ -94,7 +94,7 @@ describe('ExchangeRatesService', () => {
   });
 
   describe('getting exchange rate map', () => {
-    it('should return a map with EUR and all stored rates grouped by currency', async () => {
+    it('should map each currency to its euro exchange rate history', async () => {
       mockExchangeRateRepository.find = jest.fn().mockResolvedValue([
         { currency: 'ETB', euroExchangeRate: 59.52, closeTime: '2024-01-15' },
         { currency: 'KES', euroExchangeRate: 155.3, closeTime: '2024-01-15' },
@@ -114,13 +114,14 @@ describe('ExchangeRatesService', () => {
 
       const result = await exchangeRateService.getExchangeRateHistoryMap();
 
-      expect(result.get('USD')).toEqual([
+      const ratesSortedByDateDescending = [
         { rate: 0.85, date: '2024-01-20' },
         { rate: 0.9, date: '2024-01-10' },
-      ]);
+      ];
+      expect(result.get('USD')).toEqual(ratesSortedByDateDescending);
     });
 
-    it('should return a map with only EUR when no rates are stored', async () => {
+    it('should return an empty map when no rates are stored', async () => {
       mockExchangeRateRepository.find = jest.fn().mockResolvedValue([]);
 
       const result = await exchangeRateService.getExchangeRateHistoryMap();
@@ -166,8 +167,8 @@ describe('ExchangeRatesService', () => {
           [
             'USD',
             [
-              { rate: 0.85, date: '2024-01-20' },
-              { rate: 0.9, date: '2024-01-10' },
+              { rate: 0.85, date: '2024-01-20' }, // Future rate, should not be used
+              { rate: 0.9, date: '2024-01-10' }, // Matching date, should be used
             ],
           ],
         ]),
@@ -186,8 +187,8 @@ describe('ExchangeRatesService', () => {
           [
             'USD',
             [
-              { rate: 0.85, date: '2024-01-20' },
-              { rate: 0.9, date: '2024-01-10' },
+              { rate: 0.85, date: '2024-01-20' }, // Future rate, should not be used
+              { rate: 0.9, date: '2024-01-10' }, // Most recent rate before transaction date, should be used
             ],
           ],
         ]),
@@ -202,7 +203,9 @@ describe('ExchangeRatesService', () => {
         amount: 100,
         fromCurrency: 'USD',
         transactionDate: txDate,
-        exchangeRateMap: new Map(),
+        exchangeRateMap: new Map([
+          ['GBP', [{ rate: 0.85, date: '2024-01-15' }]], // a map without USD rates
+        ]),
       });
 
       expect(result).toBeNull();

@@ -54,10 +54,8 @@ export class InstanceReportingCsvMapper {
     headers: (keyof T & string)[];
     item: T;
   }): string {
-    const values = headers.map((header) =>
-      InstanceReportingCsvMapper.escapeCsvValue(item[header]),
-    );
-    return InstanceReportingCsvMapper.toCsvRow({ values });
+    const values = headers.map((header) => this.escapeCsvValue(item[header]));
+    return this.toCsvRow({ values });
   }
 
   public static toCsvRow({ values }: { values: string[] }): string {

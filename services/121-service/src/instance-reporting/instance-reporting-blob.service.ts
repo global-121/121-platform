@@ -46,17 +46,6 @@ export class InstanceReportingBlobService {
     items: T[];
   }): Promise<void> {
     const blockBlobClient = this.containerClient.getBlockBlobClient(blobPath);
-
-    if (items.length === 0) {
-      const headerRow = InstanceReportingCsvMapper.toCsvRow({
-        values: headers,
-      });
-      await blockBlobClient.upload(headerRow, Buffer.byteLength(headerRow), {
-        blobHTTPHeaders: { blobContentType: 'text/csv' },
-      });
-      return;
-    }
-
     const stream = this.createCsvStream({ headers, items });
 
     await blockBlobClient.uploadStream(stream, undefined, undefined, {
@@ -71,28 +60,13 @@ export class InstanceReportingBlobService {
     headers: (keyof T & string)[];
     items: T[];
   }): Readable {
-    let headerSent = false;
-    let index = 0;
+    function* generate() {
+      yield InstanceReportingCsvMapper.toCsvRow({ values: headers });
+      for (const item of items) {
+        yield InstanceReportingCsvMapper.mapItemToCsvRow({ headers, item });
+      }
+    }
 
-    return new Readable({
-      read() {
-        if (!headerSent) {
-          this.push(InstanceReportingCsvMapper.toCsvRow({ values: headers }));
-          headerSent = true;
-          return;
-        }
-        if (index < items.length) {
-          this.push(
-            InstanceReportingCsvMapper.mapItemToCsvRow({
-              headers,
-              item: items[index]!,
-            }),
-          );
-          index++;
-        } else {
-          this.push(null);
-        }
-      },
-    });
+    return Readable.from(generate());
   }
 }

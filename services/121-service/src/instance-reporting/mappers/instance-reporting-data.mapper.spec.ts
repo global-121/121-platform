@@ -7,8 +7,12 @@ describe('InstanceReportingDataMapper', () => {
   describe('mapping a registration to a DTO', () => {
     function createRegistrationRaw({
       programId = 1,
-      titlePortal = { en: 'Test' } as Record<string, string> | null,
-      registrationStatus = RegistrationStatusEnum.included as RegistrationStatusEnum | null,
+      titlePortal = { en: 'Test' },
+      registrationStatus = RegistrationStatusEnum.included,
+    }: {
+      programId?: number;
+      titlePortal?: Record<string, string> | null;
+      registrationStatus?: RegistrationStatusEnum;
     } = {}) {
       return {
         id: 1,
@@ -33,7 +37,11 @@ describe('InstanceReportingDataMapper', () => {
 
     it('should map all registration fields correctly', () => {
       const result = InstanceReportingDataMapper.mapRegistration({
-        registration: createRegistrationRaw(),
+        registration: createRegistrationRaw({
+          programId: 1,
+          titlePortal: { en: 'Test' },
+          registrationStatus: RegistrationStatusEnum.included,
+        }),
         instance: 'test-instance',
         uploadDate: '2026-04-20',
       });
@@ -51,7 +59,11 @@ describe('InstanceReportingDataMapper', () => {
   });
 
   describe('mapping a transaction to a DTO', () => {
-    function createTransactionRaw() {
+    function createTransactionRaw({
+      titlePortal = { en: 'Test' },
+    }: {
+      titlePortal?: Record<string, string> | null;
+    } = {}) {
       return {
         id: 42,
         status: TransactionStatusEnum.success,
@@ -64,7 +76,7 @@ describe('InstanceReportingDataMapper', () => {
           program: {
             id: 1,
             currency: CurrencyCode.ETB,
-            titlePortal: { en: 'Test' },
+            titlePortal,
           },
         },
       };
@@ -107,12 +119,8 @@ describe('InstanceReportingDataMapper', () => {
     });
 
     it('should fall back to "Program {id}" when titlePortal is null', () => {
-      const transaction = createTransactionRaw();
-      transaction.registration.program.titlePortal =
-        null as unknown as typeof transaction.registration.program.titlePortal;
-
       const result = InstanceReportingDataMapper.mapTransaction({
-        transaction,
+        transaction: createTransactionRaw({ titlePortal: null }),
         instance: 'test-instance',
         amountEuro: 100,
         uploadDate: '2026-04-20',

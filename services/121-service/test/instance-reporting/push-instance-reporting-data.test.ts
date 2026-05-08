@@ -1,7 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { retrieveAndStoreAllExchangeRates } from '@121-service/test/helpers/exchange-rate.helper';
 import { pushInstanceReportingData } from '@121-service/test/helpers/instance-reporting.helper';
@@ -50,7 +49,7 @@ describe('Push instance reporting data', () => {
   });
 
   it('should only return registrations that have at least one successful transaction', async () => {
-    // Arrange - seed registrations in two programs but only pay one
+    // Arrange
     await seedIncludedRegistrations(
       [registrationOCW2],
       programIdOCW,
@@ -68,12 +67,8 @@ describe('Push instance reporting data', () => {
     // Assert - only registrationOCW1 has a successful transaction
     expect(response.status).toBe(HttpStatus.OK);
     expect(response.body.registrations).toHaveLength(1);
-    expect(response.body.registrations[0]).toEqual(
-      expect.objectContaining({
-        programId: programIdOCW,
-        status: RegistrationStatusEnum.included,
-      }),
-    );
+    const receivedReferenceId = response.body.registrations[0].referenceId;
+    expect(receivedReferenceId).toBe(registrationOCW1.referenceId);
   });
 
   it('should return registration data with correct structure', async () => {
@@ -95,12 +90,8 @@ describe('Push instance reporting data', () => {
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
 
-    const sortedRegistrations = [...response.body.registrations].sort(
-      (a: { programId: number }, b: { programId: number }) =>
-        a.programId - b.programId,
-    );
-
-    expect(sortedRegistrations).toMatchInlineSnapshot(
+    // Should be sorted by program id ascending, then by created date ascending
+    expect(response.body.registrations).toMatchInlineSnapshot(
       [
         {
           instance: expect.any(String),
@@ -161,12 +152,8 @@ describe('Push instance reporting data', () => {
     expect(response.body.registrations.length).toBeGreaterThanOrEqual(2);
     expect(response.body.transactions.length).toBeGreaterThanOrEqual(2);
 
-    const sortedTransactions = [...response.body.transactions].sort(
-      (a: { programId: number }, b: { programId: number }) =>
-        a.programId - b.programId,
-    );
-
-    expect(sortedTransactions).toMatchInlineSnapshot(
+    // Should be sorted by program id ascending, then by created date ascending
+    expect(response.body.transactions).toMatchInlineSnapshot(
       [
         {
           id: expect.any(Number),
