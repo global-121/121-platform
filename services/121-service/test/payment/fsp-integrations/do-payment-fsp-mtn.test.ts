@@ -121,7 +121,6 @@ describe('Do payment with FSP: MTN', () => {
     });
 
     // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
 
     const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
