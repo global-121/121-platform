@@ -207,8 +207,7 @@ test.beforeEach(async ({ page }) => {
 
   // Login
   const loginPage = new LoginPage(page);
-  await page.goto('/login');
-  await loginPage.login();
+  await loginPage.loginAsAdmin();
 });
 
 test('Navigate to programme', async ({ page }) => {

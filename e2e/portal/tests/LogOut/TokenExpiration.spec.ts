@@ -26,8 +26,7 @@ test('User is redirected to login when token expires', async ({ page }) => {
   });
 
   const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+  await loginPage.loginAsAdmin();
 
   // Verify we're logged in
   await page.waitForURL((url) => url.pathname.startsWith('/en-GB/programs'));
@@ -53,8 +52,7 @@ test('User is silently redirected to login on fresh page load with already-expir
   page,
 }) => {
   const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+  await loginPage.loginAsAdmin();
 
   // Verify we're logged in
   await page.waitForURL((url) => url.pathname.startsWith('/en-GB/programs'));
@@ -81,7 +79,10 @@ test('User is silently redirected to login on fresh page load with already-expir
   const sessionExpiredDialog = page.getByText('Session expired');
   await expect(sessionExpiredDialog).not.toBeVisible();
   // After logging back in, the user should land on the originally requested URL.
-  await loginPage.login(undefined, undefined, true);
+  await loginPage.loginAsAdmin({
+    skipNavigateToLogin: true,
+    skipUrlCheck: true,
+  });
   await page.waitForURL((url) =>
     url.pathname.endsWith('/program/2/registrations'),
   );
@@ -91,8 +92,7 @@ test('User with a valid (non-expired) token is not redirected to login on page r
   page,
 }) => {
   const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+  await loginPage.loginAsAdmin();
 
   // Verify we're logged in
   await page.waitForURL((url) => url.pathname.startsWith('/en-GB/programs'));

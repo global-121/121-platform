@@ -15,11 +15,10 @@ test.beforeEach(async ({ page }) => {
 
   // Login
   const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login(
-    env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
-    env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
-  );
+  await loginPage.login({
+    username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+    password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+  });
 });
 
 test('Change password successfully', async ({ page }) => {
@@ -43,19 +42,19 @@ test('Change password successfully', async ({ page }) => {
 
   await test.step('Login with new credentials', async () => {
     await homePage.selectAccountOption('Logout');
-    await loginPage.login(
-      env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
-      'newPassword',
-    );
+    await loginPage.login({
+      username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+      password: 'newPassword',
+    });
   });
 
   await test.step('Login with old credentials', async () => {
     await homePage.selectAccountOption('Logout');
-    await loginPage.login(
-      env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
-      env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
-      true,
-    );
+    await loginPage.login({
+      username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+      skipUrlCheck: true,
+    });
     await loginPage.validateFormError({
       errorText:
         'Invalid email or password. Double-check your credentials and try again.',

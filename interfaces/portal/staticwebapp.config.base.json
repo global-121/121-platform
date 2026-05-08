@@ -18,6 +18,16 @@
       "statusCode": 302
     },
     {
+      "route": "/.well-known/login",
+      "redirect": "/en-GB/login",
+      "statusCode": 302
+    },
+    {
+      "route": "/login",
+      "redirect": "/en-GB/login",
+      "statusCode": 302
+    },
+    {
       "route": "*.{js,json,css,jpg,jpeg,png,svg,ico,webmanifest,tff,woff,woff2}",
       "headers": {
         "Cache-Control": "immutable, no-transform, max-age=31536000"

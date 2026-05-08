@@ -47,7 +47,7 @@ class BasePage {
   }
 
   async openSidebar() {
-    await this.sidebarToggle.click();
+    await this.sidebarToggle.getByRole('button', { name: 'Menu' }).click();
   }
 
   async navigateToPage(pageName: string) {
