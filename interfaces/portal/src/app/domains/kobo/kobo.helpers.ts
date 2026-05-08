@@ -53,3 +53,18 @@ export const extractServerAndAssetIdFromUrl = (
 
   return {};
 };
+
+export enum ImportExistingSubmissionsResultKey {
+  numberOfSubmissionsFailed = 'numberOfSubmissionsFailed',
+  numberOfSubmissionsImported = 'numberOfSubmissionsImported',
+  numberOfSubmissionsSkipped = 'numberOfSubmissionsSkipped',
+}
+
+export const SUBMISSION_RESULT_LABELS: Record<
+  ImportExistingSubmissionsResultKey,
+  string
+> = {
+  [ImportExistingSubmissionsResultKey.numberOfSubmissionsFailed]: $localize`:@@submission-result-failed:Submissions failed`,
+  [ImportExistingSubmissionsResultKey.numberOfSubmissionsImported]: $localize`:@@submission-result-imported:Imported successfully`,
+  [ImportExistingSubmissionsResultKey.numberOfSubmissionsSkipped]: $localize`:@@submission-result-skipped:Submissions skipped`,
+};

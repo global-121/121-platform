@@ -9,6 +9,7 @@
   [subtitle]="cardSubtitle()"
   [image]="'assets/registration-data/kobo-toolbox.svg'"
   [enableLink]="!isKoboIntegrated()"
+  [attr.data-testid]="'kobo-integration-card'"
 >
   <ng-container card-content>
     @if (isKoboIntegrated()) {
@@ -24,7 +25,9 @@
         i18n-title="@@generic-opens-in-new-window"
         class="inline-block [&_span:first-child]:underline hover:[&_span:first-child]:no-underline focus:[&_span:first-child]:no-underline"
         ><span>{{ koboIntegration.data()?.name ?? externalFormUrl() }}</span>
-        <span class="p-button-icon pi pi-external-link ms-1 text-sm"></span>
+        <span
+          class="p-button-icon pi pi-external-link relative top-0.5 ms-2 text-sm"
+        ></span>
       </a>
     }
   </ng-container>
@@ -43,5 +46,10 @@
 
 <app-kobo-configuration-dialog
   #koboConfigurationDialog
+  [programId]="programId()"
+/>
+
+<app-kobo-import-existing-registration-dialog
+  #koboImportExistingDialog
   [programId]="programId()"
 />

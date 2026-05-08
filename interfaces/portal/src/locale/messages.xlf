@@ -2256,14 +2256,44 @@
       <trans-unit id="4892553839051604445" datatype="html">
         <source>Payment</source>
       </trans-unit>
+      <trans-unit id="1872549287181572098" datatype="html">
+        <source>Import existing registrations from your Kobo form.</source>
+      </trans-unit>
+      <trans-unit id="2159130950882492111" datatype="html">
+        <source>Cancel</source>
+      </trans-unit>
+      <trans-unit id="2200828314484557158" datatype="html">
+        <source>Import complete</source>
+      </trans-unit>
+      <trans-unit id="3851949706407638075" datatype="html">
+        <source>The system will create registrations with the status <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;&apos;blue&apos;&quot; label=&quot;&apos;New&apos;&quot; i18n-label /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;&apos;blue&apos;&quot; label=&quot;&apos;New&apos;&quot; i18n-label /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/></source>
+      </trans-unit>
+      <trans-unit id="4513666009026562086" datatype="html">
+        <source>Import existing reg.</source>
+      </trans-unit>
+      <trans-unit id="4680756702302858333" datatype="html">
+        <source>Import registrations</source>
+      </trans-unit>
+      <trans-unit id="4964612859944755976" datatype="html">
+        <source>Import complete with errors</source>
+      </trans-unit>
+      <trans-unit id="6245136461829083125" datatype="html">
+        <source>Import existing registrations</source>
+      </trans-unit>
+      <trans-unit id="1519954996184640001" datatype="html">
+        <source>Error</source>
+      </trans-unit>
+      <trans-unit id="4135275683761793881" datatype="html">
+        <source><x equiv-text="this.importExistingSubmissions.data()?.numberOfSubmissionsOnForm ?? 0" id="count"/> total submission(s)</source>
+      </trans-unit>
+      <trans-unit id="763982378603811482" datatype="html">
+        <source>Column</source>
+      </trans-unit>
       <trans-unit id="4421433274861560863" datatype="html">
         <source>Add a user to the 121 platform. Fill in the fields below to create a new user account.</source>
       </trans-unit>
       <trans-unit id="5918723526444903137" datatype="html">
         <source>Add user</source>
-      </trans-unit>
-      <trans-unit id="1519954996184640001" datatype="html">
-        <source>Error</source>
       </trans-unit>
       <trans-unit id="3077263560424048384" datatype="html">
         <source>The import takes about 1 minute per 100 records.</source>
@@ -2271,11 +2301,11 @@
       <trans-unit id="6555318547274416232" datatype="html">
         <source>Value</source>
       </trans-unit>
-      <trans-unit id="763982378603811482" datatype="html">
-        <source>Column</source>
-      </trans-unit>
       <trans-unit id="7761072359529249164" datatype="html">
         <source>Line number</source>
+      </trans-unit>
+      <trans-unit id="7703736032933423612" datatype="html">
+        <source>Error while importing existing Kobo registrations</source>
       </trans-unit>
       <trans-unit id="debit-card-actions-close-card" datatype="html">
         <source>Close card</source>
@@ -2292,6 +2322,21 @@
       <trans-unit id="debit-card-status-closed" datatype="html">
         <source>Closed</source>
       </trans-unit>
+      <trans-unit id="4686419033610227407" datatype="html">
+        <source>No submissions found</source>
+      </trans-unit>
+      <trans-unit id="6554222446236271125" datatype="html">
+        <source>The import takes about 1 minute per 100 records.</source>
+      </trans-unit>
+      <trans-unit id="7819314041543176992" datatype="html">
+        <source>Close</source>
+      </trans-unit>
+      <trans-unit id="3608877004778230790" datatype="html">
+        <source>Submissions that have been added to the program already are skipped to avoid duplications.</source>
+      </trans-unit>
+      <trans-unit id="3757859142679780974" datatype="html">
+        <source>Kobo form ”<x equiv-text="this.koboIntegration.data()?.name" id="PH"/>” does not have existing registrations. New registrations will be synced to the program automatically.</source>
+      </trans-unit>
       <trans-unit id="2986249053713735246" datatype="html">
         <source>Export refunded debit cards</source>
       </trans-unit>
@@ -2300,6 +2345,21 @@
       </trans-unit>
       <trans-unit id="export-refunded-debit-cards" datatype="html">
         <source>Refunded debit cards</source>
+      </trans-unit>
+      <trans-unit id="3443177849607577586" datatype="html">
+        <source>Successfully imported submissions from Kobo form</source>
+      </trans-unit>
+      <trans-unit id="4033651697146421557" datatype="html">
+        <source>&apos;New&apos;</source>
+      </trans-unit>
+      <trans-unit id="submission-result-failed" datatype="html">
+        <source>Submissions failed</source>
+      </trans-unit>
+      <trans-unit id="submission-result-imported" datatype="html">
+        <source>Imported successfully</source>
+      </trans-unit>
+      <trans-unit id="submission-result-skipped" datatype="html">
+        <source>Submissions skipped</source>
       </trans-unit>
     </body>
   </file>

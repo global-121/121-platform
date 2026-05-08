@@ -19,20 +19,19 @@ const koboIntegrationFormColumns = [
   'How are you today (select one)?',
 ];
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+test('Add Kobo integration successfully', async ({
+  resetDBAndSeedRegistrations,
+  registrationDataPage,
+  registrationsPage,
+  tableComponent,
+}) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.safaricomProgram,
     registrations: registrationsSafaricom,
     programId: programIdSafaricom,
     navigateToPage: `/program/${programIdSafaricom}/registrations`,
   });
-});
 
-test('Add Kobo integration successfully', async ({
-  registrationDataPage,
-  registrationsPage,
-  tableComponent,
-}) => {
   await test.step('Validate column availability from Registrations page', async () => {
     for (const column of koboIntegrationFormColumns) {
       await registrationsPage.checkColumnAvailability({
@@ -47,21 +46,7 @@ test('Add Kobo integration successfully', async ({
   });
 
   await test.step('Add Kobo integration', async () => {
-    await registrationDataPage.clickRegistrationDataSection();
-    await registrationDataPage.addKoboToolboxIntegration({
-      url: koboIntegrationDetails.url,
-      apiKey: koboIntegrationDetails.apiKey,
-    });
-    // Validate success message after adding Kobo integration with correct details
-    await registrationDataPage.validateKoboIntegration({
-      koboFormName: '25042025 Prototype Sprint',
-    });
-    // Click continue button to exit the form
-    await registrationDataPage.clickContinueButton();
-    // Validate toast message after exiting the form
-    await registrationDataPage.validateToastMessageAndClose(
-      'Kobo form successfully integrated.',
-    );
+    await registrationDataPage.addKoboIntegration(koboIntegrationDetails);
   });
 
   await test.step('Validate Kobo integration details on Registrations page', async () => {

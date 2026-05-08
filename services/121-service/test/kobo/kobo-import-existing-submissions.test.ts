@@ -95,6 +95,33 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
     return { programId, assetUid: uid };
   }
 
+  it('should handle case with no submissions', async () => {
+    // Arrange
+    const assetUid = 'without-submissions';
+    const expectedReferenceId = `${KoboMockSubmissionUuids.success}-${assetUid}`;
+    const { programId } = await setup(assetUid);
+
+    // Act§
+    const response = await patchKoboSubmissions({ programId, accessToken });
+
+    // Assert
+    expect(response.status).toBe(HttpStatus.OK);
+    expect(response.body).toMatchObject({
+      numberOfSubmissionsOnForm: 0,
+      numberOfSubmissionsImported: 0,
+      numberOfSubmissionsSkipped: 0,
+      numberOfSubmissionsFailed: 0,
+      validationErrors: [],
+    });
+
+    const searchResponse = await searchRegistrationByReferenceId(
+      expectedReferenceId,
+      programId,
+      accessToken,
+    );
+    expect(searchResponse.body.data).toBeArrayOfSize(0);
+  });
+
   it('should import new submissions and create registrations', async () => {
     // Arrange
     const assetUid = 'import-happy-flow';

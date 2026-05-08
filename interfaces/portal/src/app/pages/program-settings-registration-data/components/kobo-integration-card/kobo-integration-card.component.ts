@@ -19,6 +19,7 @@ import {
 } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { KoboConfigurationDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-configuration-dialog/kobo-configuration-dialog.component';
+import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
 
 @Component({
   selector: 'app-kobo-integration-card',
@@ -27,6 +28,7 @@ import { KoboConfigurationDialogComponent } from '~/pages/program-settings-regis
     EllipsisMenuComponent,
     DatePipe,
     KoboConfigurationDialogComponent,
+    KoboImportExistingRegistrationsDialogComponent,
   ],
   templateUrl: './kobo-integration-card.component.html',
   styles: ``,
@@ -40,6 +42,10 @@ export class KoboIntegrationCardComponent {
   readonly koboConfigurationDialog =
     viewChild.required<KoboConfigurationDialogComponent>(
       'koboConfigurationDialog',
+    );
+  readonly koboImportExistingDialog =
+    viewChild.required<KoboImportExistingRegistrationsDialogComponent>(
+      'koboImportExistingDialog',
     );
 
   readonly koboIntegration = injectQuery(() => ({
@@ -76,9 +82,14 @@ export class KoboIntegrationCardComponent {
   readonly menuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`Reconfigure`,
-      icon: 'pi pi-pencil',
       command: () => {
         this.koboConfigurationDialog().show();
+      },
+    },
+    {
+      label: $localize`Import existing reg.`,
+      command: () => {
+        this.koboImportExistingDialog().show();
       },
     },
   ]);

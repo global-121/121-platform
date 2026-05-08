@@ -6,6 +6,10 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
 import { VISA_CARD_STATUS_LABELS } from '~/domains/fsp-account-management/intersolve-visa.helper';
 import {
+  ImportExistingSubmissionsResultKey,
+  SUBMISSION_RESULT_LABELS,
+} from '~/domains/kobo/kobo.helpers';
+import {
   convertTwilioMessageStatusToMessageStatus,
   MESSAGE_STATUS_LABELS,
   MessageStatus,
@@ -115,5 +119,18 @@ export const getChipDataByDuplicateStatus = (
     chipVariants: {
       [DuplicateStatus.unique]: 'green',
       [DuplicateStatus.duplicate]: 'red',
+    },
+  });
+
+export const getChipDataBySubmissionsKey = (
+  status?: ImportExistingSubmissionsResultKey | null,
+): ChipData =>
+  mapValueToChipData({
+    value: status,
+    labels: SUBMISSION_RESULT_LABELS,
+    chipVariants: {
+      [ImportExistingSubmissionsResultKey.numberOfSubmissionsFailed]: 'red',
+      [ImportExistingSubmissionsResultKey.numberOfSubmissionsImported]: 'green',
+      [ImportExistingSubmissionsResultKey.numberOfSubmissionsSkipped]: 'orange',
     },
   });

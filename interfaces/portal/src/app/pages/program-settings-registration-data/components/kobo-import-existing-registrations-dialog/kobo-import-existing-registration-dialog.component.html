@@ -1,0 +1,179 @@
+<p-dialog
+  [(visible)]="dialogVisible"
+  [style]="{ width: dialogWidth() }"
+  (onHide)="resetDialogState()"
+  [draggable]="false"
+  appendTo="body"
+  #confirmDialog
+  [modal]="true"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-2">
+      <h3>
+        <i [class]="headerIcon()"></i>
+        {{ dialogTitle() }}
+      </h3>
+    </div>
+  </ng-template>
+
+  <section data-testid="import-existing-kobo-registrations-dialog">
+    @if (importState() === DialogState.NotInitiated) {
+      <div>
+        <p i18n>Import existing registrations from your Kobo form.</p>
+        <p i18n>
+          The system will create registrations with the status
+          <!-- This is a one off label for this view -->
+          <app-colored-chip
+            [variant]="'blue'"
+            label="'New'"
+            i18n-label
+          />
+        </p>
+        <p i18n>The import takes about 1 minute per 100 records.</p>
+      </div>
+
+      <div class="mt-5 flex justify-end gap-4">
+        <p-button
+          (click)="dialogVisible.set(false)"
+          severity="secondary"
+          [rounded]="true"
+          label="Cancel"
+          i18n-label
+        />
+        <p-button
+          [loading]="importExistingSubmissions.isPending()"
+          (click)="importExistingSubmissions.mutate()"
+          label="Import registrations"
+          [rounded]="true"
+          i18n-label
+        />
+      </div>
+    }
+
+    @if (importState() === DialogState.ImportedWithoutSubmissions) {
+      <p>{{ noExistingSubmissionsTranslation() }}</p>
+
+      <div class="mt-5 flex justify-end gap-4">
+        <p-button
+          (click)="closeDialog()"
+          [rounded]="true"
+          label="Close"
+          i18n-label
+        />
+      </div>
+    }
+
+    @if (
+      importState() === DialogState.ImportedWithoutErrors ||
+      importState() === DialogState.ImportedWithErrors
+    ) {
+      <div>
+        <p>
+          <span i18n>Successfully imported submissions from Kobo form</span
+          >&nbsp;
+          <span>”{{ koboIntegration.data()?.name }}”</span>
+        </p>
+
+        <div class="mt-4 space-y-2">
+          <p class="font-bold">
+            {{ totalSubmissionsTranslation() }}
+          </p>
+
+          @if (
+            this.importExistingSubmissions.data()
+              ?.numberOfSubmissionsSkipped !== 0
+          ) {
+            <div class="flex items-center gap-1">
+              <app-colored-chip
+                [label]="`${getChipLabelBySubmissionKey(importExistingSubmissionsResultKey.numberOfSubmissionsSkipped)}: ${importExistingSubmissions.data()?.numberOfSubmissionsSkipped ?? 0}`"
+                [variant]="
+                  getChipVariantBySubmissionKey(
+                    importExistingSubmissionsResultKey.numberOfSubmissionsSkipped
+                  )
+                "
+                [icon]="'pi pi-fast-forward'"
+                class="block"
+                i18n-icon
+              />
+              <app-info-tooltip
+                i18n-tooltip
+                message="Submissions that have been added to the program already are skipped to avoid duplications."
+                i18n-message
+              />
+            </div>
+          }
+
+          @if (
+            this.importExistingSubmissions.data()
+              ?.numberOfSubmissionsImported !== 0
+          ) {
+            <app-colored-chip
+              [label]="`${getChipLabelBySubmissionKey(importExistingSubmissionsResultKey.numberOfSubmissionsImported)}: ${importExistingSubmissions.data()?.numberOfSubmissionsImported ?? 0}`"
+              [variant]="
+                getChipVariantBySubmissionKey(
+                  importExistingSubmissionsResultKey.numberOfSubmissionsImported
+                )
+              "
+              [icon]="'pi pi-check'"
+              class="block"
+              i18n-icon
+            />
+          }
+        </div>
+      </div>
+    }
+
+    @if (importState() === DialogState.ImportedWithoutErrors) {
+      <div class="mt-5 flex justify-end gap-4">
+        <p-button
+          label="Close"
+          i18n-label
+          (click)="closeDialog()"
+          [rounded]="true"
+        />
+      </div>
+    }
+
+    @if (importState() === DialogState.ImportedWithErrors) {
+      <div>
+        <div class="mt-4 space-y-2">
+          <app-colored-chip
+            [label]="`${getChipLabelBySubmissionKey(importExistingSubmissionsResultKey.numberOfSubmissionsFailed)}: ${importExistingSubmissions.data()?.numberOfSubmissionsFailed ?? 0}`"
+            [variant]="
+              getChipVariantBySubmissionKey(
+                importExistingSubmissionsResultKey.numberOfSubmissionsFailed
+              )
+            "
+            [icon]="'pi pi-exclamation-triangle'"
+            class="block"
+          />
+
+          <app-form-error
+            [error]="'Below are the errors corresponding to the failed submissions. Correct the submissions in the kobo form and try again.'"
+          />
+        </div>
+
+        <app-query-table
+          [items]="detailedImportErrors() ?? []"
+          [columns]="detailedErrorsColumns()"
+          [initialSortField]="'referenceId'"
+          [isPending]="false"
+          [dataTestId]="'kobo-import-existing-registration-dialog-errors-table'"
+          [paginatorDropdownAppendTo]="'body'"
+          [scrollHeight]="'400px'"
+          [scrollable]="true"
+        >
+        </app-query-table>
+
+        <div class="mt-5 flex justify-end gap-4">
+          <p-button
+            (click)="resetDialogState()"
+            label="Try again"
+            [rounded]="true"
+            i18n-label
+          />
+        </div>
+      </div>
+    }
+  </section>
+</p-dialog>
