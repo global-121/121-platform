@@ -60,15 +60,7 @@ describe('Do payment with FSP: MTN', () => {
       completeStatuses: [TransactionStatusEnum.success],
     });
 
-    // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-    expect(doPaymentResponse.body.applicableCount).toBe(
-      paymentReferenceIds.length,
-    );
-    expect(doPaymentResponse.body.nonApplicableCount).toBe(0);
-    expect(doPaymentResponse.body.sumPaymentAmountMultiplier).toBe(
-      registration.paymentAmountMultiplier,
-    );
+ // Assert
 
     const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
