@@ -7,12 +7,12 @@ import {
   HttpStatus,
   Param,
   Post,
-  Res,
 } from '@nestjs/common';
 import { ApiHeader, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
 
+import { MtnAuthenticateResponseDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-authenticate-response.dto';
 import { MtnCreateTransferRequestDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-create-transfer-request.dto';
+import { MtnTransferStatusResponseDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-transfer-status-response.dto';
 import { MtnMockService } from '@mock-service/src/fsp-integration/mtn/mtn.mock.service';
 
 @ApiTags('fsp/mtn')
@@ -32,13 +32,11 @@ export class MtnMockController {
   public authenticate(
     @Headers('authorization') authorization: string | undefined,
     @Headers('ocp-apim-subscription-key') subscriptionKey: string | undefined,
-    @Res() res: Response,
-  ): Response {
-    const [status, responseBody] = this.mtnMockService.authenticate({
+  ): MtnAuthenticateResponseDto {
+    return this.mtnMockService.authenticate({
       authorization,
       subscriptionKey,
     });
-    return res.status(status).json(responseBody);
   }
 
   @ApiOperation({ summary: 'Create disbursement transfer' })
@@ -50,16 +48,12 @@ export class MtnMockController {
     @Headers('x-reference-id') referenceId: string | undefined,
     @Headers('ocp-apim-subscription-key') subscriptionKey: string | undefined,
     @Body() body: MtnCreateTransferRequestDto,
-    @Res() res: Response,
-  ): Response {
-    const [status, responseBody] = this.mtnMockService.createTransfer({
+  ): void {
+    this.mtnMockService.createTransfer({
       referenceId,
       subscriptionKey,
       body,
     });
-    return responseBody
-      ? res.status(status).json(responseBody)
-      : res.status(status).send();
   }
 
   @ApiOperation({ summary: 'Get disbursement transfer status' })
@@ -69,12 +63,10 @@ export class MtnMockController {
   public getTransferStatus(
     @Param('referenceId') referenceId: string,
     @Headers('ocp-apim-subscription-key') subscriptionKey: string | undefined,
-    @Res() res: Response,
-  ): Response {
-    const [status, responseBody] = this.mtnMockService.getTransferStatus({
+  ): MtnTransferStatusResponseDto {
+    return this.mtnMockService.getTransferStatus({
       referenceId,
       subscriptionKey,
     });
-    return res.status(status).json(responseBody);
   }
 }

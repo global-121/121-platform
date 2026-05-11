@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 
+import { MtnTransferResult } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
-import { MtnApiDuplicateError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api-duplicate.error';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsMtnService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-mtn.service';
@@ -84,16 +84,12 @@ describe('TransactionJobsMtnService', () => {
       isRetry: false,
     });
     expect(mtnService.createTransfer).toHaveBeenCalledWith({
-      referenceId: expect.any(String),
+      mtnReferenceId: expect.any(String),
       amount: '100',
       currency: 'UGX',
       externalId: '1',
-      payee: {
-        partyIdType: 'MSISDN',
-        partyId: '256771234567',
-      },
-      payerMessage: 'Payment for transaction 1',
-      payeeNote: 'Payment for transaction 1',
+      phoneNumber: '256771234567',
+      transactionId: 1,
     });
     expect(transactionsService.saveProgress).toHaveBeenCalledWith({
       context: {
@@ -107,7 +103,10 @@ describe('TransactionJobsMtnService', () => {
 
   it('should save error status when MtnApiError is thrown', async () => {
     (mtnService.createTransfer as jest.Mock).mockRejectedValue(
-      new MtnApiError('Transfer failed'),
+      new MtnApiError({
+        type: MtnTransferResult.fail,
+        message: 'Transfer failed',
+      }),
     );
 
     await service.processTransactionJob(mockTransactionJob);
@@ -126,7 +125,10 @@ describe('TransactionJobsMtnService', () => {
 
   it('should call getTransferStatus and save success when duplicate with SUCCESSFUL status', async () => {
     (mtnService.createTransfer as jest.Mock).mockRejectedValue(
-      new MtnApiDuplicateError(),
+      new MtnApiError({
+        type: MtnTransferResult.duplicate,
+        message: 'Duplicate transfer request',
+      }),
     );
     (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
       status: 'SUCCESSFUL',
@@ -151,7 +153,10 @@ describe('TransactionJobsMtnService', () => {
 
   it('should call getTransferStatus and save waiting when duplicate with PENDING status', async () => {
     (mtnService.createTransfer as jest.Mock).mockRejectedValue(
-      new MtnApiDuplicateError(),
+      new MtnApiError({
+        type: MtnTransferResult.duplicate,
+        message: 'Duplicate transfer request',
+      }),
     );
     (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
       status: 'PENDING',
@@ -173,7 +178,10 @@ describe('TransactionJobsMtnService', () => {
 
   it('should call getTransferStatus and save error when duplicate with FAILED status', async () => {
     (mtnService.createTransfer as jest.Mock).mockRejectedValue(
-      new MtnApiDuplicateError(),
+      new MtnApiError({
+        type: MtnTransferResult.duplicate,
+        message: 'Duplicate transfer request',
+      }),
     );
     (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
       status: 'FAILED',
@@ -200,7 +208,7 @@ describe('TransactionJobsMtnService', () => {
     // First call with 0 failed attempts
     await service.processTransactionJob(mockTransactionJob);
     const firstReferenceId = (mtnService.createTransfer as jest.Mock).mock
-      .calls[0][0].referenceId;
+      .calls[0][0].mtnReferenceId;
 
     // Second call with 1 failed attempt (payment retry)
     (
@@ -211,7 +219,7 @@ describe('TransactionJobsMtnService', () => {
       isRetry: true,
     });
     const secondReferenceId = (mtnService.createTransfer as jest.Mock).mock
-      .calls[1][0].referenceId;
+      .calls[1][0].mtnReferenceId;
 
     expect(firstReferenceId).not.toEqual(secondReferenceId);
   });
@@ -221,11 +229,11 @@ describe('TransactionJobsMtnService', () => {
 
     await service.processTransactionJob(mockTransactionJob);
     const firstReferenceId = (mtnService.createTransfer as jest.Mock).mock
-      .calls[0][0].referenceId;
+      .calls[0][0].mtnReferenceId;
 
     await service.processTransactionJob(mockTransactionJob);
     const secondReferenceId = (mtnService.createTransfer as jest.Mock).mock
-      .calls[1][0].referenceId;
+      .calls[1][0].mtnReferenceId;
 
     expect(firstReferenceId).toEqual(secondReferenceId);
   });

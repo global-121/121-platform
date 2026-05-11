@@ -19,8 +19,7 @@ export class MtnTransferCallbackDto {
     description:
       'The reference ID (UUID) used as X-Reference-Id in the original transfer request.',
   })
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   readonly referenceId: string;
 
   @ApiProperty({

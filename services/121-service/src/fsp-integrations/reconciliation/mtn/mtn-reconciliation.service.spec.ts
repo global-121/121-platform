@@ -103,7 +103,7 @@ describe('MtnReconciliationService', () => {
         transactionId: 42,
         description: TransactionEventDescription.mtnCallbackReceived,
         newTransactionStatus: TransactionStatusEnum.error,
-        errorMessage: 'MTN transfer failed with reason: PAYER_NOT_FOUND',
+        errorMessage: 'PAYER_NOT_FOUND',
       });
     });
 
@@ -120,7 +120,7 @@ describe('MtnReconciliationService', () => {
         transactionId: 42,
         description: TransactionEventDescription.mtnCallbackReceived,
         newTransactionStatus: TransactionStatusEnum.error,
-        errorMessage: 'MTN transfer failed with reason: unknown',
+        errorMessage: 'unknown',
       });
     });
 
@@ -137,7 +137,7 @@ describe('MtnReconciliationService', () => {
         transactionId: 42,
         description: TransactionEventDescription.mtnCallbackReceived,
         newTransactionStatus: TransactionStatusEnum.error,
-        errorMessage: 'MTN transfer failed with reason: unknown',
+        errorMessage: 'unknown',
       });
     });
   });

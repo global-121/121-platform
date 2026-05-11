@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { Equal } from 'typeorm';
 
+import { env } from '@121-service/src/env';
+import { MtnTransferResult } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
-import { MtnApiDuplicateError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api-duplicate.error';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
 import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
@@ -51,9 +53,10 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
     );
 
     // 3. Look up program currency for the MTN API
-    const program = await this.programRepository.findByIdOrFail(
-      transactionJob.programId,
-    );
+    const program = await this.programRepository.findOneOrFail({
+      where: { id: Equal(transactionJob.programId) },
+      select: { currency: true },
+    });
 
     if (!program.currency) {
       await this.transactionsService.saveProgress({
@@ -68,28 +71,24 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
     // 4. Call MTN transfer endpoint, if failure handle accordingly and return early
     try {
       await this.mtnService.createTransfer({
-        referenceId: mtnReferenceId,
+        mtnReferenceId,
         amount: String(transactionJob.transferValue),
         currency: program.currency,
         externalId: String(transactionJob.transactionId),
-        payee: {
-          partyIdType: 'MSISDN',
-          partyId: transactionJob.phoneNumber,
-        },
-        payerMessage: `Payment for transaction ${transactionJob.transactionId}`,
-        payeeNote: `Payment for transaction ${transactionJob.transactionId}`,
+        phoneNumber: transactionJob.phoneNumber,
+        transactionId: transactionJob.transactionId,
       });
     } catch (error) {
-      if (error instanceof MtnApiDuplicateError) {
-        // 5a. Duplicate: this is a queue retry where the original request already went through
-        // Use GetTransferStatus to determine the actual outcome
-        await this.handleDuplicateTransfer({
-          mtnReferenceId,
-          transactionEventContext,
-        });
-        return;
-      }
       if (error instanceof MtnApiError) {
+        if (error.type === MtnTransferResult.duplicate) {
+          // 5a. Duplicate: this is a queue retry where the original request already went through
+          // Use GetTransferStatus to determine the actual outcome
+          await this.handleDuplicateTransfer({
+            mtnReferenceId,
+            transactionEventContext,
+          });
+          return;
+        }
         // 5b. Other API error: store error transaction event and update transaction to 'error'
         await this.transactionsService.saveProgress({
           context: transactionEventContext,
@@ -102,11 +101,89 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
       throw error;
     }
 
-    // 6. Store success transaction event and leave transaction on 'waiting' (will go to final status on callback)
+    // 6. Store success transaction event and leave transaction on 'waiting'.
+    // Final status will be set via the callback flow (triggered below by polling).
     await this.transactionsService.saveProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.mtnRequestSent,
     });
+
+    // 7. Poll MTN for the actual transfer status and trigger our own callback endpoint.
+    // MTN sandbox does not reliably send callbacks, so we call our callback ourselves.
+    // This way we use the exact same code path as a real callback from MTN.
+    await this.pollAndTriggerCallback({
+      mtnReferenceId,
+      transactionId: transactionJob.transactionId,
+    });
+  }
+
+  private async pollAndTriggerCallback({
+    mtnReferenceId,
+    transactionId,
+  }: {
+    mtnReferenceId: string;
+    transactionId: number;
+  }): Promise<void> {
+    const maxAttempts = 5;
+    const delayMs = 2000;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const transferStatus = await this.mtnService.getTransferStatus({
+        mtnReferenceId,
+      });
+
+      if (transferStatus.status !== 'PENDING') {
+        // Hit our own callback endpoint, exactly like MTN would in production.
+        await this.invokeMtnCallbackEndpoint({
+          externalId: String(transactionId),
+          referenceId: mtnReferenceId,
+          status: transferStatus.status,
+          reason: transferStatus.reason,
+        });
+        return;
+      }
+
+      if (attempt < maxAttempts) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+    }
+
+    console.warn(
+      `[MTN] Transfer ${mtnReferenceId} still PENDING after ${maxAttempts} polls. Leaving transaction in 'waiting'.`,
+    );
+  }
+
+  private async invokeMtnCallbackEndpoint({
+    externalId,
+    referenceId,
+    status,
+    reason,
+  }: {
+    externalId: string;
+    referenceId: string;
+    status: string;
+    reason?: string;
+  }): Promise<void> {
+    const callbackUrl = `${env.EXTERNAL_121_SERVICE_URL ?? 'http://localhost:3000'}/api/fsps/mtn/transfer-callback`;
+    const body = { externalId, referenceId, status, reason: reason ?? '' };
+
+    console.log(
+      `[MTN] Invoking callback endpoint at ${callbackUrl} with body:`,
+      JSON.stringify(body),
+    );
+
+    const response = await fetch(callbackUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const responseText = await response.text();
+      console.error(
+        `[MTN] Callback endpoint returned ${response.status}: ${responseText}`,
+      );
+    }
   }
 
   private async handleDuplicateTransfer({
@@ -117,10 +194,10 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
     transactionEventContext: TransactionEventCreationContext;
   }): Promise<void> {
     const transferStatus = await this.mtnService.getTransferStatus({
-      referenceId: mtnReferenceId,
+      mtnReferenceId,
     });
 
-    const transactionStatus = this.mapMtnStatusToTransactionStatus({
+    const transactionStatus = this.mtnService.mapMtnStatusToTransactionStatus({
       mtnStatus: transferStatus.status,
     });
 
@@ -130,25 +207,8 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
       newTransactionStatus: transactionStatus,
       errorMessage:
         transactionStatus === TransactionStatusEnum.error
-          ? `MTN transfer failed with reason: ${transferStatus.reason ?? 'unknown'}`
+          ? (transferStatus.reason ?? 'unknown')
           : undefined,
     });
-  }
-
-  private mapMtnStatusToTransactionStatus({
-    mtnStatus,
-  }: {
-    mtnStatus: string;
-  }): TransactionStatusEnum {
-    switch (mtnStatus) {
-      case 'SUCCESSFUL':
-        return TransactionStatusEnum.success;
-      case 'PENDING':
-        return TransactionStatusEnum.waiting;
-      case 'FAILED':
-        return TransactionStatusEnum.error;
-      default:
-        return TransactionStatusEnum.error;
-    }
   }
 }

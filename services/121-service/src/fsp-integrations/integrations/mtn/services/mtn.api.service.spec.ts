@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { env } from '@121-service/src/env';
+import { MtnTransferResult } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
-import { MtnApiDuplicateError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api-duplicate.error';
 import { MtnApiHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.helper.service';
 import { MtnApiService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
@@ -32,7 +32,7 @@ const mockAuthResponse = {
 };
 
 const createTransferInput = {
-  referenceId: '550e8400-e29b-41d4-a716-446655440000',
+  mtnReferenceId: '550e8400-e29b-41d4-a716-446655440000',
   amount: '100',
   currency: 'EUR',
   externalId: '42',
@@ -77,6 +77,13 @@ describe('MtnApiService', () => {
               .fn()
               .mockReturnValue(statusHeaders),
             createCommonHeaders: jest.fn().mockReturnValue(commonHeaders),
+            formatResponseError: jest
+              .fn()
+              .mockImplementation(({ response }) => {
+                const status = response?.status ?? 'unknown';
+                const statusText = response?.statusText ?? 'unknown';
+                return `Status: ${status}, StatusText: ${statusText}`;
+              }),
           },
         },
       ],
@@ -114,7 +121,7 @@ describe('MtnApiService', () => {
       );
     });
 
-    it('should throw MtnApiDuplicateError when the API responds with 409', async () => {
+    it('should throw MtnApiError with duplicate type when the API responds with 409', async () => {
       // Arrange
       post
         .mockResolvedValueOnce(mockAuthResponse) // authenticate() call
@@ -123,7 +130,9 @@ describe('MtnApiService', () => {
       // Act & Assert
       await expect(
         mtnApiService.createTransfer(createTransferInput),
-      ).rejects.toBeInstanceOf(MtnApiDuplicateError);
+      ).rejects.toMatchObject({
+        type: MtnTransferResult.duplicate,
+      });
     });
 
     it('should throw MtnApiError when the API responds with a non-2xx status', async () => {
@@ -153,12 +162,15 @@ describe('MtnApiService', () => {
       ).rejects.toBeInstanceOf(MtnApiError);
     });
 
-    it('should rethrow MtnApiDuplicateError without wrapping when it propagates from a dependency', async () => {
+    it('should rethrow MtnApiError with duplicate type without wrapping when it propagates from a dependency', async () => {
       // Arrange
       post
         .mockResolvedValueOnce(mockAuthResponse) // authenticate() call
         .mockRejectedValueOnce(
-          new MtnApiDuplicateError('Duplicate transfer request'),
+          new MtnApiError({
+            type: MtnTransferResult.duplicate,
+            message: 'Duplicate transfer request',
+          }),
         ); // createTransfer() call
 
       // Act
@@ -170,7 +182,8 @@ describe('MtnApiService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(MtnApiDuplicateError);
+      expect(error).toBeInstanceOf(MtnApiError);
+      expect((error as MtnApiError).type).toBe(MtnTransferResult.duplicate);
     });
   });
 
@@ -261,6 +274,7 @@ describe('MtnApiService', () => {
                 .fn()
                 .mockReturnValue(statusHeaders),
               createCommonHeaders: jest.fn().mockReturnValue(commonHeaders),
+              formatResponseError: jest.fn(),
             },
           },
         ],
@@ -299,6 +313,7 @@ describe('MtnApiService', () => {
                 .fn()
                 .mockReturnValue(statusHeaders),
               createCommonHeaders: jest.fn().mockReturnValue(commonHeaders),
+              formatResponseError: jest.fn(),
             },
           },
         ],

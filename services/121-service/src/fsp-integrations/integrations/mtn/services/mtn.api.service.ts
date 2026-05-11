@@ -1,19 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { TokenSet } from 'openid-client';
 
 import { env } from '@121-service/src/env';
 import { MtnApiAuthenticationResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-authentication-response-body.dto';
 import { MtnApiCreateTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-transfer-request-body.dto';
+import { MtnTransferResult } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
-import { MtnApiDuplicateError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api-duplicate.error';
-import { CreateTransferParams } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/create-transfer-params.interface';
+import { MtnApiCreateTransferParams } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-api-create-transfer-params.interface';
 import { MtnTransferStatusResponse } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-transfer-status-response.interface';
 import { MtnApiHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-
-const HTTP_STATUS_ACCEPTED = 202;
-const HTTP_STATUS_CONFLICT = 409;
 
 @Injectable()
 export class MtnApiService {
@@ -29,7 +26,14 @@ export class MtnApiService {
     this.mtnApiKey = env.MTN_API_KEY;
   }
 
-  private getMtnTokenURL(): URL {
+  private getTransferUrl(): URL {
+    return new URL(
+      'disbursement/v1_0/transfer',
+      this.mtnApiHelperService.getBaseUrl(),
+    );
+  }
+
+  private getTokenURL(): URL {
     return new URL(
       'disbursement/token/',
       this.mtnApiHelperService.getBaseUrl(),
@@ -38,24 +42,26 @@ export class MtnApiService {
 
   private addAuthHeaders(headers: Headers): Headers {
     if (!this.tokenSet || !this.tokenSet.access_token) {
-      throw new MtnApiError('No access token available for MTN API requests');
+      throw new MtnApiError({
+        type: MtnTransferResult.fail,
+        message: 'No access token available for MTN API requests',
+      });
     }
     headers.set('Authorization', `Bearer ${this.tokenSet.access_token}`);
     return headers;
   }
 
   public async createTransfer({
-    referenceId,
+    mtnReferenceId,
     amount,
     currency,
     externalId,
     payee,
     payerMessage,
     payeeNote,
-  }: CreateTransferParams): Promise<void> {
+  }: MtnApiCreateTransferParams): Promise<void> {
     await this.authenticate();
     const payload = this.mtnApiHelperService.createTransferPayload({
-      referenceId,
       amount,
       currency,
       externalId,
@@ -63,7 +69,7 @@ export class MtnApiService {
       payerMessage,
       payeeNote,
     });
-    await this.makeTransferCall({ payload, referenceId });
+    await this.getTransfer({ payload, referenceId: mtnReferenceId });
   }
 
   public async getTransferStatus({
@@ -72,24 +78,28 @@ export class MtnApiService {
     referenceId: string;
   }): Promise<MtnTransferStatusResponse> {
     await this.authenticate();
+
+    const url = new URL(`${this.getTransferUrl()}/${referenceId}`);
+
+    const headers = this.addAuthHeaders(
+      this.mtnApiHelperService.createGetTransferStatusHeaders(),
+    );
+
     try {
-      const url = new URL(
-        `disbursement/v1_0/transfer/${referenceId}`,
-        this.mtnApiHelperService.getBaseUrl(),
-      );
-
-      const headers = this.addAuthHeaders(
-        this.mtnApiHelperService.createGetTransferStatusHeaders(),
-      );
-
       const response = await this.httpService.get<
         AxiosResponse<MtnTransferStatusResponse>
       >(url.toString(), headers);
 
+      console.log(
+        `[MTN API] Get status response - referenceId: ${referenceId}, status: ${response.status}, data:`,
+        JSON.stringify(response.data),
+      );
+
       if (!response || response.status < 200 || response.status >= 300) {
-        throw new MtnApiError(
-          `Failed to get transfer status. Status: ${response?.status ?? 'unknown'}, StatusText: ${response?.statusText ?? 'unknown'}, Body: ${this.stringifyResponseData(response?.data)}`,
-        );
+        throw new MtnApiError({
+          type: MtnTransferResult.fail,
+          message: `Failed to get transfer status. ${this.mtnApiHelperService.formatResponseError({ response })}`,
+        });
       }
 
       return response.data;
@@ -98,83 +108,84 @@ export class MtnApiService {
         throw error;
       }
       console.error('Failed to get MTN transfer status', error);
-      throw new MtnApiError(
-        `Error getting transfer status: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      );
+      throw new MtnApiError({
+        type: MtnTransferResult.fail,
+        message: `Error getting transfer status: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      });
     }
   }
 
-  private stringifyResponseData(data: unknown): string {
-    if (data === undefined || data === null) {
-      return 'empty';
-    }
-
-    try {
-      return JSON.stringify(data);
-    } catch {
-      return '[unserializable body]';
-    }
-  }
-  private async makeTransferCall({
+  private async getTransfer({
     payload,
     referenceId,
   }: {
     payload: MtnApiCreateTransferRequestBodyDto;
     referenceId: string;
   }): Promise<void> {
+    const url = this.getTransferUrl();
+
+    const headers = this.addAuthHeaders(
+      this.mtnApiHelperService.createTransferHeaders({
+        referenceId,
+      }),
+    );
+
+    console.log(
+      `[MTN API] Making transfer call - referenceId: ${referenceId}, payload:`,
+      JSON.stringify(payload),
+    );
+
     try {
-      const url = new URL(
-        'disbursement/v1_0/transfer',
-        this.mtnApiHelperService.getBaseUrl(),
-      );
-
-      const headers = this.addAuthHeaders(
-        this.mtnApiHelperService.createTransferHeaders({
-          referenceId,
-        }),
-      );
-
       const response = await this.httpService.post<AxiosResponse<void>>(
         url.toString(),
         payload,
         headers,
       );
+      console.log(
+        `[MTN API] Transfer response - referenceId: ${referenceId}, status: ${response.status}`,
+      );
 
-      if (response?.status === HTTP_STATUS_CONFLICT) {
-        throw new MtnApiDuplicateError(
-          `Duplicate transfer request for referenceId: ${referenceId}`,
-        );
+      if (response?.status === HttpStatus.CONFLICT) {
+        throw new MtnApiError({
+          type: MtnTransferResult.duplicate,
+          message: `Duplicate transfer request for referenceId: ${referenceId}`,
+        });
       }
 
       if (
         !response ||
-        response.status < HTTP_STATUS_ACCEPTED ||
+        response.status < HttpStatus.ACCEPTED ||
         response.status >= 300
       ) {
-        throw new MtnApiError(
-          `Failed to create transfer. Status: ${response?.status ?? 'unknown'}, StatusText: ${response?.statusText ?? 'unknown'}`,
-        );
+        throw new MtnApiError({
+          type: MtnTransferResult.fail,
+          message: `Failed to create transfer. ${this.mtnApiHelperService.formatResponseError({ response })}`,
+        });
       }
     } catch (error) {
-      if (
-        error instanceof MtnApiDuplicateError ||
-        error instanceof MtnApiError
-      ) {
+      if (error instanceof MtnApiError) {
         throw error;
       }
       console.error('Failed to make MTN B2C payment API call', error);
-      throw new MtnApiError(
-        `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      );
+      throw new MtnApiError({
+        type: MtnTransferResult.fail,
+        message: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      });
     }
   }
 
   private async authenticate(): Promise<void> {
     if (!this.mtnReferenceId) {
-      throw new MtnApiError('MTN_REFERENCE_ID is not set');
+      throw new MtnApiError({
+        type: MtnTransferResult.fail,
+        message: 'MTN_REFERENCE_ID is not set',
+      });
     }
     if (!this.mtnApiKey) {
-      throw new MtnApiError('MTN_API_KEY is not set');
+      throw new MtnApiError({
+        type: MtnTransferResult.fail,
+        message: 'MTN_API_KEY is not set',
+      });
     }
 
     // MTN uses Basic Authentication.
@@ -191,11 +202,12 @@ export class MtnApiService {
       // Refactor: add validation.
       response = await this.httpService.post<
         AxiosResponse<MtnApiAuthenticationResponseBodyDto>
-      >(this.getMtnTokenURL().href, {}, headers);
+      >(this.getTokenURL().href, {}, headers);
     } catch (error) {
-      throw new MtnApiError(
-        `authentication failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      );
+      throw new MtnApiError({
+        type: MtnTransferResult.fail,
+        message: `authentication failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      });
     }
 
     // Refactor: add validation.
@@ -204,9 +216,10 @@ export class MtnApiService {
 
     if (!accessToken || !expiresInSeconds || expiresInSeconds <= 0) {
       // Unlikely to go wrong, so bad ROI in throwing more specific errors.
-      throw new MtnApiError(
-        'authentication failed: unclear response from MTN API',
-      );
+      throw new MtnApiError({
+        type: MtnTransferResult.fail,
+        message: 'authentication failed: unclear response from MTN API',
+      });
     }
 
     // We subtract 5 seconds to ensure we don't use an expired token.

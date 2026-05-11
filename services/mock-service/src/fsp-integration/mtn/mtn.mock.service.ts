@@ -1,9 +1,5 @@
-import { HttpService } from '@nestjs/axios';
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { setTimeout } from 'node:timers/promises';
-import { lastValueFrom } from 'rxjs';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { API_PATHS, EXTERNAL_API_ROOT } from '@mock-service/src/config';
 import { MtnAuthenticateResponseDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-authenticate-response.dto';
 import { MtnCreateTransferRequestDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-create-transfer-request.dto';
 import { MtnTransferStatusResponseDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-transfer-status-response.dto';
@@ -13,12 +9,12 @@ enum MtnMockPhoneNumber {
   failInternalError = '100000002',
 }
 
+const MTN_MOCK_NOT_FOUND_REFERENCE_ID = '00000000-0000-0000-0000-000000000404';
+
 export const MtnAuthToken = 'mock-mtn-access-token-12345';
 
 @Injectable()
 export class MtnMockService {
-  private readonly transfers = new Map<string, MtnCreateTransferRequestDto>();
-
   private static readonly uuidPattern =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -28,19 +24,19 @@ export class MtnMockService {
   }: {
     authorization: string | undefined;
     subscriptionKey: string | undefined;
-  }): [HttpStatus, MtnAuthenticateResponseDto | object] {
+  }): MtnAuthenticateResponseDto {
     if (!subscriptionKey) {
-      return [
-        HttpStatus.UNAUTHORIZED,
+      throw new HttpException(
         { message: 'Access denied due to missing subscription key.' },
-      ];
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
-    if (!authorization || !authorization.startsWith('Basic ')) {
-      return [
-        HttpStatus.UNAUTHORIZED,
+    if (!authorization?.startsWith('Basic ')) {
+      throw new HttpException(
         { message: 'Invalid or missing Authorization header.' },
-      ];
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     return [
@@ -61,63 +57,44 @@ export class MtnMockService {
     referenceId: string | undefined;
     subscriptionKey: string | undefined;
     body: MtnCreateTransferRequestDto;
-  }): [HttpStatus, object | undefined] {
+  }): void {
     if (!subscriptionKey) {
-      return [
-        HttpStatus.UNAUTHORIZED,
+      throw new HttpException(
         { message: 'Access denied due to missing subscription key.' },
-      ];
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     if (!referenceId) {
-      return [
-        HttpStatus.BAD_REQUEST,
+      throw new HttpException(
         { message: 'X-Reference-Id header is required.' },
-      ];
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     if (!MtnMockService.uuidPattern.test(referenceId)) {
-      return [
-        HttpStatus.BAD_REQUEST,
+      throw new HttpException(
         { message: 'X-Reference-Id must be a valid UUID.' },
-      ];
-    }
-
-    if (this.transfers.has(referenceId)) {
-      return [
-        HttpStatus.CONFLICT,
-        { code: 'RESOURCE_ALREADY_EXIST', message: 'Duplicated reference id.' },
-      ];
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     if (body.payee.partyId === MtnMockPhoneNumber.failDuplicate) {
-      // Simulate a queue retry: the original transfer went through, so store it,
-      // then return 409 as the MTN API would for a duplicate referenceId.
-      this.transfers.set(referenceId, body);
-      return [
-        HttpStatus.CONFLICT,
+      throw new HttpException(
         { code: 'RESOURCE_ALREADY_EXIST', message: 'Duplicated reference id.' },
-      ];
+        HttpStatus.CONFLICT,
+      );
     }
 
     if (body.payee.partyId === MtnMockPhoneNumber.failInternalError) {
-      return [
-        HttpStatus.INTERNAL_SERVER_ERROR,
+      throw new HttpException(
         { code: 'INTERNAL_PROCESSING_ERROR', message: 'Internal error.' },
-      ];
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
-    this.transfers.set(referenceId, body);
-
-    this.sendStatusCallback({
-      referenceId,
-      externalId: body.externalId,
-      status: 'SUCCESSFUL',
-    })
-      // eslint-disable-next-line promise/prefer-await-to-callbacks, promise/prefer-await-to-then -- We want to log errors from the callback but not fail the main request
-      .catch((error) => console.log(error));
-
-    return [HttpStatus.ACCEPTED, undefined];
+    // Transfer accepted. The 121-service polls getTransferStatus and triggers
+    // its own callback, so the mock does not need to push a callback here.
   }
 
   public getTransferStatus({
@@ -126,53 +103,24 @@ export class MtnMockService {
   }: {
     referenceId: string;
     subscriptionKey: string | undefined;
-  }): [HttpStatus, MtnTransferStatusResponseDto | object] {
+  }): MtnTransferStatusResponseDto {
     if (!subscriptionKey) {
-      return [
-        HttpStatus.UNAUTHORIZED,
+      throw new HttpException(
         { message: 'Access denied due to missing subscription key.' },
-      ];
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
-    const transfer = this.transfers.get(referenceId);
-
-    if (!transfer) {
-      return [
-        HttpStatus.NOT_FOUND,
+    if (referenceId === MTN_MOCK_NOT_FOUND_REFERENCE_ID) {
+      throw new HttpException(
         {
           code: 'RESOURCE_NOT_FOUND',
           message: 'Requested resource was not found.',
         },
-      ];
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    return [
-      HttpStatus.OK,
-      { status: 'SUCCESSFUL' } satisfies MtnTransferStatusResponseDto,
-    ];
-  }
-
-  public reset(): void {
-    this.transfers.clear();
-  }
-
-  private async sendStatusCallback({
-    referenceId,
-    externalId,
-    status,
-  }: {
-    referenceId: string;
-    externalId: string;
-    status: string;
-  }): Promise<void> {
-    await setTimeout(300);
-
-    const url = `${EXTERNAL_API_ROOT}/${API_PATHS.mtnTransferCallback}`;
-    const payload = { referenceId, externalId, status };
-
-    const httpService = new HttpService();
-    await lastValueFrom(httpService.post(url, payload)).catch((error) =>
-      console.log(error),
-    );
+    return { status: 'SUCCESSFUL' };
   }
 }

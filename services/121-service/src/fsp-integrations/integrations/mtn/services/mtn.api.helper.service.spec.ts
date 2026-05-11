@@ -71,7 +71,6 @@ describe('MtnApiHelperService', () => {
   describe('createTransferPayload', () => {
     it('should return a correctly structured transfer payload', () => {
       const result = mtnApiHelperService.createTransferPayload({
-        referenceId: 'ref-123',
         amount: '100',
         currency: 'EUR',
         externalId: '42',
@@ -98,7 +97,6 @@ describe('MtnApiHelperService', () => {
 
     it('should not include referenceId in the payload', () => {
       const result = mtnApiHelperService.createTransferPayload({
-        referenceId: 'ref-123',
         amount: '50',
         currency: 'USD',
         externalId: '1',
@@ -148,36 +146,6 @@ describe('MtnApiHelperService', () => {
 
       expect(headers.get('X-Callback-Url')).toBeNull();
     });
-
-    it('should throw MtnApiError when MTN_TARGET_ENVIRONMENT is not set', () => {
-      (env as any).MTN_TARGET_ENVIRONMENT = '';
-
-      expect(() =>
-        mtnApiHelperService.createTransferHeaders({
-          referenceId: 'ref-uuid-123',
-        }),
-      ).toThrow(MtnApiError);
-      expect(() =>
-        mtnApiHelperService.createTransferHeaders({
-          referenceId: 'ref-uuid-123',
-        }),
-      ).toThrow('MTN_TARGET_ENVIRONMENT is not set');
-    });
-
-    it('should throw MtnApiError when MTN_SUBSCRIPTION_KEY is not set', () => {
-      (env as any).MTN_SUBSCRIPTION_KEY = '';
-
-      expect(() =>
-        mtnApiHelperService.createTransferHeaders({
-          referenceId: 'ref-uuid-123',
-        }),
-      ).toThrow(MtnApiError);
-      expect(() =>
-        mtnApiHelperService.createTransferHeaders({
-          referenceId: 'ref-uuid-123',
-        }),
-      ).toThrow('MTN_SUBSCRIPTION_KEY is not set');
-    });
   });
 
   describe('createGetTransferStatusHeaders', () => {
@@ -198,27 +166,79 @@ describe('MtnApiHelperService', () => {
       expect(headers.get('X-Reference-Id')).toBeNull();
       expect(headers.get('X-Callback-Url')).toBeNull();
     });
+  });
 
-    it('should throw MtnApiError when MTN_TARGET_ENVIRONMENT is not set', () => {
-      (env as any).MTN_TARGET_ENVIRONMENT = '';
+  describe('formatResponseError', () => {
+    it('should format error with code and message when MTN error shape is present', () => {
+      const result = mtnApiHelperService.formatResponseError({
+        response: {
+          status: 500,
+          statusText: 'Internal Server Error',
+          data: {
+            code: 'INTERNAL_PROCESSING_ERROR',
+            message: 'Internal error.',
+          },
+        },
+      });
 
-      expect(() =>
-        mtnApiHelperService.createGetTransferStatusHeaders(),
-      ).toThrow(MtnApiError);
-      expect(() =>
-        mtnApiHelperService.createGetTransferStatusHeaders(),
-      ).toThrow('MTN_TARGET_ENVIRONMENT is not set');
+      expect(result).toBe(
+        'Status: 500, StatusText: Internal Server Error, Code: INTERNAL_PROCESSING_ERROR, Message: Internal error.',
+      );
     });
 
-    it('should throw MtnApiError when MTN_SUBSCRIPTION_KEY is not set', () => {
-      (env as any).MTN_SUBSCRIPTION_KEY = '';
+    it('should format error with code and message for bad request', () => {
+      const result = mtnApiHelperService.formatResponseError({
+        response: {
+          status: 400,
+          statusText: 'Bad Request',
+          data: {
+            code: 'INVALID_CALLBACK_URL_HOST',
+            message: 'Invalid callback URL',
+          },
+        },
+      });
 
-      expect(() =>
-        mtnApiHelperService.createGetTransferStatusHeaders(),
-      ).toThrow(MtnApiError);
-      expect(() =>
-        mtnApiHelperService.createGetTransferStatusHeaders(),
-      ).toThrow('MTN_SUBSCRIPTION_KEY is not set');
+      expect(result).toBe(
+        'Status: 400, StatusText: Bad Request, Code: INVALID_CALLBACK_URL_HOST, Message: Invalid callback URL',
+      );
+    });
+
+    it('should fall back to JSON.stringify for non-MTN error shapes', () => {
+      const result = mtnApiHelperService.formatResponseError({
+        response: {
+          status: 500,
+          statusText: 'Internal Server Error',
+          data: { unexpected: 'shape' },
+        },
+      });
+
+      expect(result).toBe(
+        'Status: 500, StatusText: Internal Server Error, Body: {"unexpected":"shape"}',
+      );
+    });
+
+    it('should handle null response', () => {
+      const result = mtnApiHelperService.formatResponseError({
+        response: null,
+      });
+
+      expect(result).toBe('Status: unknown, StatusText: unknown');
+    });
+
+    it('should handle undefined response', () => {
+      const result = mtnApiHelperService.formatResponseError({
+        response: undefined,
+      });
+
+      expect(result).toBe('Status: unknown, StatusText: unknown');
+    });
+
+    it('should handle response with no data', () => {
+      const result = mtnApiHelperService.formatResponseError({
+        response: { status: 404, statusText: 'Not Found' },
+      });
+
+      expect(result).toBe('Status: 404, StatusText: Not Found');
     });
   });
 });

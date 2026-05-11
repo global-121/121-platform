@@ -2,20 +2,18 @@ import { Injectable } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
 import { MtnApiCreateTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-transfer-request-body.dto';
-import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
-import { CreateTransferParams } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/create-transfer-params.interface';
+import { MtnApiErrorResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-error-response-body.dto';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 
 @Injectable()
 export class MtnApiHelperService {
   public getBaseUrl(): URL {
+    // Non-null assertions (!) are safe here because FspEnvVariableValidationService
+    // validates at startup that all required env variables are set when MTN_MODE=EXTERNAL.
     if (env.MTN_MODE === FspMode.mock) {
       return new URL('api/fsp/mtn/', env.MOCK_SERVICE_URL);
     }
-    if (!env.MTN_API_URL) {
-      throw new MtnApiError('MTN_API_URL is not set');
-    }
-    return new URL(env.MTN_API_URL);
+    return new URL(env.MTN_API_URL!);
   }
 
   public createTransferPayload({
@@ -25,7 +23,14 @@ export class MtnApiHelperService {
     payee,
     payerMessage,
     payeeNote,
-  }: CreateTransferParams): MtnApiCreateTransferRequestBodyDto {
+  }: {
+    amount: string;
+    currency: string;
+    externalId: string;
+    payee: { partyIdType: string; partyId: string };
+    payerMessage: string;
+    payeeNote: string;
+  }): MtnApiCreateTransferRequestBodyDto {
     return {
       amount,
       currency,
@@ -39,18 +44,16 @@ export class MtnApiHelperService {
     };
   }
 
+  // Non-null assertions (!) are safe here because FspEnvVariableValidationService
+  // validates at startup that all required env variables are set when MTN_MODE=EXTERNAL.
   public createTransferHeaders({
     referenceId,
   }: {
     referenceId: string;
   }): Headers {
-    if (!env.MTN_TARGET_ENVIRONMENT) {
-      throw new MtnApiError('MTN_TARGET_ENVIRONMENT is not set');
-    }
-
     const headers = this.createCommonHeaders();
     headers.set('X-Reference-Id', referenceId);
-    headers.set('X-Target-Environment', env.MTN_TARGET_ENVIRONMENT);
+    headers.set('X-Target-Environment', env.MTN_TARGET_ENVIRONMENT!);
 
     if (env.EXTERNAL_121_SERVICE_URL) {
       headers.set(
@@ -62,21 +65,14 @@ export class MtnApiHelperService {
   }
 
   public createGetTransferStatusHeaders(): Headers {
-    if (!env.MTN_TARGET_ENVIRONMENT) {
-      throw new MtnApiError('MTN_TARGET_ENVIRONMENT is not set');
-    }
-
     const headers = this.createCommonHeaders();
-    headers.set('X-Target-Environment', env.MTN_TARGET_ENVIRONMENT);
+    headers.set('X-Target-Environment', env.MTN_TARGET_ENVIRONMENT!);
 
     return headers;
   }
 
   private getSubscriptionKeyOrThrow(): string {
-    if (!env.MTN_SUBSCRIPTION_KEY) {
-      throw new MtnApiError('MTN_SUBSCRIPTION_KEY is not set');
-    }
-    return env.MTN_SUBSCRIPTION_KEY;
+    return env.MTN_SUBSCRIPTION_KEY!;
   }
 
   public createCommonHeaders(): Headers {
@@ -85,5 +81,61 @@ export class MtnApiHelperService {
       'Cache-Control': 'no-cache',
       'Ocp-Apim-Subscription-Key': this.getSubscriptionKeyOrThrow(),
     });
+  }
+
+  public formatResponseError({
+    response,
+  }: {
+    response?: {
+      status?: number;
+      statusText?: string;
+      data?: unknown;
+    } | null;
+  }): string {
+    const status = response?.status ?? 'unknown';
+    const statusText = response?.statusText ?? 'unknown';
+    const errorMessage = this.parseErrorMessage(response?.data);
+
+    const parts = [
+      `Status: ${status}`,
+      `StatusText: ${statusText}`,
+      ...(errorMessage ? [errorMessage] : []),
+    ];
+
+    return parts.join(', ');
+  }
+
+  private parseErrorMessage(data: unknown): string | undefined {
+    if (!this.isMtnErrorResponse(data)) {
+      if (data === undefined || data === null) {
+        return undefined;
+      }
+
+      try {
+        return `Body: ${JSON.stringify(data)}`;
+      } catch {
+        return 'Body: [unserializable body]';
+      }
+    }
+
+    const parts: string[] = [];
+    if (data.code) {
+      parts.push(`Code: ${data.code}`);
+    }
+    if (data.message) {
+      parts.push(`Message: ${data.message}`);
+    }
+    return parts.length > 0 ? parts.join(', ') : undefined;
+  }
+
+  private isMtnErrorResponse(
+    data: unknown,
+  ): data is MtnApiErrorResponseBodyDto {
+    return (
+      typeof data === 'object' &&
+      data !== null &&
+      'code' in data &&
+      'message' in data
+    );
   }
 }

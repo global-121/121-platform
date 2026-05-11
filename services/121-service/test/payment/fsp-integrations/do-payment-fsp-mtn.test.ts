@@ -131,7 +131,9 @@ describe('Do payment with FSP: MTN', () => {
     const transaction = getTransactionsResult.body.data[0];
 
     expect(transaction.status).toBe(TransactionStatusEnum.error);
-    expect(transaction.errorMessage).toMatchSnapshot();
+    expect(transaction.errorMessage).toMatchInlineSnapshot(
+      `"MTN API Error: Failed to create transfer. Status: 500, StatusText: Internal Server Error, Code: INTERNAL_PROCESSING_ERROR, Message: Internal error."`,
+    );
 
     const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId,

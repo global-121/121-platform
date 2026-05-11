@@ -4,7 +4,6 @@ import { MtnMockController } from '@mock-service/src/fsp-integration/mtn/mtn.moc
 import { MtnMockService } from '@mock-service/src/fsp-integration/mtn/mtn.mock.service';
 
 @Module({
-  imports: [],
   controllers: [MtnMockController],
   providers: [MtnMockService],
   exports: [MtnMockService],

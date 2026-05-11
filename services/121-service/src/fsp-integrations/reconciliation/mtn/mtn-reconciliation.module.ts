@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
+import { MtnModule } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.module';
 import { MtnReconciliationController } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.controller';
 import { MtnReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.service';
 import { TransferCallbackJobProcessorMtn } from '@121-service/src/fsp-integrations/reconciliation/mtn/processors/mtn-transfer-callback-job.processor';
@@ -9,7 +10,7 @@ import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-re
 import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-logger.middleware';
 
 @Module({
-  imports: [RedisModule, TransactionsModule, QueuesRegistryModule],
+  imports: [MtnModule, RedisModule, TransactionsModule, QueuesRegistryModule],
   providers: [MtnReconciliationService, TransferCallbackJobProcessorMtn],
   controllers: [MtnReconciliationController],
   exports: [MtnReconciliationService],
