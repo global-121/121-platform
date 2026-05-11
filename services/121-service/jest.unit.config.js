@@ -14,9 +14,9 @@ module.exports = {
     '^@121-service/(.*)$': '<rootDir>/$1',
   },
   transform: {
-    'node_modules/@t3-oss/.+\\.js$': ['ts-jest'],
+    'node_modules/(@t3-oss|uuid)/.+[.]js$': ['ts-jest'],
   },
-  transformIgnorePatterns: ['node_modules/(?!@t3-oss)'],
+  transformIgnorePatterns: ['node_modules/(?!@t3-oss|uuid)'],
   randomize: true,
   verbose: true,
   reporters: [

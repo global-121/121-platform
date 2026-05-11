@@ -13,9 +13,9 @@ module.exports = {
   moduleFileExtensions: ['js', 'ts'],
   transform: {
     '^.+\\.ts?$': ['ts-jest', { tsconfig: '<rootDir>/test/tsconfig.json' }],
-    'node_modules/@t3-oss/.+\\.js$': ['ts-jest'],
+    'node_modules/(@t3-oss|uuid)/.+[.]js$': ['ts-jest'],
   },
-  transformIgnorePatterns: ['node_modules/(?!@t3-oss)'],
+  transformIgnorePatterns: ['node_modules/(?!@t3-oss|uuid)'],
   testTimeout: 30_000,
   randomize: true,
   verbose: true,
