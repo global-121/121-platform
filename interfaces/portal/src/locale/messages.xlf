@@ -2343,6 +2343,72 @@
       <trans-unit id="9190469470269882637" datatype="html">
         <source>Integrate FSP</source>
       </trans-unit>
+      <trans-unit id="1030526487647802742" datatype="html">
+        <source>Payment approval saved successfully.</source>
+      </trans-unit>
+      <trans-unit id="1647547699224335647" datatype="html">
+        <source>Threshold amounts must be unique.</source>
+      </trans-unit>
+      <trans-unit id="2238812055506325996" datatype="html">
+        <source>This user or one of these users will need to approve the payment if the total amount is above the decided value.</source>
+      </trans-unit>
+      <trans-unit id="2378903204725593693" datatype="html">
+        <source>If payment total exceeds</source>
+      </trans-unit>
+      <trans-unit id="2556148873952297722" datatype="html">
+        <source>You cannot assign yourself, and users can only be assigned to one step.</source>
+      </trans-unit>
+      <trans-unit id="3385926657540057767" datatype="html">
+        <source>Set up an approval process for program payments by selecting 1 or more users for each step. Only one user must approve in each step. Steps will run in order based on the amount conditions you set (from lowest to highest).</source>
+      </trans-unit>
+      <trans-unit id="3395013078330530672" datatype="html">
+        <source>Threshold amount is required.</source>
+      </trans-unit>
+      <trans-unit id="3453831056127531396" datatype="html">
+        <source>First approval step must be set for all payments regardless of the total payment amount.</source>
+      </trans-unit>
+      <trans-unit id="3642069228206062436" datatype="html">
+        <source>Must be larger than 0</source>
+      </trans-unit>
+      <trans-unit id="3869416404290728263" datatype="html">
+        <source>Select at least one user.</source>
+      </trans-unit>
+      <trans-unit id="5124373210930196762" datatype="html">
+        <source>For more information about how to set up payment approval see <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/></source>
+      </trans-unit>
+      <trans-unit id="5578681806481405422" datatype="html">
+        <source>Select 1 or more users from your program team</source>
+      </trans-unit>
+      <trans-unit id="5963256347991946436" datatype="html">
+        <source>These users would have to approve payment if the total amount is above the decided value.</source>
+      </trans-unit>
+      <trans-unit id="6169902268775373280" datatype="html">
+        <source>Select users for this approval step</source>
+      </trans-unit>
+      <trans-unit id="6400478456082901749" datatype="html">
+        <source>Add approval step</source>
+      </trans-unit>
+      <trans-unit id="7142071176900316357" datatype="html">
+        <source>Select users for the first approval step</source>
+      </trans-unit>
+      <trans-unit id="7327614050923667855" datatype="html">
+        <source>Only users with full program access can approve.</source>
+      </trans-unit>
+      <trans-unit id="8179681723030824196" datatype="html">
+        <source>Edit payment approval settings</source>
+      </trans-unit>
+      <trans-unit id="8600722866221025144" datatype="html">
+        <source>Step</source>
+      </trans-unit>
+      <trans-unit id="8964439148766830800" datatype="html">
+        <source><x ctype="x-span" equiv-text="&lt;span class=&quot;inline-flex items-center gap-1 whitespace-nowrap&quot;&gt;" id="START_TAG_SPAN"/> If payment total exceeds <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip message=&quot;This user or one of these users will need to approve the payment if the total amount is above the decided value.&quot; i18n-message /&gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip message=&quot;This user or one of these users will need to approve the payment if the total amount is above the decided value.&quot; i18n-message /&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/></source>
+      </trans-unit>
+      <trans-unit id="913139971007804116" datatype="html">
+        <source>No eligible users found.</source>
+      </trans-unit>
+      <trans-unit id="page-title-program-settings-payment-approval" datatype="html">
+        <source>Payment approval</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

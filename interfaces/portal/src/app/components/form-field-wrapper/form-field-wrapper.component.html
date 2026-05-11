@@ -6,17 +6,20 @@
     class="block [&_.p-datepicker]:w-full [&_input]:w-full [&_textarea]:w-full"
   >
     <strong class="mb-2 block">
-      @if (isRequired()) {
-        <span class="me-0">*</span>
-      }
-      <span class="ms-0">{{ label() | translatableString }}</span>
-      @let tooltip = labelTooltip();
-      @if (tooltip) {
-        <app-info-tooltip
-          [message]="tooltip"
-          class="ms-1"
-        ></app-info-tooltip>
-      }
+      <span class="inline-flex max-w-full items-center gap-1 align-middle">
+        @if (isRequired()) {
+          <span class="me-0">*</span>
+        }
+        <span class="ms-0">{{ label() | translatableString }}</span>
+        @let tooltip = labelTooltip();
+        @if (tooltip) {
+          <app-info-tooltip
+            [message]="tooltip"
+            class="ms-1"
+          ></app-info-tooltip>
+        }
+        <ng-content select="[slot='label-extra']"></ng-content>
+      </span>
     </strong>
     <ng-content></ng-content>
     <app-form-error [error]="errorMessage()" />

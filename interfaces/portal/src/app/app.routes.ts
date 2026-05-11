@@ -30,6 +30,7 @@ export enum AppRoutes {
   programSettings = 'settings',
   programSettingsFsps = 'fsps',
   programSettingsInformation = 'information',
+  programSettingsPaymentApproval = 'payment-approval',
   programSettingsRegistrationData = 'registration-data',
   programSettingsTeam = 'team',
   registrationByReferenceId = 'registration-by-reference-id',
@@ -196,6 +197,7 @@ export const routes: Routes = [
                 permission: PermissionEnum.ProgramUPDATE,
                 fallbackRoute: [
                   AppRoutes.programSettings,
+                  AppRoutes.users,
                   AppRoutes.programSettingsTeam,
                 ],
               }),
@@ -230,19 +232,51 @@ export const routes: Routes = [
             ],
           },
           {
-            path: AppRoutes.programSettingsTeam,
-            title:
-              $localize`:@@page-title-program-settings-team:Program team` +
-              ' | ' +
-              $localize`:@@page-title-program-settings:Settings`,
-            loadComponent: () =>
-              import('~/pages/program-settings-team/program-settings-team.page').then(
-                (x) => x.ProgramSettingsTeamPageComponent,
-              ),
+            path: AppRoutes.users,
             canActivate: [
               programPermissionsGuard({
                 permission: PermissionEnum.AidWorkerProgramREAD,
               }),
+            ],
+            children: [
+              {
+                path: ``,
+                pathMatch: 'full',
+                redirectTo: AppRoutes.programSettingsTeam,
+              },
+              {
+                path: AppRoutes.programSettingsTeam,
+                title:
+                  $localize`:@@page-title-program-settings-team:Program team` +
+                  ' | ' +
+                  $localize`:@@page-title-program-settings:Settings`,
+                loadComponent: () =>
+                  import('~/pages/program-settings-team/program-settings-team.page').then(
+                    (x) => x.ProgramSettingsTeamPageComponent,
+                  ),
+                canActivate: [
+                  programPermissionsGuard({
+                    permission: PermissionEnum.AidWorkerProgramREAD,
+                  }),
+                ],
+              },
+              {
+                path: AppRoutes.programSettingsPaymentApproval,
+                title:
+                  $localize`:@@page-title-program-settings-payment-approval:Payment approval` +
+                  ' | ' +
+                  $localize`:@@page-title-program-settings:Settings`,
+                loadComponent: () =>
+                  import('~/pages/program-settings-payment-approval/program-settings-payment-approval.page').then(
+                    (x) => x.ProgramSettingsPaymentApprovalPageComponent,
+                  ),
+                canActivate: [
+                  authCapabilitiesGuard(
+                    (authService) => authService.isOrganizationAdmin,
+                  ),
+                ],
+                canDeactivate: [pendingChangesGuard],
+              },
             ],
           },
           {

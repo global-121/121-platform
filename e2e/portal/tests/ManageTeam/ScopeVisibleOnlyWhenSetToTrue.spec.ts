@@ -13,12 +13,12 @@ test('"Scope" column should only be loaded when "enableScope": is set to true un
   programTeamPage,
 }) => {
   await test.step('Navigate to Manage team in PV program and validate scope column is hidden per configuration', async () => {
-    await programTeamPage.goto('/program/2/settings/team');
+    await programTeamPage.goto('/program/2/settings/users/team');
     await programTeamPage.validateScopeColumnIsVisible();
   });
 
   await test.step('Navigate to Manage team in OCW program and validate scope column is hidden per configuration', async () => {
-    await programTeamPage.goto('/program/3/settings/team');
+    await programTeamPage.goto('/program/3/settings/users/team');
     await programTeamPage.validateScopeColumnIsHidden();
   });
 });
