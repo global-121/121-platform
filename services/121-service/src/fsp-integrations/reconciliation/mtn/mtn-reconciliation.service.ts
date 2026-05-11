@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
 import { MtnTransferCallbackDto } from '@121-service/src/fsp-integrations/reconciliation/mtn/dtos/mtn-transfer-callback.dto';
 import { MtnTransferCallbackJobDto } from '@121-service/src/fsp-integrations/reconciliation/mtn/dtos/mtn-transfer-callback-job.dto';
@@ -24,10 +25,36 @@ export class MtnReconciliationService {
       '[MTN Callback] Received callback:',
       JSON.stringify(mtnTransferCallback),
     );
+
+    const { externalId, status } = mtnTransferCallback;
+
+    if (!externalId || !status) {
+      console.warn(
+        `[MTN Callback] Dropping callback with missing required fields - externalId: ${externalId}, status: ${status}`,
+      );
+      return;
+    }
+
+    const transactionId = Number(externalId);
+    if (Number.isNaN(transactionId)) {
+      console.warn(
+        `[MTN Callback] Dropping callback with non-numeric externalId: ${externalId}`,
+      );
+      return;
+    }
+
+    if (
+      !Object.values(MtnTransferStatus).includes(status as MtnTransferStatus)
+    ) {
+      console.warn(
+        `[MTN Callback] Received unknown status '${status}' for transactionId: ${transactionId}. Processing as error.`,
+      );
+    }
+
     const mtnTransferCallbackJob: MtnTransferCallbackJobDto = {
-      transactionId: Number(mtnTransferCallback.externalId),
-      referenceId: mtnTransferCallback.referenceId,
-      status: mtnTransferCallback.status,
+      transactionId,
+      referenceId: mtnTransferCallback.referenceId ?? '',
+      status: status as MtnTransferStatus,
       reason: mtnTransferCallback.reason,
     };
 

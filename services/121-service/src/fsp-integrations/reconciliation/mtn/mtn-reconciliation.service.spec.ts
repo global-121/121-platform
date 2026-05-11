@@ -70,6 +70,65 @@ describe('MtnReconciliationService', () => {
         },
       );
     });
+
+    it('should default referenceId to empty string when not provided', async () => {
+      await mtnReconciliationService.processTransferCallback({
+        externalId: '42',
+        status: MtnTransferStatus.successful,
+      });
+
+      expect(mockMtnTransferCallbackQueue.add).toHaveBeenCalledWith(
+        JobNames.default,
+        {
+          transactionId: 42,
+          referenceId: '',
+          status: MtnTransferStatus.successful,
+          reason: undefined,
+        },
+      );
+    });
+
+    it('should drop callback when externalId is missing', async () => {
+      await mtnReconciliationService.processTransferCallback({
+        status: MtnTransferStatus.successful,
+      });
+
+      expect(mockMtnTransferCallbackQueue.add).not.toHaveBeenCalled();
+    });
+
+    it('should drop callback when status is missing', async () => {
+      await mtnReconciliationService.processTransferCallback({
+        externalId: '42',
+      });
+
+      expect(mockMtnTransferCallbackQueue.add).not.toHaveBeenCalled();
+    });
+
+    it('should drop callback when externalId is not numeric', async () => {
+      await mtnReconciliationService.processTransferCallback({
+        externalId: 'not-a-number',
+        status: MtnTransferStatus.successful,
+      });
+
+      expect(mockMtnTransferCallbackQueue.add).not.toHaveBeenCalled();
+    });
+
+    it('should still enqueue callback with unknown status value', async () => {
+      await mtnReconciliationService.processTransferCallback({
+        externalId: '42',
+        status: 'UNKNOWN_STATUS',
+      });
+
+      expect(mockMtnTransferCallbackQueue.add).toHaveBeenCalledWith(
+        JobNames.default,
+        {
+          transactionId: 42,
+          referenceId: '',
+          status: 'UNKNOWN_STATUS',
+          reason: undefined,
+        },
+      );
+    });
   });
 
   describe('processMtnTransferCallbackJob', () => {
