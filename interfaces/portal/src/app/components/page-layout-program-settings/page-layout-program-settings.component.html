@@ -11,14 +11,42 @@
         @for (item of menuItems(); track $index) {
           @if (item.visible) {
             <li>
-              <a
-                [routerLink]="item.routerLink"
-                routerLinkActive="text-purple !border-l-purple"
-                class="txt-body-m hover:text-purple focus:text-purple flex items-center gap-2 border-l border-l-transparent ps-1 font-semibold text-black"
-              >
-                <i [class]="item.icon"></i>
-                {{ item.label }}
-              </a>
+              @if (item.items) {
+                <a
+                  [routerLink]="item.routerLink"
+                  class="txt-body-m hover:text-purple focus:text-purple flex cursor-pointer items-center gap-2 border-l border-l-transparent ps-1 font-semibold text-black"
+                  [class.text-purple]="isUsersSubMenuActive()"
+                  [class]="{ 'border-l-purple!': isUsersSubMenuActive() }"
+                >
+                  <i [class]="item.icon"></i>
+                  {{ item.label }}
+                </a>
+                @if (isUsersSubMenuActive()) {
+                  <ul class="mt-2 space-y-2 ps-8">
+                    @for (subItem of item.items; track $index) {
+                      <li>
+                        <a
+                          [routerLink]="subItem.routerLink"
+                          routerLinkActive="font-semibold"
+                          [routerLinkActiveOptions]="{ exact: true }"
+                          class="txt-body-m hover:text-purple focus:text-purple text-black"
+                        >
+                          {{ subItem.label }}
+                        </a>
+                      </li>
+                    }
+                  </ul>
+                }
+              } @else {
+                <a
+                  [routerLink]="item.routerLink"
+                  routerLinkActive="text-purple !border-l-purple"
+                  class="txt-body-m hover:text-purple focus:text-purple flex items-center gap-2 border-l border-l-transparent ps-1 font-semibold text-black"
+                >
+                  <i [class]="item.icon"></i>
+                  {{ item.label }}
+                </a>
+              }
             </li>
           }
         }

@@ -24,6 +24,7 @@ import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 import ProgramMonitoring from '@121-e2e/portal/pages/ProgramMonitoringPage';
 import ProgramSettingsPage from '@121-e2e/portal/pages/ProgramSettingsPage';
+import ProgramSettingsPaymentApprovalPage from '@121-e2e/portal/pages/ProgramSettingsPaymentApprovalPage';
 import ProgramTeamPage from '@121-e2e/portal/pages/ProgramTeamPage';
 import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
 import RegistrationDataPage from '@121-e2e/portal/pages/RegistrationDataPage';
@@ -72,6 +73,7 @@ interface Fixtures {
   paymentsPage: PaymentsPage;
   programMonitoringPage: ProgramMonitoring;
   programSettingsPage: ProgramSettingsPage;
+  programSettingsPaymentApprovalPage: ProgramSettingsPaymentApprovalPage;
   programTeamPage: ProgramTeamPage;
   registrationActivityLogPage: RegistrationActivityLogPage;
   registrationDataPage: RegistrationDataPage;
@@ -300,6 +302,10 @@ export const customSharedFixture = base.extend<Fixtures>({
 
   programSettingsPage: async ({ page }, use) => {
     await use(new ProgramSettingsPage(page));
+  },
+
+  programSettingsPaymentApprovalPage: async ({ page }, use) => {
+    await use(new ProgramSettingsPaymentApprovalPage(page));
   },
 
   programTeamPage: async ({ page }, use) => {

@@ -33,6 +33,7 @@ test('Users should be removable from "program team"', async ({
 
   await test.step('Select program and navigate to Manage team', async () => {
     await programTeamPage.selectProgram(programTitle);
+    await programTeamPage.navigateToProgramSettingsPage('Users');
     await programTeamPage.navigateToProgramSettingsPage('Program team');
   });
 

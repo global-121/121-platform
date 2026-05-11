@@ -30,6 +30,7 @@ export enum AppRoutes {
   programSettings = 'settings',
   programSettingsFsps = 'fsps',
   programSettingsInformation = 'information',
+  programSettingsPaymentApproval = 'payment-approval',
   programSettingsRegistrationData = 'registration-data',
   programSettingsTeam = 'team',
   registrationByReferenceId = 'registration-by-reference-id',
@@ -238,6 +239,22 @@ export const routes: Routes = [
             loadComponent: () =>
               import('~/pages/program-settings-team/program-settings-team.page').then(
                 (x) => x.ProgramSettingsTeamPageComponent,
+              ),
+            canActivate: [
+              programPermissionsGuard({
+                permission: PermissionEnum.AidWorkerProgramREAD,
+              }),
+            ],
+          },
+          {
+            path: AppRoutes.programSettingsPaymentApproval,
+            title:
+              $localize`:@@page-title-program-settings-payment-approval:Payment approval` +
+              ' | ' +
+              $localize`:@@page-title-program-settings:Settings`,
+            loadComponent: () =>
+              import('~/pages/program-settings-payment-approval/program-settings-payment-approval.page').then(
+                (x) => x.ProgramSettingsPaymentApprovalPageComponent,
               ),
             canActivate: [
               programPermissionsGuard({
