@@ -124,6 +124,7 @@ graph LR
   PaymentsModule-->TransactionsModule
   PaymentsModule-->UserModule
   ProgramApprovalThresholdsModule-->ProgramAidworkerAssignmentsModule
+  ProgramFspConfigurationsModule-->ProgramRegistrationAttributesModule
   ProgramModule-->FspsModule
   ProgramModule-->IntersolveVisaModule
   ProgramModule-->KoboConnectModule

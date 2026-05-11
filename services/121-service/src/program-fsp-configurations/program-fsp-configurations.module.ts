@@ -6,6 +6,7 @@ import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-
 import { ProgramFspConfigurationsController } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.controller';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
+import { ProgramRegistrationAttributesModule } from '@121-service/src/program-registration-attributes/program-registration-attributes.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-co
       ProgramFspConfigurationEntity,
       ProgramFspConfigurationPropertyEntity,
     ]),
+    ProgramRegistrationAttributesModule,
   ],
   providers: [
     ProgramFspConfigurationsService,

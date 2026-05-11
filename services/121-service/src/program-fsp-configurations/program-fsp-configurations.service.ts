@@ -2,11 +2,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
+import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-types.const';
 import {
   FspConfigurationPropertyVisibility,
   FspConfigurationPropertyVisibilityMap,
 } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-visibility.const';
+import { FSP_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
@@ -20,6 +22,7 @@ import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/progr
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
+import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 @Injectable()
@@ -28,6 +31,10 @@ export class ProgramFspConfigurationsService {
   private readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
   @InjectRepository(ProgramFspConfigurationPropertyEntity)
   private readonly programFspConfigurationPropertyRepository: Repository<ProgramFspConfigurationPropertyEntity>;
+
+  constructor(
+    private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
+  ) {}
 
   public async getByProgramId(
     programId: number,
@@ -48,6 +55,43 @@ export class ProgramFspConfigurationsService {
     programFspConfigurationDto: CreateProgramFspConfigurationDto,
   ): Promise<ProgramFspConfigurationResponseDto> {
     await this.validate(programId, programFspConfigurationDto);
+    //
+    const currentProgramAttributes =
+      await this.programRegistrationAttributesService.getAttributes({
+        programId,
+        includeProgramRegistrationAttributes: true,
+        includeTemplateDefaultAttributes: true,
+      });
+
+    const currentProgramAttributesNames = currentProgramAttributes.map(
+      (attributes) => attributes.name,
+    );
+
+    const foundFsp = FSP_SETTINGS[programFspConfigurationDto.fspName];
+    const requiredAttributes = foundFsp.attributes.filter(
+      (attribute) => attribute.isRequired,
+    );
+    const requiredAttributeNames = requiredAttributes.map(
+      (attribute) => attribute.name,
+    );
+
+    for (const requiredAttributeName of requiredAttributeNames) {
+      if (!currentProgramAttributesNames.includes(requiredAttributeName)) {
+        await this.programRegistrationAttributesService.createProgramRegistrationAttribute(
+          {
+            programId,
+            createProgramRegistrationAttributeDto: {
+              name: requiredAttributeName,
+              type: FSP_ATTRIBUTE_TYPE_MAPPING[requiredAttributeName],
+              label: {
+                en: requiredAttributeName,
+              },
+            },
+          },
+        );
+      }
+    }
+
     return this.createEntity(programId, programFspConfigurationDto);
   }
 

@@ -24,37 +24,3 @@
     />
   }
 </app-form-dialog>
-
-<app-form-dialog
-  #integrationErrorDialog
-  [mutation]="retryConfigureFsp"
-  [mutationData]="undefined"
-  header="Integration error"
-  i18n-header
-  headerIcon="pi pi-exclamation-triangle"
-  proceedLabel="Try again"
-  i18n-proceedLabel
->
-  <p i18n>
-    We couldn't configure this FSP due to missing fields in your program.
-  </p>
-  @if (isKoboIntegrated()) {
-    <p i18n>
-      Please add these fields to your Kobo form. Save the form, redeploy it, and
-      reconfigure the integration to try again.
-    </p>
-    <p i18n>
-      Learn more about how to integrate Kobo forms in the <app-manual-link />.
-    </p>
-  } @else {
-    <p i18n>Please add the following fields:</p>
-  }
-  <ol class="my-4 list-inside list-decimal ps-4">
-    @for (attribute of missingIntegrationAttributes(); track attribute.name) {
-      <li i18n>
-        FSP "{{ fspLabel() }}" is missing required field
-        <b>"{{ attribute.name }}"</b>
-      </li>
-    }
-  </ol>
-</app-form-dialog>

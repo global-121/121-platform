@@ -25,7 +25,6 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
-import { isKoboIntegrated } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationPropertyFormFieldComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-property-form-field/fsp-configuration-property-form-field.component';
@@ -33,6 +32,7 @@ import {
   FspConfigurationFormGroup,
   FspConfigurationService,
 } from '~/services/fsp-configuration.service';
+import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
@@ -46,7 +46,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   templateUrl: './fsp-configuration-form-dialog.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [],
+  providers: [ToastService],
 })
 export class FspConfigurationFormDialogComponent {
   readonly programId = input.required<string>();
@@ -58,6 +58,7 @@ export class FspConfigurationFormDialogComponent {
 
   readonly programApiService = inject(ProgramApiService);
   readonly koboApiService = inject(KoboApiService);
+  readonly toastService = inject(ToastService);
 
   programAttributes = injectQuery(
     this.programApiService.getProgramAttributes({
@@ -68,18 +69,6 @@ export class FspConfigurationFormDialogComponent {
 
   readonly configurationDialog = viewChild.required<FormDialogComponent>(
     'configurationDialog',
-  );
-  readonly integrationErrorDialog = viewChild.required<FormDialogComponent>(
-    'integrationErrorDialog',
-  );
-
-  readonly koboIntegration = injectQuery(() => ({
-    ...this.koboApiService.getKoboIntegration(this.programId)(),
-    enabled: !!this.programId(),
-  }));
-
-  readonly isKoboIntegrated = computed<boolean>(() =>
-    isKoboIntegrated(this.koboIntegration),
   );
 
   // This is defaulted to Excel to avoid undefined errors before show() is called
@@ -131,17 +120,6 @@ export class FspConfigurationFormDialogComponent {
     mutationFn: async (
       formGroupData: ReturnType<FspConfigurationFormGroup['getRawValue']>,
     ) => {
-      // TODO: AB#35944 - Once we have implemented KOBO integration via the UI, this should become
-      // if (this.missingIntegrationAttributes().length > 0 && this.hasKoboIntegration()) {
-      // TODO: AB#35935 - Once we have implemented automatic registration attribute creation, this check should disappear altogether
-      if (this.missingIntegrationAttributes().length > 0) {
-        this.configurationDialog().hide({ resetFormGroup: false });
-        this.integrationErrorDialog().show();
-        throw new Error(
-          $localize`Missing required attributes for FSP integration. Please add them to the program registration form before trying again.`,
-        );
-      }
-
       const { configurationProperties, name: fspName } = this.fspSetting();
 
       const fspConfiguration = {
@@ -183,6 +161,9 @@ export class FspConfigurationFormDialogComponent {
     },
     onSuccess: (fspConfiguration) => {
       this.configurationCompleted.emit(fspConfiguration);
+    },
+    onError: () => {
+      this.toastService.showGenericError();
     },
   }));
 
