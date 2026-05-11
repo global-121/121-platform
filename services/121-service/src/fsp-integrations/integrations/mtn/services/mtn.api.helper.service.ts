@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
+import { MtnApiAuthenticationResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-authentication-response-body.dto';
 import { MtnApiCreateTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-transfer-request-body.dto';
 import { MtnApiErrorResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-error-response-body.dto';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
@@ -136,6 +137,19 @@ export class MtnApiHelperService {
       data !== null &&
       'code' in data &&
       'message' in data
+    );
+  }
+
+  public isAuthenticationResponse(
+    data: unknown,
+  ): data is MtnApiAuthenticationResponseBodyDto {
+    return (
+      typeof data === 'object' &&
+      data !== null &&
+      'access_token' in data &&
+      typeof (data as Record<string, unknown>).access_token === 'string' &&
+      'expires_in' in data &&
+      typeof (data as Record<string, unknown>).expires_in === 'number'
     );
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
 import { CreateTransferParams } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/create-transfer-params.interface';
 import { MtnTransferStatusResponse } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-transfer-status-response.interface';
 import { MtnApiService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.service';
@@ -58,14 +59,14 @@ export class MtnService {
   public mapMtnStatusToTransactionStatus({
     mtnStatus,
   }: {
-    mtnStatus: string;
+    mtnStatus: MtnTransferStatus;
   }): TransactionStatusEnum {
     switch (mtnStatus) {
-      case 'SUCCESSFUL':
+      case MtnTransferStatus.successful:
         return TransactionStatusEnum.success;
-      case 'PENDING':
+      case MtnTransferStatus.pending:
         return TransactionStatusEnum.waiting;
-      case 'FAILED':
+      case MtnTransferStatus.failed:
         return TransactionStatusEnum.error;
       default:
         return TransactionStatusEnum.error;

@@ -1,6 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
 
+import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
 import { MtnReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -36,7 +37,7 @@ describe('MtnReconciliationService', () => {
       await mtnReconciliationService.processTransferCallback({
         externalId: '42',
         referenceId: 'ref-uuid-123',
-        status: 'SUCCESSFUL',
+        status: MtnTransferStatus.successful,
         reason: undefined,
       });
 
@@ -45,7 +46,7 @@ describe('MtnReconciliationService', () => {
         {
           transactionId: 42,
           referenceId: 'ref-uuid-123',
-          status: 'SUCCESSFUL',
+          status: MtnTransferStatus.successful,
           reason: undefined,
         },
       );
@@ -55,7 +56,7 @@ describe('MtnReconciliationService', () => {
       await mtnReconciliationService.processTransferCallback({
         externalId: '99',
         referenceId: 'ref-uuid-456',
-        status: 'FAILED',
+        status: MtnTransferStatus.failed,
         reason: 'PAYER_NOT_FOUND',
       });
 
@@ -64,7 +65,7 @@ describe('MtnReconciliationService', () => {
         {
           transactionId: 99,
           referenceId: 'ref-uuid-456',
-          status: 'FAILED',
+          status: MtnTransferStatus.failed,
           reason: 'PAYER_NOT_FOUND',
         },
       );
@@ -76,7 +77,7 @@ describe('MtnReconciliationService', () => {
       await mtnReconciliationService.processMtnTransferCallbackJob({
         transactionId: 42,
         referenceId: 'ref-uuid-123',
-        status: 'SUCCESSFUL',
+        status: MtnTransferStatus.successful,
       });
 
       expect(
@@ -93,7 +94,7 @@ describe('MtnReconciliationService', () => {
       await mtnReconciliationService.processMtnTransferCallbackJob({
         transactionId: 42,
         referenceId: 'ref-uuid-123',
-        status: 'FAILED',
+        status: MtnTransferStatus.failed,
         reason: 'PAYER_NOT_FOUND',
       });
 
@@ -111,7 +112,7 @@ describe('MtnReconciliationService', () => {
       await mtnReconciliationService.processMtnTransferCallbackJob({
         transactionId: 42,
         referenceId: 'ref-uuid-123',
-        status: 'FAILED',
+        status: MtnTransferStatus.failed,
       });
 
       expect(
@@ -128,7 +129,7 @@ describe('MtnReconciliationService', () => {
       await mtnReconciliationService.processMtnTransferCallbackJob({
         transactionId: 42,
         referenceId: 'ref-uuid-123',
-        status: 'UNEXPECTED_STATUS',
+        status: 'UNEXPECTED_STATUS' as MtnTransferStatus,
       });
 
       expect(

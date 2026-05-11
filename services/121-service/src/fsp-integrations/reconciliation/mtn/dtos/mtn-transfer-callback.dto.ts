@@ -1,10 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsEnum,
   IsNotEmpty,
   IsNumberString,
   IsOptional,
   IsString,
 } from 'class-validator';
+
+import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
 
 export class MtnTransferCallbackDto {
   @ApiProperty({
@@ -24,10 +27,11 @@ export class MtnTransferCallbackDto {
 
   @ApiProperty({
     description: 'The status of the transfer: SUCCESSFUL, FAILED, or PENDING.',
+    enum: MtnTransferStatus,
   })
   @IsNotEmpty()
-  @IsString()
-  readonly status: string;
+  @IsEnum(MtnTransferStatus)
+  readonly status: MtnTransferStatus;
 
   @ApiProperty({
     description: 'The reason for failure, if status is FAILED.',

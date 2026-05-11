@@ -241,4 +241,73 @@ describe('MtnApiHelperService', () => {
       expect(result).toBe('Status: 404, StatusText: Not Found');
     });
   });
+
+  describe('isAuthenticationResponse', () => {
+    it('should return true for a valid authentication response', () => {
+      expect(
+        mtnApiHelperService.isAuthenticationResponse({
+          access_token: 'mock-token',
+          token_type: 'access_token',
+          expires_in: 3600,
+        }),
+      ).toBe(true);
+    });
+
+    it('should return true when only required fields are present', () => {
+      expect(
+        mtnApiHelperService.isAuthenticationResponse({
+          access_token: 'mock-token',
+          expires_in: 3600,
+        }),
+      ).toBe(true);
+    });
+
+    it('should return false when access_token is missing', () => {
+      expect(
+        mtnApiHelperService.isAuthenticationResponse({
+          expires_in: 3600,
+        }),
+      ).toBe(false);
+    });
+
+    it('should return false when expires_in is missing', () => {
+      expect(
+        mtnApiHelperService.isAuthenticationResponse({
+          access_token: 'mock-token',
+        }),
+      ).toBe(false);
+    });
+
+    it('should return false when access_token is not a string', () => {
+      expect(
+        mtnApiHelperService.isAuthenticationResponse({
+          access_token: 123,
+          expires_in: 3600,
+        }),
+      ).toBe(false);
+    });
+
+    it('should return false when expires_in is not a number', () => {
+      expect(
+        mtnApiHelperService.isAuthenticationResponse({
+          access_token: 'mock-token',
+          expires_in: '3600',
+        }),
+      ).toBe(false);
+    });
+
+    it('should return false for null', () => {
+      expect(mtnApiHelperService.isAuthenticationResponse(null)).toBe(false);
+    });
+
+    it('should return false for undefined', () => {
+      expect(mtnApiHelperService.isAuthenticationResponse(undefined)).toBe(
+        false,
+      );
+    });
+
+    it('should return false for an empty object', () => {
+      expect(mtnApiHelperService.isAuthenticationResponse({})).toBe(false);
+    });
+  });
 });

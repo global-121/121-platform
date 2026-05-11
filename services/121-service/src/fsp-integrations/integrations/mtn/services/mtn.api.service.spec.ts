@@ -84,6 +84,16 @@ describe('MtnApiService', () => {
                 const statusText = response?.statusText ?? 'unknown';
                 return `Status: ${status}, StatusText: ${statusText}`;
               }),
+            isAuthenticationResponse: jest.fn().mockImplementation((data) => {
+              return (
+                typeof data === 'object' &&
+                data !== null &&
+                'access_token' in data &&
+                typeof data.access_token === 'string' &&
+                'expires_in' in data &&
+                typeof data.expires_in === 'number'
+              );
+            }),
           },
         },
       ],
@@ -345,7 +355,7 @@ describe('MtnApiService', () => {
       ).rejects.toThrow('authentication failed');
     });
 
-    it('should throw MtnApiError when authentication response is unclear', async () => {
+    it('should throw MtnApiError when authentication response is unexpected', async () => {
       // Arrange
       post.mockResolvedValueOnce({ status: 200, data: {} }); // Missing access_token
 
@@ -355,7 +365,7 @@ describe('MtnApiService', () => {
       ).rejects.toThrow(MtnApiError);
       await expect(
         mtnApiService.createTransfer(createTransferInput),
-      ).rejects.toThrow('unclear response from MTN API');
+      ).rejects.toThrow('unexpected response from MTN API');
     });
   });
 });

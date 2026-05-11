@@ -3,7 +3,6 @@ import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios
 import { TokenSet } from 'openid-client';
 
 import { env } from '@121-service/src/env';
-import { MtnApiAuthenticationResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-authentication-response-body.dto';
 import { MtnApiCreateTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-transfer-request-body.dto';
 import { MtnTransferResult } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
@@ -198,11 +197,11 @@ export class MtnApiService {
 
     let response;
     try {
-      // We don't actually validate that the API returns this.
-      // Refactor: add validation.
-      response = await this.httpService.post<
-        AxiosResponse<MtnApiAuthenticationResponseBodyDto>
-      >(this.getTokenURL().href, {}, headers);
+      response = await this.httpService.post<AxiosResponse<unknown>>(
+        this.getTokenURL().href,
+        {},
+        headers,
+      );
     } catch (error) {
       throw new MtnApiError({
         type: MtnTransferResult.fail,
@@ -210,15 +209,20 @@ export class MtnApiService {
       });
     }
 
-    // Refactor: add validation.
-    const accessToken = response?.data?.access_token;
-    const expiresInSeconds = response?.data?.expires_in;
-
-    if (!accessToken || !expiresInSeconds || expiresInSeconds <= 0) {
-      // Unlikely to go wrong, so bad ROI in throwing more specific errors.
+    if (!this.mtnApiHelperService.isAuthenticationResponse(response?.data)) {
       throw new MtnApiError({
         type: MtnTransferResult.fail,
-        message: 'authentication failed: unclear response from MTN API',
+        message: `authentication failed: unexpected response from MTN API`,
+      });
+    }
+
+    const accessToken = response.data.access_token;
+    const expiresInSeconds = response.data.expires_in;
+
+    if (expiresInSeconds <= 0) {
+      throw new MtnApiError({
+        type: MtnTransferResult.fail,
+        message: 'authentication failed: invalid token expiry from MTN API',
       });
     }
 

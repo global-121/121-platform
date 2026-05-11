@@ -39,14 +39,11 @@ export class MtnMockService {
       );
     }
 
-    return [
-      HttpStatus.OK,
-      {
-        access_token: MtnAuthToken,
-        token_type: 'access_token',
-        expires_in: 3600,
-      } satisfies MtnAuthenticateResponseDto,
-    ];
+    return {
+      access_token: MtnAuthToken,
+      token_type: 'access_token',
+      expires_in: 3600,
+    };
   }
 
   public createTransfer({
