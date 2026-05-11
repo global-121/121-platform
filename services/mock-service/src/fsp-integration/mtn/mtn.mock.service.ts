@@ -7,6 +7,7 @@ import { MtnTransferStatusResponseDto } from '@mock-service/src/fsp-integration/
 enum MtnMockPhoneNumber {
   failDuplicate = '100000001',
   failInternalError = '100000002',
+  failCallback = '100000003',
 }
 
 const MTN_MOCK_NOT_FOUND_REFERENCE_ID = '00000000-0000-0000-0000-000000000404';
@@ -17,6 +18,9 @@ export const MtnAuthToken = 'mock-mtn-access-token-12345';
 export class MtnMockService {
   private static readonly uuidPattern =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+  // Tracks reference IDs that should return FAILED on getTransferStatus.
+  private readonly failedReferenceIds = new Set<string>();
 
   public authenticate({
     authorization,
@@ -92,6 +96,9 @@ export class MtnMockService {
 
     // Transfer accepted. The 121-service polls getTransferStatus and triggers
     // its own callback, so the mock does not need to push a callback here.
+    if (body.payee.partyId === MtnMockPhoneNumber.failCallback) {
+      this.failedReferenceIds.add(referenceId);
+    }
   }
 
   public getTransferStatus({
@@ -116,6 +123,11 @@ export class MtnMockService {
         },
         HttpStatus.NOT_FOUND,
       );
+    }
+
+    if (this.failedReferenceIds.has(referenceId)) {
+      this.failedReferenceIds.delete(referenceId);
+      return { status: 'FAILED', reason: 'PAYER_NOT_FOUND' };
     }
 
     return { status: 'SUCCESSFUL' };

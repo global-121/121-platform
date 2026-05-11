@@ -60,7 +60,7 @@ describe('Do payment with FSP: MTN', () => {
       completeStatuses: [TransactionStatusEnum.success],
     });
 
- // Assert
+    // Assert
 
     const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
@@ -145,6 +145,63 @@ describe('Do payment with FSP: MTN', () => {
       TransactionEventDescription.approval,
       TransactionEventDescription.initiated,
       TransactionEventDescription.mtnRequestSent,
+    ]);
+  });
+
+  it('should yield error transaction when the MTN callback indicates a failed transfer', async () => {
+    // Arrange: the transfer is accepted (202), but getTransferStatus returns FAILED.
+    // This simulates a real-world scenario where the disbursement is accepted
+    // initially but later fails (e.g., invalid recipient).
+    const registration = {
+      ...registrationMtn,
+      phoneNumber: '100000003', // Triggers failCallback in the mock service
+      referenceId: 'mtn-failed-callback',
+    };
+    const paymentReferenceIds = [registration.referenceId];
+
+    await seedIncludedRegistrations([registration], programId, accessToken);
+
+    // Act
+    const doPaymentResponse = await doPayment({
+      programId,
+      transferValue,
+      referenceIds: paymentReferenceIds,
+      accessToken,
+    });
+    const paymentId = doPaymentResponse.body.id;
+
+    await waitForPaymentAndTransactionsToComplete({
+      programId,
+      paymentReferenceIds,
+      paymentId,
+      accessToken,
+      maxWaitTimeMs: 10_000,
+      completeStatuses: [TransactionStatusEnum.error],
+    });
+
+    // Assert
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
+      programId,
+      paymentId,
+      registrationReferenceId: registration.referenceId,
+      accessToken,
+    });
+    const transaction = getTransactionsResult.body.data[0];
+
+    expect(transaction.status).toBe(TransactionStatusEnum.error);
+    expect(transaction.errorMessage).toBe('PAYER_NOT_FOUND');
+
+    const transactionEventDescriptions = await getTransactionEventDescriptions({
+      programId,
+      transactionId: transaction.id,
+      accessToken,
+    });
+    expect(transactionEventDescriptions).toEqual([
+      TransactionEventDescription.created,
+      TransactionEventDescription.approval,
+      TransactionEventDescription.initiated,
+      TransactionEventDescription.mtnRequestSent,
+      TransactionEventDescription.mtnCallbackReceived,
     ]);
   });
 
