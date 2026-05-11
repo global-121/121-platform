@@ -314,7 +314,7 @@ export class SeedHelperService {
         thresholds.push(
           {
             thresholdAmount: 0,
-            userIds: [adminUser.id, approverUser.id],
+            userIds: [approverUser.id],
           },
           {
             thresholdAmount: 100,

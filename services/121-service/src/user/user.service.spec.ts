@@ -19,6 +19,7 @@ describe('UserService', () => {
   let userRepository: Repository<UserEntity>;
   let permissionRepository: Repository<PermissionEntity>;
   let userRoleRepository: Repository<UserRoleEntity>;
+  let assignmentRepository: ProgramAidworkerAssignmentRepository;
   let userEmailsService: UserEmailsService;
 
   const mockRequest = {
@@ -50,6 +51,7 @@ describe('UserService', () => {
           useValue: {
             isApprover: jest.fn(),
             findByUserId: jest.fn(),
+            createQueryBuilder: jest.fn(),
           },
         },
         {
@@ -75,6 +77,9 @@ describe('UserService', () => {
     );
     userRoleRepository = module.get<Repository<UserRoleEntity>>(
       getRepositoryToken(UserRoleEntity),
+    );
+    assignmentRepository = module.get<ProgramAidworkerAssignmentRepository>(
+      ProgramAidworkerAssignmentRepository,
     );
     userEmailsService = module.get<UserEmailsService>(UserEmailsService);
   });
@@ -936,6 +941,77 @@ describe('UserService', () => {
 
       expect(userRepository.save).toHaveBeenCalled();
       expect(userEmailsService.sendPasswordReset).toHaveBeenCalled();
+    });
+  });
+
+  describe('getUsersInProgram', () => {
+    function createRawUser({
+      scope,
+    }: {
+      scope: string;
+    }): {
+      id: number;
+      username: string;
+      admin: boolean;
+      active: boolean;
+      lastLogin: Date | null;
+      rolesid: number[];
+      role: string[];
+      label: string[];
+      scope: string;
+    } {
+      return {
+        id: 1,
+        username: 'user@example.org',
+        admin: false,
+        active: true,
+        lastLogin: null,
+        rolesid: [11],
+        role: ['Program Manager'],
+        label: ['Program Manager'],
+        scope,
+      };
+    }
+
+    function mockQueryBuilder(
+      rawUsers: ReturnType<typeof createRawUser>[],
+    ): void {
+      const queryBuilderMock = {
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        select: jest.fn().mockReturnThis(),
+        groupBy: jest.fn().mockReturnThis(),
+        getRawMany: jest.fn().mockResolvedValue(rawUsers),
+      };
+
+      jest
+        .spyOn(assignmentRepository, 'createQueryBuilder')
+        .mockReturnValue(queryBuilderMock as never);
+
+      return;
+    }
+
+    it('should set isEligiblePaymentApprover=true for unscoped assignments', async () => {
+      // Arrange
+      mockQueryBuilder([createRawUser({ scope: '' })]);
+
+      // Act
+      const result = await service.getUsersInProgram(1);
+
+      // Assert
+      expect(result[0].isEligiblePaymentApprover).toBe(true);
+    });
+
+    it('should set isEligiblePaymentApprover=false for scoped assignments', async () => {
+      // Arrange
+      mockQueryBuilder([createRawUser({ scope: 'region-1' })]);
+
+      // Act
+      const result = await service.getUsersInProgram(1);
+
+      // Assert
+      expect(result[0].isEligiblePaymentApprover).toBe(false);
     });
   });
 });

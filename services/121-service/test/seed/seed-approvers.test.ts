@@ -68,9 +68,8 @@ describe('Seed with different approverMode options', () => {
         programId,
         accessToken,
       });
-      expect(approvers).toHaveLength(4);
+      expect(approvers).toHaveLength(3);
       const usernames = approvers.map((u) => u.username);
-      expect(usernames).toContain(env.USERCONFIG_121_SERVICE_EMAIL_ADMIN);
       expect(usernames).toContain(env.USERCONFIG_121_SERVICE_EMAIL_APPROVER);
       expect(usernames).toContain(
         env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
