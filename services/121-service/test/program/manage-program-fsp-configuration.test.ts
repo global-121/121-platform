@@ -4,6 +4,7 @@ import {
   FspConfigurationPropertyVisibility,
   FspConfigurationPropertyVisibilityMap,
 } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-visibility.const';
+import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
@@ -16,7 +17,10 @@ import { programIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { paymentIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { getTransactionsByPaymentIdPaginated } from '@121-service/test/helpers/program.helper';
+import {
+  getProgram,
+  getTransactionsByPaymentIdPaginated,
+} from '@121-service/test/helpers/program.helper';
 import {
   deleteProgramFspConfiguration,
   deleteProgramFspConfigurationProperty,
@@ -49,25 +53,36 @@ const seededFspConfigVoucher = programOCW.programFspConfigurations.find(
   (fspConfig) => fspConfig.fsp === Fsps.intersolveVoucherWhatsapp,
 )!;
 
-const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto = {
-  name: 'Intersolve Voucher WhatsApp name',
-  label: {
-    en: 'Intersolve Voucher WhatsApp label',
-    nl: 'Intersolve Voucher WhatsApp label Dutch translation',
-    es: 'Intersolve Voucher WhatsApp label Spanish translation',
-  },
-  fspName: Fsps.intersolveVoucherWhatsapp,
-  properties: [
-    {
-      name: FspConfigurationProperties.username,
-      value: 'user123',
+const createProgramFspConfigurationDtoIntersolveVoucher: CreateProgramFspConfigurationDto =
+  {
+    name: 'Intersolve Voucher WhatsApp name',
+    label: {
+      en: 'Intersolve Voucher WhatsApp label',
+      nl: 'Intersolve Voucher WhatsApp label Dutch translation',
+      es: 'Intersolve Voucher WhatsApp label Spanish translation',
     },
-    {
-      name: FspConfigurationProperties.password,
-      value: 'password123',
+    fspName: Fsps.intersolveVoucherWhatsapp,
+    properties: [
+      {
+        name: FspConfigurationProperties.username,
+        value: 'user123',
+      },
+      {
+        name: FspConfigurationProperties.password,
+        value: 'password123',
+      },
+    ],
+  };
+
+const createProgramFspConfigurationDtoSafaricom: CreateProgramFspConfigurationDto =
+  {
+    name: 'Safaricom name',
+    label: {
+      en: 'Safaricom label',
     },
-  ],
-};
+    fspName: Fsps.safaricom,
+    properties: [],
+  };
 
 describe('Manage Fsp configurations', () => {
   let accessToken: string;
@@ -81,7 +96,7 @@ describe('Manage Fsp configurations', () => {
     // Act
     const result = await postProgramFspConfiguration({
       programId: programIdVisa,
-      body: createProgramFspConfigurationDto,
+      body: createProgramFspConfigurationDtoIntersolveVoucher,
       accessToken,
     });
     const getResult = await getProgramFspConfigurations({
@@ -89,23 +104,25 @@ describe('Manage Fsp configurations', () => {
       accessToken,
     });
     const getResultConfig = getResult.body.find(
-      (config) => config.name === createProgramFspConfigurationDto.name,
+      (config) =>
+        config.name === createProgramFspConfigurationDtoIntersolveVoucher.name,
     );
     // Assert
     expect(result.statusCode).toBe(HttpStatus.CREATED);
     expect(result.body).toEqual(
       expect.objectContaining({
-        name: createProgramFspConfigurationDto.name,
-        label: createProgramFspConfigurationDto.label,
-        fspName: createProgramFspConfigurationDto.fspName,
+        name: createProgramFspConfigurationDtoIntersolveVoucher.name,
+        label: createProgramFspConfigurationDtoIntersolveVoucher.label,
+        fspName: createProgramFspConfigurationDtoIntersolveVoucher.fspName,
       }),
     );
     const propertyNamesResult = result.body.properties
       .map((property) => property.name)
       .sort();
-    const propertyNamesExpected = createProgramFspConfigurationDto
-      .properties!.map((property) => property.name)
-      .sort();
+    const propertyNamesExpected =
+      createProgramFspConfigurationDtoIntersolveVoucher
+        .properties!.map((property) => property.name)
+        .sort();
     expect(propertyNamesResult).toEqual(
       expect.arrayContaining(propertyNamesExpected),
     );
@@ -117,6 +134,47 @@ describe('Manage Fsp configurations', () => {
     });
     // Ensure that the update data is reflected in the get response so actually updated in the db
     expect(getResultConfig).toEqual(result.body);
+  });
+
+  it('should add missing required program registration attributes when adding a program Fsp configuration', async () => {
+    // Arrange
+    const program = await getProgram(programIdVisa, accessToken);
+    const programRegistrationAttributes =
+      program.body.programRegistrationAttributes;
+
+    expect(
+      programRegistrationAttributes.map((attr) => attr.name),
+    ).not.toContain(FspAttributes.nationalId);
+
+    // Storing the original phone number attribute to check later that it's not being overridden, since it's also required by safaricom configuration and already exists in the program before adding the configuration, so should not be added again or overridden
+    const originalPhoneNumberProgramRegistrationAttribute =
+      programRegistrationAttributes.find(
+        (attr) => attr.name === FspAttributes.phoneNumber,
+      );
+
+    // Act
+    const result = await postProgramFspConfiguration({
+      programId: programIdVisa,
+      body: createProgramFspConfigurationDtoSafaricom,
+      accessToken,
+    });
+
+    // Assert
+    expect(result.statusCode).toBe(HttpStatus.CREATED);
+
+    const updatedProgram = await getProgram(programIdVisa, accessToken);
+    const updatedProgramRegistrationAttributes =
+      updatedProgram.body.programRegistrationAttributes;
+
+    expect(
+      updatedProgramRegistrationAttributes.map((attr) => attr.name),
+    ).toContain(FspAttributes.nationalId);
+
+    expect(
+      updatedProgramRegistrationAttributes.find(
+        (attribute) => attribute.name === FspAttributes.phoneNumber,
+      ),
+    ).toEqual(originalPhoneNumberProgramRegistrationAttribute);
   });
 
   it('should patch existing program Fsp configuration', async () => {
@@ -285,7 +343,7 @@ describe('Manage Fsp configurations', () => {
   it('should add program Fsp configuration properties to an existing program Fsp configuration', async () => {
     // Prepare
     const createProgramFspConfigurationDtoNoProperties = {
-      ...createProgramFspConfigurationDto,
+      ...createProgramFspConfigurationDtoIntersolveVoucher,
       properties: undefined,
     };
     await postProgramFspConfiguration({
@@ -297,9 +355,9 @@ describe('Manage Fsp configurations', () => {
     // Act
     const result = await postProgramFspConfigurationProperties({
       programId: programIdVisa,
-      properties: createProgramFspConfigurationDto.properties!,
+      properties: createProgramFspConfigurationDtoIntersolveVoucher.properties!,
       accessToken,
-      name: createProgramFspConfigurationDto.name,
+      name: createProgramFspConfigurationDtoIntersolveVoucher.name,
     });
 
     const getResult = await getProgramFspConfigurations({
@@ -307,14 +365,15 @@ describe('Manage Fsp configurations', () => {
       accessToken,
     });
     const getResultConfig = getResult.body.find(
-      (config) => config.name === createProgramFspConfigurationDto.name,
+      (config) =>
+        config.name === createProgramFspConfigurationDtoIntersolveVoucher.name,
     );
 
     // Assert
     expect(result.statusCode).toBe(HttpStatus.CREATED);
     const propertyNamesResult = result.body.map((property) => property.name);
     const propertyNamesExpected =
-      createProgramFspConfigurationDto.properties!.map(
+      createProgramFspConfigurationDtoIntersolveVoucher.properties!.map(
         (property) => property.name,
       );
     expect(propertyNamesResult).toEqual(
