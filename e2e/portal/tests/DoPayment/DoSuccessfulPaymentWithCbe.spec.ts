@@ -61,6 +61,12 @@ test('Do successful payment for Cbe fsp', async ({
   await test.step('Validate payment card', async () => {
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.navigateToProgramPage('Payments');
+
+    // TODO: AB#42066
+    // Remove the need for this reload() by making sure the payment card updates after the transactions have completed, without needing to refresh the page
+    // This reload() 'fixes' the issue of the payment card not updating after the transactions have completed
+    await paymentsPage.page.reload();
+
     await paymentsPage.validatePaymentCard({
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
