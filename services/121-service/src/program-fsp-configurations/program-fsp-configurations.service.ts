@@ -74,6 +74,10 @@ export class ProgramFspConfigurationsService {
       (attribute) => attribute.name,
     );
 
+    // TODO:
+    // Replace this loop with updateBatchProgramRegistrationAttributes from
+    // https://github.com/global-121/121-platform/pull/8229/ once merged
+
     for (const requiredAttributeName of requiredAttributeNames) {
       if (!currentProgramAttributesNames.includes(requiredAttributeName)) {
         await this.programRegistrationAttributesService.createProgramRegistrationAttribute(
