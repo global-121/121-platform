@@ -5,7 +5,9 @@ import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/m
 import { MtnTransferCallbackDto } from '@121-service/src/fsp-integrations/reconciliation/mtn/dtos/mtn-transfer-callback.dto';
 import { MtnTransferCallbackJobDto } from '@121-service/src/fsp-integrations/reconciliation/mtn/dtos/mtn-transfer-callback-job.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
@@ -16,6 +18,8 @@ export class MtnReconciliationService {
     private readonly mtnService: MtnService,
     private readonly transactionsService: TransactionsService,
     private readonly queuesService: QueuesRegistryService,
+    private readonly transactionRepository: TransactionRepository,
+    private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
   ) {}
 
   public async processTransferCallback(
@@ -75,12 +79,34 @@ export class MtnReconciliationService {
       `[MTN Callback Job] Processing job - transactionId: ${mtnTransferCallbackJob.transactionId}, referenceId: ${mtnTransferCallbackJob.referenceId}`,
     );
 
+    // 1. Look up registration referenceId from transaction
+    const registrationReferenceId =
+      await this.transactionRepository.getReferenceIdByTransactionIdOrThrow(
+        mtnTransferCallbackJob.transactionId,
+      );
+
+    // 2. Regenerate mtnReferenceId to verify transfer status via MTN API
+    const failedTransactionAttempts =
+      await this.transactionEventScopedRepository.countFailedTransactionAttempts(
+        mtnTransferCallbackJob.transactionId,
+      );
+    const mtnReferenceId = this.mtnService.generateMtnReferenceId({
+      referenceId: registrationReferenceId,
+      transactionId: mtnTransferCallbackJob.transactionId,
+      failedTransactionAttempts,
+    });
+
+    // 3. Get transfer status from MTN API
+    const transferStatus = await this.mtnService.getTransferStatus({
+      mtnReferenceId,
+    });
+
     const transactionStatus = this.mtnService.mapMtnStatusToTransactionStatus({
-      mtnStatus: mtnTransferCallbackJob.status,
+      mtnStatus: transferStatus.status,
     });
 
     console.log(
-      `[MTN Callback Job] Mapped status - transactionId: ${mtnTransferCallbackJob.transactionId}, mtnStatus: ${mtnTransferCallbackJob.status}, mappedStatus: ${transactionStatus}`,
+      `[MTN Callback Job] Mapped status - transactionId: ${mtnTransferCallbackJob.transactionId}, mtnStatus: ${transferStatus.status}, mappedStatus: ${transactionStatus}`,
     );
 
     await this.transactionsService.saveProgressFromExternalSource({
@@ -89,7 +115,7 @@ export class MtnReconciliationService {
       newTransactionStatus: transactionStatus,
       errorMessage:
         transactionStatus === TransactionStatusEnum.error
-          ? (mtnTransferCallbackJob.reason ?? 'unknown')
+          ? (transferStatus.reason ?? 'unknown')
           : undefined,
     });
 

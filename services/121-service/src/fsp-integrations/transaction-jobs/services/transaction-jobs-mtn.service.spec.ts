@@ -59,6 +59,17 @@ describe('TransactionJobsMtnService', () => {
         'countFailedTransactionAttempts',
       )
       .mockResolvedValue(0);
+    (mtnService.generateMtnReferenceId as jest.Mock).mockImplementation(
+      ({
+        referenceId,
+        transactionId,
+        failedTransactionAttempts,
+      }: {
+        referenceId: string;
+        transactionId: number;
+        failedTransactionAttempts: number;
+      }) => `${referenceId}-${transactionId}-${failedTransactionAttempts}`,
+    );
     jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
       currency: 'UGX',
     } as any);

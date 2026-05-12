@@ -93,6 +93,7 @@ graph LR
   MtnReconciliationModule-->MtnModule
   MtnReconciliationModule-->QueuesRegistryModule
   MtnReconciliationModule-->RedisModule
+  MtnReconciliationModule-->TransactionEventsModule
   MtnReconciliationModule-->TransactionsModule
   NedbankReconciliationModule-->NedbankModule
   NedbankReconciliationModule-->TransactionEventsModule

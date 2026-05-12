@@ -14,7 +14,6 @@ import { TransactionEventCreationContext } from '@121-service/src/payments/trans
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
-import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
 export class TransactionJobsMtnService implements TransactionJobService<MtnTransactionJobDto> {
@@ -41,16 +40,15 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
     });
 
     // 2. Create idempotency key (used as X-Reference-Id for MTN API)
-    // This ensures:
-    //   a. Payment retry: a new mtnReferenceId is generated (different failedTransactionAttempts count), which will not be blocked by MTN API, as desired.
-    //   b. Queue retry: the same mtnReferenceId is generated (same failedTransactionAttempts count), which will be blocked by MTN API as duplicate, as desired.
     const failedTransactionAttempts =
       await this.transactionEventScopedRepository.countFailedTransactionAttempts(
         transactionJob.transactionId,
       );
-    const mtnReferenceId = generateUUIDFromSeed(
-      `ReferenceId=${transactionJob.referenceId},TransactionId=${transactionJob.transactionId},Attempt=${failedTransactionAttempts}`,
-    );
+    const mtnReferenceId = this.mtnService.generateMtnReferenceId({
+      referenceId: transactionJob.referenceId,
+      transactionId: transactionJob.transactionId,
+      failedTransactionAttempts,
+    });
 
     // 3. Look up program currency for the MTN API
     const program = await this.programRepository.findOneOrFail({
