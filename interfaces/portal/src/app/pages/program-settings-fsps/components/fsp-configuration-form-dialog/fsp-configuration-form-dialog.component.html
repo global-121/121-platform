@@ -5,7 +5,7 @@
   [formGroup]="formGroup()"
   [mutation]="configureFsp"
   [mutationData]="formGroup().getRawValue()"
-  proceedLabel="Integrate FSP"
+  [proceedLabel]="configurationProceedLabel()"
   i18n-proceedLabel
 >
   <p

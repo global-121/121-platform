@@ -95,6 +95,15 @@ export class FspConfigurationFormDialogComponent {
     return `${title} ${this.fspLabel()}`;
   });
 
+  readonly configurationProceedLabel = computed(() => {
+    if (this.existingFspConfiguration()) {
+      return $localize`Save changes`;
+    } else {
+      const title = $localize`Integrate FSP`;
+      return `${title} ${this.fspLabel()}`;
+    }
+  });
+
   readonly formGroup = computed<FspConfigurationFormGroup>(() =>
     this.fspConfigurationService.fspSettingToFormGroup({
       fspSetting: this.fspSetting(),
