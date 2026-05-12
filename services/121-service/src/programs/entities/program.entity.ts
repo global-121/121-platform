@@ -76,9 +76,6 @@ export class ProgramEntity extends Base121Entity {
   @OneToMany(() => RegistrationEntity, (registrations) => registrations.program)
   public registrations: Relation<RegistrationEntity[]>;
 
-  @Column({ default: false })
-  public tryWhatsAppFirst: boolean;
-
   // TODO: This can be refactored into 'nameField' so that this can be 1 field name that maps to the 'Name' column in the Portal.
   // This is an array of ProgramRegistrationAttributeEntity names that build up the full name of a PA.
   @Column('json', { nullable: true })

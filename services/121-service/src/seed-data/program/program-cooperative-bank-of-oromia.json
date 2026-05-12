@@ -16,7 +16,6 @@
   "fixedTransferValue": 10,
   "paymentAmountMultiplierFormula": null,
   "targetNrRegistrations": 2850,
-  "tryWhatsAppFirst": false,
   "programRegistrationAttributes": [
     {
       "name": "fullName",

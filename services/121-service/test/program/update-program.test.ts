@@ -28,7 +28,6 @@ describe('Update program', () => {
       budget: 50000,
       monitoringDashboardUrl: 'https://example.org/new-dashboard',
       fullnameNamingConvention: ['firstName', 'lastName'],
-      tryWhatsAppFirst: true,
       languages: [
         RegistrationPreferredLanguage.en,
         RegistrationPreferredLanguage.nl,
@@ -60,9 +59,6 @@ describe('Update program', () => {
     );
     expect(updateProgramResponse.body.fullnameNamingConvention).toStrictEqual(
       program.fullnameNamingConvention,
-    );
-    expect(updateProgramResponse.body.tryWhatsAppFirst).toBe(
-      program.tryWhatsAppFirst,
     );
     expect(updateProgramResponse.body.languages).toStrictEqual(
       program.languages,

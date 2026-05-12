@@ -43,7 +43,6 @@ export const MESSAGE_QUEUE_MAP: MessageQueueMap[] = [
       MessageProcessType.sms,
       MessageProcessType.whatsappTemplateVoucher,
       MessageProcessType.whatsappTemplateGeneric,
-      MessageProcessType.tryWhatsapp, // tryWhatsapp is similar priority as whatsappTemplateGeneric but we don't know if the user has WhatsApp-ed the reply and this sends the same message
     ],
     queueName: QueueNames.createMessageSmallBulk,
     bulkSizeQueueName: [

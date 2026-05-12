@@ -14,7 +14,6 @@
   "distributionFrequency": "month",
   "distributionDuration": 3,
   "fixedTransferValue": 7000,
-  "tryWhatsAppFirst": false,
   "paymentAmountMultiplierFormula": null,
   "targetNrRegistrations": 250,
   "programRegistrationAttributes": [

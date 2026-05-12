@@ -16,7 +16,6 @@ import {
 import { MessageService } from '@121-service/src/notifications/services/message.service';
 import { SmsModule } from '@121-service/src/notifications/sms/sms.module';
 import { TwilioMessageScopedRepository } from '@121-service/src/notifications/twilio-message.repository';
-import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappModule } from '@121-service/src/notifications/whatsapp/whatsapp.module';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
@@ -26,7 +25,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      TryWhatsappEntity,
       RegistrationEntity,
       WhatsappPendingMessageEntity,
       MessageTemplateEntity,

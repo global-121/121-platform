@@ -77,11 +77,6 @@ export abstract class BaseProgramDto {
   @IsNumber()
   public readonly targetNrRegistrations?: number;
 
-  @ApiProperty({ example: true })
-  @IsOptional()
-  @IsBoolean()
-  public readonly tryWhatsAppFirst?: boolean;
-
   @ApiProperty({
     example: ['nameFirst', 'nameLast'],
   })

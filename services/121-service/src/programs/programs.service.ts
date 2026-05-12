@@ -169,7 +169,6 @@ export class ProgramService {
     program.paymentAmountMultiplierFormula =
       programData.paymentAmountMultiplierFormula ?? null;
     program.targetNrRegistrations = programData.targetNrRegistrations ?? null;
-    program.tryWhatsAppFirst = !!programData.tryWhatsAppFirst;
     program.fullnameNamingConvention = fullnameNamingConvention;
     program.languages = programData.languages ?? [
       RegistrationPreferredLanguage.en,
@@ -292,7 +291,6 @@ export class ProgramService {
         program.programFspConfigurations,
       ),
       targetNrRegistrations: program.targetNrRegistrations ?? undefined,
-      tryWhatsAppFirst: program.tryWhatsAppFirst,
       budget: program.budget ?? undefined,
       programRegistrationAttributes:
         ProgramRegistrationAttributeMapper.entitiesToDtos(

@@ -164,10 +164,6 @@ export class ProgramReturnDto {
   @IsOptional()
   public readonly targetNrRegistrations?: number;
 
-  @ApiProperty({ example: true })
-  @IsBoolean()
-  public readonly tryWhatsAppFirst: boolean;
-
   @ApiProperty({
     example: exampleAttributesReturn,
   })

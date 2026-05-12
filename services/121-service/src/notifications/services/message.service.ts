@@ -13,7 +13,6 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { SmsService } from '@121-service/src/notifications/sms/sms.service';
 import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
-import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -23,8 +22,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 
 @Injectable()
 export class MessageService {
-  @InjectRepository(TryWhatsappEntity)
-  private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
   @InjectRepository(RegistrationEntity)
   public readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
@@ -56,19 +53,6 @@ export class MessageService {
             messageJobDto.messageProcessType,
           );
           break;
-        case MessageProcessType.tryWhatsapp:
-          if (!messageJobDto.phoneNumber) {
-            throw new Error(`No phoneNumber provided for ${processtype}`);
-          }
-          await this.storePendingMessageAndSendWhatsappTemplate({
-            message: messageText,
-            recipientPhoneNr: messageJobDto.phoneNumber,
-            registrationId: messageJobDto.registrationId,
-            messageContentType: messageJobDto.messageContentType,
-            tryWhatsapp: true,
-            userId: messageJobDto.userId,
-          });
-          break;
         case MessageProcessType.whatsappTemplateGeneric:
           if (!messageJobDto.whatsappPhoneNumber) {
             throw new Error(
@@ -80,7 +64,6 @@ export class MessageService {
             recipientPhoneNr: messageJobDto.whatsappPhoneNumber,
             registrationId: messageJobDto.registrationId,
             messageContentType: messageJobDto.messageContentType,
-            tryWhatsapp: false,
             userId: messageJobDto.userId,
           });
           break;
@@ -296,14 +279,12 @@ export class MessageService {
     recipientPhoneNr,
     registrationId,
     messageContentType,
-    tryWhatsapp = false,
     userId,
   }: {
     message: string;
     recipientPhoneNr: string;
     registrationId: number;
     messageContentType?: MessageContentType;
-    tryWhatsapp?: boolean;
     userId: MessageSenderUserId;
   }): Promise<void> {
     const pendingMesssage = new WhatsappPendingMessageEntity();
@@ -327,7 +308,7 @@ export class MessageService {
       messageTemplateKey: ProgramNotificationEnum.whatsappGenericMessage,
       preferredLanguage: language,
     });
-    const sid = await this.whatsappService.sendWhatsapp({
+    await this.whatsappService.sendWhatsapp({
       contentSid: contentSid ?? undefined,
       recipientPhoneNr,
       registrationId,
@@ -335,13 +316,6 @@ export class MessageService {
       messageProcessType: MessageProcessType.whatsappTemplateGeneric,
       userId,
     });
-    if (tryWhatsapp) {
-      const tryWhatsapp = {
-        sid,
-        registrationId,
-      };
-      await this.tryWhatsappRepository.save(tryWhatsapp);
-    }
   }
 
   private async getTemplateMessageTextOrFallback({

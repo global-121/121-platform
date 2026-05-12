@@ -13,7 +13,6 @@ import { MessageQueuesModule } from '@121-service/src/notifications/message-queu
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
-import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
@@ -51,7 +50,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TypeOrmModule.forFeature([
       UserEntity,
       ProgramEntity,
-      TryWhatsappEntity,
       RegistrationEntity,
       LatestMessageEntity,
       WhatsappPendingMessageEntity,

@@ -16,7 +16,6 @@ import { MessageQueuesModule } from '@121-service/src/notifications/message-queu
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { MessageIncomingProcessor } from '@121-service/src/notifications/processors/message-incoming.processor';
 import { MessageStatusCallbackProcessor } from '@121-service/src/notifications/processors/message-status-callback.processor';
-import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappModule } from '@121-service/src/notifications/whatsapp/whatsapp.module';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.module';
@@ -38,7 +37,6 @@ import { UserModule } from '@121-service/src/user/user.module';
       ProgramEntity,
       RegistrationEntity,
       WhatsappPendingMessageEntity,
-      TryWhatsappEntity,
       UserEntity,
     ]),
     ImageCodeModule,

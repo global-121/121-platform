@@ -270,7 +270,6 @@
   ],
   "fullnameNamingConvention": ["fullName"],
   "languages": ["ar", "en", "es", "fr", "nl"],
-  "tryWhatsAppFirst": true,
   "enableMaxPayments": false,
   "enableScope": false,
   "allowEmptyPhoneNumber": false,
