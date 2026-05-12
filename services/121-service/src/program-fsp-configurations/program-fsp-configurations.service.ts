@@ -8,10 +8,10 @@ import {
   FspConfigurationPropertyVisibility,
   FspConfigurationPropertyVisibilityMap,
 } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-visibility.const';
-import { FSP_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
+import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/fsp-management/fsp-attribute-type-mapping';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -81,7 +81,9 @@ export class ProgramFspConfigurationsService {
             programId,
             createProgramRegistrationAttributeDto: {
               name: requiredAttributeName,
-              type: FSP_ATTRIBUTE_TYPE_MAPPING[requiredAttributeName],
+              type: FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING[
+                requiredAttributeName
+              ],
               label: {
                 en: requiredAttributeName,
               },
