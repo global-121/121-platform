@@ -17,7 +17,7 @@ export enum FspAttributes {
 }
 
 export const FSP_ATTRIBUTE_TYPE_MAPPING = {
-  [FspAttributes.phoneNumber]: RegistrationAttributeTypes.text,
+  [FspAttributes.phoneNumber]: RegistrationAttributeTypes.tel,
   [FspAttributes.nationalId]: RegistrationAttributeTypes.text,
   [FspAttributes.fullName]: RegistrationAttributeTypes.text,
   [FspAttributes.firstName]: RegistrationAttributeTypes.text,
@@ -28,6 +28,6 @@ export const FSP_ATTRIBUTE_TYPE_MAPPING = {
   [FspAttributes.addressPostalCode]: RegistrationAttributeTypes.text,
   [FspAttributes.addressCity]: RegistrationAttributeTypes.text,
   [FspAttributes.bankAccountNumber]: RegistrationAttributeTypes.text,
-  [FspAttributes.whatsappPhoneNumber]: RegistrationAttributeTypes.text,
-  [FspAttributes.phoneNumberPayment]: RegistrationAttributeTypes.text,
-} as const;
+  [FspAttributes.whatsappPhoneNumber]: RegistrationAttributeTypes.tel,
+  [FspAttributes.phoneNumberPayment]: RegistrationAttributeTypes.tel,
+} as const satisfies Record<FspAttributes, RegistrationAttributeTypes>;

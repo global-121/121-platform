@@ -55,7 +55,6 @@ export class ProgramFspConfigurationsService {
     programFspConfigurationDto: CreateProgramFspConfigurationDto,
   ): Promise<ProgramFspConfigurationResponseDto> {
     await this.validate(programId, programFspConfigurationDto);
-    //
     const currentProgramAttributes =
       await this.programRegistrationAttributesService.getAttributes({
         programId,

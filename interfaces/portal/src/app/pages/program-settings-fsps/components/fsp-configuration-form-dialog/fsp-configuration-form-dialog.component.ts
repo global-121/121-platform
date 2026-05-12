@@ -25,7 +25,6 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
-import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationPropertyFormFieldComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-property-form-field/fsp-configuration-property-form-field.component';
 import {
@@ -57,7 +56,6 @@ export class FspConfigurationFormDialogComponent {
   readonly translatableStringService = inject(TranslatableStringService);
 
   readonly programApiService = inject(ProgramApiService);
-  readonly koboApiService = inject(KoboApiService);
   readonly toastService = inject(ToastService);
 
   programAttributes = injectQuery(
@@ -88,20 +86,15 @@ export class FspConfigurationFormDialogComponent {
   );
 
   readonly configurationDialogHeader = computed(() => {
-    const title = this.existingFspConfiguration()
-      ? $localize`Reconfigure`
-      : $localize`Configure`;
-
-    return `${title} ${this.fspLabel()}`;
+    return this.existingFspConfiguration()
+      ? $localize`Reconfigure ${this.fspLabel()}:fspName:`
+      : $localize`Configure ${this.fspLabel()}:fspName:`;
   });
 
   readonly configurationProceedLabel = computed(() => {
-    if (this.existingFspConfiguration()) {
-      return $localize`Save changes`;
-    } else {
-      const title = $localize`Integrate FSP`;
-      return `${title} ${this.fspLabel()}`;
-    }
+    return this.existingFspConfiguration()
+      ? $localize`Save changes`
+      : $localize`Integrate FSP ${this.fspLabel()}:fspName:`;
   });
 
   readonly formGroup = computed<FspConfigurationFormGroup>(() =>

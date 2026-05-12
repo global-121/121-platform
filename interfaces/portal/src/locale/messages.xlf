@@ -1673,9 +1673,6 @@
       <trans-unit id="5473276629033556345" datatype="html">
         <source>Funding token code</source>
       </trans-unit>
-      <trans-unit id="5479133824073842793" datatype="html">
-        <source>Configure</source>
-      </trans-unit>
       <trans-unit id="5568900620756681669" datatype="html">
         <source>Your form must include the following required fields in this <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>exact format<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> for this FSP integration in the data column name:</source>
       </trans-unit>
@@ -1705,9 +1702,6 @@
       </trans-unit>
       <trans-unit id="8738732372986673558" datatype="html">
         <source>Copy to clipboard</source>
-      </trans-unit>
-      <trans-unit id="9190469470269882637" datatype="html">
-        <source>Integrate FSP</source>
       </trans-unit>
       <trans-unit id="9202925211917001608" datatype="html">
         <source>Columns to export</source>
@@ -2336,6 +2330,18 @@
       </trans-unit>
       <trans-unit id="submission-result-skipped" datatype="html">
         <source>Submissions skipped</source>
+      </trans-unit>
+      <trans-unit id="1403545532790809587" datatype="html">
+        <source>Reconfigure <x equiv-text="this.fspLabel()" id="fspName"/></source>
+      </trans-unit>
+      <trans-unit id="3534500453495072578" datatype="html">
+        <source>Integrate FSP <x equiv-text="this.fspLabel()" id="fspName"/></source>
+      </trans-unit>
+      <trans-unit id="6650633628037596693" datatype="html">
+        <source>Try again</source>
+      </trans-unit>
+      <trans-unit id="6988015601759805630" datatype="html">
+        <source>Configure <x equiv-text="this.fspLabel()" id="fspName"/></source>
       </trans-unit>
     </body>
   </file>
