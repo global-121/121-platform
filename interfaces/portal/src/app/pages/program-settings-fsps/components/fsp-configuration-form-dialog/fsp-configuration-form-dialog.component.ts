@@ -95,13 +95,6 @@ export class FspConfigurationFormDialogComponent {
     return `${title} ${this.fspLabel()}`;
   });
 
-  readonly missingIntegrationAttributes = computed(() =>
-    this.fspConfigurationService.getMissingRequiredAttributes({
-      fspSetting: this.fspSetting(),
-      programAttributes: this.programAttributes.data() ?? [],
-    }),
-  );
-
   readonly formGroup = computed<FspConfigurationFormGroup>(() =>
     this.fspConfigurationService.fspSettingToFormGroup({
       fspSetting: this.fspSetting(),
@@ -164,13 +157,6 @@ export class FspConfigurationFormDialogComponent {
     },
     onError: () => {
       this.toastService.showGenericError();
-    },
-  }));
-
-  retryConfigureFsp = injectMutation(() => ({
-    mutationFn: () => {
-      this.configurationDialog().show({ resetFormGroup: false });
-      return Promise.resolve();
     },
   }));
 
