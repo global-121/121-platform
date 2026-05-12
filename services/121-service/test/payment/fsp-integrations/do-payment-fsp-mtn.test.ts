@@ -24,6 +24,25 @@ import { registrationMtn } from '@121-service/test/registrations/pagination/pagi
 const programId = 1;
 const transferValue = 10;
 
+const expectedEventsForSyncError = [
+  TransactionEventDescription.created,
+  TransactionEventDescription.approval,
+  TransactionEventDescription.initiated,
+  TransactionEventDescription.mtnRequestSent,
+];
+
+const expectedEventsForCallbackResult = [
+  ...expectedEventsForSyncError,
+  TransactionEventDescription.mtnCallbackReceived,
+];
+
+const expectedEventsForRetrySuccess = [
+  ...expectedEventsForSyncError,
+  TransactionEventDescription.retry,
+  TransactionEventDescription.mtnRequestSent,
+  TransactionEventDescription.mtnCallbackReceived,
+];
+
 describe('Do payment with FSP: MTN', () => {
   let accessToken: string;
 
@@ -79,13 +98,9 @@ describe('Do payment with FSP: MTN', () => {
       transactionId: transaction.id,
       accessToken,
     });
-    expect(transactionEventDescriptions).toEqual([
-      TransactionEventDescription.created,
-      TransactionEventDescription.approval,
-      TransactionEventDescription.initiated,
-      TransactionEventDescription.mtnRequestSent,
-      TransactionEventDescription.mtnCallbackReceived,
-    ]);
+    expect(transactionEventDescriptions).toEqual(
+      expectedEventsForCallbackResult,
+    );
   });
 
   it('should yield error transaction when the MTN API returns an internal error', async () => {
@@ -140,12 +155,7 @@ describe('Do payment with FSP: MTN', () => {
       transactionId: transaction.id,
       accessToken,
     });
-    expect(transactionEventDescriptions).toEqual([
-      TransactionEventDescription.created,
-      TransactionEventDescription.approval,
-      TransactionEventDescription.initiated,
-      TransactionEventDescription.mtnRequestSent,
-    ]);
+    expect(transactionEventDescriptions).toEqual(expectedEventsForSyncError);
   });
 
   it('should yield error transaction when the MTN callback indicates a failed transfer', async () => {
@@ -196,13 +206,62 @@ describe('Do payment with FSP: MTN', () => {
       transactionId: transaction.id,
       accessToken,
     });
-    expect(transactionEventDescriptions).toEqual([
-      TransactionEventDescription.created,
-      TransactionEventDescription.approval,
-      TransactionEventDescription.initiated,
-      TransactionEventDescription.mtnRequestSent,
-      TransactionEventDescription.mtnCallbackReceived,
-    ]);
+    expect(transactionEventDescriptions).toEqual(
+      expectedEventsForCallbackResult,
+    );
+  });
+
+  it('should yield error transaction when the phone number is invalid', async () => {
+    // Arrange: the transfer is accepted (202), but getTransferStatus returns FAILED
+    // with PAYEE_NOT_FOUND. This matches MTN production behavior where an invalid
+    // partyId causes the transaction to fail asynchronously.
+    const registration = {
+      ...registrationMtn,
+      phoneNumber: '100000004', // Triggers invalidPhoneNumber in the mock service
+      referenceId: 'mtn-invalid-phone',
+    };
+    const paymentReferenceIds = [registration.referenceId];
+
+    await seedIncludedRegistrations([registration], programId, accessToken);
+
+    // Act
+    const doPaymentResponse = await doPayment({
+      programId,
+      transferValue,
+      referenceIds: paymentReferenceIds,
+      accessToken,
+    });
+    const paymentId = doPaymentResponse.body.id;
+
+    await waitForPaymentAndTransactionsToComplete({
+      programId,
+      paymentReferenceIds,
+      paymentId,
+      accessToken,
+      maxWaitTimeMs: 10_000,
+      completeStatuses: [TransactionStatusEnum.error],
+    });
+
+    // Assert
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
+      programId,
+      paymentId,
+      registrationReferenceId: registration.referenceId,
+      accessToken,
+    });
+    const transaction = getTransactionsResult.body.data[0];
+
+    expect(transaction.status).toBe(TransactionStatusEnum.error);
+    expect(transaction.errorMessage).toBe('PAYEE_NOT_FOUND');
+
+    const transactionEventDescriptions = await getTransactionEventDescriptions({
+      programId,
+      transactionId: transaction.id,
+      accessToken,
+    });
+    expect(transactionEventDescriptions).toEqual(
+      expectedEventsForCallbackResult,
+    );
   });
 
   it('should resolve to success when the MTN API returns a duplicate conflict on queue retry', async () => {
@@ -258,12 +317,7 @@ describe('Do payment with FSP: MTN', () => {
       transactionId: transaction.id,
       accessToken,
     });
-    expect(transactionEventDescriptions).toEqual([
-      TransactionEventDescription.created,
-      TransactionEventDescription.approval,
-      TransactionEventDescription.initiated,
-      TransactionEventDescription.mtnRequestSent,
-    ]);
+    expect(transactionEventDescriptions).toEqual(expectedEventsForSyncError);
   });
 
   it('should successfully retry pay-out after an initial failure', async () => {
@@ -331,14 +385,6 @@ describe('Do payment with FSP: MTN', () => {
       transactionId: transaction.id,
       accessToken,
     });
-    expect(transactionEventDescriptions).toEqual([
-      TransactionEventDescription.created,
-      TransactionEventDescription.approval,
-      TransactionEventDescription.initiated,
-      TransactionEventDescription.mtnRequestSent,
-      TransactionEventDescription.retry,
-      TransactionEventDescription.mtnRequestSent,
-      TransactionEventDescription.mtnCallbackReceived,
-    ]);
+    expect(transactionEventDescriptions).toEqual(expectedEventsForRetrySuccess);
   });
 });

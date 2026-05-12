@@ -8,6 +8,7 @@ enum MtnMockPhoneNumber {
   failDuplicate = '100000001',
   failInternalError = '100000002',
   failCallback = '100000003',
+  invalidPhoneNumber = '100000004',
 }
 
 const MTN_MOCK_NOT_FOUND_REFERENCE_ID = '00000000-0000-0000-0000-000000000404';
@@ -21,6 +22,8 @@ export class MtnMockService {
 
   // Tracks reference IDs that should return FAILED on getTransferStatus.
   private readonly failedReferenceIds = new Set<string>();
+  // Tracks reference IDs for invalid phone number scenario (PAYEE_NOT_FOUND).
+  private readonly invalidPhoneReferenceIds = new Set<string>();
 
   public authenticate({
     authorization,
@@ -99,6 +102,13 @@ export class MtnMockService {
     if (body.payee.partyId === MtnMockPhoneNumber.failCallback) {
       this.failedReferenceIds.add(referenceId);
     }
+
+    // Invalid phone number: transfer is accepted but later fails with PAYEE_NOT_FOUND.
+    // This matches MTN production behavior where an invalid partyId causes the
+    // transaction to fail asynchronously.
+    if (body.payee.partyId === MtnMockPhoneNumber.invalidPhoneNumber) {
+      this.invalidPhoneReferenceIds.add(referenceId);
+    }
   }
 
   public getTransferStatus({
@@ -126,8 +136,11 @@ export class MtnMockService {
     }
 
     if (this.failedReferenceIds.has(referenceId)) {
-      this.failedReferenceIds.delete(referenceId);
       return { status: 'FAILED', reason: 'PAYER_NOT_FOUND' };
+    }
+
+    if (this.invalidPhoneReferenceIds.has(referenceId)) {
+      return { status: 'FAILED', reason: 'PAYEE_NOT_FOUND' };
     }
 
     return { status: 'SUCCESSFUL' };
