@@ -1,4 +1,4 @@
-<p-card>
+<p-card [class]="isEditing() ? 'outline-purple outline-2' : ''">
   <form
     (ngSubmit)="onFormSubmit()"
     (keydown.control.enter)="onFormSubmit()"
