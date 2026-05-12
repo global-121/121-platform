@@ -1,8 +1,8 @@
+import { fspQuestionName } from '@121-service/src/kobo/consts/kobo-fsp-question-name.const';
 import { KoboAttachmentDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-attachment.dto';
 import { KoboSubmissionDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-submission.dto';
 import { KoboRegistrationInput } from '@121-service/src/kobo/interfaces/kobo-registration-input.interface';
 import { KoboFormDefinitionMapper } from '@121-service/src/kobo/mappers/kobo-form-definition.mapper';
-import { fspQuestionName } from '@121-service/src/kobo/services/kobo.service';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 
 export class KoboSubmissionMapper {
