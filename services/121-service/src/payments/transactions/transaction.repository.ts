@@ -1,6 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
+import { InstanceReportingTransactionRaw } from '@121-service/src/instance-reporting/interfaces/instance-reporting-transaction-raw.interface';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 
@@ -66,5 +67,28 @@ export class TransactionRepository extends Repository<TransactionEntity> {
       .leftJoin('transaction.registration', 'registration')
       .where('registration."referenceId" = :referenceId', { referenceId })
       .getCount();
+  }
+
+  public async findForInstanceReporting(): Promise<
+    InstanceReportingTransactionRaw[]
+  > {
+    return this.createQueryBuilder('transaction')
+      .select([
+        'transaction.id',
+        'transaction.status',
+        'transaction.transferValue',
+        'transaction.created',
+        'transaction.updated',
+        'registration.id',
+        'registration.referenceId',
+        'program.id',
+        'program.currency',
+        'program.titlePortal',
+      ])
+      .innerJoin('transaction.registration', 'registration')
+      .innerJoin('registration.program', 'program')
+      .orderBy('program.id', 'ASC')
+      .addOrderBy('transaction.created', 'ASC')
+      .getMany();
   }
 }
