@@ -46,6 +46,7 @@ export class StartPaymentComponent {
         programId: this.programId,
         paymentId: this.paymentId,
       }),
+    meta: { invalidateCacheAgainAfterDelay: 1000 },
     onSuccess: () => {
       this.startPaymentDialog().hide();
       this.toastService.showToast({
