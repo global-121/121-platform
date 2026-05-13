@@ -103,7 +103,7 @@
     "eslint-plugin-regexp": "^3.1.0",
     "eslint-plugin-sort-class-members": "^1.22.1",
     "jsdom": "^29.0.2",
-    "knip": "^6.3.1",
+    "knip": "^6.13.1",
     "ng-extract-i18n-merge": "^3.3.0",
     "postcss": "^8.5.14",
     "prettier": "^3.8.1",
