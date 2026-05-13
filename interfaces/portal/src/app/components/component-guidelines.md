@@ -17,3 +17,23 @@ Guidelines with the 🤖 emoji are enforced through CI checks.
 - Do not abstract by default
   - ie. only pull out a component into a separate file when you are certain it will be re-used, or when you are trying to re-use it in a different component
 - Nest page-specific components & services within the respective page folder
+- Prefer making illegal states impossible over testing for them
+  - ie. using types ([example](https://github.com/global-121/121-platform/pull/8193))
+- Try to limit the amount of different states a component can be in
+  - a component receiving enableSendMessage to change its behaviour will make it more complex as even a boolean input will double the amount of relevantly different states the component can be in, making it harder to reason about and test
+
+# Unit Test Guidelines
+
+As with other kinds of tests: we generally only want to test "our own" code. Some examples
+
+- ❌ Don't test:
+  - the HTML `<select>` element working
+  - that localStorage itself works
+  - a utility function that's part of a library we depend on (the unique function from radashi)
+  - simple use of a PrimeNG component
+  - simple use of Angular: @if
+- ✅ Test:
+  - complex use of a PrimeNG component: you can make mistakes
+  - a helper function that's part of our codebase (and not from a library)
+  - that your code actually and correctly put something in localStorage
+  - "glue code": the value that you put into an Angular @if has the right value at the right time(s)
