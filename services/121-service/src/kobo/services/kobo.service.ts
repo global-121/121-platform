@@ -15,6 +15,7 @@ import { KoboValidationService } from '@121-service/src/kobo/services/kobo.valid
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
 import { KoboSurveyProcessorService } from '@121-service/src/kobo/services/kobo-survey-processor.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
@@ -33,6 +34,7 @@ export class KoboService {
     private readonly koboSurveyProcessorService: KoboSurveyProcessorService,
     private readonly programService: ProgramService,
     private readonly programRepository: ProgramRepository,
+    private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
   ) {}
 
   public async getKoboData({
@@ -276,10 +278,12 @@ export class KoboService {
       .filter(isNotRegistrationViewAttribute)
       .filter(isNotFsp);
 
-    await this.programService.upsertProgramRegistrationAttributes({
-      programId,
-      programRegistrationAttributes: attributesToUpsert,
-    });
+    await this.programRegistrationAttributesService.upsertProgramRegistrationAttributes(
+      {
+        programId,
+        programRegistrationAttributes: attributesToUpsert,
+      },
+    );
   }
 
   private async addLanguagesToProgram({

@@ -6,9 +6,9 @@ import { IntersolveVisaModule } from '@121-service/src/fsp-integrations/integrat
 import { FspsModule } from '@121-service/src/fsp-management/fsp.module';
 import { KoboConnectModule } from '@121-service/src/kobo-connect/kobo-connect.module';
 import { LookupModule } from '@121-service/src/notifications/lookup/lookup.module';
-import { ProgramAttributesModule } from '@121-service/src/program-attributes/program-attributes.module';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
+import { ProgramRegistrationAttributesModule } from '@121-service/src/program-registration-attributes/program-registration-attributes.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramAidworkerAssignmentsModule } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignments.module';
@@ -34,7 +34,7 @@ import { UserModule } from '@121-service/src/user/user.module';
     UserModule,
     ProgramAidworkerAssignmentsModule,
     ProgramAttachmentsModule,
-    ProgramAttributesModule,
+    ProgramRegistrationAttributesModule,
     KoboConnectModule,
     ProgramFspConfigurationsModule,
     IntersolveVisaModule,

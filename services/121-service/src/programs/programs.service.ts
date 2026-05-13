@@ -1,21 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
+import { DataSource, Equal, Repository } from 'typeorm';
 
 import { GetTokenResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/get-token-result.interface';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
-import {
-  ProgramRegistrationAttributeDto,
-  UpdateProgramRegistrationAttributeDto,
-} from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -23,8 +19,6 @@ import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/en
 import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
-import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { registrationViewAttributeNames } from '@121-service/src/shared/const';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
@@ -41,7 +35,7 @@ export class ProgramService {
     private readonly dataSource: DataSource,
     private readonly userService: UserService,
     private readonly programAttachmentsService: ProgramAttachmentsService,
-    private readonly programAttributesService: ProgramAttributesService,
+    private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly intersolveVisaService: IntersolveVisaService,
   ) {}
@@ -76,9 +70,11 @@ export class ProgramService {
       });
 
     program.editableAttributes =
-      await this.programAttributesService.getPaEditableAttributes(program.id);
+      await this.programRegistrationAttributesService.getPaEditableAttributes(
+        program.id,
+      );
     program['paTableAttributes'] =
-      await this.programAttributesService.getAttributes({
+      await this.programRegistrationAttributesService.getAttributes({
         programId: program.id,
         includeProgramRegistrationAttributes: true,
         includeTemplateDefaultAttributes: false,
@@ -86,7 +82,9 @@ export class ProgramService {
 
     // TODO: Get these attributes from some enum or something
     program['filterableAttributes'] =
-      this.programAttributesService.getFilterableAttributes(program);
+      this.programRegistrationAttributesService.getFilterableAttributes(
+        program,
+      );
 
     program['fspConfigurations'] =
       ProgramFspConfigurationMapper.mapEntitiesToDtos(
@@ -149,10 +147,12 @@ export class ProgramService {
         namingConventionData: programData.fullnameNamingConvention,
       });
     const programRegistrationAttributes =
-      this.applyProgramRegistrationAttributesFallbackIfNecessary({
-        attributesData: programData.programRegistrationAttributes,
-        namingConventionData: fullnameNamingConvention,
-      });
+      await this.programRegistrationAttributesService.applyProgramRegistrationAttributesFallbackIfNecessary(
+        {
+          attributesData: programData.programRegistrationAttributes,
+          namingConventionData: fullnameNamingConvention,
+        },
+      );
 
     const program = new ProgramEntity();
     program.validation = !!programData.validation;
@@ -196,12 +196,15 @@ export class ProgramService {
       savedProgram.programRegistrationAttributes = [];
       for (const programRegistrationAttribute of programRegistrationAttributes) {
         const createdAttribute =
-          await this.createProgramRegistrationAttributeEntity({
-            // we save the program twice because we need a program id to create program registrations attributes
-            programId: savedProgram.id,
-            createProgramRegistrationAttributeDto: programRegistrationAttribute,
-            repository: programRegistrationAttributeRepository,
-          });
+          await this.programRegistrationAttributesService.createProgramRegistrationAttributeEntity(
+            {
+              // we save the program twice because we need a program id to create program registrations attributes
+              programId: savedProgram.id,
+              createProgramRegistrationAttributeDto:
+                programRegistrationAttribute,
+              repository: programRegistrationAttributeRepository,
+            },
+          );
         if (createdAttribute) {
           savedProgram.programRegistrationAttributes.push(createdAttribute);
         }
@@ -311,197 +314,6 @@ export class ProgramService {
     return programDto;
   }
 
-  private async validateAttributeName(
-    programId: number,
-    name: string,
-  ): Promise<void> {
-    const existingAttributes =
-      await this.programAttributesService.getAttributes({
-        programId,
-        includeProgramRegistrationAttributes: true,
-        includeTemplateDefaultAttributes: false,
-      });
-    const existingNames = existingAttributes.map((attr) => {
-      return attr.name;
-    });
-    if (existingNames.includes(name)) {
-      const errors = `Unable to create program registration attribute with name ${name}. The names ${existingNames.join(
-        ', ',
-      )} are already in use`;
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
-    if (registrationViewAttributeNames.includes(name)) {
-      const errors = `Unable to create program registration attribute with name ${name}. The names ${registrationViewAttributeNames.join(
-        ', ',
-      )} are forbidden to use`;
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  public async upsertProgramRegistrationAttributes({
-    programId,
-    programRegistrationAttributes,
-  }: {
-    programId: number;
-    programRegistrationAttributes: ProgramRegistrationAttributeDto[];
-  }): Promise<void> {
-    // Fetch all existing attributes for this program in one query
-    const existingAttributes =
-      await this.programRegistrationAttributeRepository.find({
-        where: { programId: Equal(programId) },
-      });
-
-    const existingAttributesMap = new Map(
-      existingAttributes.map((attr) => [attr.name, attr]),
-    );
-
-    const entitiesToSave: ProgramRegistrationAttributeEntity[] = [];
-
-    for (const attribute of programRegistrationAttributes) {
-      const existingAttribute = existingAttributesMap.get(attribute.name);
-
-      if (existingAttribute) {
-        // Update existing attribute
-        for (const key in attribute) {
-          existingAttribute[key] = attribute[key];
-        }
-        entitiesToSave.push(existingAttribute);
-      } else {
-        // Create new attribute
-        const newAttribute =
-          this.programRegistrationAttributeDtoToEntity(attribute);
-        newAttribute.programId = programId;
-        entitiesToSave.push(newAttribute);
-      }
-    }
-    await this.programRegistrationAttributeRepository.save(entitiesToSave);
-  }
-
-  public async createProgramRegistrationAttribute({
-    programId,
-    createProgramRegistrationAttributeDto,
-  }: {
-    programId: number;
-    createProgramRegistrationAttributeDto: ProgramRegistrationAttributeDto;
-  }): Promise<ProgramRegistrationAttributeDto> {
-    const entity = await this.createProgramRegistrationAttributeEntity({
-      programId,
-      createProgramRegistrationAttributeDto,
-    });
-    return ProgramRegistrationAttributeMapper.entityToDto(entity);
-  }
-
-  private async createProgramRegistrationAttributeEntity({
-    programId,
-    createProgramRegistrationAttributeDto,
-    repository,
-  }: {
-    programId: number;
-    createProgramRegistrationAttributeDto: ProgramRegistrationAttributeDto;
-    repository?: Repository<ProgramRegistrationAttributeEntity>;
-  }): Promise<ProgramRegistrationAttributeEntity> {
-    await this.validateAttributeName(
-      programId,
-      createProgramRegistrationAttributeDto.name,
-    );
-    const programRegistrationAttribute =
-      this.programRegistrationAttributeDtoToEntity(
-        createProgramRegistrationAttributeDto,
-      );
-    programRegistrationAttribute.programId = programId;
-
-    try {
-      if (repository) {
-        return await repository.save(programRegistrationAttribute);
-      } else {
-        return await this.programRegistrationAttributeRepository.save(
-          programRegistrationAttribute,
-        );
-      }
-    } catch (error) {
-      if (error instanceof QueryFailedError) {
-        const errorMessage = error.message; // Get the error message from QueryFailedError
-        throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
-      }
-      // Unexpected error
-      throw error;
-    }
-  }
-
-  private programRegistrationAttributeDtoToEntity(
-    dto: ProgramRegistrationAttributeDto,
-  ): ProgramRegistrationAttributeEntity {
-    const programRegistrationAttribute =
-      new ProgramRegistrationAttributeEntity();
-    programRegistrationAttribute.name = dto.name;
-    programRegistrationAttribute.label = dto.label;
-    programRegistrationAttribute.type = dto.type;
-    programRegistrationAttribute.options = dto.options ?? null;
-    programRegistrationAttribute.scoring = dto.scoring ?? {};
-    programRegistrationAttribute.pattern = dto.pattern ?? null;
-    programRegistrationAttribute.editableInPortal =
-      dto.editableInPortal ?? true;
-    programRegistrationAttribute.includeInTransactionExport =
-      dto.includeInTransactionExport ?? false;
-    programRegistrationAttribute.duplicateCheck = dto.duplicateCheck ?? false;
-    programRegistrationAttribute.placeholder = dto.placeholder ?? null;
-    programRegistrationAttribute.isRequired = dto.isRequired ?? false;
-    programRegistrationAttribute.showInPeopleAffectedTable =
-      dto.showInPeopleAffectedTable ?? false;
-    return programRegistrationAttribute;
-  }
-
-  public async updateProgramRegistrationAttribute({
-    programId,
-    programRegistrationAttributeName,
-    updateProgramRegistrationAttribute,
-  }: {
-    programId: number;
-    programRegistrationAttributeName: string;
-    updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
-  }): Promise<ProgramRegistrationAttributeEntity> {
-    const programRegistrationAttribute =
-      await this.programRegistrationAttributeRepository.findOne({
-        where: {
-          name: Equal(programRegistrationAttributeName),
-          programId: Equal(programId),
-        },
-      });
-    if (!programRegistrationAttribute) {
-      const errors = `No programRegistrationAttribute found with name ${programRegistrationAttributeName} for program ${programId}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    for (const attribute in updateProgramRegistrationAttribute) {
-      programRegistrationAttribute[attribute] =
-        updateProgramRegistrationAttribute[attribute];
-    }
-
-    await this.programRegistrationAttributeRepository.save(
-      programRegistrationAttribute,
-    );
-    return programRegistrationAttribute;
-  }
-
-  public async deleteProgramRegistrationAttribute(
-    programId: number,
-    programRegistrationAttributeId: number,
-  ): Promise<ProgramRegistrationAttributeEntity> {
-    await this.findProgramOrThrow(programId);
-
-    const programRegistrationAttribute =
-      await this.programRegistrationAttributeRepository.findOne({
-        where: { id: Number(programRegistrationAttributeId) },
-      });
-    if (!programRegistrationAttribute) {
-      const errors = `Program registration attribute with id: '${programRegistrationAttributeId}' not found.'`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    return await this.programRegistrationAttributeRepository.remove(
-      programRegistrationAttribute,
-    );
-  }
-
   public async getAllRelationProgram(
     programId: number,
   ): Promise<RegistrationDataInfo[]> {
@@ -591,53 +403,5 @@ export class ProgramService {
     }
 
     return namingConventionData;
-  }
-
-  private applyProgramRegistrationAttributesFallbackIfNecessary({
-    attributesData,
-    namingConventionData,
-  }: {
-    attributesData: ProgramRegistrationAttributeDto[] | undefined;
-    namingConventionData: string[];
-  }): ProgramRegistrationAttributeDto[] {
-    const programRegistrationAttributes = attributesData ?? [];
-
-    // make sure phoneNumber is in programRegistrationAttributes
-
-    if (
-      !programRegistrationAttributes.find((attr) => attr.name === 'phoneNumber')
-    ) {
-      programRegistrationAttributes.push({
-        name: 'phoneNumber',
-        type: RegistrationAttributeTypes.text,
-        label: { en: 'Phone number' },
-      });
-    }
-
-    // make sure all fullnameNamingConventions are in programRegistrationAttributes
-
-    const registrationAttributesNames = programRegistrationAttributes.map(
-      (attr) => attr.name,
-    );
-    const missingNamingConventions = namingConventionData.filter(
-      (attr) => !registrationAttributesNames.includes(attr),
-    );
-
-    if (missingNamingConventions.length > 0) {
-      for (const missingNamingConvention of missingNamingConventions) {
-        programRegistrationAttributes.push({
-          name: missingNamingConvention,
-          type: RegistrationAttributeTypes.text,
-          label: {
-            en:
-              missingNamingConvention === 'fullName'
-                ? 'Full name'
-                : missingNamingConvention,
-          },
-        });
-      }
-    }
-
-    return programRegistrationAttributes;
   }
 }

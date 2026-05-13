@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 
@@ -12,7 +12,7 @@ import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/en
       ProgramRegistrationAttributeEntity,
     ]),
   ],
-  providers: [ProgramAttributesService],
-  exports: [ProgramAttributesService],
+  providers: [ProgramRegistrationAttributesService],
+  exports: [ProgramRegistrationAttributesService],
 })
-export class ProgramAttributesModule {}
+export class ProgramRegistrationAttributesModule {}

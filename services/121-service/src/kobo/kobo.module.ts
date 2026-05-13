@@ -12,6 +12,7 @@ import { KoboSubmissionHelperService } from '@121-service/src/kobo/services/kobo
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
 import { KoboSurveyProcessorService } from '@121-service/src/kobo/services/kobo-survey-processor.service';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
+import { ProgramRegistrationAttributesModule } from '@121-service/src/program-registration-attributes/program-registration-attributes.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
@@ -21,6 +22,7 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
   imports: [
     TypeOrmModule.forFeature([KoboEntity, RegistrationEntity]),
     ProgramModule,
+    ProgramRegistrationAttributesModule,
     ProgramFspConfigurationsModule,
     HttpModule,
     RegistrationsModule,
