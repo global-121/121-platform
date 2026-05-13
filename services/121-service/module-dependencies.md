@@ -18,6 +18,7 @@ graph LR
   CronjobModule-->CommercialBankEthiopiaAccountManagementModule
   CronjobModule-->CooperativeBankOfOromiaAccountManagementModule
   CronjobModule-->ExchangeRatesModule
+  CronjobModule-->InstanceReportingModule
   CronjobModule-->IntersolveVisaReconciliationModule
   CronjobModule-->IntersolveVoucherModule
   CronjobModule-->IntersolveVoucherReconciliationModule
@@ -34,6 +35,8 @@ graph LR
   ExcelReconcilicationModule-->TransactionsModule
   ExchangeRatesModule-->UserModule
   FspsModule-->UserModule
+  InstanceReportingModule-->ExchangeRatesModule
+  InstanceReportingModule-->TransactionsModule
   IntersolveVisaAccountManagementModule-->IntersolveVisaDataSynchronizationModule
   IntersolveVisaAccountManagementModule-->IntersolveVisaModule
   IntersolveVisaAccountManagementModule-->MessageQueuesModule

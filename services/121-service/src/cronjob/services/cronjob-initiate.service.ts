@@ -147,6 +147,18 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'post', headers);
   }
 
+  // Needs to run out of working hours
+  // The servers are in UTC which is suboptimal for countries that have their own timezone but for now we just picked a time that is outside of working hours for all/most countries.
+  @Cron(CronExpression.EVERY_DAY_AT_2AM, {
+    disabled: !env.CRON_INSTANCE_REPORTING,
+  })
+  public async cronPushInstanceReportingData(cronJobMethodName): cronReturn {
+    const { baseCronUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
+    const url = `${baseCronUrl}/instance-reporting`;
+    return await this.callEndpoint(url, 'post', headers);
+  }
+
   // Used for testing and triggering through Swagger UI.
   public getAllCronJobMethodNames(): string[] {
     const prototype = Object.getPrototypeOf(this);

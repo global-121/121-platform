@@ -23,6 +23,8 @@ import { CronjobInitiateService } from '@121-service/src/cronjob/services/cronjo
 import { RemoveDeprecatedImageCodesDto } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/dto/remove-deprecated-image-codes-dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { PushInstanceReportingDataResponseDto } from '@121-service/src/instance-reporting/dtos/push-instance-reporting-data-response.dto';
+import { InstanceReportingService } from '@121-service/src/instance-reporting/instance-reporting.service';
 
 @ApiTags('cronjobs')
 @UseGuards(AuthenticatedUserGuard)
@@ -30,8 +32,25 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 export class CronjobController {
   constructor(
     private readonly cronjobInitiateService: CronjobInitiateService,
-    private readonly cronjobExecutionService: CronjobExecutionService, // Assuming this is a service to execute cron jobs
+    private readonly cronjobExecutionService: CronjobExecutionService,
+    private readonly instanceReportingService: InstanceReportingService,
   ) {}
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary: '[CRON] Push instance reporting data to Azure Blob Storage',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'Instance reporting data pushed to blob storage. Response body contains the data only in non-production environments. In production the response body is empty to avoid sending potentially millions of rows over the network.',
+    type: PushInstanceReportingDataResponseDto,
+  })
+  @HttpCode(HttpStatus.OK)
+  @Post('instance-reporting')
+  public async pushInstanceReportingData(): Promise<PushInstanceReportingDataResponseDto | void> {
+    return await this.instanceReportingService.pushInstanceReportingData();
+  }
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({

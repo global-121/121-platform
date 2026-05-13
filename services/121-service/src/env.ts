@@ -296,6 +296,7 @@ export const env = createEnv({
 
     // Scheduled(cron) Activities
     CRON_GET_DAILY_EXCHANGE_RATES: z.stringbool().default(false),
+    CRON_INSTANCE_REPORTING: z.stringbool().default(true),
 
     // Interface(s) configuration
     REDIRECT_PORTAL_URL_HOST: z
