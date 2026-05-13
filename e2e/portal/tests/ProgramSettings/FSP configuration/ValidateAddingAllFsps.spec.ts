@@ -21,10 +21,10 @@ const availableFsps = [
 ].filter((label): label is string => label !== undefined);
 
 const fspsNotConfigurableForOcwProgram = [
-  FSP_SETTINGS[Fsps.safaricom].defaultLabel.en,
-  FSP_SETTINGS[Fsps.commercialBankEthiopia].defaultLabel.en,
-  FSP_SETTINGS[Fsps.onafriq].defaultLabel.en,
-].filter((label): label is string => label !== undefined);
+  FSP_SETTINGS[Fsps.safaricom],
+  FSP_SETTINGS[Fsps.commercialBankEthiopia],
+  FSP_SETTINGS[Fsps.onafriq],
+];
 
 const fspsConfiguredInKobo = [
   FSP_SETTINGS[Fsps.intersolveVoucherPaper].defaultLabel.en,
@@ -68,9 +68,9 @@ test('Add all available FSPs', async ({
     });
   });
 
-  await test.step('Add FSPs that do not match Kobo form configuration', async () => {
-    await fspSettingsPage.validateFspConfigurationIsNotPresent({
-      fspNames: fspsNotConfigurableForOcwProgram,
+  await test.step('Add FSPs that do not match Kobo form configuration and validate their automatic configuration', async () => {
+    await fspSettingsPage.validateFspConfigurationIsAutomaticlySet({
+      fspsNotConfigurableForOcwProgram,
     });
   });
 
