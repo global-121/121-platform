@@ -30,16 +30,6 @@ export class ProgramRegistrationAttributesService {
   @InjectRepository(ProgramRegistrationAttributeEntity)
   private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
 
-  private async findProgramOrThrow(programId: number): Promise<void> {
-    const program = await this.programRepository.findOne({
-      where: { id: Equal(programId) },
-    });
-    if (!program) {
-      const errors = `No program found with id ${programId}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-  }
-
   public getFilterableAttributes(program: ProgramEntity) {
     const genericPaAttributeFilters = [
       'personAffectedSequence',
@@ -443,7 +433,6 @@ export class ProgramRegistrationAttributesService {
     programId: number,
     programRegistrationAttributeId: number,
   ): Promise<ProgramRegistrationAttributeEntity> {
-    await this.findProgramOrThrow(programId);
     const programRegistrationAttribute =
       await this.programRegistrationAttributeRepository.findOne({
         where: { id: Number(programRegistrationAttributeId) },
