@@ -116,6 +116,7 @@ describe('MtnApiHelperService', () => {
     it('should return headers with all required fields', () => {
       const headers = mtnApiHelperService.createTransferHeaders({
         referenceId: 'ref-uuid-123',
+        subscriptionKey: 'test-subscription-key',
       });
 
       expect(headers.get('Content-Type')).toBe('application/json');
@@ -130,6 +131,7 @@ describe('MtnApiHelperService', () => {
     it('should include X-Callback-Url when EXTERNAL_121_SERVICE_URL is set', () => {
       const headers = mtnApiHelperService.createTransferHeaders({
         referenceId: 'ref-uuid-123',
+        subscriptionKey: 'test-subscription-key',
       });
 
       expect(headers.get('X-Callback-Url')).toBe(
@@ -142,6 +144,7 @@ describe('MtnApiHelperService', () => {
 
       const headers = mtnApiHelperService.createTransferHeaders({
         referenceId: 'ref-uuid-123',
+        subscriptionKey: 'test-subscription-key',
       });
 
       expect(headers.get('X-Callback-Url')).toBeNull();
@@ -150,7 +153,9 @@ describe('MtnApiHelperService', () => {
 
   describe('createGetTransferStatusHeaders', () => {
     it('should return headers with all required fields', () => {
-      const headers = mtnApiHelperService.createGetTransferStatusHeaders();
+      const headers = mtnApiHelperService.createGetTransferStatusHeaders({
+        subscriptionKey: 'test-subscription-key',
+      });
 
       expect(headers.get('Content-Type')).toBe('application/json');
       expect(headers.get('Cache-Control')).toBe('no-cache');
@@ -161,7 +166,9 @@ describe('MtnApiHelperService', () => {
     });
 
     it('should not include X-Reference-Id or X-Callback-Url', () => {
-      const headers = mtnApiHelperService.createGetTransferStatusHeaders();
+      const headers = mtnApiHelperService.createGetTransferStatusHeaders({
+        subscriptionKey: 'test-subscription-key',
+      });
 
       expect(headers.get('X-Reference-Id')).toBeNull();
       expect(headers.get('X-Callback-Url')).toBeNull();

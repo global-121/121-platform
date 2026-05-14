@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
 import { CreateTransferParams } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/create-transfer-params.interface';
+import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnTransferStatusResponse } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-transfer-status-response.interface';
 import { MtnApiService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -35,6 +36,7 @@ export class MtnService {
     externalId,
     phoneNumber,
     transactionId,
+    requestIdentity,
   }: CreateTransferParams): Promise<void> {
     const message = `Payment for transaction ${transactionId}`;
     console.log(
@@ -51,6 +53,7 @@ export class MtnService {
       },
       payerMessage: message,
       payeeNote: message,
+      requestIdentity,
     });
     console.log(
       `[MTN Transfer] Successfully initiated - referenceId: ${mtnReferenceId}`,
@@ -59,14 +62,17 @@ export class MtnService {
 
   public async getTransferStatus({
     mtnReferenceId,
+    requestIdentity,
   }: {
     mtnReferenceId: string;
+    requestIdentity: MtnRequestIdentity;
   }): Promise<MtnTransferStatusResponse> {
     console.log(
       `[MTN Transfer] Fetching status - referenceId: ${mtnReferenceId}`,
     );
     const status = await this.mtnApiService.getTransferStatus({
       referenceId: mtnReferenceId,
+      requestIdentity,
     });
     console.log(
       `[MTN Transfer] Status retrieved - referenceId: ${mtnReferenceId}, status: ${status.status}`,

@@ -1,3 +1,5 @@
+import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
+
 export interface MtnApiCreateTransferParams {
   readonly mtnReferenceId: string;
   readonly amount: string;
@@ -9,4 +11,5 @@ export interface MtnApiCreateTransferParams {
   };
   readonly payerMessage: string;
   readonly payeeNote: string;
+  readonly requestIdentity: MtnRequestIdentity;
 }

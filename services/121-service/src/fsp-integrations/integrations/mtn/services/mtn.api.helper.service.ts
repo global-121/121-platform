@@ -45,14 +45,14 @@ export class MtnApiHelperService {
     };
   }
 
-  // Non-null assertions (!) are safe here because FspEnvVariableValidationService
-  // validates at startup that all required env variables are set when MTN_MODE=EXTERNAL.
   public createTransferHeaders({
     referenceId,
+    subscriptionKey,
   }: {
     referenceId: string;
+    subscriptionKey: string;
   }): Headers {
-    const headers = this.createCommonHeaders();
+    const headers = this.createCommonHeaders({ subscriptionKey });
     headers.set('X-Reference-Id', referenceId);
     headers.set('X-Target-Environment', env.MTN_TARGET_ENVIRONMENT!);
 
@@ -65,22 +65,26 @@ export class MtnApiHelperService {
     return headers;
   }
 
-  public createGetTransferStatusHeaders(): Headers {
-    const headers = this.createCommonHeaders();
+  public createGetTransferStatusHeaders({
+    subscriptionKey,
+  }: {
+    subscriptionKey: string;
+  }): Headers {
+    const headers = this.createCommonHeaders({ subscriptionKey });
     headers.set('X-Target-Environment', env.MTN_TARGET_ENVIRONMENT!);
 
     return headers;
   }
 
-  private getSubscriptionKeyOrThrow(): string {
-    return env.MTN_SUBSCRIPTION_KEY!;
-  }
-
-  public createCommonHeaders(): Headers {
+  public createCommonHeaders({
+    subscriptionKey,
+  }: {
+    subscriptionKey: string;
+  }): Headers {
     return new Headers({
       'Content-Type': 'application/json',
       'Cache-Control': 'no-cache',
-      'Ocp-Apim-Subscription-Key': this.getSubscriptionKeyOrThrow(),
+      'Ocp-Apim-Subscription-Key': subscriptionKey,
     });
   }
 
@@ -103,7 +107,7 @@ export class MtnApiHelperService {
       ...(errorMessage ? [errorMessage] : []),
     ];
 
-    return parts.join(', ');
+  return parts.join(', ');
   }
 
   private parseErrorMessage(data: unknown): string | undefined {

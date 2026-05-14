@@ -1,17 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { env } from '@121-service/src/env';
 import { MtnTransferResult } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
+import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnApiHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.helper.service';
 import { MtnApiService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 jest.mock('@121-service/src/env', () => ({
-  env: {
-    MTN_REFERENCE_ID: 'test-reference-id',
-    MTN_API_KEY: 'test-api-key',
-  },
+  env: {},
 }));
 
 const baseUrl = new URL('https://sandbox.momodeveloper.mtn.com/');
@@ -31,6 +28,12 @@ const mockAuthResponse = {
   },
 };
 
+const testRequestIdentity: MtnRequestIdentity = {
+  subscriptionKey: 'test-subscription-key',
+  referenceId: 'test-reference-id',
+  apiKey: 'test-api-key',
+};
+
 const createTransferInput = {
   mtnReferenceId: '550e8400-e29b-41d4-a716-446655440000',
   amount: '100',
@@ -39,6 +42,7 @@ const createTransferInput = {
   payee: { partyIdType: 'MSISDN', partyId: '256771234567' },
   payerMessage: 'Payment',
   payeeNote: 'Note',
+  requestIdentity: testRequestIdentity,
 };
 
 const transferPayload = {
@@ -56,9 +60,6 @@ describe('MtnApiService', () => {
   let get: jest.Mock;
 
   beforeEach(async () => {
-    // Reset env to defaults before each test
-    (env as any).MTN_REFERENCE_ID = 'test-reference-id';
-    (env as any).MTN_API_KEY = 'test-api-key';
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -207,7 +208,10 @@ describe('MtnApiService', () => {
       });
 
       // Act
-      await mtnApiService.getTransferStatus({ referenceId: 'ref-uuid' });
+      await mtnApiService.getTransferStatus({
+        referenceId: 'ref-uuid',
+        requestIdentity: testRequestIdentity,
+      });
       // For now we need can use sandbox URL in assertion as the base URL is determined by the helper service which is mocked to return sandbox URL.
       // If we want to make it more flexible we would need to also mock the helper service's getBaseUrl method to return a test-specific URL that can be asserted against here.
       // Assert
@@ -230,6 +234,7 @@ describe('MtnApiService', () => {
       // Act
       const result = await mtnApiService.getTransferStatus({
         referenceId: 'ref-uuid',
+        requestIdentity: testRequestIdentity,
       });
 
       // Assert
@@ -247,7 +252,10 @@ describe('MtnApiService', () => {
 
       // Act & Assert
       await expect(
-        mtnApiService.getTransferStatus({ referenceId: 'ref-uuid' }),
+        mtnApiService.getTransferStatus({
+          referenceId: 'ref-uuid',
+          requestIdentity: testRequestIdentity,
+        }),
       ).rejects.toBeInstanceOf(MtnApiError);
     });
 
@@ -258,90 +266,15 @@ describe('MtnApiService', () => {
 
       // Act & Assert
       await expect(
-        mtnApiService.getTransferStatus({ referenceId: 'ref-uuid' }),
+        mtnApiService.getTransferStatus({
+          referenceId: 'ref-uuid',
+          requestIdentity: testRequestIdentity,
+        }),
       ).rejects.toBeInstanceOf(MtnApiError);
     });
   });
 
   describe('authenticate', () => {
-    it('should throw MtnApiError when MTN_REFERENCE_ID is not set', async () => {
-      // Arrange: need to create a new service instance with undefined env var
-      (env as any).MTN_REFERENCE_ID = undefined;
-      const module: TestingModule = await Test.createTestingModule({
-        providers: [
-          MtnApiService,
-          {
-            provide: CustomHttpService,
-            useValue: { post: jest.fn(), get: jest.fn() },
-          },
-          {
-            provide: MtnApiHelperService,
-            useValue: {
-              getBaseUrl: jest.fn().mockReturnValue(baseUrl),
-              createTransferPayload: jest.fn().mockReturnValue(transferPayload),
-              createTransferHeaders: jest.fn().mockReturnValue(transferHeaders),
-              createGetTransferStatusHeaders: jest
-                .fn()
-                .mockReturnValue(statusHeaders),
-              createCommonHeaders: jest.fn().mockReturnValue(commonHeaders),
-              formatResponseError: jest.fn(),
-            },
-          },
-        ],
-      }).compile();
-      const testService = module.get<MtnApiService>(MtnApiService);
-
-      // Act & Assert
-      await expect(
-        testService.createTransfer(createTransferInput),
-      ).rejects.toThrow(MtnApiError);
-      await expect(
-        testService.createTransfer(createTransferInput),
-      ).rejects.toThrow('MTN_REFERENCE_ID is not set');
-
-      // Restore
-      (env as any).MTN_REFERENCE_ID = 'test-reference-id';
-    });
-
-    it('should throw MtnApiError when MTN_API_KEY is not set', async () => {
-      // Arrange: need to create a new service instance with undefined env var
-      (env as any).MTN_API_KEY = undefined;
-      const module: TestingModule = await Test.createTestingModule({
-        providers: [
-          MtnApiService,
-          {
-            provide: CustomHttpService,
-            useValue: { post: jest.fn(), get: jest.fn() },
-          },
-          {
-            provide: MtnApiHelperService,
-            useValue: {
-              getBaseUrl: jest.fn().mockReturnValue(baseUrl),
-              createTransferPayload: jest.fn().mockReturnValue(transferPayload),
-              createTransferHeaders: jest.fn().mockReturnValue(transferHeaders),
-              createGetTransferStatusHeaders: jest
-                .fn()
-                .mockReturnValue(statusHeaders),
-              createCommonHeaders: jest.fn().mockReturnValue(commonHeaders),
-              formatResponseError: jest.fn(),
-            },
-          },
-        ],
-      }).compile();
-      const testService = module.get<MtnApiService>(MtnApiService);
-
-      // Act & Assert
-      await expect(
-        testService.createTransfer(createTransferInput),
-      ).rejects.toThrow(MtnApiError);
-      await expect(
-        testService.createTransfer(createTransferInput),
-      ).rejects.toThrow('MTN_API_KEY is not set');
-
-      // Restore
-      (env as any).MTN_API_KEY = 'test-api-key';
-    });
-
     it('should throw MtnApiError when authentication fails', async () => {
       // Arrange
       post.mockRejectedValueOnce(new Error('Auth network error'));

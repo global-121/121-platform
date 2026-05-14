@@ -7,6 +7,7 @@ import { TransferCallbackJobProcessorMtn } from '@121-service/src/fsp-integratio
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEventsModule } from '@121-service/src/payments/transactions/transaction-events/transaction-events.module';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
+import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-logger.middleware';
 
@@ -16,6 +17,7 @@ import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-
     RedisModule,
     TransactionsModule,
     TransactionEventsModule,
+    ProgramFspConfigurationsModule,
     QueuesRegistryModule,
   ],
   providers: [MtnReconciliationService, TransferCallbackJobProcessorMtn],

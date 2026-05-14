@@ -52,7 +52,21 @@
   "allowEmptyPhoneNumber": false,
   "programFspConfigurations": [
     {
-      "fsp": "MTN"
+      "fsp": "MTN",
+      "properties": [
+        {
+          "name": "subscriptionKeyMtn",
+          "value": "test-subscription-key"
+        },
+        {
+          "name": "referenceIdMtn",
+          "value": "test-reference-id"
+        },
+        {
+          "name": "apiKeyMtn",
+          "value": "test-api-key"
+        }
+      ]
     }
   ]
 }

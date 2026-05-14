@@ -2,7 +2,9 @@ import { TestBed } from '@automock/jest';
 
 import { MtnTransferResult } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
+import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsMtnService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-mtn.service';
 import { MtnTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/mtn-transaction-job.dto';
@@ -10,7 +12,26 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
+
+jest.mock('@121-service/src/env', () => ({
+  env: {},
+}));
+
+jest.mock('@121-service/src/ormconfig', () => ({
+  ormConfig: {},
+}));
+
+jest.mock('@121-service/src/appdatasource', () => ({
+  AppDataSource: {},
+}));
+
+const testRequestIdentity: MtnRequestIdentity = {
+  subscriptionKey: 'test-subscription-key',
+  referenceId: 'test-reference-id',
+  apiKey: 'test-api-key',
+};
 
 const mockTransactionJob: MtnTransactionJobDto = {
   referenceId: 'ref-1',
@@ -31,6 +52,7 @@ describe('TransactionJobsMtnService', () => {
   let transactionJobsHelperService: TransactionJobsHelperService;
   let transactionsService: TransactionsService;
   let programRepository: ProgramRepository;
+  let programFspConfigurationRepository: ProgramFspConfigurationRepository;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -48,6 +70,10 @@ describe('TransactionJobsMtnService', () => {
     );
     transactionsService = unitRef.get<TransactionsService>(TransactionsService);
     programRepository = unitRef.get<ProgramRepository>(ProgramRepository);
+    programFspConfigurationRepository =
+      unitRef.get<ProgramFspConfigurationRepository>(
+        ProgramFspConfigurationRepository,
+      );
 
     jest
       .spyOn(transactionJobsHelperService, 'logTransactionJobStart')
@@ -70,9 +96,25 @@ describe('TransactionJobsMtnService', () => {
         failedTransactionAttempts: number;
       }) => `${referenceId}-${transactionId}-${failedTransactionAttempts}`,
     );
-    jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
+    jest.spyOn(programRepository, 'findOneOrFail').mockResolvedValue({
       currency: 'UGX',
     } as any);
+    jest
+      .spyOn(programFspConfigurationRepository, 'getPropertiesByNamesOrThrow')
+      .mockResolvedValue([
+        {
+          name: FspConfigurationProperties.subscriptionKeyMtn,
+          value: 'test-subscription-key',
+        },
+        {
+          name: FspConfigurationProperties.referenceIdMtn,
+          value: 'test-reference-id',
+        },
+        {
+          name: FspConfigurationProperties.apiKeyMtn,
+          value: 'test-api-key',
+        },
+      ]);
   });
 
   it('should be defined', () => {
@@ -81,6 +123,10 @@ describe('TransactionJobsMtnService', () => {
 
   it('should log transaction job start and call createTransfer on success', async () => {
     (mtnService.createTransfer as jest.Mock).mockResolvedValue(undefined);
+    (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+      status: 'SUCCESSFUL',
+    });
+    global.fetch = jest.fn().mockResolvedValue({ ok: true });
 
     await service.processTransactionJob(mockTransactionJob);
 
@@ -101,6 +147,7 @@ describe('TransactionJobsMtnService', () => {
       externalId: '1',
       phoneNumber: '256771234567',
       transactionId: 1,
+      requestIdentity: testRequestIdentity,
     });
     expect(transactionsService.saveProgress).toHaveBeenCalledWith({
       context: {
@@ -144,11 +191,15 @@ describe('TransactionJobsMtnService', () => {
     (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
       status: 'SUCCESSFUL',
     });
+    (mtnService.mapMtnStatusToTransactionStatus as jest.Mock).mockReturnValue(
+      TransactionStatusEnum.success,
+    );
 
     await service.processTransactionJob(mockTransactionJob);
 
     expect(mtnService.getTransferStatus).toHaveBeenCalledWith({
-      referenceId: expect.any(String),
+      mtnReferenceId: expect.any(String),
+      requestIdentity: testRequestIdentity,
     });
     expect(transactionsService.saveProgress).toHaveBeenCalledWith({
       context: {
@@ -172,6 +223,9 @@ describe('TransactionJobsMtnService', () => {
     (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
       status: 'PENDING',
     });
+    (mtnService.mapMtnStatusToTransactionStatus as jest.Mock).mockReturnValue(
+      TransactionStatusEnum.waiting,
+    );
 
     await service.processTransactionJob(mockTransactionJob);
 
@@ -198,6 +252,9 @@ describe('TransactionJobsMtnService', () => {
       status: 'FAILED',
       reason: 'Insufficient funds',
     });
+    (mtnService.mapMtnStatusToTransactionStatus as jest.Mock).mockReturnValue(
+      TransactionStatusEnum.error,
+    );
 
     await service.processTransactionJob(mockTransactionJob);
 
@@ -209,12 +266,16 @@ describe('TransactionJobsMtnService', () => {
       },
       description: TransactionEventDescription.mtnRequestSent,
       newTransactionStatus: TransactionStatusEnum.error,
-      errorMessage: 'MTN transfer failed with reason: Insufficient funds',
+      errorMessage: 'Insufficient funds',
     });
   });
 
   it('should generate different referenceIds for payment retry (different failedAttempts count)', async () => {
     (mtnService.createTransfer as jest.Mock).mockResolvedValue(undefined);
+    (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+      status: 'SUCCESSFUL',
+    });
+    global.fetch = jest.fn().mockResolvedValue({ ok: true });
 
     // First call with 0 failed attempts
     await service.processTransactionJob(mockTransactionJob);
@@ -237,6 +298,10 @@ describe('TransactionJobsMtnService', () => {
 
   it('should generate same referenceId for queue retry (same failedAttempts count)', async () => {
     (mtnService.createTransfer as jest.Mock).mockResolvedValue(undefined);
+    (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+      status: 'SUCCESSFUL',
+    });
+    global.fetch = jest.fn().mockResolvedValue({ ok: true });
 
     await service.processTransactionJob(mockTransactionJob);
     const firstReferenceId = (mtnService.createTransfer as jest.Mock).mock

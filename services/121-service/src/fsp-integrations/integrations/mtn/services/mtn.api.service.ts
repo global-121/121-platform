@@ -2,28 +2,23 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { TokenSet } from 'openid-client';
 
-import { env } from '@121-service/src/env';
 import { MtnApiCreateTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-transfer-request-body.dto';
 import { MtnTransferResult } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnApiCreateTransferParams } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-api-create-transfer-params.interface';
+import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnTransferStatusResponse } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-transfer-status-response.interface';
 import { MtnApiHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
 export class MtnApiService {
-  private tokenSet: TokenSet;
-  private readonly mtnReferenceId: string | undefined;
-  private readonly mtnApiKey: string | undefined;
+  private readonly tokenCache = new Map<string, TokenSet>();
 
   public constructor(
     private readonly httpService: CustomHttpService,
     private readonly mtnApiHelperService: MtnApiHelperService,
-  ) {
-    this.mtnReferenceId = env.MTN_REFERENCE_ID;
-    this.mtnApiKey = env.MTN_API_KEY;
-  }
+  ) {}
 
   private getTransferUrl(): URL {
     return new URL(
@@ -39,14 +34,21 @@ export class MtnApiService {
     );
   }
 
-  private addAuthHeaders(headers: Headers): Headers {
-    if (!this.tokenSet || !this.tokenSet.access_token) {
+  private addAuthHeaders({
+    headers,
+    requestIdentity,
+  }: {
+    headers: Headers;
+    requestIdentity: MtnRequestIdentity;
+  }): Headers {
+    const tokenSet = this.tokenCache.get(requestIdentity.referenceId);
+    if (!tokenSet || !tokenSet.access_token) {
       throw new MtnApiError({
         type: MtnTransferResult.fail,
         message: 'No access token available for MTN API requests',
       });
     }
-    headers.set('Authorization', `Bearer ${this.tokenSet.access_token}`);
+    headers.set('Authorization', `Bearer ${tokenSet.access_token}`);
     return headers;
   }
 
@@ -58,8 +60,9 @@ export class MtnApiService {
     payee,
     payerMessage,
     payeeNote,
+    requestIdentity,
   }: MtnApiCreateTransferParams): Promise<void> {
-    await this.authenticate();
+    await this.authenticate({ requestIdentity });
     const payload = this.mtnApiHelperService.createTransferPayload({
       amount,
       currency,
@@ -68,21 +71,30 @@ export class MtnApiService {
       payerMessage,
       payeeNote,
     });
-    await this.getTransfer({ payload, referenceId: mtnReferenceId });
+    await this.getTransfer({
+      payload,
+      referenceId: mtnReferenceId,
+      requestIdentity,
+    });
   }
 
   public async getTransferStatus({
     referenceId,
+    requestIdentity,
   }: {
     referenceId: string;
+    requestIdentity: MtnRequestIdentity;
   }): Promise<MtnTransferStatusResponse> {
-    await this.authenticate();
+    await this.authenticate({ requestIdentity });
 
     const url = new URL(`${this.getTransferUrl()}/${referenceId}`);
 
-    const headers = this.addAuthHeaders(
-      this.mtnApiHelperService.createGetTransferStatusHeaders(),
-    );
+    const headers = this.addAuthHeaders({
+      headers: this.mtnApiHelperService.createGetTransferStatusHeaders({
+        subscriptionKey: requestIdentity.subscriptionKey,
+      }),
+      requestIdentity,
+    });
 
     try {
       const response = await this.httpService.get<
@@ -117,17 +129,21 @@ export class MtnApiService {
   private async getTransfer({
     payload,
     referenceId,
+    requestIdentity,
   }: {
     payload: MtnApiCreateTransferRequestBodyDto;
     referenceId: string;
+    requestIdentity: MtnRequestIdentity;
   }): Promise<void> {
     const url = this.getTransferUrl();
 
-    const headers = this.addAuthHeaders(
-      this.mtnApiHelperService.createTransferHeaders({
+    const headers = this.addAuthHeaders({
+      headers: this.mtnApiHelperService.createTransferHeaders({
         referenceId,
+        subscriptionKey: requestIdentity.subscriptionKey,
       }),
-    );
+      requestIdentity,
+    });
 
     console.log(
       `[MTN API] Making transfer call - referenceId: ${referenceId}, payload:`,
@@ -173,26 +189,25 @@ export class MtnApiService {
     }
   }
 
-  private async authenticate(): Promise<void> {
-    if (!this.mtnReferenceId) {
-      throw new MtnApiError({
-        type: MtnTransferResult.fail,
-        message: 'MTN_REFERENCE_ID is not set',
-      });
-    }
-    if (!this.mtnApiKey) {
-      throw new MtnApiError({
-        type: MtnTransferResult.fail,
-        message: 'MTN_API_KEY is not set',
-      });
+  private async authenticate({
+    requestIdentity,
+  }: {
+    requestIdentity: MtnRequestIdentity;
+  }): Promise<void> {
+    // Check for existing valid token
+    const existingToken = this.tokenCache.get(requestIdentity.referenceId);
+    if (existingToken && !existingToken.expired()) {
+      return;
     }
 
     // MTN uses Basic Authentication.
     const credentials = Buffer.from(
-      `${this.mtnReferenceId}:${this.mtnApiKey}`,
+      `${requestIdentity.referenceId}:${requestIdentity.apiKey}`,
     ).toString('base64');
 
-    const headers = this.mtnApiHelperService.createCommonHeaders();
+    const headers = this.mtnApiHelperService.createCommonHeaders({
+      subscriptionKey: requestIdentity.subscriptionKey,
+    });
     headers.set('Authorization', `Basic ${credentials}`);
 
     let response;
@@ -229,9 +244,12 @@ export class MtnApiService {
     // We subtract 5 seconds to ensure we don't use an expired token.
     const expiresAtUnixTimestamp = (expiresInSeconds - 5) * 1000 + Date.now();
 
-    this.tokenSet = new TokenSet({
-      access_token: accessToken,
-      expires_at: expiresAtUnixTimestamp,
-    });
+    this.tokenCache.set(
+      requestIdentity.referenceId,
+      new TokenSet({
+        access_token: accessToken,
+        expires_at: expiresAtUnixTimestamp,
+      }),
+    );
   }
 }

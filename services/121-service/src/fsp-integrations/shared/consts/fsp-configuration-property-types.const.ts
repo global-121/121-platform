@@ -15,6 +15,9 @@ export const fspConfigurationPropertyTypes = {
   [FspConfigurationProperties.debitAccountNumber]: 'string',
   [FspConfigurationProperties.password]: 'string',
   [FspConfigurationProperties.username]: 'string',
+  [FspConfigurationProperties.subscriptionKeyMtn]: 'string',
+  [FspConfigurationProperties.referenceIdMtn]: 'string',
+  [FspConfigurationProperties.apiKeyMtn]: 'string',
 } as const;
 
 // Map runtime type strings to actual TypeScript types

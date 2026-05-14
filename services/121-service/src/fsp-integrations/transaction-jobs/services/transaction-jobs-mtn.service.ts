@@ -4,7 +4,9 @@ import { Equal } from 'typeorm';
 import { env } from '@121-service/src/env';
 import { MtnTransferResult } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
+import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { MtnTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/mtn-transaction-job.dto';
@@ -13,6 +15,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 
 @Injectable()
@@ -23,6 +26,7 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
     private readonly transactionsService: TransactionsService,
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
     private readonly programRepository: ProgramRepository,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
   public async processTransactionJob(
@@ -66,7 +70,12 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
       return;
     }
 
-    // 4. Call MTN transfer endpoint, if failure handle accordingly and return early
+    // 4. Retrieve per-program MTN wallet credentials
+    const requestIdentity = await this.getMtnFspConfig({
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
+    });
+
+    // 5. Call MTN transfer endpoint, if failure handle accordingly and return early
     try {
       await this.mtnService.createTransfer({
         mtnReferenceId,
@@ -75,19 +84,21 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
         externalId: String(transactionJob.transactionId),
         phoneNumber: transactionJob.phoneNumber,
         transactionId: transactionJob.transactionId,
+        requestIdentity,
       });
     } catch (error) {
       if (error instanceof MtnApiError) {
         if (error.type === MtnTransferResult.duplicate) {
-          // 5a. Duplicate: this is a queue retry where the original request already went through
+          // 6a. Duplicate: this is a queue retry where the original request already went through
           // Use GetTransferStatus to determine the actual outcome
           await this.handleDuplicateTransfer({
             mtnReferenceId,
+            requestIdentity,
             transactionEventContext,
           });
           return;
         }
-        // 5b. Other API error: store error transaction event and update transaction to 'error'
+        // 6b. Other API error: store error transaction event and update transaction to 'error'
         await this.transactionsService.saveProgress({
           context: transactionEventContext,
           description: TransactionEventDescription.mtnRequestSent,
@@ -99,27 +110,30 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
       throw error;
     }
 
-    // 6. Store success transaction event and leave transaction on 'waiting'.
+    // 7. Store success transaction event and leave transaction on 'waiting'.
     // Final status will be set via the callback flow (triggered below by polling).
     await this.transactionsService.saveProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.mtnRequestSent,
     });
 
-    // 7. Poll MTN for the actual transfer status and trigger our own callback endpoint.
+    // 8. Poll MTN for the actual transfer status and trigger our own callback endpoint.
     // MTN sandbox does not reliably send callbacks, so we call our callback ourselves.
     // This way we use the exact same code path as a real callback from MTN.
     await this.pollAndTriggerCallback({
       mtnReferenceId,
+      requestIdentity,
       transactionId: transactionJob.transactionId,
     });
   }
 
   private async pollAndTriggerCallback({
     mtnReferenceId,
+    requestIdentity,
     transactionId,
   }: {
     mtnReferenceId: string;
+    requestIdentity: MtnRequestIdentity;
     transactionId: number;
   }): Promise<void> {
     const maxAttempts = 5;
@@ -128,6 +142,7 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       const transferStatus = await this.mtnService.getTransferStatus({
         mtnReferenceId,
+        requestIdentity,
       });
 
       if (transferStatus.status !== 'PENDING') {
@@ -186,13 +201,16 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
 
   private async handleDuplicateTransfer({
     mtnReferenceId,
+    requestIdentity,
     transactionEventContext,
   }: {
     mtnReferenceId: string;
+    requestIdentity: MtnRequestIdentity;
     transactionEventContext: TransactionEventCreationContext;
   }): Promise<void> {
     const transferStatus = await this.mtnService.getTransferStatus({
       mtnReferenceId,
+      requestIdentity,
     });
 
     const transactionStatus = this.mtnService.mapMtnStatusToTransactionStatus({
@@ -208,5 +226,32 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
           ? (transferStatus.reason ?? 'unknown')
           : undefined,
     });
+  }
+
+  private async getMtnFspConfig({
+    programFspConfigurationId,
+  }: {
+    programFspConfigurationId: number;
+  }): Promise<MtnRequestIdentity> {
+    const programFspConfigProperties =
+      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
+        programFspConfigurationId,
+        names: [
+          FspConfigurationProperties.subscriptionKeyMtn,
+          FspConfigurationProperties.referenceIdMtn,
+          FspConfigurationProperties.apiKeyMtn,
+        ],
+      });
+    return {
+      subscriptionKey: programFspConfigProperties.find(
+        (c) => c.name === FspConfigurationProperties.subscriptionKeyMtn,
+      )?.value as string,
+      referenceId: programFspConfigProperties.find(
+        (c) => c.name === FspConfigurationProperties.referenceIdMtn,
+      )?.value as string,
+      apiKey: programFspConfigProperties.find(
+        (c) => c.name === FspConfigurationProperties.apiKeyMtn,
+      )?.value as string,
+    };
   }
 }

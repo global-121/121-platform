@@ -91,6 +91,7 @@ graph LR
   MetricsModule-->RegistrationsModule
   MetricsModule-->UserModule
   MtnReconciliationModule-->MtnModule
+  MtnReconciliationModule-->ProgramFspConfigurationsModule
   MtnReconciliationModule-->QueuesRegistryModule
   MtnReconciliationModule-->RedisModule
   MtnReconciliationModule-->TransactionEventsModule

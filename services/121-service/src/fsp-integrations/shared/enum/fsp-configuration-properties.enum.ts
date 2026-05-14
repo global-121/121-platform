@@ -11,6 +11,10 @@ export enum FspConfigurationProperties {
   maxBalanceInCents = 'maxBalanceInCents',
   // Nedbank
   paymentReferencePrefix = 'paymentReferencePrefix',
+  // MTN
+  subscriptionKeyMtn = 'subscriptionKeyMtn',
+  referenceIdMtn = 'referenceIdMtn',
+  apiKeyMtn = 'apiKeyMtn',
   // Onafriq
   corporateCodeOnafriq = 'corporateCodeOnafriq',
   passwordOnafriq = 'passwordOnafriq',
