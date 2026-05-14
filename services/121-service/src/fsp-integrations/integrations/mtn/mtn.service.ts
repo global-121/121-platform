@@ -34,13 +34,13 @@ export class MtnService {
     amount,
     currency,
     externalId,
-    phoneNumber,
+    phoneNumberPayment,
     transactionId,
     requestIdentity,
   }: CreateTransferParams): Promise<void> {
     const message = `Payment for transaction ${transactionId}`;
     console.log(
-      `[MTN Transfer] Initiating transfer - referenceId: ${mtnReferenceId}, externalId: ${externalId}, amount: ${amount} ${currency}, phoneNumber: ${phoneNumber}`,
+      `[MTN Transfer] Initiating transfer - referenceId: ${mtnReferenceId}, externalId: ${externalId}, amount: ${amount} ${currency}, phoneNumberPayment: ${phoneNumberPayment}`,
     );
     await this.mtnApiService.createTransfer({
       mtnReferenceId,
@@ -49,7 +49,7 @@ export class MtnService {
       externalId,
       payee: {
         partyIdType: 'MSISDN',
-        partyId: phoneNumber,
+        partyId: phoneNumberPayment,
       },
       payerMessage: message,
       payeeNote: message,

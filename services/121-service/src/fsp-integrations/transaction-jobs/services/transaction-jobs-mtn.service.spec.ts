@@ -42,7 +42,7 @@ const mockTransactionJob: MtnTransactionJobDto = {
   transferValue: 100,
   programFspConfigurationId: 1,
   isRetry: false,
-  phoneNumber: '256771234567',
+  phoneNumberPayment: '256771234567',
 };
 
 describe('TransactionJobsMtnService', () => {
@@ -145,7 +145,7 @@ describe('TransactionJobsMtnService', () => {
       amount: '100',
       currency: 'UGX',
       externalId: '1',
-      phoneNumber: '256771234567',
+      phoneNumberPayment: '256771234567',
       transactionId: 1,
       requestIdentity: testRequestIdentity,
     });

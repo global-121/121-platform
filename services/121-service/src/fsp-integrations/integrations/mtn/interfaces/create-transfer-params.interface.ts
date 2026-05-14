@@ -5,7 +5,7 @@ export interface CreateTransferParams {
   readonly amount: string;
   readonly currency: string;
   readonly externalId: string;
-  readonly phoneNumber: string;
+  readonly phoneNumberPayment: string;
   readonly transactionId: number;
   readonly requestIdentity: MtnRequestIdentity;
 }

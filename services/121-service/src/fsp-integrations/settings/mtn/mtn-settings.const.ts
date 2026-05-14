@@ -12,7 +12,7 @@ export const MTN_SETTINGS: FspSettingsDto = {
   },
   attributes: [
     {
-      name: FspAttributes.phoneNumber,
+      name: FspAttributes.phoneNumberPayment,
       isRequired: true,
     },
   ],

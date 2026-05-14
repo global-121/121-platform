@@ -82,7 +82,7 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
         amount: String(transactionJob.transferValue),
         currency: program.currency,
         externalId: String(transactionJob.transactionId),
-        phoneNumber: transactionJob.phoneNumber,
+        phoneNumberPayment: transactionJob.phoneNumberPayment,
         transactionId: transactionJob.transactionId,
         requestIdentity,
       });
