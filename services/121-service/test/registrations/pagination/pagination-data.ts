@@ -436,7 +436,7 @@ export const registrationsCooperativeBankOfOromia = [
 
 export const registrationMtn = {
   referenceId: 'registration-mtn-1',
-  phoneNumber: '14155238886',
+  phoneNumberPayment: '14155238886',
   preferredLanguage: RegistrationPreferredLanguage.en,
   paymentAmountMultiplier: 1,
   programFspConfigurationName: Fsps.mtn,

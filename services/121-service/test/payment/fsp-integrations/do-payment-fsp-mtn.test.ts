@@ -107,7 +107,7 @@ describe('Do payment with FSP: MTN', () => {
     // Arrange
     const registration = {
       ...registrationMtn,
-      phoneNumber: '100000002', // Triggers failInternalError in the mock service
+      phoneNumberPayment: '100000002', // Triggers failInternalError in the mock service
       referenceId: 'mtn-error-transaction',
     };
     const paymentReferenceIds = [registration.referenceId];
@@ -164,7 +164,7 @@ describe('Do payment with FSP: MTN', () => {
     // initially but later fails (e.g., invalid recipient).
     const registration = {
       ...registrationMtn,
-      phoneNumber: '100000003', // Triggers failCallback in the mock service
+      phoneNumberPayment: '100000003', // Triggers failCallback in the mock service
       referenceId: 'mtn-failed-callback',
     };
     const paymentReferenceIds = [registration.referenceId];
@@ -217,7 +217,7 @@ describe('Do payment with FSP: MTN', () => {
     // partyId causes the transaction to fail asynchronously.
     const registration = {
       ...registrationMtn,
-      phoneNumber: '100000004', // Triggers invalidPhoneNumber in the mock service
+      phoneNumberPayment: '100000004', // Triggers invalidPhoneNumber in the mock service
       referenceId: 'mtn-invalid-phone',
     };
     const paymentReferenceIds = [registration.referenceId];
@@ -269,7 +269,7 @@ describe('Do payment with FSP: MTN', () => {
     // MTN returns 409 CONFLICT, then getTransferStatus returns SUCCESSFUL.
     const registration = {
       ...registrationMtn,
-      phoneNumber: '100000001', // Triggers failDuplicate in the mock service
+      phoneNumberPayment: '100000001', // Triggers failDuplicate in the mock service
       referenceId: 'mtn-duplicate-transaction',
     };
     const paymentReferenceIds = [registration.referenceId];
@@ -324,7 +324,7 @@ describe('Do payment with FSP: MTN', () => {
     // Arrange
     const registration = {
       ...registrationMtn,
-      phoneNumber: '100000002', // Triggers failInternalError in the mock service
+      phoneNumberPayment: '100000002', // Triggers failInternalError in the mock service
       referenceId: 'mtn-retry-payment',
     };
     const paymentReferenceIds = [registration.referenceId];
@@ -353,7 +353,7 @@ describe('Do payment with FSP: MTN', () => {
     await updateRegistration(
       programId,
       registration.referenceId,
-      { phoneNumber: registrationMtn.phoneNumber },
+      { phoneNumberPayment: registrationMtn.phoneNumberPayment },
       'automated test',
       accessToken,
     );
