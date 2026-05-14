@@ -96,4 +96,4 @@ When `MTN_MODE=MOCK`, the following phone numbers trigger specific scenarios:
 
 ## Further Reading
 
-For the full integration architecture, transaction flow, API details, and error handling, see [docs/fsp-mtn.md](../../../../../../../docs/fsp-mtn.md).
+For the full integration architecture, transaction flow, API details, and error handling, see [docs/fsp-mtn.md](https://github.com/rodekruis/dev-internal-documentation/tree/main/MTN).
