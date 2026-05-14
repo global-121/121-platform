@@ -642,7 +642,8 @@ export class TransactionJobsCreationService {
         return {
           ...base!,
           // FSP-specific additions:
-          phoneNumber: registrationView[FspAttributes.phoneNumber]!,
+          phoneNumberPayment:
+            registrationView[FspAttributes.phoneNumberPayment]!,
         };
       },
     );
