@@ -12,29 +12,13 @@ import { MessageQueuesService } from '@121-service/src/notifications/message-que
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
-import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
-import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-
-const defaultMessageJob = {
-  whatsappPhoneNumber: '1234567890',
-  phoneNumber: '1234567890',
-  preferredLanguage: RegistrationPreferredLanguage.en,
-  referenceId: 'ref-test',
-  message: 'test message',
-  messageTemplateKey: 'messageTemplateKey',
-  messageContentType: MessageContentType.custom,
-  userId: 1,
-} as MessageJobDto;
 
 describe('MessageQueuesService', () => {
   let queueMessageService: MessageQueuesService;
   let queuesService: QueuesRegistryService;
   let programAttributesService: ProgramAttributesService;
   let messageTemplateRepository: Repository<MessageTemplateEntity>;
-  let registrationDataService: RegistrationDataService;
 
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(MessageQueuesService)
@@ -49,7 +33,6 @@ describe('MessageQueuesService', () => {
     queueMessageService = unit;
     queuesService = unitRef.get(QueuesRegistryService);
     programAttributesService = unitRef.get(ProgramAttributesService);
-    registrationDataService = unitRef.get(RegistrationDataService);
     messageTemplateRepository = unitRef.get(
       getRepositoryToken(MessageTemplateEntity) as any,
     );
@@ -59,87 +42,35 @@ describe('MessageQueuesService', () => {
     expect(queueMessageService).toBeDefined();
   });
 
-  it('should add message to queue registration view', async () => {
+  it('should add message to queue', async () => {
     // Arrange
-    const registration = new RegistrationViewEntity();
-    registration.id = 2;
-    registration.referenceId = 'refview';
-    registration.preferredLanguage = RegistrationPreferredLanguage.fr;
-    registration.phoneNumber = '234567891';
-    registration.programId = 1;
-    registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber] =
-      '0987654321';
+    const messageJob = {
+      registrationId: 2,
+      programId: 1,
+      whatsappPhoneNumber: '1234567890',
+      phoneNumber: '1234567890',
+      preferredLanguage: RegistrationPreferredLanguage.en,
+      referenceId: 'ref-test',
+      message: 'test message',
+      messageTemplateKey: 'messageTemplateKey',
+      messageContentType: MessageContentType.custom,
+      messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+      userId: 1,
+    } satisfies MessageJobDto;
 
     // Act
     await queueMessageService.addMessageJob({
-      registration,
-      message: 'test message',
-      messageTemplateKey: defaultMessageJob.messageTemplateKey,
-      messageContentType: MessageContentType.custom,
-      messageProcessType: MessageProcessType.whatsappTemplateGeneric,
-      userId: defaultMessageJob.userId,
+      ...messageJob,
+      extendedMessageProcessType: messageJob.messageProcessType,
     });
 
     // Assert
     expect(queuesService.createMessageSmallBulkQueue.add).toHaveBeenCalledWith(
       ProcessNameMessage.send,
       {
-        ...defaultMessageJob,
-        whatsappPhoneNumber:
-          registration[
-            DefaultRegistrationDataAttributeNames.whatsappPhoneNumber
-          ],
-        phoneNumber: registration.phoneNumber,
-        preferredLanguage: registration.preferredLanguage,
-        registrationId: registration.id,
-        programId: registration.programId,
-        referenceId: registration.referenceId,
+        ...messageJob,
         customData: undefined,
         mediaUrl: undefined,
-        messageProcessType: MessageProcessType.whatsappTemplateGeneric,
-      },
-    );
-  });
-
-  it('should add message to queue registration entity', async () => {
-    // Arrange
-    const whatsappNumber = '0987654321';
-    const registration = new RegistrationEntity();
-    registration.id = 1;
-    registration.referenceId = 'ref';
-    registration.preferredLanguage = RegistrationPreferredLanguage.en;
-    registration.phoneNumber = '1234567890';
-    registration.programId = 1;
-
-    const mockGetRegistrationDataValueByName = jest
-      .spyOn(registrationDataService, 'getRegistrationDataValueByName')
-      .mockResolvedValue(whatsappNumber);
-
-    // Act
-    await queueMessageService.addMessageJob({
-      registration,
-      message: 'test message',
-      messageTemplateKey: defaultMessageJob.messageTemplateKey,
-      messageContentType: MessageContentType.custom,
-      messageProcessType: MessageProcessType.whatsappTemplateGeneric,
-      userId: defaultMessageJob.userId,
-    });
-
-    // Assert
-    expect(mockGetRegistrationDataValueByName).toHaveBeenCalledTimes(1);
-    expect(queuesService.createMessageSmallBulkQueue.add).toHaveBeenCalledWith(
-      ProcessNameMessage.send,
-      {
-        ...defaultMessageJob,
-        whatsappPhoneNumber: whatsappNumber,
-        phoneNumber: registration.phoneNumber,
-        preferredLanguage: registration.preferredLanguage,
-        registrationId: registration.id,
-        referenceId: registration.referenceId,
-        programId: registration.programId,
-        customData: undefined,
-        mediaUrl: undefined,
-        messageProcessType: MessageProcessType.whatsappTemplateGeneric,
       },
     );
   });

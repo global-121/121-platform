@@ -25,6 +25,7 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
+import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserModule } from '@121-service/src/user/user.module';
@@ -48,6 +49,7 @@ import { UserModule } from '@121-service/src/user/user.module';
     RegistrationDataModule,
     QueuesRegistryModule,
     TransactionsModule,
+    RegistrationsModule,
   ],
   providers: [
     MessageIncomingService,

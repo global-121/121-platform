@@ -164,7 +164,7 @@ export class IntersolveVoucherService {
     }
 
     // If no WhatsApp: return early
-    if (!useWhatsapp) {
+    if (!useWhatsapp || !whatsappPhoneNumber) {
       paResult.status = TransactionStatusEnum.success;
       return paResult;
     }
@@ -176,6 +176,7 @@ export class IntersolveVoucherService {
       paResult,
       transactionId,
       bulkSize,
+      whatsappPhoneNumber,
       userId,
     });
   }
@@ -273,6 +274,7 @@ export class IntersolveVoucherService {
     transactionId,
     bulkSize,
     userId,
+    whatsappPhoneNumber,
   }: {
     programFspConfigurationId: number;
     referenceId: string;
@@ -280,6 +282,7 @@ export class IntersolveVoucherService {
     transactionId: number;
     bulkSize: number;
     userId: number;
+    whatsappPhoneNumber: string;
   }): Promise<PaTransactionResultDto> {
     const transferResult = await this.sendVoucherWhatsapp({
       referenceId,
@@ -287,6 +290,7 @@ export class IntersolveVoucherService {
       bulkSize,
       userId,
       programFspConfigurationId,
+      whatsappPhoneNumber,
     });
 
     paResult.status = transferResult.status;
@@ -301,12 +305,14 @@ export class IntersolveVoucherService {
     bulkSize,
     userId,
     programFspConfigurationId,
+    whatsappPhoneNumber,
   }: {
     referenceId: string;
     transactionId: number;
     bulkSize: number;
     userId: number;
     programFspConfigurationId: number;
+    whatsappPhoneNumber: string;
   }): Promise<PaTransactionResultDto> {
     const result = new PaTransactionResultDto();
     result.referenceId = referenceId;
@@ -328,15 +334,20 @@ export class IntersolveVoucherService {
       language,
     });
 
+    // TODO: Refactor this to be called from the TransactionJobsIntersolveVoucherService
+    // As the IntersolveVoucherService should ideally not have to import other modules such as transactions or notifications
     await this.queueMessageService.addMessageJob({
-      registration,
+      registrationId: registration.id,
+      programId,
+      referenceId,
+      whatsappPhoneNumber,
       contentSid: contentSid ?? undefined,
       messageContentType: MessageContentType.paymentTemplated,
-      messageProcessType: MessageProcessType.whatsappTemplateVoucher,
+      extendedMessageProcessType: MessageProcessType.whatsappTemplateVoucher,
       customData: {
         transactionData: { transactionId, programFspConfigurationId },
       },
-      bulksize: bulkSize,
+      bulkSize,
       userId,
     });
     result.status = TransactionStatusEnum.waiting;

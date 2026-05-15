@@ -46,9 +46,6 @@ describe('TransactionJobsHelperService', () => {
     );
 
     jest
-      .spyOn(registrationScopedRepository, 'getByReferenceId')
-      .mockResolvedValue(mockedRegistration);
-    jest
       .spyOn(registrationScopedRepository, 'updateUnscoped')
       .mockResolvedValue({} as UpdateResult);
 
@@ -57,25 +54,6 @@ describe('TransactionJobsHelperService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
-  });
-
-  describe('getRegistrationOrThrow', () => {
-    it('should return registration if found', async () => {
-      const result = await service.getRegistrationOrThrow('ref-123');
-      expect(result).toBe(mockedRegistration);
-      expect(
-        registrationScopedRepository.getByReferenceId,
-      ).toHaveBeenCalledWith({ referenceId: 'ref-123' });
-    });
-
-    it('should throw if registration not found', async () => {
-      jest
-        .spyOn(registrationScopedRepository, 'getByReferenceId')
-        .mockResolvedValueOnce(null);
-      await expect(service.getRegistrationOrThrow('not-found')).rejects.toThrow(
-        'Registration was not found for referenceId not-found',
-      );
-    });
   });
 
   describe('logTransactionJobStart', () => {

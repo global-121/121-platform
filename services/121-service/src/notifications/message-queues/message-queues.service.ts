@@ -22,10 +22,6 @@ import { MessageSenderUserId } from '@121-service/src/notifications/types/messag
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
-import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
-import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 @Injectable()
@@ -35,7 +31,6 @@ export class MessageQueuesService {
   private readonly queueNameToQueueMap: Partial<Record<QueueNames, Queue>>;
 
   public constructor(
-    private readonly registrationDataService: RegistrationDataService,
     private readonly programAttributesService: ProgramAttributesService,
     private readonly queuesService: QueuesRegistryService,
   ) {
@@ -54,64 +49,63 @@ export class MessageQueuesService {
   }
 
   public async addMessageJob({
-    registration,
+    registrationId,
+    referenceId,
+    programId,
+    preferredLanguage,
+    phoneNumber,
+    whatsappPhoneNumber,
+    extendedMessageProcessType,
     message,
     contentSid,
     messageTemplateKey,
     messageContentType,
-    messageProcessType,
     mediaUrl,
     customData,
-    bulksize,
     userId,
+    bulkSize,
   }: {
-    registration: RegistrationEntity | Omit<RegistrationViewEntity, 'data'>;
+    registrationId: number;
+    referenceId: string;
+    programId: number;
+    preferredLanguage?: RegistrationPreferredLanguage | null;
+    phoneNumber?: string;
+    whatsappPhoneNumber?: string;
+    extendedMessageProcessType: ExtendedMessageProccessType;
     message?: string;
     contentSid?: string;
     messageTemplateKey?: string;
     messageContentType: MessageContentType;
-    messageProcessType: ExtendedMessageProccessType;
-    mediaUrl?: string | null;
+    mediaUrl?: string;
     customData?: MessageJobCustomDataDto;
-    bulksize?: number;
     userId: MessageSenderUserId;
+    bulkSize?: number;
   }): Promise<void> {
-    let whatsappPhoneNumber =
-      registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber];
-    if (registration instanceof RegistrationEntity) {
-      whatsappPhoneNumber =
-        await this.registrationDataService.getRegistrationDataValueByName(
-          registration,
-          DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
-        );
-    }
-
     // If messageProcessType is smsOrWhatsappTemplateGeneric, check if registration has whatsappPhoneNumber
-    if (
-      messageProcessType ===
+    const messageProcessType: MessageProcessType =
+      extendedMessageProcessType ===
       MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric
-    ) {
-      messageProcessType = whatsappPhoneNumber
-        ? MessageProcessType.whatsappTemplateGeneric
-        : MessageProcessType.sms;
-    }
+        ? whatsappPhoneNumber
+          ? MessageProcessType.whatsappTemplateGeneric
+          : MessageProcessType.sms
+        : extendedMessageProcessType;
 
     try {
-      const queueName = this.getQueueName(messageProcessType, bulksize);
+      const queueName = this.getQueueName(messageProcessType, bulkSize);
       const messageJob: MessageJobDto = {
         messageProcessType,
-        registrationId: registration.id,
-        referenceId: registration.referenceId,
+        registrationId,
+        referenceId,
         preferredLanguage:
-          registration.preferredLanguage ?? RegistrationPreferredLanguage.en,
+          preferredLanguage ?? RegistrationPreferredLanguage.en,
         whatsappPhoneNumber,
-        phoneNumber: registration.phoneNumber ?? undefined,
-        programId: registration.programId,
+        phoneNumber,
+        programId,
         message,
         contentSid,
         messageTemplateKey,
         messageContentType,
-        mediaUrl: mediaUrl ?? undefined,
+        mediaUrl,
         customData,
         userId,
       };
