@@ -242,6 +242,19 @@ export class ProgramApiService extends DomainApiService {
     });
   }
 
+  getProgramRegistrationAttributesWithUntranslatedLabels({
+    programId,
+  }: {
+    programId: Signal<number | string>;
+  }) {
+    return this.generateQueryOptions<Attribute[]>({
+      path: [BASE_ENDPOINT, programId, 'attributes'],
+      params: {
+        includeProgramRegistrationAttributes: true,
+      },
+    });
+  }
+
   getProgramAttributes({
     programId,
     includeProgramRegistrationAttributes = false,
@@ -263,22 +276,43 @@ export class ProgramApiService extends DomainApiService {
         includeTemplateDefaultAttributes,
         filterShowInRegistrationsTable,
       },
-      processResponse: (attributes) =>
-        unique(attributes, (attribute) => attribute.name).map((attribute) => {
-          const translatedLabel = this.translatableStringService.translate(
-            attribute.label,
-          );
-          return {
-            ...attribute,
-            label:
-              translatedLabel ??
-              (isGenericAttribute(attribute.name)
-                ? ATTRIBUTE_LABELS[attribute.name]
-                : undefined) ??
-              attribute.name,
-          };
-        }),
+      processResponse: (attributes) => {
+        return unique(attributes, (attribute) => attribute.name).map(
+          (attribute) => {
+            return {
+              ...attribute,
+              label: this.getAttributeTranslatedLabelOrName(attribute),
+            };
+          },
+        );
+      },
     });
+  }
+
+  private getAttributeTranslatedLabelOrName(attribute: Attribute): string {
+    if (attribute.label) {
+      const translated = this.translatableStringService.translate(
+        attribute.label,
+      );
+      if (translated) {
+        return translated;
+      }
+    }
+
+    if (attribute.koboLabel) {
+      const translated = this.translatableStringService.translate(
+        attribute.koboLabel,
+      );
+      if (translated) {
+        return translated;
+      }
+    }
+
+    if (isGenericAttribute(attribute.name)) {
+      return ATTRIBUTE_LABELS[attribute.name];
+    }
+
+    return attribute.name;
   }
 
   assignProgramUser(
