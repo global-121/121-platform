@@ -4,13 +4,11 @@ import { Queue } from 'bull';
 import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
 import { MtnReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.service';
-import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
@@ -33,7 +31,6 @@ describe('MtnReconciliationService', () => {
   let queuesRegistryService: jest.Mocked<QueuesRegistryService>;
   let transactionRepository: jest.Mocked<TransactionRepository>;
   let transactionEventsScopedRepository: jest.Mocked<TransactionEventsScopedRepository>;
-  let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
   let mockMtnTransferCallbackQueue: jest.Mocked<Queue>;
 
   beforeEach(() => {
@@ -52,9 +49,6 @@ describe('MtnReconciliationService', () => {
     transactionRepository = unitRef.get(TransactionRepository);
     transactionEventsScopedRepository = unitRef.get(
       TransactionEventsScopedRepository,
-    );
-    programFspConfigurationRepository = unitRef.get(
-      ProgramFspConfigurationRepository,
     );
 
     (queuesRegistryService as any).mtnTransferCallbackQueue =
@@ -86,22 +80,11 @@ describe('MtnReconciliationService', () => {
     (
       transactionEventsScopedRepository.findLatestEventByTransactionId as jest.Mock
     ).mockResolvedValue({ programFspConfigurationId: 1 });
-    (
-      programFspConfigurationRepository.getPropertiesByNamesOrThrow as jest.Mock
-    ).mockResolvedValue([
-      {
-        name: FspConfigurationProperties.subscriptionKeyMtn,
-        value: 'test-subscription-key',
-      },
-      {
-        name: FspConfigurationProperties.referenceIdMtn,
-        value: 'test-reference-id',
-      },
-      {
-        name: FspConfigurationProperties.apiKeyMtn,
-        value: 'test-api-key',
-      },
-    ]);
+    (mtnService.getMtnFspConfig as jest.Mock).mockResolvedValue({
+      subscriptionKey: 'test-subscription-key',
+      referenceId: 'test-reference-id',
+      apiKey: 'test-api-key',
+    });
   });
 
   describe('processTransferCallback', () => {

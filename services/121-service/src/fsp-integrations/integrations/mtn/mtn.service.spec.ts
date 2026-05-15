@@ -26,7 +26,7 @@ describe('MtnService', () => {
   let mtnService: MtnService;
 
   beforeEach(() => {
-    mtnService = new MtnService(jest.fn() as any);
+    mtnService = new MtnService(jest.fn() as any, jest.fn() as any);
   });
 
   describe('generateMtnReferenceId', () => {

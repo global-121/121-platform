@@ -6,7 +6,6 @@ import { MtnTransferResult } from '@121-service/src/fsp-integrations/integration
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
-import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { MtnTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/mtn-transaction-job.dto';
@@ -15,7 +14,6 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 
 @Injectable()
@@ -26,7 +24,6 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
     private readonly transactionsService: TransactionsService,
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
     private readonly programRepository: ProgramRepository,
-    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
   public async processTransactionJob(
@@ -71,7 +68,7 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
     }
 
     // 4. Retrieve per-program MTN wallet credentials
-    const requestIdentity = await this.getMtnFspConfig({
+    const requestIdentity = await this.mtnService.getMtnFspConfig({
       programFspConfigurationId: transactionJob.programFspConfigurationId,
     });
 
@@ -226,32 +223,5 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
           ? (transferStatus.reason ?? 'unknown')
           : undefined,
     });
-  }
-
-  private async getMtnFspConfig({
-    programFspConfigurationId,
-  }: {
-    programFspConfigurationId: number;
-  }): Promise<MtnRequestIdentity> {
-    const programFspConfigProperties =
-      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
-        programFspConfigurationId,
-        names: [
-          FspConfigurationProperties.subscriptionKeyMtn,
-          FspConfigurationProperties.referenceIdMtn,
-          FspConfigurationProperties.apiKeyMtn,
-        ],
-      });
-    return {
-      subscriptionKey: programFspConfigProperties.find(
-        (c) => c.name === FspConfigurationProperties.subscriptionKeyMtn,
-      )?.value as string,
-      referenceId: programFspConfigProperties.find(
-        (c) => c.name === FspConfigurationProperties.referenceIdMtn,
-      )?.value as string,
-      apiKey: programFspConfigProperties.find(
-        (c) => c.name === FspConfigurationProperties.apiKeyMtn,
-      )?.value as string,
-    };
   }
 }

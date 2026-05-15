@@ -1,17 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
 import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
-import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
 import { MtnTransferCallbackDto } from '@121-service/src/fsp-integrations/reconciliation/mtn/dtos/mtn-transfer-callback.dto';
 import { MtnTransferCallbackJobDto } from '@121-service/src/fsp-integrations/reconciliation/mtn/dtos/mtn-transfer-callback-job.dto';
-import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
@@ -23,7 +20,6 @@ export class MtnReconciliationService {
     private readonly queuesService: QueuesRegistryService,
     private readonly transactionRepository: TransactionRepository,
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
-    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
   public async processTransferCallback(
@@ -105,7 +101,7 @@ export class MtnReconciliationService {
       await this.transactionEventScopedRepository.findLatestEventByTransactionId(
         mtnTransferCallbackJob.transactionId,
       );
-    const requestIdentity = await this.getMtnFspConfig({
+    const requestIdentity = await this.mtnService.getMtnFspConfig({
       programFspConfigurationId: latestEvent.programFspConfigurationId,
     });
 
@@ -136,33 +132,5 @@ export class MtnReconciliationService {
     console.log(
       `[MTN Callback Job] Completed processing - transactionId: ${mtnTransferCallbackJob.transactionId}, finalStatus: ${transactionStatus}`,
     );
-  }
-
-  private async getMtnFspConfig({
-    programFspConfigurationId,
-  }: {
-    programFspConfigurationId: number;
-  }): Promise<MtnRequestIdentity> {
-    const programFspConfigProperties =
-      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
-        programFspConfigurationId,
-        names: [
-          FspConfigurationProperties.subscriptionKeyMtn,
-          FspConfigurationProperties.referenceIdMtn,
-          FspConfigurationProperties.apiKeyMtn,
-        ],
-      });
-
-    return {
-      subscriptionKey: programFspConfigProperties.find(
-        (c) => c.name === FspConfigurationProperties.subscriptionKeyMtn,
-      )?.value as string,
-      referenceId: programFspConfigProperties.find(
-        (c) => c.name === FspConfigurationProperties.referenceIdMtn,
-      )?.value as string,
-      apiKey: programFspConfigProperties.find(
-        (c) => c.name === FspConfigurationProperties.apiKeyMtn,
-      )?.value as string,
-    };
   }
 }

@@ -7,13 +7,46 @@ import { CreateTransferParams } from '@121-service/src/fsp-integrations/integrat
 import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnTransferStatusResponse } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-transfer-status-response.interface';
 import { MtnApiService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.service';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
 export class MtnService {
-  public constructor(private readonly mtnApiService: MtnApiService) {}
+  public constructor(
+    private readonly mtnApiService: MtnApiService,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+  ) {}
+
+  public async getMtnFspConfig({
+    programFspConfigurationId,
+  }: {
+    programFspConfigurationId: number;
+  }): Promise<MtnRequestIdentity> {
+    const programFspConfigProperties =
+      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
+        programFspConfigurationId,
+        names: [
+          FspConfigurationProperties.subscriptionKeyMtn,
+          FspConfigurationProperties.referenceIdMtn,
+          FspConfigurationProperties.apiKeyMtn,
+        ],
+      });
+
+    return {
+      subscriptionKey: programFspConfigProperties.find(
+        (c) => c.name === FspConfigurationProperties.subscriptionKeyMtn,
+      )?.value as string,
+      referenceId: programFspConfigProperties.find(
+        (c) => c.name === FspConfigurationProperties.referenceIdMtn,
+      )?.value as string,
+      apiKey: programFspConfigProperties.find(
+        (c) => c.name === FspConfigurationProperties.apiKeyMtn,
+      )?.value as string,
+    };
+  }
 
   // This ensures:
   //   a. Payment retry: a new mtnReferenceId is generated (different failedTransactionAttempts count), which will not be blocked by MTN API, as desired.

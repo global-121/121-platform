@@ -4,7 +4,6 @@ import { MtnTransferResult } from '@121-service/src/fsp-integrations/integration
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
-import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsMtnService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-mtn.service';
 import { MtnTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/mtn-transaction-job.dto';
@@ -12,7 +11,6 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 
 jest.mock('@121-service/src/env', () => ({
@@ -52,7 +50,6 @@ describe('TransactionJobsMtnService', () => {
   let transactionJobsHelperService: TransactionJobsHelperService;
   let transactionsService: TransactionsService;
   let programRepository: ProgramRepository;
-  let programFspConfigurationRepository: ProgramFspConfigurationRepository;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -70,10 +67,6 @@ describe('TransactionJobsMtnService', () => {
     );
     transactionsService = unitRef.get<TransactionsService>(TransactionsService);
     programRepository = unitRef.get<ProgramRepository>(ProgramRepository);
-    programFspConfigurationRepository =
-      unitRef.get<ProgramFspConfigurationRepository>(
-        ProgramFspConfigurationRepository,
-      );
 
     jest
       .spyOn(transactionJobsHelperService, 'logTransactionJobStart')
@@ -99,22 +92,9 @@ describe('TransactionJobsMtnService', () => {
     jest.spyOn(programRepository, 'findOneOrFail').mockResolvedValue({
       currency: 'UGX',
     } as any);
-    jest
-      .spyOn(programFspConfigurationRepository, 'getPropertiesByNamesOrThrow')
-      .mockResolvedValue([
-        {
-          name: FspConfigurationProperties.subscriptionKeyMtn,
-          value: 'test-subscription-key',
-        },
-        {
-          name: FspConfigurationProperties.referenceIdMtn,
-          value: 'test-reference-id',
-        },
-        {
-          name: FspConfigurationProperties.apiKeyMtn,
-          value: 'test-api-key',
-        },
-      ]);
+    (mtnService.getMtnFspConfig as jest.Mock).mockResolvedValue(
+      testRequestIdentity,
+    );
   });
 
   it('should be defined', () => {
