@@ -29,12 +29,14 @@ export class Attribute {
   public name: string;
   public type: RegistrationAttributeTypes;
   public isRequired?: boolean;
-  public label: UILanguageTranslation | null;
+  public label?: UILanguageTranslation | null;
+  public koboLabel?: UILanguageTranslation | null;
   public options?: QuestionOption[] | null;
   public pattern?: string | null;
 }
 
 export type AttributeWithOptionalLabel = Omit<Attribute, 'label'> &
+  Omit<Attribute, 'koboLabel'> &
   Partial<Pick<Attribute, 'label'>>;
 
 export enum RegistrationAttributeTypes {

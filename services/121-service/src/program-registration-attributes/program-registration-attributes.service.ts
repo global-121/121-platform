@@ -203,6 +203,7 @@ export class ProgramRegistrationAttributesService {
         name: c.name,
         type: c.type,
         label: c.label,
+        koboLabel: c.koboLabel,
         isRequired: c.isRequired,
       };
     });

@@ -81,7 +81,16 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
     },
   })
   @IsNotEmpty()
-  public readonly label: RegistrationPreferredLanguageTranslation;
+  public readonly label?: RegistrationPreferredLanguageTranslation | null;
+
+  @ApiProperty({
+    example: {
+      en: 'Please enter your last name:',
+      fr: "Remplissez votre nom, s'il vous plaît:",
+    },
+  })
+  @IsNotEmpty()
+  public readonly koboLabel?: RegistrationPreferredLanguageTranslation | null;
 
   @ApiProperty({
     example: RegistrationAttributeTypes.text,
