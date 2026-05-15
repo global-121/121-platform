@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { MtnMockReferenceId } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-mock-reference-id.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -158,67 +159,14 @@ describe('Do payment with FSP: MTN', () => {
     expect(transactionEventDescriptions).toEqual(expectedEventsForSyncError);
   });
 
-  it('should yield error transaction when the MTN callback indicates a failed transfer', async () => {
-    // Arrange: the transfer is accepted (202), but getTransferStatus returns FAILED.
-    // This simulates a real-world scenario where the disbursement is accepted
-    // initially but later fails (e.g., invalid recipient).
-    const registration = {
-      ...registrationMtn,
-      phoneNumberPayment: '100000003', // Triggers failCallback in the mock service
-      referenceId: 'mtn-failed-callback',
-    };
-    const paymentReferenceIds = [registration.referenceId];
-
-    await seedIncludedRegistrations([registration], programId, accessToken);
-
-    // Act
-    const doPaymentResponse = await doPayment({
-      programId,
-      transferValue,
-      referenceIds: paymentReferenceIds,
-      accessToken,
-    });
-    const paymentId = doPaymentResponse.body.id;
-
-    await waitForPaymentAndTransactionsToComplete({
-      programId,
-      paymentReferenceIds,
-      paymentId,
-      accessToken,
-      maxWaitTimeMs: 10_000,
-      completeStatuses: [TransactionStatusEnum.error],
-    });
-
-    // Assert
-    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
-      programId,
-      paymentId,
-      registrationReferenceId: registration.referenceId,
-      accessToken,
-    });
-    const transaction = getTransactionsResult.body.data[0];
-
-    expect(transaction.status).toBe(TransactionStatusEnum.error);
-    expect(transaction.errorMessage).toBe('PAYER_NOT_FOUND');
-
-    const transactionEventDescriptions = await getTransactionEventDescriptions({
-      programId,
-      transactionId: transaction.id,
-      accessToken,
-    });
-    expect(transactionEventDescriptions).toEqual(
-      expectedEventsForCallbackResult,
-    );
-  });
-
-  it('should yield error transaction when the phone number is invalid', async () => {
+  it('should yield error transaction when transfer is accepted but callback indicates failure due to invalid phone number', async () => {
     // Arrange: the transfer is accepted (202), but getTransferStatus returns FAILED
-    // with PAYEE_NOT_FOUND. This matches MTN production behavior where an invalid
-    // partyId causes the transaction to fail asynchronously.
+    // with PAYEE_NOT_FOUND. This simulates a real-world scenario where the
+    // disbursement is accepted initially but later fails (e.g., invalid recipient).
+    // The mock referenceId drives the failure scenario statelessly.
     const registration = {
       ...registrationMtn,
-      phoneNumberPayment: '100000004', // Triggers invalidPhoneNumber in the mock service
-      referenceId: 'mtn-invalid-phone',
+      referenceId: MtnMockReferenceId.failPayeeNotFound,
     };
     const paymentReferenceIds = [registration.referenceId];
 

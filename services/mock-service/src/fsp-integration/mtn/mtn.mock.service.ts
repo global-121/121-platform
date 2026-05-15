@@ -4,14 +4,19 @@ import { MtnAuthenticateResponseDto } from '@mock-service/src/fsp-integration/mt
 import { MtnCreateTransferRequestDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-create-transfer-request.dto';
 import { MtnTransferStatusResponseDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-transfer-status-response.dto';
 
+// Used to drive createTransfer error responses based on phone number.
 enum MtnMockPhoneNumber {
   failDuplicate = '100000001',
   failInternalError = '100000002',
-  failCallback = '100000003',
-  invalidPhoneNumber = '100000004',
 }
 
-const MTN_MOCK_NOT_FOUND_REFERENCE_ID = '00000000-0000-0000-0000-000000000404';
+// Mock referenceIds used to drive the (stateless) mock from end-to-end tests.
+// `MtnService.generateMtnReferenceId` passes them through unchanged so the
+// mock can derive the scenario from the referenceId alone.
+export enum MtnMockReferenceId {
+  notFound = '00000000-0000-0000-0000-000000000404',
+  failPayeeNotFound = '00000000-0000-0000-0000-000000000402',
+}
 
 export const MtnAuthToken = 'mock-mtn-access-token-12345';
 
@@ -19,11 +24,6 @@ export const MtnAuthToken = 'mock-mtn-access-token-12345';
 export class MtnMockService {
   private static readonly uuidPattern =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-  // Tracks reference IDs that should return FAILED on getTransferStatus.
-  private readonly failedReferenceIds = new Set<string>();
-  // Tracks reference IDs for invalid phone number scenario (PAYEE_NOT_FOUND).
-  private readonly invalidPhoneReferenceIds = new Set<string>();
 
   public authenticate({
     authorization,
@@ -96,19 +96,6 @@ export class MtnMockService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-
-    // Transfer accepted. The 121-service polls getTransferStatus and triggers
-    // its own callback, so the mock does not need to push a callback here.
-    if (body.payee.partyId === MtnMockPhoneNumber.failCallback) {
-      this.failedReferenceIds.add(referenceId);
-    }
-
-    // Invalid phone number: transfer is accepted but later fails with PAYEE_NOT_FOUND.
-    // This matches MTN production behavior where an invalid partyId causes the
-    // transaction to fail asynchronously.
-    if (body.payee.partyId === MtnMockPhoneNumber.invalidPhoneNumber) {
-      this.invalidPhoneReferenceIds.add(referenceId);
-    }
   }
 
   public getTransferStatus({
@@ -125,7 +112,7 @@ export class MtnMockService {
       );
     }
 
-    if (referenceId === MTN_MOCK_NOT_FOUND_REFERENCE_ID) {
+    if (referenceId === MtnMockReferenceId.notFound) {
       throw new HttpException(
         {
           code: 'RESOURCE_NOT_FOUND',
@@ -135,11 +122,7 @@ export class MtnMockService {
       );
     }
 
-    if (this.failedReferenceIds.has(referenceId)) {
-      return { status: 'FAILED', reason: 'PAYER_NOT_FOUND' };
-    }
-
-    if (this.invalidPhoneReferenceIds.has(referenceId)) {
+    if (referenceId === MtnMockReferenceId.failPayeeNotFound) {
       return { status: 'FAILED', reason: 'PAYEE_NOT_FOUND' };
     }
 

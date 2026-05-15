@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
+import { env } from '@121-service/src/env';
+import { MtnMockReferenceId } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-mock-reference-id.enum';
 import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
 import { CreateTransferParams } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/create-transfer-params.interface';
 import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnTransferStatusResponse } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-transfer-status-response.interface';
 import { MtnApiService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.service';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
@@ -24,9 +27,28 @@ export class MtnService {
     transactionId: number;
     failedTransactionAttempts: number;
   }): string {
-    return generateUUIDFromSeed(
+    const seededMtnReferenceId = generateUUIDFromSeed(
       `ReferenceId=${referenceId},TransactionId=${transactionId},Attempt=${failedTransactionAttempts}`,
     );
+
+    if (env.MTN_MODE !== FspMode.mock) {
+      return seededMtnReferenceId;
+    }
+
+    // Mock-mode only: if the registration's referenceId is one of the
+    // `MtnMockReferenceId` UUIDs, pass it through unchanged instead of seeding
+    // a new UUID. This is required because the mock's `getTransfer`
+    // endpoint receives *only* the referenceId — it has no access to the
+    // phone number or any other field — so the failure scenario must be
+    // encoded in the referenceId itself for the mock to route on it.
+    // Having mock related code here in the 121-service is sub-optimal however
+    // since GET getTransfer only accepts a referenceId which is generated here
+    // there is no good alternative.
+    const mtnMockReferenceIds = Object.values(MtnMockReferenceId) as string[];
+    if (mtnMockReferenceIds.includes(referenceId)) {
+      return referenceId;
+    }
+    return seededMtnReferenceId;
   }
 
   public async createTransfer({
