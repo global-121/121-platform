@@ -5,17 +5,15 @@ import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
-import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
@@ -24,71 +22,36 @@ export class TransactionJobsHelperService {
   public constructor(
     private readonly messageTemplateService: MessageTemplateService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    private readonly queueMessageService: MessageQueuesService,
+    private readonly registrationsService: RegistrationsService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly transactionRepository: TransactionRepository,
   ) {}
 
-  public async getRegistrationOrThrow(
-    referenceId: string,
-  ): Promise<RegistrationEntity> {
-    const registration =
-      await this.registrationScopedRepository.getByReferenceId({
-        referenceId,
-      });
-    if (!registration) {
-      throw new Error(
-        `Registration was not found for referenceId ${referenceId}`,
-      );
-    }
-    return registration;
-  }
-
-  private async addMessageJobToQueue({
-    registration,
-    userId,
-    message,
-    bulksize,
-  }: {
-    registration: RegistrationEntity | Omit<RegistrationViewEntity, 'data'>;
-    userId: number;
-    message?: string;
-    bulksize?: number;
-  }): Promise<void> {
-    await this.queueMessageService.addMessageJob({
-      registration,
-      message,
-      messageContentType: MessageContentType.payment,
-      messageProcessType:
-        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-      bulksize,
-      userId,
-    });
-  }
-
   public async createMessageAndAddToQueue({
     type,
     programId,
-    registration,
+    referenceId,
     amountTransferred,
     bulkSize,
     userId,
+    preferredLanguage,
   }: {
     type: ProgramNotificationEnum;
     programId: number;
-    registration: RegistrationEntity;
+    referenceId: string;
     amountTransferred: number;
     bulkSize: number;
     userId: number;
-  }) {
+    preferredLanguage: RegistrationPreferredLanguage | null;
+  }): Promise<void> {
     const templates =
       await this.messageTemplateService.getMessageTemplatesByProgramId(
         programId,
         type,
       );
     let messageContent = templates.find(
-      (template) => template.language === registration.preferredLanguage,
+      (template) => template.language === preferredLanguage,
     )?.message;
     if (!messageContent) {
       messageContent = templates.find(
@@ -110,10 +73,14 @@ export class TransactionJobsHelperService {
       }
     }
 
-    await this.addMessageJobToQueue({
-      registration,
+    await this.registrationsService.createMessageJobForRegistration({
+      referenceId,
+      programId,
+      extendedMessageProcessType:
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
       message: messageContent ?? undefined,
-      bulksize: bulkSize,
+      messageContentType: MessageContentType.payment,
+      bulkSize,
       userId,
     });
   }

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Equal } from 'typeorm';
 
 import { DoTransferOrIssueCardResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
@@ -15,17 +16,17 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
 @Injectable()
-export class TransactionJobsIntersolveVisaService
-  implements TransactionJobService<IntersolveVisaTransactionJobDto>
-{
+export class TransactionJobsIntersolveVisaService implements TransactionJobService<IntersolveVisaTransactionJobDto> {
   constructor(
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly transactionsService: TransactionsService,
     private readonly transactionRepository: TransactionRepository,
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly intersolveVisaChildWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
   ) {}
 
@@ -43,10 +44,11 @@ export class TransactionJobsIntersolveVisaService
       isRetry: transactionJob.isRetry,
     });
 
-    const registration =
-      await this.transactionJobsHelperService.getRegistrationOrThrow(
-        transactionJob.referenceId,
-      );
+    const { id: registrationId, preferredLanguage } =
+      await this.registrationScopedRepository.findOneOrFail({
+        where: { referenceId: Equal(transactionJob.referenceId) },
+        select: { id: true, preferredLanguage: true },
+      });
 
     let transferValueInMajorUnit: number;
     try {
@@ -57,7 +59,7 @@ export class TransactionJobsIntersolveVisaService
       transferValueInMajorUnit =
         await this.intersolveVisaService.calculateTransferValueWithWalletRetrieval(
           {
-            registrationId: registration.id,
+            registrationId,
             inputTransferValueInMajorUnit: transactionJob.transferValue,
             maxBalanceInCents,
           },
@@ -95,7 +97,7 @@ export class TransactionJobsIntersolveVisaService
 
       const isChildWalletLinkedToRegistration =
         await this.intersolveVisaChildWalletScopedRepository.hasLinkedChildWalletForRegistrationId(
-          registration.id,
+          registrationId,
         );
       if (!cardDistributionByMail && !isChildWalletLinkedToRegistration) {
         throw new IntersolveVisaApiError(
@@ -105,7 +107,7 @@ export class TransactionJobsIntersolveVisaService
 
       intersolveVisaDoTransferOrIssueCardReturnDto =
         await this.intersolveVisaService.doTransferOrIssueCard({
-          registrationId: registration.id,
+          registrationId,
           createCustomerReference: transactionJob.referenceId,
           transferReference: `ReferenceId=${transactionJob.referenceId},TransactionId=${transactionJob.transactionId}`, // Will be used to generate idempotency key for the transfer
           contactInformation: {
@@ -145,11 +147,12 @@ export class TransactionJobsIntersolveVisaService
     await this.transactionJobsHelperService.createMessageAndAddToQueue({
       type: messageType,
       programId: transactionJob.programId,
-      registration,
+      referenceId: transactionJob.referenceId,
       amountTransferred:
         intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
       bulkSize: transactionJob.bulkSize,
       userId: transactionJob.userId,
+      preferredLanguage,
     });
 
     await this.transactionsService.saveProgress({

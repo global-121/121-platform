@@ -24,24 +24,6 @@ export class RegistrationDataService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
   ) {}
 
-  public async getRegistrationValueByName(
-    registration: RegistrationEntity,
-    name: string,
-  ): Promise<string | undefined> {
-    const registrationDataResult = await this.getRegistrationDataValueByName(
-      registration,
-      name,
-    );
-    if (registrationDataResult) {
-      return registrationDataResult;
-    } else {
-      const registrationResult = registration[name];
-      if (registrationResult) {
-        return registrationResult;
-      }
-    }
-  }
-
   // TODO: Refactor this to accept an array of keys
   public async getRegistrationDataValueByName(
     registration: RegistrationEntity,

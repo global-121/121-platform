@@ -12,7 +12,6 @@ import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/sh
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
-import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
@@ -20,7 +19,6 @@ import { RegistrationsService } from '@121-service/src/registration/services/reg
 describe('IntersolveVisaAccountManagementService', () => {
   let service: IntersolveVisaAccountManagementService;
   let intersolveVisaService: jest.Mocked<IntersolveVisaService>;
-  let queueMessageService: jest.Mocked<MessageQueuesService>;
   let registrationsService: jest.Mocked<RegistrationsService>;
   let intersolveVisaChildWalletScopedRepository: jest.Mocked<IntersolveVisaChildWalletScopedRepository>;
   let walletClosureScopedRepository: jest.Mocked<IntersolveVisaWalletClosureScopedRepository>;
@@ -39,6 +37,7 @@ describe('IntersolveVisaAccountManagementService', () => {
           provide: RegistrationsService,
           useValue: {
             getRegistrationOrThrow: jest.fn(),
+            createMessageJobForRegistration: jest.fn(),
             getContactInformation: jest.fn().mockResolvedValue({
               name: 'Jane Doe',
               addressStreet: 'Main',
@@ -54,12 +53,6 @@ describe('IntersolveVisaAccountManagementService', () => {
           provide: IntersolveVisaDataSynchronizationService,
           useValue: {
             syncData: jest.fn(),
-          },
-        },
-        {
-          provide: MessageQueuesService,
-          useValue: {
-            addMessageJob: jest.fn(),
           },
         },
         {
@@ -110,7 +103,6 @@ describe('IntersolveVisaAccountManagementService', () => {
     }).compile();
 
     service = module.get(IntersolveVisaAccountManagementService);
-    queueMessageService = module.get(MessageQueuesService);
     intersolveVisaService = module.get(IntersolveVisaService);
     registrationsService = module.get(
       RegistrationsService,
@@ -195,11 +187,14 @@ describe('IntersolveVisaAccountManagementService', () => {
         'token-1',
         true,
       );
-      expect(queueMessageService.addMessageJob).toHaveBeenCalledWith({
-        registration,
+      expect(
+        registrationsService.createMessageJobForRegistration,
+      ).toHaveBeenCalledWith({
+        referenceId: 'ref-1',
+        programId: 1,
         messageTemplateKey: ProgramNotificationEnum.pauseVisaCard,
         messageContentType: MessageContentType.custom,
-        messageProcessType:
+        extendedMessageProcessType:
           MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
         userId: 9,
       });
@@ -212,11 +207,14 @@ describe('IntersolveVisaAccountManagementService', () => {
 
       await service.pauseCardAndSendMessage('ref-1', 1, 'token-1', false, 9);
 
-      expect(queueMessageService.addMessageJob).toHaveBeenCalledWith({
-        registration,
+      expect(
+        registrationsService.createMessageJobForRegistration,
+      ).toHaveBeenCalledWith({
+        referenceId: 'ref-1',
+        programId: 1,
         messageTemplateKey: ProgramNotificationEnum.unpauseVisaCard,
         messageContentType: MessageContentType.custom,
-        messageProcessType:
+        extendedMessageProcessType:
           MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
         userId: 9,
       });

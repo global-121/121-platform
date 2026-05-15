@@ -5,7 +5,14 @@ import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
+import {
+  ExtendedMessageProccessType,
+  MessageJobCustomDataDto,
+} from '@121-service/src/notifications/dto/message-job.dto';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
+import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
@@ -22,6 +29,7 @@ import {
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import {
   DefaultRegistrationDataAttributeNames,
+  GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -70,6 +78,7 @@ export class RegistrationsService {
     private readonly registrationsInputValidator: RegistrationsInputValidator,
     private readonly uniqueRegistrationPairRepository: UniqueRegistrationPairRepository,
     private readonly intersolveVisaDataSynchronizationService: IntersolveVisaDataSynchronizationService,
+    private readonly messageQueuesService: MessageQueuesService,
   ) {}
 
   public async getRegistrationOrThrow({
@@ -100,26 +109,99 @@ export class RegistrationsService {
     return registration;
   }
 
-  // This methods can be used to get the same formatted data as the pagination query using referenceId
-  public async getPaginateRegistrationForReferenceId(
-    referenceId: string,
-    programId: number,
-  ) {
+  public async createMessageJobForRegistration({
+    referenceId,
+    programId,
+    extendedMessageProcessType,
+    message,
+    contentSid,
+    messageTemplateKey,
+    messageContentType,
+    mediaUrl,
+    customData,
+    userId,
+    bulkSize,
+  }: {
+    referenceId: string;
+    programId: number;
+    extendedMessageProcessType: ExtendedMessageProccessType;
+    message?: string;
+    contentSid?: string;
+    messageTemplateKey?: string;
+    messageContentType: MessageContentType;
+    mediaUrl?: string;
+    customData?: MessageJobCustomDataDto;
+    userId: MessageSenderUserId;
+    bulkSize?: number;
+  }): Promise<void> {
+    const registration = await this.getOnePaginatedRegistrationByReferenceId({
+      referenceId,
+      programId,
+      select: [
+        'id',
+        GenericRegistrationAttributes.preferredLanguage,
+        DefaultRegistrationDataAttributeNames.phoneNumber,
+        DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
+      ],
+    });
+
+    await this.messageQueuesService.addMessageJob({
+      registrationId: registration.id,
+      referenceId,
+      programId,
+      preferredLanguage: registration.preferredLanguage,
+      phoneNumber:
+        registration[DefaultRegistrationDataAttributeNames.phoneNumber],
+      whatsappPhoneNumber:
+        registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber],
+      extendedMessageProcessType,
+      message,
+      contentSid,
+      messageTemplateKey,
+      messageContentType,
+      mediaUrl,
+      customData,
+      userId,
+      bulkSize,
+    });
+  }
+
+  /**
+   * This method can be used to get the same formatted data as the pagination query using referenceId.
+   * This is a registration view with flattened version of its registrationData.
+   */
+  private async getOnePaginatedRegistrationByReferenceId({
+    referenceId,
+    programId,
+    select,
+  }: {
+    referenceId: string;
+    programId: number;
+    select?: string[];
+  }) {
     const queryBuilder = this.registrationViewScopedRepository
       .createQueryBuilder('registration')
       .andWhere({ referenceId });
     const paginateResult =
       await this.registrationsPaginationService.getPaginate({
-        query: { path: '', limit: 1 },
+        query: { path: '', limit: 1, select },
         programId,
         hasPersonalReadPermission: true,
         queryBuilder,
       });
+    if (paginateResult.data.length !== 1) {
+      throw new Error(
+        `Unexpected error: ReferenceId '${referenceId}' not found in pagination query results.`,
+      );
+    }
     return paginateResult.data[0];
   }
 
-  // This methods can be used to get the same formatted data as the pagination query using referenceId
-  public async getPaginateRegistrationById({
+  /**
+   * This method can be used to get the same formatted data as the pagination query using referenceId.
+   * This is a registration view with flattened version of its registrationData.
+   */
+  public async getOnePaginatedRegistrationById({
     id,
     programId,
   }: {
@@ -391,7 +473,10 @@ export class RegistrationsService {
     const program = registrationToUpdate.program;
 
     const oldViewRegistration =
-      await this.getPaginateRegistrationForReferenceId(referenceId, programId);
+      await this.getOnePaginatedRegistrationByReferenceId({
+        referenceId,
+        programId,
+      });
 
     // Track whether maxPayments has been updated to match paymentCount
     let maxPaymentsMatchesPaymentCount = false;
@@ -448,9 +533,11 @@ export class RegistrationsService {
       nrAttributesUpdated++;
     }
 
-    const newRegistration = await this.getPaginateRegistrationForReferenceId(
-      referenceId,
-      programId,
+    const newRegistration = await this.getOnePaginatedRegistrationByReferenceId(
+      {
+        referenceId,
+        programId,
+      },
     );
 
     if (nrAttributesUpdated > 0) {
@@ -612,10 +699,10 @@ export class RegistrationsService {
 
     return await Promise.all(
       filteredRegistrations.map(async (uniqueRegistration) => {
-        return await this.getPaginateRegistrationForReferenceId(
-          uniqueRegistration.referenceId,
-          uniqueRegistration.programId,
-        );
+        return await this.getOnePaginatedRegistrationByReferenceId({
+          referenceId: uniqueRegistration.referenceId,
+          programId: uniqueRegistration.programId,
+        });
       }),
     );
   }

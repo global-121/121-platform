@@ -49,13 +49,10 @@ graph LR
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->MessageQueuesModule
   IntersolveVoucherModule-->MessageTemplateModule
-  IntersolveVoucherModule-->QueuesRegistryModule
-  IntersolveVoucherModule-->RedisModule
   IntersolveVoucherModule-->RegistrationDataModule
   IntersolveVoucherModule-->RegistrationUtilsModule
-  IntersolveVoucherModule-->TransactionEventsModule
+  IntersolveVoucherModule-->RegistrationsModule
   IntersolveVoucherModule-->TransactionsModule
-  IntersolveVoucherModule-->UserModule
   IntersolveVoucherReconciliationModule-->IntersolveVoucherModule
   IntersolveVoucherReconciliationModule-->ProgramFspConfigurationsModule
   IntersolveVoucherReconciliationModule-->ProgramModule
@@ -69,6 +66,7 @@ graph LR
   MessageIncomingModule-->MessageTemplateModule
   MessageIncomingModule-->QueuesRegistryModule
   MessageIncomingModule-->RegistrationDataModule
+  MessageIncomingModule-->RegistrationsModule
   MessageIncomingModule-->TransactionsModule
   MessageIncomingModule-->UserModule
   MessageIncomingModule-->WhatsappModule

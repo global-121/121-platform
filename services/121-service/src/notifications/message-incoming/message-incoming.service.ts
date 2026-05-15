@@ -22,10 +22,8 @@ import {
 import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
-import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
-import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
@@ -33,6 +31,7 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
@@ -47,8 +46,7 @@ export class MessageIncomingService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(ProgramEntity)
   private programRepository: Repository<ProgramEntity>;
-  @InjectRepository(WhatsappPendingMessageEntity)
-  private readonly whatsappPendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
+
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
 
@@ -61,11 +59,11 @@ export class MessageIncomingService {
     private readonly imageCodeService: ImageCodeService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly queuesService: QueuesRegistryService,
-    private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly whatsappService: WhatsappService,
     private readonly transactionRepository: TransactionRepository,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
+    private readonly registrationsService: RegistrationsService,
   ) {}
 
   public async getGenericNotificationText(
@@ -152,6 +150,7 @@ export class MessageIncomingService {
     ) {
       const message = await this.twilioMessageRepository.findOne({
         where: { sid: Equal(callbackData.MessageSid) },
+        relations: { registration: true },
       });
       if (
         message &&
@@ -159,7 +158,11 @@ export class MessageIncomingService {
         message.retryCount < 3
       ) {
         if (callbackData.MessageStatus === TwilioStatus.undelivered) {
-          await this.handleFaultyTemplateError(callbackData, message);
+          await this.handleFaultyTemplateError({
+            callbackData,
+            message,
+            programId: message.registration.programId,
+          });
         }
         return;
       }
@@ -223,10 +226,15 @@ export class MessageIncomingService {
     }
   }
 
-  private async handleFaultyTemplateError(
-    callbackData: TwilioStatusCallbackDto,
-    message: TwilioMessageEntity,
-  ): Promise<void> {
+  private async handleFaultyTemplateError({
+    callbackData,
+    message,
+    programId,
+  }: {
+    callbackData: TwilioStatusCallbackDto;
+    message: TwilioMessageEntity;
+    programId: number;
+  }): Promise<void> {
     await this.twilioMessageRepository.update(
       {
         sid: callbackData.MessageSid,
@@ -244,9 +252,11 @@ export class MessageIncomingService {
       );
     }
 
-    const registration = await this.registrationRepository.findOneOrFail({
-      where: { id: Equal(message.registrationId) },
-    });
+    const registration =
+      await this.registrationsService.getOnePaginatedRegistrationById({
+        id: message.registrationId,
+        programId,
+      });
 
     if (!message.processType) {
       throw new Error(
@@ -254,12 +264,13 @@ export class MessageIncomingService {
       );
     }
 
-    await this.queueMessageService.addMessageJob({
-      registration,
+    await this.registrationsService.createMessageJobForRegistration({
+      referenceId: registration.referenceId,
+      programId: registration.programId,
       message: message.body,
       messageContentType: message.contentType,
-      messageProcessType: message.processType,
-      mediaUrl: message.mediaUrl,
+      extendedMessageProcessType: message.processType,
+      mediaUrl: message.mediaUrl ?? undefined,
       customData: {
         pendingMessageId: message.id, // This will also get filled (incorrectly) for payment-reply messages, but it will simply not be handled on the processor-side
         existingMessageSid: callbackData.MessageSid,
@@ -400,11 +411,12 @@ export class MessageIncomingService {
             language,
           )
         )[0];
-        await this.queueMessageService.addMessageJob({
-          registration: registrationsWithPhoneNumber[0],
+        await this.registrationsService.createMessageJobForRegistration({
+          referenceId: registrationsWithPhoneNumber[0].referenceId,
+          programId: registrationsWithPhoneNumber[0].programId,
           message: whatsappDefaultReply.message ?? undefined,
           messageContentType: MessageContentType.defaultReply,
-          messageProcessType: MessageProcessType.whatsappDefaultReply,
+          extendedMessageProcessType: MessageProcessType.whatsappDefaultReply,
           userId: userId ? userId.id : 1,
         });
         return;
@@ -466,11 +478,12 @@ export class MessageIncomingService {
             intersolveVoucher.paymentId!,
             registration.id,
           );
-        await this.queueMessageService.addMessageJob({
-          registration,
+        await this.registrationsService.createMessageJobForRegistration({
+          referenceId: registration.referenceId,
+          programId: registration.programId,
           message,
           messageContentType: MessageContentType.paymentVoucher,
-          messageProcessType: MessageProcessType.whatsappPendingVoucher,
+          extendedMessageProcessType: MessageProcessType.whatsappPendingVoucher,
           mediaUrl,
           customData: {
             transactionData: {
@@ -488,11 +501,13 @@ export class MessageIncomingService {
 
       // Send instruction message only once (outside of loops)
       if (registrationsWithOpenVouchers.length > 0) {
-        await this.queueMessageService.addMessageJob({
-          registration,
+        await this.registrationsService.createMessageJobForRegistration({
+          referenceId: registration.referenceId,
+          programId: registration.programId,
           message: '',
           messageContentType: MessageContentType.paymentInstructions,
-          messageProcessType: MessageProcessType.whatsappVoucherInstructions,
+          extendedMessageProcessType:
+            MessageProcessType.whatsappVoucherInstructions,
           mediaUrl: `${EXTERNAL_API.rootApi}/programs/${program.id}/${API_PATHS.voucherInstructions}`,
           userId: intersolveVouchersPerPa[0].userId,
         });
@@ -536,12 +551,14 @@ export class MessageIncomingService {
     for (const registration of registrationsWithPendingMessage) {
       if (registration.whatsappPendingMessages) {
         for (const message of registration.whatsappPendingMessages) {
-          await this.queueMessageService.addMessageJob({
-            registration,
+          await this.registrationsService.createMessageJobForRegistration({
+            referenceId: registration.referenceId,
+            programId: registration.programId,
             message: message.body,
             messageContentType: message.contentType,
-            messageProcessType: MessageProcessType.whatsappPendingMessage,
-            mediaUrl: message.mediaUrl,
+            extendedMessageProcessType:
+              MessageProcessType.whatsappPendingMessage,
+            mediaUrl: message.mediaUrl ?? undefined,
             customData: { pendingMessageId: message.id },
             userId: message.userId,
           });

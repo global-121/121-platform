@@ -144,12 +144,6 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     });
   }
 
-  public async getByReferenceId({ referenceId }: { referenceId: string }) {
-    return await this.getWithRelationsByReferenceIdAndProgramId({
-      referenceId,
-    });
-  }
-
   public async getWithRelationsByReferenceIdAndProgramId({
     referenceId,
     programId,
@@ -309,8 +303,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   public async getDebitCardsDetailsForExport(
     programId: number,
   ): Promise<ExportVisaCardDetailsRawData[]> {
-    const wallets = await this
-      .createQueryBuilder('registration')
+    const wallets = await this.createQueryBuilder('registration')
       .leftJoin('registration.intersolveVisaCustomer', 'customer')
       .leftJoin(
         'customer.intersolveVisaParentWallet',
@@ -364,8 +357,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   }: {
     referenceId: string;
   }): Promise<boolean> {
-    const registrationToComplete = await this
-      .createQueryBuilder('registration')
+    const registrationToComplete = await this.createQueryBuilder('registration')
       .andWhere('registration."paymentCount" >= registration."maxPayments"')
       .andWhere('registration."registrationStatus" != :completedStatus', {
         completedStatus: RegistrationStatusEnum.completed,
