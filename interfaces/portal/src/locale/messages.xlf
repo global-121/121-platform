@@ -2390,6 +2390,20 @@
       </trans-unit>
       <trans-unit id="submission-result-skipped" datatype="html">
         <source>Submissions skipped</source>
+      <trans-unit id="3860042976960140382" datatype="html">
+        <source>Below are the <x equiv-text="programAttributesLength.toString()" id="PH"/> questions from the linked Kobo form. Please edit each label to a shorter version which will be displayed in the table of the registration page and on the profile page. The default lanaguage is set by the language of the instance.</source>
+      </trans-unit>
+      <trans-unit id="4705747697674144692" datatype="html">
+        <source>Personal information</source>
+      </trans-unit>
+      <trans-unit id="6062854020526523813" datatype="html">
+        <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions from the integrated Kobo form. Please edit each column name to a shorter version that will be displayed in the data table and on the profile page.</source>
+      </trans-unit>
+      <trans-unit id="6267577653105675049" datatype="html">
+        <source>Edit personal information</source>
+      </trans-unit>
+      <trans-unit id="6711033592081422255" datatype="html">
+        <source>Question label</source>
       </trans-unit>
       <trans-unit id="table-quick-search" datatype="html">
         <source>Filter by keyword</source>
