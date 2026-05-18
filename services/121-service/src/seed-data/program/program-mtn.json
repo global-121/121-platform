@@ -69,15 +69,15 @@
       "properties": [
         {
           "name": "subscriptionKeyMtn",
-          "value": "test-subscription-key"
+          "value": "MTN_SUBSCRIPTION_KEY"
         },
         {
           "name": "referenceIdMtn",
-          "value": "test-reference-id"
+          "value": "MTN_REFERENCE_ID"
         },
         {
           "name": "apiKeyMtn",
-          "value": "test-api-key"
+          "value": "MTN_API_KEY"
         }
       ]
     }
