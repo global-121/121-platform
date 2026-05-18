@@ -2390,6 +2390,7 @@
       </trans-unit>
       <trans-unit id="submission-result-skipped" datatype="html">
         <source>Submissions skipped</source>
+      </trans-unit>
       <trans-unit id="3860042976960140382" datatype="html">
         <source>Below are the <x equiv-text="programAttributesLength.toString()" id="PH"/> questions from the linked Kobo form. Please edit each label to a shorter version which will be displayed in the table of the registration page and on the profile page. The default lanaguage is set by the language of the instance.</source>
       </trans-unit>
