@@ -188,7 +188,7 @@ export class RegistrationsService {
       });
     if (paginateResult.data.length !== 1) {
       throw new Error(
-        `Unexpected error: ReferenceId with ${referenceId} not found in pagination query.`,
+        `Unexpected error: ReferenceId '${referenceId}' not found in pagination query results.`,
       );
     }
     return paginateResult.data[0];

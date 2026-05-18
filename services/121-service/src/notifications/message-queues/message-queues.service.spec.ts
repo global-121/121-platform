@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import {
   MessageJobDto,
   MessageProcessType,
+  MessageProcessTypeExtension,
 } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
@@ -42,20 +43,24 @@ describe('MessageQueuesService', () => {
     expect(queueMessageService).toBeDefined();
   });
 
+  const baseMessageJob = {
+    registrationId: 2,
+    programId: 1,
+    phoneNumber: '1234567890',
+    preferredLanguage: RegistrationPreferredLanguage.en,
+    referenceId: 'ref-test',
+    message: 'test message',
+    messageTemplateKey: 'messageTemplateKey',
+    messageContentType: MessageContentType.custom,
+    userId: 1,
+  };
+
   it('should add message to queue', async () => {
     // Arrange
     const messageJob = {
-      registrationId: 2,
-      programId: 1,
+      ...baseMessageJob,
       whatsappPhoneNumber: '1234567890',
-      phoneNumber: '1234567890',
-      preferredLanguage: RegistrationPreferredLanguage.en,
-      referenceId: 'ref-test',
-      message: 'test message',
-      messageTemplateKey: 'messageTemplateKey',
-      messageContentType: MessageContentType.custom,
       messageProcessType: MessageProcessType.whatsappTemplateGeneric,
-      userId: 1,
     } satisfies MessageJobDto;
 
     // Act
@@ -72,6 +77,47 @@ describe('MessageQueuesService', () => {
         customData: undefined,
         mediaUrl: undefined,
       },
+    );
+  });
+
+  it('should resolve smsOrWhatsappTemplateGeneric to whatsappTemplateGeneric when whatsappPhoneNumber is set', async () => {
+    // Arrange
+    const whatsappPhoneNumber = '1234567890';
+
+    // Act
+    await queueMessageService.addMessageJob({
+      ...baseMessageJob,
+      whatsappPhoneNumber,
+      extendedMessageProcessType:
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+    });
+
+    // Assert
+    expect(queuesService.createMessageSmallBulkQueue.add).toHaveBeenCalledWith(
+      ProcessNameMessage.send,
+      expect.objectContaining({
+        messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+        whatsappPhoneNumber,
+      }),
+    );
+  });
+
+  it('should resolve smsOrWhatsappTemplateGeneric to sms when whatsappPhoneNumber is not set', async () => {
+    // Act
+    await queueMessageService.addMessageJob({
+      ...baseMessageJob,
+      whatsappPhoneNumber: undefined,
+      extendedMessageProcessType:
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+    });
+
+    // Assert
+    expect(queuesService.createMessageSmallBulkQueue.add).toHaveBeenCalledWith(
+      ProcessNameMessage.send,
+      expect.objectContaining({
+        messageProcessType: MessageProcessType.sms,
+        whatsappPhoneNumber: undefined,
+      }),
     );
   });
 

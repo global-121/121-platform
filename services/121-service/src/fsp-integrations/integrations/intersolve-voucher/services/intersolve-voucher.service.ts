@@ -164,9 +164,14 @@ export class IntersolveVoucherService {
     }
 
     // If no WhatsApp: return early
-    if (!useWhatsapp || !whatsappPhoneNumber) {
+    if (!useWhatsapp) {
       paResult.status = TransactionStatusEnum.success;
       return paResult;
+    }
+
+    if (!whatsappPhoneNumber) {
+      // This should never happen because the API layer should prevent this, it's to make TS happy
+      throw Error('WhatsApp phone number is required when useWhatsapp is true');
     }
 
     // Continue with WhatsApp:
