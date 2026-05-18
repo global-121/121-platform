@@ -112,6 +112,12 @@
       [rounded]="true"
       label="Close"
       i18n-label
+      (click)="koboSuccesfullyLinkedDialogVisible.set(false)"
     />
   </div>
 </p-dialog>
+
+<app-kobo-import-existing-registration-dialog
+  #koboImportExistingDialog
+  [programId]="programId()"
+/>
