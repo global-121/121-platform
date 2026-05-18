@@ -57,13 +57,10 @@ export class MtnReconciliationService {
 
     const mtnTransferCallbackJob: MtnTransferCallbackJobDto = {
       transactionId,
-      referenceId: mtnTransferCallback.referenceId ?? '',
-      status: status as MtnTransferStatus,
-      reason: mtnTransferCallback.reason,
     };
 
     console.log(
-      `[MTN Callback] Processing callback - transactionId: ${mtnTransferCallbackJob.transactionId}, status: ${mtnTransferCallbackJob.status}`,
+      `[MTN Callback] Enqueuing job - transactionId: ${transactionId}`,
     );
 
     await this.queuesService.mtnTransferCallbackQueue.add(
@@ -76,8 +73,18 @@ export class MtnReconciliationService {
     mtnTransferCallbackJob: MtnTransferCallbackJobDto,
   ): Promise<void> {
     console.log(
-      `[MTN Callback Job] Processing job - transactionId: ${mtnTransferCallbackJob.transactionId}, referenceId: ${mtnTransferCallbackJob.referenceId}`,
+      `[MTN Callback Job] Processing job - transactionId: ${mtnTransferCallbackJob.transactionId}`,
     );
+
+    const currentStatus = await this.transactionRepository.getStatusByIdOrThrow(
+      mtnTransferCallbackJob.transactionId,
+    );
+    if (currentStatus !== TransactionStatusEnum.waiting) {
+      console.log(
+        `[MTN Callback Job] Skipping - transaction ${mtnTransferCallbackJob.transactionId} is already in status '${currentStatus}'`,
+      );
+      return;
+    }
 
     // 1. Look up registration referenceId from transaction
     const registrationReferenceId =

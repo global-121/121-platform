@@ -45,6 +45,19 @@ export class TransactionRepository extends Repository<TransactionEntity> {
       .execute();
   }
 
+  public async getStatusByIdOrThrow(
+    transactionId: number,
+  ): Promise<TransactionStatusEnum> {
+    const transaction = await this.findOne({
+      where: { id: Equal(transactionId) },
+      select: ['status'],
+    });
+    if (!transaction) {
+      throw new Error(`Transaction with id ${transactionId} not found`);
+    }
+    return transaction.status as TransactionStatusEnum;
+  }
+
   public async getReferenceIdByTransactionIdOrThrow(
     transactionId: number,
   ): Promise<string> {

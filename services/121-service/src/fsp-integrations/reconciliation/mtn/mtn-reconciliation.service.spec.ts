@@ -54,6 +54,9 @@ describe('MtnReconciliationService', () => {
     (queuesRegistryService as any).mtnTransferCallbackQueue =
       mockMtnTransferCallbackQueue;
 
+    (transactionRepository.getStatusByIdOrThrow as jest.Mock).mockResolvedValue(
+      TransactionStatusEnum.waiting,
+    );
     (
       transactionRepository.getReferenceIdByTransactionIdOrThrow as jest.Mock
     ).mockResolvedValue('registration-ref-id');
@@ -98,16 +101,11 @@ describe('MtnReconciliationService', () => {
 
       expect(mockMtnTransferCallbackQueue.add).toHaveBeenCalledWith(
         JobNames.default,
-        {
-          transactionId: 42,
-          referenceId: 'ref-uuid-123',
-          status: MtnTransferStatus.successful,
-          reason: undefined,
-        },
+        { transactionId: 42 },
       );
     });
 
-    it('should pass the reason when provided', async () => {
+    it('should enqueue job for callback with reason', async () => {
       await mtnReconciliationService.processTransferCallback({
         externalId: '99',
         referenceId: 'ref-uuid-456',
@@ -117,16 +115,11 @@ describe('MtnReconciliationService', () => {
 
       expect(mockMtnTransferCallbackQueue.add).toHaveBeenCalledWith(
         JobNames.default,
-        {
-          transactionId: 99,
-          referenceId: 'ref-uuid-456',
-          status: MtnTransferStatus.failed,
-          reason: 'PAYER_NOT_FOUND',
-        },
+        { transactionId: 99 },
       );
     });
 
-    it('should default referenceId to empty string when not provided', async () => {
+    it('should enqueue job even when referenceId is not provided', async () => {
       await mtnReconciliationService.processTransferCallback({
         externalId: '42',
         status: MtnTransferStatus.successful,
@@ -134,12 +127,7 @@ describe('MtnReconciliationService', () => {
 
       expect(mockMtnTransferCallbackQueue.add).toHaveBeenCalledWith(
         JobNames.default,
-        {
-          transactionId: 42,
-          referenceId: '',
-          status: MtnTransferStatus.successful,
-          reason: undefined,
-        },
+        { transactionId: 42 },
       );
     });
 
@@ -176,12 +164,7 @@ describe('MtnReconciliationService', () => {
 
       expect(mockMtnTransferCallbackQueue.add).toHaveBeenCalledWith(
         JobNames.default,
-        {
-          transactionId: 42,
-          referenceId: '',
-          status: 'UNKNOWN_STATUS',
-          reason: undefined,
-        },
+        { transactionId: 42 },
       );
     });
   });
@@ -194,8 +177,6 @@ describe('MtnReconciliationService', () => {
 
       await mtnReconciliationService.processMtnTransferCallbackJob({
         transactionId: 42,
-        referenceId: 'callback-ref-uuid',
-        status: MtnTransferStatus.successful,
       });
 
       expect(
@@ -226,8 +207,6 @@ describe('MtnReconciliationService', () => {
 
       await mtnReconciliationService.processMtnTransferCallbackJob({
         transactionId: 42,
-        referenceId: 'callback-ref-uuid',
-        status: MtnTransferStatus.successful,
       });
 
       expect(
@@ -248,9 +227,6 @@ describe('MtnReconciliationService', () => {
 
       await mtnReconciliationService.processMtnTransferCallbackJob({
         transactionId: 42,
-        referenceId: 'callback-ref-uuid',
-        status: MtnTransferStatus.failed,
-        reason: 'PAYER_NOT_FOUND',
       });
 
       expect(
@@ -270,8 +246,6 @@ describe('MtnReconciliationService', () => {
 
       await mtnReconciliationService.processMtnTransferCallbackJob({
         transactionId: 42,
-        referenceId: 'callback-ref-uuid',
-        status: MtnTransferStatus.failed,
       });
 
       expect(
@@ -292,8 +266,6 @@ describe('MtnReconciliationService', () => {
 
       await mtnReconciliationService.processMtnTransferCallbackJob({
         transactionId: 42,
-        referenceId: 'callback-ref-uuid',
-        status: MtnTransferStatus.successful,
       });
 
       expect(
@@ -313,8 +285,6 @@ describe('MtnReconciliationService', () => {
 
       await mtnReconciliationService.processMtnTransferCallbackJob({
         transactionId: 42,
-        referenceId: 'callback-ref-uuid',
-        status: MtnTransferStatus.pending,
       });
 
       expect(
