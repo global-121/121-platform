@@ -51,7 +51,7 @@ export class KoboConfigurationDialogComponent {
   private readonly toastService = inject(ToastService);
 
   readonly koboFormName = signal<string | undefined>(undefined);
-  readonly koboSuccesfullyLinkedDialogVisible = signal(false);
+  readonly koboSuccessfullyLinkedDialogVisible = signal(false);
 
   readonly koboConfigurationDialog = viewChild.required<FormDialogComponent>(
     'koboConfigurationDialog',
@@ -103,7 +103,6 @@ export class KoboConfigurationDialogComponent {
 
   readonly koboConfigurationMutation = injectMutation(() => ({
     mutationFn: () => {
-      console.log('koboConfigurationMutation mutationFn called'); // Debug log to verify function call
       const formRawValue = this.koboConfigurationFormGroup.getRawValue();
 
       return this.koboApiService.upsertKoboIntegration({
@@ -150,7 +149,7 @@ export class KoboConfigurationDialogComponent {
         detail: $localize`Kobo form successfully integrated.`,
       });
 
-      this.koboSuccesfullyLinkedDialogVisible.set(true);
+      this.koboSuccessfullyLinkedDialogVisible.set(true);
     },
     onError: () => {
       this.toastService.showToast({
@@ -183,7 +182,7 @@ export class KoboConfigurationDialogComponent {
 
   handleImportExistingRegistrationsClick() {
     this.koboImportExistingDialog().show();
-    this.koboSuccesfullyLinkedDialogVisible.set(false);
+    this.koboSuccessfullyLinkedDialogVisible.set(false);
   }
 
   show() {
