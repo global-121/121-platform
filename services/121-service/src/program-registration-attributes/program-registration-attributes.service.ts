@@ -435,10 +435,13 @@ export class ProgramRegistrationAttributesService {
   ): Promise<ProgramRegistrationAttributeEntity> {
     const programRegistrationAttribute =
       await this.programRegistrationAttributeRepository.findOne({
-        where: { id: Number(programRegistrationAttributeId) },
+        where: {
+          id: Equal(programRegistrationAttributeId),
+          programId: Equal(programId),
+        },
       });
     if (!programRegistrationAttribute) {
-      const errors = `Program registration attribute with id: '${programRegistrationAttributeId}' not found.'`;
+      const errors = `Program registration attribute with id: '${programRegistrationAttributeId}' not found for program '${programId}'.`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return await this.programRegistrationAttributeRepository.remove(

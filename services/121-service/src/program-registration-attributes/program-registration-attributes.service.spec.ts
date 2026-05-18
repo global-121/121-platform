@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
@@ -195,6 +195,68 @@ describe('ProgramRegistrationAttributesService', () => {
       expect(savedEntities[0].name).toBe('firstName');
       expect(savedEntities[0].label).toEqual({ en: 'Updated First Name' });
       expect(savedEntities[0].isRequired).toBe(true);
+    });
+  });
+
+  describe('deleteProgramRegistrationAttribute', () => {
+    it('should scope lookup by both program id and attribute id before delete', async () => {
+      // Arrange
+      const programId = 1;
+      const programRegistrationAttributeId = 99;
+      const attributeEntity = createAttributeEntity({
+        id: programRegistrationAttributeId,
+        programId,
+      });
+
+      const findOneSpy = jest
+        .spyOn(programRegistrationAttributeRepository, 'findOne')
+        .mockResolvedValue(attributeEntity);
+      const removeSpy = jest
+        .spyOn(programRegistrationAttributeRepository, 'remove')
+        .mockResolvedValue(attributeEntity);
+
+      // Act
+      const result =
+        await programRegistrationAttributesService.deleteProgramRegistrationAttribute(
+          programId,
+          programRegistrationAttributeId,
+        );
+
+      // Assert
+      expect(result).toEqual(attributeEntity);
+      expect(findOneSpy).toHaveBeenCalledWith({
+        where: {
+          id: Equal(programRegistrationAttributeId),
+          programId: Equal(programId),
+        },
+      });
+      expect(removeSpy).toHaveBeenCalledWith(attributeEntity);
+    });
+
+    it('should throw not found when attribute does not exist in the given program', async () => {
+      // Arrange
+      const programId = 1;
+      const programRegistrationAttributeId = 99;
+
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'findOne')
+        .mockResolvedValue(null);
+
+      // Act + Assert
+      await expect(
+        programRegistrationAttributesService.deleteProgramRegistrationAttribute(
+          programId,
+          programRegistrationAttributeId,
+        ),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          response: expect.objectContaining({
+            errors: expect.stringContaining(
+              `attribute with id: '${programRegistrationAttributeId}' not found for program '${programId}'`,
+            ),
+          }),
+        }),
+      );
     });
   });
 });
