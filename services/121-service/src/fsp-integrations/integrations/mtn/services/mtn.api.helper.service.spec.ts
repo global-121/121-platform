@@ -151,9 +151,9 @@ describe('MtnApiHelperService', () => {
     });
   });
 
-  describe('createGetTransferStatusHeaders', () => {
+  describe('createGetTransferHeaders', () => {
     it('should return headers with all required fields', () => {
-      const headers = mtnApiHelperService.createGetTransferStatusHeaders({
+      const headers = mtnApiHelperService.createGetTransferHeaders({
         subscriptionKey: 'test-subscription-key',
       });
 
@@ -166,7 +166,7 @@ describe('MtnApiHelperService', () => {
     });
 
     it('should not include X-Reference-Id or X-Callback-Url', () => {
-      const headers = mtnApiHelperService.createGetTransferStatusHeaders({
+      const headers = mtnApiHelperService.createGetTransferHeaders({
         subscriptionKey: 'test-subscription-key',
       });
 

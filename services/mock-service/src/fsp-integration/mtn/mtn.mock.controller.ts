@@ -60,11 +60,11 @@ export class MtnMockController {
   @ApiParam({ name: 'referenceId', required: true })
   @ApiHeader({ name: 'Ocp-Apim-Subscription-Key', required: true })
   @Get('disbursement/v1_0/transfer/:referenceId')
-  public getTransferStatus(
+  public getTransfer(
     @Param('referenceId') referenceId: string,
     @Headers('ocp-apim-subscription-key') subscriptionKey: string | undefined,
   ): MtnTransferStatusResponseDto {
-    return this.mtnMockService.getTransferStatus({
+    return this.mtnMockService.getTransfer({
       referenceId,
       subscriptionKey,
     });

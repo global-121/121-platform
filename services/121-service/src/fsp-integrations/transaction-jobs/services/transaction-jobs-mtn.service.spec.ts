@@ -103,7 +103,7 @@ describe('TransactionJobsMtnService', () => {
 
   it('should log transaction job start and call createTransfer on success', async () => {
     (mtnService.createTransfer as jest.Mock).mockResolvedValue(undefined);
-    (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+    (mtnService.getTransfer as jest.Mock).mockResolvedValue({
       status: 'SUCCESSFUL',
     });
     global.fetch = jest.fn().mockResolvedValue({ ok: true });
@@ -161,14 +161,14 @@ describe('TransactionJobsMtnService', () => {
     });
   });
 
-  it('should call getTransferStatus and save success when duplicate with SUCCESSFUL status', async () => {
+  it('should call getTransfer and save success when duplicate with SUCCESSFUL status', async () => {
     (mtnService.createTransfer as jest.Mock).mockRejectedValue(
       new MtnApiError({
         type: MtnTransferResult.duplicate,
         message: 'Duplicate transfer request',
       }),
     );
-    (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+    (mtnService.getTransfer as jest.Mock).mockResolvedValue({
       status: 'SUCCESSFUL',
     });
     (mtnService.mapMtnStatusToTransactionStatus as jest.Mock).mockReturnValue(
@@ -177,7 +177,7 @@ describe('TransactionJobsMtnService', () => {
 
     await service.processTransactionJob(mockTransactionJob);
 
-    expect(mtnService.getTransferStatus).toHaveBeenCalledWith({
+    expect(mtnService.getTransfer).toHaveBeenCalledWith({
       mtnReferenceId: expect.any(String),
       requestIdentity: testRequestIdentity,
     });
@@ -193,14 +193,14 @@ describe('TransactionJobsMtnService', () => {
     });
   });
 
-  it('should call getTransferStatus and save waiting when duplicate with PENDING status', async () => {
+  it('should call getTransfer and save waiting when duplicate with PENDING status', async () => {
     (mtnService.createTransfer as jest.Mock).mockRejectedValue(
       new MtnApiError({
         type: MtnTransferResult.duplicate,
         message: 'Duplicate transfer request',
       }),
     );
-    (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+    (mtnService.getTransfer as jest.Mock).mockResolvedValue({
       status: 'PENDING',
     });
     (mtnService.mapMtnStatusToTransactionStatus as jest.Mock).mockReturnValue(
@@ -221,14 +221,14 @@ describe('TransactionJobsMtnService', () => {
     });
   });
 
-  it('should call getTransferStatus and save error when duplicate with FAILED status', async () => {
+  it('should call getTransfer and save error when duplicate with FAILED status', async () => {
     (mtnService.createTransfer as jest.Mock).mockRejectedValue(
       new MtnApiError({
         type: MtnTransferResult.duplicate,
         message: 'Duplicate transfer request',
       }),
     );
-    (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+    (mtnService.getTransfer as jest.Mock).mockResolvedValue({
       status: 'FAILED',
       reason: 'Insufficient funds',
     });
@@ -252,7 +252,7 @@ describe('TransactionJobsMtnService', () => {
 
   it('should generate different referenceIds for payment retry (different failedAttempts count)', async () => {
     (mtnService.createTransfer as jest.Mock).mockResolvedValue(undefined);
-    (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+    (mtnService.getTransfer as jest.Mock).mockResolvedValue({
       status: 'SUCCESSFUL',
     });
     global.fetch = jest.fn().mockResolvedValue({ ok: true });
@@ -278,7 +278,7 @@ describe('TransactionJobsMtnService', () => {
 
   it('should generate same referenceId for queue retry (same failedAttempts count)', async () => {
     (mtnService.createTransfer as jest.Mock).mockResolvedValue(undefined);
-    (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+    (mtnService.getTransfer as jest.Mock).mockResolvedValue({
       status: 'SUCCESSFUL',
     });
     global.fetch = jest.fn().mockResolvedValue({ ok: true });

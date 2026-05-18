@@ -105,8 +105,8 @@ export class MtnReconciliationService {
       programFspConfigurationId: latestEvent.programFspConfigurationId,
     });
 
-    // 4. Get transfer status from MTN API
-    const transferStatus = await this.mtnService.getTransferStatus({
+    // 4. Get transfer from MTN API
+    const transferStatus = await this.mtnService.getTransfer({
       mtnReferenceId,
       requestIdentity,
     });

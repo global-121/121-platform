@@ -160,7 +160,7 @@ describe('Do payment with FSP: MTN', () => {
   });
 
   it('should yield error transaction when transfer is accepted but callback indicates failure due to invalid phone number', async () => {
-    // Arrange: the transfer is accepted (202), but getTransferStatus returns FAILED
+    // Arrange: the transfer is accepted (202), but getTransfer returns FAILED
     // with PAYEE_NOT_FOUND. This simulates a real-world scenario where the
     // disbursement is accepted initially but later fails (e.g., invalid recipient).
     // The mock referenceId drives the failure scenario statelessly.
@@ -214,7 +214,7 @@ describe('Do payment with FSP: MTN', () => {
 
   it('should resolve to success when the MTN API returns a duplicate conflict on queue retry', async () => {
     // Arrange: the mock simulates a queue retry where the original transfer succeeded.
-    // MTN returns 409 CONFLICT, then getTransferStatus returns SUCCESSFUL.
+    // MTN returns 409 CONFLICT, then getTransfer returns SUCCESSFUL.
     const registration = {
       ...registrationMtn,
       phoneNumberPayment: '100000001', // Triggers failDuplicate in the mock service
@@ -256,7 +256,7 @@ describe('Do payment with FSP: MTN', () => {
     });
     const transaction = getTransactionsResult.body.data[0];
 
-    // The duplicate handler queries getTransferStatus, which returns SUCCESSFUL
+    // The duplicate handler queries getTransfer, which returns SUCCESSFUL
     expect(transaction.status).toBe(TransactionStatusEnum.success);
     expect(transaction.errorMessage).toBe(null);
 

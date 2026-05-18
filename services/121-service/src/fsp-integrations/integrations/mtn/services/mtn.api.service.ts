@@ -71,14 +71,14 @@ export class MtnApiService {
       payerMessage,
       payeeNote,
     });
-    await this.getTransfer({
+    await this.initiateTransferRequest({
       payload,
       referenceId: mtnReferenceId,
       requestIdentity,
     });
   }
 
-  public async getTransferStatus({
+  public async getTransfer({
     referenceId,
     requestIdentity,
   }: {
@@ -90,7 +90,7 @@ export class MtnApiService {
     const url = new URL(`${this.getTransferUrl()}/${referenceId}`);
 
     const headers = this.addAuthHeaders({
-      headers: this.mtnApiHelperService.createGetTransferStatusHeaders({
+      headers: this.mtnApiHelperService.createGetTransferHeaders({
         subscriptionKey: requestIdentity.subscriptionKey,
       }),
       requestIdentity,
@@ -102,14 +102,14 @@ export class MtnApiService {
       >(url.toString(), headers);
 
       console.log(
-        `[MTN API] Get status response - referenceId: ${referenceId}, status: ${response.status}, data:`,
+        `[MTN API] Get transfer response - referenceId: ${referenceId}, status: ${response.status}, data:`,
         JSON.stringify(response.data),
       );
 
       if (!response || response.status < 200 || response.status >= 300) {
         throw new MtnApiError({
           type: MtnTransferResult.fail,
-          message: `Failed to get transfer status. ${this.mtnApiHelperService.formatResponseError({ response })}`,
+          message: `Failed to get transfer. ${this.mtnApiHelperService.formatResponseError({ response })}`,
         });
       }
 
@@ -118,15 +118,15 @@ export class MtnApiService {
       if (error instanceof MtnApiError) {
         throw error;
       }
-      console.error('Failed to get MTN transfer status', error);
+      console.error('Failed to get MTN transfer', error);
       throw new MtnApiError({
         type: MtnTransferResult.fail,
-        message: `Error getting transfer status: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        message: `Error getting transfer: ${error instanceof Error ? error.message : 'Unknown error'}`,
       });
     }
   }
 
-  private async getTransfer({
+  private async initiateTransferRequest({
     payload,
     referenceId,
     requestIdentity,

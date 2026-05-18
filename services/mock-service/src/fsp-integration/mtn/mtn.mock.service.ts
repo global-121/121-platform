@@ -98,7 +98,7 @@ export class MtnMockService {
     }
   }
 
-  public getTransferStatus({
+  public getTransfer({
     referenceId,
     subscriptionKey,
   }: {

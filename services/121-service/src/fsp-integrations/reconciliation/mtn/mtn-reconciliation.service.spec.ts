@@ -188,7 +188,7 @@ describe('MtnReconciliationService', () => {
 
   describe('processMtnTransferCallbackJob', () => {
     it('should regenerate mtnReferenceId and call MTN API to verify status', async () => {
-      (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+      (mtnService.getTransfer as jest.Mock).mockResolvedValue({
         status: MtnTransferStatus.successful,
       });
 
@@ -209,7 +209,7 @@ describe('MtnReconciliationService', () => {
         transactionId: 42,
         failedTransactionAttempts: 0,
       });
-      expect(mtnService.getTransferStatus).toHaveBeenCalledWith({
+      expect(mtnService.getTransfer).toHaveBeenCalledWith({
         mtnReferenceId: 'generated-mtn-reference-id',
         requestIdentity: {
           subscriptionKey: 'test-subscription-key',
@@ -220,7 +220,7 @@ describe('MtnReconciliationService', () => {
     });
 
     it('should update transaction to success when MTN API returns SUCCESSFUL', async () => {
-      (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+      (mtnService.getTransfer as jest.Mock).mockResolvedValue({
         status: MtnTransferStatus.successful,
       });
 
@@ -241,7 +241,7 @@ describe('MtnReconciliationService', () => {
     });
 
     it('should update transaction to error when MTN API returns FAILED', async () => {
-      (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+      (mtnService.getTransfer as jest.Mock).mockResolvedValue({
         status: MtnTransferStatus.failed,
         reason: 'PAYER_NOT_FOUND',
       });
@@ -264,7 +264,7 @@ describe('MtnReconciliationService', () => {
     });
 
     it('should use unknown as error message when MTN API returns FAILED without reason', async () => {
-      (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+      (mtnService.getTransfer as jest.Mock).mockResolvedValue({
         status: MtnTransferStatus.failed,
       });
 
@@ -285,7 +285,7 @@ describe('MtnReconciliationService', () => {
     });
 
     it('should use MTN API status even when callback status differs', async () => {
-      (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+      (mtnService.getTransfer as jest.Mock).mockResolvedValue({
         status: MtnTransferStatus.failed,
         reason: 'INTERNAL_ERROR',
       });
@@ -307,7 +307,7 @@ describe('MtnReconciliationService', () => {
     });
 
     it('should update transaction to waiting when MTN API returns PENDING', async () => {
-      (mtnService.getTransferStatus as jest.Mock).mockResolvedValue({
+      (mtnService.getTransfer as jest.Mock).mockResolvedValue({
         status: MtnTransferStatus.pending,
       });
 

@@ -73,7 +73,7 @@ export class MtnApiHelperService {
     return headers;
   }
 
-  public createGetTransferStatusHeaders({
+  public createGetTransferHeaders({
     subscriptionKey,
   }: {
     subscriptionKey: string;

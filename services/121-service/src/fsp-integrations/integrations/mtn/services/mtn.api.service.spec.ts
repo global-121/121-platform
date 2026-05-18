@@ -60,7 +60,6 @@ describe('MtnApiService', () => {
   let get: jest.Mock;
 
   beforeEach(async () => {
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MtnApiService,
@@ -74,9 +73,7 @@ describe('MtnApiService', () => {
             getBaseUrl: jest.fn().mockReturnValue(baseUrl),
             createTransferPayload: jest.fn().mockReturnValue(transferPayload),
             createTransferHeaders: jest.fn().mockReturnValue(transferHeaders),
-            createGetTransferStatusHeaders: jest
-              .fn()
-              .mockReturnValue(statusHeaders),
+            createGetTransferHeaders: jest.fn().mockReturnValue(statusHeaders),
             createCommonHeaders: jest.fn().mockReturnValue(commonHeaders),
             formatResponseError: jest
               .fn()
@@ -198,7 +195,7 @@ describe('MtnApiService', () => {
     });
   });
 
-  describe('getTransferStatus', () => {
+  describe('getTransfer', () => {
     it('should call GET with the correct URL and headers', async () => {
       // Arrange
       post.mockResolvedValueOnce(mockAuthResponse); // authenticate() call
@@ -208,7 +205,7 @@ describe('MtnApiService', () => {
       });
 
       // Act
-      await mtnApiService.getTransferStatus({
+      await mtnApiService.getTransfer({
         referenceId: 'ref-uuid',
         requestIdentity: testRequestIdentity,
       });
@@ -232,7 +229,7 @@ describe('MtnApiService', () => {
       });
 
       // Act
-      const result = await mtnApiService.getTransferStatus({
+      const result = await mtnApiService.getTransfer({
         referenceId: 'ref-uuid',
         requestIdentity: testRequestIdentity,
       });
@@ -252,7 +249,7 @@ describe('MtnApiService', () => {
 
       // Act & Assert
       await expect(
-        mtnApiService.getTransferStatus({
+        mtnApiService.getTransfer({
           referenceId: 'ref-uuid',
           requestIdentity: testRequestIdentity,
         }),
@@ -266,7 +263,7 @@ describe('MtnApiService', () => {
 
       // Act & Assert
       await expect(
-        mtnApiService.getTransferStatus({
+        mtnApiService.getTransfer({
           referenceId: 'ref-uuid',
           requestIdentity: testRequestIdentity,
         }),

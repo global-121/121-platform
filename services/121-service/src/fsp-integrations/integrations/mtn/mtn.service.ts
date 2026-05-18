@@ -115,7 +115,7 @@ export class MtnService {
     );
   }
 
-  public async getTransferStatus({
+  public async getTransfer({
     mtnReferenceId,
     requestIdentity,
   }: {
@@ -123,14 +123,14 @@ export class MtnService {
     requestIdentity: MtnRequestIdentity;
   }): Promise<MtnTransferStatusResponse> {
     console.log(
-      `[MTN Transfer] Fetching status - referenceId: ${mtnReferenceId}`,
+      `[MTN Transfer] Fetching transfer - referenceId: ${mtnReferenceId}`,
     );
-    const status = await this.mtnApiService.getTransferStatus({
+    const status = await this.mtnApiService.getTransfer({
       referenceId: mtnReferenceId,
       requestIdentity,
     });
     console.log(
-      `[MTN Transfer] Status retrieved - referenceId: ${mtnReferenceId}, status: ${status.status}`,
+      `[MTN Transfer] Transfer retrieved - referenceId: ${mtnReferenceId}, status: ${status.status}`,
     );
     return status;
   }

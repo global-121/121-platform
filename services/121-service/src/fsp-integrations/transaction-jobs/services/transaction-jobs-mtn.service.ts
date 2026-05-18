@@ -87,7 +87,7 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
       if (error instanceof MtnApiError) {
         if (error.type === MtnTransferResult.duplicate) {
           // 6a. Duplicate: this is a queue retry where the original request already went through
-          // Use GetTransferStatus to determine the actual outcome
+          // Use getTransfer to determine the actual outcome
           await this.handleDuplicateTransfer({
             mtnReferenceId,
             requestIdentity,
@@ -137,7 +137,7 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
     const delayMs = 2000;
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      const transferStatus = await this.mtnService.getTransferStatus({
+      const transferStatus = await this.mtnService.getTransfer({
         mtnReferenceId,
         requestIdentity,
       });
@@ -205,7 +205,7 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
     requestIdentity: MtnRequestIdentity;
     transactionEventContext: TransactionEventCreationContext;
   }): Promise<void> {
-    const transferStatus = await this.mtnService.getTransferStatus({
+    const transferStatus = await this.mtnService.getTransfer({
       mtnReferenceId,
       requestIdentity,
     });
