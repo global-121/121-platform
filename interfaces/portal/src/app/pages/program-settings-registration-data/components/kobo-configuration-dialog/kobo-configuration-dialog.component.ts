@@ -101,8 +101,64 @@ export class KoboConfigurationDialogComponent {
     },
   );
 
+  // readonly koboConfigurationMutation = injectMutation(() => ({
+  //   mutationFn: () => {
+  //     const formRawValue = this.koboConfigurationFormGroup.getRawValue();
+
+  //     return this.koboApiService.upsertKoboIntegration({
+  //       programId: this.programId,
+  //       integration: {
+  //         url: formRawValue.serverUrl,
+  //         assetUid: formRawValue.assetId,
+  //         token: formRawValue.token,
+  //       },
+  //       dryRun: true,
+  //     });
+  //   },
+  //   onSuccess: (koboFormResponse) => {
+  //     this.koboFormName.set(koboFormResponse.name);
+  //     this.koboConfigurationDialog().hide({
+  //       resetMutation: false, // Retain form values for the `linkKoboMutation`
+  //       resetFormGroup: false, // Retain form values for the `linkKoboMutation`
+  //     });
+  //     this.linkKoboDialog().show();
+  //   },
+  // }));
+
+  // readonly linkKoboMutation = injectMutation(() => ({
+  //   mutationFn: () => {
+  //     const formRawValue = this.koboConfigurationFormGroup.getRawValue();
+
+  //     return this.koboApiService.upsertKoboIntegration({
+  //       programId: this.programId,
+  //       integration: {
+  //         url: formRawValue.serverUrl,
+  //         assetUid: formRawValue.assetId,
+  //         token: formRawValue.token,
+  //       },
+  //       dryRun: false,
+  //     });
+  //   },
+  //   onSuccess: () => {
+  //     this.koboConfigurationMutation.reset();
+  //     this.koboConfigurationFormGroup.reset();
+
+  //     this.linkKoboDialog().hide();
+
+  //     // Show the success dialog after successfully linking the Kobo form
+  //     §
+  //   },
+  //   onError: () => {
+  //     this.toastService.showToast({
+  //       severity: 'error',
+  //       detail: $localize`Error while integrating Kobo form`,
+  //     });
+  //   },
+  // }));
+
   readonly koboConfigurationMutation = injectMutation(() => ({
     mutationFn: () => {
+      console.log('koboConfigurationMutation mutationFn called'); // Debug log to verify function call
       const formRawValue = this.koboConfigurationFormGroup.getRawValue();
 
       return this.koboApiService.upsertKoboIntegration({
@@ -127,6 +183,7 @@ export class KoboConfigurationDialogComponent {
 
   readonly linkKoboMutation = injectMutation(() => ({
     mutationFn: () => {
+      console.log('linkKoboMutation mutationFn called'); // Debug log to verify function call
       const formRawValue = this.koboConfigurationFormGroup.getRawValue();
 
       return this.koboApiService.upsertKoboIntegration({
