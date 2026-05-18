@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { env } from '@121-service/src/env';
 import { MtnApiAuthenticationResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-authentication-response-body.dto';
 import { MtnApiCreateTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-transfer-request-body.dto';
-import { MtnApiErrorResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-error-response-body.dto';
 import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
@@ -105,49 +104,22 @@ export class MtnApiHelperService {
   }): string {
     const status = response?.status ?? 'unknown';
     const statusText = response?.statusText ?? 'unknown';
-    const errorMessage = this.parseErrorMessage(response?.data);
+    const body = this.formatBody(response?.data);
 
-    const parts = [
-      `Status: ${status}`,
-      `StatusText: ${statusText}`,
-      ...(errorMessage ? [errorMessage] : []),
-    ];
-
-    return parts.join(', ');
+    return body
+      ? `Status: ${status}, StatusText: ${statusText}, Body: ${body}`
+      : `Status: ${status}, StatusText: ${statusText}`;
   }
 
-  private parseErrorMessage(data: unknown): string | undefined {
-    if (!this.isMtnErrorResponse(data)) {
-      if (data === undefined || data === null) {
-        return undefined;
-      }
-
-      try {
-        return `Body: ${JSON.stringify(data)}`;
-      } catch {
-        return 'Body: [unserializable body]';
-      }
+  private formatBody(data: unknown): string | undefined {
+    if (!data) {
+      return undefined;
     }
-
-    const parts: string[] = [];
-    if (data.code) {
-      parts.push(`Code: ${data.code}`);
+    try {
+      return JSON.stringify(data);
+    } catch {
+      return undefined;
     }
-    if (data.message) {
-      parts.push(`Message: ${data.message}`);
-    }
-    return parts.length > 0 ? parts.join(', ') : undefined;
-  }
-
-  private isMtnErrorResponse(
-    data: unknown,
-  ): data is MtnApiErrorResponseBodyDto {
-    return (
-      typeof data === 'object' &&
-      data !== null &&
-      'code' in data &&
-      'message' in data
-    );
   }
 
   public isAuthenticationResponse(

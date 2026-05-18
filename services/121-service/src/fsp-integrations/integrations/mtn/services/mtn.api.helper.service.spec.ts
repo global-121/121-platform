@@ -168,7 +168,7 @@ describe('MtnApiHelperService', () => {
   });
 
   describe('formatResponseError', () => {
-    it('should format error with code and message when MTN error shape is present', () => {
+    it('should include body when response data is present', () => {
       const result = mtnApiHelperService.formatResponseError({
         response: {
           status: 500,
@@ -181,28 +181,11 @@ describe('MtnApiHelperService', () => {
       });
 
       expect(result).toBe(
-        'Status: 500, StatusText: Internal Server Error, Code: INTERNAL_PROCESSING_ERROR, Message: Internal error.',
+        'Status: 500, StatusText: Internal Server Error, Body: {"code":"INTERNAL_PROCESSING_ERROR","message":"Internal error."}',
       );
     });
 
-    it('should format error with code and message for bad request', () => {
-      const result = mtnApiHelperService.formatResponseError({
-        response: {
-          status: 400,
-          statusText: 'Bad Request',
-          data: {
-            code: 'INVALID_CALLBACK_URL_HOST',
-            message: 'Invalid callback URL',
-          },
-        },
-      });
-
-      expect(result).toBe(
-        'Status: 400, StatusText: Bad Request, Code: INVALID_CALLBACK_URL_HOST, Message: Invalid callback URL',
-      );
-    });
-
-    it('should fall back to JSON.stringify for non-MTN error shapes', () => {
+    it('should include body for any data shape', () => {
       const result = mtnApiHelperService.formatResponseError({
         response: {
           status: 500,
