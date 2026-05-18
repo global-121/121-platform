@@ -47,7 +47,7 @@ const expectedEventsForRetrySuccess = [
 describe('Do payment with FSP: MTN', () => {
   let accessToken: string;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     await resetDB({ seedScript: SeedScript.mtnProgram });
     accessToken = await getAccessToken();
   });
