@@ -3,8 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { env } from '@121-service/src/env';
 import { MtnApiAuthenticationResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-authentication-response-body.dto';
 import { MtnApiCreateTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-transfer-request-body.dto';
-import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
-import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 
 @Injectable()
@@ -15,13 +13,7 @@ export class MtnApiHelperService {
     if (env.MTN_MODE === FspMode.mock) {
       return new URL('api/fsp/mtn/', env.MOCK_SERVICE_URL);
     }
-    if (!env.MTN_API_URL) {
-      throw new MtnApiError({
-        type: MtnTransferErrorTypes.fail,
-        message: 'MTN_API_URL is not set',
-      });
-    }
-    return new URL(env.MTN_API_URL);
+    return new URL(env.MTN_API_URL!);
   }
 
   public createTransferPayload({

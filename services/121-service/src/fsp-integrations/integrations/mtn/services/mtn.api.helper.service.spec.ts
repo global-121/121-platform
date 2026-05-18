@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { env } from '@121-service/src/env';
-import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnApiHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.helper.service';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 
@@ -55,16 +54,6 @@ describe('MtnApiHelperService', () => {
       const result = mtnApiHelperService.getBaseUrl();
 
       expect(result.toString()).toBe('https://sandbox.momodeveloper.mtn.com/');
-    });
-
-    it('should throw MtnApiError when MTN_MODE is not mock and MTN_API_URL is not set', () => {
-      (env as any).MTN_MODE = FspMode.external;
-      (env as any).MTN_API_URL = '';
-
-      expect(() => mtnApiHelperService.getBaseUrl()).toThrow(MtnApiError);
-      expect(() => mtnApiHelperService.getBaseUrl()).toThrow(
-        'MTN_API_URL is not set',
-      );
     });
   });
 
