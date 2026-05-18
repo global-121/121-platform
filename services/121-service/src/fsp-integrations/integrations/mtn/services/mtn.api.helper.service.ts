@@ -29,27 +29,25 @@ export class MtnApiHelperService {
     amount,
     currency,
     externalId,
-    payee,
-    payerMessage,
-    payeeNote,
+    phoneNumber,
+    message,
   }: {
     amount: string;
     currency: string;
     externalId: string;
-    payee: { partyIdType: string; partyId: string };
-    payerMessage: string;
-    payeeNote: string;
+    phoneNumber: string;
+    message: string;
   }): MtnApiCreateTransferRequestBodyDto {
     return {
       amount,
       currency,
       externalId,
       payee: {
-        partyIdType: payee.partyIdType,
-        partyId: payee.partyId,
+        partyIdType: 'MSISDN',
+        partyId: phoneNumber,
       },
-      payerMessage,
-      payeeNote,
+      payerMessage: message,
+      payeeNote: message,
     };
   }
 

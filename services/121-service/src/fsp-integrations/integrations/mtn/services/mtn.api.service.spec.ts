@@ -39,9 +39,8 @@ const createTransferInput = {
   amount: '100',
   currency: 'EUR',
   externalId: '42',
-  payee: { partyIdType: 'MSISDN', partyId: '256771234567' },
-  payerMessage: 'Payment',
-  payeeNote: 'Note',
+  phoneNumber: '256771234567',
+  message: 'Payment',
   requestIdentity: testRequestIdentity,
 };
 

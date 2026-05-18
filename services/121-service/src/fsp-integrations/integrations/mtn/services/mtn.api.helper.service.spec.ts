@@ -74,12 +74,8 @@ describe('MtnApiHelperService', () => {
         amount: '100',
         currency: 'EUR',
         externalId: '42',
-        payee: {
-          partyIdType: 'MSISDN',
-          partyId: '256771234567',
-        },
-        payerMessage: 'Payment message',
-        payeeNote: 'Payment note',
+        phoneNumber: '256771234567',
+        message: 'Payment message',
       });
 
       expect(result).toEqual({
@@ -91,7 +87,7 @@ describe('MtnApiHelperService', () => {
           partyId: '256771234567',
         },
         payerMessage: 'Payment message',
-        payeeNote: 'Payment note',
+        payeeNote: 'Payment message',
       });
     });
 
@@ -100,12 +96,8 @@ describe('MtnApiHelperService', () => {
         amount: '50',
         currency: 'USD',
         externalId: '1',
-        payee: {
-          partyIdType: 'MSISDN',
-          partyId: '256770000000',
-        },
-        payerMessage: 'msg',
-        payeeNote: 'note',
+        phoneNumber: '256770000000',
+        message: 'msg',
       });
 
       expect(result).not.toHaveProperty('referenceId');

@@ -102,12 +102,8 @@ export class MtnService {
       amount,
       currency,
       externalId,
-      payee: {
-        partyIdType: 'MSISDN',
-        partyId: phoneNumberPayment,
-      },
-      payerMessage: message,
-      payeeNote: message,
+      phoneNumber: phoneNumberPayment,
+      message,
       requestIdentity,
     });
     console.log(

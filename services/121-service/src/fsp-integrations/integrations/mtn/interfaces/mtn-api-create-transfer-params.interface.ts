@@ -5,11 +5,7 @@ export interface MtnApiCreateTransferParams {
   readonly amount: string;
   readonly currency: string;
   readonly externalId: string;
-  readonly payee: {
-    readonly partyIdType: string;
-    readonly partyId: string;
-  };
-  readonly payerMessage: string;
-  readonly payeeNote: string;
+  readonly phoneNumber: string;
+  readonly message: string;
   readonly requestIdentity: MtnRequestIdentity;
 }

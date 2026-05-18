@@ -57,9 +57,8 @@ export class MtnApiService {
     amount,
     currency,
     externalId,
-    payee,
-    payerMessage,
-    payeeNote,
+    phoneNumber,
+    message,
     requestIdentity,
   }: MtnApiCreateTransferParams): Promise<void> {
     await this.authenticate({ requestIdentity });
@@ -67,9 +66,8 @@ export class MtnApiService {
       amount,
       currency,
       externalId,
-      payee,
-      payerMessage,
-      payeeNote,
+      phoneNumber,
+      message,
     });
     await this.initiateTransferRequest({
       payload,
