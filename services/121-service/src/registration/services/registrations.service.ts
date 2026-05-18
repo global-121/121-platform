@@ -34,7 +34,6 @@ import {
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
-import { ErrorEnum } from '@121-service/src/registration/errors/registration-data.error';
 import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
@@ -585,21 +584,9 @@ export class RegistrationsService {
           },
         );
       } else {
-        try {
-          await this.registrationDataService.saveData(registration, value, {
-            name: attribute,
-          });
-        } catch (error) {
-          // This is an exception because the phoneNumber is in the registration entity, not in the registrationData.
-          if (attribute === Attributes.phoneNumber) {
-            registration.phoneNumber = value.toString();
-            await this.registrationUtilsService.save(registration);
-          } else {
-            if (error.name !== ErrorEnum.RegistrationDataError) {
-              throw error;
-            }
-          }
-        }
+        await this.registrationDataService.saveData(registration, value, {
+          name: attribute,
+        });
       }
     }
 
@@ -654,17 +641,7 @@ export class RegistrationsService {
       DefaultRegistrationDataAttributeNames.whatsappPhoneNumber as string,
     ];
 
-    const matchingRegistrations = (
-      await this.registrationScopedRepository.find({
-        where: { phoneNumber: Equal(phoneNumber) },
-      })
-    ).map((r) => {
-      return {
-        programId: r.programId,
-        referenceId: r.referenceId,
-        scope: r.scope,
-      };
-    });
+    const matchingRegistrations: ReferenceProgramIdScopeDto[] = [];
     const matchingRegistrationData = await this.registrationDataScopedRepository
       .createQueryBuilder('registrationData')
       .leftJoinAndSelect('registrationData.registration', 'registration')

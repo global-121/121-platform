@@ -1,8 +1,10 @@
-import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  DefaultRegistrationDataAttributeNames,
+  GenericRegistrationAttributes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 
 export const ATTRIBUTE_LABELS: Record<GenericRegistrationAttributes, string> = {
   referenceId: $localize`:@@attribute-label-referenceId:Reference ID`,
-  phoneNumber: $localize`:@@attribute-label-phoneNumber:Phone Number`,
   preferredLanguage: $localize`:@@attribute-label-preferredLanguage:Preferred Language`,
   paymentAmountMultiplier: $localize`:@@attribute-label-paymentAmountMultiplier:Transfer value multiplier`,
   programFspConfigurationName: $localize`:@@attribute-label-programFspConfigurationName:FSP`,
@@ -24,8 +26,15 @@ export const ATTRIBUTE_EDIT_INFO: Partial<
   maxPayments: $localize`:@@attribute-edit-info-maxPayments:Maximum amount of transactions to be received. Keeping field empty to remove the limit.`,
   paymentCountRemaining: $localize`:@@attribute-edit-info-paymentCountRemaining:This field is calculated by subtracting the sent payments from the planned payments. If the limit is removed from the planned payments this field will be empty.`,
   paymentAmountMultiplier: $localize`:@@attribute-edit-info-paymentAmountMultiplier:The transfer value will be multiplied by this number to calculate the payment amount.`,
-  phoneNumber: $localize`:@@attribute-edit-info-phoneNumber:Required format: numbers only (including country-code).`,
   scope: $localize`:@@attribute-edit-info-scope:Separate the parts with a dot (i.e. 'amsterdam.west').`,
+};
+
+// Edit-info hints for registration data attributes that are not generic
+// attributes but still benefit from extra guidance in the Portal.
+export const DEFAULT_ATTRIBUTE_EDIT_INFO: Partial<
+  Record<DefaultRegistrationDataAttributeNames, string>
+> = {
+  phoneNumber: $localize`:@@attribute-edit-info-phoneNumber:Required format: numbers only (including country-code).`,
 };
 
 export const isGenericAttribute = (

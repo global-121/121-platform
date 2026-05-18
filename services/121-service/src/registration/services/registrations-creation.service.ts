@@ -110,7 +110,6 @@ export class RegistrationsCreationService {
     const genericAttributes: string[] = [
       GenericRegistrationAttributes.referenceId,
       GenericRegistrationAttributes.programFspConfigurationName,
-      GenericRegistrationAttributes.phoneNumber,
       GenericRegistrationAttributes.preferredLanguage,
     ];
     const dynamicAttributes: string[] = (
@@ -200,7 +199,6 @@ export class RegistrationsCreationService {
     for await (const record of validatedImportRecords) {
       const registration = new RegistrationEntity();
       registration.referenceId = record.referenceId || uuid();
-      registration.phoneNumber = record.phoneNumber ?? null;
       registration.preferredLanguage = record.preferredLanguage ?? null;
       registration.program = program;
       registration.inclusionScore = 0;

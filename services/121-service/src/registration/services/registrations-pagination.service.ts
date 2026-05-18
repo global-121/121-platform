@@ -20,10 +20,7 @@ import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
-import {
-  DefaultRegistrationDataAttributeNames,
-  RegistrationAttributeTypes,
-} from '@121-service/src/registration/enum/registration-attribute.enum';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
@@ -87,25 +84,18 @@ export class RegistrationsPaginationService {
 
     const programRegistrationAttributeRelations =
       await this.programService.getAllRelationProgram(programId);
-    // Phonenumber is already in the registration table so we do not need to filter on it twice
-    const relationsWithoutPhoneNumber =
-      programRegistrationAttributeRelations.filter(
-        (r) => r.name !== DefaultRegistrationDataAttributeNames.phoneNumber,
-      );
-    const relationNamesWithoutPhonenumber = relationsWithoutPhoneNumber.map(
+    const relationNames = programRegistrationAttributeRelations.map(
       (r) => r.name,
     );
 
     // Check if the filter contains at least one registration data name
     if (query.filter) {
       const filters = Object.keys(query.filter);
-      if (
-        relationNamesWithoutPhonenumber.some((key) => filters.includes(key))
-      ) {
+      if (relationNames.some((key) => filters.includes(key))) {
         queryBuilder = this.filterOnRegistrationAttributeData(
           query,
           queryBuilder,
-          relationsWithoutPhoneNumber,
+          programRegistrationAttributeRelations,
         );
       }
     }
@@ -129,7 +119,7 @@ export class RegistrationsPaginationService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      if (relationNamesWithoutPhonenumber.some((key) => sortByKey === key)) {
+      if (relationNames.includes(sortByKey)) {
         queryBuilder =
           this.registrationViewScopedRepository.sortOnRegistrationData(
             sortByKey,
@@ -253,9 +243,6 @@ export class RegistrationsPaginationService {
       const registrationDataNamesProgram = registrationDataRelations.map(
         (r) => r.name,
       );
-      registrationDataNamesProgram.push(
-        DefaultRegistrationDataAttributeNames.phoneNumber,
-      );
 
       // Check if the filter contains at least one registration data name
       for (const registrationDataName of registrationDataNamesProgram) {
@@ -355,7 +342,6 @@ export class RegistrationsPaginationService {
         RegistrationViewsMapper.selectRegistrationRootFields({
           registration,
           select,
-          hasPersonalReadPermission,
         });
 
       const mappedRegistration = hasPersonalReadPermission

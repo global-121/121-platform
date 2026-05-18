@@ -15,14 +15,13 @@ import { KoboLanguageMapper } from '@121-service/src/kobo/mappers/kobo-language.
 import { fspQuestionName } from '@121-service/src/kobo/services/kobo.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import {
+  DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
-import {
-  registrationViewAttributeNames,
-  type RegistrationViewAttributeNameWithoutPhoneNumber,
-} from '@121-service/src/shared/const';
+import { registrationViewAttributeNames } from '@121-service/src/shared/const';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 // These Kobo field types are accepted for any 121 attribute type because cash-im teams use them for computed/pre-filled values
@@ -301,15 +300,15 @@ export class KoboValidationService {
     const errors: KoboValidationError[] = [];
 
     const phoneNumberItem = koboSurveyItems.find(
-      (item) => item.name === GenericRegistrationAttributes.phoneNumber,
+      (item) => item.name === DefaultRegistrationDataAttributeNames.phoneNumber,
     );
 
     // Only validate existence if empty phone numbers are not allowed
     if (!phoneNumberItem && !allowEmptyPhoneNumber) {
       errors.push({
         type: KoboValidationErrorType.missingField,
-        attributeName: GenericRegistrationAttributes.phoneNumber,
-        error: `Attribute '${GenericRegistrationAttributes.phoneNumber}' is missing`,
+        attributeName: DefaultRegistrationDataAttributeNames.phoneNumber,
+        error: `Attribute '${DefaultRegistrationDataAttributeNames.phoneNumber}' is missing`,
         solution:
           'Add a phoneNumber field with text type including country code, or set program.allowEmptyPhoneNumber to true',
       });
@@ -321,7 +320,7 @@ export class KoboValidationService {
 
     // Also validate type if the phone number item exists
     const error = this.validateSurveyItemTypeMatchExpected121Type({
-      attributeName: GenericRegistrationAttributes.phoneNumber,
+      attributeName: DefaultRegistrationDataAttributeNames.phoneNumber,
       surveyItemType: phoneNumberItem.type,
       expected121Type: RegistrationAttributeTypes.tel,
     });
@@ -497,7 +496,7 @@ export class KoboValidationService {
 
   private isRegistrationViewAttributeName(
     name: string,
-  ): name is RegistrationViewAttributeNameWithoutPhoneNumber {
+  ): name is keyof RegistrationViewEntity {
     return registrationViewAttributeNames.includes(name);
   }
 

@@ -197,7 +197,7 @@ export class TransactionJobsCreationService {
             addressPostalCode:
               registrationView[FspAttributes.addressPostalCode],
             addressCity: registrationView[FspAttributes.addressCity],
-            phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has visa as FSP
+            phoneNumber: registrationView[FspAttributes.phoneNumber], // Phonenumber is a required field if a registration has visa as FSP
           };
         },
       );
@@ -304,7 +304,7 @@ export class TransactionJobsCreationService {
         return {
           ...base!,
           // FSP-specific additions:
-          phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has safaricom as FSP
+          phoneNumber: registrationView[FspAttributes.phoneNumber], // Phonenumber is a required field if a registration has safaricom as FSP
           idNumber: registrationView[FspAttributes.nationalId],
         };
       });

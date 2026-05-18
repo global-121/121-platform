@@ -15,11 +15,9 @@ export class RegistrationViewsMapper {
   static selectRegistrationRootFields({
     registration,
     select,
-    hasPersonalReadPermission,
   }: {
     registration: RegistrationViewEntity;
     select?: string[];
-    hasPersonalReadPermission?: boolean;
   }): RegistrationViewWithoutData {
     let mappedRegistration = omit(registration, 'data');
 
@@ -30,10 +28,6 @@ export class RegistrationViewsMapper {
           mappedRegistration[selectKey] = registration[selectKey];
         }
       }
-    }
-
-    if (!hasPersonalReadPermission) {
-      delete mappedRegistration.phoneNumber;
     }
 
     return mappedRegistration;

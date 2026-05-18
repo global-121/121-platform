@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -1932,9 +1932,6 @@
       <trans-unit id="attribute-edit-info-paymentCountRemaining" datatype="html">
         <source>This field is calculated by subtracting the sent payments from the planned payments. If the limit is removed from the planned payments this field will be empty.</source>
       </trans-unit>
-      <trans-unit id="attribute-edit-info-phoneNumber" datatype="html">
-        <source>Required format: numbers only (including country-code).</source>
-      </trans-unit>
       <trans-unit id="attribute-edit-info-scope" datatype="html">
         <source>Separate the parts with a dot (i.e. &apos;amsterdam.west&apos;).</source>
       </trans-unit>
@@ -1955,9 +1952,6 @@
       </trans-unit>
       <trans-unit id="attribute-label-paymentCountRemaining" datatype="html">
         <source>Remaining payments</source>
-      </trans-unit>
-      <trans-unit id="attribute-label-phoneNumber" datatype="html">
-        <source>Phone Number</source>
       </trans-unit>
       <trans-unit id="attribute-label-preferredLanguage" datatype="html">
         <source>Preferred Language</source>
@@ -2606,6 +2600,21 @@
       </trans-unit>
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
+      </trans-unit>
+      <trans-unit id="6751289562324913219" datatype="html">
+        <source>Form setting errors</source>
+      </trans-unit>
+      <trans-unit id="6151408429233480883" datatype="html">
+        <source>Required fields not found</source>
+      </trans-unit>
+      <trans-unit id="7615933189038112184" datatype="html">
+        <source>These fields are expected by 121 but are missing from your Kobo form. Add them before redeploying.</source>
+      </trans-unit>
+      <trans-unit id="7968872754950254240" datatype="html">
+        <source>There are issues in your Kobo form that are blocking the integration. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-phoneNumber" datatype="html">
+        <source>Required format: numbers only (including country-code).</source>
       </trans-unit>
     </body>
   </file>

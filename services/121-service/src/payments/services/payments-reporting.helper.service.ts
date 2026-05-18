@@ -55,7 +55,7 @@ export class PaymentsReportingHelperService {
     const defaultSelect = [
       DefaultRegistrationDataAttributeNames.name,
       GenericRegistrationAttributes.registrationProgramId,
-      GenericRegistrationAttributes.phoneNumber,
+      DefaultRegistrationDataAttributeNames.phoneNumber,
       GenericRegistrationAttributes.preferredLanguage,
       GenericRegistrationAttributes.paymentAmountMultiplier,
       GenericRegistrationAttributes.programFspConfigurationLabel,

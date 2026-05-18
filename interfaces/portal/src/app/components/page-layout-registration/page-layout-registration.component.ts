@@ -15,7 +15,10 @@ import { CardModule } from 'primeng/card';
 import { MenuModule } from 'primeng/menu';
 
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
-import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  DefaultRegistrationDataAttributeNames,
+  GenericRegistrationAttributes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
@@ -168,6 +171,9 @@ export class PageLayoutRegistrationComponent {
       registrationRawData?.status,
     );
 
+    const phoneNumber =
+      registrationRawData?.[DefaultRegistrationDataAttributeNames.phoneNumber];
+
     const listData: DataListItem[] = [
       {
         label: $localize`:@@registration-status:Registration Status`,
@@ -176,7 +182,7 @@ export class PageLayoutRegistrationComponent {
       },
       {
         label: $localize`:@@registration-phone-number:Phone number`,
-        value: registrationRawData?.phoneNumber,
+        value: typeof phoneNumber === 'string' ? phoneNumber : undefined,
         type: 'text',
       },
       {

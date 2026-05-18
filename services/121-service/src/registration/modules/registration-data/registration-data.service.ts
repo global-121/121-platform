@@ -11,7 +11,6 @@ import {
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
-import { RegistrationDataError } from '@121-service/src/registration/errors/registration-data.error';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
@@ -100,7 +99,7 @@ export class RegistrationDataService {
     }
 
     const errorMessage = `Cannot find registration data, name: '${name}' not found (In program registration attributes)`;
-    throw new RegistrationDataError(errorMessage);
+    throw new Error(errorMessage);
   }
 
   // To save registration data you need either a relation or a name
