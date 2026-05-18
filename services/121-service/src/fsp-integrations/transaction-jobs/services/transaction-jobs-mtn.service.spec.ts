@@ -1,6 +1,6 @@
 import { TestBed } from '@automock/jest';
 
-import { MtnTransferResult } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
+import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
@@ -142,7 +142,7 @@ describe('TransactionJobsMtnService', () => {
   it('should save error status when MtnApiError is thrown', async () => {
     (mtnService.createTransfer as jest.Mock).mockRejectedValue(
       new MtnApiError({
-        type: MtnTransferResult.fail,
+        type: MtnTransferErrorTypes.fail,
         message: 'Transfer failed',
       }),
     );
@@ -164,7 +164,7 @@ describe('TransactionJobsMtnService', () => {
   it('should call getTransfer and save success when duplicate with SUCCESSFUL status', async () => {
     (mtnService.createTransfer as jest.Mock).mockRejectedValue(
       new MtnApiError({
-        type: MtnTransferResult.duplicate,
+        type: MtnTransferErrorTypes.duplicate,
         message: 'Duplicate transfer request',
       }),
     );
@@ -196,7 +196,7 @@ describe('TransactionJobsMtnService', () => {
   it('should call getTransfer and save waiting when duplicate with PENDING status', async () => {
     (mtnService.createTransfer as jest.Mock).mockRejectedValue(
       new MtnApiError({
-        type: MtnTransferResult.duplicate,
+        type: MtnTransferErrorTypes.duplicate,
         message: 'Duplicate transfer request',
       }),
     );
@@ -224,7 +224,7 @@ describe('TransactionJobsMtnService', () => {
   it('should call getTransfer and save error when duplicate with FAILED status', async () => {
     (mtnService.createTransfer as jest.Mock).mockRejectedValue(
       new MtnApiError({
-        type: MtnTransferResult.duplicate,
+        type: MtnTransferErrorTypes.duplicate,
         message: 'Duplicate transfer request',
       }),
     );

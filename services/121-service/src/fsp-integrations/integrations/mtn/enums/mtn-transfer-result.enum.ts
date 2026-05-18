@@ -1,4 +1,4 @@
-export enum MtnTransferResult {
+export enum MtnTransferErrorTypes {
   fail = 'fail',
   duplicate = 'duplicate',
 }

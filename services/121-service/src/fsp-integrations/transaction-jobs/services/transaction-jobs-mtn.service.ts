@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
 import { env } from '@121-service/src/env';
-import { MtnTransferResult } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
+import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
@@ -85,7 +85,7 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
       });
     } catch (error) {
       if (error instanceof MtnApiError) {
-        if (error.type === MtnTransferResult.duplicate) {
+        if (error.type === MtnTransferErrorTypes.duplicate) {
           // 6a. Duplicate: this is a queue retry where the original request already went through
           // Use getTransfer to determine the actual outcome
           await this.handleDuplicateTransfer({

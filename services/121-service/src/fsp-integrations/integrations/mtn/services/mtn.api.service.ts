@@ -3,7 +3,7 @@ import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios
 import { TokenSet } from 'openid-client';
 
 import { MtnApiCreateTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-transfer-request-body.dto';
-import { MtnTransferResult } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
+import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnApiCreateTransferParams } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-api-create-transfer-params.interface';
 import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
@@ -44,7 +44,7 @@ export class MtnApiService {
     const tokenSet = this.tokenCache.get(requestIdentity.referenceId);
     if (!tokenSet || !tokenSet.access_token) {
       throw new MtnApiError({
-        type: MtnTransferResult.fail,
+        type: MtnTransferErrorTypes.fail,
         message: 'No access token available for MTN API requests',
       });
     }
@@ -108,7 +108,7 @@ export class MtnApiService {
 
       if (!response || response.status < 200 || response.status >= 300) {
         throw new MtnApiError({
-          type: MtnTransferResult.fail,
+          type: MtnTransferErrorTypes.fail,
           message: `Failed to get transfer. ${this.mtnApiHelperService.formatResponseError({ response })}`,
         });
       }
@@ -120,7 +120,7 @@ export class MtnApiService {
       }
       console.error('Failed to get MTN transfer', error);
       throw new MtnApiError({
-        type: MtnTransferResult.fail,
+        type: MtnTransferErrorTypes.fail,
         message: `Error getting transfer: ${error instanceof Error ? error.message : 'Unknown error'}`,
       });
     }
@@ -162,7 +162,7 @@ export class MtnApiService {
 
       if (response?.status === HttpStatus.CONFLICT) {
         throw new MtnApiError({
-          type: MtnTransferResult.duplicate,
+          type: MtnTransferErrorTypes.duplicate,
           message: `Duplicate transfer request for referenceId: ${referenceId}`,
         });
       }
@@ -173,7 +173,7 @@ export class MtnApiService {
         response.status >= 300
       ) {
         throw new MtnApiError({
-          type: MtnTransferResult.fail,
+          type: MtnTransferErrorTypes.fail,
           message: `Failed to create transfer. ${this.mtnApiHelperService.formatResponseError({ response })}`,
         });
       }
@@ -183,7 +183,7 @@ export class MtnApiService {
       }
       console.error('Failed to make MTN B2C payment API call', error);
       throw new MtnApiError({
-        type: MtnTransferResult.fail,
+        type: MtnTransferErrorTypes.fail,
         message: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
       });
     }
@@ -219,14 +219,14 @@ export class MtnApiService {
       );
     } catch (error) {
       throw new MtnApiError({
-        type: MtnTransferResult.fail,
+        type: MtnTransferErrorTypes.fail,
         message: `authentication failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       });
     }
 
     if (!this.mtnApiHelperService.isAuthenticationResponse(response?.data)) {
       throw new MtnApiError({
-        type: MtnTransferResult.fail,
+        type: MtnTransferErrorTypes.fail,
         message: `authentication failed: unexpected response from MTN API`,
       });
     }
@@ -236,7 +236,7 @@ export class MtnApiService {
 
     if (expiresInSeconds <= 0) {
       throw new MtnApiError({
-        type: MtnTransferResult.fail,
+        type: MtnTransferErrorTypes.fail,
         message: 'authentication failed: invalid token expiry from MTN API',
       });
     }

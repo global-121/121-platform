@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { MtnTransferResult } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
+import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnApiHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.helper.service';
@@ -139,7 +139,7 @@ describe('MtnApiService', () => {
       await expect(
         mtnApiService.createTransfer(createTransferInput),
       ).rejects.toMatchObject({
-        type: MtnTransferResult.duplicate,
+        type: MtnTransferErrorTypes.duplicate,
       });
     });
 
@@ -176,7 +176,7 @@ describe('MtnApiService', () => {
         .mockResolvedValueOnce(mockAuthResponse) // authenticate() call
         .mockRejectedValueOnce(
           new MtnApiError({
-            type: MtnTransferResult.duplicate,
+            type: MtnTransferErrorTypes.duplicate,
             message: 'Duplicate transfer request',
           }),
         ); // createTransfer() call
@@ -191,7 +191,7 @@ describe('MtnApiService', () => {
 
       // Assert
       expect(error).toBeInstanceOf(MtnApiError);
-      expect((error as MtnApiError).type).toBe(MtnTransferResult.duplicate);
+      expect((error as MtnApiError).type).toBe(MtnTransferErrorTypes.duplicate);
     });
   });
 
