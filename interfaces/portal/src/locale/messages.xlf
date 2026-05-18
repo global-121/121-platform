@@ -2339,6 +2339,14 @@
       </trans-unit>
       <trans-unit id="9190469470269882637" datatype="html">
         <source>Integrate FSP</source>
+      <trans-unit id="132292818541848392" datatype="html">
+        <source>Kobo form linked successfully</source>
+      </trans-unit>
+      <trans-unit id="2796653095673932200" datatype="html">
+        <source><x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ koboFormName() }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> was linked successfully to your program.</source>
+      </trans-unit>
+      <trans-unit id="4807849088306745118" datatype="html">
+        <source>pi pi-check</source>
       </trans-unit>
       <trans-unit id="1030526487647802742" datatype="html">
         <source>Payment approval saved successfully.</source>

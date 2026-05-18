@@ -82,3 +82,36 @@
     <p>{{ koboConfigurationMutation.data()?.message }}</p>
   }
 </app-form-dialog>
+
+<p-dialog
+  #koboSuccesfullyLinkedDialog
+  class="w-full max-w-md"
+  [modal]="true"
+  [closeOnEscape]="false"
+  [(visible)]="koboSuccesfullyLinkedDialogVisible"
+  header="Kobo form linked successfully"
+  i18n-header
+  icon="pi pi-check"
+  i18n-icon
+  [styleClass]="'min-w-[632px]'"
+>
+  <p i18n>
+    <strong>{{ koboFormName() }}</strong>
+    was linked successfully to your program.
+  </p>
+
+  <div class="mt-4 flex justify-end gap-4">
+    <p-button
+      label="Import existing reg."
+      i18n-label
+      outlined
+      rounded
+      (click)="handleImportExistingRegistrationsClick()"
+    />
+    <p-button
+      [rounded]="true"
+      label="Close"
+      i18n-label
+    />
+  </div>
+</p-dialog>

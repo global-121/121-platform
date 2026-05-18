@@ -14,6 +14,8 @@ import {
 } from '@angular/forms';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
+import { Button } from 'primeng/button';
+import { Dialog } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
@@ -21,6 +23,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { extractServerAndAssetIdFromUrl } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
+import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
@@ -32,6 +35,8 @@ import { generateFieldErrors } from '~/utils/form-validation';
     InputTextModule,
     ReactiveFormsModule,
     ManualLinkComponent,
+    Dialog,
+    Button,
   ],
   providers: [ToastService],
   templateUrl: './kobo-configuration-dialog.component.html',
@@ -45,12 +50,23 @@ export class KoboConfigurationDialogComponent {
   private readonly toastService = inject(ToastService);
 
   readonly koboFormName = signal<string | undefined>(undefined);
+  readonly koboSuccesfullyLinkedDialogVisible = signal(true);
 
   readonly koboConfigurationDialog = viewChild.required<FormDialogComponent>(
     'koboConfigurationDialog',
   );
+
   readonly linkKoboDialog =
     viewChild.required<FormDialogComponent>('linkKoboDialog');
+
+  // readonly koboSuccesfullyLinkedDialog = viewChild.required<Dialog>(
+  //   'koboSuccesfullyLinkedDialog',
+  // );
+
+  readonly koboImportExistingDialog =
+    viewChild.required<KoboImportExistingRegistrationsDialogComponent>(
+      'koboImportExistingDialog',
+    );
 
   readonly koboConfigurationFormGroup = new FormGroup({
     fullKoboFormUrl: new FormControl('', {
@@ -88,8 +104,64 @@ export class KoboConfigurationDialogComponent {
     },
   );
 
+  // readonly koboConfigurationMutation = injectMutation(() => ({
+  //   mutationFn: () => {
+  //     const formRawValue = this.koboConfigurationFormGroup.getRawValue();
+
+  //     return this.koboApiService.upsertKoboIntegration({
+  //       programId: this.programId,
+  //       integration: {
+  //         url: formRawValue.serverUrl,
+  //         assetUid: formRawValue.assetId,
+  //         token: formRawValue.token,
+  //       },
+  //       dryRun: true,
+  //     });
+  //   },
+  //   onSuccess: (koboFormResponse) => {
+  //     this.koboFormName.set(koboFormResponse.name);
+  //     this.koboConfigurationDialog().hide({
+  //       resetMutation: false, // Retain form values for the `linkKoboMutation`
+  //       resetFormGroup: false, // Retain form values for the `linkKoboMutation`
+  //     });
+  //     this.linkKoboDialog().show();
+  //   },
+  // }));
+
+  // readonly linkKoboMutation = injectMutation(() => ({
+  //   mutationFn: () => {
+  //     const formRawValue = this.koboConfigurationFormGroup.getRawValue();
+
+  //     return this.koboApiService.upsertKoboIntegration({
+  //       programId: this.programId,
+  //       integration: {
+  //         url: formRawValue.serverUrl,
+  //         assetUid: formRawValue.assetId,
+  //         token: formRawValue.token,
+  //       },
+  //       dryRun: false,
+  //     });
+  //   },
+  //   onSuccess: () => {
+  //     this.koboConfigurationMutation.reset();
+  //     this.koboConfigurationFormGroup.reset();
+
+  //     this.linkKoboDialog().hide();
+
+  //     // Show the success dialog after successfully linking the Kobo form
+  //     §
+  //   },
+  //   onError: () => {
+  //     this.toastService.showToast({
+  //       severity: 'error',
+  //       detail: $localize`Error while integrating Kobo form`,
+  //     });
+  //   },
+  // }));
+
   readonly koboConfigurationMutation = injectMutation(() => ({
     mutationFn: () => {
+      console.log('koboConfigurationMutation mutationFn called'); // Debug log to verify function call
       const formRawValue = this.koboConfigurationFormGroup.getRawValue();
 
       return this.koboApiService.upsertKoboIntegration({
@@ -114,6 +186,7 @@ export class KoboConfigurationDialogComponent {
 
   readonly linkKoboMutation = injectMutation(() => ({
     mutationFn: () => {
+      console.log('linkKoboMutation mutationFn called'); // Debug log to verify function call
       const formRawValue = this.koboConfigurationFormGroup.getRawValue();
 
       return this.koboApiService.upsertKoboIntegration({
@@ -163,6 +236,12 @@ export class KoboConfigurationDialogComponent {
         ?.setErrors({ invalid: true });
     }
   };
+
+  handleImportExistingRegistrationsClick() {
+    this.koboImportExistingDialog().show();
+    // this.koboSuccesfullyLinkedDialog().hide();
+  }
+
   show() {
     this.koboConfigurationDialog().show();
   }
