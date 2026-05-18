@@ -94,34 +94,32 @@ export class MtnApiService {
       requestIdentity,
     });
 
+    let response: AxiosResponse<MtnTransferStatusResponse>;
     try {
-      const response = await this.httpService.get<
+      response = await this.httpService.get<
         AxiosResponse<MtnTransferStatusResponse>
       >(url.toString(), headers);
-
-      console.log(
-        `[MTN API] Get transfer response - referenceId: ${referenceId}, status: ${response.status}, data:`,
-        JSON.stringify(response.data),
-      );
-
-      if (!response || response.status < 200 || response.status >= 300) {
-        throw new MtnApiError({
-          type: MtnTransferErrorTypes.fail,
-          message: `Failed to get transfer. ${this.mtnApiHelperService.formatResponseError({ response })}`,
-        });
-      }
-
-      return response.data;
     } catch (error) {
-      if (error instanceof MtnApiError) {
-        throw error;
-      }
       console.error('Failed to get MTN transfer', error);
       throw new MtnApiError({
         type: MtnTransferErrorTypes.fail,
         message: `Error getting transfer: ${error instanceof Error ? error.message : 'Unknown error'}`,
       });
     }
+
+    console.log(
+      `[MTN API] Get transfer response - referenceId: ${referenceId}, status: ${response.status}, data:`,
+      JSON.stringify(response.data),
+    );
+
+    if (!response || response.status < 200 || response.status >= 300) {
+      throw new MtnApiError({
+        type: MtnTransferErrorTypes.fail,
+        message: `Failed to get transfer. ${this.mtnApiHelperService.formatResponseError({ response })}`,
+      });
+    }
+
+    return response.data;
   }
 
   private async initiateTransferRequest({
