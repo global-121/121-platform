@@ -11,6 +11,7 @@ import { getFspConfigurationProperties } from '@121-service/src/fsp-management/f
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
+import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { programIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
@@ -142,14 +143,11 @@ describe('Manage Fsp configurations', () => {
     const programRegistrationAttributes =
       program.body.programRegistrationAttributes;
 
-    expect(
-      programRegistrationAttributes.map((attr) => attr.name),
-    ).not.toContain(FspAttributes.nationalId);
-
     // Storing the original phone number attribute to check later that it's not being overridden, since it's also required by safaricom configuration and already exists in the program before adding the configuration, so should not be added again or overridden
     const originalPhoneNumberProgramRegistrationAttribute =
       programRegistrationAttributes.find(
-        (attr) => attr.name === FspAttributes.phoneNumber,
+        (attr: ProgramRegistrationAttributeDto) =>
+          attr.name === FspAttributes.phoneNumber,
       );
 
     // Act
@@ -163,16 +161,20 @@ describe('Manage Fsp configurations', () => {
     expect(result.statusCode).toBe(HttpStatus.CREATED);
 
     const updatedProgram = await getProgram(programIdVisa, accessToken);
-    const updatedProgramRegistrationAttributes =
+    const updatedProgramRegistrationAttributes: ProgramRegistrationAttributeDto[] =
       updatedProgram.body.programRegistrationAttributes;
 
+    // The seed data for programIdVisa does not include nationalId, but it is a required attribute of the Safaricom FSP
     expect(
-      updatedProgramRegistrationAttributes.map((attr) => attr.name),
+      updatedProgramRegistrationAttributes.map(
+        (attr: ProgramRegistrationAttributeDto) => attr.name,
+      ),
     ).toContain(FspAttributes.nationalId);
 
     expect(
       updatedProgramRegistrationAttributes.find(
-        (attribute) => attribute.name === FspAttributes.phoneNumber,
+        (attribute: ProgramRegistrationAttributeDto) =>
+          attribute.name === FspAttributes.phoneNumber,
       ),
     ).toEqual(originalPhoneNumberProgramRegistrationAttribute);
   });

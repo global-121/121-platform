@@ -2334,14 +2334,14 @@
       <trans-unit id="1403545532790809587" datatype="html">
         <source>Reconfigure <x equiv-text="this.fspLabel()" id="fspName"/></source>
       </trans-unit>
-      <trans-unit id="3534500453495072578" datatype="html">
-        <source>Integrate FSP <x equiv-text="this.fspLabel()" id="fspName"/></source>
-      </trans-unit>
       <trans-unit id="6650633628037596693" datatype="html">
         <source>Try again</source>
       </trans-unit>
       <trans-unit id="6988015601759805630" datatype="html">
         <source>Configure <x equiv-text="this.fspLabel()" id="fspName"/></source>
+      </trans-unit>
+      <trans-unit id="9190469470269882637" datatype="html">
+        <source>Integrate FSP</source>
       </trans-unit>
     </body>
   </file>

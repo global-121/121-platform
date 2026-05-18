@@ -27,12 +27,7 @@
         <b>exact format</b>
         for this FSP integration in the data column name:
       </p>
-      <p-table
-        [value]="requiredRegistrationAttributes()"
-        attr.data-testid="required-attributes-table-{{
-          this.fspSetting().name
-        }}"
-      >
+      <p-table [value]="requiredRegistrationAttributes()">
         <ng-template #header>
           <tr>
             <th

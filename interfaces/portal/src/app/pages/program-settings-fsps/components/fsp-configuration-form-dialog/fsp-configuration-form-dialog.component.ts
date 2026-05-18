@@ -94,7 +94,7 @@ export class FspConfigurationFormDialogComponent {
   readonly configurationProceedLabel = computed(() => {
     return this.existingFspConfiguration()
       ? $localize`Save changes`
-      : $localize`Integrate FSP ${this.fspLabel()}:fspName:`;
+      : $localize`Integrate FSP`;
   });
 
   readonly formGroup = computed<FspConfigurationFormGroup>(() =>

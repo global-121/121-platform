@@ -23,6 +23,7 @@ import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-conf
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
+import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 @Injectable()
@@ -34,6 +35,7 @@ export class ProgramFspConfigurationsService {
 
   constructor(
     private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
+    private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
   ) {}
 
   public async getByProgramId(
@@ -55,47 +57,10 @@ export class ProgramFspConfigurationsService {
     programFspConfigurationDto: CreateProgramFspConfigurationDto,
   ): Promise<ProgramFspConfigurationResponseDto> {
     await this.validate(programId, programFspConfigurationDto);
-    const currentProgramAttributes =
-      await this.programRegistrationAttributesService.getAttributes({
-        programId,
-        includeProgramRegistrationAttributes: true,
-        includeTemplateDefaultAttributes: true,
-      });
-
-    const currentProgramAttributesNames = currentProgramAttributes.map(
-      (attributes) => attributes.name,
+    await this.createMissingFspRegistrationAttributes(
+      programId,
+      programFspConfigurationDto,
     );
-
-    const foundFsp = FSP_SETTINGS[programFspConfigurationDto.fspName];
-    const requiredAttributes = foundFsp.attributes.filter(
-      (attribute) => attribute.isRequired,
-    );
-    const requiredAttributeNames = requiredAttributes.map(
-      (attribute) => attribute.name,
-    );
-
-    // TODO:
-    // Replace this loop with updateBatchProgramRegistrationAttributes from
-    // https://github.com/global-121/121-platform/pull/8229/ once merged
-
-    for (const requiredAttributeName of requiredAttributeNames) {
-      if (!currentProgramAttributesNames.includes(requiredAttributeName)) {
-        await this.programRegistrationAttributesService.createProgramRegistrationAttribute(
-          {
-            programId,
-            createProgramRegistrationAttributeDto: {
-              name: requiredAttributeName,
-              type: FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING[
-                requiredAttributeName
-              ],
-              label: {
-                en: requiredAttributeName,
-              },
-            },
-          },
-        );
-      }
-    }
 
     return this.createEntity(programId, programFspConfigurationDto);
   }
@@ -131,6 +96,50 @@ export class ProgramFspConfigurationsService {
       this.validatePropertyValueTypesOrThrow(
         programFspConfigurationDto.properties,
       );
+    }
+  }
+
+  private async createMissingFspRegistrationAttributes(
+    programId: number,
+    programFspConfigurationDto: CreateProgramFspConfigurationDto,
+  ): Promise<void> {
+    const currentProgramAttributes =
+      await this.programRegistrationAttributeRepository.find({
+        where: { programId: Equal(programId) },
+        select: { name: true },
+      });
+
+    const currentProgramAttributesNames = currentProgramAttributes.map(
+      (attributes) => attributes.name,
+    );
+
+    const requiredAttributeNames = FSP_SETTINGS[
+      programFspConfigurationDto.fspName
+    ].attributes
+      .filter((attribute) => attribute.isRequired)
+      .map((attribute) => attribute.name);
+
+    // TODO:
+    // Replace this loop with updateBatchProgramRegistrationAttributes from
+    // https://github.com/global-121/121-platform/pull/8229/ once merged
+
+    for (const requiredAttributeName of requiredAttributeNames) {
+      if (!currentProgramAttributesNames.includes(requiredAttributeName)) {
+        await this.programRegistrationAttributesService.createProgramRegistrationAttribute(
+          {
+            programId,
+            createProgramRegistrationAttributeDto: {
+              name: requiredAttributeName,
+              type: FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING[
+                requiredAttributeName
+              ],
+              label: {
+                en: requiredAttributeName,
+              },
+            },
+          },
+        );
+      }
     }
   }
 

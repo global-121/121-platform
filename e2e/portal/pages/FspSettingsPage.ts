@@ -26,8 +26,6 @@ class FspSettingsPage extends BasePage {
       name: 'Save changes',
     });
     this.fspCard = this.page.locator('app-card-with-link p-card');
-
-    // this.integrationErrorMessage = this.page.getByText('Integration error');
     this.cancelButton = this.page.getByRole('button', { name: 'Cancel' });
   }
 
@@ -179,25 +177,29 @@ class FspSettingsPage extends BasePage {
     }
   }
 
-  async validateFspConfigurationIsAutomaticlySet({
-    fspsNotConfigurableForOcwProgram,
+  async addFspsWithRequiredAttributes({
+    fspConfiguration,
   }: {
-    fspsNotConfigurableForOcwProgram: FspSettingsDto[];
-  }) {
-    for (const FSP of fspsNotConfigurableForOcwProgram) {
-      const { defaultLabel, attributes, name: FSPname } = FSP;
+    fspConfiguration: FspSettingsDto[];
+  }): Promise<string[]> {
+    let allRequiredAttributes: string[] = [];
+
+    for (const fsp of fspConfiguration) {
+      const { defaultLabel, attributes, name: fspName } = fsp;
 
       const requiredAttributes = attributes
         .filter((attr) => attr.isRequired)
         .map((attr) => attr.name);
 
+      allRequiredAttributes = [...allRequiredAttributes, ...requiredAttributes];
+
       if (!defaultLabel.en) {
         throw new Error(
-          `FSP ${FSPname} does not have a default label in English`,
+          `FSP ${fspName} does not have a default label in English`,
         );
       }
 
-      // Check if we need to c§lick "Add another FSP" first
+      // Check if we need to click "Add another FSP" first
       await this.page.waitForTimeout(200); // Small wait to ensure button is loaded
       if (await this.addFspButton.isVisible()) {
         await this.addFspButton.click();
@@ -215,20 +217,9 @@ class FspSettingsPage extends BasePage {
       }
 
       await this.integrateFspButton.click();
-
-      // Get the table of required attributes for this FSP and validate it contains the expected attributes
-      const table = this.page
-        .locator(`[data-testid="required-attributes-table-${FSPname}"]`)
-        .first();
-      await expect(table).toBeVisible();
-
-      const attributesInTable = await table
-        .locator('tbody tr td:last-child')
-        .allTextContents()
-        .then((texts) => texts.map((text) => text.trim()));
-
-      expect(attributesInTable).toEqual(requiredAttributes);
     }
+
+    return allRequiredAttributes;
   }
 
   async reconfigureFsp(configuration: string[]) {
