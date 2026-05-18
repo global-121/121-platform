@@ -103,7 +103,6 @@ export class KoboConfigurationDialogComponent {
 
   readonly koboConfigurationMutation = injectMutation(() => ({
     mutationFn: () => {
-      console.log('koboConfigurationMutation mutationFn called'); // Debug log to verify function call
       const formRawValue = this.koboConfigurationFormGroup.getRawValue();
 
       return this.koboApiService.upsertKoboIntegration({
