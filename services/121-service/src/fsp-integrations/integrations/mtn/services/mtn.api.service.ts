@@ -148,41 +148,40 @@ export class MtnApiService {
       JSON.stringify(payload),
     );
 
+    let response: AxiosResponse<void>;
     try {
-      const response = await this.httpService.post<AxiosResponse<void>>(
+      response = await this.httpService.post<AxiosResponse<void>>(
         url.toString(),
         payload,
         headers,
       );
-      console.log(
-        `[MTN API] Transfer response - referenceId: ${referenceId}, status: ${response.status}`,
-      );
-
-      if (response?.status === HttpStatus.CONFLICT) {
-        throw new MtnApiError({
-          type: MtnTransferErrorTypes.duplicate,
-          message: `Duplicate transfer request for referenceId: ${referenceId}`,
-        });
-      }
-
-      if (
-        !response ||
-        response.status < HttpStatus.ACCEPTED ||
-        response.status >= 300
-      ) {
-        throw new MtnApiError({
-          type: MtnTransferErrorTypes.fail,
-          message: `Failed to create transfer. ${this.mtnApiHelperService.formatResponseError({ response })}`,
-        });
-      }
     } catch (error) {
-      if (error instanceof MtnApiError) {
-        throw error;
-      }
       console.error('Failed to make MTN B2C payment API call', error);
       throw new MtnApiError({
         type: MtnTransferErrorTypes.fail,
         message: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      });
+    }
+
+    console.log(
+      `[MTN API] Transfer response - referenceId: ${referenceId}, status: ${response.status}`,
+    );
+
+    if (response?.status === HttpStatus.CONFLICT) {
+      throw new MtnApiError({
+        type: MtnTransferErrorTypes.duplicate,
+        message: `Duplicate transfer request for referenceId: ${referenceId}`,
+      });
+    }
+
+    if (
+      !response ||
+      response.status < HttpStatus.ACCEPTED ||
+      response.status >= 300
+    ) {
+      throw new MtnApiError({
+        type: MtnTransferErrorTypes.fail,
+        message: `Failed to create transfer. ${this.mtnApiHelperService.formatResponseError({ response })}`,
       });
     }
   }
