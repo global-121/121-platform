@@ -253,9 +253,6 @@ export class RegistrationsPaginationService {
       const registrationDataNamesProgram = registrationDataRelations.map(
         (r) => r.name,
       );
-      registrationDataNamesProgram.push(
-        DefaultRegistrationDataAttributeNames.phoneNumber,
-      );
 
       // Check if the filter contains at least one registration data name
       for (const registrationDataName of registrationDataNamesProgram) {
@@ -355,7 +352,6 @@ export class RegistrationsPaginationService {
         RegistrationViewsMapper.selectRegistrationRootFields({
           registration,
           select,
-          hasPersonalReadPermission,
         });
 
       const mappedRegistration = hasPersonalReadPermission

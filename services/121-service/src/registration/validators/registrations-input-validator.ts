@@ -12,6 +12,7 @@ import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dt
 import { AdditionalAttributes } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import {
+  DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -200,10 +201,6 @@ export class RegistrationsInputValidator {
       });
       if (errorObjValidatePhoneNr) {
         rowErrors.push(errorObjValidatePhoneNr);
-      } else if (row.phoneNumber !== undefined) {
-        validatedRegistrationInput.phoneNumber = row.phoneNumber
-          ? String(row.phoneNumber)
-          : null;
       }
 
       /*
@@ -709,7 +706,7 @@ export class RegistrationsInputValidator {
     ) {
       return {
         index: i,
-        column: GenericRegistrationAttributes.phoneNumber,
+        column: DefaultRegistrationDataAttributeNames.phoneNumber,
         value: undefined,
         error:
           'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
@@ -723,7 +720,7 @@ export class RegistrationsInputValidator {
       // on an update phonenumber can be empty if it is not being updated
       return {
         index: i,
-        column: GenericRegistrationAttributes.phoneNumber,
+        column: DefaultRegistrationDataAttributeNames.phoneNumber,
         value: row.phoneNumber,
         error:
           'PhoneNumber is not allowed to be updated to an empty value. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',

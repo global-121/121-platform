@@ -9,7 +9,6 @@ export enum DefaultRegistrationDataAttributeNames {
 
 export enum GenericRegistrationAttributes {
   referenceId = 'referenceId',
-  phoneNumber = 'phoneNumber',
   preferredLanguage = 'preferredLanguage',
   paymentAmountMultiplier = 'paymentAmountMultiplier',
   programFspConfigurationName = 'programFspConfigurationName',

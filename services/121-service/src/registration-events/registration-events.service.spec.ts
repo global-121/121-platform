@@ -3,7 +3,10 @@ import { TestBed } from '@automock/jest';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
-import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  DefaultRegistrationDataAttributeNames,
+  GenericRegistrationAttributes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
@@ -90,7 +93,8 @@ describe('RegistrationEventsService', () => {
   });
 
   it('should create a registrationEvent of a data change', async () => {
-    newViewRegistration.phoneNumber = '1234567890';
+    newViewRegistration[DefaultRegistrationDataAttributeNames.phoneNumber] =
+      '1234567890';
     const options = { reason: 'exampleReason' };
 
     // Act
@@ -107,9 +111,24 @@ describe('RegistrationEventsService', () => {
         registrationId: oldViewRegistration.id,
         type: RegistrationEventEnum.registrationDataChange,
         attributes: [
-          { key: 'oldValue', value: oldViewRegistration.phoneNumber },
-          { key: 'newValue', value: newViewRegistration.phoneNumber },
-          { key: 'fieldName', value: 'phoneNumber' },
+          {
+            key: 'oldValue',
+            value:
+              oldViewRegistration[
+                DefaultRegistrationDataAttributeNames.phoneNumber
+              ],
+          },
+          {
+            key: 'newValue',
+            value:
+              newViewRegistration[
+                DefaultRegistrationDataAttributeNames.phoneNumber
+              ],
+          },
+          {
+            key: 'fieldName',
+            value: DefaultRegistrationDataAttributeNames.phoneNumber,
+          },
           { key: 'reason', value: options.reason },
         ],
         userId: 2,
@@ -284,7 +303,8 @@ describe('RegistrationEventsService', () => {
   });
 
   it('should create an event for a registration status change', async () => {
-    newViewRegistration.phoneNumber = '1234567890';
+    newViewRegistration[DefaultRegistrationDataAttributeNames.phoneNumber] =
+      '1234567890';
     newViewRegistration.status = RegistrationStatusEnum.included;
     const options = { reason: 'exampleReason' };
 
@@ -330,11 +350,17 @@ describe('RegistrationEventsService', () => {
             }),
             expect.objectContaining({
               key: 'oldValue',
-              value: oldViewRegistration.phoneNumber,
+              value:
+                oldViewRegistration[
+                  DefaultRegistrationDataAttributeNames.phoneNumber
+                ],
             }),
             expect.objectContaining({
               key: 'newValue',
-              value: newViewRegistration.phoneNumber,
+              value:
+                newViewRegistration[
+                  DefaultRegistrationDataAttributeNames.phoneNumber
+                ],
             }),
             expect.objectContaining({
               key: 'reason',
