@@ -310,8 +310,7 @@ export const env = createEnv({
     MOCK_AZURE_EMAIL: z.stringbool().default(false),
     AZURE_GRAPH_API_URL: z
       .url()
-      .pipe(z.transform((url) => withoutTrailingSlash(url)))
-      .default('https://graph.microsoft.com/v1.0'),
+      .pipe(z.transform((url) => withoutTrailingSlash(url))),
     AZURE_EMAIL_SENDER_ADDRESS: z.email(),
     AZURE_USER_ASSIGNED_IDENTITY_CLIENT_ID: z.string().optional(),
 

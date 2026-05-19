@@ -8,8 +8,6 @@ import { EmailData } from '@121-service/src/emails/interfaces/email-data.interfa
 import { env } from '@121-service/src/env';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
-const GRAPH_FILE_ATTACHMENT_TYPE = '#microsoft.graph.fileAttachment' as const;
-
 @Injectable()
 export class GraphService {
   public constructor(
@@ -17,9 +15,14 @@ export class GraphService {
     private readonly azureGraphTokenService: AzureGraphTokenService,
   ) {}
 
-  public async sendMail(emailData: EmailData): Promise<void> {
+  public async sendMail({
+    email,
+    subject,
+    body,
+    attachment,
+  }: EmailData): Promise<void> {
     const url = this.getSendMailUrl();
-    const payload = this.getSendMailPayload(emailData);
+    const payload = this.getSendMailPayload({ email, subject, body, attachment });
     const headers = await this.getAuthorizationHeaders();
 
     const response = await this.httpService.post<{
@@ -27,14 +30,15 @@ export class GraphService {
       statusText?: string;
     }>(url, payload, headers);
 
-    const isSuccess =
-      typeof response.status === 'number' &&
-      response.status >= 200 &&
-      response.status < 300;
-    if (!isSuccess) {
-      throw new EmailDeliveryError(
-        `Failed to send email: HTTP ${response.status} ${response.statusText ?? ''}`.trim(),
-      );
+    if (response.status !== 202) {
+      const isHttpResponse =
+        typeof response.status === 'number' && response.status >= 100;
+
+      const detail = isHttpResponse
+        ? `HTTP ${response.status} ${response.statusText ?? ''}`.trim()
+        : `network error (${response.statusText ?? 'unknown'})`;
+
+      throw new EmailDeliveryError(`Failed to send email: ${detail}`);
     }
   }
 
@@ -43,24 +47,29 @@ export class GraphService {
     return `${env.AZURE_GRAPH_API_URL}/users/${sender}/sendMail`;
   }
 
-  private getSendMailPayload(emailData: EmailData): GraphSendMailRequest {
+  private getSendMailPayload({
+    email,
+    subject,
+    body,
+    attachment,
+  }: EmailData): GraphSendMailRequest {
     const message: GraphMessage = {
-      subject: emailData.subject,
+      subject,
       body: {
         contentType: 'HTML',
-        content: emailData.body,
+        content: body,
       },
-      toRecipients: [{ emailAddress: { address: emailData.email } }],
+      toRecipients: [{ emailAddress: { address: email } }],
     };
 
-    if (emailData.attachment) {
+    if (attachment) {
       message.attachments = [
         {
-          '@odata.type': GRAPH_FILE_ATTACHMENT_TYPE,
-          name: emailData.attachment.name,
-          contentBytes: emailData.attachment.contentBytes,
-        },
-      ];
+          '@odata.type': '#microsoft.graph.fileAttachment',
+          name: attachment.name,
+          contentBytes: attachment.contentBytes,
+        }
+      ]
     }
 
     return {

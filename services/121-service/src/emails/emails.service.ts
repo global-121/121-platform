@@ -26,18 +26,14 @@ export class EmailsService {
       recipientName: stripHtmlTags(input.recipientName),
     };
 
-    const template = templateBuilder(sanitizedInput);
+    const { subject, body } = templateBuilder(sanitizedInput);
 
-    await this.sendEmail({
+    await this.graphService.sendMail({
       email: sanitizedInput.email,
-      subject: template.subject,
-      body: this.wrapWithEmailLayout(template.body),
+      subject,
+      body: this.wrapWithEmailLayout(body),
       attachment,
     });
-  }
-
-  public async sendEmail(emailData: EmailData): Promise<void> {
-    await this.graphService.sendMail(emailData);
   }
 
   private wrapWithEmailLayout(content: string): string {
