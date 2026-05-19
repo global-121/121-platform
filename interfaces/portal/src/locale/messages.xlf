@@ -797,9 +797,6 @@
       <trans-unit id="4606793880716021431" datatype="html">
         <source>Serial number</source>
       </trans-unit>
-      <trans-unit id="4621142478381936681" datatype="html">
-        <source><x equiv-text="@if (isKoboIntegrated()) {" id="START_BLOCK_IF"/> adsdas <x equiv-text="}" id="CLOSE_BLOCK_IF"/></source>
-      </trans-unit>
       <trans-unit id="462133179319783861" datatype="html">
         <source>Fixed transfer value</source>
       </trans-unit>
