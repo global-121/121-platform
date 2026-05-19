@@ -1,0 +1,245 @@
+<app-page-layout-program-settings [programId]="programId()">
+  <app-card-editable
+    header="Payment approval"
+    i18n-header="@@page-title-program-settings-payment-approval"
+    editPencilTitle="Edit payment approval settings"
+    i18n-editPencilTitle
+    [canEdit]="canManageAidworkers()"
+    [isEditing]="isEditing()"
+    (isEditingChange)="isEditing.set($event)"
+    [formGroup]="formGroup"
+    [mutation]="saveApprovalThresholdsMutation"
+    [mutationData]="mutationData()"
+  >
+    <p i18n>
+      Set up an approval process for program payments by selecting 1 or more
+      users for each step. Only one user must approve in each step. Steps will
+      run in order based on the amount conditions you set (from lowest to
+      highest).
+    </p>
+    <p
+      i18n
+      class="mb-4"
+    >
+      For more information about how to set up payment approval see
+      <app-manual-link />
+    </p>
+
+    @if (!isEditing()) {
+      <p-table
+        [value]="tableRows()"
+        class="p-datatable-sm"
+      >
+        <ng-template #header>
+          <tr class="border-grey-300 bg-grey-100 border-b">
+            <th
+              i18n
+              class="txt-body-s text-grey-700 w-[11%] px-4 py-2 text-center font-semibold"
+            >
+              Step
+            </th>
+            <th
+              i18n="@@page-title-users"
+              class="txt-body-s text-grey-700 w-[46%] px-4 py-2 font-semibold"
+            >
+              Users
+            </th>
+            <th
+              i18n
+              class="txt-body-s text-grey-700 w-[43%] px-4 py-2 font-semibold"
+            >
+              <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                If payment total exceeds
+                <app-info-tooltip
+                  message="This user or one of these users will need to approve the payment if the total amount is above the decided value."
+                  i18n-message
+                />
+              </span>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template
+          #body
+          let-row
+        >
+          <tr class="border-grey-300 border-b">
+            <td class="px-4 py-3 text-center">{{ row.step }}</td>
+            <td class="px-4 py-3">{{ row.users }}</td>
+            <td class="px-4 py-3">{{ row.thresholdAmount }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    } @else {
+      <div class="space-y-4">
+        <app-form-field-wrapper
+          label="Select users for the first approval step"
+          i18n-label
+        >
+          <ng-container slot="label-extra">
+            <app-info-tooltip
+              message="First approval step must be set for all payments regardless of the total payment amount."
+              i18n-message
+            />
+          </ng-container>
+          <p-multiSelect
+            [inputId]="'first-step-users'"
+            [options]="availableApproversForFirstStep()"
+            [optionLabel]="'label'"
+            [optionValue]="'value'"
+            formControlName="firstStepUserIds"
+            placeholder="Select 1 or more users from your program team"
+            i18n-placeholder
+            [filter]="true"
+            [showToggleAll]="true"
+            [maxSelectedLabels]="3"
+            [overlayOptions]="{ target: '@parent' }"
+            (onChange)="onApproverSelectionChanged()"
+          >
+            <ng-template #empty>
+              <app-no-eligible-approvers-message />
+            </ng-template>
+            <ng-template #emptyfilter>
+              <app-no-eligible-approvers-message />
+            </ng-template>
+          </p-multiSelect>
+          @if (isFirstStepInvalid()) {
+            <ng-container slot="details">
+              <p
+                i18n
+                class="txt-system-s mt-2 text-red-500"
+              >
+                Select at least one user.
+              </p>
+            </ng-container>
+          }
+        </app-form-field-wrapper>
+
+        @if (showAdditionalSteps()) {
+          <div formArrayName="additionalSteps">
+            @for (step of additionalSteps.controls; track step) {
+              <div
+                [formGroupName]="$index"
+                class="mt-4 grid grid-cols-1 items-start gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,14rem)_auto]"
+              >
+                <app-form-field-wrapper
+                  label="Select users for this approval step"
+                  i18n-label
+                >
+                  <p-multiSelect
+                    [inputId]="'additional-step-users-' + $index"
+                    [options]="availableApproversForAdditionalStep($index)"
+                    [optionLabel]="'label'"
+                    [optionValue]="'value'"
+                    formControlName="userIds"
+                    placeholder="Select 1 or more users from your program team"
+                    i18n-placeholder
+                    [filter]="true"
+                    [showToggleAll]="true"
+                    [maxSelectedLabels]="3"
+                    [overlayOptions]="{ target: '@parent' }"
+                    (onChange)="onApproverSelectionChanged()"
+                  >
+                    <ng-template #empty>
+                      <app-no-eligible-approvers-message />
+                    </ng-template>
+                    <ng-template #emptyfilter>
+                      <app-no-eligible-approvers-message />
+                    </ng-template>
+                  </p-multiSelect>
+                  @if (isAdditionalStepUsersInvalid($index)) {
+                    <ng-container slot="details">
+                      <p
+                        i18n
+                        class="txt-system-s mt-2 text-red-500"
+                      >
+                        Select at least one user.
+                      </p>
+                    </ng-container>
+                  }
+                </app-form-field-wrapper>
+
+                <app-form-field-wrapper
+                  label="If payment total exceeds"
+                  i18n-label
+                >
+                  <ng-container slot="label-extra">
+                    <app-info-tooltip
+                      message="These users would have to approve payment if the total amount is above the decided value."
+                      i18n-message
+                    />
+                  </ng-container>
+                  <p-inputNumber
+                    [min]="1"
+                    [mode]="'currency'"
+                    [currency]="currencyCode() ?? 'EUR'"
+                    [currencyDisplay]="'symbol'"
+                    [useGrouping]="true"
+                    [minFractionDigits]="0"
+                    [maxFractionDigits]="0"
+                    [locale]="inputLocale()"
+                    [class]="'w-full'"
+                    [inputStyleClass]="'w-full'"
+                    formControlName="thresholdAmount"
+                  ></p-inputNumber>
+                  @if (isAdditionalStepThresholdInvalid($index)) {
+                    <ng-container slot="details">
+                      @if (
+                        step.controls.thresholdAmount.errors?.[
+                          'mustBeLargerThanZero'
+                        ]
+                      ) {
+                        <p
+                          i18n
+                          class="txt-system-s mt-2 text-red-500"
+                        >
+                          Must be larger than 0
+                        </p>
+                      } @else if (
+                        step.controls.thresholdAmount.errors?.['required']
+                      ) {
+                        <p
+                          i18n
+                          class="txt-system-s mt-2 text-red-500"
+                        >
+                          Threshold amount is required.
+                        </p>
+                      }
+                    </ng-container>
+                  } @else if (isDuplicateThresholdAmount($index)) {
+                    <ng-container slot="details">
+                      <p
+                        i18n
+                        class="txt-system-s mt-2 text-red-500"
+                      >
+                        Threshold amounts must be unique.
+                      </p>
+                    </ng-container>
+                  }
+                </app-form-field-wrapper>
+
+                <p-button
+                  text
+                  plain
+                  icon="pi pi-trash"
+                  [styleClass]="'mt-8'"
+                  (onClick)="removeApprovalStep($index)"
+                  [ariaLabel]="'Remove approval step'"
+                  i18n-ariaLabel
+                />
+              </div>
+            }
+          </div>
+        }
+
+        <p-button
+          outlined
+          rounded
+          icon="pi pi-plus"
+          label="Add approval step"
+          i18n-label
+          (onClick)="addApprovalStep()"
+        />
+      </div>
+    }
+  </app-card-editable>
+</app-page-layout-program-settings>

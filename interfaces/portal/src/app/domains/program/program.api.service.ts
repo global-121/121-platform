@@ -9,6 +9,8 @@ import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/fsp-
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
+import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
+import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
@@ -480,5 +482,31 @@ export class ProgramApiService extends DomainApiService {
         },
       });
     };
+  }
+
+  getApprovalThresholds({ programId }: { programId: Signal<number | string> }) {
+    return this.generateQueryOptions<GetProgramApprovalThresholdResponseDto[]>({
+      path: [BASE_ENDPOINT, programId, 'approval-thresholds'],
+    });
+  }
+
+  createOrReplaceApprovalThresholds({
+    programId,
+    thresholds,
+  }: {
+    programId: Signal<number | string>;
+    thresholds: Dto<CreateProgramApprovalThresholdDto>[];
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<
+      Dto<GetProgramApprovalThresholdResponseDto>[]
+    >({
+      method: 'PUT',
+      endpoint: this.pathToQueryKey([
+        BASE_ENDPOINT,
+        programId,
+        'approval-thresholds',
+      ]).join('/'),
+      body: thresholds,
+    });
   }
 }

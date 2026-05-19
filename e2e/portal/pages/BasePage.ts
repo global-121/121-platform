@@ -66,9 +66,17 @@ class BasePage {
   }
 
   async navigateToProgramSettingsPage(
-    pageName: 'Program information' | 'Program team',
+    pageName: 'Program information' | 'Users' | 'Program team',
   ) {
     await this.navigateToProgramPage('Settings');
+
+    if (pageName === 'Program team') {
+      const usersLink = this.page.getByRole('link', { name: 'Users' });
+      if (await usersLink.isVisible()) {
+        await usersLink.click();
+      }
+    }
+
     const link = this.page.getByRole('link', { name: pageName });
     await expect(async () => {
       await expect(link).toBeVisible();

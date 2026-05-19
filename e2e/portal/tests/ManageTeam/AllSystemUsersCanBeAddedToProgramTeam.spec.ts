@@ -39,6 +39,7 @@ test('All system-users are available to be added to a "program team"', async ({
   const programTitle = 'Cash program Westeros';
   await test.step('Select program and navigate to Manage team', async () => {
     await programTeamPage.selectProgram(programTitle);
+    await programTeamPage.navigateToProgramSettingsPage('Users');
     await programTeamPage.navigateToProgramSettingsPage('Program team');
   });
   await test.step('Validate assigned users are visible', async () => {

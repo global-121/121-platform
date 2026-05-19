@@ -5,7 +5,7 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { MenuItem } from 'primeng/api';
 
@@ -14,6 +14,13 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { AppRoutes } from '~/app.routes';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { AuthService } from '~/services/auth.service';
+
+const BASE_URL = (programId: number | string) => [
+  '/',
+  AppRoutes.program,
+  String(programId),
+  AppRoutes.programSettings,
+];
 
 @Component({
   selector: 'app-page-layout-program-settings',
@@ -26,6 +33,7 @@ export class PageLayoutProgramSettingsComponent {
   readonly programId = input.required<string>();
 
   readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly menuItems = computed<MenuItem[]>(() => [
     {
@@ -68,19 +76,57 @@ export class PageLayoutProgramSettingsComponent {
       visible: this.authService.isAdmin,
     },
     {
-      label: $localize`:@@page-title-program-settings-team:Program team`,
+      label: $localize`:@@page-title-users:Users`,
       icon: 'pi pi-users',
       routerLink: [
         '/',
         AppRoutes.program,
         this.programId(),
         AppRoutes.programSettings,
+        AppRoutes.users,
         AppRoutes.programSettingsTeam,
       ],
       visible: this.authService.hasPermission({
         programId: this.programId(),
         requiredPermission: PermissionEnum.AidWorkerProgramREAD,
       }),
+      items: [
+        {
+          label: $localize`:@@page-title-program-settings-team:Program team`,
+          routerLink: [
+            '/',
+            AppRoutes.program,
+            this.programId(),
+            AppRoutes.programSettings,
+            AppRoutes.users,
+            AppRoutes.programSettingsTeam,
+          ],
+        },
+        {
+          label: $localize`:@@page-title-program-settings-payment-approval:Payment approval`,
+          routerLink: [
+            '/',
+            AppRoutes.program,
+            this.programId(),
+            AppRoutes.programSettings,
+            AppRoutes.users,
+            AppRoutes.programSettingsPaymentApproval,
+          ],
+          visible: this.authService.isOrganizationAdmin,
+        },
+      ],
     },
   ]);
+
+  isParentActive(routerLink: (number | string)[]) {
+    const slicedBaseUrl = new Set(BASE_URL(this.programId()).slice(1));
+    const parentFromUrl = this.router.url
+      .split('/')
+      .slice(1)
+      .find((x) => !slicedBaseUrl.has(x));
+    const parentFromItem = routerLink
+      .slice(1)
+      .find((x) => !slicedBaseUrl.has(String(x)));
+    return parentFromUrl === parentFromItem;
+  }
 }
