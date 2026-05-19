@@ -1,7 +1,7 @@
 import { ManagedIdentityCredential } from '@azure/identity';
 
-import { AzureGraphTokenService } from '@121-service/src/emails/azure-graph-token.service';
 import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
+import { AzureGraphTokenService } from '@121-service/src/emails/graph/azure-graph-token.service';
 
 jest.mock('@121-service/src/env', () => ({
   env: {
