@@ -84,10 +84,6 @@ describe('Import a Kobo form definition', () => {
     });
 
     const programId = createProgramResponse.body.id;
-    console.log(
-      '🚀 ~ createProgramResponse.body:',
-      JSON.stringify(createProgramResponse.body),
-    );
     // Act
     const koboLinkDto: CreateKoboDto = {
       token: 'mock-token',
@@ -114,10 +110,6 @@ describe('Import a Kobo form definition', () => {
     );
     const programAfterKoboIntegration =
       getProgramResponseAfterKoboIntegration.body;
-    console.log(
-      '🚀 ~ programAfterKoboIntegration:',
-      programAfterKoboIntegration,
-    );
     const programAttributesAfterKoboIntegration =
       programAfterKoboIntegration.programRegistrationAttributes.sort((a, b) =>
         a.name.localeCompare(b.name),
