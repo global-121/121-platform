@@ -28,12 +28,12 @@ As with other kinds of tests: we generally only want to test "our own" code. Som
 
 - ❌ Don't test:
   - the HTML `<select>` element working
-  - that localStorage itself works
-  - a utility function that's part of a library we depend on (the unique function from radashi)
+  - that `localStorage` itself works
+  - a utility function that's part of a library we depend on (the `unique`-function from `radashi`)
   - simple use of a PrimeNG component
-  - simple use of Angular: @if
+  - simple use of Angular: `@if`
 - ✅ Test:
   - complex use of a PrimeNG component: you can make mistakes
   - a helper function that's part of our codebase (and not from a library)
-  - that your code actually and correctly put something in localStorage
-  - "glue code": the value that you put into an Angular @if has the right value at the right time(s)
+  - that our code actually and correctly puts something in `localStorage` (and returns it in the expected shape)
+  - "glue code": the value that you put into an Angular `@if` has the right value at the right time(s)
