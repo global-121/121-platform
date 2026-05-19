@@ -23,6 +23,14 @@ updates:
       default-days: 8
     open-pull-requests-limit: 5
     versioning-strategy: increase
+    groups:
+      dependencies:
+        patterns:
+          - '*'
+    ignore:
+      # Dependencies below are ordered alphabetically!
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
 
   - directory: '/packages/eslint-config-121-platform/'
     commit-message:
