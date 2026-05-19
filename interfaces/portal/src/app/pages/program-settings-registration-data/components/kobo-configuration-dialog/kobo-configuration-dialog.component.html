@@ -89,12 +89,16 @@
   [modal]="true"
   [closeOnEscape]="false"
   [(visible)]="koboSuccessfullyLinkedDialogVisible"
-  header="Kobo form linked successfully"
-  i18n-header
-  icon="pi pi-check"
-  i18n-icon
   [styleClass]="'min-w-[632px]'"
+  [attr.data-testid]="'kobo-import-successful-dialog'"
 >
+  <ng-template pTemplate="header">
+    <h3>
+      <span class="pi pi-check me-2"></span>
+      <ng-container i18n>Kobo form linked successfully</ng-container>
+    </h3>
+  </ng-template>
+
   <p i18n>
     <strong>{{ koboFormName() }}</strong>
     was linked successfully to your program.

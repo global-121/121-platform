@@ -14,7 +14,7 @@ import {
 import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { registrationOCW1 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import FormDialogComponent from '@121-e2e/portal/components/FormDialogComponent';
+import DialogComponent from '@121-e2e/portal/components/DialogComponent';
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const visaCardNumber = '1111222233334444555';
@@ -115,7 +115,7 @@ test.describe('Link Visa card to registration', () => {
     await test.step('Replace debit card', async () => {
       const dialogLocator = registrationDebitCardPage.page.locator('.p-dialog');
 
-      const formDialog = new FormDialogComponent(dialogLocator);
+      const formDialog = new DialogComponent(dialogLocator);
       // Link already existing card to check error message
       await registrationDebitCardPage.clickMainPageReplaceCardButton();
       await registrationDebitCardPage.replaceVisaCard(visaCardNumber);
@@ -147,7 +147,7 @@ test.describe('Link Visa card to registration', () => {
     registrationDebitCardPage,
   }) => {
     const dialogLocator = registrationDebitCardPage.page.locator('.p-dialog');
-    const formDialog = new FormDialogComponent(dialogLocator);
+    const formDialog = new DialogComponent(dialogLocator);
 
     await registrationDebitCardPage.linkVisaCard(nonExistingVisaCardNumber);
 

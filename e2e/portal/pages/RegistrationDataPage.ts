@@ -1,5 +1,6 @@
 import { Locator, Page } from 'playwright';
 
+import DialogComponent from '../components/DialogComponent';
 import BasePage from './BasePage';
 
 class RegistrationDataPage extends BasePage {
@@ -8,6 +9,7 @@ class RegistrationDataPage extends BasePage {
   readonly koboCardEllipsisMenu: Locator;
   readonly koboCard: Locator;
   readonly initiateImportButton: Locator;
+  readonly importSuccessDialog: Locator;
   readonly importDialog: Locator;
   readonly closeImportDialog: Locator;
 
@@ -20,6 +22,9 @@ class RegistrationDataPage extends BasePage {
     this.continueButton = this.page.getByRole('button', { name: 'Continue' });
     this.importDialog = this.page.getByTestId(
       'import-existing-kobo-registrations-dialog',
+    );
+    this.importSuccessDialog = this.page.getByTestId(
+      'kobo-import-successful-dialog',
     );
     this.initiateImportButton = this.page.getByRole('button', {
       name: 'Import registrations',
@@ -45,10 +50,11 @@ class RegistrationDataPage extends BasePage {
     });
     // Click continue button to exit the form
     await this.clickContinueButton();
-    // Validate toast message after exiting the form
-    await this.validateToastMessageAndClose(
-      'Kobo form successfully integrated.',
-    );
+
+    // Validate modal message after submitting the form
+    const dialog = new DialogComponent(this.importSuccessDialog);
+    await dialog.waitForVisible();
+    await dialog.confirm('Close');
   }
 
   async clickRegistrationDataSection() {

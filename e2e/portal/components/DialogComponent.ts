@@ -1,6 +1,6 @@
 import { Locator } from '@playwright/test';
 
-class FormDialogComponent {
+class DialogComponent {
   readonly dialog: Locator;
 
   constructor(dialog: Locator) {
@@ -44,4 +44,4 @@ class FormDialogComponent {
   }
 }
 
-export default FormDialogComponent;
+export default DialogComponent;

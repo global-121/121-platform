@@ -10,7 +10,7 @@ import {
   registrationOCW2,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import FormDialogComponent from '@121-e2e/portal/components/FormDialogComponent';
+import DialogComponent from '@121-e2e/portal/components/DialogComponent';
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const closedCardRegistration = {
@@ -56,7 +56,7 @@ test.describe('Close debit card', () => {
         await registrationDebitCardPage.getCloseCardButton();
       await closeCardButton.click();
 
-      const dialog = new FormDialogComponent(page.locator('.p-dialog'));
+      const dialog = new DialogComponent(page.locator('.p-dialog'));
       await dialog.waitForVisible();
       await dialog.confirm('Close card');
     });
