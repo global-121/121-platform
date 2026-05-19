@@ -55,9 +55,7 @@ class RegistrationDataPage extends BasePage {
     await this.validateToastMessageAndClose(
       'Kobo form successfully integrated.',
     );
-  }
 
-  async validateKoboIntegrationSuccessfullyAddedModal() {
     const dialog = new DialogComponent(this.koboSuccessfullyLinkedDialog);
     await dialog.waitForVisible();
     await dialog.confirm('Close');

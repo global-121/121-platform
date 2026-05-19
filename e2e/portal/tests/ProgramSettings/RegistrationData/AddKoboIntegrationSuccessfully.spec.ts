@@ -49,10 +49,6 @@ test('Add Kobo integration successfully', async ({
     await registrationDataPage.addKoboIntegration(koboIntegrationDetails);
   });
 
-  await test.step('Validate Kobo integration successfully added modal', async () => {
-    await registrationDataPage.validateKoboIntegrationSuccessfullyAddedModal();
-  });
-
   await test.step('Validate Kobo integration details on Registrations page', async () => {
     // Navigate to Registrations page
     await registrationsPage.navigateToProgramPage('Registrations');
