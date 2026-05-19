@@ -11,5 +11,4 @@ export const enum TwilioErrorCodes {
   toNumberDoesNotExist = '21211',
   mediaUrlInvalid = '63021',
   failedFreeFormMessage = '63016',
-  channelCouldNotFindToAddress = '63003',
 }

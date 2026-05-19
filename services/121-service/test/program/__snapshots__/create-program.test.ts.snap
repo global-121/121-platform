@@ -469,7 +469,6 @@ exports[`Create program should post a program: Create program response for progr
   "titlePortal": {
     "en": "CBE Program",
   },
-  "tryWhatsAppFirst": false,
   "validation": false,
 }
 `;
@@ -984,7 +983,6 @@ exports[`Create program should post a program: Create program response for progr
   "titlePortal": {
     "en": "NLRC OCW program",
   },
-  "tryWhatsAppFirst": true,
   "validation": false,
 }
 `;

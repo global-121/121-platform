@@ -25,7 +25,6 @@
     }
   ],
   "targetNrRegistrations": 1000,
-  "tryWhatsAppFirst": false,
   "budget": 12000000,
   "programRegistrationAttributes": [
     {

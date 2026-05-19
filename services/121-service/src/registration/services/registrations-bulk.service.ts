@@ -14,7 +14,6 @@ import { MessageContentDetails } from '@121-service/src/notifications/interfaces
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
-import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -40,8 +39,6 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 export class RegistrationsBulkService {
   @InjectRepository(MessageTemplateEntity)
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
-  @InjectRepository(TryWhatsappEntity)
-  private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
   @InjectRepository(LatestMessageEntity)
   private readonly latestMessageRepository: Repository<LatestMessageEntity>;
   // Even though this is related to the registration entity, it is not scoped since we never get/update this in a direct call
@@ -618,9 +615,6 @@ export class RegistrationsBulkService {
       registrationId: In(registrationsIds),
     });
     await this.whatsappPendingMessageRepository.delete({
-      registrationId: In(registrationsIds),
-    });
-    await this.tryWhatsappRepository.delete({
       registrationId: In(registrationsIds),
     });
     await this.registrationScopedRepository.updateUnscoped(

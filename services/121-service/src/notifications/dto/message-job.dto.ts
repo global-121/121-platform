@@ -57,7 +57,6 @@ export class MessageJobCustomDataDto {
  */
 export enum MessageProcessType {
   sms = 'sms',
-  tryWhatsapp = 'try-whatsapp',
 
   /**
    * A templated message asking for a reply.

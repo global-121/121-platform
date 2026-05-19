@@ -124,39 +124,6 @@ describe('MessageService', () => {
       );
     });
 
-    it('should call whatsappService when processType = tryWhatsapp', async () => {
-      // Arrange
-      const testMessageJob = {
-        ...defaultMessageJob,
-        messageProcessType: MessageProcessType.tryWhatsapp,
-        phoneNumber: '999888777',
-        whatsappPhoneNumber: undefined,
-      };
-      const messageTemplateObject = {
-        contentSid: 'h123',
-      };
-      getMessageTemplateForLanguageOrFallback = jest
-        .spyOn(messageService as any, 'getMessageTemplateForLanguageOrFallback')
-        .mockResolvedValue(messageTemplateObject);
-
-      // Act
-      await messageService.sendTextMessage(testMessageJob);
-
-      // Assert
-      expect(getMessageTemplateForLanguageOrFallback).toHaveBeenCalledTimes(1);
-      expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
-      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
-        message: undefined,
-        contentSid: messageTemplateObject.contentSid,
-        userId: testMessageJob.userId,
-        recipientPhoneNr: testMessageJob.phoneNumber,
-        registrationId: testMessageJob.registrationId,
-        messageContentType: MessageContentType.genericTemplated,
-        messageProcessType: MessageProcessType.whatsappTemplateGeneric,
-      });
-      expect(smsService.sendSms).toHaveBeenCalledTimes(0);
-    });
-
     it('should call whatsappService when processType = whatsappTemplateGeneric', async () => {
       // Arrange
       const testMessageJob = {

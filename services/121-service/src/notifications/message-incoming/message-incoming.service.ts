@@ -8,7 +8,6 @@ import {
   IS_DEVELOPMENT,
 } from '@121-service/src/config';
 import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
-import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import {
   TwilioIncomingCallbackDto,
@@ -25,7 +24,6 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
@@ -35,7 +33,6 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
@@ -50,8 +47,6 @@ export class MessageIncomingService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(ProgramEntity)
   private programRepository: Repository<ProgramEntity>;
-  @InjectRepository(TryWhatsappEntity)
-  private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
   private readonly whatsappPendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
   @InjectRepository(UserEntity)
@@ -63,7 +58,6 @@ export class MessageIncomingService {
   };
 
   public constructor(
-    private readonly registrationDataService: RegistrationDataService,
     private readonly imageCodeService: ImageCodeService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly queuesService: QueuesRegistryService,
@@ -146,20 +140,6 @@ export class MessageIncomingService {
   public async processWhatsappStatusCallback(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    if (
-      (callbackData.MessageStatus === TwilioStatus.delivered ||
-        callbackData.MessageStatus === TwilioStatus.failed) &&
-      callbackData.SmsSid
-    ) {
-      const tryWhatsapp = await this.tryWhatsappRepository.findOne({
-        where: { sid: Equal(callbackData.SmsSid) },
-        relations: ['registration'],
-      });
-      if (tryWhatsapp) {
-        await this.handleTryWhatsappResult(callbackData, tryWhatsapp);
-      }
-    }
-
     // if we get a faulty 63016 we retry sending a message, and we don't need to update the status
     if (
       isSameAsString(
@@ -286,71 +266,6 @@ export class MessageIncomingService {
       },
       userId: message.userId,
     });
-  }
-
-  private async handleTryWhatsappResult(
-    callbackData: TwilioStatusCallbackDto,
-    tryWhatsapp: TryWhatsappEntity,
-  ): Promise<void> {
-    if (!tryWhatsapp.registration.phoneNumber) {
-      throw new Error(
-        `TryWhatsapp with sid ${tryWhatsapp.sid} has no whatsappnumber and no phonenumber attached`,
-      );
-    }
-    if (
-      isSameAsString(callbackData.MessageStatus, TwilioStatus.failed) &&
-      isSameAsString(
-        callbackData.ErrorCode,
-        TwilioErrorCodes.channelCouldNotFindToAddress,
-      )
-    ) {
-      // PA does not have WhatsApp
-      // Send pending message via sms
-      const whatsappPendingMessages =
-        await this.whatsappPendingMessageRepo.find({
-          where: { to: Equal(tryWhatsapp.registration.phoneNumber) },
-          relations: ['registration'],
-        });
-      for (const w of whatsappPendingMessages) {
-        await this.queueMessageService.addMessageJob({
-          registration: w.registration,
-          message: w.body,
-          messageContentType: MessageContentType.invited,
-          messageProcessType: MessageProcessType.sms,
-          userId: whatsappPendingMessages[0].userId,
-        });
-        await this.whatsappPendingMessageRepo.remove(w);
-      }
-      await this.tryWhatsappRepository.remove(tryWhatsapp);
-    }
-    if (callbackData.MessageStatus === TwilioStatus.delivered) {
-      // PA does have WhatsApp
-      // Store PA phone number as whatsappPhonenumber
-      // Since it is for now impossible to store a WhatsApp-number without a chosen FSP
-      // Explicitly search for the the fsp intersolve (in the related FSPs of this program)
-      // This should be refactored later
-      const program = await this.programRepository.findOneOrFail({
-        where: { id: Equal(tryWhatsapp.registration.programId) },
-        relations: ['programFspConfigurations'],
-      });
-      const fspConfigWithFspIntersolveWhatsapp =
-        program.programFspConfigurations.find((config) => {
-          return config.fspName === Fsps.intersolveVoucherWhatsapp;
-        })!;
-      tryWhatsapp.registration.programFspConfigurationId =
-        fspConfigWithFspIntersolveWhatsapp.id;
-      const savedRegistration = await this.registrationRepository.save(
-        tryWhatsapp.registration,
-      );
-      await this.registrationDataService.saveData(
-        savedRegistration,
-        tryWhatsapp.registration.phoneNumber,
-        {
-          name: DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
-        },
-      );
-      await this.tryWhatsappRepository.remove(tryWhatsapp);
-    }
   }
 
   private async getRegistrationsWithPhoneNumber(
