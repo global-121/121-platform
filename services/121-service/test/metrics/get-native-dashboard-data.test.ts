@@ -83,10 +83,6 @@ describe('Get all payments aggregates', () => {
       const today = new Date().toISOString().split('T')[0];
       expect(aggregate.id).toEqual(2);
       expect(aggregate.date).toContain(today);
-      console.log(
-        'aggregate.aggregatedStatuses: ',
-        aggregate.aggregatedStatuses,
-      );
       expect(aggregate.aggregatedStatuses.aggregationsPerStatus).toEqual({
         success: { count: 1, transferValue },
         waiting: { count: 1, transferValue },
