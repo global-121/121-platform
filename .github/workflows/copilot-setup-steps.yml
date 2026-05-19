@@ -1,0 +1,72 @@
+# See: https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/customize-the-agent-environment
+
+name: 'Copilot Setup Steps'
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+
+    # Set the permissions to the lowest permissions possible needed for your steps.
+    # Copilot will be given its own token for its operations.
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            e2e/package-lock.json
+            packages/eslint-config-121-platform/package-lock.json
+            interfaces/portal/package-lock.json
+            services/121-service/package-lock.json
+            services/mock-service/package-lock.json
+
+      - name: Install root dependencies
+        working-directory: './'
+        env:
+          HUSKY: 0
+        run: npm ci --ignore-scripts
+
+      - name: Install shared ESLint-config dependencies
+        working-directory: './packages/eslint-config-121-platform'
+        run: npm ci --ignore-scripts
+
+      - name: Install E2E-Test dependencies
+        working-directory: './e2e'
+        run: npm ci --ignore-scripts
+
+      - name: Install Portal dependencies
+        working-directory: './interfaces/portal'
+        run: npm ci --ignore-scripts
+
+      - name: Install 121-Service dependencies
+        working-directory: './services/121-service'
+        run: npm ci --ignore-scripts
+
+      - name: Install Mock-Service dependencies
+        working-directory: './services/mock-service'
+        run: npm ci --ignore-scripts
+
+      - name: Prepare ENV-variables
+        run: |
+          cp services/.env.example services/.env
+          grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
+          cp interfaces/portal/.env.example interfaces/portal/.env
+          grep -v "^#\|^$" interfaces/portal/.env >> $GITHUB_ENV
