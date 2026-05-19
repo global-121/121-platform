@@ -154,6 +154,9 @@ export class MtnApiService {
         headers,
       );
     } catch (error) {
+      if (error instanceof MtnApiError) {
+        throw error;
+      }
       console.error('Failed to make MTN B2C payment API call', error);
       throw new MtnApiError({
         type: MtnTransferErrorTypes.fail,
