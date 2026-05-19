@@ -9,7 +9,7 @@ class RegistrationDataPage extends BasePage {
   readonly koboCardEllipsisMenu: Locator;
   readonly koboCard: Locator;
   readonly initiateImportButton: Locator;
-  readonly importSuccessDialog: Locator;
+  readonly koboSuccessfullyLinkedDialog: Locator;
   readonly importDialog: Locator;
   readonly closeImportDialog: Locator;
 
@@ -23,9 +23,9 @@ class RegistrationDataPage extends BasePage {
     this.importDialog = this.page.getByTestId(
       'import-existing-kobo-registrations-dialog',
     );
-    this.importSuccessDialog = this.page.getByTestId(
-      'kobo-import-successful-dialog',
-    );
+    this.koboSuccessfullyLinkedDialog = this.page
+      .getByTestId('kobo-successfully-linked-dialog')
+      .locator('.p-dialog');
     this.initiateImportButton = this.page.getByRole('button', {
       name: 'Import registrations',
     });
@@ -52,7 +52,13 @@ class RegistrationDataPage extends BasePage {
     await this.clickContinueButton();
 
     // Validate modal message after submitting the form
-    const dialog = new DialogComponent(this.importSuccessDialog);
+    await this.validateToastMessageAndClose(
+      'Kobo form successfully integrated.',
+    );
+  }
+
+  async validateKoboIntegrationSuccessfullyAddedModal() {
+    const dialog = new DialogComponent(this.koboSuccessfullyLinkedDialog);
     await dialog.waitForVisible();
     await dialog.confirm('Close');
   }

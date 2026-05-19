@@ -90,11 +90,11 @@
   [closeOnEscape]="false"
   [(visible)]="koboSuccessfullyLinkedDialogVisible"
   [styleClass]="'min-w-[632px]'"
-  [attr.data-testid]="'kobo-import-successful-dialog'"
+  [attr.data-testid]="'kobo-successfully-linked-dialog'"
 >
-  <ng-template pTemplate="header">
+  <ng-template #header>
     <h3>
-      <span class="pi pi-check me-2"></span>
+      <i class="pi pi-check me-2"></i>
       <ng-container i18n>Kobo form linked successfully</ng-container>
     </h3>
   </ng-template>
