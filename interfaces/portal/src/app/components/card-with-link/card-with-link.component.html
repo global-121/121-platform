@@ -1,52 +1,70 @@
-<p-card
-  class="[&_.p-card-content]:flex-end group shadow-clickable-cards relative h-full border border-transparent transition-colors *:h-full focus-within:border-purple-500 hover:border-purple-500 [&_.p-card-title]:grow [&_.p-card-title]:ps-0"
+<div
   data-testid="card-with-link"
+  class="group shadow-clickable-cards relative h-full border border-transparent transition-colors *:h-full focus-within:border-purple-500 hover:border-purple-500"
 >
-  <ng-template pTemplate="title">
-    <div class="flex flex-row items-center">
+  <div class="flex p-5">
+    <div>
       @if (image()) {
-        <div class="ms-1 me-5 w-24">
-          <img
-            [src]="image()"
-            alt=""
-            aria-hidden="true"
-            role="presentation"
-            class="mx-auto h-14 object-contain"
-          />
+        <!-- <div class=""> -->
+        <img
+          class="mx-auto size-14 bg-red-500 object-contain"
+          role="presentation"
+          aria-hidden="true"
+          [src]="image()"
+          alt=""
+        />
+        <!-- </div> -->
+      }
+    </div>
+    <div class="flex-1">
+      <div class="bg-orange-500">
+        @if (!enableLink()) {
+          <ng-container *ngTemplateOutlet="cardTitle"></ng-container>
+        } @else {
+          <a
+            class="group-focus-within:text-purple group-hover:text-purple cursor-pointer transition-colors after:absolute after:inset-0 after:block"
+            (keydown.space)="cardClicked.emit(); $event.preventDefault()"
+            (keydown.enter)="cardClicked.emit()"
+            [tabindex]="!href() ? 0 : null"
+            (click)="cardClicked.emit()"
+            [routerLink]="href()"
+          >
+            <ng-container *ngTemplateOutlet="cardTitle"></ng-container>
+          </a>
+        }
+      </div>
+      <ng-content select="[card-subtitle]"></ng-content>
+    </div>
+    <div>
+      @if (menuItems.length > 0) {
+        <div class="absolute inset-e-4 top-2">
+          <app-ellipsis-menu [menuItems]="menuItems()" />
         </div>
       }
+    </div>
+  </div>
+
+  <ng-content select="[card-content]"></ng-content>
+
+  <!-- <ng-template pTemplate="title">
+    <div class="flex flex-row items-center">
       <div>
-        @if (!!title()) {
-          @if (!enableLink()) {
-            <ng-container *ngTemplateOutlet="cardTitle"></ng-container>
-          } @else {
-            <a
-              [routerLink]="href()"
-              (click)="cardClicked.emit()"
-              (keydown.enter)="cardClicked.emit()"
-              (keydown.space)="cardClicked.emit(); $event.preventDefault()"
-              [tabindex]="!href() ? 0 : null"
-              class="group-focus-within:text-purple group-hover:text-purple cursor-pointer transition-colors after:absolute after:inset-0 after:block"
-            >
-              <ng-container *ngTemplateOutlet="cardTitle"></ng-container>
-            </a>
-          }
-          @if (subtitle()) {
-            <div class="txt-body-m font-normal">
-              {{ subtitle() }}
-            </div>
-          }
+        @if (subtitle()) {
+          <div class="txt-body-m font-normal">
+            {{ subtitle() }}
+          </div>
         }
       </div>
     </div>
-  </ng-template>
-  <ng-template pTemplate="content">
-    <ng-content select="[card-content]"></ng-content>
-  </ng-template>
-  <ng-template pTemplate="footer">
+  </ng-template> -->
+
+  <!-- <ng-template pTemplate="content">
+
+  </ng-template> -->
+  <!-- <ng-template pTemplate="footer">
     <ng-content select="[card-footer]"></ng-content>
-  </ng-template>
-</p-card>
+  </ng-template> -->
+</div>
 
 <ng-template #cardTitle>
   @if (loading()) {

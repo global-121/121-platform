@@ -1,0 +1,15 @@
+<a
+  [href]="externalUrl()"
+  [rel]="'noopener noreferrer external'"
+  target="_blank"
+  title="Opens in a new window"
+  i18n-title="@@generic-opens-in-new-window"
+  class=""
+>
+  {{ label() }}
+
+  <!-- {{ koboIntegration.data()?.name ?? externalUrl() }} -->
+  <span
+    class="p-button-icon pi pi-external-link relative top-0.5 ms-2 text-sm"
+  ></span>
+</a>

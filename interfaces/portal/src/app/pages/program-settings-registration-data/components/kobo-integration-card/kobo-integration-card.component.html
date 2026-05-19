@@ -1,36 +1,32 @@
 <app-card-with-link
+  [image]="'assets/registration-data/kobo-toolbox.svg'"
+  [titleColoredChipLabel]="titleColoredChipLabel()"
+  [menuItems]="isKoboIntegrated() ? menuItems() : []"
+  [attr.data-testid]="'kobo-integration-card'"
+  [enableLink]="!isKoboIntegrated()"
+  [titleColoredChipColor]="'green'"
   title="KoboToolbox"
   i18n-title
-  [titleColoredChipLabel]="titleColoredChipLabel()"
-  [titleColoredChipColor]="'green'"
   (cardClicked)="
     isKoboIntegrated() ? undefined : koboConfigurationDialog.show()
   "
-  [subtitle]="cardSubtitle()"
-  [image]="'assets/registration-data/kobo-toolbox.svg'"
-  [enableLink]="!isKoboIntegrated()"
-  [attr.data-testid]="'kobo-integration-card'"
 >
-  <ng-container card-content>
+  <ng-container
+    i18n
+    card-content
+  >
     @if (isKoboIntegrated()) {
-      <div class="absolute inset-e-4 top-2">
-        <app-ellipsis-menu [menuItems]="menuItems()" />
-      </div>
-
-      <a
-        [href]="externalFormUrl()"
-        [rel]="'external'"
-        target="_blank"
-        title="Opens in a new window"
-        i18n-title="@@generic-opens-in-new-window"
-        class="inline-block [&_span:first-child]:underline hover:[&_span:first-child]:no-underline focus:[&_span:first-child]:no-underline"
-        ><span>{{ koboIntegration.data()?.name ?? externalFormUrl() }}</span>
-        <span
-          class="p-button-icon pi pi-external-link relative top-0.5 ms-2 text-sm"
-        ></span>
-      </a>
+      adsdas
     }
   </ng-container>
+
+  <ng-container
+    i18n
+    card-subtitle
+  >
+    {{ isKoboIntegrated() ? 'KoboToolbox is integrated' : 'Not integrated' }}
+  </ng-container>
+
   <ng-container card-footer>
     @if (isKoboIntegrated()) {
       <p
