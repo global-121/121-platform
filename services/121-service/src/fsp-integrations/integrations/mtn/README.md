@@ -15,7 +15,7 @@ All other MTN variables can be placeholder values (e.g., `test-subscription-key`
 ### Using the MTN Sandbox
 
 1. Register at [momodeveloper.mtn.com](https://momodeveloper.mtn.com) and subscribe to the **Disbursements** product.
-2. Create an API User and generate an API Key on the portal.
+2. Create an API User and generate an API Key on the portal. For this purpose you can use bash script from [POC](https://github.com/global-121/integration-proof-of-concepts/tree/main/fsp-integrations/mtn) repository.
 3. Update `services/.env`:
    ```bash
    MTN_MODE=EXTERNAL
