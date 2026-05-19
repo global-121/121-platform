@@ -280,6 +280,7 @@ exports[`Create program should post a program: Create program response for progr
   "paTableAttributes": [
     {
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "am": "እድሜ",
         "en": "Age",
@@ -289,6 +290,7 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Bank Account Number",
       },
@@ -297,6 +299,7 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "am": "ስም",
         "en": "Name",
@@ -306,6 +309,7 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "am": "ጾታ",
         "en": "Gender",
@@ -315,6 +319,7 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "am": "የመታውቂያ ቁጥር",
         "en": "ID Card number",
@@ -324,6 +329,7 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "am": "ስልክ ቁጥር",
         "en": "Phone number",
@@ -335,12 +341,12 @@ exports[`Create program should post a program: Create program response for progr
   "paymentAmountMultiplierFormula": null,
   "programRegistrationAttributes": [
     {
-      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 29,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "am": "እድሜ",
         "en": "Age",
@@ -355,12 +361,12 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
-      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 31,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Bank Account Number",
       },
@@ -376,12 +382,12 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
-      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 26,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "am": "ስም",
         "en": "Name",
@@ -396,12 +402,12 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
-      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 30,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "am": "ጾታ",
         "en": "Gender",
@@ -431,12 +437,12 @@ exports[`Create program should post a program: Create program response for progr
       "type": "dropdown",
     },
     {
-      "customLabel": null,
       "duplicateCheck": true,
       "editableInPortal": true,
       "id": 28,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "am": "የመታውቂያ ቁጥር",
         "en": "ID Card number",
@@ -451,12 +457,12 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
-      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 27,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "am": "ስልክ ቁጥር",
         "en": "Phone number",
@@ -770,6 +776,7 @@ exports[`Create program should post a program: Create program response for progr
   "paTableAttributes": [
     {
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Address city",
       },
@@ -778,6 +785,7 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Address house number",
       },
@@ -786,6 +794,7 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Address house number addition",
       },
@@ -794,6 +803,7 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Address postal code",
       },
@@ -802,6 +812,7 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Address street",
       },
@@ -810,6 +821,7 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Full Name",
       },
@@ -818,6 +830,7 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Phone Number",
       },
@@ -826,6 +839,7 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "WhatsApp Nr.",
       },
@@ -836,12 +850,12 @@ exports[`Create program should post a program: Create program response for progr
   "paymentAmountMultiplierFormula": null,
   "programRegistrationAttributes": [
     {
-      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 25,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Address city",
       },
@@ -855,12 +869,12 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
-      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 22,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Address house number",
       },
@@ -874,12 +888,12 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
-      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 23,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Address house number addition",
       },
@@ -893,12 +907,12 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
-      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 24,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Address postal code",
       },
@@ -912,12 +926,12 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
-      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 21,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Address street",
       },
@@ -931,12 +945,12 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
-      "customLabel": null,
       "duplicateCheck": false,
       "editableInPortal": true,
       "id": 18,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Full Name",
       },
@@ -950,12 +964,12 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
-      "customLabel": null,
       "duplicateCheck": true,
       "editableInPortal": false,
       "id": 19,
       "includeInTransactionExport": false,
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "Phone Number",
       },
@@ -971,12 +985,12 @@ exports[`Create program should post a program: Create program response for progr
       "type": "tel",
     },
     {
-      "customLabel": null,
       "duplicateCheck": true,
       "editableInPortal": true,
       "id": 20,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboLabel": null,
       "label": {
         "en": "WhatsApp Nr.",
       },
