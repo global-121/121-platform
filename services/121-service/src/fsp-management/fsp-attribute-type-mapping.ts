@@ -19,4 +19,4 @@ export const FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING: Record<
   [FspAttributes.phoneNumber]: tel,
   [FspAttributes.phoneNumberPayment]: tel,
   [FspAttributes.whatsappPhoneNumber]: tel,
-};
+} satisfies Record<FspAttributes, RegistrationAttributeTypes>;

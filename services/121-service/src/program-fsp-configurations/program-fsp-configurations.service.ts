@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
+import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-types.const';
 import {
   FspConfigurationPropertyVisibility,
@@ -10,6 +11,7 @@ import {
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
+import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/fsp-management/fsp-attribute-type-mapping';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -20,6 +22,8 @@ import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/progr
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
+import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
+import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 @Injectable()
@@ -28,6 +32,11 @@ export class ProgramFspConfigurationsService {
   private readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
   @InjectRepository(ProgramFspConfigurationPropertyEntity)
   private readonly programFspConfigurationPropertyRepository: Repository<ProgramFspConfigurationPropertyEntity>;
+
+  constructor(
+    private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
+    private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
+  ) {}
 
   public async getByProgramId(
     programId: number,
@@ -48,6 +57,11 @@ export class ProgramFspConfigurationsService {
     programFspConfigurationDto: CreateProgramFspConfigurationDto,
   ): Promise<ProgramFspConfigurationResponseDto> {
     await this.validate(programId, programFspConfigurationDto);
+    await this.createMissingFspRegistrationAttributes(
+      programId,
+      programFspConfigurationDto,
+    );
+
     return this.createEntity(programId, programFspConfigurationDto);
   }
 
@@ -82,6 +96,50 @@ export class ProgramFspConfigurationsService {
       this.validatePropertyValueTypesOrThrow(
         programFspConfigurationDto.properties,
       );
+    }
+  }
+
+  private async createMissingFspRegistrationAttributes(
+    programId: number,
+    programFspConfigurationDto: CreateProgramFspConfigurationDto,
+  ): Promise<void> {
+    const currentProgramAttributes =
+      await this.programRegistrationAttributeRepository.find({
+        where: { programId: Equal(programId) },
+        select: { name: true },
+      });
+
+    const currentProgramAttributesNames = currentProgramAttributes.map(
+      (attributes) => attributes.name,
+    );
+
+    const requiredAttributeNames = FSP_SETTINGS[
+      programFspConfigurationDto.fspName
+    ].attributes
+      .filter((attribute) => attribute.isRequired)
+      .map((attribute) => attribute.name);
+
+    // TODO:
+    // Replace this loop with updateBatchProgramRegistrationAttributes from
+    // https://github.com/global-121/121-platform/pull/8229/ once merged
+
+    for (const requiredAttributeName of requiredAttributeNames) {
+      if (!currentProgramAttributesNames.includes(requiredAttributeName)) {
+        await this.programRegistrationAttributesService.createProgramRegistrationAttribute(
+          {
+            programId,
+            createProgramRegistrationAttributeDto: {
+              name: requiredAttributeName,
+              type: FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING[
+                requiredAttributeName
+              ],
+              label: {
+                en: requiredAttributeName,
+              },
+            },
+          },
+        );
+      }
     }
   }
 

@@ -20,11 +20,11 @@ const availableFsps = [
   FSP_SETTINGS[Fsps.onafriq].defaultLabel.en,
 ].filter((label): label is string => label !== undefined);
 
-const fspsNotConfigurableForOcwProgram = [
-  FSP_SETTINGS[Fsps.safaricom].defaultLabel.en,
-  FSP_SETTINGS[Fsps.commercialBankEthiopia].defaultLabel.en,
-  FSP_SETTINGS[Fsps.onafriq].defaultLabel.en,
-].filter((label): label is string => label !== undefined);
+const fspsWithRequiredAttributes = [
+  FSP_SETTINGS[Fsps.safaricom],
+  FSP_SETTINGS[Fsps.commercialBankEthiopia],
+  FSP_SETTINGS[Fsps.onafriq],
+];
 
 const fspsConfiguredInKobo = [
   FSP_SETTINGS[Fsps.intersolveVoucherPaper].defaultLabel.en,
@@ -68,13 +68,33 @@ test('Add all available FSPs', async ({
     });
   });
 
-  await test.step('Add FSPs that do not match Kobo form configuration', async () => {
-    await fspSettingsPage.validateFspConfigurationIsNotPresent({
-      fspNames: fspsNotConfigurableForOcwProgram,
-    });
+  await test.step('Add FSPs that have missing required attributes and validate their automatic configuration', async () => {
+    const allRequiredAttributes =
+      await fspSettingsPage.addFspsWithRequiredAttributes({
+        fspConfiguration: fspsWithRequiredAttributes,
+      });
+
+    await fspSettingsPage.navigateToProgramPage('Registrations');
+
+    // For some reason we mutate 'fullName' to 'Full name' in
+    // applyProgramRegistrationAttributesFallbackIfNecessary when a program is created.
+    // In the frontend - on the registration table - it is displayed as 'Name'...
+    // So for now I'm removing 'fullName' from the required attributes array I'm checking for
+    // Related to #AB32551
+
+    for (const attribute of allRequiredAttributes.filter(
+      (attr) => attr !== 'fullName',
+    )) {
+      await registrationsPage.checkColumnAvailability({
+        column: attribute,
+        shouldBeAvailable: true,
+      });
+    }
   });
 
   await test.step('Add all available FSPs that match Kobo form configuration', async () => {
+    await registrationsPage.navigateToProgramPage('Settings');
+    await fspSettingsPage.clickEditFspSection();
     await fspSettingsPage.addFsp({ fspNames: fspsConfiguredInKobo });
   });
 

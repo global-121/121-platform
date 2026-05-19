@@ -11,6 +11,8 @@ import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-c
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
+import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
+import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 
 const programId = 1;
 const mockProgramFspConfigPropertyEntity =
@@ -98,6 +100,18 @@ describe('ProgramFspConfigurationsService', () => {
         {
           provide: getRepositoryToken(ProgramFspConfigurationPropertyEntity),
           useValue: mockProgramFspConfigurationPropertyRepository,
+        },
+        {
+          provide: ProgramRegistrationAttributesService,
+          useValue: {
+            createProgramRegistrationAttribute: jest.fn(),
+          },
+        },
+        {
+          provide: ProgramRegistrationAttributeRepository,
+          useValue: {
+            find: jest.fn().mockResolvedValue([]),
+          },
         },
       ],
     }).compile();

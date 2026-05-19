@@ -1,14 +1,18 @@
 import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
 
+import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
+
 import BasePage from './BasePage';
 
 class FspSettingsPage extends BasePage {
   readonly addFspButton: Locator;
   readonly integrateFspButton: Locator;
+  readonly saveReconfigurationButton: Locator;
   readonly fspCard: Locator;
   readonly integrationErrorMessage: Locator;
   readonly cancelButton: Locator;
+  readonly fspCardTable: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -18,8 +22,10 @@ class FspSettingsPage extends BasePage {
     this.integrateFspButton = this.page.getByRole('button', {
       name: 'Integrate FSP',
     });
+    this.saveReconfigurationButton = this.page.getByRole('button', {
+      name: 'Save changes',
+    });
     this.fspCard = this.page.locator('app-card-with-link p-card');
-    this.integrationErrorMessage = this.page.getByText('Integration error');
     this.cancelButton = this.page.getByRole('button', { name: 'Cancel' });
   }
 
@@ -171,31 +177,49 @@ class FspSettingsPage extends BasePage {
     }
   }
 
-  async validateFspConfigurationIsNotPresent({
-    fspNames,
+  async addFspsWithRequiredAttributes({
+    fspConfiguration,
   }: {
-    fspNames: string[];
-  }) {
-    for (const name of fspNames) {
+    fspConfiguration: FspSettingsDto[];
+  }): Promise<string[]> {
+    let allRequiredAttributes: string[] = [];
+
+    for (const fsp of fspConfiguration) {
+      const { defaultLabel, attributes, name: fspName } = fsp;
+
+      const requiredAttributes = attributes
+        .filter((attr) => attr.isRequired)
+        .map((attr) => attr.name);
+
+      allRequiredAttributes = [...allRequiredAttributes, ...requiredAttributes];
+
+      if (!defaultLabel.en) {
+        throw new Error(
+          `FSP ${fspName} does not have a default label in English`,
+        );
+      }
+
       // Check if we need to click "Add another FSP" first
       await this.page.waitForTimeout(200); // Small wait to ensure button is loaded
       if (await this.addFspButton.isVisible()) {
         await this.addFspButton.click();
       }
+
       // Now proceed with selecting and configuring the FSP
-      await this.fspCard.filter({ hasText: name }).click();
+      await this.fspCard.filter({ hasText: defaultLabel.en }).click();
       await this.page.waitForTimeout(200); // Wait for inputs to load
       const inputs = this.page.locator('input');
       const inputCount = await inputs.count();
+
       for (let i = 1; i < inputCount; i++) {
         const input = inputs.nth(i);
-        await input.fill(name);
+        await input.fill(defaultLabel.en);
       }
+
       await this.integrateFspButton.click();
-      await expect(this.integrationErrorMessage).toBeVisible();
-      await this.page.waitForTimeout(500);
-      await this.cancelButton.click();
     }
+
+    return allRequiredAttributes;
   }
 
   async reconfigureFsp(configuration: string[]) {
@@ -213,7 +237,7 @@ class FspSettingsPage extends BasePage {
       }
     }
 
-    await this.integrateFspButton.click();
+    await this.saveReconfigurationButton.click();
   }
 
   async deleteFsp({ fspName }: { fspName: string[] }) {
