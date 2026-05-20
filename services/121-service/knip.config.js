@@ -12,6 +12,7 @@ module.exports = {
     // Known issues with devDependencies:
     '@automock/adapters.nestjs', // Auto-loaded by @automock/jest
     'prettier', // Used by VSCode and ESLint via shared config
+    'multer', // Used for file uploads, but not directly imported in the code (imported via MulterModule.register() in NestJS)
   ],
   rules: {
     binaries: 'error',
