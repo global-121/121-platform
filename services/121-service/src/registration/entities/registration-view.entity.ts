@@ -55,7 +55,6 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
         'paymentAmountMultiplier',
       )
       .addSelect('registration.maxPayments', 'maxPayments')
-      .addSelect('registration.phoneNumber', 'phoneNumber')
       .addSelect('registration.scope', 'scope')
       .leftJoin('registration.programFspConfiguration', 'fspconfig')
       .leftJoin('registration.latestMessage', 'latestMessage')
@@ -132,9 +131,6 @@ export class RegistrationViewEntity {
 
   @ViewColumn()
   public referenceId: string;
-
-  @ViewColumn()
-  public phoneNumber?: string;
 
   @ViewColumn()
   public preferredLanguage: RegistrationPreferredLanguage;

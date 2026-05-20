@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
-import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationsCreationService } from '@121-service/src/registration/services/registrations-creation.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
@@ -42,7 +42,7 @@ describe('RegistrationsCreationService', () => {
           [
             {
               lineNumber: 1,
-              column: GenericRegistrationAttributes.phoneNumber,
+              column: DefaultRegistrationDataAttributeNames.phoneNumber,
               value: '',
               error: 'PhoneNumber is not allowed to be empty',
             },

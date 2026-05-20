@@ -668,8 +668,6 @@ export class IntersolveVoucherService {
         unusedVoucher.issueDate = voucher.created;
         unusedVoucher.whatsappPhoneNumber =
           voucher.whatsappPhoneNumber ?? undefined;
-        unusedVoucher.phoneNumber =
-          voucher.image[0].registration.phoneNumber ?? undefined;
         unusedVoucher.lastExternalUpdate =
           voucher.updatedLastRequestedBalance ?? undefined;
         unusedVouchersDtos.push(unusedVoucher);
@@ -746,8 +744,6 @@ export class IntersolveVoucherService {
     voucherWithBalance.name = await this.registrationUtilsService.getFullName(
       voucher.image[0].registration,
     );
-    voucherWithBalance.phoneNumber =
-      voucher.image[0].registration.phoneNumber ?? undefined;
     voucherWithBalance.whatsappPhoneNumber =
       voucher.whatsappPhoneNumber ?? undefined;
     voucherWithBalance.paStatus =

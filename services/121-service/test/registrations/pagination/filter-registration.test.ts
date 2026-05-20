@@ -111,10 +111,6 @@ describe('Filter registrations', () => {
         filterValue: '63e6286',
         expectedReferenceIds: [registrationOCW1.referenceId],
       },
-      phoneNumber: {
-        filterValue: '14155235555',
-        expectedReferenceIds: [registrationOCW4.referenceId],
-      },
       preferredLanguage: {
         filterValue: UILanguage.en,
         expectedReferenceIds: [

@@ -322,7 +322,7 @@ describe('RegistrationsInputValidator', () => {
         {
           index: 0,
           referenceId: undefined,
-          column: GenericRegistrationAttributes.phoneNumber,
+          column: DefaultRegistrationDataAttributeNames.phoneNumber,
           value: undefined,
           error:
             'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
@@ -402,7 +402,6 @@ describe('RegistrationsInputValidator', () => {
       paymentAmountMultiplier: 1,
       scope: '',
       preferredLanguage: RegistrationPreferredLanguage.en,
-      phoneNumber: null,
       programFspConfigurationName: 'Excel',
     };
 
