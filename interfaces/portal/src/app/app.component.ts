@@ -14,15 +14,22 @@ import { Subscription } from 'rxjs';
 
 import { AppRoutes } from '~/app.routes';
 import { SessionExpiredDialogComponent } from '~/components/session-expired-dialog/session-expired-dialog.component';
+import { UnsavedChangesDialogComponent } from '~/components/unsaved-changes-dialog/unsaved-changes-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { LogService } from '~/services/log.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
+import { UnsavedChangesService } from '~/services/unsaved-changes.service';
 import { environment } from '~environment';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ToastModule, SessionExpiredDialogComponent],
+  imports: [
+    RouterOutlet,
+    ToastModule,
+    SessionExpiredDialogComponent,
+    UnsavedChangesDialogComponent,
+  ],
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -39,6 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   readonly showSessionExpiredDialog = this.authService.showSessionExpiredDialog;
   readonly sessionExpiredReturnUrl = this.authService.sessionExpiredReturnUrl;
+  protected readonly unsavedChangesService = inject(UnsavedChangesService);
 
   private readonly logService = inject(LogService);
 
