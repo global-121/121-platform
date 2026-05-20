@@ -52,7 +52,7 @@ describe('KoboSurveyProcessorService', () => {
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual({
         name: fieldName,
-        label: labels,
+        koboLabel: labels,
         type: RegistrationAttributeTypes.text,
         // Also validate the defeault values in this test
         isRequired: false,
@@ -94,7 +94,7 @@ describe('KoboSurveyProcessorService', () => {
       // Assert
       expect(result[0]).toMatchObject({
         name: fieldName,
-        label: labels,
+        koboLabel: labels,
         type: RegistrationAttributeTypes.numeric,
       });
     });
@@ -127,7 +127,7 @@ describe('KoboSurveyProcessorService', () => {
       // Assert
       expect(result[0]).toMatchObject({
         name: fieldName,
-        label: {
+        koboLabel: {
           en: fieldName, // Fallback to field name
         },
       });
@@ -260,7 +260,7 @@ describe('KoboSurveyProcessorService', () => {
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({
         name: fieldName,
-        label: labels,
+        koboLabel: labels,
         type: RegistrationAttributeTypes.dropdown,
         options: [
           {
@@ -369,7 +369,7 @@ describe('KoboSurveyProcessorService', () => {
       );
       expect(genderResult).toMatchObject({
         name: genderField.name,
-        label: genderField.labels,
+        koboLabel: genderField.labels,
         type: RegistrationAttributeTypes.dropdown,
         options: [
           { option: genderChoices.male.name, label: genderChoices.male.labels },
@@ -386,7 +386,7 @@ describe('KoboSurveyProcessorService', () => {
       );
       expect(educationResult).toMatchObject({
         name: educationField.name,
-        label: educationField.labels,
+        koboLabel: educationField.labels,
         type: RegistrationAttributeTypes.dropdown,
         options: [
           {
