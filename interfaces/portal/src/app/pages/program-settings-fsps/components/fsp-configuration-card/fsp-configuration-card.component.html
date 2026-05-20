@@ -24,7 +24,11 @@
         <b>exact format</b>
         for this FSP integration in the data column name:
       </p>
-      <p-table [value]="requiredRegistrationAttributes()">
+      <p-table
+        [value]="requiredRegistrationAttributes()"
+        [size]="'small'"
+        i18n-size
+      >
         <ng-template #header>
           <tr>
             <th
@@ -47,7 +51,7 @@
         >
           <tr>
             <td>{{ attribute.label }}</td>
-            <td>
+            <td class="relative">
               {{ attribute.name }}
               <p-button
                 icon="pi pi-copy"
@@ -56,6 +60,7 @@
                 rounded
                 ariaLabel="Copy to clipboard"
                 i18n-ariaLabel
+                class="absolute top-1/2 -translate-y-1/2"
               />
             </td>
           </tr>

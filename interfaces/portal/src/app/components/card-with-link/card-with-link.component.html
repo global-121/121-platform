@@ -1,21 +1,19 @@
 <div
   data-testid="card-with-link"
-  class="group shadow-clickable-cards relative h-full border border-transparent transition-colors *:h-full focus-within:border-purple-500 hover:border-purple-500"
+  class="group shadow-clickable-cards border-grey-300 relative h-full rounded-lg border transition-colors focus-within:border-purple-500 hover:border-purple-500"
 >
-  <div class="flex p-5">
-    <div>
-      @if (image()) {
-        <img
-          class="mx-auto size-14 bg-red-500 object-contain"
-          role="presentation"
-          aria-hidden="true"
-          [src]="image()"
-          alt=""
-        />
-      }
-    </div>
+  <div class="flex gap-4 p-4">
+    @if (image()) {
+      <img
+        class="mx-auto size-14 object-contain"
+        role="presentation"
+        aria-hidden="true"
+        [src]="image()"
+        alt=""
+      />
+    }
     <div class="flex-1">
-      <div class="bg-orange-500">
+      <div class="text-lg font-bold">
         @if (!enableLink()) {
           <ng-container *ngTemplateOutlet="cardTitle"></ng-container>
         } @else {
@@ -33,16 +31,14 @@
       </div>
       <ng-content select="[card-subtitle]"></ng-content>
     </div>
-    <div>
-      @if (menuItems.length > 0) {
-        <div class="inset-e-4 top-2">
-          <app-ellipsis-menu [menuItems]="menuItems()" />
-        </div>
-      }
-    </div>
+    @if (menuItems().length > 0) {
+      <div class="absolute inset-y-2 inset-e-2">
+        <app-ellipsis-menu [menuItems]="menuItems()" />
+      </div>
+    }
   </div>
 
-  <div class="p-5 pt-0 empty:hidden">
+  <div class="p-4 pt-0 empty:hidden">
     <ng-content select="[card-content]"></ng-content>
   </div>
 

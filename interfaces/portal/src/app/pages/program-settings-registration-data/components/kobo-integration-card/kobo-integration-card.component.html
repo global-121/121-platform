@@ -13,12 +13,15 @@
 >
   <ng-container card-subtitle>
     @if (isKoboIntegrated()) {
-      <div class="flex items-start justify-between">
+      <div class="flex items-end justify-between">
         <app-external-link
           [href]="externalFormUrl()"
           [label]="koboIntegration.data()?.name ?? externalFormUrl()"
         />
-        <p i18n>
+        <p
+          i18n
+          class="text-grey-700 text-end text-sm"
+        >
           Last updated: {{ koboIntegration.data()?.dateDeployed | date }}
         </p>
       </div>
