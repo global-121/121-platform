@@ -15,6 +15,7 @@ import {
 import { MenuItem } from 'primeng/api';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
+import { ExternalLinkComponent } from '~/components/external-link/external-link.component';
 import {
   buildKoboFormUrl,
   isKoboIntegrated,
@@ -31,6 +32,7 @@ import { ToastService } from '~/services/toast.service';
     DatePipe,
     KoboConfigurationDialogComponent,
     KoboImportExistingRegistrationsDialogComponent,
+    ExternalLinkComponent,
   ],
   templateUrl: './kobo-integration-card.component.html',
   styles: ``,
@@ -65,18 +67,12 @@ export class KoboIntegrationCardComponent {
     this.isKoboIntegrated() ? $localize`Linked` : undefined,
   );
 
-  // readonly cardSubtitle = computed(() =>
-  //   this.isKoboIntegrated() ? '' : $localize`Click to integrate`,
-  // );
-
-  readonly externalFormUrl = computed<null | string>(() => {
-    if (!this.isKoboIntegrated()) {
-      return null;
-    }
+  readonly externalFormUrl = computed<string>(() => {
     const koboIntegrationData = this.koboIntegration.data();
     if (!koboIntegrationData) {
-      return null;
+      return '';
     }
+
     return buildKoboFormUrl({
       serverUrl: koboIntegrationData.url,
       assetUid: koboIntegrationData.assetUid,

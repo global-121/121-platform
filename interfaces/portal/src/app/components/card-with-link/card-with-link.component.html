@@ -5,7 +5,6 @@
   <div class="flex p-5">
     <div>
       @if (image()) {
-        <!-- <div class=""> -->
         <img
           class="mx-auto size-14 bg-red-500 object-contain"
           role="presentation"
@@ -13,7 +12,6 @@
           [src]="image()"
           alt=""
         />
-        <!-- </div> -->
       }
     </div>
     <div class="flex-1">
@@ -37,14 +35,16 @@
     </div>
     <div>
       @if (menuItems.length > 0) {
-        <div class="absolute inset-e-4 top-2">
+        <div class="inset-e-4 top-2">
           <app-ellipsis-menu [menuItems]="menuItems()" />
         </div>
       }
     </div>
   </div>
 
-  <ng-content select="[card-content]"></ng-content>
+  <div class="p-5 pt-0 empty:hidden">
+    <ng-content select="[card-content]"></ng-content>
+  </div>
 
   <!-- <ng-template pTemplate="title">
     <div class="flex flex-row items-center">

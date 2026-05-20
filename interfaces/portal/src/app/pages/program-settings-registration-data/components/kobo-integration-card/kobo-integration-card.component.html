@@ -11,31 +11,26 @@
     isKoboIntegrated() ? undefined : koboConfigurationDialog.show()
   "
 >
-  <ng-container card-content>
+  <ng-container card-subtitle>
     @if (isKoboIntegrated()) {
-      <!-- -->
+      <div class="flex items-start justify-between">
+        <app-external-link
+          [href]="externalFormUrl()"
+          [label]="koboIntegration.data()?.name ?? externalFormUrl()"
+        />
+        <p i18n>
+          Last updated: {{ koboIntegration.data()?.dateDeployed | date }}
+        </p>
+      </div>
     }
-  </ng-container>
 
-  <ng-container
-    i18n
-    card-subtitle
-  >
-    {{ isKoboIntegrated() ? 'KoboToolbox is integrated' : 'Not integrated' }}
-  </ng-container>
-
-  <ng-container card-footer>
-    @if (isKoboIntegrated()) {
-      <p
-        i18n
-        class="text-end"
-      >
-        Last updated:
-        <span>{{ koboIntegration.data()?.dateDeployed | date }}</span>
-      </p>
+    @if (!isKoboIntegrated()) {
+      <p i18n>Not integrated</p>
     }
   </ng-container>
 </app-card-with-link>
+
+<!-- DIALOGS -->
 
 <app-kobo-configuration-dialog
   #koboConfigurationDialog

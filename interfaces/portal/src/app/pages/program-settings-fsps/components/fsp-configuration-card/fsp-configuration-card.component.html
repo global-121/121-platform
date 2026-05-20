@@ -1,16 +1,13 @@
 <app-card-with-link
-  class="relative"
-  [title]="fspConfigurationLabel()"
   (cardClicked)="reconfigureFsp.emit(configuration())"
-  [image]="fspImage()"
+  [title]="fspConfigurationLabel()"
   subtitle="Click to reconfigure"
+  [menuItems]="menuItems()"
+  [image]="fspImage()"
+  class="relative"
   i18n-subtitle
 >
   <ng-container card-content>
-    <div class="absolute inset-e-4 top-2">
-      <app-ellipsis-menu [menuItems]="menuItems()" />
-    </div>
-
     <p
       i18n
       class="mt-4 font-bold"
