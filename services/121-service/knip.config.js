@@ -11,7 +11,6 @@ module.exports = {
   ignoreDependencies: [
     // Known issues with devDependencies:
     '@automock/adapters.nestjs', // Auto-loaded by @automock/jest
-    'eslint-config-121-platform', // Shared config, used in eslint.config.mjs
     'prettier', // Used by VSCode and ESLint via shared config
   ],
   rules: {
