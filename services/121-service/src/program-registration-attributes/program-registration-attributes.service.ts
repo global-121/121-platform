@@ -382,6 +382,7 @@ export class ProgramRegistrationAttributesService {
       new ProgramRegistrationAttributeEntity();
     programRegistrationAttribute.name = dto.name;
     programRegistrationAttribute.label = dto.label;
+    programRegistrationAttribute.koboLabel = dto.koboLabel;
     programRegistrationAttribute.type = dto.type;
     programRegistrationAttribute.options = dto.options ?? null;
     programRegistrationAttribute.scoring = dto.scoring ?? {};
