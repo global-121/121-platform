@@ -134,7 +134,7 @@ export class RegistrationsService {
     userId: MessageSenderUserId;
     bulkSize?: number;
   }): Promise<void> {
-    const registration = await this.getPaginateRegistrationForReferenceId({
+    const registration = await this.getOnePaginatedRegistrationByReferenceId({
       referenceId,
       programId,
       select: [
@@ -166,8 +166,11 @@ export class RegistrationsService {
     });
   }
 
-  // This methods can be used to get the same formatted data as the pagination query using referenceId
-  private async getPaginateRegistrationForReferenceId({
+  /**
+   * This method can be used to get the same formatted data as the pagination query using referenceId.
+   * This is a registration view with flattened version of its registrationData.
+   */
+  private async getOnePaginatedRegistrationByReferenceId({
     referenceId,
     programId,
     select,
@@ -194,8 +197,11 @@ export class RegistrationsService {
     return paginateResult.data[0];
   }
 
-  // This methods can be used to get the same formatted data as the pagination query using referenceId
-  public async getPaginateRegistrationById({
+  /**
+   * This method can be used to get the same formatted data as the pagination query using referenceId.
+   * This is a registration view with flattened version of its registrationData.
+   */
+  public async getOnePaginatedRegistrationById({
     id,
     programId,
   }: {
@@ -467,7 +473,7 @@ export class RegistrationsService {
     const program = registrationToUpdate.program;
 
     const oldViewRegistration =
-      await this.getPaginateRegistrationForReferenceId({
+      await this.getOnePaginatedRegistrationByReferenceId({
         referenceId,
         programId,
       });
@@ -527,10 +533,12 @@ export class RegistrationsService {
       nrAttributesUpdated++;
     }
 
-    const newRegistration = await this.getPaginateRegistrationForReferenceId({
-      referenceId,
-      programId,
-    });
+    const newRegistration = await this.getOnePaginatedRegistrationByReferenceId(
+      {
+        referenceId,
+        programId,
+      },
+    );
 
     if (nrAttributesUpdated > 0) {
       await this.inclusionScoreService.calculateInclusionScore(referenceId);
@@ -691,7 +699,7 @@ export class RegistrationsService {
 
     return await Promise.all(
       filteredRegistrations.map(async (uniqueRegistration) => {
-        return await this.getPaginateRegistrationForReferenceId({
+        return await this.getOnePaginatedRegistrationByReferenceId({
           referenceId: uniqueRegistration.referenceId,
           programId: uniqueRegistration.programId,
         });

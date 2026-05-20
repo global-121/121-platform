@@ -664,7 +664,7 @@ export class RegistrationsController {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<MappedPaginatedRegistrationDto> {
     const registrationEntity =
-      await this.registrationsService.getPaginateRegistrationById({
+      await this.registrationsService.getOnePaginatedRegistrationById({
         id,
         programId,
       });

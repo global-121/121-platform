@@ -253,7 +253,7 @@ export class MessageIncomingService {
     }
 
     const registration =
-      await this.registrationsService.getPaginateRegistrationById({
+      await this.registrationsService.getOnePaginatedRegistrationById({
         id: message.registrationId,
         programId,
       });
