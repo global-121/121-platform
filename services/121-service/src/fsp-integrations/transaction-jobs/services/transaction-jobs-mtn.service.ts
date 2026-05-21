@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { env } from '@121-service/src/env';
 import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-error-types.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
@@ -108,92 +107,11 @@ export class TransactionJobsMtnService implements TransactionJobService<MtnTrans
     }
 
     // 7. Store success transaction event and leave transaction on 'waiting'.
-    // Final status will be set via the callback flow (triggered below by polling).
+    // Final status will be resolved by the reconciliation flow.
     await this.transactionsService.saveProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.mtnRequestSent,
     });
-
-    // 8. Poll MTN for the actual transfer status and trigger our own callback endpoint.
-    // MTN sandbox does not reliably send callbacks, so we call our callback ourselves.
-    // This way we use the exact same code path as a real callback from MTN.
-    await this.pollAndTriggerCallback({
-      mtnReferenceId,
-      requestIdentity,
-      transactionId: transactionJob.transactionId,
-    });
-  }
-
-  private async pollAndTriggerCallback({
-    mtnReferenceId,
-    requestIdentity,
-    transactionId,
-  }: {
-    mtnReferenceId: string;
-    requestIdentity: MtnRequestIdentity;
-    transactionId: number;
-  }): Promise<void> {
-    const maxAttempts = 5;
-    const delayMs = 2000;
-
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      const transferStatus = await this.mtnService.getTransfer({
-        mtnReferenceId,
-        requestIdentity,
-      });
-
-      if (transferStatus.status !== 'PENDING') {
-        // Hit our own callback endpoint, exactly like MTN would in production.
-        await this.invokeMtnCallbackEndpoint({
-          externalId: String(transactionId),
-          referenceId: mtnReferenceId,
-          status: transferStatus.status,
-          reason: transferStatus.reason,
-        });
-        return;
-      }
-
-      if (attempt < maxAttempts) {
-        await new Promise((resolve) => setTimeout(resolve, delayMs));
-      }
-    }
-
-    console.warn(
-      `[MTN] Transfer ${mtnReferenceId} still PENDING after ${maxAttempts} polls. Leaving transaction in 'waiting'.`,
-    );
-  }
-
-  private async invokeMtnCallbackEndpoint({
-    externalId,
-    referenceId,
-    status,
-    reason,
-  }: {
-    externalId: string;
-    referenceId: string;
-    status: string;
-    reason?: string;
-  }): Promise<void> {
-    const callbackUrl = `${env.EXTERNAL_121_SERVICE_URL ?? 'http://localhost:3000'}/api/fsps/mtn/transfer-callback`;
-    const body = { externalId, referenceId, status, reason: reason ?? '' };
-
-    console.log(
-      `[MTN] Invoking callback endpoint at ${callbackUrl} with body:`,
-      JSON.stringify(body),
-    );
-
-    const response = await fetch(callbackUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-      const responseText = await response.text();
-      console.error(
-        `[MTN] Callback endpoint returned ${response.status}: ${responseText}`,
-      );
-    }
   }
 
   private async handleDuplicateTransfer({

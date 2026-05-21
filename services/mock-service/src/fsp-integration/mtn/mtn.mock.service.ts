@@ -1,5 +1,8 @@
+import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
 
+import { API_PATHS, EXTERNAL_API_ROOT } from '@mock-service/src/config';
 import { MtnAuthenticateResponseDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-authenticate-response.dto';
 import { MtnCreateTransferRequestDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-create-transfer-request.dto';
 import { MtnTransferStatusResponseDto } from '@mock-service/src/fsp-integration/mtn/dto/mtn-transfer-status-response.dto';
@@ -24,6 +27,8 @@ export const MtnAuthToken = 'mock-mtn-access-token-12345';
 export class MtnMockService {
   private static readonly uuidPattern =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+  constructor(private readonly httpService: HttpService) {}
 
   public authenticate({
     authorization,
@@ -95,6 +100,47 @@ export class MtnMockService {
         { code: 'INTERNAL_PROCESSING_ERROR', message: 'Internal error.' },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+
+    // Fire-and-forget: send a callback to the 121-service, mimicking MTN's
+    // production behavior where they POST the transfer result.
+    const callbackStatus = this.deriveCallbackStatus({ referenceId });
+    void this.sendTransferCallback({
+      externalId: body.externalId,
+      referenceId,
+      status: callbackStatus.status,
+      reason: callbackStatus.reason,
+    });
+  }
+
+  private deriveCallbackStatus({ referenceId }: { referenceId: string }): {
+    status: string;
+    reason?: string;
+  } {
+    if (referenceId === MtnMockReferenceId.failPayeeNotFound) {
+      return { status: 'FAILED', reason: 'PAYEE_NOT_FOUND' };
+    }
+    return { status: 'SUCCESSFUL' };
+  }
+
+  private async sendTransferCallback({
+    externalId,
+    referenceId,
+    status,
+    reason,
+  }: {
+    externalId: string;
+    referenceId: string;
+    status: string;
+    reason?: string;
+  }): Promise<void> {
+    const url = `${EXTERNAL_API_ROOT}/${API_PATHS.mtnTransferCallback}`;
+    const body = { externalId, referenceId, status, reason: reason ?? '' };
+
+    try {
+      await lastValueFrom(this.httpService.post(url, body));
+    } catch (error) {
+      console.error('[MTN Mock] Failed to send transfer callback:', error);
     }
   }
 

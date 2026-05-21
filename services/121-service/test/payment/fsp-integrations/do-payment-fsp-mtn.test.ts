@@ -32,7 +32,10 @@ const expectedEventsForSyncError = [
 ];
 
 const expectedEventsForCallbackResult = [
-  ...expectedEventsForSyncError,
+  TransactionEventDescription.created,
+  TransactionEventDescription.approval,
+  TransactionEventDescription.initiated,
+  TransactionEventDescription.mtnRequestSent,
   TransactionEventDescription.mtnCallbackReceived,
 ];
 
