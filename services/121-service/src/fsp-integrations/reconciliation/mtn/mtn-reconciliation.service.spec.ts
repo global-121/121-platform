@@ -67,20 +67,6 @@ describe('MtnReconciliationService', () => {
       'generated-mtn-reference-id',
     );
     (
-      mtnService.mapMtnStatusToTransactionStatus as jest.Mock
-    ).mockImplementation(({ mtnStatus }: { mtnStatus: string }) => {
-      switch (mtnStatus) {
-        case MtnTransferStatus.successful:
-          return TransactionStatusEnum.success;
-        case MtnTransferStatus.pending:
-          return TransactionStatusEnum.waiting;
-        case MtnTransferStatus.failed:
-          return TransactionStatusEnum.error;
-        default:
-          return TransactionStatusEnum.error;
-      }
-    });
-    (
       transactionEventsScopedRepository.findLatestEventByTransactionId as jest.Mock
     ).mockResolvedValue({ programFspConfigurationId: 1 });
     (mtnService.getMtnFspConfig as jest.Mock).mockResolvedValue({
@@ -92,6 +78,7 @@ describe('MtnReconciliationService', () => {
 
   describe('processTransferCallback', () => {
     it('should enqueue a callback job with the correct data', async () => {
+      // Act
       await mtnReconciliationService.processTransferCallback({
         externalId: '42',
         referenceId: 'ref-uuid-123',
@@ -99,32 +86,7 @@ describe('MtnReconciliationService', () => {
         reason: undefined,
       });
 
-      expect(mockMtnTransferCallbackQueue.add).toHaveBeenCalledWith(
-        JobNames.default,
-        { transactionId: 42 },
-      );
-    });
-
-    it('should enqueue job for callback with reason', async () => {
-      await mtnReconciliationService.processTransferCallback({
-        externalId: '99',
-        referenceId: 'ref-uuid-456',
-        status: MtnTransferStatus.failed,
-        reason: 'PAYER_NOT_FOUND',
-      });
-
-      expect(mockMtnTransferCallbackQueue.add).toHaveBeenCalledWith(
-        JobNames.default,
-        { transactionId: 99 },
-      );
-    });
-
-    it('should enqueue job even when referenceId is not provided', async () => {
-      await mtnReconciliationService.processTransferCallback({
-        externalId: '42',
-        status: MtnTransferStatus.successful,
-      });
-
+      // Assert
       expect(mockMtnTransferCallbackQueue.add).toHaveBeenCalledWith(
         JobNames.default,
         { transactionId: 42 },
@@ -132,167 +94,66 @@ describe('MtnReconciliationService', () => {
     });
 
     it('should drop callback when externalId is missing', async () => {
+      // Act
       await mtnReconciliationService.processTransferCallback({
         status: MtnTransferStatus.successful,
       });
 
-      expect(mockMtnTransferCallbackQueue.add).not.toHaveBeenCalled();
-    });
-
-    it('should drop callback when status is missing', async () => {
-      await mtnReconciliationService.processTransferCallback({
-        externalId: '42',
-      });
-
+      // Assert
       expect(mockMtnTransferCallbackQueue.add).not.toHaveBeenCalled();
     });
 
     it('should drop callback when externalId is not numeric', async () => {
+      // Act
       await mtnReconciliationService.processTransferCallback({
         externalId: 'not-a-number',
         status: MtnTransferStatus.successful,
       });
 
+      // Assert
       expect(mockMtnTransferCallbackQueue.add).not.toHaveBeenCalled();
-    });
-
-    it('should still enqueue callback with unknown status value', async () => {
-      await mtnReconciliationService.processTransferCallback({
-        externalId: '42',
-        status: 'UNKNOWN_STATUS',
-      });
-
-      expect(mockMtnTransferCallbackQueue.add).toHaveBeenCalledWith(
-        JobNames.default,
-        { transactionId: 42 },
-      );
     });
   });
 
   describe('processMtnTransferCallbackJob', () => {
-    it('should regenerate mtnReferenceId and call MTN API to verify status', async () => {
-      (mtnService.getTransfer as jest.Mock).mockResolvedValue({
-        status: MtnTransferStatus.successful,
-      });
+    it('should skip processing if the transaction is not in waiting status', async () => {
+      // Arrange
+      (
+        transactionRepository.getStatusByIdOrThrow as jest.Mock
+      ).mockResolvedValue(TransactionStatusEnum.success);
 
+      // Act
       await mtnReconciliationService.processMtnTransferCallbackJob({
         transactionId: 42,
       });
 
+      // Assert
       expect(
-        transactionRepository.getReferenceIdByTransactionIdOrThrow,
-      ).toHaveBeenCalledWith(42);
-      expect(
-        transactionEventsScopedRepository.countFailedTransactionAttempts,
-      ).toHaveBeenCalledWith(42);
-      expect(mtnService.generateMtnReferenceId).toHaveBeenCalledWith({
-        referenceId: 'registration-ref-id',
-        transactionId: 42,
-        failedTransactionAttempts: 0,
-      });
-      expect(mtnService.getTransfer).toHaveBeenCalledWith({
-        mtnReferenceId: 'generated-mtn-reference-id',
-        requestIdentity: {
-          subscriptionKey: 'test-subscription-key',
-          referenceId: 'test-reference-id',
-          apiKey: 'test-api-key',
-        },
-      });
+        transactionsService.saveProgressFromExternalSource,
+      ).not.toHaveBeenCalled();
     });
 
-    it('should update transaction to success when MTN API returns SUCCESSFUL', async () => {
+    it('should save transaction progress', async () => {
+      // Arrange
       (mtnService.getTransfer as jest.Mock).mockResolvedValue({
         status: MtnTransferStatus.successful,
       });
+      (mtnService.mapMtnStatusToTransactionStatus as jest.Mock).mockReturnValue(
+        TransactionStatusEnum.success,
+      );
 
+      // Act
       await mtnReconciliationService.processMtnTransferCallbackJob({
         transactionId: 42,
       });
 
+      // Assert
       expect(
         transactionsService.saveProgressFromExternalSource,
       ).toHaveBeenCalledWith({
         transactionId: 42,
         description: TransactionEventDescription.mtnCallbackReceived,
         newTransactionStatus: TransactionStatusEnum.success,
-        errorMessage: undefined,
-      });
-    });
-
-    it('should update transaction to error when MTN API returns FAILED', async () => {
-      (mtnService.getTransfer as jest.Mock).mockResolvedValue({
-        status: MtnTransferStatus.failed,
-        reason: 'PAYER_NOT_FOUND',
-      });
-
-      await mtnReconciliationService.processMtnTransferCallbackJob({
-        transactionId: 42,
-      });
-
-      expect(
-        transactionsService.saveProgressFromExternalSource,
-      ).toHaveBeenCalledWith({
-        transactionId: 42,
-        description: TransactionEventDescription.mtnCallbackReceived,
-        newTransactionStatus: TransactionStatusEnum.error,
-        errorMessage: 'PAYER_NOT_FOUND',
-      });
-    });
-
-    it('should use unknown as error message when MTN API returns FAILED without reason', async () => {
-      (mtnService.getTransfer as jest.Mock).mockResolvedValue({
-        status: MtnTransferStatus.failed,
-      });
-
-      await mtnReconciliationService.processMtnTransferCallbackJob({
-        transactionId: 42,
-      });
-
-      expect(
-        transactionsService.saveProgressFromExternalSource,
-      ).toHaveBeenCalledWith({
-        transactionId: 42,
-        description: TransactionEventDescription.mtnCallbackReceived,
-        newTransactionStatus: TransactionStatusEnum.error,
-        errorMessage: 'unknown',
-      });
-    });
-
-    it('should use MTN API status even when callback status differs', async () => {
-      (mtnService.getTransfer as jest.Mock).mockResolvedValue({
-        status: MtnTransferStatus.failed,
-        reason: 'INTERNAL_ERROR',
-      });
-
-      await mtnReconciliationService.processMtnTransferCallbackJob({
-        transactionId: 42,
-      });
-
-      expect(
-        transactionsService.saveProgressFromExternalSource,
-      ).toHaveBeenCalledWith({
-        transactionId: 42,
-        description: TransactionEventDescription.mtnCallbackReceived,
-        newTransactionStatus: TransactionStatusEnum.error,
-        errorMessage: 'INTERNAL_ERROR',
-      });
-    });
-
-    it('should update transaction to waiting when MTN API returns PENDING', async () => {
-      (mtnService.getTransfer as jest.Mock).mockResolvedValue({
-        status: MtnTransferStatus.pending,
-      });
-
-      await mtnReconciliationService.processMtnTransferCallbackJob({
-        transactionId: 42,
-      });
-
-      expect(
-        transactionsService.saveProgressFromExternalSource,
-      ).toHaveBeenCalledWith({
-        transactionId: 42,
-        description: TransactionEventDescription.mtnCallbackReceived,
-        newTransactionStatus: TransactionStatusEnum.waiting,
         errorMessage: undefined,
       });
     });

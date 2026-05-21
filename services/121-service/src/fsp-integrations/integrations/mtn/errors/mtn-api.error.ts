@@ -1,4 +1,4 @@
-import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
+import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-error-types.enum';
 
 export class MtnApiError extends Error {
   type: MtnTransferErrorTypes;

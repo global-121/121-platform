@@ -50,7 +50,7 @@ export class TransactionRepository extends Repository<TransactionEntity> {
   ): Promise<TransactionStatusEnum> {
     const transaction = await this.findOne({
       where: { id: Equal(transactionId) },
-      select: ['status'],
+      select: { status: true },
     });
     if (!transaction) {
       throw new Error(`Transaction with id ${transactionId} not found`);

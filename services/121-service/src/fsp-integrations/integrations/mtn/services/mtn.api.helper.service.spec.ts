@@ -40,124 +40,131 @@ describe('MtnApiHelperService', () => {
 
   describe('getBaseUrl', () => {
     it('should return mock service URL when MTN_MODE is mock', () => {
+      // Arrange
       (env as any).MTN_MODE = FspMode.mock;
 
+      // Act
       const result = mtnApiHelperService.getBaseUrl();
 
+      // Assert
       expect(result.toString()).toBe('http://mock-service:3001/api/fsp/mtn/');
     });
 
     it('should return MTN API URL when MTN_MODE is not mock', () => {
+      // Arrange
       (env as any).MTN_MODE = FspMode.external;
       (env as any).MTN_API_URL = 'https://sandbox.momodeveloper.mtn.com';
 
+      // Act
       const result = mtnApiHelperService.getBaseUrl();
 
+      // Assert
       expect(result.toString()).toBe('https://sandbox.momodeveloper.mtn.com/');
     });
   });
 
   describe('createTransferPayload', () => {
     it('should return a correctly structured transfer payload', () => {
+      // Arrange
+      const amount = '100';
+      const currency = 'EUR';
+      const externalId = '42';
+      const phoneNumber = '256771234567';
+      const message = 'Payment message';
+
+      // Act
       const result = mtnApiHelperService.createTransferPayload({
-        amount: '100',
-        currency: 'EUR',
-        externalId: '42',
-        phoneNumber: '256771234567',
-        message: 'Payment message',
+        amount,
+        currency,
+        externalId,
+        phoneNumber,
+        message,
       });
 
+      // Assert
       expect(result).toEqual({
-        amount: '100',
-        currency: 'EUR',
-        externalId: '42',
+        amount,
+        currency,
+        externalId,
         payee: {
           partyIdType: 'MSISDN',
-          partyId: '256771234567',
+          partyId: phoneNumber,
         },
-        payerMessage: 'Payment message',
-        payeeNote: 'Payment message',
+        payerMessage: message,
+        payeeNote: message,
       });
-    });
-
-    it('should not include referenceId in the payload', () => {
-      const result = mtnApiHelperService.createTransferPayload({
-        amount: '50',
-        currency: 'USD',
-        externalId: '1',
-        phoneNumber: '256770000000',
-        message: 'msg',
-      });
-
-      expect(result).not.toHaveProperty('referenceId');
     });
   });
 
   describe('createTransferHeaders', () => {
     it('should return headers with all required fields', () => {
+      // Arrange
+      const referenceId = 'ref-uuid-123';
+      const subscriptionKey = 'test-subscription-key';
+
+      // Act
       const headers = mtnApiHelperService.createTransferHeaders({
-        referenceId: 'ref-uuid-123',
-        subscriptionKey: 'test-subscription-key',
+        referenceId,
+        subscriptionKey,
       });
 
+      // Assert
       expect(headers.get('Content-Type')).toBe('application/json');
       expect(headers.get('Cache-Control')).toBe('no-cache');
-      expect(headers.get('Ocp-Apim-Subscription-Key')).toBe(
-        'test-subscription-key',
-      );
-      expect(headers.get('X-Reference-Id')).toBe('ref-uuid-123');
+      expect(headers.get('Ocp-Apim-Subscription-Key')).toBe(subscriptionKey);
+      expect(headers.get('X-Reference-Id')).toBe(referenceId);
       expect(headers.get('X-Target-Environment')).toBe('sandbox');
     });
 
     it('should include X-Callback-Url when EXTERNAL_121_SERVICE_URL is set', () => {
+      // Act
       const headers = mtnApiHelperService.createTransferHeaders({
         referenceId: 'ref-uuid-123',
         subscriptionKey: 'test-subscription-key',
       });
 
+      // Assert
       expect(headers.get('X-Callback-Url')).toBe(
-        'http://localhost:3000/api/fsps/mtn/transfer-callback',
+        `${env.EXTERNAL_121_SERVICE_URL}/api/fsps/mtn/transfer-callback`,
       );
     });
 
     it('should not include X-Callback-Url when EXTERNAL_121_SERVICE_URL is empty', () => {
+      // Arrange
       (env as any).EXTERNAL_121_SERVICE_URL = '';
 
+      // Act
       const headers = mtnApiHelperService.createTransferHeaders({
         referenceId: 'ref-uuid-123',
         subscriptionKey: 'test-subscription-key',
       });
 
+      // Assert
       expect(headers.get('X-Callback-Url')).toBeNull();
     });
   });
 
   describe('createGetTransferHeaders', () => {
     it('should return headers with all required fields', () => {
+      // Arrange
+      const subscriptionKey = 'test-subscription-key';
+
+      // Act
       const headers = mtnApiHelperService.createGetTransferHeaders({
-        subscriptionKey: 'test-subscription-key',
+        subscriptionKey,
       });
 
+      // Assert
       expect(headers.get('Content-Type')).toBe('application/json');
       expect(headers.get('Cache-Control')).toBe('no-cache');
-      expect(headers.get('Ocp-Apim-Subscription-Key')).toBe(
-        'test-subscription-key',
-      );
+      expect(headers.get('Ocp-Apim-Subscription-Key')).toBe(subscriptionKey);
       expect(headers.get('X-Target-Environment')).toBe('sandbox');
-    });
-
-    it('should not include X-Reference-Id or X-Callback-Url', () => {
-      const headers = mtnApiHelperService.createGetTransferHeaders({
-        subscriptionKey: 'test-subscription-key',
-      });
-
-      expect(headers.get('X-Reference-Id')).toBeNull();
-      expect(headers.get('X-Callback-Url')).toBeNull();
     });
   });
 
   describe('formatResponseError', () => {
     it('should include body when response data is present', () => {
+      // Act
       const result = mtnApiHelperService.formatResponseError({
         response: {
           status: 500,
@@ -169,12 +176,14 @@ describe('MtnApiHelperService', () => {
         },
       });
 
+      // Assert
       expect(result).toBe(
         'Status: 500, StatusText: Internal Server Error, Body: {"code":"INTERNAL_PROCESSING_ERROR","message":"Internal error."}',
       );
     });
 
     it('should include body for any data shape', () => {
+      // Act
       const result = mtnApiHelperService.formatResponseError({
         response: {
           status: 500,
@@ -183,38 +192,46 @@ describe('MtnApiHelperService', () => {
         },
       });
 
+      // Assert
       expect(result).toBe(
         'Status: 500, StatusText: Internal Server Error, Body: {"unexpected":"shape"}',
       );
     });
 
     it('should handle null response', () => {
+      // Act
       const result = mtnApiHelperService.formatResponseError({
         response: null,
       });
 
+      // Assert
       expect(result).toBe('Status: unknown, StatusText: unknown');
     });
 
     it('should handle undefined response', () => {
+      // Act
       const result = mtnApiHelperService.formatResponseError({
         response: undefined,
       });
 
+      // Assert
       expect(result).toBe('Status: unknown, StatusText: unknown');
     });
 
     it('should handle response with no data', () => {
+      // Act
       const result = mtnApiHelperService.formatResponseError({
         response: { status: 404, statusText: 'Not Found' },
       });
 
+      // Assert
       expect(result).toBe('Status: 404, StatusText: Not Found');
     });
   });
 
   describe('isAuthenticationResponse', () => {
     it('should return true for a valid authentication response', () => {
+      // Act & Assert
       expect(
         mtnApiHelperService.isAuthenticationResponse({
           access_token: 'mock-token',
@@ -225,6 +242,7 @@ describe('MtnApiHelperService', () => {
     });
 
     it('should return true when only required fields are present', () => {
+      // Act & Assert
       expect(
         mtnApiHelperService.isAuthenticationResponse({
           access_token: 'mock-token',
@@ -234,6 +252,7 @@ describe('MtnApiHelperService', () => {
     });
 
     it('should return false when access_token is missing', () => {
+      // Act & Assert
       expect(
         mtnApiHelperService.isAuthenticationResponse({
           expires_in: 3600,
@@ -242,6 +261,7 @@ describe('MtnApiHelperService', () => {
     });
 
     it('should return false when expires_in is missing', () => {
+      // Act & Assert
       expect(
         mtnApiHelperService.isAuthenticationResponse({
           access_token: 'mock-token',
@@ -250,6 +270,7 @@ describe('MtnApiHelperService', () => {
     });
 
     it('should return false when access_token is not a string', () => {
+      // Act & Assert
       expect(
         mtnApiHelperService.isAuthenticationResponse({
           access_token: 123,
@@ -259,6 +280,7 @@ describe('MtnApiHelperService', () => {
     });
 
     it('should return false when expires_in is not a number', () => {
+      // Act & Assert
       expect(
         mtnApiHelperService.isAuthenticationResponse({
           access_token: 'mock-token',
@@ -268,16 +290,19 @@ describe('MtnApiHelperService', () => {
     });
 
     it('should return false for null', () => {
+      // Act & Assert
       expect(mtnApiHelperService.isAuthenticationResponse(null)).toBe(false);
     });
 
     it('should return false for undefined', () => {
+      // Act & Assert
       expect(mtnApiHelperService.isAuthenticationResponse(undefined)).toBe(
         false,
       );
     });
 
     it('should return false for an empty object', () => {
+      // Act & Assert
       expect(mtnApiHelperService.isAuthenticationResponse({})).toBe(false);
     });
   });

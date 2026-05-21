@@ -1,6 +1,7 @@
+import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
+import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-error-types.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnApiHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.helper.service';
@@ -20,7 +21,7 @@ const statusHeaders = new Headers({ 'Ocp-Apim-Subscription-Key': 'key' });
 const commonHeaders = new Headers({ 'Ocp-Apim-Subscription-Key': 'key' });
 
 const mockAuthResponse = {
-  status: 200,
+  status: HttpStatus.OK,
   data: {
     access_token: 'mock-access-token',
     token_type: 'access_token',
@@ -55,6 +56,7 @@ const transferPayload = {
 
 describe('MtnApiService', () => {
   let mtnApiService: MtnApiService;
+  let mtnApiHelperService: MtnApiHelperService;
   let post: jest.Mock;
   let get: jest.Mock;
 
@@ -74,29 +76,15 @@ describe('MtnApiService', () => {
             createTransferHeaders: jest.fn().mockReturnValue(transferHeaders),
             createGetTransferHeaders: jest.fn().mockReturnValue(statusHeaders),
             createCommonHeaders: jest.fn().mockReturnValue(commonHeaders),
-            formatResponseError: jest
-              .fn()
-              .mockImplementation(({ response }) => {
-                const status = response?.status ?? 'unknown';
-                const statusText = response?.statusText ?? 'unknown';
-                return `Status: ${status}, StatusText: ${statusText}`;
-              }),
-            isAuthenticationResponse: jest.fn().mockImplementation((data) => {
-              return (
-                typeof data === 'object' &&
-                data !== null &&
-                'access_token' in data &&
-                typeof data.access_token === 'string' &&
-                'expires_in' in data &&
-                typeof data.expires_in === 'number'
-              );
-            }),
+            formatResponseError: jest.fn(),
+            isAuthenticationResponse: jest.fn().mockReturnValue(true),
           },
         },
       ],
     }).compile();
 
     mtnApiService = module.get<MtnApiService>(MtnApiService);
+    mtnApiHelperService = module.get<MtnApiHelperService>(MtnApiHelperService);
     const customHttpService = module.get<CustomHttpService>(CustomHttpService);
     post = customHttpService.post as jest.Mock;
     get = customHttpService.get as jest.Mock;
@@ -107,7 +95,7 @@ describe('MtnApiService', () => {
       // Arrange
       post
         .mockResolvedValueOnce(mockAuthResponse) // authenticate() call
-        .mockResolvedValueOnce({ status: 202 }); // createTransfer() call
+        .mockResolvedValueOnce({ status: HttpStatus.ACCEPTED }); // createTransfer() call
 
       // Act
       await mtnApiService.createTransfer(createTransferInput);
@@ -132,7 +120,7 @@ describe('MtnApiService', () => {
       // Arrange
       post
         .mockResolvedValueOnce(mockAuthResponse) // authenticate() call
-        .mockResolvedValueOnce({ status: 409, statusText: 'Conflict' }); // createTransfer() call
+        .mockResolvedValueOnce({ status: HttpStatus.CONFLICT, statusText: 'Conflict' }); // createTransfer() call
 
       // Act & Assert
       await expect(
@@ -147,7 +135,7 @@ describe('MtnApiService', () => {
       post
         .mockResolvedValueOnce(mockAuthResponse) // authenticate() call
         .mockResolvedValueOnce({
-          status: 500,
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
           statusText: 'Internal Server Error',
         }); // createTransfer() call
 
@@ -199,7 +187,7 @@ describe('MtnApiService', () => {
       // Arrange
       post.mockResolvedValueOnce(mockAuthResponse); // authenticate() call
       get.mockResolvedValueOnce({
-        status: 200,
+        status: HttpStatus.OK,
         data: { status: 'SUCCESSFUL' },
       });
 
@@ -223,7 +211,7 @@ describe('MtnApiService', () => {
       // Arrange
       post.mockResolvedValueOnce(mockAuthResponse); // authenticate() call
       get.mockResolvedValueOnce({
-        status: 200,
+        status: HttpStatus.OK,
         data: { status: 'SUCCESSFUL' },
       });
 
@@ -241,7 +229,7 @@ describe('MtnApiService', () => {
       // Arrange
       post.mockResolvedValueOnce(mockAuthResponse); // authenticate() call
       get.mockResolvedValueOnce({
-        status: 404,
+        status: HttpStatus.NOT_FOUND,
         statusText: 'Not Found',
         data: {},
       });
@@ -278,23 +266,28 @@ describe('MtnApiService', () => {
       // Act & Assert
       await expect(
         mtnApiService.createTransfer(createTransferInput),
-      ).rejects.toThrow(MtnApiError);
-      await expect(
-        mtnApiService.createTransfer(createTransferInput),
-      ).rejects.toThrow('authentication failed');
+      ).rejects.toThrow(
+        expect.objectContaining({
+          message: expect.stringContaining('authentication failed'),
+        }),
+      );
     });
 
     it('should throw MtnApiError when authentication response is unexpected', async () => {
       // Arrange
-      post.mockResolvedValueOnce({ status: 200, data: {} }); // Missing access_token
+      post.mockResolvedValueOnce({ status: HttpStatus.OK, data: {} });
+      (
+        mtnApiHelperService.isAuthenticationResponse as unknown as jest.Mock
+      ).mockReturnValue(false);
 
       // Act & Assert
       await expect(
         mtnApiService.createTransfer(createTransferInput),
-      ).rejects.toThrow(MtnApiError);
-      await expect(
-        mtnApiService.createTransfer(createTransferInput),
-      ).rejects.toThrow('unexpected response from MTN API');
+      ).rejects.toThrow(
+        expect.objectContaining({
+          message: expect.stringContaining('unexpected response from MTN API'),
+        }),
+      );
     });
   });
 });

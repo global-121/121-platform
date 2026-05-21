@@ -1,7 +1,11 @@
+import { TestBed } from '@automock/jest/dist/testbed-factory';
+
 import { env } from '@121-service/src/env';
 import { MtnMockReferenceId } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-mock-reference-id.enum';
+import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 jest.mock('@121-service/src/env', () => ({
@@ -26,7 +30,8 @@ describe('MtnService', () => {
   let mtnService: MtnService;
 
   beforeEach(() => {
-    mtnService = new MtnService(jest.fn() as any, jest.fn() as any);
+    const { unit } = TestBed.create(MtnService).compile();
+    mtnService = unit;
   });
 
   describe('generateMtnReferenceId', () => {
@@ -91,6 +96,48 @@ describe('MtnService', () => {
       });
 
       expect(result).toBe('seeded-uuid');
+    });
+  });
+
+  describe('mapMtnStatusToTransactionStatus', () => {
+    it('should map SUCCESSFUL to success', () => {
+      // Act
+      const result = mtnService.mapMtnStatusToTransactionStatus({
+        mtnStatus: MtnTransferStatus.successful,
+      });
+
+      // Assert
+      expect(result).toBe(TransactionStatusEnum.success);
+    });
+
+    it('should map PENDING to waiting', () => {
+      // Act
+      const result = mtnService.mapMtnStatusToTransactionStatus({
+        mtnStatus: MtnTransferStatus.pending,
+      });
+
+      // Assert
+      expect(result).toBe(TransactionStatusEnum.waiting);
+    });
+
+    it('should map FAILED to error', () => {
+      // Act
+      const result = mtnService.mapMtnStatusToTransactionStatus({
+        mtnStatus: MtnTransferStatus.failed,
+      });
+
+      // Assert
+      expect(result).toBe(TransactionStatusEnum.error);
+    });
+
+    it('should map unknown status to error', () => {
+      // Act
+      const result = mtnService.mapMtnStatusToTransactionStatus({
+        mtnStatus: 'UNKNOWN' as MtnTransferStatus,
+      });
+
+      // Assert
+      expect(result).toBe(TransactionStatusEnum.error);
     });
   });
 });

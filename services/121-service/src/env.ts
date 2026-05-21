@@ -114,7 +114,6 @@ export const mtnEnvVariablesSchema = {
     .pipe(z.transform((url) => withoutTrailingSlash(url)))
     .optional(),
   MTN_SUBSCRIPTION_KEY: z.string().optional(),
-  MTN_ACCESS_TOKEN: z.string().optional(),
   MTN_REFERENCE_ID: z.string().optional(),
   // In sandbox: 'sandbox'. In production: country-specific identifier (e.g., 'mtnuganda', 'mtnghana').
   MTN_TARGET_ENVIRONMENT: z.string().optional(),

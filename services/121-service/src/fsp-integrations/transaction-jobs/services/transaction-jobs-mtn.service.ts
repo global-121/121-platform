@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
 import { env } from '@121-service/src/env';
-import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-result.enum';
+import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-error-types.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';

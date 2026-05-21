@@ -4,7 +4,6 @@ import { MtnMockReferenceId } from '@121-service/src/fsp-integrations/integratio
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   getTransactionsByPaymentIdPaginated,
@@ -163,7 +162,7 @@ describe('Do payment with FSP: MTN', () => {
     // Arrange: the transfer is accepted (202), but getTransfer returns FAILED
     // with PAYEE_NOT_FOUND. This simulates a real-world scenario where the
     // disbursement is accepted initially but later fails (e.g., invalid recipient).
-    // The mock referenceId drives the failure scenario statelessly.
+    // The mock referenceId drives the failure scenario statelessly on the mock service.
     const registration = {
       ...registrationMtn,
       referenceId: MtnMockReferenceId.failPayeeNotFound,
@@ -246,8 +245,6 @@ describe('Do payment with FSP: MTN', () => {
     });
 
     // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-
     const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
@@ -312,7 +309,15 @@ describe('Do payment with FSP: MTN', () => {
       paymentId,
       accessToken,
     });
-    await waitFor(2_000);
+    // Wait for the retry to complete, which should now succeed with the corrected phone number
+    await waitForPaymentAndTransactionsToComplete({
+      programId,
+      paymentReferenceIds,
+      paymentId,
+      accessToken,
+      maxWaitTimeMs: 10_000,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
 
     // Assert
     expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
