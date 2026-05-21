@@ -1,0 +1,31 @@
+<app-page-layout-monitoring [programId]="programId()">
+  <section class="space-y-2">
+    <p
+      i18n
+      class="font-bold"
+    >
+      Cards ordered
+    </p>
+    <p i18n>
+      Below is a table showing the cards successfully ordered from Visa/
+      Intersolve. Please note, this table shows orders that were successfully
+      sent to Intersolve but does not show the status of the order.
+    </p>
+    <p-button
+      label="Order cards"
+      i18n-label
+      outlined
+      rounded
+      (click)="handleOrderCardsClick()"
+    />
+  </section>
+  <app-query-table
+    [items]="[]"
+    [columns]="columns()"
+    [isPending]="false"
+  ></app-query-table>
+</app-page-layout-monitoring>
+
+<app-order-debit-cards-dialog
+  #orderDebitCardsDialog
+></app-order-debit-cards-dialog>

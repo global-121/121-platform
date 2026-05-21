@@ -2433,6 +2433,60 @@
       <trans-unit id="debit-card-status-blocked" datatype="html">
         <source>Blocked</source>
       </trans-unit>
+      <trans-unit id="1731594811396701423" datatype="html">
+        <source>John Doe</source>
+      </trans-unit>
+      <trans-unit id="2027937752773529981" datatype="html">
+        <source>1234AB</source>
+      </trans-unit>
+      <trans-unit id="2185398424871178341" datatype="html">
+        <source>Addressee (name of the recipient of the package)</source>
+      </trans-unit>
+      <trans-unit id="2309973394549994770" datatype="html">
+        <source>Cards ordered</source>
+      </trans-unit>
+      <trans-unit id="2314075913167237221" datatype="html">
+        <source>City</source>
+      </trans-unit>
+      <trans-unit id="2927756291333791748" datatype="html">
+        <source>Den Haag</source>
+      </trans-unit>
+      <trans-unit id="3813846479427944009" datatype="html">
+        <source>Anna van Saksenlaan 50, 2593 HT Den Haag</source>
+      </trans-unit>
+      <trans-unit id="3889355052598045321" datatype="html">
+        <source>Number of cards</source>
+      </trans-unit>
+      <trans-unit id="5077622588607274492" datatype="html">
+        <source>Below is a table showing the cards successfully ordered from Visa/ Intersolve. Please note, this table shows orders that were successfully sent to Intersolve but does not show the status of the order.</source>
+      </trans-unit>
+      <trans-unit id="5287630787862185490" datatype="html">
+        <source>Order cards to your branch by filling in this form and clicking on order. If the order is sent successfully it will be logged in the table on the ‘Debit cards&apos; tab.</source>
+      </trans-unit>
+      <trans-unit id="6064501572523614945" datatype="html">
+        <source>Address (including street name, house number, and addition)</source>
+      </trans-unit>
+      <trans-unit id="6151488389266366349" datatype="html">
+        <source>Date ordered</source>
+      </trans-unit>
+      <trans-unit id="6304432362546770951" datatype="html">
+        <source>Address</source>
+      </trans-unit>
+      <trans-unit id="7377270311230371336" datatype="html">
+        <source>Order cards</source>
+      </trans-unit>
+      <trans-unit id="7450324673386885301" datatype="html">
+        <source>Postal code</source>
+      </trans-unit>
+      <trans-unit id="7814604735706675498" datatype="html">
+        <source>Cards ordered</source>
+      </trans-unit>
+      <trans-unit id="8181410181518647436" datatype="html">
+        <source>0</source>
+      </trans-unit>
+      <trans-unit id="page-title-program-monitoring-debit-cards" datatype="html">
+        <source>Debit Cards</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
