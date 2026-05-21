@@ -10,13 +10,13 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
-import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
+import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 // TODO: Consider Refactoring this service as intersolve voucher is the only fsp with a cron-service.
@@ -39,9 +39,9 @@ export class IntersolveVoucherCronService {
 
   public constructor(
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
-    private readonly queueMessageService: MessageQueuesService,
-    private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly registrationDataService: RegistrationDataService,
+    private readonly intersolveVoucherService: IntersolveVoucherService,
+    private readonly registrationsService: RegistrationsService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
@@ -159,6 +159,7 @@ export class IntersolveVoucherCronService {
           where: { referenceId: Equal(referenceId) },
           relations: ['program'],
         });
+
         const fromNumber =
           await this.registrationDataService.getRegistrationDataValueByName(
             registration,
@@ -171,6 +172,7 @@ export class IntersolveVoucherCronService {
           );
           continue;
         }
+
         const language = await this.getLanguageForRegistration(referenceId);
         const contentSid =
           await this.intersolveVoucherService.getNotificationContentSid({
@@ -179,11 +181,12 @@ export class IntersolveVoucherCronService {
             language,
           });
 
-        await this.queueMessageService.addMessageJob({
-          registration,
+        await this.registrationsService.createMessageJobForRegistration({
+          referenceId,
+          programId: registration.program.id,
           contentSid,
           messageContentType: MessageContentType.paymentReminder,
-          messageProcessType:
+          extendedMessageProcessType:
             MessageProcessType.whatsappTemplateVoucherReminder,
           userId: unsentIntersolveVoucher.userId,
         });

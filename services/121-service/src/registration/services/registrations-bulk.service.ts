@@ -659,14 +659,23 @@ export class RegistrationsBulkService {
         placeholderData[placeholder] = registration[placeholder];
       }
       await this.queueMessageService.addMessageJob({
-        registration,
+        registrationId: registration.id,
+        referenceId: registration.referenceId,
+        programId: registration.programId,
+        preferredLanguage: registration.preferredLanguage,
+        phoneNumber:
+          registration[DefaultRegistrationDataAttributeNames.phoneNumber],
+        whatsappPhoneNumber:
+          registration[
+            DefaultRegistrationDataAttributeNames.whatsappPhoneNumber
+          ],
         message: messageContentDetails.message,
         messageTemplateKey: messageContentDetails.messageTemplateKey,
         messageContentType: messageContentDetails.messageContentType!, // already validated to be present
-        messageProcessType:
+        extendedMessageProcessType:
           MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
         customData: { placeholderData },
-        bulksize,
+        bulkSize: bulksize,
         userId,
       });
     }

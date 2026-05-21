@@ -16,7 +16,6 @@ import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/sh
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
-import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
@@ -24,7 +23,6 @@ import { RegistrationsService } from '@121-service/src/registration/services/reg
 @Injectable()
 export class IntersolveVisaAccountManagementService {
   public constructor(
-    private readonly queueMessageService: MessageQueuesService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly registrationsService: RegistrationsService,
@@ -124,11 +122,12 @@ export class IntersolveVisaAccountManagementService {
       programFspConfigurationId: registration.programFspConfigurationId,
     });
 
-    await this.queueMessageService.addMessageJob({
-      registration,
+    await this.registrationsService.createMessageJobForRegistration({
+      referenceId,
+      programId,
       messageTemplateKey: ProgramNotificationEnum.replaceVisaCard,
       messageContentType: MessageContentType.custom,
-      messageProcessType:
+      extendedMessageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
       userId,
     });
@@ -314,23 +313,18 @@ export class IntersolveVisaAccountManagementService {
     pause: boolean,
     userId: number,
   ): Promise<IntersolveVisaChildWalletEntity> {
-    const registration = await this.registrationsService.getRegistrationOrThrow(
-      {
-        referenceId,
-        programId,
-      },
-    );
     const updatedWallet = await this.intersolveVisaService.pauseCardOrThrow(
       tokenCode,
       pause,
     );
-    await this.queueMessageService.addMessageJob({
-      registration,
+    await this.registrationsService.createMessageJobForRegistration({
+      referenceId,
+      programId,
       messageTemplateKey: pause
         ? ProgramNotificationEnum.pauseVisaCard
         : ProgramNotificationEnum.unpauseVisaCard,
       messageContentType: MessageContentType.custom,
-      messageProcessType:
+      extendedMessageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
       userId,
     });
