@@ -134,7 +134,7 @@
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
     "istanbul-merge": "^2.0.0",
     "jest": "^30.3.0",
-    "jest-ci-spec-reporter": "^1.0.4",
+    "jest-ci-spec-reporter": "^1.0.5",
     "jest-extended": "^7.0.0",
     "knip": "^6.11.0",
     "nodemon": "^3.1.14",
