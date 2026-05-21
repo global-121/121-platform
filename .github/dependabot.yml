@@ -20,7 +20,7 @@ updates:
       interval: monthly
       day: tuesday
     cooldown:
-      default-days: 8
+      default-days: 8 # See: .npmrc
     open-pull-requests-limit: 5
     versioning-strategy: increase
     groups:
@@ -40,7 +40,7 @@ updates:
       interval: monthly
       day: tuesday
     cooldown:
-      default-days: 8
+      default-days: 8 # See: .npmrc
     open-pull-requests-limit: 5
     versioning-strategy: increase
     groups:
@@ -64,7 +64,7 @@ updates:
       interval: monthly
       day: tuesday
     cooldown:
-      default-days: 8
+      default-days: 8 # See: .npmrc
     open-pull-requests-limit: 5
     versioning-strategy: increase
     groups:
@@ -98,7 +98,7 @@ updates:
       interval: monthly
       day: tuesday
     cooldown:
-      default-days: 8
+      default-days: 8 # See: .npmrc
     open-pull-requests-limit: 5
     versioning-strategy: increase
     groups:
@@ -127,7 +127,7 @@ updates:
       interval: monthly
       day: tuesday
     cooldown:
-      default-days: 8
+      default-days: 8 # See: .npmrc
     open-pull-requests-limit: 5
     versioning-strategy: increase
     groups:
@@ -180,7 +180,7 @@ updates:
       interval: monthly
       day: tuesday
     cooldown:
-      default-days: 8
+      default-days: 8 # See: .npmrc
     open-pull-requests-limit: 5
     versioning-strategy: increase
     groups:
