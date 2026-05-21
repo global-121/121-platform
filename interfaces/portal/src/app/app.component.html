@@ -1,9 +1,20 @@
 <router-outlet />
-<p-toast
-  [key]="toastKey"
-  [position]="toastPosition"
-></p-toast>
-<app-session-expired-dialog
-  [(dialogVisible)]="showSessionExpiredDialog"
-  [returnUrl]="sessionExpiredReturnUrl()"
-/>
+@defer (on idle) {
+  <p-toast
+    [key]="toastKey"
+    [position]="toastPosition"
+  ></p-toast>
+}
+@defer (on idle) {
+  <app-session-expired-dialog
+    [(dialogVisible)]="showSessionExpiredDialog"
+    [returnUrl]="sessionExpiredReturnUrl()"
+  />
+}
+@defer (on idle) {
+  <app-unsaved-changes-dialog
+    [visible]="unsavedChangesService.visible()"
+    (confirmDialog)="unsavedChangesService.resolve(true)"
+    (cancelDialog)="unsavedChangesService.resolve(false)"
+  />
+}

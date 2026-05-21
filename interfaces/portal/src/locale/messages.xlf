@@ -1039,9 +1039,6 @@
       <trans-unit id="generic-save" datatype="html">
         <source>Save</source>
       </trans-unit>
-      <trans-unit id="8602877633844729884" datatype="html">
-        <source>Changes that you made may not be saved. Are you sure you wish to proceed?</source>
-      </trans-unit>
       <trans-unit id="attribute-edit-info-paymentCountRemaining" datatype="html">
         <source>This field is calculated by subtracting the sent payments from the planned payments. If the limit is removed from the planned payments this field will be empty.</source>
       </trans-unit>
@@ -2408,6 +2405,21 @@
       </trans-unit>
       <trans-unit id="page-title-program-settings-payment-approval" datatype="html">
         <source>Payment approval</source>
+      </trans-unit>
+      <trans-unit id="unsaved-changes-leave-page" datatype="html">
+        <source>Leave page</source>
+      </trans-unit>
+      <trans-unit id="unsaved-changes-message" datatype="html">
+        <source>This page contains unsaved changes. Do you still wish to leave this page?</source>
+      </trans-unit>
+      <trans-unit id="unsaved-changes-stay-page" datatype="html">
+        <source>Stay on page</source>
+      </trans-unit>
+      <trans-unit id="unsaved-changes-title" datatype="html">
+        <source>Unsaved changes</source>
+      </trans-unit>
+      <trans-unit id="unsaved-changes-warning-label" datatype="html">
+        <source>Unsaved changes warning</source>
       </trans-unit>
     </body>
   </file>

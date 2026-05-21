@@ -1,0 +1,68 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="cancelDialog.emit()"
+  [modal]="true"
+  [closable]="false"
+  [closeOnEscape]="false"
+  [showHeader]="false"
+  styleClass="max-w-[calc(100vw-2rem)] md:min-w-184 [&_.p-dialog-content]:rounded-lg [&_.p-dialog-content]:p-6 [&_.p-dialog-content]:shadow-xl"
+  maskStyleClass="bg-black/40"
+  aria-label="Unsaved changes warning"
+  i18n-aria-label="@@unsaved-changes-warning-label"
+>
+  <div class="flex flex-col gap-6">
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span
+          class="pi pi-exclamation-triangle text-xl text-red-700"
+          aria-hidden="true"
+        ></span>
+        <h2
+          class="text-xl leading-none font-semibold text-red-700"
+          i18n="@@unsaved-changes-title"
+        >
+          Unsaved changes
+        </h2>
+      </div>
+
+      <button
+        type="button"
+        class="hover:bg-grey-100 flex size-8 items-center justify-center rounded-full text-black transition"
+        (click)="cancelDialog.emit()"
+        aria-label="Stay on page"
+        i18n-aria-label="@@unsaved-changes-stay-page"
+      >
+        <span
+          class="pi pi-times text-lg"
+          aria-hidden="true"
+        ></span>
+      </button>
+    </div>
+
+    <p
+      class="text-xl/10 text-black"
+      i18n="@@unsaved-changes-message"
+    >
+      This page contains unsaved changes. Do you still wish to leave this page?
+    </p>
+
+    <div class="flex flex-wrap justify-end gap-3">
+      <p-button
+        label="Leave page"
+        i18n-label="@@unsaved-changes-leave-page"
+        [rounded]="true"
+        severity="secondary"
+        styleClass="border-grey-300 min-w-36 border bg-white px-5 py-2 text-sm font-semibold text-black shadow-none"
+        (click)="confirmDialog.emit()"
+      />
+      <p-button
+        label="Stay on page"
+        i18n-label="@@unsaved-changes-stay-page"
+        [rounded]="true"
+        severity="primary"
+        styleClass="min-w-36 border border-violet-700 bg-violet-700 px-5 py-2 text-sm font-semibold text-white shadow-none"
+        (click)="cancelDialog.emit()"
+      />
+    </div>
+  </div>
+</p-dialog>
