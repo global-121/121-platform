@@ -118,7 +118,7 @@
     "@automock/jest": "^2.1.2",
     "@nestjs/cli": "^11.0.21",
     "@swc/cli": "^0.8.1",
-    "@swc/core": "^1.15.32",
+    "@swc/core": "^1.15.33",
     "@types/cookie-parser": "^1.4.10",
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.24",
