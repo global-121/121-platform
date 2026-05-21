@@ -141,7 +141,7 @@
     "nyc": "^18.0.0",
     "prettier": "^3.8.1",
     "supertest": "^7.2.2",
-    "ts-jest": "^29.4.6",
+    "ts-jest": "^29.4.9",
     "typescript-eslint": "^8.58.0"
   }
 }
