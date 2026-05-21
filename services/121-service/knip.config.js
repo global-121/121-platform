@@ -11,8 +11,8 @@ module.exports = {
   ignoreDependencies: [
     // Known issues with devDependencies:
     '@automock/adapters.nestjs', // Auto-loaded by @automock/jest
-    'eslint-config-121-platform', // Shared config, used in eslint.config.mjs
     'prettier', // Used by VSCode and ESLint via shared config
+    'multer', // Used for file uploads, but not directly imported in the code (imported via MulterModule.register() in NestJS)
   ],
   rules: {
     binaries: 'error',
