@@ -54,7 +54,9 @@
             [label]="proceedLabel()"
             rounded
             [loading]="mutation().isPending()"
+            [disabled]="proceedDisabled()"
             type="submit"
+            [icon]="proceedIcon()"
             data-testid="form-dialog-proceed-button"
           />
         </div>
