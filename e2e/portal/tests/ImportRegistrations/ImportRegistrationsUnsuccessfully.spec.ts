@@ -38,3 +38,27 @@ test('Unsuccessfully import registrations', async ({ registrationsPage }) => {
     await registrationsPage.validateErrorTable();
   });
 });
+
+test('Import too many registrations', async ({ registrationsPage }) => {
+  const wrongRegistrationsDataFilePath = path.resolve(
+    __dirname,
+    '../../../test-registration-data/test-registrations-demo-1001.csv',
+  );
+  const programTitle = NLRCProgramPV.titlePortal.en;
+
+  await test.step('Select program', async () => {
+    await registrationsPage.selectProgram(programTitle);
+  });
+
+  await test.step('Import registrations to PV program successfully', async () => {
+    //  Because the import throws quite quick on maximum rows exeeded,
+    // we don't need to wait for the import process to complete in this test
+    await registrationsPage.importRegistrations(wrongRegistrationsDataFilePath);
+  });
+
+  await test.step('Validate import error message', async () => {
+    await registrationsPage.validateErrorMessage(
+      'Too many records. Maximum number of records is 1000. You have 1001 records.',
+    );
+  });
+});

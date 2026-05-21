@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -65,26 +64,29 @@ export class ImportFileDialogComponent {
 
   formFieldErrors = generateFieldErrors(this.formGroup);
 
-  readonly detailedImportErrors = computed(() => {
-    const error = this.mutation().failureReason();
+  readonly singleErrorMessage = computed(() => {
+    const failureReason = this.mutation().failureReason();
+    const errors = (failureReason?.cause as { error: unknown[] }).error;
 
-    if (
-      error?.cause instanceof HttpErrorResponse &&
-      Array.isArray(error.cause.error)
-    ) {
-      // We need to add a ID because the table expects it, without <app-query-table> throws a typescript error
-      const detailedErrorsWithIndexedIds: DetailedImportError[] =
-        error.cause.error.map(
-          (error: ValidateRegistrationErrorObject, index: number) => ({
-            ...error,
-            id: index,
-          }),
-        );
-
-      return detailedErrorsWithIndexedIds;
+    if (!isDetailedImportErrorArray(errors)) {
+      return errors[0] as string;
     }
 
-    return undefined;
+    return;
+  });
+
+  readonly detailedErrors = computed(() => {
+    const failureReason = this.mutation().failureReason();
+    const errors = (failureReason?.cause as { error: unknown[] }).error;
+
+    if (isDetailedImportErrorArray(errors)) {
+      return errors.map((error: ValidateRegistrationErrorObject, index) => ({
+        ...error,
+        id: index,
+      })) as DetailedImportError[];
+    }
+
+    return;
   });
 
   readonly detailedErrorsColumns = computed<
@@ -137,3 +139,8 @@ export class ImportFileDialogComponent {
     this.mutation().mutate(this.formGroup.getRawValue());
   }
 }
+
+const isDetailedImportErrorArray = (
+  errors: unknown[],
+): errors is ValidateRegistrationErrorObject[] =>
+  errors.length > 0 && typeof errors[0] === 'object' && errors[0] !== null;

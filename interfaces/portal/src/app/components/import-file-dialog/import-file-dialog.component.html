@@ -3,8 +3,8 @@
   [closeOnEscape]="false"
   [(visible)]="dialogVisible"
   (onShow)="resetForm()"
-  class="w-full max-w-184"
   (onHide)="handleClose()"
+  [style]="{ width: '632px' }"
 >
   <ng-template pTemplate="header">
     <h3>
@@ -29,10 +29,12 @@
       <app-form-error [error]="formFieldErrors()('file')" />
     </div>
     @if (mutation().isError()) {
-      @let detailedErrors = detailedImportErrors();
-
       <div class="mt-4">
-        @if (detailedErrors) {
+        @if (singleErrorMessage()) {
+          <app-form-error [error]="singleErrorMessage()" />
+        }
+
+        @if (detailedErrors()) {
           <app-form-error
             error="Something went wrong with this import. Please fix the errors reported below and try again."
             i18n-error
@@ -42,14 +44,12 @@
             [paginatorDropdownAppendTo]="'body'"
             [columns]="detailedErrorsColumns()"
             [initialSortField]="'lineNumber'"
-            [items]="detailedErrors"
+            [items]="detailedErrors() ?? []"
             [scrollHeight]="'400px'"
             [isPending]="false"
             [scrollable]="true"
           >
           </app-query-table>
-        } @else {
-          <app-form-error [error]="mutation().failureReason()?.message" />
         }
       </div>
     }
