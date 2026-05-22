@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
 import { AzureGraphTokenService } from '@121-service/src/emails/graph/azure-graph-token.service';
+import { GRAPH_ATTACHMENT_DATA_TYPE } from '@121-service/src/emails/graph/const/graph-attachment-data-type.cont';
 import { GraphMessage } from '@121-service/src/emails/graph/interfaces/graph-message.interface';
 import { GraphSendMailRequest } from '@121-service/src/emails/graph/interfaces/graph-send-mail-request.interface';
 import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
@@ -65,7 +66,7 @@ export class GraphService {
     if (attachment) {
       message.attachments = [
         {
-          '@odata.type': '#microsoft.graph.fileAttachment',
+          '@odata.type': GRAPH_ATTACHMENT_DATA_TYPE,
           name: attachment.name,
           contentBytes: attachment.contentBytes,
         }
