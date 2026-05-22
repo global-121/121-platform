@@ -129,7 +129,14 @@ describe('TransactionJobsMtnService', () => {
       transactionId: 1,
       requestIdentity: testRequestIdentity,
     });
-    expect(transactionsService.saveProgress).not.toHaveBeenCalled();
+    expect(transactionsService.saveProgress).toHaveBeenCalledWith({
+      context: {
+        transactionId: mockTransactionJob.transactionId,
+        userId: mockTransactionJob.userId,
+        programFspConfigurationId: mockTransactionJob.programFspConfigurationId,
+      },
+      description: TransactionEventDescription.mtnRequestSent,
+    });
   });
 
   it('should save error status when MtnApiError is thrown', async () => {
