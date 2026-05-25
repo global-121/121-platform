@@ -463,7 +463,7 @@ export class PaymentsController {
     });
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentCREATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentUPDATE] })
   @ApiOperation({ summary: 'Rename payment' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
@@ -475,7 +475,7 @@ export class PaymentsController {
     status: HttpStatus.NOT_FOUND,
     description: 'Payment not found for this program',
   })
-  @Patch('programs/:programId/payments/:paymentId/rename')
+  @Patch('programs/:programId/payments/:paymentId')
   public async renamePayment(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,

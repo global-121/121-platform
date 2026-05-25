@@ -561,4 +561,39 @@ describe('PaymentsManagementService', () => {
       });
     });
   });
+
+  describe('renamePayment', () => {
+    const renameParams = { programId: 2, paymentId: 5, newName: 'New name' };
+
+    beforeEach(() => {
+      (service as any).paymentRepository.findOne = jest
+        .fn()
+        .mockResolvedValue({ id: 5, programId: 2, name: 'Old name' });
+      (service as any).paymentRepository.save = jest
+        .fn()
+        .mockResolvedValue(undefined);
+    });
+
+    it('should throw NOT_FOUND if payment does not exist', async () => {
+      // Arrange
+      (service as any).paymentRepository.findOne = jest
+        .fn()
+        .mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(
+        service.renamePayment(renameParams),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.NOT_FOUND);
+    });
+
+    it('should update the payment name and save', async () => {
+      // Act
+      await service.renamePayment(renameParams);
+
+      // Assert
+      expect((service as any).paymentRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ name: 'New name' }),
+      );
+    });
+  });
 });
