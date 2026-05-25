@@ -1069,6 +1069,14 @@
     ]
   },
   {
+    "method": "patch",
+    "path": "/api/programs/{programId}/payments/{paymentId}/rename",
+    "params": [
+      "programId",
+      "paymentId"
+    ]
+  },
+  {
     "method": "post",
     "path": "/api/notifications/whatsapp/status",
     "params": []
