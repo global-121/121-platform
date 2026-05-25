@@ -974,6 +974,14 @@
     ]
   },
   {
+    "method": "patch",
+    "path": "/api/programs/{programId}/payments/{paymentId}",
+    "params": [
+      "programId",
+      "paymentId"
+    ]
+  },
+  {
     "method": "post",
     "path": "/api/programs/{programId}/payments/{paymentId}/approve",
     "params": [
@@ -1063,14 +1071,6 @@
   {
     "method": "get",
     "path": "/api/programs/{programId}/payments/{paymentId}/events",
-    "params": [
-      "programId",
-      "paymentId"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/payments/{paymentId}/rename",
     "params": [
       "programId",
       "paymentId"
