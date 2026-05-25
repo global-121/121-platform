@@ -456,6 +456,30 @@ export class PaymentsManagementService {
     }
   }
 
+  public async renamePayment({
+    programId,
+    paymentId,
+    newName,
+  }: {
+    programId: number;
+    paymentId: number;
+    newName: string;
+  }): Promise<void> {
+    const payment = await this.paymentRepository.findOne({
+      where: { id: Equal(paymentId), programId: Equal(programId) },
+    });
+
+    if (!payment) {
+      throw new HttpException(
+        'Payment not found for this program',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    payment.name = newName;
+    await this.paymentRepository.save(payment);
+  }
+
   public async deletePayment({
     programId,
     paymentId,
