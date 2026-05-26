@@ -986,9 +986,6 @@
       <trans-unit id="5270320047142620174" datatype="html">
         <source>Information automatically collected about you</source>
       </trans-unit>
-      <trans-unit id="5287630787862185490" datatype="html">
-        <source>Order cards to your branch by filling in this form and clicking on order. If the order is sent successfully it will be logged in the table on the ‘Debit cards&apos; tab.</source>
-      </trans-unit>
       <trans-unit id="5306473977542913614" datatype="html">
         <source>Activity</source>
       </trans-unit>
@@ -1066,6 +1063,9 @@
       </trans-unit>
       <trans-unit id="5568900620756681669" datatype="html">
         <source>Your form must include the following required fields in this <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>exact format<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> for this FSP integration in the data column name:</source>
+      </trans-unit>
+      <trans-unit id="5578437656517849832" datatype="html">
+        <source>Order cards to your branch by filling in this form and clicking on order. If the order is sent successfully it will be logged in the table on the &apos;Debit cards&apos; tab.</source>
       </trans-unit>
       <trans-unit id="5578681806481405422" datatype="html">
         <source>Select 1 or more users from your program team</source>

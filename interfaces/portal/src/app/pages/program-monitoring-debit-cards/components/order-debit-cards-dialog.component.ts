@@ -7,13 +7,11 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { injectMutation } from 'node_modules/@tanstack/angular-query-experimental/inject-mutation';
+import { injectMutation } from '@tanstack/angular-query-experimental';
 import { InputTextModule } from 'primeng/inputtext';
-import { map } from 'rxjs';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
-import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
@@ -27,7 +25,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     ReactiveFormsModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ToastService],
+  providers: [],
 })
 export class OrderDebitCardsDialogComponent {
   readonly formDialog = viewChild.required<FormDialogComponent>(
@@ -85,15 +83,6 @@ export class OrderDebitCardsDialogComponent {
       },
     ),
   });
-
-  readonly formStatus = toSignal(
-    this.formGroup.statusChanges.pipe(
-      map(() => ({
-        invalid: this.formGroup.invalid,
-        touched: this.formGroup.touched,
-      })),
-    ),
-  );
 
   readonly formEvents = toSignal(this.formGroup.events);
   readonly formFieldErrors = generateFieldErrors(this.formGroup, {});

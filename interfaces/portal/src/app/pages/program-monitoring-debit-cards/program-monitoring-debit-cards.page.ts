@@ -8,8 +8,6 @@ import {
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { InputTextModule } from 'primeng/inputtext';
 
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
@@ -18,23 +16,20 @@ import {
   QueryTableColumnType,
 } from '~/components/query-table/query-table.types';
 import { OrderDebitCardsDialogComponent } from '~/pages/program-monitoring-debit-cards/components/order-debit-cards-dialog.component';
-import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-program-monitoring-debit-cards',
   imports: [
     ButtonModule,
-    CheckboxModule,
     ReactiveFormsModule,
     PageLayoutMonitoringComponent,
-    InputTextModule,
     QueryTableComponent,
     OrderDebitCardsDialogComponent,
   ],
   templateUrl: './program-monitoring-debit-cards.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ToastService],
+  providers: [],
 })
 export class ProgramMonitoringDebitCardsPageComponent {
   readonly programId = input.required<string>();
