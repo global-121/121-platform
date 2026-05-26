@@ -36,10 +36,11 @@ export enum AppRoutes {
   users = 'users',
 }
 
-// @TODO or @IDEA:
-// This is a cleaner way of defining the 'paths' to avoid enum collisions...
+// @TODO
+// ISSUE https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/42350
 // The AppRoutes enum makes little sense when we have nested routes, as we can't use it to define the nested paths (e.g. `${AppRoutes.programMonitoring}/dashboard` doesn't work).
 
+// Temporary 'fix' to avoid collisions in this 'AppRoutes' enum.
 export enum ProgramMonitoringPaths {
   Dashboard = 'dashboard',
   DataChanges = 'data-changes',
