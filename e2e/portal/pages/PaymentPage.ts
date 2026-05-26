@@ -22,6 +22,8 @@ class PaymentPage extends BasePage {
   readonly startPaymentButton: Locator;
   readonly approvePaymentButton: Locator;
   readonly approvalFlowRow: Locator;
+  readonly renamePaymentInput: Locator;
+  readonly renamePaymentButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -64,6 +66,12 @@ class PaymentPage extends BasePage {
       name: 'Approve payment',
     });
     this.approvalFlowRow = this.page.getByTestId('approval-flow-row');
+    this.renamePaymentInput = this.page.getByTestId(
+      'page-layout-payment-rename-input',
+    );
+    this.renamePaymentButton = this.page.getByRole('button', {
+      name: 'Rename',
+    });
   }
 
   async approvePayment() {
@@ -80,6 +88,18 @@ class PaymentPage extends BasePage {
     await this.page.getByTestId('ellipsis-menu-button').click();
     await this.page.getByRole('menuitem', { name: 'Delete payment' }).click();
     await this.formDialogProceedButton.click();
+  }
+
+  async renamePayment(newName: string) {
+    await this.page.getByTestId('ellipsis-menu-button').click();
+    await this.page.getByRole('menuitem', { name: 'Rename payment' }).click();
+    await this.renamePaymentInput.fill(newName);
+    await this.renamePaymentButton.click();
+  }
+
+  async validatePaymentName(expectedName: string) {
+    const paymentName = this.page.locator('h1');
+    await expect(paymentName).toContainText(expectedName);
   }
 
   async isEllipsisMenuVisible(): Promise<boolean> {
