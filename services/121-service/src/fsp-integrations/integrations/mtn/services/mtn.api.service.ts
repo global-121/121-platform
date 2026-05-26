@@ -97,17 +97,11 @@ export class MtnApiService {
         AxiosResponse<MtnTransferStatusResponse>
       >(url.toString(), headers);
     } catch (error) {
-      console.error('Failed to get MTN transfer', error);
       throw new MtnApiError({
         type: MtnTransferErrorTypes.fail,
         message: `Error getting transfer: ${error instanceof Error ? error.message : 'Unknown error'}`,
       });
     }
-
-    console.log(
-      `[MTN API] Get transfer response - referenceId: ${referenceId}, status: ${response.status}, data:`,
-      JSON.stringify(response.data),
-    );
 
     if (!response || response.status < 200 || response.status >= 300) {
       throw new MtnApiError({
@@ -138,11 +132,6 @@ export class MtnApiService {
       requestIdentity,
     });
 
-    console.log(
-      `[MTN API] Making transfer call - referenceId: ${referenceId}, payload:`,
-      JSON.stringify(payload),
-    );
-
     let response: AxiosResponse<void>;
     try {
       response = await this.httpService.post<AxiosResponse<void>>(
@@ -154,16 +143,11 @@ export class MtnApiService {
       if (error instanceof MtnApiError) {
         throw error;
       }
-      console.error('Failed to make MTN B2C payment API call', error);
       throw new MtnApiError({
         type: MtnTransferErrorTypes.fail,
         message: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
       });
     }
-
-    console.log(
-      `[MTN API] Transfer response - referenceId: ${referenceId}, status: ${response.status}`,
-    );
 
     if (response?.status === HttpStatus.CONFLICT) {
       throw new MtnApiError({

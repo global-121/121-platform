@@ -94,9 +94,6 @@ export class MtnService {
     requestIdentity,
   }: CreateTransferParams): Promise<void> {
     const message = `Payment for transaction ${transactionId}`;
-    console.log(
-      `[MTN Transfer] Initiating transfer - referenceId: ${mtnReferenceId}, externalId: ${externalId}, amount: ${amount} ${currency}, phoneNumberPayment: ${phoneNumberPayment}`,
-    );
     await this.mtnApiService.createTransfer({
       mtnReferenceId,
       amount,
@@ -106,9 +103,6 @@ export class MtnService {
       message,
       requestIdentity,
     });
-    console.log(
-      `[MTN Transfer] Successfully initiated - referenceId: ${mtnReferenceId}`,
-    );
   }
 
   public async getTransfer({
@@ -118,16 +112,10 @@ export class MtnService {
     mtnReferenceId: string;
     requestIdentity: MtnRequestIdentity;
   }): Promise<MtnTransferStatusResponse> {
-    console.log(
-      `[MTN Transfer] Fetching transfer - referenceId: ${mtnReferenceId}`,
-    );
     const status = await this.mtnApiService.getTransfer({
       referenceId: mtnReferenceId,
       requestIdentity,
     });
-    console.log(
-      `[MTN Transfer] Transfer retrieved - referenceId: ${mtnReferenceId}, status: ${status.status}`,
-    );
     return status;
   }
 
