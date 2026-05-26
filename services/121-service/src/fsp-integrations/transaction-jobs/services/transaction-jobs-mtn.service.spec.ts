@@ -201,7 +201,7 @@ describe('TransactionJobsMtnService', () => {
       }),
     );
     (mtnService.getTransfer as jest.Mock).mockResolvedValue({
-      status: 'PENDING',
+      status: MtnTransferStatus.pending,
     });
     (mtnService.mapMtnStatusToTransactionStatus as jest.Mock).mockReturnValue(
       TransactionStatusEnum.waiting,
