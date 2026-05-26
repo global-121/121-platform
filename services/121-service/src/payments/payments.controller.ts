@@ -480,11 +480,15 @@ export class PaymentsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
     @Body() data: RenamePaymentDto,
+    @Req() req: ScopedUserRequest,
   ): Promise<void> {
+    const userId = RequestHelper.getUserId(req);
+
     await this.paymentsManagementService.renamePayment({
       programId,
       paymentId,
-      newName: data.newName,
+      name: data.name,
+      userId,
     });
   }
 }

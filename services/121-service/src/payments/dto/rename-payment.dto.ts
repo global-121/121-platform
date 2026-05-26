@@ -7,5 +7,5 @@ export class RenamePaymentDto {
   @IsNotEmpty()
   @Matches(/\S/)
   @MaxLength(60)
-  public readonly newName: string;
+  public readonly name: string;
 }
