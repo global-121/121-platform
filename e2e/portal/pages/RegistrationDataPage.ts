@@ -1,5 +1,6 @@
 import { Locator, Page } from 'playwright';
 
+import DialogComponent from '../components/DialogComponent';
 import BasePage from './BasePage';
 
 class RegistrationDataPage extends BasePage {
@@ -30,6 +31,29 @@ class RegistrationDataPage extends BasePage {
     });
   }
 
+  async koboSuccessfullyLinkedDialog({
+    openImportExistingRegistrationsDialog,
+    closeDialog,
+  }: {
+    openImportExistingRegistrationsDialog?: boolean;
+    closeDialog?: boolean;
+  }) {
+    const dialog = new DialogComponent(
+      this.page
+        .getByTestId('kobo-successfully-linked-dialog')
+        .locator('.p-dialog'),
+    );
+    await dialog.waitForVisible();
+
+    if (closeDialog) {
+      await dialog.confirm('Close');
+    }
+
+    if (openImportExistingRegistrationsDialog) {
+      await dialog.clickButton('Import existing registrations');
+    }
+  }
+
   async addKoboIntegration(koboIntegrationDetails: {
     url: string;
     apiKey: string;
@@ -45,7 +69,8 @@ class RegistrationDataPage extends BasePage {
     });
     // Click continue button to exit the form
     await this.clickContinueButton();
-    // Validate toast message after exiting the form
+
+    // Validate modal message after submitting the form
     await this.validateToastMessageAndClose(
       'Kobo form successfully integrated.',
     );

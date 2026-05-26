@@ -14,6 +14,8 @@ import {
 } from '@angular/forms';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
+import { Button } from 'primeng/button';
+import { Dialog } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
@@ -21,6 +23,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { extractServerAndAssetIdFromUrl } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
+import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
@@ -32,6 +35,9 @@ import { generateFieldErrors } from '~/utils/form-validation';
     InputTextModule,
     ReactiveFormsModule,
     ManualLinkComponent,
+    KoboImportExistingRegistrationsDialogComponent,
+    Dialog,
+    Button,
   ],
   providers: [ToastService],
   templateUrl: './kobo-configuration-dialog.component.html',
@@ -45,12 +51,19 @@ export class KoboConfigurationDialogComponent {
   private readonly toastService = inject(ToastService);
 
   readonly koboFormName = signal<string | undefined>(undefined);
+  readonly koboSuccessfullyLinkedDialogVisible = signal(false);
 
   readonly koboConfigurationDialog = viewChild.required<FormDialogComponent>(
     'koboConfigurationDialog',
   );
+
   readonly linkKoboDialog =
     viewChild.required<FormDialogComponent>('linkKoboDialog');
+
+  readonly koboImportExistingDialog =
+    viewChild.required<KoboImportExistingRegistrationsDialogComponent>(
+      'koboImportExistingDialog',
+    );
 
   readonly koboConfigurationFormGroup = new FormGroup({
     fullKoboFormUrl: new FormControl('', {
@@ -134,6 +147,8 @@ export class KoboConfigurationDialogComponent {
       this.toastService.showToast({
         detail: $localize`Kobo form successfully integrated.`,
       });
+
+      this.koboSuccessfullyLinkedDialogVisible.set(true);
     },
     onError: () => {
       this.toastService.showToast({
@@ -163,6 +178,12 @@ export class KoboConfigurationDialogComponent {
         ?.setErrors({ invalid: true });
     }
   };
+
+  handleImportExistingRegistrationsClick() {
+    this.koboSuccessfullyLinkedDialogVisible.set(false);
+    this.koboImportExistingDialog().show();
+  }
+
   show() {
     this.koboConfigurationDialog().show();
   }

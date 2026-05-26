@@ -82,3 +82,44 @@
     <p>{{ koboConfigurationMutation.data()?.message }}</p>
   }
 </app-form-dialog>
+
+<p-dialog
+  [modal]="true"
+  [closeOnEscape]="false"
+  [(visible)]="koboSuccessfullyLinkedDialogVisible"
+  styleClass="max-w-[90vw] sm:min-w-[40rem]"
+  [attr.data-testid]="'kobo-successfully-linked-dialog'"
+>
+  <ng-template #header>
+    <h3>
+      <i class="pi pi-check me-2"></i>
+      <ng-container i18n>Kobo form linked successfully</ng-container>
+    </h3>
+  </ng-template>
+
+  <p i18n>
+    <strong>{{ koboFormName() }}</strong>
+    was linked successfully to your program.
+  </p>
+
+  <div class="mt-4 flex justify-end gap-4">
+    <p-button
+      label="Import existing registrations"
+      i18n-label
+      outlined
+      rounded
+      (click)="handleImportExistingRegistrationsClick()"
+    />
+    <p-button
+      [rounded]="true"
+      label="Close"
+      i18n-label
+      (click)="koboSuccessfullyLinkedDialogVisible.set(false)"
+    />
+  </div>
+</p-dialog>
+
+<app-kobo-import-existing-registration-dialog
+  #koboImportExistingDialog
+  [programId]="programId()"
+/>
