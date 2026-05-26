@@ -221,7 +221,7 @@ describe('MtnApiHelperService', () => {
     it('should handle response with no data', () => {
       // Act
       const result = mtnApiHelperService.formatResponseError({
-        response: { status: 404, statusText: 'Not Found' },
+        response: { status: HttpStatus.NOT_FOUND, statusText: 'Not Found' },
       });
 
       // Assert
