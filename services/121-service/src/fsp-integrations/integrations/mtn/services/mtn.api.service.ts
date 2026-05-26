@@ -43,10 +43,7 @@ export class MtnApiService {
   }): Headers {
     const tokenSet = this.tokenCache.get(requestIdentity.referenceId);
     if (!tokenSet || !tokenSet.access_token) {
-      throw new MtnApiError({
-        type: MtnTransferErrorTypes.fail,
-        message: 'No access token available for MTN API requests',
-      });
+      throw new Error('No access token available for MTN API requests');
     }
     headers.set('Authorization', `Bearer ${tokenSet.access_token}`);
     return headers;

@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-error-types.enum';
+import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnApiHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.helper.service';
@@ -120,7 +121,10 @@ describe('MtnApiService', () => {
       // Arrange
       post
         .mockResolvedValueOnce(mockAuthResponse) // authenticate() call
-        .mockResolvedValueOnce({ status: HttpStatus.CONFLICT, statusText: 'Conflict' }); // createTransfer() call
+        .mockResolvedValueOnce({
+          status: HttpStatus.CONFLICT,
+          statusText: 'Conflict',
+        }); // createTransfer() call
 
       // Act & Assert
       await expect(
@@ -222,7 +226,7 @@ describe('MtnApiService', () => {
       });
 
       // Assert
-      expect(result).toEqual({ status: 'SUCCESSFUL' });
+      expect(result).toEqual({ status: MtnTransferStatus.successful });
     });
 
     it('should throw MtnApiError when the API responds with a non-2xx status', async () => {

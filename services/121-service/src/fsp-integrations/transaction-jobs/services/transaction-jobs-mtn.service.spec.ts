@@ -1,6 +1,7 @@
 import { TestBed } from '@automock/jest';
 
 import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-error-types.enum';
+import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
@@ -104,7 +105,7 @@ describe('TransactionJobsMtnService', () => {
   it('should log transaction job start and call createTransfer on success', async () => {
     (mtnService.createTransfer as jest.Mock).mockResolvedValue(undefined);
     (mtnService.getTransfer as jest.Mock).mockResolvedValue({
-      status: 'SUCCESSFUL',
+      status: MtnTransferStatus.successful,
     });
     global.fetch = jest.fn().mockResolvedValue({ ok: true });
 
@@ -229,7 +230,7 @@ describe('TransactionJobsMtnService', () => {
       }),
     );
     (mtnService.getTransfer as jest.Mock).mockResolvedValue({
-      status: 'FAILED',
+      status: MtnTransferStatus.failed,
       reason: 'Insufficient funds',
     });
     (mtnService.mapMtnStatusToTransactionStatus as jest.Mock).mockReturnValue(
@@ -253,7 +254,7 @@ describe('TransactionJobsMtnService', () => {
   it('should generate different referenceIds for payment retry (different failedAttempts count)', async () => {
     (mtnService.createTransfer as jest.Mock).mockResolvedValue(undefined);
     (mtnService.getTransfer as jest.Mock).mockResolvedValue({
-      status: 'SUCCESSFUL',
+      status: MtnTransferStatus.successful,
     });
     global.fetch = jest.fn().mockResolvedValue({ ok: true });
 
@@ -279,7 +280,7 @@ describe('TransactionJobsMtnService', () => {
   it('should generate same referenceId for queue retry (same failedAttempts count)', async () => {
     (mtnService.createTransfer as jest.Mock).mockResolvedValue(undefined);
     (mtnService.getTransfer as jest.Mock).mockResolvedValue({
-      status: 'SUCCESSFUL',
+      status: MtnTransferStatus.successful,
     });
     global.fetch = jest.fn().mockResolvedValue({ ok: true });
 
