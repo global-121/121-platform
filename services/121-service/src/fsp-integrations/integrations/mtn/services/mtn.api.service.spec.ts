@@ -188,7 +188,7 @@ describe('MtnApiService', () => {
       post.mockResolvedValueOnce(mockAuthResponse); // authenticate() call
       get.mockResolvedValueOnce({
         status: HttpStatus.OK,
-        data: { status: 'SUCCESSFUL' },
+        data: { status: MtnTransferStatus.successful },
       });
 
       // Act
