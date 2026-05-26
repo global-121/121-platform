@@ -30,11 +30,11 @@
     </div>
     @if (mutation().isError()) {
       <div class="mt-4">
-        @if (errorResponse().singleErrorMessage) {
-          <app-form-error [error]="errorResponse().singleErrorMessage" />
+        @if (errorResponse()?.singleErrorMessage) {
+          <app-form-error [error]="errorResponse()?.singleErrorMessage" />
         }
 
-        @if (errorResponse().detailedErrors) {
+        @if (errorResponse()?.detailedErrors) {
           <app-form-error
             error="Something went wrong with this import. Please fix the errors reported below and try again."
             i18n-error
@@ -44,7 +44,7 @@
             [paginatorDropdownAppendTo]="'body'"
             [columns]="detailedErrorsColumns()"
             [initialSortField]="'lineNumber'"
-            [items]="errorResponse().detailedErrors ?? []"
+            [items]="errorResponse()?.detailedErrors ?? []"
             [scrollHeight]="'400px'"
             [isPending]="false"
             [scrollable]="true"
