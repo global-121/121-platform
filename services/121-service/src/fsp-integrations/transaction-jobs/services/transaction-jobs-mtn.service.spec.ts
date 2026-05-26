@@ -169,7 +169,7 @@ describe('TransactionJobsMtnService', () => {
       }),
     );
     (mtnService.getTransfer as jest.Mock).mockResolvedValue({
-      status: 'SUCCESSFUL',
+      status: MtnTransferStatus.successful,
     });
     (mtnService.mapMtnStatusToTransactionStatus as jest.Mock).mockReturnValue(
       TransactionStatusEnum.success,
