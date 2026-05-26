@@ -168,7 +168,7 @@ describe('MtnApiHelperService', () => {
       // Act
       const result = mtnApiHelperService.formatResponseError({
         response: {
-          status: 500,
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
           statusText: 'Internal Server Error',
           data: {
             code: 'INTERNAL_PROCESSING_ERROR',
@@ -187,7 +187,7 @@ describe('MtnApiHelperService', () => {
       // Act
       const result = mtnApiHelperService.formatResponseError({
         response: {
-          status: 500,
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
           statusText: 'Internal Server Error',
           data: { unexpected: 'shape' },
         },
