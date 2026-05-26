@@ -9,6 +9,14 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 
 import {
@@ -18,6 +26,7 @@ import {
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TimelineModule } from 'primeng/timeline';
 
@@ -29,6 +38,7 @@ import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.com
 import { ColoredChipPaymentApprovalStatusComponent } from '~/components/colored-chip-payment-approval-status/colored-chip-payment-approval-status.component';
 import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
+import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { MetricTileComponent } from '~/components/metric-tile/metric-tile.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { ApprovePaymentComponent } from '~/components/page-layout-payment/components/approve-payment/approve-payment.component';
@@ -44,7 +54,20 @@ import { AuthService } from '~/services/auth.service';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { generateFieldErrors } from '~/utils/form-validation';
 import { Locale } from '~/utils/locale';
+
+const noWhitespaceOnlyValueValidator = (
+  control: AbstractControl<null | string>,
+): null | ValidationErrors => {
+  const value = control.value;
+  if (typeof value !== 'string' || value.length === 0) {
+    return null;
+  }
+
+  return value.trim().length > 0 ? null : { whitespaceOnly: true };
+};
+
 @Component({
   selector: 'app-page-layout-payment',
   imports: [
@@ -65,6 +88,9 @@ import { Locale } from '~/utils/locale';
     TimelineModule,
     EllipsisMenuComponent,
     FormDialogComponent,
+    FormFieldWrapperComponent,
+    InputTextModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './page-layout-payment.component.html',
   styles: ``,
@@ -88,6 +114,35 @@ export class PageLayoutPaymentComponent {
 
   readonly deletePaymentDialog = viewChild.required<FormDialogComponent>(
     'deletePaymentDialog',
+  );
+  readonly renamePaymentDialog = viewChild.required<FormDialogComponent>(
+    'renamePaymentDialog',
+  );
+
+  readonly renamePaymentFormGroup = new FormGroup({
+    newName: new FormControl('', {
+      nonNullable: true,
+      validators: [
+        (control) => Validators.required(control),
+        (control) => Validators.maxLength(60)(control),
+        noWhitespaceOnlyValueValidator,
+      ],
+    }),
+  });
+
+  readonly renameFormFieldErrors = generateFieldErrors(
+    this.renamePaymentFormGroup,
+    {
+      newName: (control) => {
+        if (control.errors?.required || control.errors?.whitespaceOnly) {
+          return $localize`Please enter a name.`;
+        }
+        if (control.errors?.maxlength) {
+          return $localize`Name must be at most 60 characters.`;
+        }
+        return undefined;
+      },
+    },
   );
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
@@ -193,6 +248,16 @@ export class PageLayoutPaymentComponent {
     }
 
     return `${localizedText} ${this.paymentDate()}`;
+  });
+
+  readonly currentPaymentName = computed(() => {
+    if (!this.payments.isSuccess()) {
+      return undefined;
+    }
+
+    return this.payments
+      .data()
+      .find((p) => p.paymentId === Number(this.paymentId()))?.name;
   });
 
   readonly totalRegistrations = computed(() => {
@@ -471,15 +536,60 @@ export class PageLayoutPaymentComponent {
     return true;
   });
 
-  readonly menuItems = computed<MenuItem[]>(() => [
-    {
-      label: $localize`Delete payment`,
-      icon: 'pi pi-trash',
-      command: () => {
-        this.deletePaymentDialog().show();
-      },
+  readonly canRenamePayment = computed(() =>
+    this.authService.hasAllPermissions({
+      programId: this.programId(),
+      requiredPermissions: [PermissionEnum.PaymentUPDATE],
+    }),
+  );
+
+  readonly showEllipsisMenu = computed(
+    () => this.canDeletePayment() || this.canRenamePayment(),
+  );
+
+  readonly menuItems = computed<MenuItem[]>(() => {
+    const items: MenuItem[] = [];
+
+    if (this.canRenamePayment()) {
+      items.push({
+        label: $localize`Rename payment`,
+        icon: 'pi pi-pencil',
+        command: () => {
+          this.renamePaymentFormGroup.reset({
+            newName: this.currentPaymentName() ?? '',
+          });
+          this.renamePaymentDialog().show({ resetFormGroup: false });
+        },
+      });
+    }
+
+    if (this.canDeletePayment()) {
+      items.push({
+        label: $localize`Delete payment`,
+        icon: 'pi pi-trash',
+        command: () => {
+          this.deletePaymentDialog().show();
+        },
+      });
+    }
+
+    return items;
+  });
+
+  readonly renamePaymentMutation = injectMutation(() => ({
+    mutationFn: (newName: string) =>
+      this.paymentApiService.renamePayment({
+        programId: this.programId,
+        paymentId: this.paymentId,
+        newName,
+      }),
+    onSuccess: async () => {
+      await Promise.all([
+        this.paymentAggregate.refetch(),
+        this.payments.refetch(),
+      ]);
     },
-  ]);
+  }));
 
   readonly deletePaymentMutation = injectMutation(() => ({
     mutationFn: () =>
