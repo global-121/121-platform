@@ -46,7 +46,6 @@ export class FormDialogComponent<TMutationData = unknown> {
 
   readonly proceedLabel = input($localize`:@@generic-proceed:Proceed`);
   readonly proceedIcon = input<string | undefined>(undefined);
-  readonly proceedDisabled = input(false);
 
   readonly formGroup = input<FormGroup>();
 

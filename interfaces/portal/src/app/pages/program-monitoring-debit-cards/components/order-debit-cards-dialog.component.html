@@ -6,7 +6,6 @@
   [headerIcon]="'pi pi-credit-card'"
   [proceedLabel]="'Order debit cards'"
   [proceedIcon]="'pi pi-credit-card'"
-  [proceedDisabled]="!!formStatus()?.invalid"
   [mutation]="fakeMutation"
 >
   <p
@@ -14,7 +13,7 @@
     class="mb-2"
   >
     Order cards to your branch by filling in this form and clicking on order. If
-    the order is sent successfully it will be logged in the table on the ‘Debit
+    the order is sent successfully it will be logged in the table on the 'Debit
     cards' tab.
   </p>
 
@@ -90,7 +89,7 @@
     <app-form-field-wrapper
       label="Addressee (name of the recipient of the package)"
       i18n-label
-      [errorMessage]="formFieldErrors()('addressValue')"
+      [errorMessage]="formFieldErrors()('addresseeValue')"
       [isRequired]="true"
     >
       <input
