@@ -563,13 +563,21 @@ describe('PaymentsManagementService', () => {
   });
 
   describe('renamePayment', () => {
-    const renameParams = { programId: 2, paymentId: 5, newName: 'New name' };
+    const renameParams = {
+      programId: 2,
+      paymentId: 5,
+      name: 'New name',
+      userId: 1,
+    };
 
     beforeEach(() => {
       (service as any).paymentRepository.findOne = jest
         .fn()
         .mockResolvedValue({ id: 5, programId: 2, name: 'Old name' });
       (service as any).paymentRepository.save = jest
+        .fn()
+        .mockResolvedValue(undefined);
+      (service as any).paymentEventsService.createEvent = jest
         .fn()
         .mockResolvedValue(undefined);
     });
