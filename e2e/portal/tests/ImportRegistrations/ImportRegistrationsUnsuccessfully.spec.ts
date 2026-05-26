@@ -51,7 +51,7 @@ test('Import too many registrations', async ({ registrationsPage }) => {
   });
 
   await test.step('Import registrations to PV program successfully', async () => {
-    //  Because the import throws quite quick on maximum rows exeeded,
+    //  Because the import throws quite quick on maximum rows exceeded,
     // we don't need to wait for the import process to complete in this test
     await registrationsPage.importRegistrations(wrongRegistrationsDataFilePath);
   });

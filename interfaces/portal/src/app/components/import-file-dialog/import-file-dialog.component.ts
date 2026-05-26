@@ -16,21 +16,18 @@ import { CreateMutationResult } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 
-import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
-
 import { FileUploadControlComponent } from '~/components/file-upload-control/file-upload-control.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import { QueryTableColumn } from '~/components/query-table/query-table.types';
+import {
+  DetailedImportError,
+  ErrorResponseSplitter,
+} from '~/utils/error-response-splitter';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 export type ImportFileDialogFormGroup =
   (typeof ImportFileDialogComponent)['prototype']['formGroup'];
-
-interface DetailedImportError extends ValidateRegistrationErrorObject {
-  lineNumber?: number;
-  id: number;
-}
 
 @Component({
   selector: 'app-import-file-dialog',
@@ -64,29 +61,9 @@ export class ImportFileDialogComponent {
 
   formFieldErrors = generateFieldErrors(this.formGroup);
 
-  readonly singleErrorMessage = computed(() => {
+  readonly errorResponse = computed(() => {
     const failureReason = this.mutation().failureReason();
-    const errors = (failureReason?.cause as { error: unknown[] }).error;
-
-    if (!isDetailedImportErrorArray(errors)) {
-      return errors[0] as string;
-    }
-
-    return;
-  });
-
-  readonly detailedErrors = computed(() => {
-    const failureReason = this.mutation().failureReason();
-    const errors = (failureReason?.cause as { error: unknown[] }).error;
-
-    if (isDetailedImportErrorArray(errors)) {
-      return errors.map((error: ValidateRegistrationErrorObject, index) => ({
-        ...error,
-        id: index,
-      })) as DetailedImportError[];
-    }
-
-    return;
+    return ErrorResponseSplitter(failureReason);
   });
 
   readonly detailedErrorsColumns = computed<
@@ -139,8 +116,3 @@ export class ImportFileDialogComponent {
     this.mutation().mutate(this.formGroup.getRawValue());
   }
 }
-
-const isDetailedImportErrorArray = (
-  errors: unknown[],
-): errors is ValidateRegistrationErrorObject[] =>
-  errors.length > 0 && typeof errors[0] === 'object' && errors[0] !== null;
