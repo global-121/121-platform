@@ -2460,9 +2460,6 @@
       <trans-unit id="5077622588607274492" datatype="html">
         <source>Below is a table showing the cards successfully ordered from Visa/ Intersolve. Please note, this table shows orders that were successfully sent to Intersolve but does not show the status of the order.</source>
       </trans-unit>
-      <trans-unit id="5287630787862185490" datatype="html">
-        <source>Order cards to your branch by filling in this form and clicking on order. If the order is sent successfully it will be logged in the table on the ‘Debit cards&apos; tab.</source>
-      </trans-unit>
       <trans-unit id="6064501572523614945" datatype="html">
         <source>Address (including street name, house number, and addition)</source>
       </trans-unit>
@@ -2486,6 +2483,9 @@
       </trans-unit>
       <trans-unit id="page-title-program-monitoring-debit-cards" datatype="html">
         <source>Debit Cards</source>
+      </trans-unit>
+      <trans-unit id="5578437656517849832" datatype="html">
+        <source>Order cards to your branch by filling in this form and clicking on order. If the order is sent successfully it will be logged in the table on the &apos;Debit cards&apos; tab.</source>
       </trans-unit>
     </body>
   </file>
