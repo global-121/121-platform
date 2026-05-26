@@ -47,6 +47,9 @@ test('Add Kobo integration successfully', async ({
 
   await test.step('Add Kobo integration', async () => {
     await registrationDataPage.addKoboIntegration(koboIntegrationDetails);
+    await registrationDataPage.koboSuccessfullyLinkedDialog({
+      closeDialog: true,
+    });
   });
 
   await test.step('Validate Kobo integration details on Registrations page', async () => {

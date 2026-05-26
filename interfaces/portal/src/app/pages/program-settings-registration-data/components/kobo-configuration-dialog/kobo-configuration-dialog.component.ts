@@ -180,8 +180,8 @@ export class KoboConfigurationDialogComponent {
   };
 
   handleImportExistingRegistrationsClick() {
-    this.koboImportExistingDialog().show();
     this.koboSuccessfullyLinkedDialogVisible.set(false);
+    this.koboImportExistingDialog().show();
   }
 
   show() {

@@ -15,7 +15,7 @@ const koboIntegrationDetails = {
   apiKey: 'mock-token',
 };
 
-test('Import existing Kobo registrations', async ({
+test('Import existing Kobo registrations after adding Kobo integration', async ({
   resetDBAndSeedRegistrations,
   registrationDataPage,
 }) => {
@@ -28,6 +28,9 @@ test('Import existing Kobo registrations', async ({
 
   await test.step('Add Kobo integration', async () => {
     await registrationDataPage.addKoboIntegration(koboIntegrationDetails);
+    await registrationDataPage.koboSuccessfullyLinkedDialog({
+      closeDialog: true,
+    });
   });
 
   await test.step('Import existing Kobo registrations', async () => {
@@ -55,6 +58,38 @@ test('Import existing Kobo registrations', async ({
 
     await expect(
       registrationDataPage.importDialog.getByText('Submissions skipped: 1'),
+    ).toBeVisible();
+  });
+});
+
+test('Import existing Kobo registrations immediately after adding Kobo integration', async ({
+  resetDBAndSeedRegistrations,
+  registrationDataPage,
+}) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.safaricomProgram,
+    registrations: registrationsSafaricom,
+    programId: programIdSafaricom,
+    navigateToPage: `/program/${programIdSafaricom}/settings/registration-data`,
+  });
+
+  await test.step('Add Kobo integration', async () => {
+    await registrationDataPage.addKoboIntegration(koboIntegrationDetails);
+    await registrationDataPage.koboSuccessfullyLinkedDialog({
+      openImportExistingRegistrationsDialog: true,
+    });
+  });
+
+  await test.step('Import existing Kobo registrations', async () => {
+    await registrationDataPage.initiateImportButton.click();
+  });
+
+  await test.step('Validate success message after importing existing Kobo registrations', async () => {
+    await expect(
+      registrationDataPage.importDialog.getByText('1 total submission(s)'),
+    ).toBeVisible();
+    await expect(
+      registrationDataPage.importDialog.getByText('Imported successfully: 1'),
     ).toBeVisible();
   });
 });

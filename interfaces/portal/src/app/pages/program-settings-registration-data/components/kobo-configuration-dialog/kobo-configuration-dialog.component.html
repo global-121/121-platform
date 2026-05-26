@@ -84,12 +84,10 @@
 </app-form-dialog>
 
 <p-dialog
-  #koboSuccesfullyLinkedDialog
-  class="w-full max-w-md"
   [modal]="true"
   [closeOnEscape]="false"
   [(visible)]="koboSuccessfullyLinkedDialogVisible"
-  [styleClass]="'min-w-[632px]'"
+  styleClass="max-w-[90vw] sm:min-w-[40rem]"
   [attr.data-testid]="'kobo-successfully-linked-dialog'"
 >
   <ng-template #header>
@@ -106,7 +104,7 @@
 
   <div class="mt-4 flex justify-end gap-4">
     <p-button
-      label="Import existing reg."
+      label="Import existing registrations"
       i18n-label
       outlined
       rounded
