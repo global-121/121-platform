@@ -459,11 +459,13 @@ export class PaymentsManagementService {
   public async renamePayment({
     programId,
     paymentId,
-    newName,
+    name,
+    userId,
   }: {
     programId: number;
     paymentId: number;
-    newName: string;
+    name: string;
+    userId: number;
   }): Promise<void> {
     const payment = await this.paymentRepository.findOne({
       where: { id: Equal(paymentId), programId: Equal(programId) },
@@ -476,8 +478,14 @@ export class PaymentsManagementService {
       );
     }
 
-    payment.name = newName;
+    payment.name = name;
     await this.paymentRepository.save(payment);
+
+    await this.paymentEventsService.createEvent({
+      paymentId: payment.id,
+      userId,
+      type: PaymentEvent.renamed,
+    });
   }
 
   public async deletePayment({
