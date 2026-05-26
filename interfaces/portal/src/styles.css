@@ -65,10 +65,6 @@ body {
   --p-form-field-lg-font-size: 1rem;
 }
 
-* {
-  box-shadow: 0 0 0 1px inset red;
-}
-
 /* Styles only for "local-development" purposes:
    Classname is set on <html> by the AppComponent. */
 .dev {
