@@ -170,7 +170,6 @@ export class KoboService {
     await this.applyFormDefinitionToProgram({
       formDefinition,
       programId,
-      versionId: formDefinition.versionId,
     });
 
     return { name: formDefinition.name };
@@ -179,12 +178,10 @@ export class KoboService {
   public async applyFormDefinitionToProgram({
     formDefinition,
     programId,
-    versionId,
     filterByCurrentVersionId,
   }: {
     formDefinition: KoboFormDefinition;
     programId: number;
-    versionId: string;
     filterByCurrentVersionId?: string;
   }): Promise<void> {
     await this.koboValidationService.validateKoboFormDefinition({
@@ -202,8 +199,9 @@ export class KoboService {
         : { programId };
 
     await this.koboRepository.update(filter, {
-      versionId,
+      versionId: formDefinition.versionId,
       dateDeployed: formDefinition.dateDeployed,
+      name: formDefinition.name,
     });
   }
 
