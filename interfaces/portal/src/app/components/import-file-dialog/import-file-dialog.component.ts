@@ -22,7 +22,7 @@ import { QueryTableComponent } from '~/components/query-table/query-table.compon
 import { QueryTableColumn } from '~/components/query-table/query-table.types';
 import {
   DetailedImportError,
-  ErrorResponseSplitter,
+  errorResponseSplitter,
 } from '~/utils/error-response-splitter';
 import { generateFieldErrors } from '~/utils/form-validation';
 
@@ -63,7 +63,7 @@ export class ImportFileDialogComponent {
 
   readonly errorResponse = computed(() => {
     const failureReason = this.mutation().failureReason();
-    return ErrorResponseSplitter(failureReason);
+    return errorResponseSplitter(failureReason);
   });
 
   readonly detailedErrorsColumns = computed<
