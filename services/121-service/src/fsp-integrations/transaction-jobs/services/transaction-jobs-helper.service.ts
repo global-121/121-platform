@@ -99,13 +99,6 @@ export class TransactionJobsHelperService {
     context: TransactionEventCreationContext;
     isRetry: boolean;
   }) {
-    if (!isRetry) {
-      await this.updatePaymentCountAndSetToCompleted({
-        transactionId: context.transactionId,
-        userId: context.userId!,
-      });
-    }
-
     await this.transactionsService.saveProgress({
       context,
       description: isRetry
@@ -113,6 +106,12 @@ export class TransactionJobsHelperService {
         : TransactionEventDescription.initiated,
       newTransactionStatus: TransactionStatusEnum.waiting,
     });
+    if (!isRetry) {
+      await this.updatePaymentCountAndSetToCompleted({
+        transactionId: context.transactionId,
+        userId: context.userId!,
+      });
+    }
   }
 
   /**
@@ -130,7 +129,7 @@ export class TransactionJobsHelperService {
         transactionId,
       );
     const newPaymentCount =
-      await this.transactionRepository.countTransactionsByReferenceId(
+      await this.transactionRepository.countStartedTransactionsByReferenceId(
         referenceId,
       );
     await this.registrationScopedRepository.updatePaymentCount({

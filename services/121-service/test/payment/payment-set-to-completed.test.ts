@@ -4,11 +4,19 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
-import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
+import {
+  approvePayment,
+  createPayment,
+  startPayment,
+  waitForMessagesToComplete,
+  waitForPaymentAndTransactionsToComplete,
+} from '@121-service/test/helpers/program.helper';
 import {
   getMessageHistory,
   getRegistrationEvents,
+  seedIncludedRegistrations,
   seedPaidRegistrations,
+  waitForRegistrationToHaveUpdatedPaymentCount,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -90,6 +98,72 @@ describe('Set registration to completed after payment', () => {
     );
     expect(new Date(initialVoucherMessage!.created).getTime()).toBeLessThan(
       new Date(completedMessage.created).getTime(),
+    );
+  });
+
+  it('should only count started transactions toward paymentCount and marking as completed', async () => {
+    // Arrange
+    const registration = { ...registrationPV5, maxPayments: 1 };
+    await seedIncludedRegistrations([registration], programId, accessToken);
+    const referenceIds = [registration.referenceId];
+
+    // Create two payments for the same registration (both get transactions in approved status)
+    const createFirstPaymentResponse = await createPayment({
+      programId,
+      transferValue,
+      referenceIds,
+      accessToken,
+      name: 'First Payment',
+    });
+    const firstPaymentId = createFirstPaymentResponse.body.id;
+    await approvePayment({
+      programId,
+      paymentId: firstPaymentId,
+      accessToken,
+    });
+
+    const createSecondPaymentResponse = await createPayment({
+      programId,
+      transferValue,
+      referenceIds,
+      accessToken,
+      name: 'Second Payment',
+    });
+    const secondPaymentId = createSecondPaymentResponse.body.id;
+    await approvePayment({
+      programId,
+      paymentId: secondPaymentId,
+      accessToken,
+    });
+
+    // Act - start only the first payment
+    await startPayment({
+      programId,
+      paymentId: firstPaymentId,
+      accessToken,
+    });
+
+    await waitForPaymentAndTransactionsToComplete({
+      programId,
+      paymentReferenceIds: referenceIds,
+      accessToken,
+      maxWaitTimeMs: 20_000,
+    });
+
+    // Assert - paymentCount should be 1 because only the started/completed
+    // transaction counts; the second payment's transaction is still in
+    // is excluded from the count.
+    const registrationAfterFirstPayment =
+      await waitForRegistrationToHaveUpdatedPaymentCount({
+        programId,
+        referenceId: registration.referenceId,
+        expectedPaymentCount: 1,
+        accessToken,
+      });
+
+    expect(registrationAfterFirstPayment!.paymentCount).toBe(1);
+    expect(registrationAfterFirstPayment!.status).toBe(
+      RegistrationStatusEnum.completed,
     );
   });
 });
