@@ -19,7 +19,8 @@
     "test": "playwright test --config=playwright.config.ts",
     "test:update-snapshots": "npm run test -- --update-snapshots",
     "test:update-snapshots:specific": "npm run test -- --update-snapshots --grep",
-    "test:find-flaky": "npm run test -- --fail-on-flaky-tests --retries=0 --repeat-each 30 -x --trace retain-on-failure --reporter=html"
+    "test:find-flaky": "npm run test -- --fail-on-flaky-tests --retries=0 --repeat-each 30 -x --trace retain-on-failure --reporter=html",
+    "test:keep-trace": "npm run test -- --trace on --reporter=html"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",

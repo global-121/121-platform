@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -17,21 +16,18 @@ import { CreateMutationResult } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 
-import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
-
 import { FileUploadControlComponent } from '~/components/file-upload-control/file-upload-control.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import { QueryTableColumn } from '~/components/query-table/query-table.types';
+import {
+  DetailedImportError,
+  errorResponseSplitter,
+} from '~/utils/error-response-splitter';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 export type ImportFileDialogFormGroup =
   (typeof ImportFileDialogComponent)['prototype']['formGroup'];
-
-interface DetailedImportError extends ValidateRegistrationErrorObject {
-  lineNumber?: number;
-  id: number;
-}
 
 @Component({
   selector: 'app-import-file-dialog',
@@ -65,26 +61,9 @@ export class ImportFileDialogComponent {
 
   formFieldErrors = generateFieldErrors(this.formGroup);
 
-  readonly detailedImportErrors = computed(() => {
-    const error = this.mutation().failureReason();
-
-    if (
-      error?.cause instanceof HttpErrorResponse &&
-      Array.isArray(error.cause.error)
-    ) {
-      // We need to add a ID because the table expects it, without <app-query-table> throws a typescript error
-      const detailedErrorsWithIndexedIds: DetailedImportError[] =
-        error.cause.error.map(
-          (error: ValidateRegistrationErrorObject, index: number) => ({
-            ...error,
-            id: index,
-          }),
-        );
-
-      return detailedErrorsWithIndexedIds;
-    }
-
-    return undefined;
+  readonly errorResponse = computed(() => {
+    const failureReason = this.mutation().failureReason();
+    return errorResponseSplitter(failureReason);
   });
 
   readonly detailedErrorsColumns = computed<

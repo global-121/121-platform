@@ -74,6 +74,12 @@ export class ImportRegistrationsComponent {
         file,
       });
     },
+    onError: () => {
+      this.toastService.showToast({
+        severity: 'error',
+        detail: $localize`:@@import-registrations-error:Failed to import registrations. Please try again.`,
+      });
+    },
     onSuccess: () => {
       this.dialogVisible.set(false);
       this.toastService.showToast({
