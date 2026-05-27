@@ -188,6 +188,19 @@ export class KoboController {
     type: KoboIntegrationResultDto,
   })
   @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description:
+      'Validation failed - the latest Kobo form definition does not meet program requirements.',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Authentication required',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Insufficient permissions to refresh the Kobo form',
+  })
+  @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'No Kobo integration found for this program',
   })
