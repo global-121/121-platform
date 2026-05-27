@@ -182,6 +182,7 @@ export default defineConfig(
             'queryParamsHandling',
             'styleClass',
             'severity',
+            'th[scope]',
             'th[pSortableColumn]',
             'app-button-menu[size]',
             'app-colored-chip[variant]',
