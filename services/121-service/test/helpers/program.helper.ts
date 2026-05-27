@@ -7,22 +7,22 @@ import { MessageActivity } from '@121-service/src/activities/interfaces/message-
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import {
-  CreateMessageTemplateDto,
-  UpdateTemplateBodyDto,
+    CreateMessageTemplateDto,
+    UpdateTemplateBodyDto,
 } from '@121-service/src/notifications/message-template/dto/message-template.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import {
-  ProgramRegistrationAttributeDto,
-  UpdateProgramRegistrationAttributeDto,
+    ProgramRegistrationAttributeDto,
+    UpdateProgramRegistrationAttributeDto,
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  getMessageHistory,
-  getRegistrations,
+    getMessageHistory,
+    getRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import { getServer } from '@121-service/test/helpers/utility.helper';
 
@@ -95,6 +95,22 @@ export async function patchProgramRegistrationAttribute({
     )
     .set('Cookie', [accessToken])
     .send(programRegistrationAttribute);
+}
+
+export async function deleteProgramRegistrationAttribute({
+  programId,
+  programRegistrationAttributeId,
+  accessToken,
+}: {
+  programId: number;
+  programRegistrationAttributeId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .delete(
+      `/programs/${programId}/registration-attributes/${programRegistrationAttributeId}`,
+    )
+    .set('Cookie', [accessToken]);
 }
 
 export async function createPayment({

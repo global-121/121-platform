@@ -167,28 +167,33 @@ export class KoboService {
       url: koboIntegration.url,
     });
 
-    await this.validateFormAndUpdateProgram({
+    await this.applyFormDefinitionToProgram({
       formDefinition,
       programId,
+      versionId: formDefinition.versionId,
     });
-
-    await this.koboRepository.update(
-      { programId },
-      {
-        versionId: formDefinition.versionId,
-        dateDeployed: formDefinition.dateDeployed,
-      },
-    );
 
     return { name: formDefinition.name };
   }
 
-  public async validateFormAndUpdateProgram({
+  /**
+   * Validates a Kobo form definition, applies it to the given program
+   * (upserting registration attributes and adding languages), and writes the
+   * resulting `versionId` and `dateDeployed` to the program's Kobo entity.
+   *
+   * Used both by the explicit refresh endpoint and by the incoming-submission
+   * flow when an upstream form re-deployment is detected.
+   */
+  public async applyFormDefinitionToProgram({
     formDefinition,
     programId,
+    versionId,
+    filterByCurrentVersionId,
   }: {
     formDefinition: KoboFormDefinition;
     programId: number;
+    versionId: string;
+    filterByCurrentVersionId?: string;
   }): Promise<void> {
     await this.koboValidationService.validateKoboFormDefinition({
       formDefinition,
@@ -197,6 +202,16 @@ export class KoboService {
     await this.updateProgramWithKoboForm({
       formDefinition,
       programId,
+    });
+
+    const filter =
+      filterByCurrentVersionId !== undefined
+        ? { programId, versionId: filterByCurrentVersionId }
+        : { programId };
+
+    await this.koboRepository.update(filter, {
+      versionId,
+      dateDeployed: formDefinition.dateDeployed,
     });
   }
 
