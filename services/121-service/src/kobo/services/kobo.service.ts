@@ -176,14 +176,6 @@ export class KoboService {
     return { name: formDefinition.name };
   }
 
-  /**
-   * Validates a Kobo form definition, applies it to the given program
-   * (upserting registration attributes and adding languages), and writes the
-   * resulting `versionId` and `dateDeployed` to the program's Kobo entity.
-   *
-   * Used both by the explicit refresh endpoint and by the incoming-submission
-   * flow when an upstream form re-deployment is detected.
-   */
   public async applyFormDefinitionToProgram({
     formDefinition,
     programId,

@@ -97,22 +97,6 @@ export async function patchProgramRegistrationAttribute({
     .send(programRegistrationAttribute);
 }
 
-export async function deleteProgramRegistrationAttribute({
-  programId,
-  programRegistrationAttributeId,
-  accessToken,
-}: {
-  programId: number;
-  programRegistrationAttributeId: number;
-  accessToken: string;
-}): Promise<request.Response> {
-  return await getServer()
-    .delete(
-      `/programs/${programId}/registration-attributes/${programRegistrationAttributeId}`,
-    )
-    .set('Cookie', [accessToken]);
-}
-
 export async function createPayment({
   programId,
   transferValue,
