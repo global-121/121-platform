@@ -13,5 +13,6 @@ export class EmailMockService {
   }): void {
     // Mock implementation: accept and discard. Matches the real Microsoft
     // Graph `sendMail` endpoint, which returns 202 Accepted with no body.
+    console.log('Mock email sent:', { sender: _sender, request: _request });
   }
 }

@@ -84,7 +84,7 @@ describe('GraphService', () => {
 
       await service.sendMail(emailData);
 
-      const url = httpService.post.mock.calls[0][0];
+      const [[url]] = httpService.post.mock.calls;
       expect(url).toBe(
         'https://graph-api.example.test/users/sender%40example.org/sendMail',
       );
@@ -95,7 +95,7 @@ describe('GraphService', () => {
 
       await service.sendMail(emailData);
 
-      const payload = httpService.post.mock.calls[0][1];
+      const [[, payload]] = httpService.post.mock.calls;
       expect(payload).toEqual({
         message: {
           subject: 'Test subject',
@@ -114,7 +114,7 @@ describe('GraphService', () => {
 
       await service.sendMail({ ...emailData, attachment });
 
-      const payload = httpService.post.mock.calls[0][1];
+      const [[, payload]] = httpService.post.mock.calls;
       expect(payload.message.attachments).toEqual([
         {
           '@odata.type': '#microsoft.graph.fileAttachment',
@@ -145,7 +145,9 @@ describe('GraphService', () => {
     it('should pass an Authorization Bearer header to CustomHttpService.post', async () => {
       await service.sendMail(emailData);
 
-      const headers = httpService.post.mock.calls[0][2] as Headers;
+      const [[, , headers]] = httpService.post.mock.calls as [
+        [unknown, unknown, Headers],
+      ];
       expect(headers.get('Authorization')).toBe('Bearer test-token');
     });
   });
