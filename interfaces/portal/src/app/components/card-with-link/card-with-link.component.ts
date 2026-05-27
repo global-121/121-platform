@@ -1,8 +1,7 @@
-import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   input,
   output,
 } from '@angular/core';
@@ -22,7 +21,6 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
   selector: 'app-card-with-link',
   imports: [
     CardModule,
-    NgClass,
     RouterLink,
     SkeletonInlineComponent,
     NgTemplateOutlet,
@@ -34,22 +32,14 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardWithLinkComponent {
-  readonly overrideCss = input('');
-
-  readonly className = computed(() => {
-    const baseClasses =
-      'group shadow-clickable-cards border-grey-300 relative h-full rounded-lg border bg-white transition-colors focus-within:border-purple-500 hover:border-purple-500';
-    return `${baseClasses} ${this.overrideCss()}`;
-  });
-
   readonly href = input<RouterLink['routerLink']>();
   readonly title = input.required<string>();
   readonly titleColoredChipLabel = input<string>();
   readonly titleColoredChipColor = input<ChipVariant>('grey');
   readonly image = input<string>();
   readonly loading = input(false);
-  // readonly subtitle = input<string>();
   readonly enableLink = input(true);
   readonly cardClicked = output();
   readonly menuItems = input<MenuItem[]>([]);
+  readonly variant = input<'fsp'>();
 }

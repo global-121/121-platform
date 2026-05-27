@@ -1,7 +1,20 @@
-<div
-  data-testid="card-with-link"
-  [ngClass]="className()"
->
+@if (variant() === 'fsp') {
+  <div
+    data-testid="card-with-link"
+    class="group shadow-clickable-cards border-grey-300 relative h-full rounded-lg border bg-white transition-colors focus-within:border-purple-500 hover:border-purple-500"
+  >
+    <ng-container *ngTemplateOutlet="cardInner"></ng-container>
+  </div>
+} @else {
+  <div
+    data-testid="card-with-link"
+    class="group shadow-clickable-cards relative h-full rounded-2xl border border-transparent bg-white transition-colors focus-within:border-purple-500 hover:border-purple-500"
+  >
+    <ng-container *ngTemplateOutlet="cardInner"></ng-container>
+  </div>
+}
+
+<ng-template #cardInner>
   <div class="flex items-center gap-4 p-4">
     @if (image()) {
       <img
@@ -48,26 +61,7 @@
   <div class="p-4 pt-0 empty:hidden">
     <ng-content select="[card-footer]"></ng-content>
   </div>
-
-  <!-- <ng-template pTemplate="title">
-    <div class="flex flex-row items-center">
-      <div>
-        @if (subtitle()) {
-          <div class="txt-body-m font-normal">
-            {{ subtitle() }}
-          </div>
-        }
-      </div>
-    </div>
-  </ng-template> -->
-
-  <!-- <ng-template pTemplate="content">
-
-  </ng-template> -->
-  <!-- <ng-template pTemplate="footer">
-    <ng-content select="[card-footer]"></ng-content>
-  </ng-template> -->
-</div>
+</ng-template>
 
 <ng-template #cardTitle>
   @if (loading()) {
