@@ -24,7 +24,6 @@ export class KoboSubmissionService {
     private readonly koboSubmissionHelperService: KoboSubmissionHelperService,
   ) {}
 
-  //TODO:
   public async processKoboWebhookCall(
     koboWebhookIncomingSubmission: KoboWebhookIncomingSubmission,
   ): Promise<void> {
