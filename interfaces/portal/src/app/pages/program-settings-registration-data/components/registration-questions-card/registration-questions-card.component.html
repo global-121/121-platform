@@ -1,7 +1,7 @@
 <app-card-editable
-  header="Personal information"
+  header="Registration questions"
   i18n-header
-  editPencilTitle="Edit personal information"
+  editPencilTitle="Edit registration questions"
   i18n-editPencilTitle
   [canEdit]="false"
   [isEditing]="false"
@@ -13,9 +13,9 @@
     i18n
     class="mb-4"
   >
-    Below are the {{ programAttributes.data()?.length }} questions from the
-    integrated Kobo form. Please edit each column name to a shorter version that
-    will be displayed in the data table and on the profile page.
+    Below are the {{ programAttributes.data()?.length }} questions that will be
+    displayed in the data table and on the profile page.<br />
+    You can edit each column name to a shorter version.
   </p>
 
   <app-program-language-tabs
@@ -23,7 +23,7 @@
     [(currentLanguage)]="currentLanguage"
   >
     <ng-template #languageTemplate>
-      <p-table [value]="sortedAttributes()">
+      <p-table [value]="programAttributes.data() ?? []">
         <ng-template #header>
           <tr>
             <th

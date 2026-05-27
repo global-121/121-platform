@@ -16,10 +16,7 @@
   </ng-template>
   <div class="flex flex-col gap-4">
     <p class="text-base">
-      <ng-container i18n="@@session-expired-body"
-        >For security reasons, you've been logged out. After logging in, you'll
-        return to where you left off.</ng-container
-      >
+      {{ sessionExpiredMessage }}
     </p>
     <div class="flex justify-end">
       <p-button

@@ -381,8 +381,8 @@ export class ProgramRegistrationAttributesService {
     const programRegistrationAttribute =
       new ProgramRegistrationAttributeEntity();
     programRegistrationAttribute.name = dto.name;
-    programRegistrationAttribute.label = dto.label;
-    programRegistrationAttribute.koboLabel = dto.koboLabel;
+    programRegistrationAttribute.label = dto.label ?? null;
+    programRegistrationAttribute.koboLabel = dto.koboLabel ?? null;
     programRegistrationAttribute.type = dto.type;
     programRegistrationAttribute.options = dto.options ?? null;
     programRegistrationAttribute.scoring = dto.scoring ?? {};

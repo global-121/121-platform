@@ -22,10 +22,10 @@ export class ProgramRegistrationAttributeEntity extends Base121Entity {
   public name: string;
 
   @Column('json', { nullable: true })
-  public label?: RegistrationPreferredLanguageTranslation | null; // user-defined, priority
+  public label: RegistrationPreferredLanguageTranslation | null; // user-defined, priority
 
   @Column('json', { nullable: true })
-  public koboLabel?: RegistrationPreferredLanguageTranslation | null;
+  public koboLabel: RegistrationPreferredLanguageTranslation | null;
 
   @Column({ type: 'character varying' })
   public type: RegistrationAttributeTypes;
