@@ -45,17 +45,19 @@
         </p>
       }
 
-      <div class="space-y-4">
+      <div class="space-y-2">
         @for (fsp of configurableFsps(); track fsp.name) {
-          <app-card-with-link
-            [title]="fsp.defaultLabel | translatableString"
-            (cardClicked)="addFspConfiguration.emit(fsp.name)"
-            [image]="FSP_IMAGE_URLS[fsp.name]"
-          >
-            <ng-container card-subtitle>
-              <div i18n>Click to integrate</div>
-            </ng-container>
-          </app-card-with-link>
+          <div>
+            <app-card-with-link
+              [title]="fsp.defaultLabel | translatableString"
+              (cardClicked)="addFspConfiguration.emit(fsp.name)"
+              [image]="FSP_IMAGE_URLS[fsp.name]"
+            >
+              <ng-container card-subtitle>
+                <div i18n>Click to integrate</div>
+              </ng-container>
+            </app-card-with-link>
+          </div>
         }
       </div>
     } @else {

@@ -1,16 +1,18 @@
 <app-card-with-link
   (cardClicked)="reconfigureFsp.emit(configuration())"
   [title]="fspConfigurationLabel()"
-  subtitle="Click to reconfigure"
   [menuItems]="menuItems()"
   [image]="fspImage()"
-  class="relative"
   i18n-subtitle
 >
+  <ng-container card-subtitle>
+    <div i18n>Click to reconfigure</div>
+  </ng-container>
+
   <ng-container card-content>
     <p
       i18n
-      class="mt-4 font-bold"
+      class="font-bold"
     >
       FSP notes
     </p>
@@ -54,13 +56,13 @@
             <td class="relative">
               {{ attribute.name }}
               <p-button
-                icon="pi pi-copy"
                 (click)="copyToClipboard(attribute.name)"
-                text
-                rounded
                 ariaLabel="Copy to clipboard"
+                icon="pi pi-copy"
+                class="hover:text-purple hover:cursor-pointer"
+                [unstyled]="true"
                 i18n-ariaLabel
-                class="absolute top-1/2 -translate-y-1/2"
+                size="small"
               />
             </td>
           </tr>

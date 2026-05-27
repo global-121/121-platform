@@ -1,8 +1,8 @@
 <div
   data-testid="card-with-link"
-  class="group shadow-clickable-cards border-grey-300 relative h-full rounded-lg border bg-white transition-colors focus-within:border-purple-500 hover:border-purple-500"
+  [ngClass]="className()"
 >
-  <div class="flex gap-4 p-4">
+  <div class="flex items-center gap-4 p-4">
     @if (image()) {
       <img
         class="mx-auto size-14 object-contain"
@@ -29,7 +29,11 @@
           </a>
         }
       </div>
-      <ng-content select="[card-subtitle]"></ng-content>
+
+      <!-- SUBTITLE -->
+      <div class="text-sm">
+        <ng-content select="[card-subtitle]"></ng-content>
+      </div>
     </div>
     @if (menuItems().length > 0) {
       <div class="absolute inset-y-2 inset-e-2">
@@ -40,6 +44,9 @@
 
   <div class="p-4 pt-0 empty:hidden">
     <ng-content select="[card-content]"></ng-content>
+  </div>
+  <div class="p-4 pt-0 empty:hidden">
+    <ng-content select="[card-footer]"></ng-content>
   </div>
 
   <!-- <ng-template pTemplate="title">
