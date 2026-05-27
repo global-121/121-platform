@@ -145,14 +145,15 @@ describe('Set registration to completed after payment', () => {
 
     await waitForPaymentAndTransactionsToComplete({
       programId,
+      paymentId: firstPaymentId,
       paymentReferenceIds: referenceIds,
       accessToken,
       maxWaitTimeMs: 20_000,
     });
 
     // Assert - paymentCount should be 1 because only the started/completed
-    // transaction counts; the second payment's transaction is still in
-    // is excluded from the count.
+    // transaction counts; the second payment's transaction remains in
+    // `approved` status and is therefore excluded from the count.
     const registrationAfterFirstPayment =
       await waitForRegistrationToHaveUpdatedPaymentCount({
         programId,

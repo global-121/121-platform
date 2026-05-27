@@ -63,10 +63,12 @@ export class TransactionRepository extends Repository<TransactionEntity> {
   public async countStartedTransactionsByReferenceId(
     referenceId: string,
   ): Promise<number> {
-    // Started transactions are transactions that are not in 'pendingApproval' or 'approved' status
-    // Only these transactions should be counted for payment count and completion of registration, as transactions in 'pendingApproval' or 'approved' status might still be deleted or rolled back
-    // If a registrations would be in 2 payments at the same time (and 1 transaction away from completion) and the first payment is started the registration would move to completed
-    // and than het would be exluded from the second payment, which is desired behavior (we expect this to rarely happen)
+    // Count only transactions that have progressed beyond 'pendingApproval' and
+    // 'approved'. Those earlier states may still be deleted or rolled back, so
+    // they should not contribute to payment counts or trigger registration
+    // completion. This also ensures that if a registration is included in two
+    // payments at once, starting the first payment can complete the registration
+    // and exclude it from the second payment, which is the intended behavior.
     return await this.createQueryBuilder('transaction')
       .leftJoin('transaction.registration', 'registration')
       .where('registration."referenceId" = :referenceId', { referenceId })
