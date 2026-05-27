@@ -39,6 +39,7 @@ import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
 import { MAX_IMPORT_RECORDS } from '@121-service/src/registration/services/registrations-creation.service';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
@@ -166,6 +167,40 @@ export class KoboController {
     programId: number,
   ): Promise<KoboResponseDto> {
     return this.koboService.getKoboData({ programId });
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
+  @ApiOperation({
+    summary: 'Refresh Kobo form integration for a Program',
+    description:
+      'Fetches the latest deployed Kobo form definition and updates the program registration attributes accordingly. Use this when you have made changes to your Kobo form and want to apply those changes to the program.',
+  })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+    description: 'The unique identifier of the program',
+    example: 1,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Kobo form refreshed successfully',
+    type: KoboIntegrationResultDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'No Kobo integration found for this program',
+  })
+  @Patch('programs/:programId/kobo')
+  public async refreshKoboForm(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<KoboIntegrationResultDto> {
+    const result = await this.koboService.refreshKoboForm({ programId });
+    return {
+      message: 'Kobo form refreshed successfully',
+      name: result.name,
+    };
   }
 
   @AuthenticatedUser({ isAdmin: true })

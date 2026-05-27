@@ -51,5 +51,6 @@
     "icon",
     "ngClass",
     "class:list"
-  ]
+  ],
+  "vsicons.presets.nestjs": true
 }

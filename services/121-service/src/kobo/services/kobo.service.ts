@@ -146,6 +146,43 @@ export class KoboService {
     };
   }
 
+  public async refreshKoboForm({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<{ name: string | null }> {
+    const koboIntegration = await this.koboRepository.findOne({
+      where: { programId: Equal(programId) },
+    });
+    if (!koboIntegration) {
+      throw new HttpException(
+        'No Kobo integration found for this program',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const formDefinition = await this.getFormDefinitionOrThrow({
+      assetUid: koboIntegration.assetUid,
+      token: koboIntegration.token,
+      url: koboIntegration.url,
+    });
+
+    await this.validateFormAndUpdateProgram({
+      formDefinition,
+      programId,
+    });
+
+    await this.koboRepository.update(
+      { programId },
+      {
+        versionId: formDefinition.versionId,
+        dateDeployed: formDefinition.dateDeployed,
+      },
+    );
+
+    return { name: formDefinition.name };
+  }
+
   public async validateFormAndUpdateProgram({
     formDefinition,
     programId,
