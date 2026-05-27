@@ -1,8 +1,15 @@
 import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 
-/**
-This smells..
+interface ErrorResponse {
+  singleErrorMessage: null | string;
+  detailedErrors: DetailedImportError[] | null;
+}
 
+export interface DetailedImportError extends ValidateRegistrationErrorObject {
+  lineNumber?: number;
+  id: number;
+}
+/**
 The helper util is created to split the error response of the import registrations endpoint into a single error
 payload that contains either a message or detailed errors. This is because the endpoint can return 3 types of
 different error shapes to the frontend and we want to handle them separately in the UI. The util also handles
@@ -12,13 +19,16 @@ error on the server.
 Here are the error response formats we handle in the UI for the import file dialog:
 
 1. BadRequestException with a message (Example: Program Files -> Validation failed (invalid file type))
+```
 {
-    "message": "Validation failed (invalid file type)",
-    "error": "Bad Request",
-    "statusCode": 400
+  "message": "Validation failed (invalid file type)",
+  "error": "Bad Request",
+  "statusCode": 400
 }
+```
 
 2. Detailed errors format (Example: Registration import -> validation errors in the file)
+```
 [
   {
      "column": "referenceId",
@@ -30,21 +40,13 @@ Here are the error response formats we handle in the UI for the import file dial
    {...},
    {...},
 ]
+```
 
 3. Single string in array error (Example: Registration import -> too many records)
+```
 ['Some error message']
-
+```
 */
-
-interface ErrorResponse {
-  singleErrorMessage: null | string;
-  detailedErrors: DetailedImportError[] | null;
-}
-
-export interface DetailedImportError extends ValidateRegistrationErrorObject {
-  lineNumber?: number;
-  id: number;
-}
 
 export const errorResponseSplitter = (
   failureReason: Error | null,
