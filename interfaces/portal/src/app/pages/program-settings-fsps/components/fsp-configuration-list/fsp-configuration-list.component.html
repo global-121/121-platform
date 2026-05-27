@@ -49,11 +49,13 @@
         @for (fsp of configurableFsps(); track fsp.name) {
           <app-card-with-link
             [title]="fsp.defaultLabel | translatableString"
-            subtitle="Click to integrate"
-            i18n-subtitle
             (cardClicked)="addFspConfiguration.emit(fsp.name)"
             [image]="FSP_IMAGE_URLS[fsp.name]"
-          />
+          >
+            <ng-container card-subtitle>
+              <div i18n>Click to integrate</div>
+            </ng-container>
+          </app-card-with-link>
         }
       </div>
     } @else {

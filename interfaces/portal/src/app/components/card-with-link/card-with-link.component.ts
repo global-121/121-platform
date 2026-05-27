@@ -38,6 +38,7 @@ export class CardWithLinkComponent {
   readonly titleColoredChipColor = input<ChipVariant>('grey');
   readonly image = input<string>();
   readonly loading = input(false);
+  // readonly subtitle = input<string>();
   readonly enableLink = input(true);
   readonly cardClicked = output();
   readonly menuItems = input<MenuItem[]>([]);
