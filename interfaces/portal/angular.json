@@ -187,6 +187,7 @@
             "sortNestedTagAttributes": true,
             "sourceFile": "messages.xlf",
             "targetFiles": [],
+            "collapseWhitespace": true,
             "trim": true
           }
         },

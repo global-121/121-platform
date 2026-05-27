@@ -33,23 +33,25 @@
         <ng-template #header>
           <tr class="border-grey-300 bg-grey-100 border-b">
             <th
+              scope="col"
               i18n
               class="txt-body-s text-grey-700 w-[11%] px-4 py-2 text-center font-semibold"
             >
               Step
             </th>
             <th
-              i18n="@@page-title-users"
+              scope="col"
+              i18n
               class="txt-body-s text-grey-700 w-[46%] px-4 py-2 font-semibold"
             >
               Users
             </th>
             <th
-              i18n
+              scope="col"
               class="txt-body-s text-grey-700 w-[43%] px-4 py-2 font-semibold"
             >
               <span class="inline-flex items-center gap-1 whitespace-nowrap">
-                If payment total exceeds
+                <ng-container i18n>If payment total exceeds</ng-container>
                 <app-info-tooltip
                   message="This user or one of these users will need to approve the payment if the total amount is above the decided value."
                   i18n-message
