@@ -62,7 +62,7 @@ export class RegistrationQuestionsCardComponent {
     }
 
     const programAttributesLength = this.programAttributes.data().length;
-    return $localize`Below are the ${programAttributesLength.toString()} questions from the linked Kobo form. Please edit each label to a shorter version which will be displayed in the table of the registration page and on the profile page.\n\nThe default lanaguage is set by the language of the instance.`;
+    return $localize`Below are the ${programAttributesLength.toString()} questions from the linked Kobo form. Please edit each label to a shorter version which will be displayed in the table of the registration page and on the profile page.\n\nThe default language is set by the language of the instance.`;
   });
 
   readonly program = injectQuery(
@@ -107,20 +107,8 @@ export class RegistrationQuestionsCardComponent {
     computed(() => {
       const { label, koboLabel, name } = attribute;
 
-      console.log('\n\n🚀 ~');
-      console.log('🚀 ~ RegistrationQuestionsCardComponent ~ label:', label);
-      console.log(
-        '🚀 ~ RegistrationQuestionsCardComponent ~ koboLabel:',
-        koboLabel,
-      );
-      console.log('🚀 ~ RegistrationQuestionsCardComponent ~ name:', name);
-
       if (label) {
         const labelToShow = label[this.currentLanguage()];
-        console.log(
-          '🚀 ~ RegistrationQuestionsCardComponent ~ labelToShow:',
-          labelToShow,
-        );
         if (labelToShow) {
           return labelToShow;
         }
@@ -128,10 +116,6 @@ export class RegistrationQuestionsCardComponent {
 
       if (koboLabel) {
         const labelToShow = koboLabel[this.currentLanguage()];
-        console.log(
-          '🚀 ~ RegistrationQuestionsCardComponent ~ labelToShow:',
-          labelToShow,
-        );
         if (labelToShow) {
           return labelToShow;
         }
@@ -139,14 +123,4 @@ export class RegistrationQuestionsCardComponent {
 
       return name;
     });
-
-  readonly sortedAttributes = computed(() => {
-    if (!this.programAttributes.isSuccess()) {
-      return [];
-    }
-
-    return this.programAttributes
-      .data()
-      .sort((a, b) => a.name.localeCompare(b.name));
-  });
 }

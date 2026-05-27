@@ -2394,18 +2394,6 @@
       <trans-unit id="submission-result-skipped" datatype="html">
         <source>Submissions skipped</source>
       </trans-unit>
-      <trans-unit id="3860042976960140382" datatype="html">
-        <source>Below are the <x equiv-text="programAttributesLength.toString()" id="PH"/> questions from the linked Kobo form. Please edit each label to a shorter version which will be displayed in the table of the registration page and on the profile page. The default lanaguage is set by the language of the instance.</source>
-      </trans-unit>
-      <trans-unit id="4705747697674144692" datatype="html">
-        <source>Personal information</source>
-      </trans-unit>
-      <trans-unit id="6062854020526523813" datatype="html">
-        <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions from the integrated Kobo form. Please edit each column name to a shorter version that will be displayed in the data table and on the profile page.</source>
-      </trans-unit>
-      <trans-unit id="6267577653105675049" datatype="html">
-        <source>Edit personal information</source>
-      </trans-unit>
       <trans-unit id="6711033592081422255" datatype="html">
         <source>Question label</source>
       </trans-unit>
@@ -2444,6 +2432,18 @@
       </trans-unit>
       <trans-unit id="4228319514212568219" datatype="html">
         <source>Users</source>
+      </trans-unit>
+      <trans-unit id="1837695438852419215" datatype="html">
+        <source>Below are the <x equiv-text="programAttributesLength.toString()" id="PH"/> questions from the linked Kobo form. Please edit each label to a shorter version which will be displayed in the table of the registration page and on the profile page. The default language is set by the language of the instance.</source>
+      </trans-unit>
+      <trans-unit id="2669137255472752633" datatype="html">
+        <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> You can edit each column name to a shorter version.</source>
+      </trans-unit>
+      <trans-unit id="5236492962293730127" datatype="html">
+        <source>Registration questions</source>
+      </trans-unit>
+      <trans-unit id="5357145550757146604" datatype="html">
+        <source>Edit registration questions</source>
       </trans-unit>
     </body>
   </file>
