@@ -22,6 +22,8 @@ module.exports = {
   transformIgnorePatterns: [
     'node_modules/(?!@t3-oss|uuid|openid-client|oauth4webapi|jose|sanitize-html|htmlparser2|entities|domhandler|domutils|domelementtype|dom-serializer)',
   ],
+  detectOpenHandles: true,
+  logHeapUsage: true,
   randomize: true,
   verbose: true,
   reporters: [

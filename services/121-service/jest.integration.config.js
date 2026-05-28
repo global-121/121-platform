@@ -22,6 +22,8 @@ module.exports = {
     'node_modules/(?!@t3-oss|uuid|openid-client|oauth4webapi|jose|sanitize-html|htmlparser2|entities|domhandler|domutils|domelementtype|dom-serializer)',
   ],
   testTimeout: 30_000,
+  detectOpenHandles: true,
+  logHeapUsage: true,
   randomize: true,
   verbose: true,
   reporters: ['default', ['github-actions', { silent: false }], 'summary'],
