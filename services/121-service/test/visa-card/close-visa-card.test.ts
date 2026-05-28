@@ -79,7 +79,7 @@ describe('Close visa debit card', () => {
     );
     expect(closedCard.actions).toEqual([VisaCardAction.replace]);
     expect(closedCard.debugInformation.isTokenBlocked).toBe(true);
-    expect(closedCard.status).toBe(VisaCard121Status.Blocked);
+    expect(closedCard.status).toBe(VisaCard121Status.Closed);
     expect(closedCard.debugInformation.intersolveVisaCardStatus).toBe(
       IntersolveVisaCardStatus.CardClosed,
     );

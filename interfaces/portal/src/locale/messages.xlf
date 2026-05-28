@@ -2430,6 +2430,9 @@
       <trans-unit id="4228319514212568219" datatype="html">
         <source>Users</source>
       </trans-unit>
+      <trans-unit id="debit-card-status-blocked" datatype="html">
+        <source>Blocked</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
