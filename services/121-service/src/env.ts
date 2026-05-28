@@ -306,8 +306,13 @@ export const env = createEnv({
     // Third-party: Azure ApplicationInsights
     APPLICATIONINSIGHTS_CONNECTION_STRING: z.string().optional(),
 
-    // Third-party: Azure Email Service
-    AZURE_EMAIL_API_URL: z.url(),
+    // Third-party: Azure Email Service (Microsoft Graph API)
+    MOCK_AZURE_EMAIL: z.stringbool().default(false),
+    AZURE_GRAPH_API_URL: z
+      .url()
+      .pipe(z.transform((url) => withoutTrailingSlash(url))),
+    AZURE_EMAIL_SENDER_ADDRESS: z.email(),
+    AZURE_USER_ASSIGNED_IDENTITY_CLIENT_ID: z.string().optional(),
 
     // Third-party: Mock/testing
     MOCK_SERVICE_URL: z
@@ -343,6 +348,20 @@ export const env = createEnv({
           path: ['NEDBANK_CERTIFICATE_PASSWORD'],
           message:
             'The NEDBANK_CERTIFICATE_PASSWORD variable must not be set in production.',
+        });
+      }
+
+      // When sending email through the real Microsoft Graph API, a User
+      // Assigned Managed Identity client ID is required to acquire a token.
+      if (
+        !env.MOCK_AZURE_EMAIL &&
+        !env.AZURE_USER_ASSIGNED_IDENTITY_CLIENT_ID
+      ) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['AZURE_USER_ASSIGNED_IDENTITY_CLIENT_ID'],
+          message:
+            'AZURE_USER_ASSIGNED_IDENTITY_CLIENT_ID must be set when MOCK_AZURE_EMAIL is disabled.',
         });
       }
 

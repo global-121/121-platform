@@ -1,16 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
 import { SUPPORT_EMAIL } from '@121-service/src/emails/emails.const';
-import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
+import { GraphService } from '@121-service/src/emails/graph/graph.service';
 import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
-import { env } from '@121-service/src/env';
-import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { stripHtmlTags } from '@121-service/src/utils/strip-html-tags.helper';
 
 @Injectable()
 export class EmailsService {
-  public constructor(private readonly httpService: CustomHttpService) {}
+  public constructor(private readonly graphService: GraphService) {}
 
   public async sendFromTemplate<
     TInput extends { email: string; recipientName: string },
@@ -28,30 +26,14 @@ export class EmailsService {
       recipientName: stripHtmlTags(input.recipientName),
     };
 
-    const template = templateBuilder(sanitizedInput);
+    const { subject, body } = templateBuilder(sanitizedInput);
 
-    await this.sendEmail({
+    await this.graphService.sendMail({
       email: sanitizedInput.email,
-      subject: template.subject,
-      body: this.wrapWithEmailLayout(template.body),
+      subject,
+      body: this.wrapWithEmailLayout(body),
       attachment,
     });
-  }
-
-  public async sendEmail(emailData: EmailData): Promise<void> {
-    const response = await this.httpService.post<{
-      status: number;
-      statusText?: string;
-    }>(env.AZURE_EMAIL_API_URL, emailData);
-    const isSuccess =
-      typeof response.status === 'number' &&
-      response.status >= 200 &&
-      response.status < 300;
-    if (!isSuccess) {
-      throw new EmailDeliveryError(
-        `Failed to send email: HTTP ${response.status} ${response.statusText ?? ''}`.trim(),
-      );
-    }
   }
 
   private wrapWithEmailLayout(content: string): string {

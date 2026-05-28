@@ -1,11 +1,18 @@
 import { Injectable } from '@nestjs/common';
 
-import { SendEmailRequestDto } from '@mock-service/src/email/dto/send-email-request.dto';
-import { SendEmailResponseDto } from '@mock-service/src/email/dto/send-email-response.dto';
+import { SendMailRequestDto } from '@mock-service/src/email/dto/send-mail-request.dto';
 
 @Injectable()
 export class EmailMockService {
-  public sendEmail(_body: SendEmailRequestDto): SendEmailResponseDto {
-    return { message: 'Email accepted' };
+  public sendMail({
+     sender: _sender,
+     request: _request,
+  }: {
+    sender: string;
+    request: SendMailRequestDto;
+  }): void {
+    // Mock implementation: accept and discard. Matches the real Microsoft
+    // Graph `sendMail` endpoint, which returns 202 Accepted with no body.
+    console.log('Mock email sent:', { sender: _sender, request: _request });
   }
 }
