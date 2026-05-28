@@ -5,8 +5,8 @@
     @for (language of languages; track language) {
       <p-tab [value]="language">
         <i class="pi pi-globe"></i>
-        {{ language }}</p-tab
-      >
+        {{ getTabLabel(language)() | titlecase }}
+      </p-tab>
     }
   </p-tablist>
   <p-tabpanels>
