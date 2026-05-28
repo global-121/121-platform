@@ -1173,9 +1173,6 @@
       <trans-unit id="6533918067030990396" datatype="html">
         <source>Amount</source>
       </trans-unit>
-      <trans-unit id="6554222446236271125" datatype="html">
-        <source>The import takes about 1 minute per 100 records.</source>
-      </trans-unit>
       <trans-unit id="6555318547274416232" datatype="html">
         <source>Value</source>
       </trans-unit>
