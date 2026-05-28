@@ -11,65 +11,88 @@
   </ng-container>
 
   <ng-container card-content>
-    <p
-      i18n
-      class="font-bold"
-    >
-      FSP notes
-    </p>
-
     @if (requiredRegistrationAttributes().length > 0) {
+      <p-accordion
+        style="
+          --p-content-border-radius: 0;
+          --p-accordion-panel-border-width: 0;
+          --p-accordion-header-first-top-border-radius: 0;
+          --p-accordion-header-padding: 0;
+          --p-accordion-content-padding: 0;
+        "
+      >
+        <p-accordion-panel value="0">
+          <p-accordion-header class="border-t">
+            <div class="pt-4">
+              <p
+                i18n
+                class="font-bold"
+              >
+                Form requirements
+              </p>
+            </div>
+          </p-accordion-header>
+          <p-accordion-content>
+            <p
+              i18n
+              class="mb-4 font-normal"
+            >
+              Your form must include the following required fields in this
+              <b>exact format</b>
+              for this FSP integration in the data column name:
+            </p>
+            <p-table
+              [value]="requiredRegistrationAttributes()"
+              [size]="'small'"
+              i18n-size
+            >
+              <ng-template #header>
+                <tr>
+                  <th
+                    i18n
+                    class="txt-body-s text-grey-700 font-semibold uppercase"
+                  >
+                    Question
+                  </th>
+                  <th
+                    i18n
+                    class="txt-body-s text-grey-700 font-semibold uppercase"
+                  >
+                    Data column name
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template
+                #body
+                let-attribute
+              >
+                <tr>
+                  <td>{{ attribute.label }}</td>
+                  <td class="relative">
+                    {{ attribute.name }}
+                    <p-button
+                      (click)="copyToClipboard(attribute.name)"
+                      ariaLabel="Copy to clipboard"
+                      icon="pi pi-copy"
+                      class="hover:text-purple hover:cursor-pointer"
+                      [unstyled]="true"
+                      i18n-ariaLabel
+                      size="small"
+                    />
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-accordion-content>
+        </p-accordion-panel>
+      </p-accordion>
+    } @else {
       <p
         i18n
-        class="mb-4"
+        class="font-bold"
       >
-        Your form must include the following required fields in this
-        <b>exact format</b>
-        for this FSP integration in the data column name:
+        FSP notes
       </p>
-      <p-table
-        [value]="requiredRegistrationAttributes()"
-        [size]="'small'"
-        i18n-size
-      >
-        <ng-template #header>
-          <tr>
-            <th
-              i18n
-              class="txt-body-s text-grey-700 font-semibold uppercase"
-            >
-              Question
-            </th>
-            <th
-              i18n
-              class="txt-body-s text-grey-700 font-semibold uppercase"
-            >
-              Data column name
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template
-          #body
-          let-attribute
-        >
-          <tr>
-            <td>{{ attribute.label }}</td>
-            <td class="relative">
-              {{ attribute.name }}
-              <p-button
-                (click)="copyToClipboard(attribute.name)"
-                ariaLabel="Copy to clipboard"
-                icon="pi pi-copy"
-                class="hover:text-purple hover:cursor-pointer"
-                [unstyled]="true"
-                i18n-ariaLabel
-                size="small"
-              />
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    } @else {
       <p i18n>There are no specific fields needed for this integration</p>
     }
   </ng-container>

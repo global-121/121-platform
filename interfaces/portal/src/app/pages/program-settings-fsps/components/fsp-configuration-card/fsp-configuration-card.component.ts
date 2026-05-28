@@ -12,6 +12,7 @@ import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
+import { AccordionModule } from 'primeng/accordion';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
@@ -35,6 +36,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     FormDialogComponent,
     TableModule,
     CardWithLinkComponent,
+    AccordionModule,
   ],
   templateUrl: './fsp-configuration-card.component.html',
   styles: ``,

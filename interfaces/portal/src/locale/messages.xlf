@@ -2486,6 +2486,8 @@
       </trans-unit>
       <trans-unit id="generic-info" datatype="html">
         <source>Info</source>
+      <trans-unit id="6967846885075875243" datatype="html">
+        <source>Form requirements</source>
       </trans-unit>
       <trans-unit id="payment-event-log-item-type-renamed" datatype="html">
         <source>Renamed</source>
