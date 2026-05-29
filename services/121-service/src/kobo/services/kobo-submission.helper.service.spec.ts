@@ -3,7 +3,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboRegistrationInput } from '@121-service/src/kobo/interfaces/kobo-registration-input.interface';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
@@ -16,7 +15,6 @@ import { RegistrationsInputValidator } from '@121-service/src/registration/valid
 describe('KoboSubmissionHelperService', () => {
   let service: KoboSubmissionHelperService;
   let koboService: jest.Mocked<KoboService>;
-  let koboRepository: jest.Mocked<Repository<KoboEntity>>;
   let registrationRepository: jest.Mocked<Repository<RegistrationEntity>>;
   let registrationsInputValidator: jest.Mocked<RegistrationsInputValidator>;
   let registrationsCreationService: jest.Mocked<RegistrationsCreationService>;
@@ -64,13 +62,7 @@ describe('KoboSubmissionHelperService', () => {
           provide: KoboService,
           useValue: {
             getFormDefinitionOrThrow: jest.fn(),
-            validateFormAndUpdateProgram: jest.fn(),
-          },
-        },
-        {
-          provide: getRepositoryToken(KoboEntity),
-          useValue: {
-            update: jest.fn(),
+            applyFormDefinitionToProgram: jest.fn(),
           },
         },
         {
@@ -98,7 +90,6 @@ describe('KoboSubmissionHelperService', () => {
       KoboSubmissionHelperService,
     );
     koboService = module.get(KoboService);
-    koboRepository = module.get(getRepositoryToken(KoboEntity));
     registrationRepository = module.get(getRepositoryToken(RegistrationEntity));
     registrationsInputValidator = module.get(RegistrationsInputValidator);
     registrationsCreationService = module.get(RegistrationsCreationService);
@@ -124,20 +115,20 @@ describe('KoboSubmissionHelperService', () => {
           versionId: 'v2',
         }),
       );
-      koboService.validateFormAndUpdateProgram.mockResolvedValue(undefined);
+      koboService.applyFormDefinitionToProgram.mockResolvedValue(undefined);
 
       // Act
       await service.updateProgramToNewVersionIfApplicable(baseVersionParams);
 
       // Assert
-      expect(koboService.validateFormAndUpdateProgram).toHaveBeenCalledWith({
-        formDefinition: expect.objectContaining({ versionId: 'v2' }),
+      expect(koboService.applyFormDefinitionToProgram).toHaveBeenCalledWith({
+        formDefinition: expect.objectContaining({
+          versionId: 'v2',
+          dateDeployed: newerDateDeployed,
+        }),
         programId: 1,
+        currentVersionId: 'v1',
       });
-      expect(koboRepository.update).toHaveBeenCalledWith(
-        { versionId: 'v1', programId: 1 },
-        { versionId: 'v2', dateDeployed: newerDateDeployed },
-      );
     });
 
     it('should skip update when versions match', async () => {
@@ -163,7 +154,7 @@ describe('KoboSubmissionHelperService', () => {
       await service.updateProgramToNewVersionIfApplicable(baseVersionParams);
 
       // Assert
-      expect(koboService.validateFormAndUpdateProgram).not.toHaveBeenCalled();
+      expect(koboService.applyFormDefinitionToProgram).not.toHaveBeenCalled();
     });
 
     it('should throw when form validation fails', async () => {
@@ -175,7 +166,7 @@ describe('KoboSubmissionHelperService', () => {
       koboService.getFormDefinitionOrThrow.mockResolvedValue(
         buildMockFormDefinition({ versionId: 'v2' }),
       );
-      koboService.validateFormAndUpdateProgram.mockRejectedValue(
+      koboService.applyFormDefinitionToProgram.mockRejectedValue(
         validationError,
       );
 

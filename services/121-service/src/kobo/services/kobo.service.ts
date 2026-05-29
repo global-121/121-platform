@@ -146,12 +146,44 @@ export class KoboService {
     };
   }
 
-  public async validateFormAndUpdateProgram({
+  public async refreshKoboForm({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<{ name: string | null }> {
+    const koboIntegration = await this.koboRepository.findOne({
+      where: { programId: Equal(programId) },
+    });
+    if (!koboIntegration) {
+      throw new HttpException(
+        'No Kobo integration found for this program',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const formDefinition = await this.getFormDefinitionOrThrow({
+      assetUid: koboIntegration.assetUid,
+      token: koboIntegration.token,
+      url: koboIntegration.url,
+    });
+
+    await this.applyFormDefinitionToProgram({
+      formDefinition,
+      programId,
+      currentVersionId: koboIntegration.versionId,
+    });
+
+    return { name: formDefinition.name };
+  }
+
+  public async applyFormDefinitionToProgram({
     formDefinition,
     programId,
+    currentVersionId,
   }: {
     formDefinition: KoboFormDefinition;
     programId: number;
+    currentVersionId: string;
   }): Promise<void> {
     await this.koboValidationService.validateKoboFormDefinition({
       formDefinition,
@@ -161,6 +193,15 @@ export class KoboService {
       formDefinition,
       programId,
     });
+
+    await this.koboRepository.update(
+      { programId, versionId: currentVersionId },
+      {
+        versionId: formDefinition.versionId,
+        dateDeployed: formDefinition.dateDeployed,
+        name: formDefinition.name,
+      },
+    );
   }
 
   public async getFormDefinitionOrThrow({

@@ -4,7 +4,6 @@ import { In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { ImportExistingSubmissionsResultDto } from '@121-service/src/kobo/dtos/import-existing-submissions-result.dto';
-import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboRegistrationInput } from '@121-service/src/kobo/interfaces/kobo-registration-input.interface';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -16,8 +15,6 @@ import { RegistrationsInputValidator } from '@121-service/src/registration/valid
 
 @Injectable()
 export class KoboSubmissionHelperService {
-  @InjectRepository(KoboEntity)
-  private readonly koboRepository: Repository<KoboEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
 
@@ -75,18 +72,11 @@ export class KoboSubmissionHelperService {
       return;
     }
 
-    await this.koboService.validateFormAndUpdateProgram({
+    await this.koboService.applyFormDefinitionToProgram({
       formDefinition,
       programId,
+      currentVersionId: currentVersion,
     });
-
-    await this.koboRepository.update(
-      { versionId: currentVersion, programId },
-      {
-        versionId: formVersionFromIncomingSubmission,
-        dateDeployed: formDeployedDateOfIncomingSubmission,
-      },
-    );
   }
 
   public async filterAlreadyExistingSubmissionUuids(

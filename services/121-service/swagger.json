@@ -1227,6 +1227,14 @@
   },
   {
     "method": "patch",
+    "path": "/api/programs/{programId}/kobo",
+    "params": [
+      "programId"
+    ],
+    "returnType": "KoboIntegrationResultDto"
+  },
+  {
+    "method": "patch",
     "path": "/api/programs/{programId}/kobo/submissions",
     "params": [
       "programId"
