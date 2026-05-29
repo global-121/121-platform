@@ -75,7 +75,7 @@ export class KoboSubmissionHelperService {
     await this.koboService.applyFormDefinitionToProgram({
       formDefinition,
       programId,
-      filterByCurrentVersionId: currentVersion,
+      currentVersionId: currentVersion,
     });
   }
 

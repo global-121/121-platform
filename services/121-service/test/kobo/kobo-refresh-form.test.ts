@@ -1,37 +1,78 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { env } from '@121-service/src/env';
-import { CreateKoboDto } from '@121-service/src/kobo/dtos/create-kobo.dto';
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
+import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { KoboMockAssetUids } from '@121-service/test/fixtures/kobo-mock-asset-uids';
 import {
   refreshKoboForm,
-  upsertKoboToProgram,
+  setupProgramWithKoboIntegration,
 } from '@121-service/test/helpers/kobo.helper';
+import {
+  getProgram,
+  patchProgramRegistrationAttribute,
+  postProgram,
+} from '@121-service/test/helpers/program.helper';
+import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { programIdSafaricom } from '@121-service/test/registrations/pagination/pagination-data';
 
-const koboLinkDto: CreateKoboDto = {
-  token: 'mock-token',
-  assetUid: KoboMockAssetUids.happyFlow,
-  url: `${env.MOCK_SERVICE_URL}/api/kobo`,
+const fspConfiguration: CreateProgramFspConfigurationDto = {
+  name: 'Safaricom',
+  label: { en: 'Safaricom' },
+  fspName: Fsps.safaricom,
+  properties: [],
+};
+
+const baseProgram: Partial<CreateProgramDto> = {
+  currency: CurrencyCode.EUR,
+  enableMaxPayments: true,
+  fixedTransferValue: 20,
+  programRegistrationAttributes: [
+    {
+      name: FspAttributes.nationalId,
+      label: { en: 'National ID' },
+      type: RegistrationAttributeTypes.text,
+      options: [],
+    },
+  ],
 };
 
 describe('Refresh Kobo form', () => {
   let accessToken: string;
 
-  beforeEach(async () => {
-    await resetDB({ seedScript: SeedScript.safaricomProgram });
+  beforeAll(async () => {
+    await resetDB({ seedScript: SeedScript.productionInitialState });
     accessToken = await getAccessToken();
   });
 
   it('should throw when no Kobo integration exists for the program', async () => {
+    // Arrange
+    const program: CreateProgramDto = {
+      ...baseProgram,
+      titlePortal: { en: 'Program without Kobo integration' },
+      languages: [RegistrationPreferredLanguage.en],
+    } as CreateProgramDto;
+
+    const createProgramResponse = await postProgram(program, accessToken);
+    const programId = createProgramResponse.body.id;
+
+    await postProgramFspConfiguration({
+      programId,
+      body: fspConfiguration,
+      accessToken,
+    });
+
     // Act
     const response = await refreshKoboForm({
-      programId: programIdSafaricom,
+      programId,
       accessToken,
     });
 
@@ -41,16 +82,39 @@ describe('Refresh Kobo form', () => {
 
   it('should successfully refresh an existing kobo integration', async () => {
     // Arrange
-    await upsertKoboToProgram({
-      programId: programIdSafaricom,
-      body: koboLinkDto,
+    const program: CreateProgramDto = {
+      ...baseProgram,
+      titlePortal: { en: 'Program with Kobo integration' },
+      languages: [RegistrationPreferredLanguage.en],
+    } as CreateProgramDto;
+
+    const { programId } = await setupProgramWithKoboIntegration({
+      assetUid: KoboMockAssetUids.happyFlow,
+      program,
+      fspConfiguration,
       accessToken,
-      dryRun: false,
     });
+
+    // Modify an attribute's label to prove refresh restores it
+    const attributeName = 'How_are_you_today_select_one';
+    await patchProgramRegistrationAttribute({
+      programId,
+      programRegistrationAttributeName: attributeName,
+      programRegistrationAttribute: { label: { en: 'Modified label' } },
+      accessToken,
+    });
+
+    // Verify the label was modified
+    const programBeforeRefresh = await getProgram(programId, accessToken);
+    const attrBefore =
+      programBeforeRefresh.body.programRegistrationAttributes.find(
+        (attr: { name: string }) => attr.name === attributeName,
+      );
+    expect(attrBefore.label.en).toBe('Modified label');
 
     // Act
     const response = await refreshKoboForm({
-      programId: programIdSafaricom,
+      programId,
       accessToken,
     });
 
@@ -60,6 +124,14 @@ describe('Refresh Kobo form', () => {
       message: 'Kobo form refreshed successfully',
       name: '25042025 Prototype Sprint',
     });
+
+    // Verify the label was restored from Kobo form definition
+    const programAfterRefresh = await getProgram(programId, accessToken);
+    const attrAfter =
+      programAfterRefresh.body.programRegistrationAttributes.find(
+        (attr: { name: string }) => attr.name === attributeName,
+      );
+    expect(attrAfter.label.en).toBe('How are you today (select one)?');
   });
 });
 

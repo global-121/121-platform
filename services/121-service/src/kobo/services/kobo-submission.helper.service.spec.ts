@@ -127,7 +127,7 @@ describe('KoboSubmissionHelperService', () => {
           dateDeployed: newerDateDeployed,
         }),
         programId: 1,
-        filterByCurrentVersionId: 'v1',
+        currentVersionId: 'v1',
       });
     });
 

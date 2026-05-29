@@ -173,7 +173,7 @@ export class KoboController {
   @ApiOperation({
     summary: 'Refresh Kobo form integration for a Program',
     description:
-      'Fetches the latest deployed Kobo form definition and updates the program registration attributes accordingly. Use this when you have made changes to your Kobo form and want to apply those changes to the program.',
+      'Fetches the latest deployed Kobo form definition and updates the program registration attributes and languages accordingly. Use this when you have made changes to your Kobo form and want to apply those changes to the program.',
   })
   @ApiParam({
     name: 'programId',
@@ -191,14 +191,6 @@ export class KoboController {
     status: HttpStatus.BAD_REQUEST,
     description:
       'Validation failed - the latest Kobo form definition does not meet program requirements.',
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Authentication required',
-  })
-  @ApiResponse({
-    status: HttpStatus.FORBIDDEN,
-    description: 'Insufficient permissions to refresh the Kobo form',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
