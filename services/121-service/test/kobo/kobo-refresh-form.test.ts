@@ -15,7 +15,7 @@ import {
 } from '@121-service/test/helpers/kobo.helper';
 import {
   getProgram,
-  patchProgramRegistrationAttribute,
+  patchProgram,
   postProgram,
 } from '@121-service/test/helpers/program.helper';
 import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
@@ -95,22 +95,12 @@ describe('Refresh Kobo form', () => {
       accessToken,
     });
 
-    // Modify an attribute's label to prove refresh restores it
-    const attributeName = 'How_are_you_today_select_one';
-    await patchProgramRegistrationAttribute({
+    // Remove Dutch to prove refresh restores languages from the form definition.
+    await patchProgram(
       programId,
-      programRegistrationAttributeName: attributeName,
-      programRegistrationAttribute: { label: { en: 'Modified label' } },
+      { languages: [RegistrationPreferredLanguage.en] },
       accessToken,
-    });
-
-    // Verify the label was modified
-    const programBeforeRefresh = await getProgram(programId, accessToken);
-    const attrBefore =
-      programBeforeRefresh.body.programRegistrationAttributes.find(
-        (attr: { name: string }) => attr.name === attributeName,
-      );
-    expect(attrBefore.label.en).toBe('Modified label');
+    );
 
     // Act
     const response = await refreshKoboForm({
@@ -125,13 +115,14 @@ describe('Refresh Kobo form', () => {
       name: '25042025 Prototype Sprint',
     });
 
-    // Verify the label was restored from Kobo form definition
+    // Verify Dutch (nl) was added back from the Kobo form definition
     const programAfterRefresh = await getProgram(programId, accessToken);
-    const attrAfter =
-      programAfterRefresh.body.programRegistrationAttributes.find(
-        (attr: { name: string }) => attr.name === attributeName,
-      );
-    expect(attrAfter.label.en).toBe('How are you today (select one)?');
+    expect(programAfterRefresh.body.languages).toEqual(
+      expect.arrayContaining([
+        RegistrationPreferredLanguage.en,
+        RegistrationPreferredLanguage.nl,
+      ]),
+    );
   });
 });
 
