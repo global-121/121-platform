@@ -54,15 +54,16 @@ runs:
     - name: Set VERSION of build/deployment
       shell: bash
       run: |
-        echo "GLOBAL_121_VERSION=$(git describe --tags --dirty --broken)" >> $GITHUB_ENV
+        global_121_version="$(git describe --tags --dirty --broken)"
+        printf 'GLOBAL_121_VERSION=%s\n' "$global_121_version" >> "$GITHUB_ENV"
 
     - name: Add VERSION to deployment
       id: version
       shell: bash
       working-directory: ${{ inputs.servicePath }}
       run: |
-        echo "${{ env.GLOBAL_121_VERSION }}" >> ./VERSION.txt
-        echo "build_version=${{ env.GLOBAL_121_VERSION }}" >> $GITHUB_OUTPUT
+        printf '%s\n' "$GLOBAL_121_VERSION" > ./VERSION.txt
+        printf 'build_version=%s\n' "$GLOBAL_121_VERSION" >> "$GITHUB_OUTPUT"
 
     - name: Reduce build package size
       shell: bash
