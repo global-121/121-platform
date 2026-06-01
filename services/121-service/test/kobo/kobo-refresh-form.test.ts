@@ -80,7 +80,7 @@ describe('Refresh Kobo form', () => {
     expect(response.status).toBe(HttpStatus.NOT_FOUND);
   });
 
-  it('should return 304 Not Modified when the Kobo form is already up to date', async () => {
+  it('should report no changes when the Kobo form is already up to date', async () => {
     // Arrange
     const program: CreateProgramDto = {
       ...baseProgram,
@@ -102,7 +102,11 @@ describe('Refresh Kobo form', () => {
     });
 
     // Assert
-    expect(response.status).toBe(HttpStatus.NOT_MODIFIED);
+    expect(response.status).toBe(HttpStatus.OK);
+    expect(response.body).toMatchObject({
+      message: 'Kobo form is already up to date',
+      updated: false,
+    });
   });
 
   it('should successfully refresh when the Kobo form has a new version', async () => {
@@ -140,6 +144,7 @@ describe('Refresh Kobo form', () => {
     expect(response.body).toMatchObject({
       message: 'Kobo form refreshed successfully',
       name: '25042025 Prototype Sprint',
+      updated: true,
     });
 
     // Verify Dutch (nl) was added back from the Kobo form definition
