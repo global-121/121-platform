@@ -111,8 +111,9 @@ describe('Refresh Kobo form', () => {
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
     expect(response.body).toMatchObject({
-      message: 'Kobo form refreshed successfully',
+      message: 'Kobo form was already up to date',
       name: '25042025 Prototype Sprint',
+      alreadyUpToDate: true,
     });
 
     // Verify Dutch (nl) was added back from the Kobo form definition

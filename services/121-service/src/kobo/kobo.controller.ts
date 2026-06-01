@@ -203,8 +203,11 @@ export class KoboController {
   ): Promise<KoboIntegrationResultDto> {
     const result = await this.koboService.refreshKoboForm({ programId });
     return {
-      message: 'Kobo form refreshed successfully',
+      message: result.alreadyUpToDate
+        ? 'Kobo form was already up to date'
+        : 'Kobo form refreshed successfully',
       name: result.name,
+      alreadyUpToDate: result.alreadyUpToDate,
     };
   }
 

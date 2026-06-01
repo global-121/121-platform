@@ -150,7 +150,7 @@ export class KoboService {
     programId,
   }: {
     programId: number;
-  }): Promise<{ name: string | null }> {
+  }): Promise<{ name: string | null; alreadyUpToDate: boolean }> {
     const koboIntegration = await this.koboRepository.findOne({
       where: { programId: Equal(programId) },
     });
@@ -167,13 +167,16 @@ export class KoboService {
       url: koboIntegration.url,
     });
 
+    const alreadyUpToDate =
+      formDefinition.versionId === koboIntegration.versionId;
+
     await this.applyFormDefinitionToProgram({
       formDefinition,
       programId,
       currentVersionId: koboIntegration.versionId,
     });
 
-    return { name: formDefinition.name };
+    return { name: formDefinition.name, alreadyUpToDate };
   }
 
   public async applyFormDefinitionToProgram({
