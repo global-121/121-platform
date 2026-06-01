@@ -25,7 +25,7 @@ class FspSettingsPage extends BasePage {
     this.saveReconfigurationButton = this.page.getByRole('button', {
       name: 'Save changes',
     });
-    this.fspCard = this.page.locator('app-card-with-link p-card');
+    this.fspCard = this.page.locator('app-card-with-link');
     this.cancelButton = this.page.getByRole('button', { name: 'Cancel' });
   }
 
