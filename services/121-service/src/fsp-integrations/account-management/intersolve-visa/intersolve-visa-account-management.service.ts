@@ -28,7 +28,6 @@ import { RegistrationsService } from '@121-service/src/registration/services/reg
 
 @Injectable()
 export class IntersolveVisaAccountManagementService {
-
   public constructor(
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,

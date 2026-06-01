@@ -17,6 +17,14 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 
+jest.mock('nestjs-paginate', () => {
+  const actual = jest.requireActual('nestjs-paginate');
+  return {
+    ...actual,
+    paginate: jest.fn(),
+  };
+});
+
 describe('IntersolveVisaAccountManagementService', () => {
   let service: IntersolveVisaAccountManagementService;
   let intersolveVisaService: jest.Mocked<IntersolveVisaService>;

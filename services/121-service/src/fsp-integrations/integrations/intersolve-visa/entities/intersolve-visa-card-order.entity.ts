@@ -1,4 +1,11 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, Relation } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  Relation,
+} from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
