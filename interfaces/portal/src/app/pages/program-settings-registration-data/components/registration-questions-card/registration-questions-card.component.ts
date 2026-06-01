@@ -19,6 +19,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { UILanguage } from '../../../../../../../../services/121-service/src/shared/enum/ui-language.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
+import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { ProgramLanguageTabsComponent } from '~/components/program-language-tabs/program-language-tabs.component';
 import { getTranslatableFormGroup } from '~/components/program-language-tabs/program-language-tabs.helper';
 import { ProgramApiService } from '~/domains/program/program.api.service';
@@ -35,6 +36,7 @@ import { ToastService } from '~/services/toast.service';
     ReactiveFormsModule,
     InputTextModule,
     CardEditableComponent,
+    InfoTooltipComponent,
   ],
   templateUrl: './registration-questions-card.component.html',
   styles: ``,
@@ -56,18 +58,17 @@ export class RegistrationQuestionsCardComponent {
     enabled: !!this.programId(),
   }));
 
-  readonly cardSubtitle = computed(() => {
-    if (!this.programAttributes.isSuccess()) {
-      return ``;
-    }
-
-    const programAttributesLength = this.programAttributes.data().length;
-    return $localize`Below are the ${programAttributesLength.toString()} questions from the linked Kobo form. Please edit each label to a shorter version which will be displayed in the table of the registration page and on the profile page.\n\nThe default language is set by the language of the instance.`;
-  });
-
   readonly program = injectQuery(
     this.programApiService.getProgram(this.programId),
   );
+
+  readonly programLanguages = computed(() => {
+    if (!this.program.isSuccess()) {
+      return [];
+    }
+
+    return this.program.data().languages;
+  });
 
   readonly toastService = inject(ToastService);
 
@@ -80,7 +81,7 @@ export class RegistrationQuestionsCardComponent {
     >
   >({});
 
-  readonly currentLanguage = model(UILanguage.en);
+  readonly currentLanguage = model(RegistrationPreferredLanguage.en);
 
   defineFormGroup = effect(() => {
     if (!this.program.isSuccess() || !this.programAttributes.isSuccess()) {
@@ -89,38 +90,72 @@ export class RegistrationQuestionsCardComponent {
 
     const program = this.program.data();
     const programAttributes = this.programAttributes.data();
-
     this.formGroup = new FormGroup(
       Object.fromEntries(
         programAttributes.map((attribute) => [
           attribute.name,
           getTranslatableFormGroup({
             program,
-            getInitialValue: () => this.labelToShow(attribute)(),
+            getInitialValue: () =>
+              this.attributeLabels()
+                ?.get(attribute.name)
+                ?.get(this.currentLanguage()) ?? attribute.name,
           }),
         ]),
       ),
     );
   });
 
-  readonly labelToShow = (attribute: Attribute) =>
-    computed(() => {
-      const { label, koboLabel, name } = attribute;
+  readonly attributeLabels = computed(() => {
+    if (!this.programAttributes.isSuccess()) {
+      return;
+    }
+    const programAttributes = this.programAttributes.data();
+    const labels = new Map<
+      string,
+      Map<RegistrationPreferredLanguage, string | undefined>
+    >();
 
-      if (label) {
-        const labelToShow = label[this.currentLanguage()];
-        if (labelToShow) {
-          return labelToShow;
-        }
+    for (const attribute of programAttributes) {
+      const labelsToShow = new Map<
+        RegistrationPreferredLanguage,
+        string | undefined
+      >();
+      for (const language of this.programLanguages()) {
+        labelsToShow.set(
+          language,
+          this.getLabelToShow({ language, attribute }),
+        );
       }
+      labels.set(attribute.name, labelsToShow);
+    }
 
-      if (koboLabel) {
-        const labelToShow = koboLabel[this.currentLanguage()];
-        if (labelToShow) {
-          return labelToShow;
-        }
+    return labels;
+  });
+
+  private getLabelToShow({
+    language,
+    attribute,
+  }: {
+    language: RegistrationPreferredLanguage;
+    attribute: Attribute;
+  }) {
+    const { label, koboLabel } = attribute;
+
+    if (label) {
+      const labelToShow = label[language as unknown as UILanguage];
+      if (labelToShow) {
+        return labelToShow;
       }
+    }
 
-      return name;
-    });
+    if (koboLabel) {
+      const labelToShow = koboLabel[language as unknown as UILanguage];
+      if (labelToShow) {
+        return labelToShow;
+      }
+    }
+
+    return;
+  }
 }

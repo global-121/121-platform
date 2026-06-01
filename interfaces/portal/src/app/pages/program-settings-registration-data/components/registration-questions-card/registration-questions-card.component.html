@@ -21,6 +21,7 @@
   <app-program-language-tabs
     [programId]="programId()"
     [(currentLanguage)]="currentLanguage"
+    [languages]="programLanguages()"
   >
     <ng-template #languageTemplate>
       <p-table [value]="programAttributes.data() ?? []">
@@ -31,12 +32,18 @@
               class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
             >
               Data column name
+              <app-info-tooltip
+                [message]="'The data column name of the question.'"
+              ></app-info-tooltip>
             </th>
             <th
               i18n
               class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
             >
               Question label
+              <app-info-tooltip
+                [message]="`The label that will be shown in the registration page table header and registration's profile. The labels cand be edited by clicking on the pencil icon above.`"
+              ></app-info-tooltip>
             </th>
           </tr>
         </ng-template>
@@ -46,7 +53,13 @@
         >
           <tr [formGroupName]="attribute.name">
             <td>{{ attribute.name }}</td>
-            <td>{{ labelToShow(attribute)() }}</td>
+            <td>
+              {{
+                attributeLabels()
+                  ?.get(attribute.name)
+                  ?.get(currentLanguage()) ?? attribute.name
+              }}
+            </td>
           </tr>
         </ng-template>
       </p-table>
