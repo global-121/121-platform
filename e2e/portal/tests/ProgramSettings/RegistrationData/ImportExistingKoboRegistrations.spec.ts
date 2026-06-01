@@ -87,6 +87,40 @@ test('Import existing Kobo registrations immediately after adding Kobo integrati
   });
 });
 
+test('Import existing Kobo registrations that include errors in the registrations', async ({
+  registrationDataPage,
+}) => {
+  await test.step('Re-add Kobo integration with over-limit asset', async () => {
+    await registrationDataPage.addKoboIntegration({
+      url: `${env.MOCK_SERVICE_URL}/api/kobo/#/forms/import-with-failure/summary`,
+      apiKey: 'mock-token',
+    });
+    await registrationDataPage.koboSuccessfullyLinkedDialog({
+      closeDialog: true,
+    });
+  });
+
+  await test.step('Import existing Kobo registrations', async () => {
+    await registrationDataPage.openImportExistingKoboRegistrationsDialog();
+    await registrationDataPage.initiateImportButton.click();
+  });
+
+  await test.step('validate error message after importing existing Kobo registrations with errors', async () => {
+    await expect(
+      registrationDataPage.importDialog.getByText('Submissions failed: 1'),
+    ).toBeVisible();
+    await expect(
+      registrationDataPage.importDialog.getByText(
+        'Below are the errors corresponding to the failed submissions. Correct the submissions in the kobo form and try again.',
+      ),
+    ).toBeVisible();
+  });
+
+  await test.step('Validate error table with details of the errors in the registrations', async () => {
+    await registrationDataPage.validateErrorTable();
+  });
+});
+
 test('Import error when importing too many existing Kobo registrations', async ({
   registrationDataPage,
 }) => {
@@ -104,6 +138,7 @@ test('Import error when importing too many existing Kobo registrations', async (
     await registrationDataPage.openImportExistingKoboRegistrationsDialog();
     await registrationDataPage.initiateImportButton.click();
   });
+
   await test.step('Validate error message when importing too many existing Kobo registrations', async () => {
     await registrationDataPage.validateKoboIntegration({
       message:
