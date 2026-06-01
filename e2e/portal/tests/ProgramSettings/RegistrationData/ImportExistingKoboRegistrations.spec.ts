@@ -15,17 +15,18 @@ const koboIntegrationDetails = {
   apiKey: 'mock-token',
 };
 
-test('Import existing Kobo registrations after adding Kobo integration', async ({
-  resetDBAndSeedRegistrations,
-  registrationDataPage,
-}) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.safaricomProgram,
     registrations: registrationsSafaricom,
     programId: programIdSafaricom,
     navigateToPage: `/program/${programIdSafaricom}/settings/registration-data`,
   });
+});
 
+test('Import existing Kobo registrations after adding Kobo integration', async ({
+  registrationDataPage,
+}) => {
   await test.step('Add Kobo integration', async () => {
     await registrationDataPage.addKoboIntegration(koboIntegrationDetails);
     await registrationDataPage.koboSuccessfullyLinkedDialog({
@@ -63,16 +64,8 @@ test('Import existing Kobo registrations after adding Kobo integration', async (
 });
 
 test('Import existing Kobo registrations immediately after adding Kobo integration', async ({
-  resetDBAndSeedRegistrations,
   registrationDataPage,
 }) => {
-  await resetDBAndSeedRegistrations({
-    seedScript: SeedScript.safaricomProgram,
-    registrations: registrationsSafaricom,
-    programId: programIdSafaricom,
-    navigateToPage: `/program/${programIdSafaricom}/settings/registration-data`,
-  });
-
   await test.step('Add Kobo integration', async () => {
     await registrationDataPage.addKoboIntegration(koboIntegrationDetails);
     await registrationDataPage.koboSuccessfullyLinkedDialog({
@@ -95,16 +88,8 @@ test('Import existing Kobo registrations immediately after adding Kobo integrati
 });
 
 test('Import error when importing too many existing Kobo registrations', async ({
-  resetDBAndSeedRegistrations,
   registrationDataPage,
 }) => {
-  await resetDBAndSeedRegistrations({
-    seedScript: SeedScript.safaricomProgram,
-    registrations: registrationsSafaricom,
-    programId: programIdSafaricom,
-    navigateToPage: `/program/${programIdSafaricom}/settings/registration-data`,
-  });
-
   await test.step('Re-add Kobo integration with over-limit asset', async () => {
     await registrationDataPage.addKoboIntegration({
       url: `${env.MOCK_SERVICE_URL}/api/kobo/#/forms/asset-id-over-limit/summary`,
