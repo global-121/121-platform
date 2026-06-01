@@ -93,3 +93,36 @@ test('Import existing Kobo registrations immediately after adding Kobo integrati
     ).toBeVisible();
   });
 });
+
+test('Import error when importing too many existing Kobo registrations', async ({
+  resetDBAndSeedRegistrations,
+  registrationDataPage,
+}) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.safaricomProgram,
+    registrations: registrationsSafaricom,
+    programId: programIdSafaricom,
+    navigateToPage: `/program/${programIdSafaricom}/settings/registration-data`,
+  });
+
+  await test.step('Re-add Kobo integration with over-limit asset', async () => {
+    await registrationDataPage.addKoboIntegration({
+      url: `${env.MOCK_SERVICE_URL}/api/kobo/#/forms/asset-id-over-limit/summary`,
+      apiKey: 'mock-token',
+    });
+    await registrationDataPage.koboSuccessfullyLinkedDialog({
+      closeDialog: true,
+    });
+  });
+
+  await test.step('Import existing Kobo registrations', async () => {
+    await registrationDataPage.openImportExistingKoboRegistrationsDialog();
+    await registrationDataPage.initiateImportButton.click();
+  });
+  await test.step('Validate error message when importing too many existing Kobo registrations', async () => {
+    await registrationDataPage.validateKoboIntegration({
+      message:
+        'Something went wrong: "The Kobo form has 1001 total submissions, which exceeds the maximum of 1000 that can be fetched at once. Not all submissions could be retrieved, so some new ones may be missing. Please use the CSV import instead and split the data into smaller batches.',
+    });
+  });
+});

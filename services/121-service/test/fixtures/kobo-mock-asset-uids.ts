@@ -11,4 +11,5 @@ export enum KoboMockAssetUids {
   notFound = 'asset-id-not-found',
   happyFlowWithChanges = 'asset-id-happy-flow-with-changes',
   withExistingWebhook = 'asset-id-with-existing-webhook',
+  overLimit = 'asset-id-over-limit',
 }
