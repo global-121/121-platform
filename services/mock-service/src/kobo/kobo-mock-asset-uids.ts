@@ -9,5 +9,6 @@ export enum KoboMockAssetUids {
   bodyThatTriggersErrors = 'asset-id-body-that-triggers-errors',
   notFound = 'asset-id-not-found',
   happyFlowWithChanges = 'asset-id-happy-flow-with-changes',
+  happyFlowAlwaysNewVersion = 'asset-id-happy-flow-always-new-version',
   withExistingWebhook = 'asset-id-with-existing-webhook',
 }

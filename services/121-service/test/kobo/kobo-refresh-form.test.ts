@@ -13,7 +13,11 @@ import {
   refreshKoboForm,
   setupProgramWithKoboIntegration,
 } from '@121-service/test/helpers/kobo.helper';
-import { postProgram } from '@121-service/test/helpers/program.helper';
+import {
+  getProgram,
+  patchProgram,
+  postProgram,
+} from '@121-service/test/helpers/program.helper';
 import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   getAccessToken,
@@ -99,6 +103,53 @@ describe('Refresh Kobo form', () => {
 
     // Assert
     expect(response.status).toBe(HttpStatus.NOT_MODIFIED);
+  });
+
+  it('should successfully refresh when the Kobo form has a new version', async () => {
+    // Arrange: this mock asset returns a freshly randomized version_id on
+    // every fetch, so the version stored at integration time will not match
+    // the one returned by the refresh fetch.
+    const program: CreateProgramDto = {
+      ...baseProgram,
+      titlePortal: { en: 'Program with stale Kobo integration' },
+      languages: [RegistrationPreferredLanguage.en],
+    } as CreateProgramDto;
+
+    const { programId } = await setupProgramWithKoboIntegration({
+      assetUid: KoboMockAssetUids.happyFlowAlwaysNewVersion,
+      program,
+      fspConfiguration,
+      accessToken,
+    });
+
+    // Remove Dutch to prove refresh restores languages from the form definition.
+    await patchProgram(
+      programId,
+      { languages: [RegistrationPreferredLanguage.en] },
+      accessToken,
+    );
+
+    // Act
+    const response = await refreshKoboForm({
+      programId,
+      accessToken,
+    });
+
+    // Assert
+    expect(response.status).toBe(HttpStatus.OK);
+    expect(response.body).toMatchObject({
+      message: 'Kobo form refreshed successfully',
+      name: '25042025 Prototype Sprint',
+    });
+
+    // Verify Dutch (nl) was added back from the Kobo form definition
+    const programAfterRefresh = await getProgram(programId, accessToken);
+    expect(programAfterRefresh.body.languages).toEqual(
+      expect.arrayContaining([
+        RegistrationPreferredLanguage.en,
+        RegistrationPreferredLanguage.nl,
+      ]),
+    );
   });
 });
 

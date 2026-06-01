@@ -378,6 +378,18 @@ const getHappyFlowWithChanges = (): KoboAssetDeployment => {
   return withChanges;
 };
 
+const getHappyFlowAlwaysNewVersion = (): KoboAssetDeployment => {
+  const withNewVersion = structuredClone(happyFlowFromDefinition);
+  const newVersionId = `asset-id-happy-flow-${Date.now()}-${Math.random()
+    .toString(36)
+    .slice(2)}`;
+
+  withNewVersion.version_id = newVersionId;
+  withNewVersion.asset.version_id = newVersionId;
+
+  return withNewVersion;
+};
+
 @Injectable()
 export class KoboMockService {
   public constructor(private readonly httpService: HttpService) {}
@@ -395,6 +407,8 @@ export class KoboMockService {
         return bodyThatTriggersErrors;
       case KoboMockAssetUids.happyFlowWithChanges:
         return getHappyFlowWithChanges();
+      case KoboMockAssetUids.happyFlowAlwaysNewVersion:
+        return getHappyFlowAlwaysNewVersion();
       default: {
         return happyFlowFromDefinition;
       }
