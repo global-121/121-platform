@@ -47,9 +47,14 @@
         <ng-content select="[card-subtitle]"></ng-content>
       </div>
     </div>
+
     @if (menuItems().length > 0) {
       <div class="absolute inset-y-2 inset-e-2">
         <app-ellipsis-menu [menuItems]="menuItems()" />
+      </div>
+    } @else {
+      <div class="empty:hidden">
+        <ng-content select="[card-action]"></ng-content>
       </div>
     }
   </div>
