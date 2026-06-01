@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -2391,9 +2391,6 @@
       <trans-unit id="submission-result-skipped" datatype="html">
         <source>Submissions skipped</source>
       </trans-unit>
-      <trans-unit id="6711033592081422255" datatype="html">
-        <source>Question label</source>
-      </trans-unit>
       <trans-unit id="table-quick-search" datatype="html">
         <source>Filter by keyword</source>
       </trans-unit>
@@ -2430,45 +2427,6 @@
       <trans-unit id="4228319514212568219" datatype="html">
         <source>Users</source>
       </trans-unit>
-      <trans-unit id="debit-card-status-blocked" datatype="html">
-        <source>Blocked</source>
-      </trans-unit>
-      <trans-unit id="1674202514578558795" datatype="html">
-        <source>New name</source>
-      </trans-unit>
-      <trans-unit id="2701527640285744987" datatype="html">
-        <source>Rename payment</source>
-      </trans-unit>
-      <trans-unit id="6041115344061899387" datatype="html">
-        <source>Rename</source>
-      </trans-unit>
-      <trans-unit id="9088314425699939664" datatype="html">
-        <source>You&apos;re about to rename the payment created on <x equiv-text="{{ paymentDate() }}" id="INTERPOLATION"/>. Choose a clear name so other users can easily find it. If this payment has already started, make sure to inform relevant users.</source>
-      </trans-unit>
-      <trans-unit id="payment-event-log-item-type-renamed" datatype="html">
-        <source>Renamed</source>
-      </trans-unit>
-      <trans-unit id="1817782792448180446" datatype="html">
-        <source>Integration is already up to date.</source>
-      </trans-unit>
-      <trans-unit id="508499092676439201" datatype="html">
-        <source>Integration update unsuccessful. Please try again.</source>
-      </trans-unit>
-      <trans-unit id="5656654201977017111" datatype="html">
-        <source>Refresh link</source>
-      </trans-unit>
-      <trans-unit id="7131024915833130123" datatype="html">
-        <source>Integration updated successfully.</source>
-      </trans-unit>
-      <trans-unit id="generic-info" datatype="html">
-        <source>Info</source>
-      </trans-unit>
-      <trans-unit id="4099904598600212843" datatype="html">
-        <source>Subscription key</source>
-      </trans-unit>
-      <trans-unit id="1837695438852419215" datatype="html">
-        <source>Below are the <x equiv-text="programAttributesLength.toString()" id="PH"/> questions from the linked Kobo form. Please edit each label to a shorter version which will be displayed in the table of the registration page and on the profile page. The default language is set by the language of the instance.</source>
-      </trans-unit>
       <trans-unit id="2669137255472752633" datatype="html">
         <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> You can edit each column name to a shorter version.</source>
       </trans-unit>
@@ -2477,6 +2435,15 @@
       </trans-unit>
       <trans-unit id="5357145550757146604" datatype="html">
         <source>Edit registration questions</source>
+      </trans-unit>
+      <trans-unit id="2630979564408668981" datatype="html">
+        <source>Data column name <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip [message]=&quot;&apos;The data column name of the question.&apos;&quot; &gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;/app-info-tooltip&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
+      </trans-unit>
+      <trans-unit id="2662038372849265781" datatype="html">
+        <source>Please note, the portal does not support <x equiv-text="{{ currentLanguageLabel() }}" id="INTERPOLATION"/> language currently.</source>
+      </trans-unit>
+      <trans-unit id="5629376220566654518" datatype="html">
+        <source>Question label <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip [message]=&quot;`The label that will be shown in the registration page table header and registration&apos;s profile. The labels cand be edited by clicking on the pencil icon above.`&quot; &gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;/app-info-tooltip&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
       </trans-unit>
     </body>
   </file>
