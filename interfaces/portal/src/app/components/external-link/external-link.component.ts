@@ -1,7 +1,4 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
-
-import { Url } from 'url';
 
 @Component({
   selector: 'app-external-link',
@@ -11,6 +8,6 @@ import { Url } from 'url';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExternalLinkComponent {
-  readonly href = input.required<RouterLink['routerLink'] | Url>();
+  readonly href = input.required<string>();
   readonly label = input.required<string>();
 }

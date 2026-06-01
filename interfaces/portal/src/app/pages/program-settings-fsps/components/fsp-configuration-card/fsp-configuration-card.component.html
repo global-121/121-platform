@@ -3,7 +3,6 @@
   [title]="fspConfigurationLabel()"
   [menuItems]="menuItems()"
   [image]="fspImage()"
-  i18n-subtitle
   [variant]="'fsp'"
 >
   <ng-container card-subtitle>
@@ -42,10 +41,7 @@
               <b>exact format</b>
               for this FSP integration in the data column name:
             </p>
-            <p-table
-              [value]="requiredRegistrationAttributes()"
-              i18n-size
-            >
+            <p-table [value]="requiredRegistrationAttributes()">
               <ng-template #header>
                 <tr>
                   <th
