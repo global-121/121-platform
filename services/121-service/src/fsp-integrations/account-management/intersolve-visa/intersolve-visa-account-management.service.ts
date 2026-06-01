@@ -1,18 +1,25 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
+import {
+  VisaCardOrdersSortBy,
+  VisaCardOrdersSortOrder,
+} from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/get-visa-card-orders-query.dto';
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
+import { VisaCardOrderEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-card-order.entity';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { IntersolveVisaCardStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { ExportVisaWalletClosure } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-wallet-closure.interface';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
+import { IntersolveVisaCardOrderRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-card-order.repository';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaWalletClosureScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-wallet-closure.scoped.repository';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -22,6 +29,11 @@ import { RegistrationsService } from '@121-service/src/registration/services/reg
 
 @Injectable()
 export class IntersolveVisaAccountManagementService {
+  private readonly logger = new Logger(
+    IntersolveVisaAccountManagementService.name,
+  );
+  private readonly defaultCardOrderPhoneNumber = '+31600000000';
+
   public constructor(
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -29,6 +41,7 @@ export class IntersolveVisaAccountManagementService {
     private readonly intersolveVisaDataSynchronizationService: IntersolveVisaDataSynchronizationService,
     private readonly intersolveVisaChildWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
     private readonly walletClosureScopedRepository: IntersolveVisaWalletClosureScopedRepository,
+    private readonly cardOrderRepository: IntersolveVisaCardOrderRepository,
   ) {}
 
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
@@ -472,5 +485,250 @@ export class IntersolveVisaAccountManagementService {
       closedDate: row.closedDate,
       amountBookedBack: row.amountBookedBackInCents / 100,
     }));
+  }
+
+  public async createVisaCardOrder({
+    programId,
+    noOfCards,
+    city,
+    postalCode,
+    address,
+    addressee,
+    phoneNumber,
+    userId,
+  }: {
+    programId: number;
+    noOfCards: number;
+    city: string;
+    postalCode: string;
+    address: string;
+    addressee: string;
+    phoneNumber?: string;
+    userId: number;
+  }): Promise<{
+    noOfCards: number;
+    noOfCardsOrdered: number;
+  }> {
+    const parsedAddress = this.parseAddressOrThrow(address);
+
+    const visaProgramFspConfigurations =
+      await this.programFspConfigurationRepository.getByProgramIdAndFspName({
+        programId,
+        fspName: Fsps.intersolveVisa,
+      });
+
+    if (visaProgramFspConfigurations.length !== 1) {
+      throw new HttpException(
+        `Expected exactly 1 Intersolve Visa configuration for program ${programId}, found ${visaProgramFspConfigurations.length}.`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const programFspConfigurationId = visaProgramFspConfigurations[0].id;
+
+    const intersolveVisaFspConfig =
+      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
+        programFspConfigurationId,
+        names: [
+          FspConfigurationProperties.brandCode,
+          FspConfigurationProperties.coverLetterCode,
+          FspConfigurationProperties.cardDistributionByMail,
+        ],
+      });
+
+    const cardDistributionByMail = intersolveVisaFspConfig.find(
+      (property) =>
+        property.name === FspConfigurationProperties.cardDistributionByMail,
+    )?.value as boolean;
+
+    if (!cardDistributionByMail) {
+      throw new HttpException(
+        'Card ordering by address is not allowed when card distribution by mail is disabled.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const brandCode = intersolveVisaFspConfig.find(
+      (property) => property.name === FspConfigurationProperties.brandCode,
+    )?.value as string;
+
+    const coverLetterCode = intersolveVisaFspConfig.find(
+      (property) =>
+        property.name === FspConfigurationProperties.coverLetterCode,
+    )?.value as string;
+
+    const cardOrderPhoneNumber =
+      phoneNumber ?? this.defaultCardOrderPhoneNumber;
+
+    const contactInformation: ContactInformation = {
+      name: addressee,
+      addressStreet: parsedAddress.addressStreet,
+      addressHouseNumber: parsedAddress.addressHouseNumber,
+      addressHouseNumberAddition: parsedAddress.addressHouseNumberAddition,
+      addressPostalCode: postalCode,
+      addressCity: city,
+      phoneNumber: cardOrderPhoneNumber,
+    };
+
+    let cardsOrdered = 0;
+    let lastIntersolveErrorMessage: null | string = null;
+
+    for (let index = 0; index < noOfCards; index++) {
+      try {
+        await this.intersolveVisaService.issueTokenAndCreatePhysicalCard({
+          brandCode,
+          coverLetterCode,
+          contactInformation,
+        });
+        cardsOrdered += 1;
+      } catch (error) {
+        if (error instanceof IntersolveVisaApiError) {
+          lastIntersolveErrorMessage = error.message;
+          continue;
+        }
+
+        throw error;
+      }
+    }
+
+    if (cardsOrdered === 0) {
+      throw new HttpException(
+        `Unable to order cards. ${lastIntersolveErrorMessage ?? 'Intersolve did not return a successful response.'}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const order = new VisaCardOrderEntity();
+    order.programId = programId;
+    order.userId = userId;
+    order.noOfCards = noOfCards;
+    order.noOfCardsOrdered = cardsOrdered;
+    order.addressee = addressee;
+    order.address = address;
+    order.city = city;
+    order.postalCode = postalCode;
+
+    try {
+      await this.cardOrderRepository.save(order);
+    } catch (error) {
+      this.logger.error(
+        `Card order persistence failed after Intersolve success for program ${programId}. noOfCards=${noOfCards} noOfCardsOrdered=${cardsOrdered} userId=${userId}`,
+        error,
+      );
+
+      throw new HttpException(
+        'Cards were ordered, but saving the batch record failed. Please contact support for reconciliation.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    return {
+      noOfCards,
+      noOfCardsOrdered: cardsOrdered,
+    };
+  }
+
+  public async getVisaCardOrders({
+    programId,
+    sortBy,
+    sortOrder,
+  }: {
+    programId: number;
+    sortBy?: VisaCardOrdersSortBy;
+    sortOrder?: VisaCardOrdersSortOrder;
+  }): Promise<
+    {
+      noOfCardsOrdered: number;
+      address: string;
+      orderedByUsername: string;
+      orderedAt: Date;
+    }[]
+  > {
+    const normalizedSortBy = this.getSortByOrDefault(sortBy);
+    const normalizedSortOrder = this.getSortOrderOrDefault(sortOrder);
+
+    const orders = await this.cardOrderRepository.getForProgram({
+      programId,
+      sortBy: normalizedSortBy,
+      sortOrder: normalizedSortOrder,
+    });
+
+    return orders.map((order) => ({
+      noOfCardsOrdered: order.noOfCardsOrdered,
+      address: this.formatCardOrderAddressForDisplay({
+        addressee: order.addressee,
+        address: order.address,
+        postalCode: order.postalCode,
+        city: order.city,
+      }),
+      orderedByUsername: order.user?.username ?? `${order.userId}`,
+      orderedAt: order.created,
+    }));
+  }
+
+  private formatCardOrderAddressForDisplay({
+    addressee,
+    address,
+    postalCode,
+    city,
+  }: {
+    addressee: string;
+    address: string;
+    postalCode: string;
+    city: string;
+  }): string {
+    return `${addressee}, ${address}, ${postalCode}, ${city}`;
+  }
+
+  private getSortByOrDefault(
+    sortBy?: VisaCardOrdersSortBy,
+  ): 'noOfCardsOrdered' | 'created' | 'orderedByUsername' {
+    switch (sortBy) {
+      case 'noOfCardsOrdered':
+        return 'noOfCardsOrdered';
+      case 'orderedByUsername':
+      case 'created':
+        return sortBy;
+      default:
+        return 'created';
+    }
+  }
+
+  private getSortOrderOrDefault(
+    sortOrder?: VisaCardOrdersSortOrder,
+  ): 'ASC' | 'DESC' {
+    if (sortOrder === VisaCardOrdersSortOrder.Asc) {
+      return 'ASC';
+    }
+    return 'DESC';
+  }
+
+  private parseAddressOrThrow(address: string): {
+    addressStreet: string;
+    addressHouseNumber: string;
+    addressHouseNumberAddition?: string;
+  } {
+    const normalizedAddress = address.trim().replace(/\s+/g, ' ');
+    const parsedAddress =
+      /^(?<addressStreet>.+?)\s+(?<addressHouseNumber>\d+)(?:\s*(?<addressHouseNumberAddition>[A-Za-z0-9-/]+))?$/.exec(
+        normalizedAddress,
+      );
+
+    if (
+      !parsedAddress?.groups?.addressStreet ||
+      !parsedAddress.groups.addressHouseNumber
+    ) {
+      throw new HttpException(
+        'Address must include street name and house number.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return {
+      addressStreet: parsedAddress.groups.addressStreet.trim(),
+      addressHouseNumber: parsedAddress.groups.addressHouseNumber.trim(),
+      addressHouseNumberAddition:
+        parsedAddress.groups.addressHouseNumberAddition?.trim() || undefined,
+    };
   }
 }
