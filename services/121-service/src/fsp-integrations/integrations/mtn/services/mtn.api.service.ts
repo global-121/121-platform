@@ -2,10 +2,10 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { TokenSet } from 'openid-client';
 
-import { MtnApiCreateTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-transfer-request-body.dto';
 import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-error-types.enum';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { MtnApiCreateTransferParams } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-api-create-transfer-params.interface';
+import { MtnApiCreateTransferRequestBody } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-api-create-transfer-request-body.interface';
 import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-request-identity.interface';
 import { MtnTransferStatusResponse } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-transfer-status-response.interface';
 import { MtnApiHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.helper.service';
@@ -118,7 +118,7 @@ export class MtnApiService {
     referenceId,
     requestIdentity,
   }: {
-    payload: MtnApiCreateTransferRequestBodyDto;
+    payload: MtnApiCreateTransferRequestBody;
     referenceId: string;
     requestIdentity: MtnRequestIdentity;
   }): Promise<void> {

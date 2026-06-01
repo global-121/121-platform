@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
-import { MtnApiAuthenticationResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-authentication-response-body.dto';
-import { MtnApiCreateTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-transfer-request-body.dto';
+import { MtnApiAuthenticationResponseBody } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-api-authentication-response-body.interface';
+import { MtnApiCreateTransferRequestBody } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-api-create-transfer-request-body.interface';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 
 @Injectable()
@@ -28,7 +28,7 @@ export class MtnApiHelperService {
     externalId: string;
     phoneNumber: string;
     message: string;
-  }): MtnApiCreateTransferRequestBodyDto {
+  }): MtnApiCreateTransferRequestBody {
     return {
       amount,
       currency,
@@ -116,7 +116,7 @@ export class MtnApiHelperService {
 
   public isAuthenticationResponse(
     data: unknown,
-  ): data is MtnApiAuthenticationResponseBodyDto {
+  ): data is MtnApiAuthenticationResponseBody {
     return (
       typeof data === 'object' &&
       data !== null &&
