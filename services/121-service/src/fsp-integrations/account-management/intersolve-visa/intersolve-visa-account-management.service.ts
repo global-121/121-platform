@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
 import { env } from '@121-service/src/env';
@@ -28,6 +28,11 @@ import { RegistrationsService } from '@121-service/src/registration/services/reg
 
 @Injectable()
 export class IntersolveVisaAccountManagementService {
+  private readonly logger = new Logger(
+    IntersolveVisaAccountManagementService.name,
+  );
+  private readonly defaultCardOrderPhoneNumber = '+31600000000';
+
   public constructor(
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
