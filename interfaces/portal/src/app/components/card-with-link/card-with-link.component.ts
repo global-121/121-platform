@@ -9,6 +9,7 @@ import { RouterLink } from '@angular/router';
 
 import { MenuItem } from 'primeng/api';
 import { CardModule } from 'primeng/card';
+import { ClassNamesModule } from 'primeng/classnames';
 
 import {
   ChipVariant,
@@ -26,6 +27,7 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
     NgTemplateOutlet,
     ColoredChipComponent,
     EllipsisMenuComponent,
+    ClassNamesModule,
   ],
   templateUrl: './card-with-link.component.html',
   styles: ``,

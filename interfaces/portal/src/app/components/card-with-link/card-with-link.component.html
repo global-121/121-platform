@@ -1,18 +1,17 @@
-@if (variant() === 'fsp') {
-  <div
-    data-testid="card-with-link"
-    class="group shadow-clickable-cards border-grey-300 relative h-full rounded-lg border bg-white transition-colors focus-within:border-purple-500 hover:border-purple-500"
-  >
-    <ng-container *ngTemplateOutlet="cardInner"></ng-container>
-  </div>
-} @else {
-  <div
-    data-testid="card-with-link"
-    class="group shadow-clickable-cards relative h-full rounded-2xl border border-transparent bg-white transition-colors focus-within:border-purple-500 hover:border-purple-500"
-  >
-    <ng-container *ngTemplateOutlet="cardInner"></ng-container>
-  </div>
-}
+<div
+  data-testid="card-with-link"
+  [pClass]="[
+    'bg-white transition-colors focus-within:border-purple-500 hover:border-purple-500 group shadow-clickable-cards relative h-full border',
+    {
+      'border-grey-300 rounded-lg': variant() === 'fsp',
+    },
+    {
+      'rounded-2xl border-transparent': variant() !== 'fsp',
+    },
+  ]"
+>
+  <ng-container *ngTemplateOutlet="cardInner"></ng-container>
+</div>
 
 <ng-template #cardInner>
   <div class="flex items-center gap-4 p-4">
