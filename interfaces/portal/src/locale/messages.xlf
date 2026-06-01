@@ -2433,6 +2433,9 @@
       <trans-unit id="debit-card-status-blocked" datatype="html">
         <source>Blocked</source>
       </trans-unit>
+      <trans-unit id="4099904598600212843" datatype="html">
+        <source>Subscription key</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
