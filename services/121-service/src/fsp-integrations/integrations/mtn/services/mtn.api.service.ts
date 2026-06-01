@@ -140,6 +140,9 @@ export class MtnApiService {
         headers,
       );
     } catch (error) {
+      if (error instanceof MtnApiError) {
+        throw error;
+      }
       throw new MtnApiError({
         type: MtnTransferErrorTypes.fail,
         message: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
