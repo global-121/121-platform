@@ -2,6 +2,7 @@
   [href]="programLink(id())"
   [title]="program.data()?.titlePortal | translatableString"
   [loading]="program.isPending()"
+  [variant]="'overview'"
 >
   <ng-container card-content>
     <app-card-summary-metrics-container

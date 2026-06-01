@@ -43,5 +43,5 @@ export class CardWithLinkComponent {
   readonly enableLink = input(true);
   readonly cardClicked = output();
   readonly menuItems = input<MenuItem[]>([]);
-  readonly variant = input<'fsp'>();
+  readonly variant = input<'overview'>();
 }

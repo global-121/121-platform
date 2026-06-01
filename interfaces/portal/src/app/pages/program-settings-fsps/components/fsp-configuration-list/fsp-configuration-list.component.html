@@ -52,7 +52,6 @@
               [title]="fsp.defaultLabel | translatableString"
               (cardClicked)="addFspConfiguration.emit(fsp.name)"
               [image]="FSP_IMAGE_URLS[fsp.name]"
-              [variant]="'fsp'"
             >
               <ng-container card-subtitle>
                 <div i18n>Click to integrate</div>
