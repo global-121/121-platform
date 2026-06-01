@@ -966,4 +966,25 @@ export class IntersolveVisaService {
 
     await this.updateChildWallet(savedChildWallet);
   }
+
+  public async issueTokenAndCreatePhysicalCard({
+    brandCode,
+    coverLetterCode,
+    contactInformation,
+  }: {
+    brandCode: string;
+    coverLetterCode: string;
+    contactInformation: ContactInformation;
+  }): Promise<void> {
+    const issuedToken = await this.intersolveVisaApiService.issueToken({
+      brandCode,
+      activate: false,
+    });
+
+    await this.intersolveVisaApiService.createPhysicalCard({
+      tokenCode: issuedToken.code,
+      contactInformation,
+      coverLetterCode,
+    });
+  }
 }

@@ -1209,6 +1209,33 @@
     ]
   },
   {
+    "method": "post",
+    "path": "/api/programs/{programId}/fsps/intersolve-visa/wallet/cards/orders",
+    "params": [
+      "programId"
+    ],
+    "returnType": "CreateVisaCardOrderResponseDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsps/intersolve-visa/wallet/cards/orders",
+    "params": [
+      "programId",
+      "page",
+      "limit",
+      "filter.noOfCardsOrdered",
+      "filter.addressee",
+      "filter.address",
+      "filter.postalCode",
+      "filter.city",
+      "filter.created",
+      "filter.user.username",
+      "sortBy",
+      "search",
+      "searchBy"
+    ]
+  },
+  {
     "method": "put",
     "path": "/api/programs/{programId}/kobo",
     "params": [
