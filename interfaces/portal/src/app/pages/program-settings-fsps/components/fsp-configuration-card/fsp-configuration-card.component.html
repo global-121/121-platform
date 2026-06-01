@@ -22,8 +22,8 @@
         "
       >
         <p-accordion-panel value="0">
-          <p-accordion-header class="border-t">
-            <div class="pt-4">
+          <p-accordion-header class="border-t pt-4">
+            <div>
               <p
                 i18n
                 class="font-bold"
@@ -43,20 +43,19 @@
             </p>
             <p-table
               [value]="requiredRegistrationAttributes()"
-              [size]="'small'"
               i18n-size
             >
               <ng-template #header>
                 <tr>
                   <th
                     i18n
-                    class="txt-body-s text-grey-700 font-semibold uppercase"
+                    class="txt-body-s text-grey-700 px-2 py-1.5 font-semibold uppercase"
                   >
                     Question
                   </th>
                   <th
                     i18n
-                    class="txt-body-s text-grey-700 font-semibold uppercase"
+                    class="txt-body-s text-grey-700 px-2 py-1.5 font-semibold uppercase"
                   >
                     Data column name
                   </th>
