@@ -66,8 +66,8 @@
                 let-attribute
               >
                 <tr>
-                  <td>{{ attribute.label }}</td>
-                  <td class="relative">
+                  <td class="px-2">{{ attribute.label }}</td>
+                  <td class="relative px-2">
                     {{ attribute.name }}
                     <p-button
                       (click)="copyToClipboard(attribute.name)"
@@ -86,13 +86,15 @@
         </p-accordion-panel>
       </p-accordion>
     } @else {
-      <p
-        i18n
-        class="font-bold"
-      >
-        FSP notes
-      </p>
-      <p i18n>There are no specific fields needed for this integration</p>
+      <div class="border-grey-300 border-t pt-4">
+        <p
+          i18n
+          class="font-bold"
+        >
+          FSP notes
+        </p>
+        <p i18n>There are no specific fields needed for this integration</p>
+      </div>
     }
   </ng-container>
 </app-card-with-link>
