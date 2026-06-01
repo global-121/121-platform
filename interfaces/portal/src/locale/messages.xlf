@@ -2394,9 +2394,6 @@
       <trans-unit id="submission-result-skipped" datatype="html">
         <source>Submissions skipped</source>
       </trans-unit>
-      <trans-unit id="6711033592081422255" datatype="html">
-        <source>Question label</source>
-      </trans-unit>
       <trans-unit id="table-quick-search" datatype="html">
         <source>Filter by keyword</source>
       </trans-unit>
@@ -2433,9 +2430,6 @@
       <trans-unit id="4228319514212568219" datatype="html">
         <source>Users</source>
       </trans-unit>
-      <trans-unit id="1837695438852419215" datatype="html">
-        <source>Below are the <x equiv-text="programAttributesLength.toString()" id="PH"/> questions from the linked Kobo form. Please edit each label to a shorter version which will be displayed in the table of the registration page and on the profile page. The default language is set by the language of the instance.</source>
-      </trans-unit>
       <trans-unit id="2669137255472752633" datatype="html">
         <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> You can edit each column name to a shorter version.</source>
       </trans-unit>
@@ -2444,6 +2438,15 @@
       </trans-unit>
       <trans-unit id="5357145550757146604" datatype="html">
         <source>Edit registration questions</source>
+      </trans-unit>
+      <trans-unit id="2630979564408668981" datatype="html">
+        <source>Data column name <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip [message]=&quot;&apos;The data column name of the question.&apos;&quot; &gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;/app-info-tooltip&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
+      </trans-unit>
+      <trans-unit id="2662038372849265781" datatype="html">
+        <source>Please note, the portal does not support <x equiv-text="{{ currentLanguageLabel() }}" id="INTERPOLATION"/> language currently.</source>
+      </trans-unit>
+      <trans-unit id="5629376220566654518" datatype="html">
+        <source>Question label <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip [message]=&quot;`The label that will be shown in the registration page table header and registration&apos;s profile. The labels cand be edited by clicking on the pencil icon above.`&quot; &gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;/app-info-tooltip&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
       </trans-unit>
     </body>
   </file>
