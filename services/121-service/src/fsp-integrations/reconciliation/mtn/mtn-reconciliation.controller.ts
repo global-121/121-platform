@@ -33,6 +33,5 @@ export class MtnReconciliationController {
     await this.mtnReconciliationService.processTransferCallback(
       mtnTransferCallback,
     );
-    console.log('mtnTransferCallback: ', mtnTransferCallback);
   }
 }

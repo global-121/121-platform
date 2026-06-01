@@ -24,35 +24,21 @@ export class MtnReconciliationService {
   public async processTransferCallback(
     mtnTransferCallback: MtnTransferCallbackDto,
   ): Promise<void> {
-    console.log(
-      '[MTN Callback] Received callback:',
-      JSON.stringify(mtnTransferCallback),
-    );
 
     const { externalId } = mtnTransferCallback;
 
     if (!externalId) {
-      console.error(
-        `[MTN Callback] Dropping callback with missing required fields - externalId: ${externalId}`,
-      );
       return;
     }
 
     const transactionId = Number(externalId);
     if (Number.isNaN(transactionId)) {
-      console.error(
-        `[MTN Callback] Dropping callback with non-numeric externalId: ${externalId}`,
-      );
       return;
     }
 
     const mtnTransferCallbackJob: MtnTransferCallbackJobDto = {
       transactionId,
     };
-
-    console.log(
-      `[MTN Callback] Enqueuing job - transactionId: ${transactionId}`,
-    );
 
     await this.queuesService.mtnTransferCallbackQueue.add(
       JobNames.default,
@@ -63,17 +49,11 @@ export class MtnReconciliationService {
   public async processMtnTransferCallbackJob(
     mtnTransferCallbackJob: MtnTransferCallbackJobDto,
   ): Promise<void> {
-    console.log(
-      `[MTN Callback Job] Processing job - transactionId: ${mtnTransferCallbackJob.transactionId}`,
-    );
 
     const currentStatus = await this.transactionRepository.getStatusByIdOrThrow(
       mtnTransferCallbackJob.transactionId,
     );
     if (currentStatus !== TransactionStatusEnum.waiting) {
-      console.log(
-        `[MTN Callback Job] Skipping - transaction ${mtnTransferCallbackJob.transactionId} is already in status '${currentStatus}'`,
-      );
       return;
     }
 
@@ -113,10 +93,6 @@ export class MtnReconciliationService {
       mtnStatus: transferStatus.status,
     });
 
-    console.log(
-      `[MTN Callback Job] Mapped status - transactionId: ${mtnTransferCallbackJob.transactionId}, mtnStatus: ${transferStatus.status}, mappedStatus: ${transactionStatus}`,
-    );
-
     await this.transactionsService.saveProgressFromExternalSource({
       transactionId: mtnTransferCallbackJob.transactionId,
       description: TransactionEventDescription.mtnCallbackReceived,
@@ -126,9 +102,5 @@ export class MtnReconciliationService {
           ? (transferStatus.reason ?? 'unknown')
           : undefined,
     });
-
-    console.log(
-      `[MTN Callback Job] Completed processing - transactionId: ${mtnTransferCallbackJob.transactionId}, finalStatus: ${transactionStatus}`,
-    );
   }
 }
