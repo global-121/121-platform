@@ -188,6 +188,11 @@ export class KoboController {
     type: KoboIntegrationResultDto,
   })
   @ApiResponse({
+    status: HttpStatus.NOT_MODIFIED,
+    description:
+      'The Kobo form is already up to date - no changes were applied.',
+  })
+  @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description:
       'Validation failed - the latest Kobo form definition does not meet program requirements.',
@@ -203,11 +208,8 @@ export class KoboController {
   ): Promise<KoboIntegrationResultDto> {
     const result = await this.koboService.refreshKoboForm({ programId });
     return {
-      message: result.alreadyUpToDate
-        ? 'Kobo form was already up to date'
-        : 'Kobo form refreshed successfully',
+      message: 'Kobo form refreshed successfully',
       name: result.name,
-      alreadyUpToDate: result.alreadyUpToDate,
     };
   }
 

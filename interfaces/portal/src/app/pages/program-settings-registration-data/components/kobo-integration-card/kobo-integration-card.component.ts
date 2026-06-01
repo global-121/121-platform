@@ -1,4 +1,5 @@
 import { DatePipe } from '@angular/common';
+import { HttpStatusCode } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -24,6 +25,7 @@ import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { KoboConfigurationDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-configuration-dialog/kobo-configuration-dialog.component';
 import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
 import { ToastService } from '~/services/toast.service';
+import { isErrorWithStatusCode } from '~/utils/is-error-with-status-code.helper';
 
 @Component({
   selector: 'app-kobo-integration-card',
@@ -87,8 +89,18 @@ export class KoboIntegrationCardComponent {
 
   readonly refreshKoboFormMutation = injectMutation(() => ({
     mutationFn: () => this.koboApiService.refreshKoboForm(this.programId),
-    onSuccess: (response) => {
-      if (response.alreadyUpToDate) {
+    onSuccess: () => {
+      this.toastService.showToast({
+        detail: $localize`Integration updated successfully.`,
+      });
+    },
+    onError: (error) => {
+      if (
+        isErrorWithStatusCode({
+          error,
+          statusCode: HttpStatusCode.NotModified,
+        })
+      ) {
         this.toastService.showToast({
           severity: 'info',
           summary: $localize`:@@generic-info:Info`,
@@ -96,11 +108,6 @@ export class KoboIntegrationCardComponent {
         });
         return;
       }
-      this.toastService.showToast({
-        detail: $localize`Integration updated successfully.`,
-      });
-    },
-    onError: () => {
       this.toastService.showToast({
         severity: 'error',
         detail: $localize`Integration update unsuccessful. Please try again.`,

@@ -13,11 +13,7 @@ import {
   refreshKoboForm,
   setupProgramWithKoboIntegration,
 } from '@121-service/test/helpers/kobo.helper';
-import {
-  getProgram,
-  patchProgram,
-  postProgram,
-} from '@121-service/test/helpers/program.helper';
+import { postProgram } from '@121-service/test/helpers/program.helper';
 import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   getAccessToken,
@@ -80,7 +76,7 @@ describe('Refresh Kobo form', () => {
     expect(response.status).toBe(HttpStatus.NOT_FOUND);
   });
 
-  it('should successfully refresh an existing kobo integration', async () => {
+  it('should return 304 Not Modified when the Kobo form is already up to date', async () => {
     // Arrange
     const program: CreateProgramDto = {
       ...baseProgram,
@@ -95,13 +91,6 @@ describe('Refresh Kobo form', () => {
       accessToken,
     });
 
-    // Remove Dutch to prove refresh restores languages from the form definition.
-    await patchProgram(
-      programId,
-      { languages: [RegistrationPreferredLanguage.en] },
-      accessToken,
-    );
-
     // Act
     const response = await refreshKoboForm({
       programId,
@@ -109,21 +98,7 @@ describe('Refresh Kobo form', () => {
     });
 
     // Assert
-    expect(response.status).toBe(HttpStatus.OK);
-    expect(response.body).toMatchObject({
-      message: 'Kobo form was already up to date',
-      name: '25042025 Prototype Sprint',
-      alreadyUpToDate: true,
-    });
-
-    // Verify Dutch (nl) was added back from the Kobo form definition
-    const programAfterRefresh = await getProgram(programId, accessToken);
-    expect(programAfterRefresh.body.languages).toEqual(
-      expect.arrayContaining([
-        RegistrationPreferredLanguage.en,
-        RegistrationPreferredLanguage.nl,
-      ]),
-    );
+    expect(response.status).toBe(HttpStatus.NOT_MODIFIED);
   });
 });
 

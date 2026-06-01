@@ -13,12 +13,4 @@ export class KoboIntegrationResultDto {
     nullable: true,
   })
   public readonly name: string | null;
-
-  @ApiProperty({
-    example: false,
-    description:
-      'Whether the program was already up to date with the latest Kobo form definition, meaning no changes were applied. Only set by the refresh endpoint.',
-    required: false,
-  })
-  public readonly alreadyUpToDate?: boolean;
 }
