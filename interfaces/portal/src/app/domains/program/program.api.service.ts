@@ -281,7 +281,8 @@ export class ProgramApiService extends DomainApiService {
           (attribute) => {
             return {
               ...attribute,
-              label: this.getAttributeTranslatedLabelOrName(attribute),
+              label:
+                this.getAttributeTranslatedLabel(attribute) ?? attribute.name,
             };
           },
         );
@@ -289,7 +290,7 @@ export class ProgramApiService extends DomainApiService {
     });
   }
 
-  private getAttributeTranslatedLabelOrName(attribute: Attribute): string {
+  private getAttributeTranslatedLabel(attribute: Attribute) {
     if (attribute.label) {
       const translated = this.translatableStringService.translate(
         attribute.label,
@@ -312,7 +313,7 @@ export class ProgramApiService extends DomainApiService {
       return ATTRIBUTE_LABELS[attribute.name];
     }
 
-    return attribute.name;
+    return;
   }
 
   assignProgramUser(
