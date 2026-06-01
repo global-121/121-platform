@@ -64,10 +64,6 @@ body {
   --font-family: var(--font-body);
 }
 
-/* .xxx * {
-  box-shadow: 0 0 0 1px inset red;
-} */
-
 /* Styles only for "local-development" purposes:
    Classname is set on <html> by the AppComponent. */
 .dev {
