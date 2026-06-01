@@ -1222,6 +1222,21 @@
     ]
   },
   {
+    "method": "post",
+    "path": "/api/programs/{programId}/fsps/intersolve-visa/wallet/cards/orders",
+    "params": [
+      "programId"
+    ],
+    "returnType": "CreateVisaCardOrderResponseDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsps/intersolve-visa/wallet/cards/orders",
+    "params": [
+      "programId"
+    ]
+  },
+  {
     "method": "put",
     "path": "/api/programs/{programId}/kobo",
     "params": [

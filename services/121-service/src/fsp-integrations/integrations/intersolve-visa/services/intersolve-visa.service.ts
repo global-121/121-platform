@@ -8,6 +8,7 @@ import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integratio
 import { IntersolveVisaCustomerEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
 import { IntersolveVisaWalletClosureEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-wallet-closure.entity';
+import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { IntersolveVisaCardStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { CreatePhysicalCardParams } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/create-physical-card-params.interface';
@@ -965,5 +966,32 @@ export class IntersolveVisaService {
       );
 
     await this.updateChildWallet(savedChildWallet);
+  }
+
+  public async issueTokenAndCreatePhysicalCard({
+    brandCode,
+    coverLetterCode,
+    contactInformation,
+  }: {
+    brandCode: string;
+    coverLetterCode: string;
+    contactInformation: ContactInformation;
+  }): Promise<void> {
+    const issuedToken = await this.intersolveVisaApiService.issueToken({
+      brandCode,
+      activate: false,
+    });
+
+    if (!issuedToken?.code) {
+      throw new IntersolveVisaApiError(
+        `${IntersolveVisa121ErrorText.issueTokenError}: response did not contain a token`,
+      );
+    }
+
+    await this.intersolveVisaApiService.createPhysicalCard({
+      tokenCode: issuedToken.code,
+      contactInformation,
+      coverLetterCode,
+    });
   }
 }

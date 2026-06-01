@@ -4,6 +4,7 @@ import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integratio
 import { IntersolveVisaCustomerEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
 import { IntersolveVisaWalletClosureEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-wallet-closure.entity';
+import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { IntersolveVisaCardStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
@@ -61,6 +62,8 @@ describe('IntersolveVisaService', () => {
             transfer: jest.fn(),
             closeCard: jest.fn(),
             setTokenBlocked: jest.fn(),
+            issueToken: jest.fn(),
+            createPhysicalCard: jest.fn(),
             getAuthenticationToken: jest.fn().mockResolvedValue('mock-token'),
           },
         },
@@ -576,6 +579,51 @@ describe('IntersolveVisaService', () => {
 
       expect(apiService.setTokenBlocked).not.toHaveBeenCalled();
       expect(apiService.closeCard).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('issueTokenAndCreatePhysicalCard', () => {
+    const contactInformation = {
+      name: 'John Doe',
+      addressStreet: 'Damrak',
+      addressHouseNumber: '1',
+      addressPostalCode: '1011AB',
+      addressCity: 'Amsterdam',
+      phoneNumber: '+31600000000',
+    };
+
+    it('throws when issueToken does not return a token code', async () => {
+      jest.spyOn(apiService, 'issueToken').mockResolvedValue({} as any);
+
+      await expect(
+        service.issueTokenAndCreatePhysicalCard({
+          brandCode: 'BRAND',
+          coverLetterCode: 'COVER_LETTER',
+          contactInformation,
+        }),
+      ).rejects.toThrow(
+        `${IntersolveVisa121ErrorText.issueTokenError}: response did not contain a token`,
+      );
+
+      expect(apiService.createPhysicalCard).not.toHaveBeenCalled();
+    });
+
+    it('creates physical card when issueToken returns a token code', async () => {
+      jest
+        .spyOn(apiService, 'issueToken')
+        .mockResolvedValue({ code: 'token-123' } as any);
+
+      await service.issueTokenAndCreatePhysicalCard({
+        brandCode: 'BRAND',
+        coverLetterCode: 'COVER_LETTER',
+        contactInformation,
+      });
+
+      expect(apiService.createPhysicalCard).toHaveBeenCalledWith({
+        tokenCode: 'token-123',
+        coverLetterCode: 'COVER_LETTER',
+        contactInformation,
+      });
     });
   });
 });

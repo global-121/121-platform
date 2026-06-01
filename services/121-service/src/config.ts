@@ -75,6 +75,8 @@ export const EXTERNAL_API = {
 // Configure Public Twilio Settings:
 // ---------------------------------------------------------------------------
 export const TWILIO_SANDBOX_WHATSAPP_NUMBER = '+14155238886';
+export const INTERSOLVE_VISA_CARD_ORDER_PHONE_NUMBER =
+  env.INTERSOLVE_VISA_CARD_ORDER_PHONE_NUMBER;
 
 // Throttling presets
 // See: https://www.npmjs.com/package/@nestjs/throttler

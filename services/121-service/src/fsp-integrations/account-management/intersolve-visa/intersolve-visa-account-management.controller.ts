@@ -23,14 +23,29 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import {
+  CreateVisaCardOrderDto,
+} from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/create-visa-card-order.dto';
+import {
+  CreateVisaCardOrderResponseDto,
+} from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/create-visa-card-order-response.dto';
 import { TokenCodeDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/token-code.dto';
-import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/intersolve-visa-account-management.service';
-import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
-import { ExportVisaWalletClosure } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-wallet-closure.interface';
+import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
+import {
+  IntersolveVisaAccountManagementService,
+} from '@121-service/src/fsp-integrations/account-management/intersolve-visa/intersolve-visa-account-management.service';
+import {
+  IntersolveVisaWalletDto,
+} from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
+import {
+  ExportVisaWalletClosure,
+} from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-wallet-closure.interface';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('fsps/debit-cards-intersolve-visa')
@@ -60,9 +75,9 @@ export class IntersolveVisaAccountManagementController {
   public async replaceCardByMail(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('referenceId') referenceId: string,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
   ): Promise<void> {
-    const userId = req.user.id;
+    const userId = RequestHelper.getUserId(req);
     await this.intersolveVisaAccountManagementService.replaceCardByMail({
       referenceId,
       programId,
@@ -91,9 +106,9 @@ export class IntersolveVisaAccountManagementController {
     @Param('referenceId') referenceId: string,
     @Param('tokenCode') tokenCode: string,
     @Query('pause', ParseBoolPipe) pause: boolean,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
   ) {
-    const userId = req.user.id;
+    const userId = RequestHelper.getUserId(req);
     const permission = pause
       ? PermissionEnum.FspDebitCardBLOCK
       : PermissionEnum.FspDebitCardUNBLOCK;
@@ -298,5 +313,58 @@ export class IntersolveVisaAccountManagementController {
     return await this.intersolveVisaAccountManagementService.getWalletClosuresExport(
       { programId },
     );
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardOrderCREATE] })
+  @ApiOperation({
+    summary: 'Order physical visa debit cards in batch for a branch delivery address',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiBody({ type: CreateVisaCardOrderDto })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Batch Physical Debit Cards ordered.',
+    type: CreateVisaCardOrderResponseDto,
+  })
+  @Post('programs/:programId/fsps/intersolve-visa/wallet/cards/orders')
+  public async createVisaCardOrder(
+    @Body() body: CreateVisaCardOrderDto,
+    @Param('programId', ParseIntPipe) programId: number,
+    @Req() req: ScopedUserRequest,
+  ): Promise<CreateVisaCardOrderResponseDto> {
+    const userId = RequestHelper.getUserId(req);
+
+    return await this.intersolveVisaAccountManagementService.createVisaCardOrder(
+      {
+        programId,
+        noOfCards: body.noOfCards,
+        addressCity: body.addressCity,
+        addressPostalCode: body.addressPostalCode,
+        addressStreet: body.addressStreet,
+        addressHouseNumber: body.addressHouseNumber,
+        addressHouseNumberAddition: body.addressHouseNumberAddition,
+        addressee: body.addressee,
+        userId,
+      },
+    );
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardOrderREAD] })
+  @ApiOperation({
+    summary: 'Get ordered visa debit card batches for a program',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Ordered visa card batches.',
+    type: [VisaCardOrderResponseDto],
+  })
+  @Get('programs/:programId/fsps/intersolve-visa/wallet/cards/orders')
+  public async getVisaCardOrders(
+    @Param('programId', ParseIntPipe) programId: number,
+  ): Promise<VisaCardOrderResponseDto[]> {
+    return await this.intersolveVisaAccountManagementService.getVisaCardOrders({
+      programId,
+    });
   }
 }
