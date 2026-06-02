@@ -134,16 +134,18 @@ class RegistrationDataPage extends BasePage {
     await this.page.getByText('Import existing reg.').click();
   }
 
-  async validateLanguageTabs(languages: string[]) {
+  async validateLanguageTabs({ languages }: { languages: string[] }) {
     await expect(this.languageTabs).toHaveCount(languages.length);
     for (const [index, language] of languages.entries()) {
       await expect(this.languageTabs.nth(index)).toHaveText(language);
     }
   }
 
-  async validateProgramAttributesTable(
-    attributes: { name: string; label: string }[],
-  ) {
+  async validateProgramAttributesTable({
+    attributes,
+  }: {
+    attributes: { name: string; label: string }[];
+  }) {
     for (const attribute of attributes) {
       await expect(this.programAttributesTable.nth(0)).toContainText(
         attribute.name,

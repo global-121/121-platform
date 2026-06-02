@@ -1,3 +1,4 @@
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdSafaricom,
@@ -5,8 +6,6 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
-
-import { env } from '../../../../../services/121-service/src/env';
 
 const languagesBeforeIntegration = ['English'];
 const languagesAfterIntegration = ['English', 'Dutch'];
@@ -25,7 +24,7 @@ const defaultSafaricomAttributes = [
   { name: 'phoneNumber', label: 'Phone Number' },
 ];
 
-const twilioAttributes = [
+const kobooAttributes = [
   { name: 'What_is_2_2_number', label: 'What is 2+2 (number)?' },
   {
     name: 'How_are_you_today_select_one',
@@ -44,8 +43,10 @@ test('View program and kobo attributes in settings page', async ({
     navigateToPage: `/program/${programIdSafaricom}/settings/registration-data`,
   });
 
-  await test.step('Validate langauge tabs', async () => {
-    await registrationDataPage.validateLanguageTabs(languagesBeforeIntegration);
+  await test.step('Validate language tabs', async () => {
+    await registrationDataPage.validateLanguageTabs({
+      languages: languagesBeforeIntegration,
+    });
   });
 
   await test.step('Add Kobo integration', async () => {
@@ -55,17 +56,21 @@ test('View program and kobo attributes in settings page', async ({
     });
   });
 
-  await test.step('Validate langauge tabs', async () => {
-    await registrationDataPage.validateLanguageTabs(languagesAfterIntegration);
+  await test.step('Validate language tabs', async () => {
+    await registrationDataPage.validateLanguageTabs({
+      languages: languagesAfterIntegration,
+    });
   });
 
   await test.step('Validate default attributes in table', async () => {
-    await registrationDataPage.validateProgramAttributesTable(
-      defaultSafaricomAttributes,
-    );
+    await registrationDataPage.validateProgramAttributesTable({
+      attributes: defaultSafaricomAttributes,
+    });
   });
 
   await test.step('Validate kobo attributes in table', async () => {
-    await registrationDataPage.validateProgramAttributesTable(twilioAttributes);
+    await registrationDataPage.validateProgramAttributesTable({
+      attributes: kobooAttributes,
+    });
   });
 });
