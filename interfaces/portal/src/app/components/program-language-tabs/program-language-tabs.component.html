@@ -3,7 +3,10 @@
 <p-tabs [(value)]="selectedTabLanguage">
   <p-tablist>
     @for (language of languages; track language) {
-      <p-tab [value]="language">
+      <p-tab
+        [value]="language"
+        data-testid="language-tab"
+      >
         <i class="pi pi-globe"></i>
         {{ tabLabels().get(language) | titlecase }}
       </p-tab>

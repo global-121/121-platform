@@ -1,3 +1,4 @@
+import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
 
 import DialogComponent from '../components/DialogComponent';
@@ -11,6 +12,8 @@ class RegistrationDataPage extends BasePage {
   readonly initiateImportButton: Locator;
   readonly importDialog: Locator;
   readonly closeImportDialog: Locator;
+  readonly languageTabs: Locator;
+  readonly programAttributesTable: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -29,6 +32,10 @@ class RegistrationDataPage extends BasePage {
     this.closeImportDialog = this.page.getByRole('button', {
       name: 'Close',
     });
+    this.languageTabs = this.page.getByTestId('language-tab');
+    this.programAttributesTable = this.page.getByTestId(
+      'program-attributes-table',
+    );
   }
 
   async koboSuccessfullyLinkedDialog({
@@ -125,6 +132,26 @@ class RegistrationDataPage extends BasePage {
 
     await ellipsisMenuButton.click();
     await this.page.getByText('Import existing reg.').click();
+  }
+
+  async validateLanguageTabs(languages: string[]) {
+    await expect(this.languageTabs).toHaveCount(languages.length);
+    for (const [index, language] of languages.entries()) {
+      await expect(this.languageTabs.nth(index)).toHaveText(language);
+    }
+  }
+
+  async validateProgramAttributesTable(
+    attributes: { name: string; label: string }[],
+  ) {
+    for (const attribute of attributes) {
+      await expect(this.programAttributesTable.nth(0)).toContainText(
+        attribute.name,
+      );
+      await expect(this.programAttributesTable.nth(0)).toContainText(
+        attribute.label,
+      );
+    }
   }
 }
 
