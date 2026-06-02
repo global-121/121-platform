@@ -1,10 +1,10 @@
 <div
   data-testid="card-with-link"
   [pClass]="[
-    'bg-white transition-colors focus-within:border-purple-500 hover:border-purple-500 group shadow-clickable-cards relative h-full border',
+    'bg-white hover:transition-colors focus-within:transition-colors focus-within:border-purple-500 hover:border-purple-500 group shadow-clickable-cards relative h-full',
     variant() === 'overview'
-      ? 'rounded-2xl border-transparent'
-      : 'rounded-lg border-grey-300',
+      ? 'rounded-2xl border border-transparent'
+      : 'rounded-lg border border-grey-300',
   ]"
 >
   <ng-container *ngTemplateOutlet="cardInner"></ng-container>
@@ -40,13 +40,13 @@
       </div>
 
       <!-- SUBTITLE -->
-      <div class="text-sm">
+      <div class="mt-0.5 text-sm empty:hidden">
         <ng-content select="[card-subtitle]"></ng-content>
       </div>
     </div>
 
     @if (menuItems().length > 0) {
-      <div class="absolute inset-y-2 inset-e-2">
+      <div class="absolute inset-y-3 inset-e-2">
         <app-ellipsis-menu [menuItems]="menuItems()" />
       </div>
     } @else {

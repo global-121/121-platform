@@ -14,10 +14,12 @@
   <ng-container card-subtitle>
     @if (isKoboIntegrated()) {
       <div class="flex items-end justify-between">
-        <app-external-link
-          [href]="externalFormUrl()"
-          [label]="koboIntegration.data()?.name ?? externalFormUrl()"
-        />
+        @if (externalFormUrl(); as formUrl) {
+          <app-external-link
+            [href]="formUrl"
+            [label]="koboIntegration.data()?.name ?? formUrl"
+          />
+        }
         <p
           i18n
           class="text-grey-700 text-end text-sm"

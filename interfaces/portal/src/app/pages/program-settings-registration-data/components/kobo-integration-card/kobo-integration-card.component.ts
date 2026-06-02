@@ -67,10 +67,10 @@ export class KoboIntegrationCardComponent {
     this.isKoboIntegrated() ? $localize`Linked` : undefined,
   );
 
-  readonly externalFormUrl = computed<string>(() => {
+  readonly externalFormUrl = computed<null | string>(() => {
     const koboIntegrationData = this.koboIntegration.data();
     if (!koboIntegrationData) {
-      return '';
+      return null;
     }
 
     return buildKoboFormUrl({
