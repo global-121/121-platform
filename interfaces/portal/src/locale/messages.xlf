@@ -1443,9 +1443,6 @@
       <trans-unit id="7799902377740606724" datatype="html">
         <source>Select 1</source>
       </trans-unit>
-      <trans-unit id="7819314041543176992" datatype="html">
-        <source>Close</source>
-      </trans-unit>
       <trans-unit id="7855962245426283369" datatype="html">
         <source>Pending reason</source>
       </trans-unit>
