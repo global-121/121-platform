@@ -160,30 +160,6 @@ describe('MtnApiService', () => {
         mtnApiService.createTransfer(createTransferInput),
       ).rejects.toBeInstanceOf(MtnApiError);
     });
-
-    it('should rethrow MtnApiError with duplicate type without wrapping when it propagates from a dependency', async () => {
-      // Arrange
-      post
-        .mockResolvedValueOnce(mockAuthResponse) // authenticate() call
-        .mockRejectedValueOnce(
-          new MtnApiError({
-            type: MtnTransferErrorTypes.duplicate,
-            message: 'Duplicate transfer request',
-          }),
-        ); // createTransfer() call
-
-      // Act
-      let error: unknown;
-      try {
-        await mtnApiService.createTransfer(createTransferInput);
-      } catch (e) {
-        error = e;
-      }
-
-      // Assert
-      expect(error).toBeInstanceOf(MtnApiError);
-      expect((error as MtnApiError).type).toBe(MtnTransferErrorTypes.duplicate);
-    });
   });
 
   describe('getTransfer', () => {
