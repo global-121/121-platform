@@ -148,8 +148,15 @@ class FspSettingsPage extends BasePage {
             .getByLabel('Full Name')
             .nth(i + 1)
             .click();
+
+          /*
+            @NOTE:
+            The test executes keystrokes before the browser's JavaScript event handlers fully attach to the multiselect dropdown
+            Adding a small wait and an extra click to ensure the dropdown is properly closed before proceeding. Not great, but okay...
+          */
+          await this.page.waitForTimeout(150);
+
           await this.page.keyboard.press('Escape'); // Close dropdown
-          // Wait for dropdown to be fully closed
           await this.page.waitForTimeout(150);
         }
       } else {
