@@ -2430,9 +2430,6 @@
       <trans-unit id="debit-card-status-blocked" datatype="html">
         <source>Blocked</source>
       </trans-unit>
-      <trans-unit id="payment-event-log-item-type-renamed" datatype="html">
-        <source>Renamed</source>
-      </trans-unit>
     </body>
   </file>
 </xliff>

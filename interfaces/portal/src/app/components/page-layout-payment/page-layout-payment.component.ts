@@ -45,7 +45,6 @@ import { PaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Locale } from '~/utils/locale';
-
 @Component({
   selector: 'app-page-layout-payment',
   imports: [
