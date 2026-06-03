@@ -25,6 +25,7 @@ export const PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS: Record<PaymentEvent, string> =
     [PaymentEvent.started]: $localize`:@@payment-event-log-item-type-started:Started`,
     [PaymentEvent.retry]: $localize`:@@payment-event-log-item-type-retry:Retry`,
     [PaymentEvent.note]: $localize`:@@payment-event-log-item-type-note:Note`,
+    [PaymentEvent.renamed]: $localize`:@@payment-event-log-item-type-renamed:Renamed`,
   };
 
 export const PAYMENT_EVENT_LOG_ITEM_TYPE_ICONS: Record<PaymentEvent, string> = {
@@ -33,4 +34,5 @@ export const PAYMENT_EVENT_LOG_ITEM_TYPE_ICONS: Record<PaymentEvent, string> = {
   [PaymentEvent.started]: 'pi pi-send',
   [PaymentEvent.retry]: 'pi pi-refresh',
   [PaymentEvent.note]: 'pi pi-pen-to-square',
+  [PaymentEvent.renamed]: 'pi pi-pen-to-square',
 };
