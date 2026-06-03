@@ -21,12 +21,13 @@
             target="_blank"
             title="Opens in a new window"
             i18n-title="@@generic-opens-in-new-window"
-            class="underline"
           >
-            {{ koboIntegration.data()?.name ?? formUrl }}
+            <span class="underline">{{
+              koboIntegration.data()?.name ?? formUrl
+            }}</span>
             <span
               aria-hidden="true"
-              class="p-button-icon pi pi-external-link relative top-0.5 ms-2 text-sm"
+              class="p-button-icon pi pi-external-link relative top-0.25 ms-1.5 text-xs"
             ></span>
           </a>
         }
