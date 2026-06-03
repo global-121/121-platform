@@ -222,7 +222,7 @@ export class PaymentApiService extends DomainApiService {
         ...BASE_ENDPOINT(programId),
         paymentId,
       ]).join('/'),
-      body: { newName },
+      body: { name: newName },
     });
   }
 
