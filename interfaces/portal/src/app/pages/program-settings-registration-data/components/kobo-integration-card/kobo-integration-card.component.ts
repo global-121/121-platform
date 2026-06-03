@@ -15,7 +15,6 @@ import {
 import { MenuItem } from 'primeng/api';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
-import { ExternalLinkComponent } from '~/components/external-link/external-link.component';
 import {
   buildKoboFormUrl,
   isKoboIntegrated,
@@ -32,7 +31,6 @@ import { ToastService } from '~/services/toast.service';
     DatePipe,
     KoboConfigurationDialogComponent,
     KoboImportExistingRegistrationsDialogComponent,
-    ExternalLinkComponent,
   ],
   templateUrl: './kobo-integration-card.component.html',
   styles: ``,
