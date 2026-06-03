@@ -145,10 +145,6 @@ export class PageLayoutPaymentComponent {
     },
   );
 
-  readonly renamePaymentDialog = viewChild.required<FormDialogComponent>(
-    'renamePaymentDialog',
-  );
-
   program = injectQuery(this.programApiService.getProgram(this.programId));
   paymentStatus = injectQuery(
     this.paymentApiService.getPaymentStatus(this.programId),
@@ -579,21 +575,6 @@ export class PageLayoutPaymentComponent {
 
     return items;
   });
-
-  readonly renamePaymentMutation = injectMutation(() => ({
-    mutationFn: (newName: string) =>
-      this.paymentApiService.renamePayment({
-        programId: this.programId,
-        paymentId: this.paymentId,
-        newName,
-      }),
-    onSuccess: async () => {
-      await Promise.all([
-        this.paymentAggregate.refetch(),
-        this.payments.refetch(),
-      ]);
-    },
-  }));
 
   readonly deletePaymentMutation = injectMutation(() => ({
     mutationFn: () =>
