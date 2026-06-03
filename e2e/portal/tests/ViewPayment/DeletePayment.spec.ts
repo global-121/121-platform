@@ -32,7 +32,7 @@ test('Delete payment button is not visible when payment has started', async ({
   });
 
   await test.step('Verify delete payment button is not visible', async () => {
-    await expect(page.getByTestId('ellipsis-menu-button')).toBeHidden();
+    await paymentPage.isDeletePaymentButtonVisible({ isVisible: false });
   });
 });
 

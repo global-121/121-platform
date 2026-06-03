@@ -24,6 +24,7 @@ class PaymentPage extends BasePage {
   readonly approvalFlowRow: Locator;
   readonly renamePaymentInput: Locator;
   readonly renamePaymentButton: Locator;
+  readonly threeDotsMenuButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -72,6 +73,7 @@ class PaymentPage extends BasePage {
     this.renamePaymentButton = this.page.getByRole('button', {
       name: 'Rename',
     });
+    this.threeDotsMenuButton = this.page.getByTestId('ellipsis-menu-button');
   }
 
   async approvePayment() {
@@ -85,13 +87,25 @@ class PaymentPage extends BasePage {
   }
 
   async deletePayment() {
-    await this.page.getByTestId('ellipsis-menu-button').click();
+    await this.threeDotsMenuButton.click();
     await this.page.getByRole('menuitem', { name: 'Delete payment' }).click();
     await this.formDialogProceedButton.click();
   }
 
+  async isDeletePaymentButtonVisible({ isVisible }: { isVisible: boolean }) {
+    await this.threeDotsMenuButton.click();
+    const deleteButton = this.page.getByRole('menuitem', {
+      name: 'Delete payment',
+    });
+    if (isVisible) {
+      await expect(deleteButton).toBeVisible();
+    } else {
+      await expect(deleteButton).toBeHidden();
+    }
+  }
+
   async renamePayment(newName: string) {
-    await this.page.getByTestId('ellipsis-menu-button').click();
+    await this.threeDotsMenuButton.click();
     await this.page.getByRole('menuitem', { name: 'Rename payment' }).click();
     await this.renamePaymentInput.fill(newName);
     await this.renamePaymentButton.click();
