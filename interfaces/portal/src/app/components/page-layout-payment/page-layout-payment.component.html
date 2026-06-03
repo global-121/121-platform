@@ -61,7 +61,7 @@
         [paymentId]="paymentId()"
         [hasExportFileIntegration]="hasFspWithExportFileIntegration()"
       />
-      @if (showEllipsisMenu()) {
+      @if (canDeletePayment()) {
         <app-ellipsis-menu [menuItems]="menuItems()" />
       }
     </div>
