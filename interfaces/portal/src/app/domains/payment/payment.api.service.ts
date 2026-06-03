@@ -207,25 +207,6 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
-  renamePayment({
-    programId,
-    paymentId,
-    newName,
-  }: {
-    programId: Signal<number | string>;
-    paymentId: Signal<number | string>;
-    newName: string;
-  }) {
-    return this.httpWrapperService.perform121ServiceRequest({
-      method: 'PATCH',
-      endpoint: this.pathToQueryKey([
-        ...BASE_ENDPOINT(programId),
-        paymentId,
-      ]).join('/'),
-      body: { name: newName },
-    });
-  }
-
   deletePayment({
     programId,
     paymentId,

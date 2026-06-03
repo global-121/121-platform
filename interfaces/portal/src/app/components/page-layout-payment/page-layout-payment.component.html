@@ -210,34 +210,3 @@
 >
   Are you sure you want to delete this payment? This action cannot be undone.
 </app-form-dialog>
-
-<app-form-dialog
-  #renamePaymentDialog
-  header="Rename payment"
-  i18n-header
-  headerIcon="pi pi-pencil"
-  proceedLabel="Rename"
-  i18n-proceedLabel
-  [mutation]="renamePaymentMutation"
-  [mutationData]="renamePaymentFormGroup.getRawValue().newName"
-  [formGroup]="renamePaymentFormGroup"
->
-  <p i18n>
-    You're about to rename the payment created on {{ paymentDate() }}. Choose a
-    clear name so other users can easily find it. If this payment has already
-    started, make sure to inform relevant users.
-  </p>
-  <app-form-field-wrapper
-    label="New name"
-    i18n-label
-    [errorMessage]="renameFormFieldErrors()('newName')"
-  >
-    <input
-      pInputText
-      formControlName="newName"
-      type="text"
-      autocomplete="off"
-      maxlength="60"
-    />
-  </app-form-field-wrapper>
-</app-form-dialog>
