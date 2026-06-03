@@ -196,16 +196,6 @@ export class PageLayoutPaymentComponent {
     return `${localizedText} ${this.paymentDate()}`;
   });
 
-  readonly currentPaymentName = computed(() => {
-    if (!this.payments.isSuccess()) {
-      return undefined;
-    }
-
-    return this.payments
-      .data()
-      .find((p) => p.paymentId === Number(this.paymentId()))?.name;
-  });
-
   readonly totalRegistrations = computed(() => {
     if (!this.paymentAggregate.isSuccess()) {
       return '-';
@@ -482,23 +472,15 @@ export class PageLayoutPaymentComponent {
     return true;
   });
 
-  readonly showEllipsisMenu = computed(() => this.canDeletePayment());
-
-  readonly menuItems = computed<MenuItem[]>(() => {
-    const items: MenuItem[] = [];
-
-    if (this.canDeletePayment()) {
-      items.push({
-        label: $localize`Delete payment`,
-        icon: 'pi pi-trash',
-        command: () => {
-          this.deletePaymentDialog().show();
-        },
-      });
-    }
-
-    return items;
-  });
+  readonly menuItems = computed<MenuItem[]>(() => [
+    {
+      label: $localize`Delete payment`,
+      icon: 'pi pi-trash',
+      command: () => {
+        this.deletePaymentDialog().show();
+      },
+    },
+  ]);
 
   readonly deletePaymentMutation = injectMutation(() => ({
     mutationFn: () =>
