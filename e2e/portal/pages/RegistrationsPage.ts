@@ -351,7 +351,9 @@ class RegistrationsPage extends BasePage {
     for (const column of columns) {
       await this.page.getByRole('option', { name: column }).click();
     }
-    const filePath = await this.downloadFile(this.exportCSVButton.click());
+    const filePath = await this.downloadFile(() =>
+      this.exportCSVButton.click(),
+    );
     await this.validateToastMessageAndClose('Exporting');
     await this.validateExportedFile({
       filePath,
@@ -400,7 +402,7 @@ class RegistrationsPage extends BasePage {
   async assertImportTemplateForPvProgram() {
     await this.clickAndSelectImportOption('Import new registrations');
 
-    const filePath = await this.downloadFile(
+    const filePath = await this.downloadFile(() =>
       this.downloadTemplateButton.click(),
     );
 

@@ -37,7 +37,7 @@ class ExportData extends BasePage {
       await this.page.getByLabel('CSV').click();
     }
 
-    const filePath = await this.downloadFile(this.clickProceedToExport());
+    const filePath = await this.downloadFile(() => this.clickProceedToExport());
     await this.validateExportedFile({
       filePath,
       minRowCount,
