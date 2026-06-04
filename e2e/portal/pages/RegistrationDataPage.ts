@@ -1,6 +1,8 @@
 import { Locator, Page } from 'playwright';
+import { expect } from 'playwright/test';
 
 import DialogComponent from '../components/DialogComponent';
+import TableComponent from '../components/TableComponent';
 import BasePage from './BasePage';
 
 class RegistrationDataPage extends BasePage {
@@ -125,6 +127,25 @@ class RegistrationDataPage extends BasePage {
 
     await ellipsisMenuButton.click();
     await this.page.getByText('Import existing reg.').click();
+  }
+
+  async validateErrorTable() {
+    const fileDialogErrorTable = new TableComponent(
+      this.page,
+      'kobo-import-existing-registration-dialog-errors-table',
+    );
+
+    const columnHeaders = await fileDialogErrorTable.getTextArrayFromHeader();
+    const rows = await fileDialogErrorTable.tableRows
+      .locator('td')
+      .allInnerTexts();
+
+    expect(columnHeaders).toEqual(['Reference ID', 'Column', 'Error']);
+    expect(rows).toEqual([
+      'failure-import-with-failure',
+      'programFspConfigurationName',
+      'FspConfigurationName undefined not found in program. Allowed values: Safaricom',
+    ]);
   }
 }
 

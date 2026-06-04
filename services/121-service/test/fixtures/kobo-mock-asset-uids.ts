@@ -12,4 +12,5 @@ export enum KoboMockAssetUids {
   happyFlowWithChanges = 'asset-id-happy-flow-with-changes',
   happyFlowAlwaysNewVersion = 'asset-id-happy-flow-always-new-version',
   withExistingWebhook = 'asset-id-with-existing-webhook',
+  overLimit = 'asset-id-over-limit',
 }

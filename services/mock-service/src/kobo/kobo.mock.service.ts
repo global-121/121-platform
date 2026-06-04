@@ -527,6 +527,10 @@ export class KoboMockService {
       return { count: 0, next: null, previous: null, results: [] };
     }
 
+    if (uid_asset.includes('over-limit')) {
+      return { count: 1001, next: null, previous: null, results };
+    }
+
     return { count: results.length, next: null, previous: null, results };
   }
 
