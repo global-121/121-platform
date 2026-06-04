@@ -1,4 +1,4 @@
-import { NgTemplateOutlet } from '@angular/common';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -9,7 +9,6 @@ import { RouterLink } from '@angular/router';
 
 import { MenuItem } from 'primeng/api';
 import { CardModule } from 'primeng/card';
-import { ClassNamesModule } from 'primeng/classnames';
 
 import {
   ChipVariant,
@@ -27,7 +26,7 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
     NgTemplateOutlet,
     ColoredChipComponent,
     EllipsisMenuComponent,
-    ClassNamesModule,
+    NgClass,
   ],
   templateUrl: './card-with-link.component.html',
   styles: ``,

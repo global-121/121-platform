@@ -1,10 +1,10 @@
 <div
   data-testid="card-with-link"
-  [pClass]="[
-    'bg-white hover:transition-colors focus-within:transition-colors focus-within:border-purple-500 hover:border-purple-500 group shadow-clickable-cards relative h-full',
+  [ngClass]="[
+    'group shadow-clickable-cards relative h-full bg-white focus-within:border-purple-500 focus-within:transition-colors hover:border-purple-500 hover:transition-colors',
     variant() === 'overview'
       ? 'rounded-2xl border border-transparent'
-      : 'rounded-lg border border-grey-300',
+      : 'border-grey-300 rounded-lg border',
   ]"
 >
   <ng-container *ngTemplateOutlet="cardInner"></ng-container>
