@@ -6,6 +6,7 @@ import { unique } from 'radashi';
 
 import { CooperativeBankOfOromiaAccountValidationReportDto } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-account-validation-report.dto';
 import { CreateVisaCardOrderDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/create-visa-card-order.dto';
+import { FindAllVisaCardOrdersResultDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/find-all-visa-card-orders-result.dto';
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
@@ -31,6 +32,7 @@ import {
 import { Role } from '~/domains/role/role.model';
 import { TransactionEventsResponse } from '~/domains/transaction/transaction.model';
 import { AuthService } from '~/services/auth.service';
+import { PaginateQuery } from '~/services/paginate-query.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
 
@@ -532,7 +534,7 @@ export class ProgramApiService extends DomainApiService {
     });
   }
 
-  public orderVisaCards({
+  orderVisaCards({
     programId,
     visaCardOrder,
   }: {
@@ -553,6 +555,28 @@ export class ProgramApiService extends DomainApiService {
         'orders',
       ]).join('/'),
       body: visaCardOrder,
+    });
+  }
+
+  getOrderedVisaCards({
+    programId,
+    paginateQuery,
+  }: {
+    programId: Signal<number | string>;
+    paginateQuery: Signal<PaginateQuery>;
+  }) {
+    return this.generateQueryOptions<FindAllVisaCardOrdersResultDto>({
+      path: [
+        BASE_ENDPOINT,
+        programId,
+        'fsps',
+        'intersolve-visa',
+        'wallet',
+        'cards',
+        'orders',
+      ],
+      paginateQuery,
+      enabled: () => !!programId() && !!paginateQuery(),
     });
   }
 }

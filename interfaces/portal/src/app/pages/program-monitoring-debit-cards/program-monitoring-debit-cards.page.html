@@ -20,9 +20,15 @@
     />
   </section>
   <app-query-table
+    [isPending]="programOrderedVisaCards.isPending()"
     [items]="[]"
-    [columns]="columns()"
-    [isPending]="false"
+    [columns]="[]"
+    [localStorageKey]="localStorageKey()"
+    [enableColumnManagement]="true"
+    [enableSelection]="true"
+    [serverSideFiltering]="true"
+    [serverSideTotalRecords]="totalOrdered()"
+    (updatePaginateQuery)="paginateQuery.set($event)"
   ></app-query-table>
 </app-page-layout-monitoring>
 

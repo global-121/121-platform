@@ -300,9 +300,6 @@
       <trans-unit id="2309376472788575612" datatype="html">
         <source>Registrations with the status “new”.</source>
       </trans-unit>
-      <trans-unit id="2309973394549994770" datatype="html">
-        <source>Cards ordered</source>
-      </trans-unit>
       <trans-unit id="2314075913167237221" datatype="html">
         <source>City</source>
       </trans-unit>
@@ -1172,9 +1169,6 @@
       <trans-unit id="6102855402615761891" datatype="html">
         <source>The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
       </trans-unit>
-      <trans-unit id="6151488389266366349" datatype="html">
-        <source>Date ordered</source>
-      </trans-unit>
       <trans-unit id="6169902268775373280" datatype="html">
         <source>Select users for this approval step</source>
       </trans-unit>
@@ -1192,9 +1186,6 @@
       </trans-unit>
       <trans-unit id="6289725856045829997" datatype="html">
         <source>Send a message to registration(s)</source>
-      </trans-unit>
-      <trans-unit id="6304432362546770951" datatype="html">
-        <source>Address</source>
       </trans-unit>
       <trans-unit id="6305795241980054784" datatype="html">
         <source>Necessary cookies are required for the basic operation of the platform.</source>
@@ -2540,6 +2531,9 @@
       </trans-unit>
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
+      </trans-unit>
+      <trans-unit id="4866288342540923037" datatype="html">
+        <source>No of Cards Ordered</source>
       </trans-unit>
     </body>
   </file>

@@ -364,6 +364,11 @@ export const routes: Routes = [
                   import('~/pages/program-registration-debit-cards/program-registration-debit-cards.page').then(
                     (x) => x.ProgramRegistrationDebitCardsPageComponent,
                   ),
+                canActivate: [
+                  programPermissionsGuard({
+                    permission: PermissionEnum.FspDebitCardOrderCREATE,
+                  }),
+                ],
               },
               {
                 path: ``,
