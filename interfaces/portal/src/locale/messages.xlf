@@ -2445,6 +2445,21 @@
       <trans-unit id="payment-event-log-item-type-renamed" datatype="html">
         <source>Renamed</source>
       </trans-unit>
+      <trans-unit id="1817782792448180446" datatype="html">
+        <source>Integration is already up to date.</source>
+      </trans-unit>
+      <trans-unit id="508499092676439201" datatype="html">
+        <source>Integration update unsuccessful. Please try again.</source>
+      </trans-unit>
+      <trans-unit id="5656654201977017111" datatype="html">
+        <source>Refresh link</source>
+      </trans-unit>
+      <trans-unit id="7131024915833130123" datatype="html">
+        <source>Integration updated successfully.</source>
+      </trans-unit>
+      <trans-unit id="generic-info" datatype="html">
+        <source>Info</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
