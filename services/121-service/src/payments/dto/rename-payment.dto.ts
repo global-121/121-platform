@@ -9,4 +9,3 @@ export class RenamePaymentDto {
   @MaxLength(60)
   public readonly name: string;
 }
-// test comment

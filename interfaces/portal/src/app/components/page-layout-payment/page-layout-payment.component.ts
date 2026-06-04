@@ -132,17 +132,6 @@ export class PageLayoutPaymentComponent {
 
   readonly renameFormFieldErrors = generateFieldErrors(
     this.renamePaymentFormGroup,
-    {
-      newName: (control) => {
-        if (control.errors?.required || control.errors?.whitespaceOnly) {
-          return $localize`Please enter a name.`;
-        }
-        if (control.errors?.maxlength) {
-          return $localize`Name must be at most 60 characters.`;
-        }
-        return undefined;
-      },
-    },
   );
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
