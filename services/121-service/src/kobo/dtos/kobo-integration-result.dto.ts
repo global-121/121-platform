@@ -13,4 +13,12 @@ export class KoboIntegrationResultDto {
     nullable: true,
   })
   public readonly name: string | null;
+
+  @ApiProperty({
+    example: true,
+    description:
+      'Whether the refresh applied changes to the program. False when the Kobo form was already up to date.',
+    required: false,
+  })
+  public readonly updated?: boolean;
 }

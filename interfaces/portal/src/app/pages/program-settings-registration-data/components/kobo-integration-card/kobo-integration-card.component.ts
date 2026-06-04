@@ -8,7 +8,10 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { injectQuery } from '@tanstack/angular-query-experimental';
+import {
+  injectMutation,
+  injectQuery,
+} from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
@@ -20,6 +23,7 @@ import {
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { KoboConfigurationDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-configuration-dialog/kobo-configuration-dialog.component';
 import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
+import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-kobo-integration-card',
@@ -32,12 +36,14 @@ import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-
   ],
   templateUrl: './kobo-integration-card.component.html',
   styles: ``,
+  providers: [ToastService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KoboIntegrationCardComponent {
   readonly programId = input.required<number | string>();
 
   private readonly koboApiService = inject(KoboApiService);
+  private readonly toastService = inject(ToastService);
 
   readonly koboConfigurationDialog =
     viewChild.required<KoboConfigurationDialogComponent>(
@@ -79,11 +85,40 @@ export class KoboIntegrationCardComponent {
     });
   });
 
+  readonly refreshKoboFormMutation = injectMutation(() => ({
+    mutationFn: () => this.koboApiService.refreshKoboForm(this.programId),
+    onSuccess: (result) => {
+      if (result.updated) {
+        this.toastService.showToast({
+          detail: $localize`Integration updated successfully.`,
+        });
+        return;
+      }
+      this.toastService.showToast({
+        severity: 'info',
+        summary: $localize`:@@generic-info:Info`,
+        detail: $localize`Integration is already up to date.`,
+      });
+    },
+    onError: () => {
+      this.toastService.showToast({
+        severity: 'error',
+        detail: $localize`Integration update unsuccessful. Please try again.`,
+      });
+    },
+  }));
+
   readonly menuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`Reconfigure`,
       command: () => {
         this.koboConfigurationDialog().show();
+      },
+    },
+    {
+      label: $localize`Refresh link`,
+      command: () => {
+        this.refreshKoboFormMutation.mutate();
       },
     },
     {

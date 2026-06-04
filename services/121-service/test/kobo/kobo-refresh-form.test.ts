@@ -80,7 +80,7 @@ describe('Refresh Kobo form', () => {
     expect(response.status).toBe(HttpStatus.NOT_FOUND);
   });
 
-  it('should successfully refresh an existing kobo integration', async () => {
+  it('should report no changes when the Kobo form is already up to date', async () => {
     // Arrange
     const program: CreateProgramDto = {
       ...baseProgram,
@@ -90,6 +90,37 @@ describe('Refresh Kobo form', () => {
 
     const { programId } = await setupProgramWithKoboIntegration({
       assetUid: KoboMockAssetUids.happyFlow,
+      program,
+      fspConfiguration,
+      accessToken,
+    });
+
+    // Act
+    const response = await refreshKoboForm({
+      programId,
+      accessToken,
+    });
+
+    // Assert
+    expect(response.status).toBe(HttpStatus.OK);
+    expect(response.body).toMatchObject({
+      message: 'Kobo form is already up to date',
+      updated: false,
+    });
+  });
+
+  it('should successfully refresh when the Kobo form has a new version', async () => {
+    // Arrange: this mock asset returns a freshly randomized version_id on
+    // every fetch, so the version stored at integration time will not match
+    // the one returned by the refresh fetch.
+    const program: CreateProgramDto = {
+      ...baseProgram,
+      titlePortal: { en: 'Program with stale Kobo integration' },
+      languages: [RegistrationPreferredLanguage.en],
+    } as CreateProgramDto;
+
+    const { programId } = await setupProgramWithKoboIntegration({
+      assetUid: KoboMockAssetUids.happyFlowAlwaysNewVersion,
       program,
       fspConfiguration,
       accessToken,
@@ -113,6 +144,7 @@ describe('Refresh Kobo form', () => {
     expect(response.body).toMatchObject({
       message: 'Kobo form refreshed successfully',
       name: '25042025 Prototype Sprint',
+      updated: true,
     });
 
     // Verify Dutch (nl) was added back from the Kobo form definition
