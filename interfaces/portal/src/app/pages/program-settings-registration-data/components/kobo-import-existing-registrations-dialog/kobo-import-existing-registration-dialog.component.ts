@@ -26,7 +26,7 @@ import { QueryTableComponent } from '~/components/query-table/query-table.compon
 import { QueryTableColumn } from '~/components/query-table/query-table.types';
 import { ImportExistingSubmissionsResultKey } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
-import { DialogState } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/KoboImportExistingRegistrationsDialogState.enum';
+import { DialogState } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registrations-dialog-state.enum';
 import { ToastService } from '~/services/toast.service';
 
 interface ValidationError {
@@ -127,9 +127,13 @@ export class KoboImportExistingRegistrationsDialogComponent {
     },
   }));
 
+  readonly singleErrorMessage = computed(
+    () => this.importExistingSubmissions.failureReason()?.message,
+  );
+
   // Error table
 
-  readonly detailedImportErrors = computed(() => {
+  readonly detailedErrors = computed(() => {
     const errors = this.importExistingSubmissions.data()?.validationErrors;
 
     if (errors?.length) {
