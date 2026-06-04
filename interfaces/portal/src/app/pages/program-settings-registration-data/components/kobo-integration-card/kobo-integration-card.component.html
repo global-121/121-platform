@@ -16,8 +16,8 @@
       <div class="flex items-end justify-between">
         @if (externalFormUrl(); as formUrl) {
           <a
-            href="{{ formUrl }}"
-            rel="'noopener noreferrer external'"
+            [href]="formUrl"
+            rel="'external'"
             target="_blank"
             title="Opens in a new window"
             i18n-title="@@generic-opens-in-new-window"
