@@ -154,10 +154,7 @@ class FspSettingsPage extends BasePage {
             fully attach to the multiselect dropdown. Adding a small wait (150ms) to ensure
             they are attached before sending the 'Escape' key to close the dropdown.
           */
-          await this.page.waitForTimeout(150);
-
-          await this.page.keyboard.press('Escape'); // Close dropdown
-          await this.page.waitForTimeout(150);
+          await this.closeOpenSelectOrMultiselectWithRetries();
         }
       } else {
         for (let i = 1; i < inputCount; i++) {
@@ -176,9 +173,7 @@ class FspSettingsPage extends BasePage {
           }
         }
       }
-      // Ensure any dropdowns or overlays are closed before clicking
-      await this.page.keyboard.press('Escape');
-      await this.page.waitForTimeout(150);
+
       await this.integrateFspButton.waitFor({ state: 'visible' });
       await this.integrateFspButton.click();
     }

@@ -229,6 +229,21 @@ class BasePage {
     return filePath;
   }
 
+  async closeOpenSelectOrMultiselectWithRetries(retries = 3) {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const overlay = this.page
+          .locator('.p-multiselect-overlay')
+          .or(this.page.locator('.p-select-overlay'));
+        await this.page.keyboard.press('Escape');
+        await expect(overlay).not.toBeVisible();
+        return; // Click successful, exit the loop
+      } catch (error) {
+        console.log(`Click failed. Retrying... Attempt ${i + 1}/${retries}`);
+      }
+    }
+  }
+
   async validateExportedFile({
     filePath,
     minRowCount,
