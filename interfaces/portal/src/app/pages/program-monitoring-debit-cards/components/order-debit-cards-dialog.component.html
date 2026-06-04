@@ -1,12 +1,12 @@
 <app-form-dialog
   #orderDebitCardsDialog
   [formGroup]="formGroup"
-  [mutationData]="formGroup.getRawValue()"
+  [mutationData]="undefined"
   [header]="'Order debit cards'"
   [headerIcon]="'pi pi-credit-card'"
   [proceedLabel]="'Order debit cards'"
   [proceedIcon]="'pi pi-credit-card'"
-  [mutation]="fakeMutation"
+  [mutation]="orderVisaCards"
   i18n-header
   i18n-proceedLabel
 >
@@ -23,14 +23,14 @@
     <app-form-field-wrapper
       label="Number of cards"
       i18n-label
-      [errorMessage]="formFieldErrors()('cardAmountValue')"
+      [errorMessage]="formFieldErrors()('noOfCards')"
       [isRequired]="true"
     >
       <input
         pInputText
         type="number"
         [pSize]="'large'"
-        formControlName="cardAmountValue"
+        formControlName="noOfCards"
         autocomplete="off"
         placeholder="0"
         i18n-placeholder
@@ -40,13 +40,13 @@
     <app-form-field-wrapper
       label="City"
       i18n-label
-      [errorMessage]="formFieldErrors()('cityValue')"
+      [errorMessage]="formFieldErrors()('city')"
       [isRequired]="true"
     >
       <input
         pInputText
         type="text"
-        formControlName="cityValue"
+        formControlName="city"
         autocomplete="off"
         [pSize]="'large'"
         placeholder="Den Haag"
@@ -57,13 +57,13 @@
     <app-form-field-wrapper
       label="Postal code"
       i18n-label
-      [errorMessage]="formFieldErrors()('postalCodeValue')"
+      [errorMessage]="formFieldErrors()('postalCode')"
       [isRequired]="true"
     >
       <input
         pInputText
         type="text"
-        formControlName="postalCodeValue"
+        formControlName="postalCode"
         autocomplete="off"
         [pSize]="'large'"
         placeholder="1234AB"
@@ -74,14 +74,14 @@
     <app-form-field-wrapper
       label="Address (including street name, house number, and addition)"
       i18n-label
-      [errorMessage]="formFieldErrors()('addressValue')"
+      [errorMessage]="formFieldErrors()('address')"
       [isRequired]="true"
     >
       <input
         pInputText
         [pSize]="'large'"
         type="text"
-        formControlName="addressValue"
+        formControlName="address"
         autocomplete="off"
         placeholder="Anna van Saksenlaan 50, 2593 HT Den Haag"
         i18n-placeholder
@@ -91,14 +91,14 @@
     <app-form-field-wrapper
       label="Addressee (name of the recipient of the package)"
       i18n-label
-      [errorMessage]="formFieldErrors()('addresseeValue')"
+      [errorMessage]="formFieldErrors()('addressee')"
       [isRequired]="true"
     >
       <input
         pInputText
         [pSize]="'large'"
         type="text"
-        formControlName="addresseeValue"
+        formControlName="addressee"
         autocomplete="off"
         placeholder="John Doe"
         i18n-placeholder

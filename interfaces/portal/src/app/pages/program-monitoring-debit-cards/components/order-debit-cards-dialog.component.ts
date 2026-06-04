@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+  viewChild,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
@@ -12,6 +18,7 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
+import { ProgramApiService } from '~/domains/program/program.api.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
@@ -28,41 +35,49 @@ import { generateFieldErrors } from '~/utils/form-validation';
   providers: [],
 })
 export class OrderDebitCardsDialogComponent {
+  readonly programId = input.required<string>();
+
+  private programApiService = inject(ProgramApiService);
+
   readonly formDialog = viewChild.required<FormDialogComponent>(
     'orderDebitCardsDialog',
   );
 
   formGroup = new FormGroup({
-    cardAmountValue: new FormControl<number | undefined>(
+    noOfCards: new FormControl<number>(
       {
         value: 0,
         disabled: false,
       },
       {
         nonNullable: true,
-        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-        validators: [Validators.required, Validators.min(1)],
+        validators: [
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+          Validators.required,
+          Validators.min(1),
+          Validators.max(700),
+        ],
       },
     ),
-    postalCodeValue: new FormControl<string | undefined>(
-      { value: undefined, disabled: false },
+    postalCode: new FormControl<string>(
+      { value: '', disabled: false },
       {
         // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
         validators: [Validators.required],
         nonNullable: true,
       },
     ),
-    cityValue: new FormControl<string | undefined>(
-      { value: undefined, disabled: false },
+    city: new FormControl<string>(
+      { value: '', disabled: false },
       {
         // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
         validators: [Validators.required],
         nonNullable: true,
       },
     ),
-    addressValue: new FormControl<string | undefined>(
+    address: new FormControl<string>(
       {
-        value: undefined,
+        value: '',
         disabled: false,
       },
       {
@@ -71,9 +86,9 @@ export class OrderDebitCardsDialogComponent {
         nonNullable: true,
       },
     ),
-    addresseeValue: new FormControl<string | undefined>(
+    addressee: new FormControl<string>(
       {
-        value: undefined,
+        value: '',
         disabled: false,
       },
       {
@@ -87,33 +102,18 @@ export class OrderDebitCardsDialogComponent {
   readonly formEvents = toSignal(this.formGroup.events);
   readonly formFieldErrors = generateFieldErrors(this.formGroup, {});
 
-  readonly fakeMutation = injectMutation(() => ({
-    mutationFn: ({
-      cardAmountValue,
-      postalCodeValue,
-      addressValue,
-      cityValue,
-      addresseeValue,
-    }: {
-      cardAmountValue: number | undefined;
-      postalCodeValue: string | undefined;
-      addressValue: string | undefined;
-      cityValue: string | undefined;
-      addresseeValue: string | undefined;
-    }) => {
-      console.log(
-        'doing stuff:',
-        cityValue,
-        postalCodeValue,
-        addressValue,
-        cardAmountValue,
-        addresseeValue,
-      );
-
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({});
-        }, 1000);
+  readonly orderVisaCards = injectMutation(() => ({
+    mutationFn: () => {
+      const formValues = this.formGroup.getRawValue();
+      return this.programApiService.orderVisaCards({
+        programId: this.programId,
+        visaCardOrder: {
+          noOfCards: formValues.noOfCards,
+          postalCode: formValues.postalCode,
+          city: formValues.city,
+          address: formValues.address,
+          addressee: formValues.addressee,
+        },
       });
     },
     onSuccess: () => {

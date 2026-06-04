@@ -41,7 +41,6 @@ export class MonitoringMenuComponent {
       label: $localize`:@@page-title-program-monitoring-debit-cards:Debit Cards`,
       routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${ProgramMonitoringPaths.DebitCards}`,
       icon: 'pi pi-credit-card',
-      visible: false,
     },
     {
       label: $localize`:@@page-title-program-monitoring-data-changes:Data changes`,
