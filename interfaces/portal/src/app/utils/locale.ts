@@ -55,7 +55,7 @@ export const getEnvironmentLocales = () =>
     .map((locale) => locale.trim())
     .filter(isValidLocale);
 
-export const getAvailableUILanguageCodes = () =>
+const getAvailableUILanguageCodes = () =>
   getEnvironmentLocales().map((locale) => getUILanguageFromLocale(locale));
 
 export const isSupportedUILanguage = (language: Language) =>
