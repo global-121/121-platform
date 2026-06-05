@@ -4,4 +4,5 @@ export enum PaymentEvent {
   started = 'started',
   retry = 'retry',
   note = 'note',
+  renamed = 'renamed',
 }
