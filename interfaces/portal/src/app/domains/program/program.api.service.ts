@@ -291,29 +291,15 @@ export class ProgramApiService extends DomainApiService {
   }
 
   private getAttributeTranslatedLabel(attribute: Attribute) {
-    if (attribute.label) {
-      const translated = this.translatableStringService.translate(
-        attribute.label,
-      );
-      if (translated) {
-        return translated;
-      }
-    }
-
-    if (attribute.koboLabel) {
-      const translated = this.translatableStringService.translate(
-        attribute.koboLabel,
-      );
-      if (translated) {
-        return translated;
-      }
-    }
-
     if (isGenericAttribute(attribute.name)) {
       return ATTRIBUTE_LABELS[attribute.name];
     }
 
-    return;
+    return (
+      this.translatableStringService.translate(attribute.label) ??
+      this.translatableStringService.translate(attribute.koboLabel) ??
+      undefined
+    );
   }
 
   assignProgramUser(
