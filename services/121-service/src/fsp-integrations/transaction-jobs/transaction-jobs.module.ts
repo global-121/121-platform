@@ -7,6 +7,7 @@ import { CooperativeBankOfOromiaModule } from '@121-service/src/fsp-integrations
 import { ExcelModule } from '@121-service/src/fsp-integrations/integrations/excel/excel.module';
 import { IntersolveVisaModule } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/intersolve-voucher.module';
+import { MtnModule } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.module';
 import { NedbankModule } from '@121-service/src/fsp-integrations/integrations/nedbank/nedbank.module';
 import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/integrations/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqModule } from '@121-service/src/fsp-integrations/integrations/onafriq/onafriq.module';
@@ -19,6 +20,7 @@ import { TransactionJobsExcelService } from '@121-service/src/fsp-integrations/t
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsIntersolveVisaService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-intersolve-visa.service';
 import { TransactionJobsIntersolveVoucherService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-intersolve-voucher.service';
+import { TransactionJobsMtnService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-mtn.service';
 import { TransactionJobsNedbankService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-nedbank.service';
 import { TransactionJobsOnafriqService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-onafriq.service';
 import { TransactionJobsSafaricomService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-safaricom.service';
@@ -47,6 +49,7 @@ const transactionJobProcessors = [
   createTransactionJobProcessor(QueueNames.transactionJobsOnafriq, TransactionJobsOnafriqService),
   createTransactionJobProcessor(QueueNames.transactionJobsCommercialBankEthiopia, TransactionJobsCommercialBankEthiopiaService),
   createTransactionJobProcessor(QueueNames.transactionJobsExcel, TransactionJobsExcelService),
+  createTransactionJobProcessor(QueueNames.transactionJobsMtn, TransactionJobsMtnService),
 ];
 
 @Module({
@@ -58,6 +61,7 @@ const transactionJobProcessors = [
     SafaricomModule,
     AirtelModule,
     CooperativeBankOfOromiaModule,
+    MtnModule,
     NedbankModule,
     ProgramFspConfigurationsModule,
     OnafriqModule,
@@ -83,6 +87,7 @@ const transactionJobProcessors = [
     TransactionJobsIntersolveVoucherService,
     TransactionJobsOnafriqService,
     TransactionJobsCommercialBankEthiopiaService,
+    TransactionJobsMtnService,
     TransactionJobsExcelService,
     createScopedRepositoryProvider(OnafriqTransactionEntity),
     TransactionEventsScopedRepository,

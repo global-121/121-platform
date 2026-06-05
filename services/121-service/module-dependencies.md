@@ -90,6 +90,12 @@ graph LR
   MetricsModule-->RegistrationEventsModule
   MetricsModule-->RegistrationsModule
   MetricsModule-->UserModule
+  MtnReconciliationModule-->MtnModule
+  MtnReconciliationModule-->ProgramFspConfigurationsModule
+  MtnReconciliationModule-->QueuesRegistryModule
+  MtnReconciliationModule-->RedisModule
+  MtnReconciliationModule-->TransactionEventsModule
+  MtnReconciliationModule-->TransactionsModule
   NedbankReconciliationModule-->NedbankModule
   NedbankReconciliationModule-->TransactionEventsModule
   NedbankReconciliationModule-->TransactionsModule
@@ -167,6 +173,7 @@ graph LR
   TransactionJobsModule-->IntersolveVoucherModule
   TransactionJobsModule-->MessageQueuesModule
   TransactionJobsModule-->MessageTemplateModule
+  TransactionJobsModule-->MtnModule
   TransactionJobsModule-->NedbankModule
   TransactionJobsModule-->OnafriqModule
   TransactionJobsModule-->ProgramFspConfigurationsModule

@@ -20,6 +20,7 @@ import { IntersolveVisaAccountManagementModule } from '@121-service/src/fsp-inte
 import { ExcelReconcilicationModule } from '@121-service/src/fsp-integrations/reconciliation/excel/excel-reconciliation.module';
 import { IntersolveVisaReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/intersolve-visa/intersolve-visa-reconciliation.module';
 import { IntersolveVoucherReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/intersolve-voucher/intersolve-voucher-reconciliation.module';
+import { MtnReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.module';
 import { NedbankReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/nedbank/nedbank-reconciliation.module';
 import { OnafriqReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/onafriq/onafriq-reconciliation.module';
 import { SafaricomReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/safaricom/safaricom-reconciliation.module';
@@ -100,6 +101,7 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
     ExcelReconcilicationModule,
     IntersolveVisaReconciliationModule,
     IntersolveVoucherReconciliationModule,
+    MtnReconciliationModule,
     SafaricomReconciliationModule,
     OnafriqReconciliationModule,
     RegistrationsUpdateJobsModule,

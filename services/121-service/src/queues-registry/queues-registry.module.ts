@@ -71,6 +71,13 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
         duration: 1000, // per duration in milliseconds
       },
     }),
+    BullModule.registerQueue({
+      name: QueueNames.transactionJobsMtn,
+      limiter: {
+        max: 20, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
 
     // Safaricom Callback Queues
     BullModule.registerQueue({
@@ -92,6 +99,14 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
           path: 'src/fsp-integrations/reconciliation/safaricom/processors/safaricom-timeout-callback-job.processor.ts',
         },
       ],
+      limiter: {
+        max: 20, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
+    // MTN Callback Queue
+    BullModule.registerQueue({
+      name: QueueNames.paymentCallbackMtnTransfer,
       limiter: {
         max: 20, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds

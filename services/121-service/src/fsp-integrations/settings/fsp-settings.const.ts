@@ -5,6 +5,7 @@ import { EXCEL_SETTINGS } from '@121-service/src/fsp-integrations/settings/excel
 import { INTERSOLVE_VISA_SETTINGS } from '@121-service/src/fsp-integrations/settings/intersolve-visa/intersolve-visa-settings.const';
 import { INTERSOLVE_VOUCHER_PAPER_SETTINGS } from '@121-service/src/fsp-integrations/settings/intersolve-voucher-paper/intersolve-voucher-paper-settings.const';
 import { INTERSOLVE_VOUCHER_WHATSAPP_SETTINGS } from '@121-service/src/fsp-integrations/settings/intersolve-voucher-whatsapp/intersolve-voucher-whatsapp-settings.const';
+import { MTN_SETTINGS } from '@121-service/src/fsp-integrations/settings/mtn/mtn-settings.const';
 import { NEDBANK_SETTINGS } from '@121-service/src/fsp-integrations/settings/nedbank/nedbank-settings.const';
 import { ONAFRIQ_SETTINGS } from '@121-service/src/fsp-integrations/settings/onafriq/onafriq-settings.const';
 import { SAFARICOM_SETTINGS } from '@121-service/src/fsp-integrations/settings/safaricom/safaricom-settings.const';
@@ -25,4 +26,5 @@ export const FSP_SETTINGS: Record<Fsps, FspSettingsDto> = {
   [Fsps.nedbank]: NEDBANK_SETTINGS,
   [Fsps.onafriq]: ONAFRIQ_SETTINGS,
   [Fsps.cooperativeBankOfOromia]: COOPERATIVE_BANK_OF_OROMIA_SETTINGS,
+  [Fsps.mtn]: MTN_SETTINGS,
 };

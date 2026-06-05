@@ -1132,6 +1132,11 @@
   },
   {
     "method": "post",
+    "path": "/api/fsps/mtn/transfer-callback",
+    "params": []
+  },
+  {
+    "method": "post",
     "path": "/api/fsps/safaricom/transfer-callback",
     "params": []
   },

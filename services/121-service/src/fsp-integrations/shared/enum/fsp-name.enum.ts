@@ -9,4 +9,5 @@ export enum Fsps {
   excel = 'Excel',
   nedbank = 'Nedbank',
   onafriq = 'Onafriq',
+  mtn = 'MTN',
 }

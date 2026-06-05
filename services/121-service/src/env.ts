@@ -106,6 +106,20 @@ export const intersolveVoucherEnvVariablesSchema = {
   INTERSOLVE_URL: z.url().default(''),
 };
 
+export const mtnEnvVariablesSchema = {
+  MTN_MODE: FspModeSchema,
+
+  MTN_API_URL: z
+    .url()
+    .pipe(z.transform((url) => withoutTrailingSlash(url)))
+    .optional(),
+  MTN_SUBSCRIPTION_KEY: z.string().optional(),
+  MTN_REFERENCE_ID: z.string().optional(),
+  // In sandbox: 'sandbox'. In production: country-specific identifier (e.g., 'mtnuganda', 'mtnghana').
+  MTN_TARGET_ENVIRONMENT: z.string().optional(),
+  MTN_API_KEY: z.string().optional(),
+};
+
 export const nedbankEnvVariablesSchema = {
   NEDBANK_MODE: FspModeSchema,
 
@@ -172,6 +186,7 @@ const fspEnvVariablesSchema = {
   // No environment variables for Excel FSP.
   ...intersolveVisaEnvVariablesSchema,
   ...intersolveVoucherEnvVariablesSchema,
+  ...mtnEnvVariablesSchema,
   ...nedbankEnvVariablesSchema,
   ...onafriqEnvVariablesSchema,
   ...safaricomEnvVariablesSchema,

@@ -10,6 +10,7 @@ export enum SeedScript {
   safaricomProgram = 'safari-program',
   airtelProgram = 'airtel-program',
   cooperativeBankOfOromiaProgram = 'cooperative-bank-of-oromia-program',
+  mtnProgram = 'mtn-program',
   // excelProgram = 'excel-program',
   nedbankProgram = 'nedbank-program',
   onafriqProgram = 'onafriq-program',

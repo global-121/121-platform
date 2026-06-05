@@ -23,4 +23,6 @@ export enum TransactionEventDescription {
   excelPreparationForExport = 'Preparation for export',
   excelReconciliationFileUpload = 'Reconciliation file upload',
   cooperativeBankOfOromiaRequestSent = 'Cooperative Bank of Oromia payment request',
+  mtnRequestSent = 'MTN payment request',
+  mtnCallbackReceived = 'MTN payment distribution',
 }

@@ -9,11 +9,13 @@ export enum QueueNames {
   transactionJobsAirtel = 'airtel-transaction-jobs',
   transactionJobsCooperativeBankOfOromia = 'cooperative-bank-of-oromia-transaction-jobs',
   transactionJobsExcel = 'excel-transaction-jobs',
+  transactionJobsMtn = 'mtn-transaction-jobs',
 
   // payment callback jobs
   paymentCallbackSafaricomTransfer = 'safaricomTransferCallback',
   paymentCallbackSafaricomTimeout = 'safaricomTimeoutCallback',
   paymentCallbackOnafriq = 'onafriqCallback',
+  paymentCallbackMtnTransfer = 'mtnTransferCallback',
 
   // create message jobs
   createMessageReplyOnIncoming = 'replyOnIncoming',

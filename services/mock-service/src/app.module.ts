@@ -6,6 +6,7 @@ import { AirtelMockModule } from '@mock-service/src/fsp-integration/airtel/airte
 import { CommercialBankEthiopiaMockModule } from '@mock-service/src/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.mock.module';
 import { CooperativeBankOfOromiaMockModule } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/cooperative-bank-of-oromia.mock.module';
 import { IntersolveVisaMockModule } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa.mock.module';
+import { MtnMockModule } from '@mock-service/src/fsp-integration/mtn/mtn.mock.module';
 import { NedbankMockModule } from '@mock-service/src/fsp-integration/nedbank/nedbank.mock.module';
 import { OnafriqMockModule } from '@mock-service/src/fsp-integration/onafriq/onafriq.mock.module';
 import { SafaricomMockModule } from '@mock-service/src/fsp-integration/safaricom/safaricom.mock.module';
@@ -25,6 +26,7 @@ import { TwilioModule } from '@mock-service/src/twilio/twilio.module';
     ResetModule,
     IntersolveVisaMockModule,
     ExchangeRatesMockModule,
+    MtnMockModule,
     NedbankMockModule,
     CommercialBankEthiopiaMockModule,
     KoboMockModule,

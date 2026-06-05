@@ -41,4 +41,11 @@ export const FspConfigurationPropertyVisibilityMap: Record<
     FspConfigurationPropertyVisibility.default,
   [FspConfigurationProperties.debitAccountNumber]:
     FspConfigurationPropertyVisibility.default,
+  // MTN properties
+  [FspConfigurationProperties.subscriptionKeyMtn]:
+    FspConfigurationPropertyVisibility.secret,
+  [FspConfigurationProperties.referenceIdMtn]:
+    FspConfigurationPropertyVisibility.secret,
+  [FspConfigurationProperties.apiKeyMtn]:
+    FspConfigurationPropertyVisibility.secret,
 };
