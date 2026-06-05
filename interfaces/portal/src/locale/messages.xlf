@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -2444,6 +2444,42 @@
       </trans-unit>
       <trans-unit id="647536533882061546" datatype="html">
         <source>Please note, the portal does not support this language currently.</source>
+      </trans-unit>
+      <trans-unit id="1674202514578558795" datatype="html">
+        <source>New name</source>
+      </trans-unit>
+      <trans-unit id="1817782792448180446" datatype="html">
+        <source>Integration is already up to date.</source>
+      </trans-unit>
+      <trans-unit id="2701527640285744987" datatype="html">
+        <source>Rename payment</source>
+      </trans-unit>
+      <trans-unit id="4099904598600212843" datatype="html">
+        <source>Subscription key</source>
+      </trans-unit>
+      <trans-unit id="508499092676439201" datatype="html">
+        <source>Integration update unsuccessful. Please try again.</source>
+      </trans-unit>
+      <trans-unit id="5656654201977017111" datatype="html">
+        <source>Refresh link</source>
+      </trans-unit>
+      <trans-unit id="6041115344061899387" datatype="html">
+        <source>Rename</source>
+      </trans-unit>
+      <trans-unit id="7131024915833130123" datatype="html">
+        <source>Integration updated successfully.</source>
+      </trans-unit>
+      <trans-unit id="9088314425699939664" datatype="html">
+        <source>You&apos;re about to rename the payment created on <x equiv-text="{{ paymentDate() }}" id="INTERPOLATION"/>. Choose a clear name so other users can easily find it. If this payment has already started, make sure to inform relevant users.</source>
+      </trans-unit>
+      <trans-unit id="debit-card-status-blocked" datatype="html">
+        <source>Blocked</source>
+      </trans-unit>
+      <trans-unit id="generic-info" datatype="html">
+        <source>Info</source>
+      </trans-unit>
+      <trans-unit id="payment-event-log-item-type-renamed" datatype="html">
+        <source>Renamed</source>
       </trans-unit>
     </body>
   </file>
