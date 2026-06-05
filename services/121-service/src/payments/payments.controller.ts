@@ -8,6 +8,7 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -38,6 +39,7 @@ import { ExportTransactionResponseDto } from '@121-service/src/payments/dto/expo
 import { PaymentAggregationFullDto } from '@121-service/src/payments/dto/payment-aggregation-full.dto';
 import { PaymentAggregationSummaryDto } from '@121-service/src/payments/dto/payment-aggregation-summary.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
+import { RenamePaymentDto } from '@121-service/src/payments/dto/rename-payment.dto';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
@@ -458,6 +460,35 @@ export class PaymentsController {
     return this.paymentsReportingService.getPaymentEvents({
       programId,
       paymentId,
+    });
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentUPDATE] })
+  @ApiOperation({ summary: 'Rename payment' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Successfully renamed the payment',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Payment not found for this program',
+  })
+  @Patch('programs/:programId/payments/:paymentId')
+  public async renamePayment(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('paymentId', ParseIntPipe) paymentId: number,
+    @Body() data: RenamePaymentDto,
+    @Req() req: ScopedUserRequest,
+  ): Promise<void> {
+    const userId = RequestHelper.getUserId(req);
+
+    await this.paymentsManagementService.renamePayment({
+      programId,
+      paymentId,
+      name: data.name,
+      userId,
     });
   }
 }
