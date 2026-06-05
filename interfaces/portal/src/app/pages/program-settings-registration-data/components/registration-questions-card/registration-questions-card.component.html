@@ -32,7 +32,10 @@
           </span>
         </p>
       }
-      <p-table [value]="programAttributes.data() ?? []">
+      <p-table
+        [value]="programAttributes.data() ?? []"
+        data-testid="program-attributes-table"
+      >
         <ng-template #header>
           <tr>
             <th
