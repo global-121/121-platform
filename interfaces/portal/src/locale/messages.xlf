@@ -1173,9 +1173,6 @@
       <trans-unit id="6533918067030990396" datatype="html">
         <source>Amount</source>
       </trans-unit>
-      <trans-unit id="6554222446236271125" datatype="html">
-        <source>The import takes about 1 minute per 100 records.</source>
-      </trans-unit>
       <trans-unit id="6555318547274416232" datatype="html">
         <source>Value</source>
       </trans-unit>
@@ -2435,6 +2432,21 @@
       </trans-unit>
       <trans-unit id="4099904598600212843" datatype="html">
         <source>Subscription key</source>
+       </trans-unit>
+      <trans-unit id="1817782792448180446" datatype="html">
+        <source>Integration is already up to date.</source>
+      </trans-unit>
+      <trans-unit id="508499092676439201" datatype="html">
+        <source>Integration update unsuccessful. Please try again.</source>
+      </trans-unit>
+      <trans-unit id="5656654201977017111" datatype="html">
+        <source>Refresh link</source>
+      </trans-unit>
+      <trans-unit id="7131024915833130123" datatype="html">
+        <source>Integration updated successfully.</source>
+      </trans-unit>
+      <trans-unit id="generic-info" datatype="html">
+        <source>Info</source>
       </trans-unit>
     </body>
   </file>

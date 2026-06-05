@@ -57,6 +57,15 @@ export class KoboApiService extends DomainApiService {
     });
   }
 
+  refreshKoboForm(programId: Signal<number | string>) {
+    return this.httpWrapperService.perform121ServiceRequest<
+      Dto<KoboIntegrationResultDto>
+    >({
+      method: 'PATCH',
+      endpoint: this.pathToQueryKey([...BASE_ENDPOINT(programId)]).join('/'),
+    });
+  }
+
   importExistingSubmissions(programId: Signal<number | string>) {
     return this.httpWrapperService.perform121ServiceRequest<
       Dto<ImportExistingSubmissionsResultDto>

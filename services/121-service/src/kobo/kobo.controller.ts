@@ -184,7 +184,8 @@ export class KoboController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Kobo form refreshed successfully',
+    description:
+      'Kobo form refresh completed. Inspect the `updated` field to determine whether changes were applied or the form was already up to date.',
     type: KoboIntegrationResultDto,
   })
   @ApiResponse({
@@ -203,8 +204,11 @@ export class KoboController {
   ): Promise<KoboIntegrationResultDto> {
     const result = await this.koboService.refreshKoboForm({ programId });
     return {
-      message: 'Kobo form refreshed successfully',
+      message: result.updated
+        ? 'Kobo form refreshed successfully'
+        : 'Kobo form is already up to date',
       name: result.name,
+      updated: result.updated,
     };
   }
 
