@@ -20,10 +20,18 @@
 
   <app-program-language-tabs
     [programId]="programId()"
-    [(currentLanguage)]="currentLanguage"
+    [(selectedTabLanguage)]="selectedTabLanguage"
     [languages]="programLanguages()"
   >
     <ng-template #languageTemplate>
+      @if (!isSupportedUILanguage(selectedTabLanguage())) {
+        <p class="my-2 flex items-center">
+          <i class="pi pi-exclamation-triangle me-2 text-xl text-red-500"></i>
+          <span i18n>
+            Please note, the portal does not support this language currently.
+          </span>
+        </p>
+      }
       <p-table [value]="programAttributes.data() ?? []">
         <ng-template #header>
           <tr>
@@ -57,7 +65,7 @@
               {{
                 attributeLabels()
                   ?.get(attribute.name)
-                  ?.get(currentLanguage()) ?? attribute.name
+                  ?.get(selectedTabLanguage()) ?? attribute.name
               }}
             </td>
           </tr>

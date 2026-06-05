@@ -15,8 +15,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-
-import { UILanguage } from '../../../../../../../../services/121-service/src/shared/enum/ui-language.enum';
+import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
@@ -25,6 +24,12 @@ import { getTranslatableFormGroup } from '~/components/program-language-tabs/pro
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Attribute } from '~/domains/program/program.model';
 import { ToastService } from '~/services/toast.service';
+import {
+  getUILanguageFromLocale,
+  isSupportedUILanguage,
+  Locale,
+} from '~/utils/locale';
+import { environment } from '~environment';
 
 @Component({
   selector: 'app-registration-questions-card',
@@ -46,6 +51,8 @@ export class RegistrationQuestionsCardComponent {
   readonly programId = input.required<number | string>();
 
   readonly programApiService = inject(ProgramApiService);
+
+  readonly isSupportedUILanguage = isSupportedUILanguage;
 
   RegistrationPreferredLanguage = RegistrationPreferredLanguage;
 
@@ -81,7 +88,11 @@ export class RegistrationQuestionsCardComponent {
     >
   >({});
 
-  readonly currentLanguage = model(RegistrationPreferredLanguage.en);
+  readonly selectedTabLanguage = model(
+    getUILanguageFromLocale(
+      environment.defaultLocale as unknown as Locale,
+    ) as unknown as RegistrationPreferredLanguage,
+  );
 
   defineFormGroup = effect(() => {
     if (!this.program.isSuccess() || !this.programAttributes.isSuccess()) {
@@ -99,7 +110,7 @@ export class RegistrationQuestionsCardComponent {
             getInitialValue: () =>
               this.attributeLabels()
                 ?.get(attribute.name)
-                ?.get(this.currentLanguage()) ?? attribute.name,
+                ?.get(this.selectedTabLanguage()) ?? attribute.name,
           }),
         ]),
       ),
@@ -140,22 +151,10 @@ export class RegistrationQuestionsCardComponent {
     language: RegistrationPreferredLanguage;
     attribute: Attribute;
   }) {
-    const { label, koboLabel } = attribute;
-
-    if (label) {
-      const labelToShow = label[language as unknown as UILanguage];
-      if (labelToShow) {
-        return labelToShow;
-      }
-    }
-
-    if (koboLabel) {
-      const labelToShow = koboLabel[language as unknown as UILanguage];
-      if (labelToShow) {
-        return labelToShow;
-      }
-    }
-
-    return;
+    return (
+      attribute.label?.[language as unknown as UILanguage] ??
+      attribute.koboLabel?.[language as unknown as UILanguage] ??
+      undefined
+    );
   }
 }
