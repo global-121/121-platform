@@ -2460,6 +2460,9 @@
       <trans-unit id="generic-info" datatype="html">
         <source>Info</source>
       </trans-unit>
+      <trans-unit id="4099904598600212843" datatype="html">
+        <source>Subscription key</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
