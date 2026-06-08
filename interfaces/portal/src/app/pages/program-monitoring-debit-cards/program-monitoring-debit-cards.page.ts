@@ -67,9 +67,8 @@ export class ProgramMonitoringDebitCardsPageComponent {
     },
     {
       field: 'created',
-      header: $localize`Created At`,
-      type: QueryTableColumnType.DATE,
-      disableFiltering: true,
+      header: $localize`Ordered By`,
+      type: QueryTableColumnType.TEXT,
     },
   ]);
 

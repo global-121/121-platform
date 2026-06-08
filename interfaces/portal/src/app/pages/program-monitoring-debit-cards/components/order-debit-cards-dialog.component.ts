@@ -147,7 +147,6 @@ export class OrderDebitCardsDialogComponent {
           addressStreet: formValues.addressStreet,
           addressHouseNumber: formValues.addressHouseNumber,
           addressHouseNumberAddition: formValues.addressHouseNumberAddition,
-          phoneNumber: formValues.phoneNumber,
           addressee: formValues.addressee,
         },
       });
