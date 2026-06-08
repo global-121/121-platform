@@ -61,7 +61,8 @@ export class OrderDebitCardsDialogComponent {
         ],
       },
     ),
-    postalCode: new FormControl<string>(
+
+    addressCity: new FormControl<string>(
       { value: '', disabled: false },
       {
         // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
@@ -69,7 +70,7 @@ export class OrderDebitCardsDialogComponent {
         nonNullable: true,
       },
     ),
-    city: new FormControl<string>(
+    addressPostalCode: new FormControl<string>(
       { value: '', disabled: false },
       {
         // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
@@ -77,7 +78,8 @@ export class OrderDebitCardsDialogComponent {
         nonNullable: true,
       },
     ),
-    address: new FormControl<string>(
+
+    addressStreet: new FormControl<string>(
       {
         value: '',
         disabled: false,
@@ -85,6 +87,35 @@ export class OrderDebitCardsDialogComponent {
       {
         // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
         validators: [Validators.required],
+        nonNullable: true,
+      },
+    ),
+    addressHouseNumber: new FormControl<string>(
+      {
+        value: '',
+        disabled: false,
+      },
+      {
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+        validators: [Validators.required],
+        nonNullable: true,
+      },
+    ),
+    addressHouseNumberAddition: new FormControl<string | undefined>(
+      {
+        value: undefined,
+        disabled: false,
+      },
+      {
+        nonNullable: true,
+      },
+    ),
+    phoneNumber: new FormControl<string | undefined>(
+      {
+        value: undefined,
+        disabled: false,
+      },
+      {
         nonNullable: true,
       },
     ),
@@ -111,9 +142,12 @@ export class OrderDebitCardsDialogComponent {
         programId: this.programId,
         visaCardOrder: {
           noOfCards: formValues.noOfCards,
-          postalCode: formValues.postalCode,
-          city: formValues.city,
-          address: formValues.address,
+          addressPostalCode: formValues.addressPostalCode,
+          addressCity: formValues.addressCity,
+          addressStreet: formValues.addressStreet,
+          addressHouseNumber: formValues.addressHouseNumber,
+          addressHouseNumberAddition: formValues.addressHouseNumberAddition,
+          phoneNumber: formValues.phoneNumber,
           addressee: formValues.addressee,
         },
       });

@@ -31,13 +31,11 @@
         <div class="flex w-full grow flex-col gap-2 py-4">
           <ng-content></ng-content>
           @if (mutation().isError()) {
-            <div class="mt-4">
-              <app-form-error
-                [error]="
-                  mutation().failureReason()?.message?.replaceAll('\\n', '\n')
-                "
-              />
-            </div>
+            <app-form-error
+              [error]="
+                mutation().failureReason()?.message?.replaceAll('\\n', '\n')
+              "
+            />
           }
         </div>
         <div class="mt-4 flex justify-end gap-4">

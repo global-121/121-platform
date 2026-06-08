@@ -19,11 +19,12 @@
       (click)="handleOrderCardsClick()"
     />
   </section>
+
   <app-query-table
+    [items]="this.programOrderedVisaCards.data() ?? []"
     [isPending]="programOrderedVisaCards.isPending()"
-    [items]="orderVisaCards()"
     [columns]="columns()"
-  ></app-query-table>
+  />
 </app-page-layout-monitoring>
 
 <app-order-debit-cards-dialog

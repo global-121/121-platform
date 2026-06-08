@@ -26,68 +26,17 @@
       [errorMessage]="formFieldErrors()('noOfCards')"
       [isRequired]="true"
     >
-      <input
-        pInputText
-        type="number"
-        [pSize]="'large'"
-        formControlName="noOfCards"
-        autocomplete="off"
-        placeholder="0"
-        i18n-placeholder
-      />
-    </app-form-field-wrapper>
-
-    <div class="grid w-full grid-cols-[1fr_1fr] gap-4">
-      <app-form-field-wrapper
-        label="City"
-        i18n-label
-        [errorMessage]="formFieldErrors()('city')"
-        [isRequired]="true"
-      >
+      <div class="max-w-[100px]">
         <input
           pInputText
-          type="text"
-          formControlName="city"
-          autocomplete="off"
+          type="number"
           [pSize]="'large'"
-          placeholder="Den Haag"
+          formControlName="noOfCards"
+          autocomplete="off"
+          placeholder="0"
           i18n-placeholder
         />
-      </app-form-field-wrapper>
-
-      <app-form-field-wrapper
-        label="Postal code"
-        i18n-label
-        [errorMessage]="formFieldErrors()('postalCode')"
-        [isRequired]="true"
-      >
-        <input
-          pInputText
-          type="text"
-          formControlName="postalCode"
-          autocomplete="off"
-          [pSize]="'large'"
-          placeholder="1234AB"
-          i18n-placeholder
-        />
-      </app-form-field-wrapper>
-    </div>
-
-    <app-form-field-wrapper
-      label="Address"
-      i18n-label
-      [errorMessage]="formFieldErrors()('address')"
-      [isRequired]="true"
-    >
-      <input
-        pInputText
-        [pSize]="'large'"
-        type="text"
-        formControlName="address"
-        autocomplete="off"
-        placeholder="Anna van Saksenlaan 50, 2593 HT Den Haag"
-        i18n-placeholder
-      />
+      </div>
     </app-form-field-wrapper>
 
     <app-form-field-wrapper
@@ -103,6 +52,113 @@
         formControlName="addressee"
         autocomplete="off"
         placeholder="John Doe"
+        i18n-placeholder
+      />
+    </app-form-field-wrapper>
+
+    <div class="w-full grid-cols-2 gap-4 sm:grid">
+      <app-form-field-wrapper
+        label="City"
+        i18n-label
+        [errorMessage]="formFieldErrors()('addressCity')"
+        [isRequired]="true"
+      >
+        <input
+          pInputText
+          type="text"
+          formControlName="addressCity"
+          autocomplete="off"
+          [pSize]="'large'"
+          placeholder="Den Haag"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+
+      <app-form-field-wrapper
+        label="Postal code"
+        i18n-label
+        [errorMessage]="formFieldErrors()('addressPostalCode')"
+        [isRequired]="true"
+      >
+        <input
+          pInputText
+          type="text"
+          formControlName="addressPostalCode"
+          autocomplete="off"
+          [pSize]="'large'"
+          placeholder="1234AB"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+    </div>
+
+    <div class="w-full grid-cols-2 gap-4 sm:grid">
+      <app-form-field-wrapper
+        label="Street"
+        i18n-label
+        [errorMessage]="formFieldErrors()('addressStreet')"
+        [isRequired]="true"
+      >
+        <input
+          pInputText
+          [pSize]="'large'"
+          type="text"
+          formControlName="addressStreet"
+          autocomplete="off"
+          placeholder="Anna van Saksenlaan"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+      <div class="grid-cols-2 gap-4 sm:grid">
+        <app-form-field-wrapper
+          label="House number"
+          i18n-label
+          [errorMessage]="formFieldErrors()('addressHouseNumber')"
+          [isRequired]="true"
+        >
+          <input
+            pInputText
+            [pSize]="'large'"
+            type="text"
+            formControlName="addressHouseNumber"
+            autocomplete="off"
+            placeholder="50"
+            i18n-placeholder
+          />
+        </app-form-field-wrapper>
+
+        <app-form-field-wrapper
+          label="Addition"
+          i18n-label
+          [errorMessage]="formFieldErrors()('addressHouseNumberAddition')"
+          [isRequired]="false"
+        >
+          <input
+            pInputText
+            [pSize]="'large'"
+            type="text"
+            formControlName="addressHouseNumberAddition"
+            autocomplete="off"
+            placeholder=""
+            i18n-placeholder
+          />
+        </app-form-field-wrapper>
+      </div>
+    </div>
+
+    <app-form-field-wrapper
+      label="Phone number"
+      i18n-label
+      [errorMessage]="formFieldErrors()('phoneNumber')"
+      [isRequired]="false"
+    >
+      <input
+        pInputText
+        [pSize]="'large'"
+        type="text"
+        formControlName="phoneNumber"
+        autocomplete="off"
+        placeholder=""
         i18n-placeholder
       />
     </app-form-field-wrapper>
