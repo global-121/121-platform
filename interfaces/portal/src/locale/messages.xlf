@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -143,6 +143,9 @@
       <trans-unit id="1670560559011171681" datatype="html">
         <source>I understand this action can not be undone.</source>
       </trans-unit>
+      <trans-unit id="1674202514578558795" datatype="html">
+        <source>New name</source>
+      </trans-unit>
       <trans-unit id="1692337501325731003" datatype="html">
         <source>There is currently no data to export</source>
       </trans-unit>
@@ -173,6 +176,9 @@
       </trans-unit>
       <trans-unit id="179685117939127283" datatype="html">
         <source>For more information about how to integrate Kobo see <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/></source>
+      </trans-unit>
+      <trans-unit id="1817782792448180446" datatype="html">
+        <source>Integration is already up to date.</source>
       </trans-unit>
       <trans-unit id="1846542227840529109" datatype="html">
         <source>Current Password</source>
@@ -360,11 +366,20 @@
       <trans-unit id="2614607010577950577" datatype="html">
         <source>Overview</source>
       </trans-unit>
+      <trans-unit id="2630979564408668981" datatype="html">
+        <source>Data column name <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip [message]=&quot;&apos;The data column name of the question.&apos;&quot; &gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;/app-info-tooltip&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
+      </trans-unit>
       <trans-unit id="2648503122381983554" datatype="html">
         <source>Duplicated with:</source>
       </trans-unit>
+      <trans-unit id="2669137255472752633" datatype="html">
+        <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> You can edit each column name to a shorter version.</source>
+      </trans-unit>
       <trans-unit id="2669678082320549438" datatype="html">
         <source>Reference ID</source>
+      </trans-unit>
+      <trans-unit id="2701527640285744987" datatype="html">
+        <source>Rename payment</source>
       </trans-unit>
       <trans-unit id="2717935367210661025" datatype="html">
         <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>). Note: <x equiv-text="event.attributes.note" id="PH_3"/></source>
@@ -680,6 +695,9 @@
       <trans-unit id="4097796198739407763" datatype="html">
         <source>This identifier is stored for max. 90 days in our logs-storage.</source>
       </trans-unit>
+      <trans-unit id="4099904598600212843" datatype="html">
+        <source>Subscription key</source>
+      </trans-unit>
       <trans-unit id="4135275683761793881" datatype="html">
         <source><x equiv-text="this.importExistingSubmissions.data()?.numberOfSubmissionsOnForm ?? 0" id="count"/> total submission(s)</source>
       </trans-unit>
@@ -893,6 +911,9 @@
       <trans-unit id="5081696702832953928" datatype="html">
         <source>Some of the registrations you have selected are not eligible for this payment. Change your selection and try again</source>
       </trans-unit>
+      <trans-unit id="508499092676439201" datatype="html">
+        <source>Integration update unsuccessful. Please try again.</source>
+      </trans-unit>
       <trans-unit id="5106050439674974101" datatype="html">
         <source>Choose an FSP from the FSPs integrated to this instance. You can add multiple FSPs to the same program. If you wish to integrate a new FSP, contact the 121 support team or talk to the account manager.</source>
       </trans-unit>
@@ -919,6 +940,9 @@
       </trans-unit>
       <trans-unit id="5189461683300981166" datatype="html">
         <source>You&apos;re about to unpause debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>.</source>
+      </trans-unit>
+      <trans-unit id="5236492962293730127" datatype="html">
+        <source>Registration questions</source>
       </trans-unit>
       <trans-unit id="5248644489024163464" datatype="html">
         <source>Import file</source>
@@ -949,6 +973,9 @@
       </trans-unit>
       <trans-unit id="5316564489973237014" datatype="html">
         <source>The amount of people/households your program plans to reach.</source>
+      </trans-unit>
+      <trans-unit id="5357145550757146604" datatype="html">
+        <source>Edit registration questions</source>
       </trans-unit>
       <trans-unit id="5393530739323921341" datatype="html">
         <source>We use the external &quot;<x ctype="x-em" equiv-text="&lt;em&gt;" id="START_EMPHASISED_TEXT"/>Matomo Cloud<x ctype="x-em" equiv-text="&lt;/em&gt;" id="CLOSE_EMPHASISED_TEXT"/>&quot;-service by InnoCraft Ltd. to measure the usage of the 121 Platform.</source>
@@ -1025,11 +1052,17 @@
       <trans-unit id="561353031255604069" datatype="html">
         <source>There are <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registration(s) that don&apos;t support this action</source>
       </trans-unit>
+      <trans-unit id="5629376220566654518" datatype="html">
+        <source>Question label <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip [message]=&quot;`The label that will be shown in the registration page table header and registration&apos;s profile. The labels cand be edited by clicking on the pencil icon above.`&quot; &gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;/app-info-tooltip&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
+      </trans-unit>
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
       </trans-unit>
       <trans-unit id="5649335820714201159" datatype="html">
         <source>Edit team</source>
+      </trans-unit>
+      <trans-unit id="5656654201977017111" datatype="html">
+        <source>Refresh link</source>
       </trans-unit>
       <trans-unit id="566208731639813177" datatype="html">
         <source>Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the program team&apos;s page. To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.</source>
@@ -1097,6 +1130,9 @@
       <trans-unit id="6001336690636833920" datatype="html">
         <source>Basic information details saved successfully.</source>
       </trans-unit>
+      <trans-unit id="6041115344061899387" datatype="html">
+        <source>Rename</source>
+      </trans-unit>
       <trans-unit id="6057281094654962766" datatype="html">
         <source>Validate</source>
       </trans-unit>
@@ -1163,6 +1199,9 @@
       </trans-unit>
       <trans-unit id="6456009373504868195" datatype="html">
         <source>Please correct the errors in the form.</source>
+      </trans-unit>
+      <trans-unit id="647536533882061546" datatype="html">
+        <source>Please note, the portal does not support this language currently.</source>
       </trans-unit>
       <trans-unit id="6502713313006518985" datatype="html">
         <source>Set up the payment&apos;s name.</source>
@@ -1251,6 +1290,9 @@
       <trans-unit id="6964415671113324026" datatype="html">
         <source>FSP notes</source>
       </trans-unit>
+      <trans-unit id="6967846885075875243" datatype="html">
+        <source>Form requirements</source>
+      </trans-unit>
       <trans-unit id="6987397690071959130" datatype="html">
         <source>Old card:</source>
       </trans-unit>
@@ -1304,6 +1346,9 @@
       </trans-unit>
       <trans-unit id="7102075992666089988" datatype="html">
         <source>Step <x equiv-text="{{ currentStep() }}" id="INTERPOLATION"/> of <x equiv-text="{{ totalSteps() }}" id="INTERPOLATION_1"/></source>
+      </trans-unit>
+      <trans-unit id="7131024915833130123" datatype="html">
+        <source>Integration updated successfully.</source>
       </trans-unit>
       <trans-unit id="7142071176900316357" datatype="html">
         <source>Select users for the first approval step</source>
@@ -1698,6 +1743,9 @@
       <trans-unit id="9063819144679824048" datatype="html">
         <source>People included</source>
       </trans-unit>
+      <trans-unit id="9088314425699939664" datatype="html">
+        <source>You&apos;re about to rename the payment created on <x equiv-text="{{ paymentDate() }}" id="INTERPOLATION"/>. Choose a clear name so other users can easily find it. If this payment has already started, make sure to inform relevant users.</source>
+      </trans-unit>
       <trans-unit id="9126928390466272085" datatype="html">
         <source>The status of <x equiv-text="data.applicableCount" id="PH"/> registration(s) is being changed to &quot;<x equiv-text="this.statusLabel()" id="PH_1"/>&quot; successfully. The status change can take up to a minute to process.</source>
       </trans-unit>
@@ -2025,6 +2073,9 @@
       <trans-unit id="generic-go-back" datatype="html">
         <source>Go back</source>
       </trans-unit>
+      <trans-unit id="generic-info" datatype="html">
+        <source>Info</source>
+      </trans-unit>
       <trans-unit id="generic-loading" datatype="html">
         <source>Loading...</source>
       </trans-unit>
@@ -2262,6 +2313,9 @@
       <trans-unit id="payment-event-log-item-type-note" datatype="html">
         <source>Note</source>
       </trans-unit>
+      <trans-unit id="payment-event-log-item-type-renamed" datatype="html">
+        <source>Renamed</source>
+      </trans-unit>
       <trans-unit id="payment-event-log-item-type-retry" datatype="html">
         <source>Retry</source>
       </trans-unit>
@@ -2432,66 +2486,6 @@
       </trans-unit>
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
-      </trans-unit>
-      <trans-unit id="4228319514212568219" datatype="html">
-        <source>Users</source>
-      </trans-unit>
-      <trans-unit id="2669137255472752633" datatype="html">
-        <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> You can edit each column name to a shorter version.</source>
-      </trans-unit>
-      <trans-unit id="5236492962293730127" datatype="html">
-        <source>Registration questions</source>
-      </trans-unit>
-      <trans-unit id="5357145550757146604" datatype="html">
-        <source>Edit registration questions</source>
-      </trans-unit>
-      <trans-unit id="2630979564408668981" datatype="html">
-        <source>Data column name <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip [message]=&quot;&apos;The data column name of the question.&apos;&quot; &gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;/app-info-tooltip&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
-      </trans-unit>
-      <trans-unit id="5629376220566654518" datatype="html">
-        <source>Question label <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip [message]=&quot;`The label that will be shown in the registration page table header and registration&apos;s profile. The labels cand be edited by clicking on the pencil icon above.`&quot; &gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;/app-info-tooltip&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
-      </trans-unit>
-      <trans-unit id="647536533882061546" datatype="html">
-        <source>Please note, the portal does not support this language currently.</source>
-      </trans-unit>
-      <trans-unit id="1674202514578558795" datatype="html">
-        <source>New name</source>
-      </trans-unit>
-      <trans-unit id="1817782792448180446" datatype="html">
-        <source>Integration is already up to date.</source>
-      </trans-unit>
-      <trans-unit id="2701527640285744987" datatype="html">
-        <source>Rename payment</source>
-      </trans-unit>
-      <trans-unit id="4099904598600212843" datatype="html">
-        <source>Subscription key</source>
-      </trans-unit>
-      <trans-unit id="508499092676439201" datatype="html">
-        <source>Integration update unsuccessful. Please try again.</source>
-      </trans-unit>
-      <trans-unit id="5656654201977017111" datatype="html">
-        <source>Refresh link</source>
-      </trans-unit>
-      <trans-unit id="6041115344061899387" datatype="html">
-        <source>Rename</source>
-      </trans-unit>
-      <trans-unit id="7131024915833130123" datatype="html">
-        <source>Integration updated successfully.</source>
-      </trans-unit>
-      <trans-unit id="9088314425699939664" datatype="html">
-        <source>You&apos;re about to rename the payment created on <x equiv-text="{{ paymentDate() }}" id="INTERPOLATION"/>. Choose a clear name so other users can easily find it. If this payment has already started, make sure to inform relevant users.</source>
-      </trans-unit>
-      <trans-unit id="debit-card-status-blocked" datatype="html">
-        <source>Blocked</source>
-      </trans-unit>
-      <trans-unit id="generic-info" datatype="html">
-        <source>Info</source>
-      </trans-unit>
-      <trans-unit id="6967846885075875243" datatype="html">
-        <source>Form requirements</source>
-      </trans-unit>
-      <trans-unit id="payment-event-log-item-type-renamed" datatype="html">
-        <source>Renamed</source>
       </trans-unit>
     </body>
   </file>
