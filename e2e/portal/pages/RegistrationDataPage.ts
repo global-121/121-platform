@@ -135,6 +135,15 @@ class RegistrationDataPage extends BasePage {
     await this.page.getByText('Import existing reg.').click();
   }
 
+  async refreshKoboIntegration() {
+    const ellipsisMenuButton = this.koboCard.getByTestId(
+      'ellipsis-menu-button',
+    );
+
+    await ellipsisMenuButton.click();
+    await this.page.getByText('Refresh link').click();
+  }
+
   async validateErrorTable() {
     const fileDialogErrorTable = new TableComponent(
       this.page,
