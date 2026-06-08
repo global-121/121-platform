@@ -341,6 +341,68 @@ class ProgramMonitoring extends BasePage {
     await expect(amountSentPerPayment).toBeVisible();
     await expect(amountSentPerMonth).toBeVisible();
   }
+
+  async orderCards({
+    noOfCards,
+    addressee,
+    address,
+    houseNumber,
+    city,
+    postalCode,
+  }: {
+    noOfCards: string;
+    addressee: string;
+    address: string;
+    houseNumber: string;
+    city: string;
+    postalCode: string;
+  }) {
+    await this.selectTab({ tabName: 'Debit cards' });
+    await this.page.getByRole('button', { name: 'Order cards' }).click();
+    await this.page.getByLabel('Number of cards').fill(noOfCards.toString());
+    await this.page.getByLabel('Addressee').fill(addressee);
+    await this.page.getByLabel('Address').fill(address);
+    await this.page.getByLabel('House number').fill(houseNumber);
+    await this.page.getByLabel('City').fill(city);
+    await this.page.getByLabel('Postal code').fill(postalCode);
+    await this.page.getByRole('button', { name: 'Submit order' }).click();
+    await this.validateToastMessageAndClose('Note successfully added.');
+  }
+
+  async expectCardOrdersTableToHaveRow({
+    addressee,
+    address,
+    city,
+    postalCode,
+    noOfCards,
+  }: {
+    addressee: string;
+    address: string;
+    city: string;
+    postalCode: string;
+    noOfCards: string;
+  }) {
+    // const fileDialogErrorTable = new TableComponent(
+    //   this.page,
+    //   'kobo-import-existing-registration-dialog-errors-table',
+    // );
+
+    console.log(
+      `Looking for row with values: ${addressee}, ${address}, ${city}, ${postalCode}, ${noOfCards}`,
+    );
+
+    // const columnHeaders = await fileDialogErrorTable.getTextArrayFromHeader();
+    // const rows = await fileDialogErrorTable.tableRows
+    //   .locator('td')
+    //   .allInnerTexts();
+
+    // expect(columnHeaders).toEqual(['Reference ID', 'Column', 'Error']);
+    // expect(rows).toEqual([
+    //   'failure-import-with-failure',
+    //   'programFspConfigurationName',
+    //   'FspConfigurationName undefined not found in program. Allowed values: Safaricom',
+    // ]);
+  }
 }
 
 export default ProgramMonitoring;
