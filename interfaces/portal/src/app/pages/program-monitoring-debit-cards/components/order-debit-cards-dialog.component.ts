@@ -19,6 +19,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
+import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
@@ -36,6 +37,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
 })
 export class OrderDebitCardsDialogComponent {
   readonly programId = input.required<string>();
+  readonly toastService = inject(ToastService);
 
   private programApiService = inject(ProgramApiService);
 
@@ -117,7 +119,9 @@ export class OrderDebitCardsDialogComponent {
       });
     },
     onSuccess: () => {
-      console.log('debit cards ordered successfully!');
+      this.toastService.showToast({
+        detail: $localize`Debit cards ordered successfully`,
+      });
     },
   }));
 

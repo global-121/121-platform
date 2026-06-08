@@ -37,42 +37,44 @@
       />
     </app-form-field-wrapper>
 
-    <app-form-field-wrapper
-      label="City"
-      i18n-label
-      [errorMessage]="formFieldErrors()('city')"
-      [isRequired]="true"
-    >
-      <input
-        pInputText
-        type="text"
-        formControlName="city"
-        autocomplete="off"
-        [pSize]="'large'"
-        placeholder="Den Haag"
-        i18n-placeholder
-      />
-    </app-form-field-wrapper>
+    <div class="grid w-full grid-cols-[1fr_1fr] gap-4">
+      <app-form-field-wrapper
+        label="City"
+        i18n-label
+        [errorMessage]="formFieldErrors()('city')"
+        [isRequired]="true"
+      >
+        <input
+          pInputText
+          type="text"
+          formControlName="city"
+          autocomplete="off"
+          [pSize]="'large'"
+          placeholder="Den Haag"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+
+      <app-form-field-wrapper
+        label="Postal code"
+        i18n-label
+        [errorMessage]="formFieldErrors()('postalCode')"
+        [isRequired]="true"
+      >
+        <input
+          pInputText
+          type="text"
+          formControlName="postalCode"
+          autocomplete="off"
+          [pSize]="'large'"
+          placeholder="1234AB"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+    </div>
 
     <app-form-field-wrapper
-      label="Postal code"
-      i18n-label
-      [errorMessage]="formFieldErrors()('postalCode')"
-      [isRequired]="true"
-    >
-      <input
-        pInputText
-        type="text"
-        formControlName="postalCode"
-        autocomplete="off"
-        [pSize]="'large'"
-        placeholder="1234AB"
-        i18n-placeholder
-      />
-    </app-form-field-wrapper>
-
-    <app-form-field-wrapper
-      label="Address (including street name, house number, and addition)"
+      label="Address"
       i18n-label
       [errorMessage]="formFieldErrors()('address')"
       [isRequired]="true"

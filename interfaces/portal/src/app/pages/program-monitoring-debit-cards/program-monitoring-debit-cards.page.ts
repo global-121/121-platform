@@ -12,8 +12,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { injectQuery } from 'node_modules/@tanstack/angular-query-experimental/inject-query';
 import { ButtonModule } from 'primeng/button';
 
-import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
-
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import {
@@ -23,7 +21,6 @@ import {
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { OrderDebitCardsDialogComponent } from '~/pages/program-monitoring-debit-cards/components/order-debit-cards-dialog.component';
 import { PaginateQuery } from '~/services/paginate-query.service';
-import { Dto } from '~/utils/dto-type';
 @Component({
   selector: 'app-program-monitoring-debit-cards',
   imports: [
@@ -72,21 +69,39 @@ export class ProgramMonitoringDebitCardsPageComponent {
     }),
   );
 
+  readonly orderVisaCards = computed(
+    () => this.programOrderedVisaCards.data()?.data ?? [],
+  );
+
   readonly orderDebitCardsDialog =
     viewChild.required<OrderDebitCardsDialogComponent>('orderDebitCardsDialog');
 
   readonly columns = computed<
-    QueryTableColumn<Dto<VisaCardOrderResponseDto>>[]
+    QueryTableColumn<{
+      id: number;
+      noOfCardsOrdered: number;
+      address: string;
+      orderedByUsername: string;
+    }>[]
   >(() => [
     {
       field: 'noOfCardsOrdered',
       header: $localize`No of Cards Ordered`,
       type: QueryTableColumnType.TEXT,
     },
+    {
+      field: 'address',
+      header: $localize`Address`,
+      type: QueryTableColumnType.TEXT,
+    },
+    {
+      field: 'orderedByUsername',
+      header: $localize`Ordered By`,
+      type: QueryTableColumnType.TEXT,
+    },
   ]);
 
   handleOrderCardsClick(): void {
-    console.log('programOrderedVisaCards', this.programOrderedVisaCards.data);
     this.orderDebitCardsDialog().show();
   }
 }

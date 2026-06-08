@@ -1163,9 +1163,6 @@
       <trans-unit id="6057281094654962766" datatype="html">
         <source>Validate</source>
       </trans-unit>
-      <trans-unit id="6064501572523614945" datatype="html">
-        <source>Address (including street name, house number, and addition)</source>
-      </trans-unit>
       <trans-unit id="6102855402615761891" datatype="html">
         <source>The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
       </trans-unit>
@@ -2534,6 +2531,15 @@
       </trans-unit>
       <trans-unit id="4866288342540923037" datatype="html">
         <source>No of Cards Ordered</source>
+      </trans-unit>
+      <trans-unit id="2121303710925969971" datatype="html">
+        <source>Ordered By</source>
+      </trans-unit>
+      <trans-unit id="5817489058335953799" datatype="html">
+        <source>Debit cards ordered successfully</source>
+      </trans-unit>
+      <trans-unit id="6304432362546770951" datatype="html">
+        <source>Address</source>
       </trans-unit>
     </body>
   </file>
