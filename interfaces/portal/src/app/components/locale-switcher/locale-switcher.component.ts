@@ -14,7 +14,7 @@ import { SelectModule } from 'primeng/select';
 
 import {
   changeLocale,
-  getAvailableLocales,
+  getEnvironmentLocales,
   getLocaleLabel,
   Locale,
 } from '~/utils/locale';
@@ -30,10 +30,15 @@ export class LocaleSwitcherComponent {
   private locale = inject<Locale>(LOCALE_ID);
   private titleCasePipe = inject(TitleCasePipe);
 
-  public locales = getAvailableLocales().map((locale) => ({
-    label: this.titleCasePipe.transform(locale.label),
-    value: locale.value,
-  }));
+  public locales = getEnvironmentLocales()
+    .map((locale) => ({
+      label: getLocaleLabel(locale),
+      value: locale,
+    }))
+    .map((locale) => ({
+      label: this.titleCasePipe.transform(locale.label),
+      value: locale.value,
+    }));
   public readonly selectedLocale = model(this.locale);
   public readonly selectedLocaleLabel = computed(() =>
     this.titleCasePipe.transform(getLocaleLabel(this.selectedLocale())),

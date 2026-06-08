@@ -14,7 +14,6 @@ const koboIntegrationDetails = {
 };
 
 const koboIntegrationFormColumns = [
-  'National ID number',
   'What is 2+2 (number)?',
   'How are you today (select one)?',
 ];

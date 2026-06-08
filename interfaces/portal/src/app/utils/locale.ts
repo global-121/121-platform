@@ -1,6 +1,7 @@
 import { isDevMode } from '@angular/core';
 
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
+import { Language } from '@121-service/src/shared/types/language.type';
 
 import { getLinguonym } from '~/utils/get-linguonym';
 import { environment } from '~environment';
@@ -48,15 +49,17 @@ export const getLocaleLabel = (locale: Locale): string => {
   });
 };
 
-export const getAvailableLocales = () =>
+export const getEnvironmentLocales = () =>
   environment.locales
     .split(',')
     .map((locale) => locale.trim())
-    .filter(isValidLocale)
-    .map((locale) => ({
-      label: getLocaleLabel(locale),
-      value: locale,
-    }));
+    .filter(isValidLocale);
+
+const getAvailableUILanguageCodes = () =>
+  getEnvironmentLocales().map((locale) => getUILanguageFromLocale(locale));
+
+export const isSupportedUILanguage = (language: Language) =>
+  getAvailableUILanguageCodes().some((uiLanguage) => uiLanguage === language);
 
 /**
  * @param {string} locale - Angular locale id
@@ -136,4 +139,12 @@ export const changeLocale = (desiredLocale: Locale): void => {
   const pathnameArray = window.location.pathname.split('/');
   pathnameArray[1] = desiredLocale;
   window.location.pathname = pathnameArray.join('/');
+};
+
+export const getUserPreferredUILanguage = (
+  fallback: Locale = environment.defaultLocale as Locale,
+) => {
+  const preferredLocale =
+    localStorage.getItem(LOCAL_STORAGE_LOCALE_KEY) ?? fallback;
+  return preferredLocale as UILanguage;
 };

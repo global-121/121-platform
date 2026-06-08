@@ -171,9 +171,12 @@ describe('Import a Kobo form definition', () => {
     expect(firstAttributeSnapshot).toMatchInlineSnapshot(`
      {
        "isRequired": false,
-       "label": {
+       "koboLabel": {
          "en": "What is your name (text)?",
          "nl": "Hoe heet je?",
+       },
+       "label": {
+         "en": "Full name",
        },
        "name": "fullName",
        "options": [],
@@ -360,11 +363,11 @@ describe('Import a Kobo form definition', () => {
 
     // test that the new attribute from the second Kobo form is added
     expect(programAttributeNamesAfterUpdate).toContain('newAttribute');
-    // Test that the updated attribute has the new label from the second Kobo form
+    // Test that the updated attribute has the new koboLabel from the second Kobo form
     const updatedAttribute = programAttributesAfterUpdate.find(
       (attr) => attr.name === 'fullName',
     );
-    expect(updatedAttribute?.label).toEqual({
+    expect(updatedAttribute?.koboLabel).toEqual({
       en: 'new label',
       nl: 'nieuw label',
       fr: 'nouvelle étiquette',

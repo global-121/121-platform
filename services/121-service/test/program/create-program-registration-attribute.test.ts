@@ -68,7 +68,7 @@ describe('Create program', () => {
 
   it('should not be able to post a registration attributes without obligatory attributes', async () => {
     // Arrange
-    const requiredAttributes = ['name', 'type', 'label'];
+    const requiredAttributes = ['name', 'type'];
     for (const attribute of requiredAttributes) {
       const programRegistrationAttributeCopy = {
         ...programRegistrationAttribute,
@@ -80,6 +80,7 @@ describe('Create program', () => {
         programIdPV,
         accessToken,
       );
+
       // Assert
       expect(createResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
     }

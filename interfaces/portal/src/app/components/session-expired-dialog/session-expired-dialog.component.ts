@@ -26,6 +26,8 @@ export class SessionExpiredDialogComponent {
   readonly dialogVisible = model(false);
   readonly returnUrl = input<string | undefined>(undefined);
 
+  readonly sessionExpiredMessage = $localize`:@@session-expired-body:For security reasons, you've been logged out. After logging in, you'll return to where you left off.`;
+
   goToLogin() {
     this.dialogVisible.set(false);
     const url = this.returnUrl();
