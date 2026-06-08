@@ -14,18 +14,19 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-const orderDebitCardOrderDetails = {
-  noOfCards: '2',
+const orderDebitCardOrder = {
+  noOfCards: '100',
+  addressPostalCode: '2593 HT',
+  addressCity: 'Den Haag',
+  addressStreet: 'Anna van Saksenlaan',
+  addressHouseNumber: '50',
+  addressHouseNumberAddition: 'K',
+  phoneNumber: '123456789',
   addressee: 'John Doe',
-  address: '',
-  houseNumber: '1',
-  city: 'Anytown',
-  postalCode: '1234AB',
 };
 
 test("All elements of Monitoring's `Data Changes` sub-page display correct data for Registration", async ({
   programMonitoringPage,
-  // tableComponent,
 }) => {
   await test.step("Navigate to monitoring's 'Debit cards' tab", async () => {
     await programMonitoringPage.goto(
@@ -35,12 +36,12 @@ test("All elements of Monitoring's `Data Changes` sub-page display correct data 
   });
 
   await test.step('Order cards', async () => {
-    await programMonitoringPage.orderCards(orderDebitCardOrderDetails);
+    await programMonitoringPage.orderCards({ orderDebitCardOrder });
   });
 
   await test.step('Verify that the order is listed in the table', async () => {
-    await programMonitoringPage.expectCardOrdersTableToHaveRow(
-      orderDebitCardOrderDetails,
-    );
+    await programMonitoringPage.expectCardOrdersTableToContainOrder({
+      orderDebitCardOrder,
+    });
   });
 });

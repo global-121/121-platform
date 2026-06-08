@@ -21,6 +21,7 @@
   </section>
 
   <app-query-table
+    [attr.data-testid]="'program-ordered-visa-cards-table'"
     [items]="this.programOrderedVisaCards.data() ?? []"
     [isPending]="programOrderedVisaCards.isPending()"
     [columns]="columns()"

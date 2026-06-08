@@ -140,6 +140,13 @@ class TableComponent {
     return headerCells.map((text) => text.trim());
   }
 
+  async getTextArrayFromRow(rowIndex: number) {
+    const rowCells = await this.table
+      .locator(`tr:nth-child(${rowIndex}) td`)
+      .allTextContents();
+    return rowCells.map((text) => text.trim());
+  }
+
   async validateWaitForTableRowCount({
     expectedRowCount,
   }: {

@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { promises as fs } from 'node:fs';
 import { Locator, Page } from 'playwright';
 
+import TableComponent from '../components/TableComponent';
 import BasePage from './BasePage';
 
 class ProgramMonitoring extends BasePage {
@@ -343,65 +344,80 @@ class ProgramMonitoring extends BasePage {
   }
 
   async orderCards({
-    noOfCards,
-    addressee,
-    address,
-    houseNumber,
-    city,
-    postalCode,
+    orderDebitCardOrder,
   }: {
-    noOfCards: string;
-    addressee: string;
-    address: string;
-    houseNumber: string;
-    city: string;
-    postalCode: string;
+    orderDebitCardOrder: {
+      noOfCards: string;
+      addressPostalCode: string;
+      addressCity: string;
+      addressStreet: string;
+      addressHouseNumber: string;
+      addressHouseNumberAddition: string;
+      phoneNumber: string;
+      addressee: string;
+    };
   }) {
     await this.selectTab({ tabName: 'Debit cards' });
     await this.page.getByRole('button', { name: 'Order cards' }).click();
+    const {
+      noOfCards,
+      addressee,
+      addressPostalCode,
+      addressCity,
+      addressStreet,
+      addressHouseNumber,
+      addressHouseNumberAddition,
+    } = orderDebitCardOrder;
+
     await this.page.getByLabel('Number of cards').fill(noOfCards.toString());
     await this.page.getByLabel('Addressee').fill(addressee);
-    await this.page.getByLabel('Address').fill(address);
-    await this.page.getByLabel('House number').fill(houseNumber);
-    await this.page.getByLabel('City').fill(city);
-    await this.page.getByLabel('Postal code').fill(postalCode);
-    await this.page.getByRole('button', { name: 'Submit order' }).click();
-    await this.validateToastMessageAndClose('Note successfully added.');
+    await this.page.getByLabel('Street').fill(addressStreet);
+    await this.page.getByLabel('House number').fill(addressHouseNumber);
+    await this.page.getByLabel('Addition').fill(addressHouseNumberAddition);
+    await this.page.getByLabel('City').fill(addressCity);
+    await this.page.getByLabel('Postal code').fill(addressPostalCode);
+
+    await this.page.getByRole('button', { name: 'Order debit cards' }).click();
+    await this.validateToastMessage('Debit cards ordered successfully');
   }
 
-  async expectCardOrdersTableToHaveRow({
-    addressee,
-    address,
-    city,
-    postalCode,
-    noOfCards,
+  async expectCardOrdersTableToContainOrder({
+    orderDebitCardOrder,
   }: {
-    addressee: string;
-    address: string;
-    city: string;
-    postalCode: string;
-    noOfCards: string;
+    orderDebitCardOrder: {
+      noOfCards: string;
+      addressPostalCode: string;
+      addressCity: string;
+      addressStreet: string;
+      addressHouseNumber: string;
+      addressHouseNumberAddition: string;
+      phoneNumber: string;
+      addressee: string;
+    };
   }) {
-    // const fileDialogErrorTable = new TableComponent(
-    //   this.page,
-    //   'kobo-import-existing-registration-dialog-errors-table',
-    // );
-
-    console.log(
-      `Looking for row with values: ${addressee}, ${address}, ${city}, ${postalCode}, ${noOfCards}`,
+    const visaCardOrdersTable = new TableComponent(
+      this.page,
+      'program-ordered-visa-cards-table',
     );
 
-    // const columnHeaders = await fileDialogErrorTable.getTextArrayFromHeader();
-    // const rows = await fileDialogErrorTable.tableRows
-    //   .locator('td')
-    //   .allInnerTexts();
+    const headers = await visaCardOrdersTable.getTextArrayFromHeader();
+    console.log('Table headers:', headers);
+    expect(headers).toEqual([
+      'No of Cards Ordered',
+      'Address',
+      'Ordered By',
+      'Created At',
+    ]);
 
-    // expect(columnHeaders).toEqual(['Reference ID', 'Column', 'Error']);
-    // expect(rows).toEqual([
-    //   'failure-import-with-failure',
-    //   'programFspConfigurationName',
-    //   'FspConfigurationName undefined not found in program. Allowed values: Safaricom',
-    // ]);
+    const addressColumn = `${orderDebitCardOrder.addressee}, ${orderDebitCardOrder.addressStreet} ${orderDebitCardOrder.addressHouseNumber} ${orderDebitCardOrder.addressHouseNumberAddition}, ${orderDebitCardOrder.addressPostalCode}, ${orderDebitCardOrder.addressCity}`;
+    const rowValues = await visaCardOrdersTable.getTextArrayFromRow(1);
+    console.log('Table row values:', rowValues);
+    expect(rowValues).toEqual([
+      orderDebitCardOrder.noOfCards,
+      addressColumn,
+      'admin@example.org',
+      expect.any(String), // Created At can be variable, so we just check that it's a string
+    ]);
   }
 }
 
