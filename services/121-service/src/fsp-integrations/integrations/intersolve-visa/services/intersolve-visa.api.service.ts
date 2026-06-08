@@ -418,14 +418,12 @@ export class IntersolveVisaApiService {
       mobileNumber: formatPhoneNumber(contactInformation.phoneNumber), // must match \"([+]){1}([1-9]){1}([0-9]){5,14}\"
       cardAddress: {
         address1: this.createAddressString(contactInformation),
-        address2: contactInformation.name,
         city: contactInformation.addressCity,
         country: 'NLD',
         postalCode: contactInformation.addressPostalCode,
       },
       pinAddress: {
         address1: this.createAddressString(contactInformation),
-        address2: contactInformation.name,
         city: contactInformation.addressCity,
         country: 'NLD',
         postalCode: contactInformation.addressPostalCode,

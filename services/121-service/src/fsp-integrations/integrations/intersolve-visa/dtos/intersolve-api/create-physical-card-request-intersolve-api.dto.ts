@@ -11,7 +11,6 @@ export interface CreatePhysicalCardRequestIntersolveApiDto {
 
 interface AddressIntersolveApi {
   readonly address1: string;
-  readonly address2?: string;
   readonly city: string;
   readonly country: string;
   readonly postalCode: string;

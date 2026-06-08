@@ -48,7 +48,6 @@ export enum PermissionEnum {
   FspDebitCardBLOCK = 'fsp:debit-card.block',
   FspDebitCardUNBLOCK = 'fsp:debit-card.unblock',
   FspDebitCardCREATE = 'fsp:debit-card.create',
-  FspDebitCardOrderCREATE = 'fsp:debit-card.order.create',
   FspDebitCardEXPORT = 'fsp:debit-card.export',
   FspDebitCardCLOSE = 'fsp:debit-card.close',
 
