@@ -97,6 +97,24 @@ export async function patchProgramRegistrationAttribute({
     .send(programRegistrationAttribute);
 }
 
+export async function patchProgramRegistrationAttributesInBatch({
+  attributesToUpdate,
+  programId,
+  accessToken,
+}: {
+  attributesToUpdate: {
+    programRegistrationAttributeName: string;
+    updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
+  }[];
+  programId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .patch(`/programs/${programId}/registration-attributes-batch/`)
+    .set('Cookie', [accessToken])
+    .send(attributesToUpdate);
+}
+
 export async function createPayment({
   programId,
   transferValue,
