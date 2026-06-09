@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { INTERSOLVE_VISA_CARD_ORDER_PHONE_NUMBER } from '@121-service/src/config';
+import { env } from '@121-service/src/env';
 import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
 import { VisaCardOrderMapper } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/mappers/visa-card-order.mapper';
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
@@ -28,8 +28,6 @@ import { RegistrationsService } from '@121-service/src/registration/services/reg
 
 @Injectable()
 export class IntersolveVisaAccountManagementService {
-  private readonly defaultCardOrderPhoneNumber =
-    INTERSOLVE_VISA_CARD_ORDER_PHONE_NUMBER;
 
   public constructor(
     private readonly intersolveVisaService: IntersolveVisaService,
@@ -531,9 +529,9 @@ export class IntersolveVisaAccountManagementService {
         },
       );
 
-    if (!cardDistributionByMail) {
+    if (cardDistributionByMail) {
       throw new HttpException(
-        'Batch ordering Visa cards is only allowed when card distribution by mail is enabled.',
+        'Batch ordering Visa cards is only allowed when card distribution by mail is disabled.',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -561,7 +559,7 @@ export class IntersolveVisaAccountManagementService {
       addressHouseNumberAddition,
       addressPostalCode,
       addressCity,
-      phoneNumber: this.defaultCardOrderPhoneNumber,
+      phoneNumber: env.INTERSOLVE_VISA_CARD_ORDER_PHONE_NUMBER,
     };
 
     let cardsSentByIntersolve = 0;

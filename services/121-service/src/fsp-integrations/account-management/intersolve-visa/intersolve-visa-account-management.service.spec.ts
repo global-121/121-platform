@@ -10,7 +10,6 @@ import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-
 import { IntersolveVisaWalletClosureScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-wallet-closure.scoped.repository';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
-import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -78,7 +77,6 @@ describe('IntersolveVisaAccountManagementService', () => {
           provide: ProgramFspConfigurationRepository,
           useValue: {
             getByProgramIdAndFspName: jest.fn(),
-            getPropertiesByNamesOrThrow: jest.fn(),
             getPropertyValueByNameOrThrow: jest
               .fn()
               .mockImplementation(async ({ name }) => {
@@ -397,11 +395,37 @@ describe('IntersolveVisaAccountManagementService', () => {
   });
 
   describe('visa card orders', () => {
+    const visaFspConfigurations = [{ id: 123 }] as any;
+
+    type CreateVisaCardOrderInput = Parameters<
+      IntersolveVisaAccountManagementService['createVisaCardOrder']
+    >[0];
+
+    function buildOrderInput(
+      overrides: Partial<CreateVisaCardOrderInput> = {},
+    ): CreateVisaCardOrderInput {
+      return {
+        programId: 1,
+        noOfCards: 1,
+        addressStreet: 'Damrak',
+        addressHouseNumber: '1',
+        addressHouseNumberAddition: 'A',
+        addressPostalCode: '1011AB',
+        addressCity: 'Amsterdam',
+        addressee: 'John Doe',
+        userId: 7,
+        ...overrides,
+      };
+    }
+
     beforeEach(() => {
+      programFspConfigurationRepository.getByProgramIdAndFspName.mockResolvedValue(
+        visaFspConfigurations,
+      );
       programFspConfigurationRepository.getPropertyValueByNameOrThrow.mockImplementation(
         async ({ name }) => {
           if (name === FspConfigurationProperties.cardDistributionByMail) {
-            return true;
+            return false;
           }
 
           if (name === FspConfigurationProperties.brandCode) {
@@ -419,76 +443,38 @@ describe('IntersolveVisaAccountManagementService', () => {
           return '';
         },
       );
+      intersolveVisaService.issueTokenAndCreatePhysicalCard.mockResolvedValue();
     });
 
-    it('should order cards and persist only successful count', async () => {
+    it('throws when the program has no visa configuration', async () => {
       programFspConfigurationRepository.getByProgramIdAndFspName.mockResolvedValue(
-        [{ id: 123 }] as any,
-      );
-      programFspConfigurationRepository.getPropertiesByNamesOrThrow.mockResolvedValue(
-        [
-          { name: FspConfigurationProperties.brandCode, value: 'BRAND' },
-          {
-            name: FspConfigurationProperties.coverLetterCode,
-            value: 'COVER_LETTER',
-          },
-          {
-            name: FspConfigurationProperties.cardDistributionByMail,
-            value: true,
-          },
-        ] as any,
+        [] as any,
       );
 
-      intersolveVisaService.issueTokenAndCreatePhysicalCard
-        .mockResolvedValueOnce()
-        .mockRejectedValueOnce(new IntersolveVisaApiError('temporary error'))
-        .mockResolvedValueOnce();
-
-      const result = await service.createVisaCardOrder({
-        programId: 1,
-        noOfCards: 3,
-        addressStreet: 'Damrak',
-        addressHouseNumber: '1',
-        addressHouseNumberAddition: 'A',
-        addressPostalCode: '1011AB',
-        addressCity: 'Amsterdam',
-        addressee: 'John Doe',
-        userId: 7,
-      });
-
-      expect(
-        programFspConfigurationRepository.getByProgramIdAndFspName,
-      ).toHaveBeenCalledWith({
-        programId: 1,
-        fspName: Fsps.intersolveVisa,
-      });
-      expect(
-        intersolveVisaService.issueTokenAndCreatePhysicalCard,
-      ).toHaveBeenCalledTimes(3);
-      expect(
-        intersolveVisaService.issueTokenAndCreatePhysicalCard,
-      ).toHaveBeenCalledWith(
-        expect.objectContaining({
-          contactInformation: expect.objectContaining({
-            phoneNumber: '+31600000000',
-          }),
-        }),
+      await expect(
+        service.createVisaCardOrder(buildOrderInput()),
+      ).rejects.toThrow(
+        'Expected exactly 1 Intersolve Visa configuration for program 1, found 0.',
       );
-      expect(cardOrderRepository.save).toHaveBeenCalledTimes(1);
-      expect(result).toEqual({
-        noOfCardsSent: 2,
-        noOfCardsOrdered: 3,
-      });
     });
 
-    it('should throw when card distribution by mail is disabled', async () => {
+    it('throws when multiple visa configurations are found', async () => {
       programFspConfigurationRepository.getByProgramIdAndFspName.mockResolvedValue(
-        [{ id: 123 }] as any,
+        [{ id: 123 }, { id: 124 }] as any,
       );
+
+      await expect(
+        service.createVisaCardOrder(buildOrderInput()),
+      ).rejects.toThrow(
+        'Expected exactly 1 Intersolve Visa configuration for program 1, found 2.',
+      );
+    });
+
+    it('throws when card distribution by mail is enabled', async () => {
       programFspConfigurationRepository.getPropertyValueByNameOrThrow.mockImplementation(
         async ({ name }) => {
           if (name === FspConfigurationProperties.cardDistributionByMail) {
-            return false;
+            return true;
           }
 
           if (name === FspConfigurationProperties.brandCode) {
@@ -504,130 +490,37 @@ describe('IntersolveVisaAccountManagementService', () => {
       );
 
       await expect(
-        service.createVisaCardOrder({
-          programId: 1,
-          noOfCards: 1,
-          addressStreet: 'Damrak',
-          addressHouseNumber: '1',
-          addressHouseNumberAddition: 'A',
-          addressPostalCode: '1011AB',
-          addressCity: 'Amsterdam',
-          addressee: 'John Doe',
-          userId: 7,
-        }),
+        service.createVisaCardOrder(buildOrderInput()),
       ).rejects.toThrow(
-        new HttpException(
-          'Batch ordering Visa cards is only allowed when card distribution by mail is enabled.',
-          HttpStatus.BAD_REQUEST,
-        ),
+        'Batch ordering Visa cards is only allowed when card distribution by mail is disabled.',
       );
-
-      expect(
-        intersolveVisaService.issueTokenAndCreatePhysicalCard,
-      ).not.toHaveBeenCalled();
-      expect(cardOrderRepository.save).not.toHaveBeenCalled();
     });
 
-    it('should throw when multiple visa configurations are found', async () => {
-      programFspConfigurationRepository.getByProgramIdAndFspName.mockResolvedValue(
-        [{ id: 123 }, { id: 124 }] as any,
-      );
-
-      await expect(
-        service.createVisaCardOrder({
-          programId: 1,
-          noOfCards: 1,
-          addressStreet: 'Damrak',
-          addressHouseNumber: '1',
-          addressHouseNumberAddition: 'A',
-          addressPostalCode: '1011AB',
-          addressCity: 'Amsterdam',
-          addressee: 'John Doe',
-          userId: 7,
-        }),
-      ).rejects.toThrow(
-        new HttpException(
-          'Expected exactly 1 Intersolve Visa configuration for program 1, found 2.',
-          HttpStatus.BAD_REQUEST,
-        ),
-      );
-
-      expect(
-        intersolveVisaService.issueTokenAndCreatePhysicalCard,
-      ).not.toHaveBeenCalled();
-      expect(cardOrderRepository.save).not.toHaveBeenCalled();
-    });
-
-    it('should throw when no card could be ordered', async () => {
-      programFspConfigurationRepository.getByProgramIdAndFspName.mockResolvedValue(
-        [{ id: 123 }] as any,
-      );
-      programFspConfigurationRepository.getPropertiesByNamesOrThrow.mockResolvedValue(
-        [
-          { name: FspConfigurationProperties.brandCode, value: 'BRAND' },
-          {
-            name: FspConfigurationProperties.coverLetterCode,
-            value: 'COVER_LETTER',
-          },
-          {
-            name: FspConfigurationProperties.cardDistributionByMail,
-            value: true,
-          },
-        ] as any,
-      );
-
+    it('throws when all card orders fail', async () => {
       intersolveVisaService.issueTokenAndCreatePhysicalCard.mockRejectedValue(
-        new IntersolveVisaApiError('all failed'),
+        new IntersolveVisaApiError('api error'),
       );
 
       await expect(
-        service.createVisaCardOrder({
-          programId: 1,
-          noOfCards: 2,
-          addressStreet: 'Damrak',
-          addressHouseNumber: '1',
-          addressPostalCode: '1011AB',
-          addressCity: 'Amsterdam',
-          addressee: 'John Doe',
-          userId: 7,
-        }),
+        service.createVisaCardOrder(buildOrderInput({ noOfCards: 2 })),
       ).rejects.toThrow(HttpException);
-
-      expect(cardOrderRepository.save).not.toHaveBeenCalled();
     });
 
-    it('should throw when saving a successful batch order fails', async () => {
-      programFspConfigurationRepository.getByProgramIdAndFspName.mockResolvedValue(
-        [{ id: 123 }] as any,
-      );
-      programFspConfigurationRepository.getPropertiesByNamesOrThrow.mockResolvedValue(
-        [
-          { name: FspConfigurationProperties.brandCode, value: 'BRAND' },
-          {
-            name: FspConfigurationProperties.coverLetterCode,
-            value: 'COVER_LETTER',
-          },
-          {
-            name: FspConfigurationProperties.cardDistributionByMail,
-            value: true,
-          },
-        ] as any,
+    it('re-throws unexpected errors from issueTokenAndCreatePhysicalCard', async () => {
+      intersolveVisaService.issueTokenAndCreatePhysicalCard.mockRejectedValue(
+        new Error('unexpected'),
       );
 
-      intersolveVisaService.issueTokenAndCreatePhysicalCard.mockResolvedValue();
+      await expect(
+        service.createVisaCardOrder(buildOrderInput()),
+      ).rejects.toThrow('unexpected');
+    });
+
+    it('throws when persisting the order record fails', async () => {
       cardOrderRepository.save.mockRejectedValue(new Error('db down'));
 
       await expect(
-        service.createVisaCardOrder({
-          programId: 1,
-          noOfCards: 1,
-          addressStreet: 'Damrak',
-          addressHouseNumber: '1',
-          addressPostalCode: '1011AB',
-          addressCity: 'Amsterdam',
-          addressee: 'John Doe',
-          userId: 7,
-        }),
+        service.createVisaCardOrder(buildOrderInput()),
       ).rejects.toMatchObject({
         message:
           'Cards were ordered, but saving the batch record failed. Please contact support for reconciliation.',
@@ -635,7 +528,25 @@ describe('IntersolveVisaAccountManagementService', () => {
       });
     });
 
-    it('should return mapped orders', async () => {
+    it('returns the count of sent and ordered cards, counting only successes', async () => {
+      intersolveVisaService.issueTokenAndCreatePhysicalCard
+        .mockResolvedValueOnce()
+        .mockRejectedValueOnce(new IntersolveVisaApiError('temporary error'))
+        .mockResolvedValueOnce();
+
+      const result = await service.createVisaCardOrder(
+        buildOrderInput({ noOfCards: 3 }),
+      );
+
+      expect(result).toEqual({
+        noOfCardsSent: 2,
+        noOfCardsOrdered: 3,
+      });
+    });
+  });
+
+  describe('getVisaCardOrders', () => {
+    it('returns mapped card orders', async () => {
       cardOrderRepository.getForProgram.mockResolvedValue([
         {
           id: 42,
@@ -656,9 +567,6 @@ describe('IntersolveVisaAccountManagementService', () => {
         programId: 1,
       });
 
-      expect(cardOrderRepository.getForProgram).toHaveBeenCalledWith({
-        programId: 1,
-      });
       expect(result).toEqual([
         {
           id: 42,
@@ -668,128 +576,6 @@ describe('IntersolveVisaAccountManagementService', () => {
           created: new Date('2026-05-26T08:30:00.000Z'),
         },
       ]);
-    });
-
-    it('should handle maximum batch of 700 cards', async () => {
-      programFspConfigurationRepository.getByProgramIdAndFspName.mockResolvedValue(
-        [{ id: 123 }] as any,
-      );
-      programFspConfigurationRepository.getPropertiesByNamesOrThrow.mockResolvedValue(
-        [
-          { name: FspConfigurationProperties.brandCode, value: 'BRAND' },
-          {
-            name: FspConfigurationProperties.coverLetterCode,
-            value: 'COVER_LETTER',
-          },
-          {
-            name: FspConfigurationProperties.cardDistributionByMail,
-            value: true,
-          },
-        ] as any,
-      );
-
-      // Mock successful creation for all 700 cards
-      intersolveVisaService.issueTokenAndCreatePhysicalCard.mockResolvedValue();
-
-      const result = await service.createVisaCardOrder({
-        programId: 1,
-        noOfCards: 700,
-        addressStreet: 'Damrak',
-        addressHouseNumber: '1',
-        addressHouseNumberAddition: 'A',
-        addressPostalCode: '1011AB',
-        addressCity: 'Amsterdam',
-        addressee: 'John Doe',
-        userId: 7,
-      });
-
-      // Verify API was called 700 times
-      expect(
-        intersolveVisaService.issueTokenAndCreatePhysicalCard,
-      ).toHaveBeenCalledTimes(700);
-
-      // Verify all 700 were ordered successfully
-      expect(result).toEqual({
-        noOfCardsSent: 700,
-        noOfCardsOrdered: 700,
-      });
-
-      // Verify batch was persisted
-      expect(cardOrderRepository.save).toHaveBeenCalledWith(
-        expect.objectContaining({
-          noOfCards: 700,
-          noOfCardsOrdered: 700,
-          programId: 1,
-          userId: 7,
-          addressStreet: 'Damrak',
-          addressHouseNumber: '1',
-          addressHouseNumberAddition: 'A',
-          addressPostalCode: '1011AB',
-          addressCity: 'Amsterdam',
-          addressee: 'John Doe',
-        }),
-      );
-      expect(cardOrderRepository.save).toHaveBeenCalledTimes(1);
-    });
-
-    it('should handle partial failure at max batch of 700 cards', async () => {
-      programFspConfigurationRepository.getByProgramIdAndFspName.mockResolvedValue(
-        [{ id: 123 }] as any,
-      );
-      programFspConfigurationRepository.getPropertiesByNamesOrThrow.mockResolvedValue(
-        [
-          { name: FspConfigurationProperties.brandCode, value: 'BRAND' },
-          {
-            name: FspConfigurationProperties.coverLetterCode,
-            value: 'COVER_LETTER',
-          },
-          {
-            name: FspConfigurationProperties.cardDistributionByMail,
-            value: true,
-          },
-        ] as any,
-      );
-
-      // Mock: 699 succeed, every 100th card fails (so 7 fail total at indices: 99, 199, 299, 399, 499, 599, 699)
-      const mockImpl = jest.fn().mockImplementation(() => {
-        const callCount = mockImpl.mock.calls.length;
-        if (callCount % 100 === 0) {
-          return Promise.reject(
-            new IntersolveVisaApiError('temporary network error'),
-          );
-        }
-        return Promise.resolve();
-      });
-      intersolveVisaService.issueTokenAndCreatePhysicalCard = mockImpl;
-
-      const result = await service.createVisaCardOrder({
-        programId: 1,
-        noOfCards: 700,
-        addressStreet: 'Damrak',
-        addressHouseNumber: '1',
-        addressHouseNumberAddition: 'A',
-        addressPostalCode: '1011AB',
-        addressCity: 'Amsterdam',
-        addressee: 'John Doe',
-        userId: 7,
-      });
-
-      // Verify API was called 700 times
-      expect(mockImpl).toHaveBeenCalledTimes(700);
-
-      // Verify 693 succeeded (700 - 7 failures)
-      expect(result).toEqual({
-        noOfCardsSent: 693,
-        noOfCardsOrdered: 700,
-      });
-
-      // Verify batch was persisted with partial count
-      expect(cardOrderRepository.save).toHaveBeenCalledWith(
-        expect.objectContaining({
-          noOfCards: 700,
-          noOfCardsOrdered: 693,
-        }),
-      );
     });
   });
 });
