@@ -5,6 +5,7 @@ import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-int
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
 import { IntersolveVisaCardStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
+import { IntersolveVisaCardOrderRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-card-order.repository';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaWalletClosureScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-wallet-closure.scoped.repository';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
@@ -22,6 +23,8 @@ describe('IntersolveVisaAccountManagementService', () => {
   let registrationsService: jest.Mocked<RegistrationsService>;
   let intersolveVisaChildWalletScopedRepository: jest.Mocked<IntersolveVisaChildWalletScopedRepository>;
   let walletClosureScopedRepository: jest.Mocked<IntersolveVisaWalletClosureScopedRepository>;
+  let cardOrderRepository: jest.Mocked<IntersolveVisaCardOrderRepository>;
+  let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
 
   function mockGetRegistrationOrThrow(returnValue: any) {
     jest
@@ -67,16 +70,20 @@ describe('IntersolveVisaAccountManagementService', () => {
             hasIntersolveCustomer: jest.fn(),
             replaceCard: jest.fn(),
             sendUpdatedCustomerInformation: jest.fn(),
+            issueTokenAndCreatePhysicalCard: jest.fn(),
           },
         },
         {
           provide: ProgramFspConfigurationRepository,
           useValue: {
+            getByProgramIdAndFspName: jest.fn(),
             getPropertyValueByNameOrThrow: jest
               .fn()
               .mockImplementation(async ({ name }) => {
                 if (name === FspConfigurationProperties.brandCode)
                   return 'BRAND';
+                if (name === FspConfigurationProperties.coverLetterCode)
+                  return 'COVER_LETTER';
                 if (name === FspConfigurationProperties.cardDistributionByMail)
                   return false;
                 if (name === FspConfigurationProperties.fundingTokenCode)
@@ -99,6 +106,13 @@ describe('IntersolveVisaAccountManagementService', () => {
             getForExport: jest.fn(),
           },
         },
+        {
+          provide: IntersolveVisaCardOrderRepository,
+          useValue: {
+            save: jest.fn(),
+            getForProgram: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -113,6 +127,12 @@ describe('IntersolveVisaAccountManagementService', () => {
     walletClosureScopedRepository = module.get(
       IntersolveVisaWalletClosureScopedRepository,
     ) as jest.Mocked<IntersolveVisaWalletClosureScopedRepository>;
+    cardOrderRepository = module.get(
+      IntersolveVisaCardOrderRepository,
+    ) as jest.Mocked<IntersolveVisaCardOrderRepository>;
+    programFspConfigurationRepository = module.get(
+      ProgramFspConfigurationRepository,
+    ) as jest.Mocked<ProgramFspConfigurationRepository>;
   });
 
   describe('linkDebitCardToRegistration', () => {
@@ -369,6 +389,191 @@ describe('IntersolveVisaAccountManagementService', () => {
           cardNumber: 'token-456',
           closedDate: new Date('2026-04-09'),
           amountBookedBack: 0,
+        },
+      ]);
+    });
+  });
+
+  describe('visa card orders', () => {
+    const visaFspConfigurations = [{ id: 123 }] as any;
+
+    type CreateVisaCardOrderInput = Parameters<
+      IntersolveVisaAccountManagementService['createVisaCardOrder']
+    >[0];
+
+    function buildOrderInput(
+      overrides: Partial<CreateVisaCardOrderInput> = {},
+    ): CreateVisaCardOrderInput {
+      return {
+        programId: 1,
+        noOfCards: 1,
+        addressStreet: 'Damrak',
+        addressHouseNumber: '1',
+        addressHouseNumberAddition: 'A',
+        addressPostalCode: '1011AB',
+        addressCity: 'Amsterdam',
+        addressee: 'John Doe',
+        userId: 7,
+        ...overrides,
+      };
+    }
+
+    beforeEach(() => {
+      programFspConfigurationRepository.getByProgramIdAndFspName.mockResolvedValue(
+        visaFspConfigurations,
+      );
+      programFspConfigurationRepository.getPropertyValueByNameOrThrow.mockImplementation(
+        async ({ name }) => {
+          if (name === FspConfigurationProperties.cardDistributionByMail) {
+            return false;
+          }
+
+          if (name === FspConfigurationProperties.brandCode) {
+            return 'BRAND';
+          }
+
+          if (name === FspConfigurationProperties.coverLetterCode) {
+            return 'COVER_LETTER';
+          }
+
+          if (name === FspConfigurationProperties.fundingTokenCode) {
+            return 'FUNDING_TOKEN';
+          }
+
+          return '';
+        },
+      );
+      intersolveVisaService.issueTokenAndCreatePhysicalCard.mockResolvedValue();
+    });
+
+    it('throws when the program has no visa configuration', async () => {
+      programFspConfigurationRepository.getByProgramIdAndFspName.mockResolvedValue(
+        [] as any,
+      );
+
+      await expect(
+        service.createVisaCardOrder(buildOrderInput()),
+      ).rejects.toThrow(
+        'Expected exactly 1 Intersolve Visa configuration for program 1, found 0.',
+      );
+    });
+
+    it('throws when multiple visa configurations are found', async () => {
+      programFspConfigurationRepository.getByProgramIdAndFspName.mockResolvedValue(
+        [{ id: 123 }, { id: 124 }] as any,
+      );
+
+      await expect(
+        service.createVisaCardOrder(buildOrderInput()),
+      ).rejects.toThrow(
+        'Expected exactly 1 Intersolve Visa configuration for program 1, found 2.',
+      );
+    });
+
+    it('throws when card distribution by mail is enabled', async () => {
+      programFspConfigurationRepository.getPropertyValueByNameOrThrow.mockImplementation(
+        async ({ name }) => {
+          if (name === FspConfigurationProperties.cardDistributionByMail) {
+            return true;
+          }
+
+          if (name === FspConfigurationProperties.brandCode) {
+            return 'BRAND';
+          }
+
+          if (name === FspConfigurationProperties.coverLetterCode) {
+            return 'COVER_LETTER';
+          }
+
+          return '';
+        },
+      );
+
+      await expect(
+        service.createVisaCardOrder(buildOrderInput()),
+      ).rejects.toThrow(
+        'Batch ordering Visa cards is only allowed when card distribution by mail is disabled.',
+      );
+    });
+
+    it('throws when all card orders fail', async () => {
+      intersolveVisaService.issueTokenAndCreatePhysicalCard.mockRejectedValue(
+        new IntersolveVisaApiError('api error'),
+      );
+
+      await expect(
+        service.createVisaCardOrder(buildOrderInput({ noOfCards: 2 })),
+      ).rejects.toThrow(HttpException);
+    });
+
+    it('re-throws unexpected errors from issueTokenAndCreatePhysicalCard', async () => {
+      intersolveVisaService.issueTokenAndCreatePhysicalCard.mockRejectedValue(
+        new Error('unexpected'),
+      );
+
+      await expect(
+        service.createVisaCardOrder(buildOrderInput()),
+      ).rejects.toThrow('unexpected');
+    });
+
+    it('throws when persisting the order record fails', async () => {
+      cardOrderRepository.save.mockRejectedValue(new Error('db down'));
+
+      await expect(
+        service.createVisaCardOrder(buildOrderInput()),
+      ).rejects.toMatchObject({
+        message:
+          'Cards were ordered, but saving the batch record failed. Please contact support for reconciliation.',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    });
+
+    it('returns the count of sent and ordered cards, counting only successes', async () => {
+      intersolveVisaService.issueTokenAndCreatePhysicalCard
+        .mockResolvedValueOnce()
+        .mockRejectedValueOnce(new IntersolveVisaApiError('temporary error'))
+        .mockResolvedValueOnce();
+
+      const result = await service.createVisaCardOrder(
+        buildOrderInput({ noOfCards: 3 }),
+      );
+
+      expect(result).toEqual({
+        noOfCardsSent: 2,
+        noOfCardsOrdered: 3,
+      });
+    });
+  });
+
+  describe('getVisaCardOrders', () => {
+    it('returns mapped card orders', async () => {
+      cardOrderRepository.getForProgram.mockResolvedValue([
+        {
+          id: 42,
+          noOfCardsOrdered: 5,
+          addressee: 'John Doe',
+          addressStreet: 'Damrak',
+          addressHouseNumber: '1',
+          addressHouseNumberAddition: 'A',
+          addressPostalCode: '1011AB',
+          addressCity: 'Amsterdam',
+          userId: 7,
+          user: { username: 'manager@example.org' },
+          created: new Date('2026-05-26T08:30:00.000Z'),
+        },
+      ] as any);
+
+      const result = await service.getVisaCardOrders({
+        programId: 1,
+      });
+
+      expect(result).toEqual([
+        {
+          id: 42,
+          noOfCardsOrdered: 5,
+          address: 'John Doe, Damrak 1 A, 1011AB, Amsterdam',
+          orderedByUsername: 'manager@example.org',
+          created: new Date('2026-05-26T08:30:00.000Z'),
         },
       ]);
     });

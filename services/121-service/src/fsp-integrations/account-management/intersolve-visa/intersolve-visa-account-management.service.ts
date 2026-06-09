@@ -1,18 +1,24 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
+import { env } from '@121-service/src/env';
+import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
+import { VisaCardOrderMapper } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/mappers/visa-card-order.mapper';
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
+import { VisaCardOrderEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-card-order.entity';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { IntersolveVisaCardStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { ExportVisaWalletClosure } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-wallet-closure.interface';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
+import { IntersolveVisaCardOrderRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-card-order.repository';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaWalletClosureScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-wallet-closure.scoped.repository';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -22,6 +28,7 @@ import { RegistrationsService } from '@121-service/src/registration/services/reg
 
 @Injectable()
 export class IntersolveVisaAccountManagementService {
+
   public constructor(
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -29,6 +36,7 @@ export class IntersolveVisaAccountManagementService {
     private readonly intersolveVisaDataSynchronizationService: IntersolveVisaDataSynchronizationService,
     private readonly intersolveVisaChildWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
     private readonly walletClosureScopedRepository: IntersolveVisaWalletClosureScopedRepository,
+    private readonly cardOrderRepository: IntersolveVisaCardOrderRepository,
   ) {}
 
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
@@ -472,5 +480,153 @@ export class IntersolveVisaAccountManagementService {
       closedDate: row.closedDate,
       amountBookedBack: row.amountBookedBackInCents / 100,
     }));
+  }
+
+  public async createVisaCardOrder({
+    programId,
+    noOfCards,
+    addressStreet,
+    addressHouseNumber,
+    addressHouseNumberAddition,
+    addressPostalCode,
+    addressCity,
+    addressee,
+    userId,
+  }: {
+    programId: number;
+    noOfCards: number;
+    addressStreet: string;
+    addressHouseNumber: string;
+    addressHouseNumberAddition?: string;
+    addressPostalCode: string;
+    addressCity: string;
+    addressee: string;
+    userId: number;
+  }): Promise<{
+    noOfCardsSent: number;
+    noOfCardsOrdered: number;
+  }> {
+    const visaProgramFspConfigurations =
+      await this.programFspConfigurationRepository.getByProgramIdAndFspName({
+        programId,
+        fspName: Fsps.intersolveVisa,
+      });
+
+    if (visaProgramFspConfigurations.length !== 1) {
+      throw new HttpException(
+        `Expected exactly 1 Intersolve Visa configuration for program ${programId}, found ${visaProgramFspConfigurations.length}.`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const programFspConfigurationId = visaProgramFspConfigurations[0].id;
+
+    const cardDistributionByMail =
+      await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
+        {
+          programFspConfigurationId,
+          name: FspConfigurationProperties.cardDistributionByMail,
+        },
+      );
+
+    if (cardDistributionByMail) {
+      throw new HttpException(
+        'Batch ordering Visa cards is only allowed when card distribution by mail is disabled.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const brandCode =
+      await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
+        {
+          programFspConfigurationId,
+          name: FspConfigurationProperties.brandCode,
+        },
+      );
+
+    const coverLetterCode =
+      await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
+        {
+          programFspConfigurationId,
+          name: FspConfigurationProperties.coverLetterCode,
+        },
+      );
+
+    const contactInformation: ContactInformation = {
+      name: addressee,
+      addressStreet,
+      addressHouseNumber,
+      addressHouseNumberAddition,
+      addressPostalCode,
+      addressCity,
+      phoneNumber: env.INTERSOLVE_VISA_CARD_ORDER_PHONE_NUMBER,
+    };
+
+    let cardsSentByIntersolve = 0;
+    let lastIntersolveErrorMessage: null | string = null;
+
+    for (let index = 0; index < noOfCards; index++) {
+      try {
+        await this.intersolveVisaService.issueTokenAndCreatePhysicalCard({
+          brandCode,
+          coverLetterCode,
+          contactInformation,
+        });
+        cardsSentByIntersolve += 1;
+      } catch (error) {
+        if (error instanceof IntersolveVisaApiError) {
+          lastIntersolveErrorMessage = error.message;
+          continue;
+        }
+
+        throw error;
+      }
+    }
+
+    if (cardsSentByIntersolve === 0) {
+      throw new HttpException(
+        `Unable to order cards. ${lastIntersolveErrorMessage ?? 'Intersolve did not return a successful response.'}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const order = new VisaCardOrderEntity();
+    order.programId = programId;
+    order.userId = userId;
+    order.noOfCards = noOfCards;
+    order.noOfCardsOrdered = cardsSentByIntersolve;
+    order.addressee = addressee;
+    order.addressStreet = addressStreet;
+    order.addressHouseNumber = addressHouseNumber;
+    order.addressHouseNumberAddition = addressHouseNumberAddition ?? null;
+    order.addressCity = addressCity;
+    order.addressPostalCode = addressPostalCode;
+
+    try {
+      await this.cardOrderRepository.save(order);
+    } catch (error) {
+      throw new HttpException(
+        'Cards were ordered, but saving the batch record failed. Please contact support for reconciliation.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        { cause: error },
+      );
+    }
+
+    return {
+      noOfCardsSent: cardsSentByIntersolve,
+      noOfCardsOrdered: noOfCards,
+    };
+  }
+
+  public async getVisaCardOrders({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<VisaCardOrderResponseDto[]> {
+    const entities = await this.cardOrderRepository.getForProgram({
+      programId,
+    });
+
+    return VisaCardOrderMapper.mapEntitiesToDtos({ entities });
   }
 }

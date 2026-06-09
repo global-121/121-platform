@@ -70,6 +70,7 @@ export const intersolveVisaEnvVariablesSchema = {
     .url()
     .pipe(z.transform((url) => withoutTrailingSlash(url)))
     .optional(),
+  INTERSOLVE_VISA_CARD_ORDER_PHONE_NUMBER: z.string().default('+31600000000'),
   INTERSOLVE_VISA_ASSET_CODE: z.string().default(''),
   INTERSOLVE_VISA_CLIENT_ID: z.string().default(''),
   INTERSOLVE_VISA_CLIENT_SECRET: z.string().optional(),
