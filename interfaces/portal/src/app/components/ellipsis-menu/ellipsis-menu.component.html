@@ -2,7 +2,12 @@
   text
   plain
   rounded
-  icon="pi pi-ellipsis-h"
+  size="small"
+  [icon]="
+    orientation() === 'horizontal'
+      ? 'pi pi-ellipsis-h text-lg'
+      : 'pi pi-ellipsis-v text-lg'
+  "
   title="More actions"
   i18n-title="@@generic-more-actions"
   aria-label="More actions"

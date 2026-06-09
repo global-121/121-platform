@@ -12,6 +12,7 @@ import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
+import { AccordionModule } from 'primeng/accordion';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
@@ -19,7 +20,6 @@ import { TableModule } from 'primeng/table';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
-import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.helper';
@@ -36,7 +36,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     FormDialogComponent,
     TableModule,
     CardWithLinkComponent,
-    EllipsisMenuComponent,
+    AccordionModule,
   ],
   templateUrl: './fsp-configuration-card.component.html',
   styles: ``,

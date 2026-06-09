@@ -13,4 +13,5 @@ import { MenuModule } from 'primeng/menu';
 })
 export class EllipsisMenuComponent {
   readonly menuItems = input.required<MenuItem[]>();
+  readonly orientation = input<'horizontal' | 'vertical'>('vertical');
 }

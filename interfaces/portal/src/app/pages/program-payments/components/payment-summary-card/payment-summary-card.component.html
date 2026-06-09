@@ -2,6 +2,7 @@
   [href]="paymentLink()"
   [title]="paymentTitle()"
   [loading]="isLatestPayment() && latestPayment.isPending()"
+  [variant]="'overview'"
 >
   <ng-container card-content>
     <app-card-summary-metrics-container
