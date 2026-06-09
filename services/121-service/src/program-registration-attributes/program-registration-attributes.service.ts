@@ -443,6 +443,26 @@ export class ProgramRegistrationAttributesService {
       updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
     }[];
   }): Promise<ProgramRegistrationAttributeEntity[]> {
+    const attributesToUpdateNames = attributesToUpdate.map(
+      (attr) => attr.programRegistrationAttributeName,
+    );
+    const attributesFromRepoNames = (
+      await this.programRegistrationAttributeRepository.find({
+        where: {
+          name: In(attributesToUpdateNames),
+          programId: Equal(programId),
+        },
+      })
+    ).map((attr) => attr.name);
+
+    const namesNotFound = attributesToUpdateNames.filter(
+      (attributeName) => !attributesFromRepoNames.includes(attributeName),
+    );
+    if (namesNotFound.length > 0) {
+      const errors = `No programRegistrationAttribute found with name ${namesNotFound.join(', ')} for program ${programId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
     const updatedAttributes: ProgramRegistrationAttributeEntity[] = [];
 
     const chunks = chunk(attributesToUpdate, 10000);
@@ -470,6 +490,7 @@ export class ProgramRegistrationAttributesService {
     }[];
   }) {
     const updatedChunk: ProgramRegistrationAttributeEntity[] = [];
+
     const programAttributesToUpdateNames = programAttributesToUpdateChunk.map(
       (attr) => attr.programRegistrationAttributeName,
     );
@@ -481,18 +502,6 @@ export class ProgramRegistrationAttributesService {
           programId: Equal(programId),
         },
       });
-
-    const attributeNamesFromRepo = programRegistrationAttributesFromRepo.map(
-      (attr) => attr.name,
-    );
-
-    const namesNotFound = programAttributesToUpdateNames.filter(
-      (attributeName) => !attributeNamesFromRepo.includes(attributeName),
-    );
-    if (namesNotFound.length > 0) {
-      const errors = `No programRegistrationAttribute found with name ${namesNotFound.join(', ')} for program ${programId}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
 
     for (const programRegistrationAttributeFromRepo of programRegistrationAttributesFromRepo) {
       const attributeWithUpdates = programAttributesToUpdateChunk.find(
