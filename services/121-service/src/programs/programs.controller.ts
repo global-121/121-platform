@@ -413,7 +413,7 @@ You can also leave the body empty.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Patch(':programId/registration-attributes-batch')
-  public async updateBatchProgramRegistrationAttributeLabel(
+  public async updateBatchProgramRegistrationAttributes(
     @Body()
     attributesToUpdate: {
       programRegistrationAttributeName: string;
