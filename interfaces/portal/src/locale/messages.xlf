@@ -2541,6 +2541,21 @@
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
       </trans-unit>
+      <trans-unit id="1181318683745969549" datatype="html">
+        <source>Expected Types</source>
+      </trans-unit>
+      <trans-unit id="1936229512844722191" datatype="html">
+        <source>XX</source>
+      </trans-unit>
+      <trans-unit id="2850086782953482141" datatype="html">
+        <source><x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ koboFormName() }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> could not be linked to your program.</source>
+      </trans-unit>
+      <trans-unit id="4734021473638517000" datatype="html">
+        <source>Actual Type</source>
+      </trans-unit>
+      <trans-unit id="4872421840981590914" datatype="html">
+        <source>Kobo form integration error</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
