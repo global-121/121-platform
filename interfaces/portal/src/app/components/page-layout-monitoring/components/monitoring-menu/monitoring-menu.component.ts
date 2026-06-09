@@ -49,7 +49,12 @@ export class MonitoringMenuComponent {
       label: $localize`:@@page-title-program-monitoring-debit-cards:Debit Cards`,
       routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${ProgramMonitoringPaths.DebitCards}`,
       icon: 'pi pi-credit-card',
-      visible: programHasPhysicalCardSupport(this.program.data()),
+      visible:
+        programHasPhysicalCardSupport(this.program.data()) &&
+        this.authService.hasPermission({
+          programId: this.programId(),
+          requiredPermission: PermissionEnum.FspDebitCardOrderREAD,
+        }),
     },
     {
       label: $localize`:@@page-title-program-monitoring-data-changes:Data changes`,

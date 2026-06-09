@@ -57,15 +57,14 @@ test('Should not be able to see the Debit cards tab for programs without physica
   });
 });
 
-test('Should not be able to see the Debit cards tab for programs without FspDebitCardOrderCREATE permission', async ({
+test('Should not be able to see the Debit cards tab for programs without FspDebitCardOrderREAD permission', async ({
   resetDBAndSeedRegistrations,
   programMonitoringPage,
 }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
-    registrations: registrationsSafaricom,
-    programId: programIdSafaricom,
-    navigateToPage: `/program/${programIdSafaricom}/monitoring/dashboard`,
+    programId: programIdOCW,
+    navigateToPage: `/program/${programIdOCW}/monitoring/dashboard`,
     userCredentials: {
       username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
       password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
