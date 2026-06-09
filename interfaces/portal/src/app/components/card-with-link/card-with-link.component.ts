@@ -1,4 +1,4 @@
-import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,14 +7,12 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { MenuItem } from 'primeng/api';
 import { CardModule } from 'primeng/card';
 
 import {
   ChipVariant,
   ColoredChipComponent,
 } from '~/components/colored-chip/colored-chip.component';
-import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 
 @Component({
@@ -25,8 +23,6 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
     SkeletonInlineComponent,
     NgTemplateOutlet,
     ColoredChipComponent,
-    EllipsisMenuComponent,
-    NgClass,
   ],
   templateUrl: './card-with-link.component.html',
   styles: ``,
@@ -37,10 +33,9 @@ export class CardWithLinkComponent {
   readonly title = input.required<string>();
   readonly titleColoredChipLabel = input<string>();
   readonly titleColoredChipColor = input<ChipVariant>('grey');
+  readonly subtitle = input<string>();
   readonly image = input<string>();
   readonly loading = input(false);
   readonly enableLink = input(true);
   readonly cardClicked = output();
-  readonly menuItems = input<MenuItem[]>([]);
-  readonly variant = input<'overview'>();
 }

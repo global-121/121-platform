@@ -1,96 +1,71 @@
 <app-card-with-link
-  (cardClicked)="reconfigureFsp.emit(configuration())"
+  class="relative"
   [title]="fspConfigurationLabel()"
-  [menuItems]="menuItems()"
+  (cardClicked)="reconfigureFsp.emit(configuration())"
   [image]="fspImage()"
+  subtitle="Click to reconfigure"
+  i18n-subtitle
 >
-  <ng-container card-subtitle>
-    <div i18n>Click to reconfigure</div>
-  </ng-container>
-
   <ng-container card-content>
+    <div class="absolute inset-e-4 top-2">
+      <app-ellipsis-menu [menuItems]="menuItems()" />
+    </div>
+
+    <p
+      i18n
+      class="mt-4 font-bold"
+    >
+      FSP notes
+    </p>
+
     @if (requiredRegistrationAttributes().length > 0) {
-      <p-accordion
-        style="
-          --p-content-border-radius: 0;
-          --p-accordion-panel-border-width: 0;
-          --p-accordion-header-first-top-border-radius: 0;
-          --p-accordion-header-padding: 0;
-          --p-accordion-content-padding: 0;
-        "
-        class="relative z-10"
+      <p
+        i18n
+        class="mb-4"
       >
-        <p-accordion-panel value="0">
-          <p-accordion-header class="border-t pt-4">
-            <div>
-              <p
-                i18n
-                class="font-bold"
-              >
-                Form requirements
-              </p>
-            </div>
-          </p-accordion-header>
-          <p-accordion-content>
-            <p
+        Your form must include the following required fields in this
+        <b>exact format</b>
+        for this FSP integration in the data column name:
+      </p>
+      <p-table [value]="requiredRegistrationAttributes()">
+        <ng-template #header>
+          <tr>
+            <th
               i18n
-              class="mb-4 font-normal"
+              class="txt-body-s text-grey-700 font-semibold uppercase"
             >
-              Your form must include the following required fields in this
-              <b>exact format</b>
-              for this FSP integration in the data column name:
-            </p>
-            <p-table [value]="requiredRegistrationAttributes()">
-              <ng-template #header>
-                <tr>
-                  <th
-                    i18n
-                    class="txt-body-s text-grey-700 px-2 py-1.5 font-semibold uppercase"
-                  >
-                    Question
-                  </th>
-                  <th
-                    i18n
-                    class="txt-body-s text-grey-700 px-2 py-1.5 font-semibold uppercase"
-                  >
-                    Data column name
-                  </th>
-                </tr>
-              </ng-template>
-              <ng-template
-                #body
-                let-attribute
-              >
-                <tr>
-                  <td class="px-2">{{ attribute.label }}</td>
-                  <td class="relative px-2">
-                    {{ attribute.name }}
-                    <p-button
-                      (click)="copyToClipboard(attribute.name)"
-                      ariaLabel="Copy to clipboard"
-                      icon="pi pi-copy"
-                      class="hover:text-purple hover:cursor-pointer"
-                      [unstyled]="true"
-                      i18n-ariaLabel
-                      size="small"
-                    />
-                  </td>
-                </tr>
-              </ng-template>
-            </p-table>
-          </p-accordion-content>
-        </p-accordion-panel>
-      </p-accordion>
-    } @else {
-      <div class="border-grey-300 border-t pt-4">
-        <p
-          i18n
-          class="font-bold"
+              Question
+            </th>
+            <th
+              i18n
+              class="txt-body-s text-grey-700 font-semibold uppercase"
+            >
+              Data column name
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template
+          #body
+          let-attribute
         >
-          FSP notes
-        </p>
-        <p i18n>There are no specific fields needed for this integration</p>
-      </div>
+          <tr>
+            <td>{{ attribute.label }}</td>
+            <td>
+              {{ attribute.name }}
+              <p-button
+                icon="pi pi-copy"
+                (click)="copyToClipboard(attribute.name)"
+                text
+                rounded
+                ariaLabel="Copy to clipboard"
+                i18n-ariaLabel
+              />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    } @else {
+      <p i18n>There are no specific fields needed for this integration</p>
     }
   </ng-container>
 </app-card-with-link>

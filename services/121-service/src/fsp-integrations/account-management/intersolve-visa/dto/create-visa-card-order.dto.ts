@@ -44,4 +44,14 @@ export class CreateVisaCardOrderDto {
   @IsNotEmpty()
   @IsString()
   public readonly addressee: string;
+
+  @ApiProperty({
+    example: '+31612345678',
+    required: false,
+    description:
+      'Optional branch contact number for card order. Defaults to a system fallback when not provided.',
+  })
+  @IsOptional()
+  @IsString()
+  public readonly phoneNumber?: string;
 }

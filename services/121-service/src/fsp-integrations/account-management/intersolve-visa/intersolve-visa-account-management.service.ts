@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { env } from '@121-service/src/env';
 import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
 import { VisaCardOrderMapper } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/mappers/visa-card-order.mapper';
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
@@ -495,6 +494,7 @@ export class IntersolveVisaAccountManagementService {
     addressPostalCode,
     addressCity,
     addressee,
+    phoneNumber,
     userId,
   }: {
     programId: number;
@@ -505,6 +505,7 @@ export class IntersolveVisaAccountManagementService {
     addressPostalCode: string;
     addressCity: string;
     addressee: string;
+    phoneNumber?: string;
     userId: number;
   }): Promise<{
     noOfCardsSent: number;
@@ -533,9 +534,9 @@ export class IntersolveVisaAccountManagementService {
         },
       );
 
-    if (cardDistributionByMail) {
+    if (!cardDistributionByMail) {
       throw new HttpException(
-        'Batch ordering Visa cards is only allowed when card distribution by mail is disabled.',
+        'Batch ordering Visa cards is only allowed when card distribution by mail is enabled.',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -556,6 +557,9 @@ export class IntersolveVisaAccountManagementService {
         },
       );
 
+    const cardOrderPhoneNumber =
+      phoneNumber ?? this.defaultCardOrderPhoneNumber;
+
     const contactInformation: ContactInformation = {
       name: addressee,
       addressStreet,
@@ -563,7 +567,7 @@ export class IntersolveVisaAccountManagementService {
       addressHouseNumberAddition,
       addressPostalCode,
       addressCity,
-      phoneNumber: env.INTERSOLVE_VISA_CARD_ORDER_PHONE_NUMBER,
+      phoneNumber: cardOrderPhoneNumber,
     };
 
     let cardsSentByIntersolve = 0;
