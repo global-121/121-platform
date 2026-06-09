@@ -1,0 +1,33 @@
+<p-dialog
+  [modal]="true"
+  [closeOnEscape]="false"
+  [(visible)]="koboErrorDialogVisible"
+  styleClass="max-w-[90vw] sm:min-w-[40rem]"
+  [attr.data-testid]="'kobo-error-dialog'"
+>
+  <ng-template #header>
+    <h3>
+      <i class="pi pi-exclamation-triangle me-2"></i>
+      <ng-container i18n>Kobo form integration error</ng-container>
+    </h3>
+  </ng-template>
+  <p i18n>
+    <strong>{{ koboFormName() }}</strong>
+    could not be linked to your program.
+  </p>
+
+  <div class="mt-4 flex justify-end gap-4">
+    <p-button
+      label="XX"
+      i18n-label
+      outlined
+      rounded
+    />
+    <p-button
+      [rounded]="true"
+      label="Close"
+      i18n-label
+      (click)="koboErrorDialogVisible.set(false)"
+    />
+  </div>
+</p-dialog>

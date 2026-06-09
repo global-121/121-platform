@@ -188,8 +188,8 @@ describe('KoboValidationService', () => {
       expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
          "Kobo form definition validation failed:
-         - Missing required FSP attribute 'bankAccountNumber' for FSP 'Commercial Bank Ethiopia' in Kobo asset survey.
-         - Missing required FSP attribute 'fullName' for FSP 'Commercial Bank Ethiopia' in Kobo asset survey."
+         - Missing required attribute 'bankAccountNumber' (for FSP 'Commercial Bank Ethiopia').
+         - Missing required attribute 'fullName' (for FSP 'Commercial Bank Ethiopia')."
         `);
     });
 
@@ -240,7 +240,7 @@ describe('KoboValidationService', () => {
       expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
          "Kobo form definition validation failed:
-         - Kobo form attribute "nationalId" has incompatible type for 121 attribute, expected one of the following types: "background-audio, xml-external, acknowledge, audio, barcode, calculate, date, dateTime, file, geopoint, geoshape, geotrace, hidden, image, rank, select_multiple_from_file, select_multiple, text, time, video", got "integer"  "
+         - Attribute "nationalId" has incompatible type, expected one of: "background-audio", "xml-external", "acknowledge", "audio", "barcode", "calculate", "date", "dateTime", "file", "geopoint", "geoshape", "geotrace", "hidden", "image", "rank", "select_multiple_from_file", "select_multiple", "text", "time", "video", got "integer"."
         `);
     });
   });
@@ -413,7 +413,7 @@ describe('KoboValidationService', () => {
       expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
          "Kobo form definition validation failed:
-         - Kobo form must contain a question with name phoneNumber (should be a text type and country code should be included) or program.allowEmptyPhoneNumber must be set to true."
+         - Missing required attribute 'phoneNumber' (should be a text type and country code should be included, or program.allowEmptyPhoneNumber must be set to true)."
         `);
     });
 
@@ -486,7 +486,7 @@ describe('KoboValidationService', () => {
       expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
          "Kobo form definition validation failed:
-         - Kobo form attribute "phoneNumber" has incompatible type for 121 attribute, expected one of the following types: "text", got "integer"  "
+         - Attribute "phoneNumber" has incompatible type, expected one of: "text", got "integer"."
         `);
     });
   });
@@ -593,7 +593,7 @@ describe('KoboValidationService', () => {
       expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
          "Kobo form definition validation failed:
-         - Kobo form must contain a scope item if program.enableScope is set to true."
+         - Missing required attribute 'scope' (required when program.enableScope is true)."
         `);
     });
 
@@ -638,7 +638,7 @@ describe('KoboValidationService', () => {
       expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
        "Kobo form definition validation failed:
-       - Kobo form attribute "scope" has incompatible type for 121 attribute, expected one of the following types: "background-audio, xml-external, acknowledge, audio, barcode, calculate, date, dateTime, file, geopoint, geoshape, geotrace, hidden, image, rank, select_multiple_from_file, select_multiple, text, time, video", got "integer"  "
+       - Attribute "scope" has incompatible type, expected one of: "background-audio", "xml-external", "acknowledge", "audio", "barcode", "calculate", "date", "dateTime", "file", "geopoint", "geoshape", "geotrace", "hidden", "image", "rank", "select_multiple_from_file", "select_multiple", "text", "time", "video", got "integer"."
       `);
     });
   });
@@ -865,7 +865,7 @@ describe('KoboValidationService', () => {
       expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
        "Kobo form definition validation failed:
-       - Kobo form attribute "preferredLanguage" has incompatible type for 121 attribute, expected one of the following types: "background-audio, xml-external, acknowledge, audio, barcode, calculate, date, dateTime, file, geopoint, geoshape, geotrace, hidden, image, rank, select_multiple_from_file, select_multiple, text, time, video", got "integer"  "
+       - Attribute "preferredLanguage" has incompatible type, expected one of: "background-audio", "xml-external", "acknowledge", "audio", "barcode", "calculate", "date", "dateTime", "file", "geopoint", "geoshape", "geotrace", "hidden", "image", "rank", "select_multiple_from_file", "select_multiple", "text", "time", "video", got "integer"."
       `);
     });
 
@@ -926,7 +926,7 @@ describe('KoboValidationService', () => {
       expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
        "Kobo form definition validation failed:
-       - Kobo form attribute "paymentCount" is a reserved attribute name cannot be filled from Kobo."
+       - Attribute "paymentCount" is a reserved attribute name and cannot be filled from Kobo."
       `);
     });
   });
@@ -987,7 +987,7 @@ describe('KoboValidationService', () => {
       expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
        "Kobo form definition validation failed:
-       - Kobo form must contain a question with name "fsp"."
+       - Missing required attribute 'fsp'."
       `);
     });
 
@@ -1069,7 +1069,7 @@ describe('KoboValidationService', () => {
       expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
        "Kobo form definition validation failed:
-       - Kobo form attribute "fsp" has choices that don't match program FSP configuration names. Invalid choices: Invalid FSP Name, Another Invalid FSP. Expected one of: Safaricom Kenya, Intersolve WhatsApp."
+       - Attribute "fsp" has invalid choices: Invalid FSP Name, Another Invalid FSP. Expected one of: Safaricom Kenya, Intersolve WhatsApp."
       `);
     });
 
@@ -1131,7 +1131,7 @@ describe('KoboValidationService', () => {
       expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
        "Kobo form definition validation failed:
-       - Kobo form attribute "fsp" must be one of the following types: "hidden", "calculate", "select_one", got "text"."
+       - Attribute "fsp" has incompatible type, expected one of: "hidden", "calculate", "select_one", got "text"."
       `);
     });
   });
@@ -1173,7 +1173,7 @@ describe('KoboValidationService', () => {
     expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
     expect(error.message).toMatchInlineSnapshot(`
      "Kobo form definition validation failed:
-     - Kobo form attribute "gender" is of type select_one or select_one_from_file but has no choices defined. Note that choices defined in a separate CSV file are not supported."
+     - Attribute "gender" is of type select_one or select_one_from_file but has no choices defined. Note that choices defined in a separate CSV file are not supported."
     `);
   });
 });

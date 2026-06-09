@@ -35,6 +35,9 @@
       <trans-unit id="1160840788795450422" datatype="html">
         <source>At least one column must be selected</source>
       </trans-unit>
+      <trans-unit id="1181318683745969549" datatype="html">
+        <source>Expected Types</source>
+      </trans-unit>
       <trans-unit id="1181910457994920507" datatype="html">
         <source>Proceed</source>
       </trans-unit>
@@ -215,6 +218,9 @@
       </trans-unit>
       <trans-unit id="1918076919963278361" datatype="html">
         <source>Registration information</source>
+      </trans-unit>
+      <trans-unit id="1936229512844722191" datatype="html">
+        <source>XX</source>
       </trans-unit>
       <trans-unit id="1941641831210864467" datatype="html">
         <source>Replace visa card</source>
@@ -431,6 +437,9 @@
       </trans-unit>
       <trans-unit id="2840088863087373358" datatype="html">
         <source>Updating registration(s)</source>
+      </trans-unit>
+      <trans-unit id="2850086782953482141" datatype="html">
+        <source><x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ koboFormName() }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> could not be linked to your program.</source>
       </trans-unit>
       <trans-unit id="2867000227530087117" datatype="html">
         <source>Date is</source>
@@ -872,6 +881,9 @@
       <trans-unit id="4725718925572069565" datatype="html">
         <source>Click to integrate</source>
       </trans-unit>
+      <trans-unit id="4734021473638517000" datatype="html">
+        <source>Actual Type</source>
+      </trans-unit>
       <trans-unit id="4746344653872488527" datatype="html">
         <source>Export payment list</source>
       </trans-unit>
@@ -895,6 +907,9 @@
       </trans-unit>
       <trans-unit id="4866288342540923037" datatype="html">
         <source>No of Cards Ordered</source>
+      </trans-unit>
+      <trans-unit id="4872421840981590914" datatype="html">
+        <source>Kobo form integration error</source>
       </trans-unit>
       <trans-unit id="4890152856739224001" datatype="html">
         <source>Optionally pass a start date and/or an end date to filter the payments. The export is limited to 100,000 records. Adapt your dates if needed.</source>

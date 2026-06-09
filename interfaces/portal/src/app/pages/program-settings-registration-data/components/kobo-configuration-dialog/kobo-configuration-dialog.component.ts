@@ -129,6 +129,10 @@ export class KoboConfigurationDialogComponent {
       });
       this.linkKoboDialog().show();
     },
+    onError: (errorResponse) => {
+      const errorPayload = (errorResponse.cause as { error: unknown[] }).error;
+      console.log('errorPayload', errorPayload);
+    },
   }));
 
   readonly linkKoboMutation = injectMutation(() => ({
