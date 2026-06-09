@@ -1,9 +1,13 @@
+import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
-import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import {
+  ProgramRegistrationAttributeDto,
+  UpdateProgramRegistrationAttributesBatchDto,
+} from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -257,6 +261,118 @@ describe('ProgramRegistrationAttributesService', () => {
           }),
         }),
       );
+    });
+  });
+
+  describe('update registration attributes in batch', () => {
+    it('should update attributes', async () => {
+      // Arrange
+      const programId = 1;
+      const existingFirstNameEntity = createAttributeEntity({
+        id: 10,
+        name: 'firstName',
+        label: { en: 'Old First Name Label' },
+        isRequired: false,
+      });
+      const existingLastNameEntity = createAttributeEntity({
+        id: 11,
+        name: 'lastName',
+        label: { en: 'Old Last Name Label' },
+        isRequired: false,
+      });
+
+      const attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[] =
+        [
+          {
+            programRegistrationAttributeName: 'firstName',
+            updateProgramRegistrationAttribute: {
+              label: { en: 'New First Name Label' },
+            },
+          },
+          {
+            programRegistrationAttributeName: 'lastName',
+            updateProgramRegistrationAttribute: {
+              label: { en: 'New Last Name Label' },
+            },
+          },
+        ];
+
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'find')
+        .mockResolvedValue([existingFirstNameEntity, existingLastNameEntity]);
+
+      const saveSpy = jest
+        .spyOn(programRegistrationAttributeRepository, 'save')
+        .mockImplementation(async (entities: any) => entities);
+
+      // Act
+      await programRegistrationAttributesService.updateBatchProgramRegistrationAttributes(
+        {
+          programId,
+          attributesToUpdate,
+        },
+      );
+
+      // Assert
+      const savedEntities = saveSpy.mock.calls[0][0];
+      expect(savedEntities).toHaveLength(2);
+      expect(savedEntities[0].label).toEqual({
+        en: 'New First Name Label',
+      });
+      expect(savedEntities[1].label).toEqual({ en: 'New Last Name Label' });
+    });
+
+    it('should return not found when updating a non existing attribute', async () => {
+      // Arrange
+      const programId = 1;
+      const existingFirstNameEntity = createAttributeEntity({
+        id: 10,
+        name: 'firstName',
+        label: { en: 'Old First Name Label' },
+        isRequired: false,
+      });
+      const existingLastNameEntity = createAttributeEntity({
+        id: 11,
+        name: 'lastName',
+        label: { en: 'Old Last Name Label' },
+        isRequired: false,
+      });
+
+      const attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[] =
+        [
+          {
+            programRegistrationAttributeName: 'familyName',
+            updateProgramRegistrationAttribute: {
+              label: { en: 'New Family Name Label' },
+            },
+          },
+          {
+            programRegistrationAttributeName: 'lastName',
+            updateProgramRegistrationAttribute: {
+              label: { en: 'New Last Name Label' },
+            },
+          },
+        ];
+
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'find')
+        .mockResolvedValue([existingFirstNameEntity, existingLastNameEntity]);
+
+      // Act
+      let error;
+      try {
+        await programRegistrationAttributesService.updateBatchProgramRegistrationAttributes(
+          {
+            programId,
+            attributesToUpdate,
+          },
+        );
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.NOT_FOUND);
     });
   });
 });
