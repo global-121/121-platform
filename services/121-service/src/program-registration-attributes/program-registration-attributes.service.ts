@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { chunk } from 'lodash';
 import { FilterOperator } from 'nestjs-paginate';
 import { Equal, QueryFailedError, Repository } from 'typeorm';
 
@@ -408,6 +409,90 @@ export class ProgramRegistrationAttributesService {
     programRegistrationAttributeName: string;
     updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
   }): Promise<ProgramRegistrationAttributeEntity> {
+    const programRegistrationAttributeFromRepo =
+      await this.getProgramRegistrationAttributeFromRepoOrThrow({
+        programId,
+        programRegistrationAttributeName,
+      });
+
+    const updatedProgramRegistrationAttribute =
+      await this.getUpdatedProgramRegistrationAttribute({
+        programRegistrationAttributeFromRepo,
+        updateProgramRegistrationAttribute,
+      });
+
+    await this.programRegistrationAttributeRepository.save(
+      updatedProgramRegistrationAttribute,
+    );
+    return updatedProgramRegistrationAttribute;
+  }
+
+  public async updateBatchProgramRegistrationAttributes({
+    programId,
+    attributesToUpdate,
+  }: {
+    programId: number;
+    attributesToUpdate: {
+      programRegistrationAttributeName: string;
+      updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
+    }[];
+  }): Promise<ProgramRegistrationAttributeEntity[]> {
+    const updatedAttributes: ProgramRegistrationAttributeEntity[] = [];
+
+    const chunks = chunk(attributesToUpdate, 10000);
+
+    for (const programAttributesToUpdateChunk of chunks) {
+      const updatedChunk = await this.getUpdatedProgramAttributePerChunk({
+        programId,
+        programAttributesToUpdateChunk,
+      });
+      updatedAttributes.push(...updatedChunk);
+      await this.programRegistrationAttributeRepository.save(updatedChunk);
+    }
+
+    return updatedAttributes;
+  }
+
+  private async getUpdatedProgramAttributePerChunk({
+    programId,
+    programAttributesToUpdateChunk,
+  }: {
+    programId: number;
+    programAttributesToUpdateChunk: {
+      programRegistrationAttributeName: string;
+      updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
+    }[];
+  }) {
+    const updatedChunk: ProgramRegistrationAttributeEntity[] = [];
+
+    for (const attributeToUpdate of programAttributesToUpdateChunk) {
+      const programRegistrationAttributeFromRepo =
+        await this.getProgramRegistrationAttributeFromRepoOrThrow({
+          programId,
+          programRegistrationAttributeName:
+            attributeToUpdate.programRegistrationAttributeName,
+        });
+
+      const updatedProgramRegistrationAttribute =
+        await this.getUpdatedProgramRegistrationAttribute({
+          programRegistrationAttributeFromRepo,
+          updateProgramRegistrationAttribute:
+            attributeToUpdate.updateProgramRegistrationAttribute,
+        });
+
+      updatedChunk.push(updatedProgramRegistrationAttribute);
+    }
+
+    return updatedChunk;
+  }
+
+  private async getProgramRegistrationAttributeFromRepoOrThrow({
+    programId,
+    programRegistrationAttributeName,
+  }: {
+    programId: number;
+    programRegistrationAttributeName: string;
+  }) {
     const programRegistrationAttribute =
       await this.programRegistrationAttributeRepository.findOne({
         where: {
@@ -420,15 +505,22 @@ export class ProgramRegistrationAttributesService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
+    return programRegistrationAttribute;
+  }
+
+  private async getUpdatedProgramRegistrationAttribute({
+    programRegistrationAttributeFromRepo,
+    updateProgramRegistrationAttribute,
+  }: {
+    programRegistrationAttributeFromRepo: ProgramRegistrationAttributeEntity;
+    updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
+  }) {
     for (const attribute in updateProgramRegistrationAttribute) {
-      programRegistrationAttribute[attribute] =
+      programRegistrationAttributeFromRepo[attribute] =
         updateProgramRegistrationAttribute[attribute];
     }
 
-    await this.programRegistrationAttributeRepository.save(
-      programRegistrationAttribute,
-    );
-    return programRegistrationAttribute;
+    return programRegistrationAttributeFromRepo;
   }
 
   public async deleteProgramRegistrationAttribute(
