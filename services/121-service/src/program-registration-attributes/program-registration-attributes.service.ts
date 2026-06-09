@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { chunk } from 'lodash';
 import { FilterOperator } from 'nestjs-paginate';
-import { Equal, QueryFailedError, Repository } from 'typeorm';
+import { Equal, In, QueryFailedError, Repository } from 'typeorm';
 
 import {
   ProgramRegistrationAttributeDto,
@@ -410,10 +410,16 @@ export class ProgramRegistrationAttributesService {
     updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
   }): Promise<ProgramRegistrationAttributeEntity> {
     const programRegistrationAttributeFromRepo =
-      await this.getProgramRegistrationAttributeFromRepoOrThrow({
-        programId,
-        programRegistrationAttributeName,
+      await this.programRegistrationAttributeRepository.findOne({
+        where: {
+          name: Equal(programRegistrationAttributeName),
+          programId: Equal(programId),
+        },
       });
+    if (!programRegistrationAttributeFromRepo) {
+      const errors = `No programRegistrationAttribute found with name ${programRegistrationAttributeName} for program ${programId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
 
     const updatedProgramRegistrationAttribute =
       await this.getUpdatedProgramRegistrationAttribute({
@@ -464,48 +470,48 @@ export class ProgramRegistrationAttributesService {
     }[];
   }) {
     const updatedChunk: ProgramRegistrationAttributeEntity[] = [];
+    const programAttributesToUpdateNames = programAttributesToUpdateChunk.map(
+      (attr) => attr.programRegistrationAttributeName,
+    );
 
-    for (const attributeToUpdate of programAttributesToUpdateChunk) {
-      const programRegistrationAttributeFromRepo =
-        await this.getProgramRegistrationAttributeFromRepoOrThrow({
-          programId,
-          programRegistrationAttributeName:
-            attributeToUpdate.programRegistrationAttributeName,
-        });
+    const programRegistrationAttributesFromRepo =
+      await this.programRegistrationAttributeRepository.find({
+        where: {
+          name: In(programAttributesToUpdateNames),
+          programId: Equal(programId),
+        },
+      });
+
+    const attributeNamesFromRepo = programRegistrationAttributesFromRepo.map(
+      (attr) => attr.name,
+    );
+
+    const namesNotFound = programAttributesToUpdateNames.filter(
+      (attributeName) => !attributeNamesFromRepo.includes(attributeName),
+    );
+    if (namesNotFound.length > 0) {
+      const errors = `No programRegistrationAttribute found with name ${namesNotFound.join(', ')} for program ${programId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    for (const programRegistrationAttributeFromRepo of programRegistrationAttributesFromRepo) {
+      const attributeWithUpdates = programAttributesToUpdateChunk.find(
+        (attr) =>
+          attr.programRegistrationAttributeName ===
+          programRegistrationAttributeFromRepo.name,
+      );
 
       const updatedProgramRegistrationAttribute =
         await this.getUpdatedProgramRegistrationAttribute({
           programRegistrationAttributeFromRepo,
           updateProgramRegistrationAttribute:
-            attributeToUpdate.updateProgramRegistrationAttribute,
+            attributeWithUpdates!.updateProgramRegistrationAttribute,
         });
 
       updatedChunk.push(updatedProgramRegistrationAttribute);
     }
 
     return updatedChunk;
-  }
-
-  private async getProgramRegistrationAttributeFromRepoOrThrow({
-    programId,
-    programRegistrationAttributeName,
-  }: {
-    programId: number;
-    programRegistrationAttributeName: string;
-  }) {
-    const programRegistrationAttribute =
-      await this.programRegistrationAttributeRepository.findOne({
-        where: {
-          name: Equal(programRegistrationAttributeName),
-          programId: Equal(programId),
-        },
-      });
-    if (!programRegistrationAttribute) {
-      const errors = `No programRegistrationAttribute found with name ${programRegistrationAttributeName} for program ${programId}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    return programRegistrationAttribute;
   }
 
   private async getUpdatedProgramRegistrationAttribute({
