@@ -35,6 +35,7 @@ import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.d
 import {
   ProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
+  UpdateProgramRegistrationAttributesBatchDto,
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
@@ -415,10 +416,7 @@ You can also leave the body empty.`,
   @Patch(':programId/registration-attributes-batch')
   public async updateBatchProgramRegistrationAttributes(
     @Body()
-    attributesToUpdate: {
-      programRegistrationAttributeName: string;
-      updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
-    }[],
+    attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[],
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<ProgramRegistrationAttributeEntity[]> {

@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { UpdateProgramRegistrationAttributesBatchDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { patchProgramRegistrationAttributesInBatch } from '@121-service/test/helpers/program.helper';
 import {
@@ -22,21 +23,22 @@ describe('Update program registration attributes in batch', () => {
   it('should successfully update multiple attributes', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
-    const attributesToUpdateSuccess = [
-      {
-        programRegistrationAttributeName: 'whatsappPhoneNumber',
-        updateProgramRegistrationAttribute: {
-          label: { en: 'WhatsApp Phone Number' },
+    const attributesToUpdateSuccess: UpdateProgramRegistrationAttributesBatchDto[] =
+      [
+        {
+          programRegistrationAttributeName: 'whatsappPhoneNumber',
+          updateProgramRegistrationAttribute: {
+            label: { en: 'WhatsApp Phone Number' },
+          },
         },
-      },
-      {
-        programRegistrationAttributeName: 'addressPostalCode',
-        updateProgramRegistrationAttribute: {
-          label: { en: 'Address PostalCode' },
-          placeholder: { en: 'Postal code' },
+        {
+          programRegistrationAttributeName: 'addressPostalCode',
+          updateProgramRegistrationAttribute: {
+            label: { en: 'Address PostalCode' },
+            placeholder: { en: 'Postal code' },
+          },
         },
-      },
-    ];
+      ];
 
     // Act
     const response = await patchProgramRegistrationAttributesInBatch({
