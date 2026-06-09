@@ -1,18 +1,12 @@
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdOCW,
-  registrationOCW4,
+  programIdSafaricom,
+  registrationsSafaricom,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
-
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  await resetDBAndSeedRegistrations({
-    seedScript: SeedScript.nlrcMultiple,
-    registrations: [registrationOCW4],
-    programId: programIdOCW,
-  });
-});
 
 const orderDebitCardOrder = {
   noOfCards: '100',
@@ -25,17 +19,18 @@ const orderDebitCardOrder = {
   addressee: 'John Doe',
 };
 
-test("All elements of Monitoring's `Data Changes` sub-page display correct data for Registration", async ({
+test('Should be able to order debit cards', async ({
+  resetDBAndSeedRegistrations,
   programMonitoringPage,
 }) => {
-  await test.step("Navigate to monitoring's 'Debit cards' tab", async () => {
-    await programMonitoringPage.goto(
-      `/program/${programIdOCW}/monitoring/dashboard`,
-    );
-    await programMonitoringPage.selectTab({ tabName: 'Debit cards' });
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    programId: programIdOCW,
+    navigateToPage: `/program/${programIdOCW}/monitoring/dashboard`,
   });
 
-  await test.step('Order cards', async () => {
+  await test.step("Navigate to monitoring's 'Debit cards' tab and Order cards", async () => {
+    await programMonitoringPage.selectTab({ tabName: 'Debit cards' });
     await programMonitoringPage.orderCards({ orderDebitCardOrder });
   });
 
@@ -43,5 +38,41 @@ test("All elements of Monitoring's `Data Changes` sub-page display correct data 
     await programMonitoringPage.expectCardOrdersTableToContainOrder({
       orderDebitCardOrder,
     });
+  });
+});
+
+test('Should not be able to see the Debit cards tab for programs without physical cards', async ({
+  resetDBAndSeedRegistrations,
+  programMonitoringPage,
+}) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.safaricomProgram,
+    registrations: registrationsSafaricom,
+    programId: programIdSafaricom,
+    navigateToPage: `/program/${programIdSafaricom}/monitoring/dashboard`,
+  });
+
+  await test.step('Confirm Debit cards tab is not visible', async () => {
+    await programMonitoringPage.confirmDebitCardsTabNotvisible();
+  });
+});
+
+test('Should not be able to see the Debit cards tab for programs without FspDebitCardOrderCREATE permission', async ({
+  resetDBAndSeedRegistrations,
+  programMonitoringPage,
+}) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsSafaricom,
+    programId: programIdSafaricom,
+    navigateToPage: `/program/${programIdSafaricom}/monitoring/dashboard`,
+    userCredentials: {
+      username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+    },
+  });
+
+  await test.step("Navigate to monitoring's 'Debit cards' tab", async () => {
+    await programMonitoringPage.confirmDebitCardsTabNotvisible();
   });
 });

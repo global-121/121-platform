@@ -381,6 +381,16 @@ class ProgramMonitoring extends BasePage {
     await this.validateToastMessage('Debit cards ordered successfully');
   }
 
+  async confirmDebitCardsTabNotvisible() {
+    const monitoringTabs = await this.page.getByTestId('monitoring-tabs-menu');
+    await expect(monitoringTabs).toBeVisible();
+    const debitCardsTabsContent = await monitoringTabs
+      .getByRole('tab')
+      .allTextContents();
+
+    await expect(debitCardsTabsContent).not.toContain('Debit cards');
+  }
+
   async expectCardOrdersTableToContainOrder({
     orderDebitCardOrder,
   }: {
@@ -406,7 +416,7 @@ class ProgramMonitoring extends BasePage {
       'No of Cards Ordered',
       'Address',
       'Ordered By',
-      'Created At',
+      'Ordered On',
     ]);
 
     const addressColumn = `${orderDebitCardOrder.addressee}, ${orderDebitCardOrder.addressStreet} ${orderDebitCardOrder.addressHouseNumber} ${orderDebitCardOrder.addressHouseNumberAddition}, ${orderDebitCardOrder.addressPostalCode}, ${orderDebitCardOrder.addressCity}`;
@@ -416,7 +426,7 @@ class ProgramMonitoring extends BasePage {
       orderDebitCardOrder.noOfCards,
       addressColumn,
       'admin@example.org',
-      expect.any(String), // Created At can be variable, so we just check that it's a string
+      expect.any(String), // Ordered On can be variable, so we just check that it's a string
     ]);
   }
 }
