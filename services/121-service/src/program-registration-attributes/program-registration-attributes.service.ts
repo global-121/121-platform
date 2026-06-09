@@ -7,6 +7,7 @@ import { Equal, In, QueryFailedError, Repository } from 'typeorm';
 import {
   ProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
+  UpdateProgramRegistrationAttributesBatchDto,
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
@@ -438,10 +439,7 @@ export class ProgramRegistrationAttributesService {
     attributesToUpdate,
   }: {
     programId: number;
-    attributesToUpdate: {
-      programRegistrationAttributeName: string;
-      updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
-    }[];
+    attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[];
   }): Promise<ProgramRegistrationAttributeEntity[]> {
     const attributesToUpdateNames = attributesToUpdate.map(
       (attr) => attr.programRegistrationAttributeName,
@@ -484,10 +482,7 @@ export class ProgramRegistrationAttributesService {
     programAttributesToUpdateChunk,
   }: {
     programId: number;
-    programAttributesToUpdateChunk: {
-      programRegistrationAttributeName: string;
-      updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
-    }[];
+    programAttributesToUpdateChunk: UpdateProgramRegistrationAttributesBatchDto[];
   }) {
     const updatedChunk: ProgramRegistrationAttributeEntity[] = [];
 

@@ -15,6 +15,7 @@ import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.d
 import {
   ProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
+  UpdateProgramRegistrationAttributesBatchDto,
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
@@ -102,10 +103,7 @@ export async function patchProgramRegistrationAttributesInBatch({
   programId,
   accessToken,
 }: {
-  attributesToUpdate: {
-    programRegistrationAttributeName: string;
-    updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
-  }[];
+  attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[];
   programId: number;
   accessToken: string;
 }): Promise<request.Response> {
