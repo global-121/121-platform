@@ -356,7 +356,6 @@ class ProgramMonitoring extends BasePage {
       addressee: string;
     };
   }) {
-    await this.selectTab({ tabName: 'Debit cards' });
     await this.page.getByRole('button', { name: 'Order cards' }).click();
     const {
       noOfCards,
@@ -379,14 +378,14 @@ class ProgramMonitoring extends BasePage {
     await this.page.getByRole('button', { name: 'Order debit cards' }).click();
   }
 
-  async confirmDebitCardsTabNotvisible() {
-    const monitoringTabs = await this.page.getByTestId('monitoring-tabs-menu');
+  async confirmDebitCardsTabNotVisible() {
+    const monitoringTabs = this.page.getByTestId('monitoring-menu');
     await expect(monitoringTabs).toBeVisible();
     const debitCardsTabsContent = await monitoringTabs
       .getByRole('tab')
       .allTextContents();
 
-    await expect(debitCardsTabsContent).not.toContain('Debit cards');
+    await expect(debitCardsTabsContent).not.toContain('Debit Cards');
   }
 
   async expectCardOrdersTableToContainOrder({

@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { injectQuery } from 'node_modules/@tanstack/angular-query-experimental/inject-query';
+import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 
 import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
@@ -68,7 +68,7 @@ export class ProgramMonitoringDebitCardsPageComponent {
     {
       field: 'created',
       header: $localize`Ordered On`,
-      type: QueryTableColumnType.TEXT,
+      type: QueryTableColumnType.DATE,
     },
   ]);
 

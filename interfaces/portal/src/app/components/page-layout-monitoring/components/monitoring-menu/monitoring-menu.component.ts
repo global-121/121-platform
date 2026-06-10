@@ -14,7 +14,6 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes, ProgramMonitoringPaths } from '~/app.routes';
 import { TabsMenuComponent } from '~/components/tabs-menu/tabs-menu.component';
-import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { programHasPhysicalCardSupport } from '~/domains/program/program.helper';
 import { AuthService } from '~/services/auth.service';
@@ -30,7 +29,6 @@ export class MonitoringMenuComponent {
 
   readonly authService = inject(AuthService);
   readonly programApiService = inject(ProgramApiService);
-  readonly fspConfigurationApiService = inject(FspConfigurationApiService);
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
 

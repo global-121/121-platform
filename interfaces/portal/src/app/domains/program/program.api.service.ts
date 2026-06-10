@@ -6,6 +6,7 @@ import { unique } from 'radashi';
 
 import { CooperativeBankOfOromiaAccountValidationReportDto } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-account-validation-report.dto';
 import { CreateVisaCardOrderDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/create-visa-card-order.dto';
+import { CreateVisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/create-visa-card-order-response.dto';
 import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
@@ -541,7 +542,7 @@ export class ProgramApiService extends DomainApiService {
     visaCardOrder: Dto<CreateVisaCardOrderDto>;
   }) {
     return this.httpWrapperService.perform121ServiceRequest<
-      Dto<CreateVisaCardOrderDto>
+      Dto<CreateVisaCardOrderResponseDto>
     >({
       method: 'POST',
       endpoint: this.pathToQueryKey([

@@ -29,12 +29,12 @@ test('Should not be able to order debit cards when card distribution by mail is 
     navigateToPage: `/program/${programIdOCW}/monitoring/dashboard`,
   });
 
-  await test.step("Navigate to monitoring's 'Debit cards' tab and Order cards", async () => {
-    await programMonitoringPage.selectTab({ tabName: 'Debit cards' });
+  await test.step("Navigate to monitoring's 'Debit Cards' tab and order cards", async () => {
+    await programMonitoringPage.selectTab({ tabName: 'Debit Cards' });
     await programMonitoringPage.orderCards({ orderDebitCardOrder });
   });
 
-  await test.step('Verify that a error is shown', async () => {
+  await test.step('Verify that an error is shown', async () => {
     await programMonitoringPage.validateFormError({
       errorText:
         'Something went wrong: "Batch ordering Visa cards is only allowed when card distribution by mail is disabled."',
@@ -56,18 +56,18 @@ test('Should be able to order debit cards when card distribution by mail is disa
 
   await test.step('Disable card distribution by mail', async () => {
     await fspSettingsPage.openEditFspConfigurationByName('Visa debit card');
-    const cardDistributionSwitch = await page.getByRole('switch', {
+    const cardDistributionSwitch = page.getByRole('switch', {
       name: '* Card distribution by mail',
     });
     await cardDistributionSwitch.click();
     await fspSettingsPage.saveReconfigurationButton.click();
   });
 
-  await test.step("Navigate to monitoring's 'Debit cards' tab and Order cards", async () => {
+  await test.step("Navigate to monitoring's 'Debit Cards' tab and Order cards", async () => {
     await programMonitoringPage.goto(
       `/program/${programIdOCW}/monitoring/dashboard`,
     );
-    await programMonitoringPage.selectTab({ tabName: 'Debit cards' });
+    await programMonitoringPage.selectTab({ tabName: 'Debit Cards' });
     await programMonitoringPage.orderCards({ orderDebitCardOrder });
     await programMonitoringPage.validateToastMessage(
       'Debit cards ordered successfully',
@@ -92,8 +92,8 @@ test('Should not be able to see the Debit cards tab for programs without physica
     navigateToPage: `/program/${programIdSafaricom}/monitoring/dashboard`,
   });
 
-  await test.step('Confirm Debit cards tab is not visible', async () => {
-    await programMonitoringPage.confirmDebitCardsTabNotvisible();
+  await test.step("Confirm that the 'Debit Cards' tab is not visible", async () => {
+    await programMonitoringPage.confirmDebitCardsTabNotVisible();
   });
 });
 
@@ -111,7 +111,7 @@ test('Should not be able to see the Debit cards tab for programs without FspDebi
     },
   });
 
-  await test.step("Navigate to monitoring's 'Debit cards' tab", async () => {
-    await programMonitoringPage.confirmDebitCardsTabNotvisible();
+  await test.step("Confirm that the 'Debit Cards' tab is not visible", async () => {
+    await programMonitoringPage.confirmDebitCardsTabNotVisible();
   });
 });
