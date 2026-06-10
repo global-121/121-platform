@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import * as request from 'supertest';
 import TestAgent from 'supertest/lib/agent';
+import { randomBytes } from 'crypto';
 
 import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
@@ -17,7 +18,7 @@ import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 
 export function generateUniqueTestId(): string {
   const timestamp = Date.now();
-  const randomSuffix = Math.random().toString(36).substring(7);
+  const randomSuffix = randomBytes(8).toString('hex');
   return `${timestamp}_${randomSuffix}`;
 }
 
