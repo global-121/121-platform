@@ -2436,12 +2436,6 @@
       <trans-unit id="5357145550757146604" datatype="html">
         <source>Edit registration questions</source>
       </trans-unit>
-      <trans-unit id="2630979564408668981" datatype="html">
-        <source>Data column name <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip [message]=&quot;&apos;The data column name of the question.&apos;&quot; &gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;/app-info-tooltip&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
-      </trans-unit>
-      <trans-unit id="5629376220566654518" datatype="html">
-        <source>Question label <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip [message]=&quot;`The label that will be shown in the registration page table header and registration&apos;s profile. The labels cand be edited by clicking on the pencil icon above.`&quot; &gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;/app-info-tooltip&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
-      </trans-unit>
       <trans-unit id="647536533882061546" datatype="html">
         <source>Please note, the portal does not support this language currently.</source>
       </trans-unit>
@@ -2486,6 +2480,18 @@
       </trans-unit>
       <trans-unit id="8094115796114921772" datatype="html">
         <source>An error occurred while updating the labels.</source>
+      </trans-unit>
+      <trans-unit id="6011590435574005771" datatype="html">
+        <source>Question label</source>
+      </trans-unit>
+      <trans-unit id="5971081331538192247" datatype="html">
+        <source>Data column name</source>
+      </trans-unit>
+      <trans-unit id="4900165365190016920" datatype="html">
+        <source>The label that will be shown in the registration page table header and registration&apos;s profile. The labels cand be edited by clicking on the pencil icon above.</source>
+      </trans-unit>
+      <trans-unit id="8089925871034232084" datatype="html">
+        <source>The data column name of the question.</source>
       </trans-unit>
     </body>
   </file>
