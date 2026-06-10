@@ -816,6 +816,7 @@ export class UserService {
         'ARRAY_AGG(assignment.programId) AS "assignedProgramIds"',
       ])
       .groupBy('user.id, user.username')
+      .orderBy('user.username', 'ASC')
       .getRawMany();
   }
 
