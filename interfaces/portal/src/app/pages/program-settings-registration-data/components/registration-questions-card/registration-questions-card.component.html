@@ -39,22 +39,27 @@
       >
         <ng-template #header>
           <tr>
-            <th
-              i18n
-              class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
-            >
-              Data column name
+            <th class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase">
+              <span
+                class="me-1"
+                i18n
+              >
+                Data column name</span
+              >
               <app-info-tooltip
-                [message]="'The data column name of the question.'"
+                message="The data column name of the question."
+                i18n-message
               ></app-info-tooltip>
             </th>
-            <th
-              i18n
-              class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
-            >
-              Question label
+            <th class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase">
+              <span
+                class="me-1"
+                i18n
+                >Question label</span
+              >
               <app-info-tooltip
-                [message]="`The label that will be shown in the registration page table header and registration's profile. The labels cand be edited by clicking on the pencil icon above.`"
+                message="The label that will be shown in the registration page table header and registration's profile. The labels cand be edited by clicking on the pencil icon above."
+                i18n-message
               ></app-info-tooltip>
             </th>
           </tr>

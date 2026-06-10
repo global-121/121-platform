@@ -2616,11 +2616,74 @@
       <trans-unit id="7968872754950254240" datatype="html">
         <source>There are issues in your Kobo form that are blocking the integration. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
       </trans-unit>
+      <trans-unit id="4228319514212568219" datatype="html">
+        <source>Users</source>
+      </trans-unit>
+      <trans-unit id="2669137255472752633" datatype="html">
+        <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> You can edit each column name to a shorter version.</source>
+      </trans-unit>
+      <trans-unit id="5236492962293730127" datatype="html">
+        <source>Registration questions</source>
+      </trans-unit>
+      <trans-unit id="5357145550757146604" datatype="html">
+        <source>Edit registration questions</source>
+      </trans-unit>
+      <trans-unit id="647536533882061546" datatype="html">
+        <source>Please note, the portal does not support this language currently.</source>
+      </trans-unit>
+      <trans-unit id="1674202514578558795" datatype="html">
+        <source>New name</source>
+      </trans-unit>
+      <trans-unit id="1817782792448180446" datatype="html">
+        <source>Integration is already up to date.</source>
+      </trans-unit>
+      <trans-unit id="2701527640285744987" datatype="html">
+        <source>Rename payment</source>
+      </trans-unit>
+      <trans-unit id="4099904598600212843" datatype="html">
+        <source>Subscription key</source>
+      </trans-unit>
+      <trans-unit id="508499092676439201" datatype="html">
+        <source>Integration update unsuccessful. Please try again.</source>
+      </trans-unit>
+      <trans-unit id="5656654201977017111" datatype="html">
+        <source>Refresh link</source>
+      </trans-unit>
+      <trans-unit id="6041115344061899387" datatype="html">
+        <source>Rename</source>
+      </trans-unit>
+      <trans-unit id="7131024915833130123" datatype="html">
+        <source>Integration updated successfully.</source>
+      </trans-unit>
+      <trans-unit id="9088314425699939664" datatype="html">
+        <source>You&apos;re about to rename the payment created on <x equiv-text="{{ paymentDate() }}" id="INTERPOLATION"/>. Choose a clear name so other users can easily find it. If this payment has already started, make sure to inform relevant users.</source>
+      </trans-unit>
+      <trans-unit id="debit-card-status-blocked" datatype="html">
+        <source>Blocked</source>
+      </trans-unit>
+      <trans-unit id="generic-info" datatype="html">
+        <source>Info</source>
+      </trans-unit>
+      <trans-unit id="payment-event-log-item-type-renamed" datatype="html">
+        <source>Renamed</source>
+      </trans-unit>
       <trans-unit id="3560595744015834305" datatype="html">
         <source>Update successful.</source>
       </trans-unit>
       <trans-unit id="8094115796114921772" datatype="html">
         <source>An error occurred while updating the labels.</source>
+      </trans-unit>
+      <trans-unit id="6011590435574005771" datatype="html">
+        <source>Question label</source>
+      </trans-unit>
+      <trans-unit id="5971081331538192247" datatype="html">
+        <source>Data column name</source>
+      </trans-unit>
+      <trans-unit id="4900165365190016920" datatype="html">
+        <source>The label that will be shown in the registration page table header and registration&apos;s profile. The labels cand be edited by clicking on the pencil icon above.</source>
+      </trans-unit>
+      <trans-unit id="8089925871034232084" datatype="html">
+        <source>The data column name of the question.</source>
       </trans-unit>
     </body>
   </file>
