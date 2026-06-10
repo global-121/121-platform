@@ -74,11 +74,7 @@ export class SeedInit implements InterfaceScript {
     permissions: PermissionEntity[],
   ): Promise<UserRoleEntity[]> {
     const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
-    const paymentRelatedPermissionsNotForProgramAdmin = [
-      PermissionEnum.PaymentSTART,
-      PermissionEnum.PaymentRETRY,
-      PermissionEnum.PaymentUPDATE,
-    ];
+
     const defaultRoles = [
       {
         role: DefaultUserRole.Admin,
@@ -88,10 +84,52 @@ export class SeedInit implements InterfaceScript {
       {
         role: DefaultUserRole.ProgramAdmin,
         label: 'Program Admin',
-        permissions: Object.values(PermissionEnum).filter(
-          (permission: PermissionEnum) =>
-            !paymentRelatedPermissionsNotForProgramAdmin.includes(permission),
-        ),
+        permissions: [
+          PermissionEnum.ProgramREAD,
+          PermissionEnum.ProgramUPDATE,
+          PermissionEnum.ProgramAttachmentsREAD,
+          PermissionEnum.ProgramAttachmentsCREATE,
+          PermissionEnum.ProgramAttachmentsUPDATE,
+          PermissionEnum.ProgramAttachmentsDELETE,
+          PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.PaymentREAD,
+          PermissionEnum.PaymentCREATE,
+          PermissionEnum.PaymentDELETE,
+          PermissionEnum.PaymentFspInstructionREAD,
+          PermissionEnum.PaymentTransactionREAD,
+          PermissionEnum.PaymentVoucherWhatsappREAD,
+          PermissionEnum.PaymentVoucherPaperREAD,
+          PermissionEnum.PaymentVoucherExport,
+          PermissionEnum.FspDebitCardREAD,
+          PermissionEnum.FspDebitCardBLOCK,
+          PermissionEnum.FspDebitCardUNBLOCK,
+          PermissionEnum.FspDebitCardCREATE,
+          PermissionEnum.FspDebitCardEXPORT,
+          PermissionEnum.FspDebitCardCLOSE,
+          PermissionEnum.FspDebitCardOrderCREATE,
+          PermissionEnum.FspDebitCardOrderREAD,
+          PermissionEnum.RegistrationREAD,
+          PermissionEnum.RegistrationCREATE,
+          PermissionEnum.RegistrationDELETE,
+          PermissionEnum.RegistrationAttributeUPDATE,
+          PermissionEnum.RegistrationAttributeFinancialUPDATE,
+          PermissionEnum.RegistrationFspConfigUPDATE,
+          PermissionEnum.RegistrationNotificationREAD,
+          PermissionEnum.RegistrationNotificationCREATE,
+          PermissionEnum.RegistrationPersonalREAD,
+          PermissionEnum.RegistrationPersonalEXPORT,
+          PermissionEnum.RegistrationPersonalUPDATE,
+          PermissionEnum.RegistrationPaymentExport,
+          PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
+          PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
+          PermissionEnum.RegistrationStatusIncludedUPDATE,
+          PermissionEnum.RegistrationStatusPausedUPDATE,
+          PermissionEnum.RegistrationImportTemplateREAD,
+          PermissionEnum.RegistrationDuplicationDELETE,
+          PermissionEnum.RegistrationBulkUPDATE,
+          PermissionEnum.AidWorkerProgramREAD,
+          PermissionEnum.AidWorkerProgramUPDATE,
+        ],
       },
       {
         role: DefaultUserRole.View,
