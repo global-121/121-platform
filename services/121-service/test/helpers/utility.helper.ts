@@ -16,9 +16,13 @@ import { UserRoleResponseDTO } from '@121-service/src/user/dto/userrole-response
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 
+const uniqueTestIdSuffixLength = 8;
+
 export function generateUniqueTestId(): string {
   const timestamp = Date.now();
-  const randomSuffix = randomBytes(8).toString('hex');
+  const randomSuffix = randomBytes(Math.ceil(uniqueTestIdSuffixLength / 2))
+    .toString('hex')
+    .slice(0, uniqueTestIdSuffixLength);
   return `${timestamp}_${randomSuffix}`;
 }
 
