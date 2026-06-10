@@ -29,10 +29,10 @@ export class VisaCardOrderMapper {
   }: {
     entity: VisaCardOrderEntity;
   }): string {
-    const houseNumberSuffix = entity.addressHouseNumberAddition
-      ? ` ${entity.addressHouseNumberAddition}`
-      : '';
+    const houseNumberWithOptionalAddition = entity.addressHouseNumberAddition
+      ? `${entity.addressHouseNumber} ${entity.addressHouseNumberAddition}`
+      : entity.addressHouseNumber;
 
-    return `${entity.addressee}, ${entity.addressStreet} ${entity.addressHouseNumber}${houseNumberSuffix}, ${entity.addressPostalCode}, ${entity.addressCity}`;
+    return `${entity.addressee}, ${entity.addressStreet} ${houseNumberWithOptionalAddition}, ${entity.addressPostalCode}, ${entity.addressCity}`;
   }
 }

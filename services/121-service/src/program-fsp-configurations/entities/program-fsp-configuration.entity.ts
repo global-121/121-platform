@@ -17,6 +17,10 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 @Unique('programFspConfigurationUnique', ['programId', 'name'])
+@Unique('programFspConfigurationProgramIdFspNameUnique', [
+  'programId',
+  'fspName',
+])
 @Entity('program_fsp_configuration')
 export class ProgramFspConfigurationEntity extends Base121Entity {
   @ManyToOne(
