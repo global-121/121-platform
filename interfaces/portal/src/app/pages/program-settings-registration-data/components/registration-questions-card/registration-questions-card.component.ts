@@ -20,6 +20,8 @@ import { TableModule } from 'primeng/table';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
+import { UpdateProgramRegistrationAttributesBatchDto } from '../../../../../../../../services/121-service/src/programs/dto/program-registration-attribute.dto';
+
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { ProgramLanguageTabsComponent } from '~/components/program-language-tabs/program-language-tabs.component';
@@ -95,12 +97,27 @@ export class RegistrationQuestionsCardComponent {
     mutationFn: async (
       formData: ReturnType<typeof this.formGroup.getRawValue>,
     ) => {
-      const attributesToUpdate = Object.keys(formData).map((attributeName) => ({
-        programRegistrationAttributeName: attributeName,
-        updateProgramRegistrationAttribute: {
-          label: formData[attributeName],
-        },
-      }));
+      const attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[] =
+        [];
+
+      for (const attributeName of Object.keys(formData)) {
+        const label: Record<string, string> = {};
+        const attributeLabel = formData[attributeName];
+        for (const language of Object.keys(attributeLabel)) {
+          const translatedLabel = attributeLabel[language] as
+            | string
+            | undefined;
+          if (translatedLabel) {
+            label[language] = translatedLabel;
+          }
+
+          attributesToUpdate.push({
+            programRegistrationAttributeName: attributeName,
+            updateProgramRegistrationAttribute: { label },
+          });
+        }
+      }
+
       return this.programApiService.updateProgramRegistrationAttributesInBatch({
         programId: this.programId,
         attributesToUpdate,
@@ -142,8 +159,7 @@ export class RegistrationQuestionsCardComponent {
           getTranslatableFormGroup({
             program,
             getInitialValue: (language) =>
-              this.attributeLabels()?.get(attribute.name)?.get(language) ??
-              attribute.name,
+              this.attributeLabels()?.get(attribute.name)?.get(language),
           }),
         ]),
       ),

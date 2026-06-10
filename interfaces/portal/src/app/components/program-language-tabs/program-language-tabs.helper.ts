@@ -9,7 +9,9 @@ export const getTranslatableFormGroup = ({
   getInitialValue,
 }: {
   program: Program;
-  getInitialValue: (language: RegistrationPreferredLanguage) => string;
+  getInitialValue: (
+    language: RegistrationPreferredLanguage,
+  ) => string | undefined;
 }) => {
   const languages = program.languages;
   return new FormGroup(
