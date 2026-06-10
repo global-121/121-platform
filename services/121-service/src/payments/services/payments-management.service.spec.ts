@@ -2,6 +2,7 @@ import { TestBed } from '@automock/jest';
 import { HttpStatus } from '@nestjs/common';
 
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
+import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
@@ -602,6 +603,41 @@ describe('PaymentsManagementService', () => {
       expect((service as any).paymentRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({ name: 'New name' }),
       );
+
+      expect((service as any).paymentEventsService.createEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paymentId: 5,
+          userId: 1,
+          type: PaymentEvent.renamed,
+          attributes: [
+            {
+              key: PaymentEventAttributeKey.oldValue,
+              value: 'Old name',
+            },
+            {
+              key: PaymentEventAttributeKey.newValue,
+              value: 'New name',
+            },
+          ],
+        }),
+      );
+    });
+
+    it('should not save or create event when new name equals old name', async () => {
+      // Arrange
+      (service as any).paymentRepository.findOne = jest
+        .fn()
+        .mockResolvedValue({ id: 5, programId: 2, name: 'Same name' });
+
+      // Act
+      await service.renamePayment({
+        ...renameParams,
+        name: 'Same name',
+      });
+
+      // Assert
+      expect((service as any).paymentRepository.save).not.toHaveBeenCalled();
+      expect((service as any).paymentEventsService.createEvent).not.toHaveBeenCalled();
     });
   });
 });

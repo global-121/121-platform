@@ -34,5 +34,5 @@ export const PAYMENT_EVENT_LOG_ITEM_TYPE_ICONS: Record<PaymentEvent, string> = {
   [PaymentEvent.started]: 'pi pi-send',
   [PaymentEvent.retry]: 'pi pi-refresh',
   [PaymentEvent.note]: 'pi pi-pen-to-square',
-  [PaymentEvent.renamed]: 'pi pi-pen-to-square',
+  [PaymentEvent.renamed]: 'pi pi-pencil',
 };

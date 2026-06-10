@@ -50,6 +50,13 @@ export class TableCellPaymentEventOverviewComponent implements TableCellComponen
         }
         return $localize`${label} payment (${order} of ${total})`;
       }
+      case PaymentEvent.renamed: {
+        const { oldValue, newValue } = event.attributes;
+        if (!oldValue || !newValue) {
+          return $localize`${label} payment`;
+        }
+        return $localize`Payment renamed from "${oldValue}" to "${newValue}"`;
+      }
       default:
         return $localize`${label} payment`;
     }
