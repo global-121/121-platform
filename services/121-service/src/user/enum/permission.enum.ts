@@ -20,13 +20,15 @@
  */
 export enum PermissionEnum {
   // Program(s)
-  ProgramUPDATE = 'program.update',
   ProgramREAD = 'program.read',
-  ProgramMetricsREAD = 'program:metrics.read',
+  ProgramUPDATE = 'program.update',
+
   ProgramAttachmentsREAD = 'program:attachments.read',
   ProgramAttachmentsCREATE = 'program:attachments.create',
   ProgramAttachmentsUPDATE = 'program:attachments.update',
   ProgramAttachmentsDELETE = 'program:attachments.delete',
+
+  ProgramMetricsREAD = 'program:metrics.read',
 
   // Payment(s)
   PaymentREAD = 'payment.read',
