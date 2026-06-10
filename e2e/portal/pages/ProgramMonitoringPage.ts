@@ -2,8 +2,18 @@ import { expect } from '@playwright/test';
 import { promises as fs } from 'node:fs';
 import { Locator, Page } from 'playwright';
 
+import TableComponent from '../components/TableComponent';
 import BasePage from './BasePage';
 
+interface OrderDebitCardOrder {
+  noOfCards: string;
+  addressPostalCode: string;
+  addressCity: string;
+  addressStreet: string;
+  addressHouseNumber: string;
+  addressHouseNumberAddition: string;
+  addressee: string;
+}
 class ProgramMonitoring extends BasePage {
   page: Page;
   readonly peopleRegisteredTile: Locator;
@@ -340,6 +350,72 @@ class ProgramMonitoring extends BasePage {
     await expect(transactionsPerPayment).toBeVisible();
     await expect(amountSentPerPayment).toBeVisible();
     await expect(amountSentPerMonth).toBeVisible();
+  }
+
+  async orderCards({
+    noOfCards,
+    addressee,
+    addressPostalCode,
+    addressCity,
+    addressStreet,
+    addressHouseNumber,
+    addressHouseNumberAddition,
+  }: OrderDebitCardOrder) {
+    await this.page.getByRole('button', { name: 'Order cards' }).click();
+
+    await this.page.getByLabel('Number of cards').fill(noOfCards);
+    await this.page.getByLabel('Addressee').fill(addressee);
+    await this.page.getByLabel('Street').fill(addressStreet);
+    await this.page.getByLabel('House number').fill(addressHouseNumber);
+    await this.page.getByLabel('Addition').fill(addressHouseNumberAddition);
+    await this.page.getByLabel('City').fill(addressCity);
+    await this.page.getByLabel('Postal code').fill(addressPostalCode);
+
+    await this.page.getByRole('button', { name: 'Order debit cards' }).click();
+  }
+
+  async confirmDebitCardsTabNotVisible() {
+    const monitoringTabs = this.page.getByTestId('monitoring-menu');
+    await expect(monitoringTabs).toBeVisible();
+    const debitCardsTabsContent = await monitoringTabs
+      .getByRole('tab')
+      .allTextContents();
+
+    await expect(debitCardsTabsContent).not.toContain('Debit Cards');
+  }
+
+  async expectCardOrdersTableToContainOrder({
+    noOfCards,
+    addressee,
+    addressPostalCode,
+    addressCity,
+    addressStreet,
+    addressHouseNumber,
+    addressHouseNumberAddition,
+  }: OrderDebitCardOrder) {
+    const visaCardOrdersTable = new TableComponent(
+      this.page,
+      'program-ordered-visa-cards-table',
+    );
+
+    const headers = await visaCardOrdersTable.getTextArrayFromHeader();
+
+    expect(headers).toEqual([
+      'No of Cards Ordered',
+      'Address',
+      'Ordered By',
+      'Ordered On',
+    ]);
+
+    const addressColumn = `${addressee}, ${addressStreet} ${addressHouseNumber} ${addressHouseNumberAddition}, ${addressPostalCode}, ${addressCity}`;
+    const rowValues = await visaCardOrdersTable.getTextArrayFromRow(1);
+
+    expect(rowValues).toEqual([
+      noOfCards,
+      addressColumn,
+      'admin@example.org',
+      expect.any(String), // Ordered On can be variable, so we just check that it's a string
+    ]);
   }
 }
 
