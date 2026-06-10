@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { randomBytes } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { lastValueFrom } from 'rxjs';
 import { joinURL } from 'ufo';
 
@@ -49,8 +49,6 @@ export interface KoboAssetDeployment {
   asset: KoboAsset;
   version_id: string;
 }
-
-const webhookUidSuffixLength = 13;
 
 const bodyThatTriggersErrors: KoboAssetDeployment = {
   version_id: KoboMockAssetUids.bodyThatTriggersErrors,
@@ -462,13 +460,9 @@ export class KoboMockService {
     active: boolean;
     subset_fields: string[];
   } {
-    const randomSuffix = randomBytes(Math.ceil(webhookUidSuffixLength / 2))
-      .toString('hex')
-      .slice(0, webhookUidSuffixLength);
-
     // Mock implementation - return the created webhook with a generated uid
     return {
-      uid: `hook_${randomSuffix}`,
+      uid: `hook_${randomUUID()}`,
       ...body,
     };
   }
