@@ -3,10 +3,10 @@
   i18n-header
   editPencilTitle="Edit registration questions"
   i18n-editPencilTitle
-  [canEdit]="false"
-  [isEditing]="false"
+  [canEdit]="true"
+  [(isEditing)]="isEditing"
   [formGroup]="formGroup"
-  [mutation]="undefined"
+  [mutation]="updateAttributeLabelsMutation"
   [mutationData]="formGroup.getRawValue()"
   [attr.data-testid]="'registration-questions-card'"
 >
@@ -32,6 +32,7 @@
           </span>
         </p>
       }
+
       <p-table
         [value]="programAttributes.data() ?? []"
         [attr.data-testid]="'program-attributes-table'"
@@ -65,11 +66,19 @@
           <tr [formGroupName]="attribute.name">
             <td>{{ attribute.name }}</td>
             <td>
-              {{
-                attributeLabels()
-                  ?.get(attribute.name)
-                  ?.get(selectedTabLanguage()) ?? attribute.name
-              }}
+              @if (isEditing()) {
+                <input
+                  type="text"
+                  pInputText
+                  [formControlName]="selectedTabLanguage()"
+                />
+              } @else {
+                {{
+                  attributeLabels()
+                    ?.get(attribute.name)
+                    ?.get(selectedTabLanguage()) ?? attribute.name
+                }}
+              }
             </td>
           </tr>
         </ng-template>

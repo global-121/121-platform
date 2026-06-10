@@ -9,7 +9,10 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { injectQuery } from '@tanstack/angular-query-experimental';
+import {
+  injectMutation,
+  injectQuery,
+} from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
@@ -88,6 +91,37 @@ export class RegistrationQuestionsCardComponent {
     >
   >({});
 
+  updateAttributeLabelsMutation = injectMutation(() => ({
+    mutationFn: async (
+      formData: ReturnType<typeof this.formGroup.getRawValue>,
+    ) => {
+      const attributesToUpdate = Object.keys(formData).map((attributeName) => ({
+        programRegistrationAttributeName: attributeName,
+        updateProgramRegistrationAttribute: {
+          label: formData[attributeName],
+        },
+      }));
+      return this.programApiService.updateProgramRegistrationAttributesInBatch({
+        programId: this.programId,
+        attributesToUpdate,
+      });
+    },
+    onSuccess: () => {
+      this.isEditing.set(false);
+      this.toastService.showToast({
+        detail: $localize`Update successful.`,
+      });
+    },
+    onError: () => {
+      this.toastService.showToast({
+        severity: 'error',
+        detail: $localize`An error occurred while updating the labels.`,
+      });
+    },
+  }));
+
+  readonly isEditing = model(false);
+
   readonly selectedTabLanguage = model(
     getUILanguageFromLocale(
       environment.defaultLocale as unknown as Locale,
@@ -107,10 +141,9 @@ export class RegistrationQuestionsCardComponent {
           attribute.name,
           getTranslatableFormGroup({
             program,
-            getInitialValue: () =>
-              this.attributeLabels()
-                ?.get(attribute.name)
-                ?.get(this.selectedTabLanguage()) ?? attribute.name,
+            getInitialValue: (language) =>
+              this.attributeLabels()?.get(attribute.name)?.get(language) ??
+              attribute.name,
           }),
         ]),
       ),

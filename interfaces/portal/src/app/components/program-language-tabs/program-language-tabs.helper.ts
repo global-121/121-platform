@@ -12,7 +12,6 @@ export const getTranslatableFormGroup = ({
   getInitialValue: (language: RegistrationPreferredLanguage) => string;
 }) => {
   const languages = program.languages;
-
   return new FormGroup(
     Object.fromEntries(
       languages.map((language) => [
