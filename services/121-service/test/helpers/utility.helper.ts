@@ -17,7 +17,8 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 
 export function generateUniqueTestId(): string {
-  return `${Date.now()}_${randomUUID()}`;
+  const timestamp = Date.now();
+  return `${timestamp}_${randomUUID().slice(0, 8)}`;
 }
 
 export function getHostname(): string {
