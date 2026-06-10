@@ -209,16 +209,16 @@ class BasePage {
   /**
    * Downloads a file triggered by a specific action on the page.
    *
-   * @param {Promise<unknown>} triggerDownloadPromise - A promise representing the action that triggers the download
-   * (e.g., a button click). This promise should not be awaited before calling this function.
+   * @param {() => Promise<unknown>} triggerDownload - A callback that triggers the download
+   * (e.g., a button click). The listener is registered before the callback is invoked to avoid
+   * a race condition where the download event fires before the listener is set up.
    * @returns {Promise<string>} - A promise that resolves to the file path where the downloaded file is saved.
    * @throws {Error} - Throws an error if the download event fails or if there are issues saving the file.
    */
-  async downloadFile(triggerDownloadPromise: Promise<unknown>) {
-    const [download] = await Promise.all([
-      this.page.waitForEvent('download'),
-      triggerDownloadPromise,
-    ]);
+  async downloadFile(triggerDownload: () => Promise<unknown>) {
+    const downloadPromise = this.page.waitForEvent('download');
+    await triggerDownload();
+    const download = await downloadPromise;
 
     const downloadDir = path.join(process.cwd(), 'downloads');
     if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);

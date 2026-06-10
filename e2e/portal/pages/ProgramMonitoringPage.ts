@@ -210,7 +210,7 @@ class ProgramMonitoring extends BasePage {
       .getByRole('row', { name: fileName })
       .locator('button')
       .click();
-    const filePath = await this.downloadFile(this.downloadOption.click());
+    const filePath = await this.downloadFile(() => this.downloadOption.click());
     const fileBuffer = await fs.readFile(filePath);
     expect(fileBuffer).toMatchSnapshot(snapshotName);
   }
