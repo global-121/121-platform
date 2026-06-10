@@ -5,6 +5,8 @@ import { queryOptions } from '@tanstack/angular-query-experimental';
 import { unique } from 'radashi';
 
 import { CooperativeBankOfOromiaAccountValidationReportDto } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-account-validation-report.dto';
+import { CreateVisaCardOrderDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/create-visa-card-order.dto';
+import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
@@ -528,6 +530,44 @@ export class ProgramApiService extends DomainApiService {
         'approval-thresholds',
       ]).join('/'),
       body: thresholds,
+    });
+  }
+
+  orderVisaCards({
+    programId,
+    visaCardOrder,
+  }: {
+    programId: Signal<number | string>;
+    visaCardOrder: Dto<CreateVisaCardOrderDto>;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<
+      Dto<CreateVisaCardOrderDto>
+    >({
+      method: 'POST',
+      endpoint: this.pathToQueryKey([
+        BASE_ENDPOINT,
+        programId,
+        'fsps',
+        'intersolve-visa',
+        'wallet',
+        'cards',
+        'orders',
+      ]).join('/'),
+      body: visaCardOrder,
+    });
+  }
+
+  getOrderedVisaCards({ programId }: { programId: Signal<number | string> }) {
+    return this.generateQueryOptions<Dto<VisaCardOrderResponseDto>[]>({
+      path: [
+        BASE_ENDPOINT,
+        programId,
+        'fsps',
+        'intersolve-visa',
+        'wallet',
+        'cards',
+        'orders',
+      ],
     });
   }
 }

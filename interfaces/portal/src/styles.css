@@ -62,6 +62,7 @@ body {
   /* primeng uses this variable on all of its components by default
      and it does not work if we set it within the 'primeng' layer */
   --font-family: var(--font-body);
+  --p-form-field-lg-font-size: 1rem;
 }
 
 /* Styles only for "local-development" purposes:

@@ -1,0 +1,135 @@
+<app-form-dialog
+  #orderDebitCardsDialog
+  [formGroup]="formGroup"
+  [mutationData]="undefined"
+  [header]="'Order debit cards'"
+  [headerIcon]="'pi pi-credit-card'"
+  [proceedLabel]="'Order debit cards'"
+  [proceedIcon]="'pi pi-credit-card'"
+  [mutation]="orderVisaCards"
+  i18n-header
+  i18n-proceedLabel
+>
+  <p
+    i18n
+    class="mb-2"
+  >
+    Order cards to your branch by filling in this form and clicking on order. If
+    the order is sent successfully it will be logged in the table on the 'Debit
+    cards' tab.
+  </p>
+
+  <div>
+    <app-form-field-wrapper
+      label="Number of cards"
+      i18n-label
+      [errorMessage]="formFieldErrors()('noOfCards')"
+      [isRequired]="true"
+    >
+      <div class="max-w-[100px]">
+        <input
+          pInputText
+          type="number"
+          [pSize]="'large'"
+          formControlName="noOfCards"
+          autocomplete="off"
+        />
+      </div>
+    </app-form-field-wrapper>
+
+    <app-form-field-wrapper
+      label="Addressee (name of the recipient of the package)"
+      i18n-label
+      [errorMessage]="formFieldErrors()('addressee')"
+      [isRequired]="true"
+    >
+      <input
+        pInputText
+        [pSize]="'large'"
+        type="text"
+        formControlName="addressee"
+        autocomplete="off"
+      />
+    </app-form-field-wrapper>
+
+    <div class="w-full grid-cols-2 gap-4 sm:grid">
+      <app-form-field-wrapper
+        label="City"
+        i18n-label
+        [errorMessage]="formFieldErrors()('addressCity')"
+        [isRequired]="true"
+      >
+        <input
+          pInputText
+          type="text"
+          formControlName="addressCity"
+          autocomplete="off"
+          [pSize]="'large'"
+        />
+      </app-form-field-wrapper>
+
+      <app-form-field-wrapper
+        label="Postal code"
+        i18n-label
+        [errorMessage]="formFieldErrors()('addressPostalCode')"
+        [isRequired]="true"
+      >
+        <input
+          pInputText
+          type="text"
+          formControlName="addressPostalCode"
+          autocomplete="off"
+          [pSize]="'large'"
+        />
+      </app-form-field-wrapper>
+    </div>
+
+    <div class="w-full grid-cols-2 gap-4 sm:grid">
+      <app-form-field-wrapper
+        label="Street"
+        i18n-label
+        [errorMessage]="formFieldErrors()('addressStreet')"
+        [isRequired]="true"
+      >
+        <input
+          pInputText
+          [pSize]="'large'"
+          type="text"
+          formControlName="addressStreet"
+          autocomplete="off"
+        />
+      </app-form-field-wrapper>
+      <div class="grid-cols-2 gap-4 sm:grid">
+        <app-form-field-wrapper
+          label="House number"
+          i18n-label
+          [errorMessage]="formFieldErrors()('addressHouseNumber')"
+          [isRequired]="true"
+        >
+          <input
+            pInputText
+            [pSize]="'large'"
+            type="text"
+            formControlName="addressHouseNumber"
+            autocomplete="off"
+          />
+        </app-form-field-wrapper>
+
+        <app-form-field-wrapper
+          label="Addition"
+          i18n-label
+          [errorMessage]="formFieldErrors()('addressHouseNumberAddition')"
+          [isRequired]="false"
+        >
+          <input
+            pInputText
+            [pSize]="'large'"
+            type="text"
+            formControlName="addressHouseNumberAddition"
+            autocomplete="off"
+          />
+        </app-form-field-wrapper>
+      </div>
+    </div>
+  </div>
+</app-form-dialog>

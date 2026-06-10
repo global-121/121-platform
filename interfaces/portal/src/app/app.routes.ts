@@ -15,10 +15,6 @@ export enum AppRoutes {
   privacy = 'privacy',
   program = 'program',
   programMonitoring = 'monitoring',
-  programMonitoringDashboard = 'dashboard',
-  programMonitoringDataChanges = 'data-changes',
-  programMonitoringFiles = 'files',
-  programMonitoringPowerBI = 'powerbi',
   programPaymentLog = 'payment-log',
   programPayments = 'payments',
   programPaymentTransactionList = 'transaction-list',
@@ -38,6 +34,21 @@ export enum AppRoutes {
   snake = 'snake',
   userRoles = 'user-roles',
   users = 'users',
+}
+
+// @TODO
+// ISSUE https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/42350
+// The AppRoutes enum makes little sense when we have nested routes, as we can't use it to define the nested paths (e.g. `${AppRoutes.programMonitoring}/dashboard` doesn't work).
+
+// Temporary 'fix' to avoid collisions in this 'AppRoutes' enum.
+export enum ProgramMonitoringPaths {
+  Dashboard = 'dashboard',
+  DataChanges = 'data-changes',
+  DebitCards = 'debit-cards',
+  Files = 'files',
+  PaymentLog = 'payment-log',
+  Payments = 'payments',
+  PowerBI = 'powerbi',
 }
 
 /* eslint-disable promise/prefer-await-to-then -- We use the auto-generated pattern by Angular CLI, so no rewrite necessary */
@@ -123,7 +134,7 @@ export const routes: Routes = [
         path: AppRoutes.programMonitoring,
         children: [
           {
-            path: AppRoutes.programMonitoringDashboard,
+            path: ProgramMonitoringPaths.Dashboard,
             title:
               $localize`:@@page-title-program-monitoring-dashboard:Dashboard` +
               ' | ' +
@@ -134,7 +145,7 @@ export const routes: Routes = [
               ),
           },
           {
-            path: AppRoutes.programMonitoringPowerBI,
+            path: ProgramMonitoringPaths.PowerBI,
             title:
               $localize`:@@page-title-program-monitoring-powerbi:PowerBI` +
               ' | ' +
@@ -145,7 +156,7 @@ export const routes: Routes = [
               ),
           },
           {
-            path: AppRoutes.programMonitoringDataChanges,
+            path: ProgramMonitoringPaths.DataChanges,
             title:
               $localize`:@@page-title-program-monitoring-data-changes:Data changes` +
               ' | ' +
@@ -156,7 +167,23 @@ export const routes: Routes = [
               ),
           },
           {
-            path: AppRoutes.programMonitoringFiles,
+            path: ProgramMonitoringPaths.DebitCards,
+            title:
+              $localize`:@@page-title-program-monitoring-debit-cards:Debit Cards` +
+              ' | ' +
+              $localize`:@@page-title-program-monitoring:Monitoring`,
+            loadComponent: () =>
+              import('~/pages/program-monitoring-debit-cards/program-monitoring-debit-cards.page').then(
+                (x) => x.ProgramMonitoringDebitCardsPageComponent,
+              ),
+            canActivate: [
+              programPermissionsGuard({
+                permission: PermissionEnum.FspDebitCardOrderREAD,
+              }),
+            ],
+          },
+          {
+            path: ProgramMonitoringPaths.Files,
             title:
               $localize`:@@page-title-program-monitoring-files:Files` +
               ' | ' +
@@ -174,7 +201,7 @@ export const routes: Routes = [
           {
             path: ``,
             pathMatch: 'full',
-            redirectTo: AppRoutes.programMonitoringDashboard,
+            redirectTo: ProgramMonitoringPaths.Dashboard,
           },
         ],
       },
