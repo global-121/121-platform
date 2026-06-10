@@ -8,6 +8,7 @@ import { CooperativeBankOfOromiaAccountValidationReportDto } from '@121-service/
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { UpdateProgramRegistrationAttributesBatchDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
@@ -528,6 +529,20 @@ export class ProgramApiService extends DomainApiService {
         'approval-thresholds',
       ]).join('/'),
       body: thresholds,
+    });
+  }
+
+  updateProgramRegistrationAttributesInBatch({
+    programId,
+    attributesToUpdate,
+  }: {
+    programId: Signal<number | string>;
+    attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[];
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<Program>({
+      method: 'PATCH',
+      endpoint: `${BASE_ENDPOINT}/${programId().toString()}/registration-attributes-batch`,
+      body: attributesToUpdate,
     });
   }
 }

@@ -2481,6 +2481,12 @@
       <trans-unit id="payment-event-log-item-type-renamed" datatype="html">
         <source>Renamed</source>
       </trans-unit>
+      <trans-unit id="3560595744015834305" datatype="html">
+        <source>Update successful.</source>
+      </trans-unit>
+      <trans-unit id="8094115796114921772" datatype="html">
+        <source>An error occurred while updating the labels.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
