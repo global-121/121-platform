@@ -65,9 +65,7 @@ class ProgramTeamPage extends BasePage {
     await this.addUserFormChooseRoleDropdown.click();
     await this.page.getByText(role).click();
     // Close the roles dropdown which stays open because multiple roles can be selected
-    const rolesPanel = this.page.locator('.p-multiselect-overlay');
-    await this.page.keyboard.press('Escape');
-    await expect(rolesPanel).not.toBeVisible();
+    await this.closeOpenSelectOrMultiselectWithRetries();
     await this.addUserFormSubmitButton.click();
   }
 

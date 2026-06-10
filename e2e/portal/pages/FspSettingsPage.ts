@@ -148,9 +148,8 @@ class FspSettingsPage extends BasePage {
             .getByLabel('Full Name')
             .nth(i + 1)
             .click();
-          await this.page.keyboard.press('Escape'); // Close dropdown
-          // Wait for dropdown to be fully closed
-          await this.page.waitForTimeout(150);
+
+          await this.closeOpenSelectOrMultiselectWithRetries();
         }
       } else {
         for (let i = 1; i < inputCount; i++) {
@@ -169,9 +168,7 @@ class FspSettingsPage extends BasePage {
           }
         }
       }
-      // Ensure any dropdowns or overlays are closed before clicking
-      await this.page.keyboard.press('Escape');
-      await this.page.waitForTimeout(150);
+
       await this.integrateFspButton.waitFor({ state: 'visible' });
       await this.integrateFspButton.click();
     }
