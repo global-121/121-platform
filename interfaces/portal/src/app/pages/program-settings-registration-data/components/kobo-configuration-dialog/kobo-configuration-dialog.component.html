@@ -9,12 +9,17 @@
   proceedLabel="Continue"
   i18n-proceedLabel
 >
-  <p
-    i18n
-    class="mb-3"
-  >
-    For more information about how to integrate Kobo see <app-manual-link />
-  </p>
+  <!-- WRAPPED IN DIV TO MITIGATE SPACING FROM PARENT  -->
+  <div class="mb-2">
+    <p i18n>
+      For more information about how to integrate Kobo see
+      <app-manual-link />
+    </p>
+    <p i18n>
+      Make sure the default language in the 'form' tab of kobo to the main
+      language of the program. One language must be set to English (EN).
+    </p>
+  </div>
 
   <app-form-field-wrapper
     label="Kobo form URL"
@@ -46,17 +51,15 @@
       i18n="@@integrate-kobo-form-api-key-explanation"
       class="text-grey-700 mb-2 block text-sm"
     >
-      In KoboToolbox, go to "Account Settings" (top-right menu), sub-page
-      "Security".<br />
-      Make sure to click "Display" next to the API Key before copying.
+      Copy the API key from the Kobo account settings (top right) > security.<br />
+      Make sure to click 'display' next to the API Key before copying.
     </small>
 
-    <input
-      autocomplete="off"
-      pInputText
-      type="text"
+    <p-password
       formControlName="token"
-      class="font-mono"
+      [toggleMask]="true"
+      autocomplete="off"
+      feedback="false"
     />
   </app-form-field-wrapper>
 </app-form-dialog>

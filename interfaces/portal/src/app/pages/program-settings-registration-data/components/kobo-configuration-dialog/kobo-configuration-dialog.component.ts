@@ -17,6 +17,7 @@ import { injectMutation } from '@tanstack/angular-query-experimental';
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
@@ -26,7 +27,6 @@ import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
-
 @Component({
   selector: 'app-kobo-configuration-dialog',
   imports: [
@@ -38,6 +38,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     KoboImportExistingRegistrationsDialogComponent,
     Dialog,
     Button,
+    PasswordModule,
   ],
   providers: [ToastService],
   templateUrl: './kobo-configuration-dialog.component.html',
@@ -94,10 +95,15 @@ export class KoboConfigurationDialogComponent {
   koboConfigurationFormFieldErrors = generateFieldErrors(
     this.koboConfigurationFormGroup,
     {
-      fullKoboFormUrl: (control) =>
-        control.valid
-          ? 'dasads'
-          : $localize`We couldn't process this URL. Please verify in KoboToolbox.`,
+      fullKoboFormUrl: (control) => {
+        if (!control.value) {
+          return $localize`This field is required.`;
+        }
+        if (!control.valid) {
+          return $localize`We couldn't find this form in Kobo. Check the URL to make sure the form is deployed.`;
+        }
+        return;
+      },
     },
   );
 
