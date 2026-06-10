@@ -46,8 +46,6 @@ export enum ProgramMonitoringPaths {
   DataChanges = 'data-changes',
   DebitCards = 'debit-cards',
   Files = 'files',
-  PaymentLog = 'payment-log',
-  Payments = 'payments',
   PowerBI = 'powerbi',
 }
 
