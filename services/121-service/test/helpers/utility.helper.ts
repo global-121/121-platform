@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
+import { randomBytes } from 'node:crypto';
 import * as request from 'supertest';
 import TestAgent from 'supertest/lib/agent';
-import { randomBytes } from 'crypto';
 
 import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
