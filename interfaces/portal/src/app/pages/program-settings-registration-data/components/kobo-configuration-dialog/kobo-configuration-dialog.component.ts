@@ -96,7 +96,7 @@ export class KoboConfigurationDialogComponent {
     {
       fullKoboFormUrl: (control) =>
         control.valid
-          ? undefined
+          ? 'dasads'
           : $localize`We couldn't process this URL. Please verify in KoboToolbox.`,
     },
   );
@@ -122,6 +122,10 @@ export class KoboConfigurationDialogComponent {
         resetFormGroup: false, // Retain form values for the `linkKoboMutation`
       });
       this.linkKoboDialog().show();
+    },
+    onError: (errorResponse) => {
+      const errorPayload = (errorResponse.cause as { error: unknown[] }).error;
+      console.log('errorPayload', errorPayload);
     },
   }));
 
