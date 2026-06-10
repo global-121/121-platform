@@ -8,6 +8,7 @@ import { PaymentApprovalEntity } from '@121-service/src/payments/entities/paymen
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { PaymentEmailsService } from '@121-service/src/payments/payment-emails/payment-emails.service';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
+import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
@@ -478,6 +479,11 @@ export class PaymentsManagementService {
       );
     }
 
+    const oldName = payment.name;
+    if (oldName === name) {
+      return;
+    }
+
     payment.name = name;
     await this.paymentRepository.save(payment);
 
@@ -485,6 +491,16 @@ export class PaymentsManagementService {
       paymentId: payment.id,
       userId,
       type: PaymentEvent.renamed,
+      attributes: [
+        {
+          key: PaymentEventAttributeKey.oldValue,
+          value: oldName,
+        },
+        {
+          key: PaymentEventAttributeKey.newValue,
+          value: name,
+        },
+      ],
     });
   }
 

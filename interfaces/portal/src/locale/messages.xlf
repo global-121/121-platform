@@ -2487,6 +2487,9 @@
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
       </trans-unit>
+      <trans-unit id="7961798913934599674" datatype="html">
+        <source>Payment renamed from &quot;<x equiv-text="oldValue" id="PH"/>&quot; to &quot;<x equiv-text="newValue" id="PH_1"/>&quot;</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
