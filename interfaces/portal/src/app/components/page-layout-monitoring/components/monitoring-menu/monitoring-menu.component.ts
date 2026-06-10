@@ -35,17 +35,17 @@ export class MonitoringMenuComponent {
   readonly navMenuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`:@@page-title-program-monitoring-dashboard:Dashboard`,
-      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${ProgramMonitoringPaths.Dashboard}`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${ProgramMonitoringPaths.dashboard}`,
       icon: 'pi pi-chart-line',
     },
     {
       label: $localize`:@@page-title-program-monitoring-powerbi:PowerBI`,
-      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${ProgramMonitoringPaths.PowerBI}`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${ProgramMonitoringPaths.powerBI}`,
       icon: 'pi pi-chart-line',
     },
     {
       label: $localize`:@@page-title-program-monitoring-debit-cards:Debit Cards`,
-      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${ProgramMonitoringPaths.DebitCards}`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${ProgramMonitoringPaths.debitCards}`,
       icon: 'pi pi-credit-card',
       visible:
         programHasPhysicalCardSupport(this.program.data()) &&
@@ -56,12 +56,12 @@ export class MonitoringMenuComponent {
     },
     {
       label: $localize`:@@page-title-program-monitoring-data-changes:Data changes`,
-      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${ProgramMonitoringPaths.DataChanges}`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${ProgramMonitoringPaths.dataChanges}`,
       icon: 'pi pi-refresh',
     },
     {
       label: $localize`:@@page-title-program-monitoring-files:Files`,
-      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${ProgramMonitoringPaths.Files}`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${ProgramMonitoringPaths.files}`,
       icon: 'pi pi-file',
       visible: this.authService.hasPermission({
         programId: this.programId(),

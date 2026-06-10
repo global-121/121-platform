@@ -42,11 +42,11 @@ export enum AppRoutes {
 
 // Temporary 'fix' to avoid collisions in this 'AppRoutes' enum.
 export enum ProgramMonitoringPaths {
-  Dashboard = 'dashboard',
-  DataChanges = 'data-changes',
-  DebitCards = 'debit-cards',
-  Files = 'files',
-  PowerBI = 'powerbi',
+  dashboard = 'dashboard',
+  dataChanges = 'data-changes',
+  debitCards = 'debit-cards',
+  files = 'files',
+  powerBI = 'powerbi',
 }
 
 /* eslint-disable promise/prefer-await-to-then -- We use the auto-generated pattern by Angular CLI, so no rewrite necessary */
@@ -132,7 +132,7 @@ export const routes: Routes = [
         path: AppRoutes.programMonitoring,
         children: [
           {
-            path: ProgramMonitoringPaths.Dashboard,
+            path: ProgramMonitoringPaths.dashboard,
             title:
               $localize`:@@page-title-program-monitoring-dashboard:Dashboard` +
               ' | ' +
@@ -143,7 +143,7 @@ export const routes: Routes = [
               ),
           },
           {
-            path: ProgramMonitoringPaths.PowerBI,
+            path: ProgramMonitoringPaths.powerBI,
             title:
               $localize`:@@page-title-program-monitoring-powerbi:PowerBI` +
               ' | ' +
@@ -154,7 +154,7 @@ export const routes: Routes = [
               ),
           },
           {
-            path: ProgramMonitoringPaths.DataChanges,
+            path: ProgramMonitoringPaths.dataChanges,
             title:
               $localize`:@@page-title-program-monitoring-data-changes:Data changes` +
               ' | ' +
@@ -165,7 +165,7 @@ export const routes: Routes = [
               ),
           },
           {
-            path: ProgramMonitoringPaths.DebitCards,
+            path: ProgramMonitoringPaths.debitCards,
             title:
               $localize`:@@page-title-program-monitoring-debit-cards:Debit Cards` +
               ' | ' +
@@ -181,7 +181,7 @@ export const routes: Routes = [
             ],
           },
           {
-            path: ProgramMonitoringPaths.Files,
+            path: ProgramMonitoringPaths.files,
             title:
               $localize`:@@page-title-program-monitoring-files:Files` +
               ' | ' +
@@ -199,7 +199,7 @@ export const routes: Routes = [
           {
             path: ``,
             pathMatch: 'full',
-            redirectTo: ProgramMonitoringPaths.Dashboard,
+            redirectTo: ProgramMonitoringPaths.dashboard,
           },
         ],
       },

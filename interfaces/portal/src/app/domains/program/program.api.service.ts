@@ -560,6 +560,7 @@ export class ProgramApiService extends DomainApiService {
 
   getOrderedVisaCards({ programId }: { programId: Signal<number | string> }) {
     return this.generateQueryOptions<Dto<VisaCardOrderResponseDto>[]>({
+      method: 'GET',
       path: [
         BASE_ENDPOINT,
         programId,
