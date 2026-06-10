@@ -5,6 +5,15 @@ import { Locator, Page } from 'playwright';
 import TableComponent from '../components/TableComponent';
 import BasePage from './BasePage';
 
+interface OrderDebitCardOrder {
+  noOfCards: string;
+  addressPostalCode: string;
+  addressCity: string;
+  addressStreet: string;
+  addressHouseNumber: string;
+  addressHouseNumberAddition: string;
+  addressee: string;
+}
 class ProgramMonitoring extends BasePage {
   page: Page;
   readonly peopleRegisteredTile: Locator;
@@ -344,30 +353,17 @@ class ProgramMonitoring extends BasePage {
   }
 
   async orderCards({
-    orderDebitCardOrder,
-  }: {
-    orderDebitCardOrder: {
-      noOfCards: string;
-      addressPostalCode: string;
-      addressCity: string;
-      addressStreet: string;
-      addressHouseNumber: string;
-      addressHouseNumberAddition: string;
-      addressee: string;
-    };
-  }) {
+    noOfCards,
+    addressee,
+    addressPostalCode,
+    addressCity,
+    addressStreet,
+    addressHouseNumber,
+    addressHouseNumberAddition,
+  }: OrderDebitCardOrder) {
     await this.page.getByRole('button', { name: 'Order cards' }).click();
-    const {
-      noOfCards,
-      addressee,
-      addressPostalCode,
-      addressCity,
-      addressStreet,
-      addressHouseNumber,
-      addressHouseNumberAddition,
-    } = orderDebitCardOrder;
 
-    await this.page.getByLabel('Number of cards').fill(noOfCards.toString());
+    await this.page.getByLabel('Number of cards').fill(noOfCards);
     await this.page.getByLabel('Addressee').fill(addressee);
     await this.page.getByLabel('Street').fill(addressStreet);
     await this.page.getByLabel('House number').fill(addressHouseNumber);
@@ -389,18 +385,14 @@ class ProgramMonitoring extends BasePage {
   }
 
   async expectCardOrdersTableToContainOrder({
-    orderDebitCardOrder,
-  }: {
-    orderDebitCardOrder: {
-      noOfCards: string;
-      addressPostalCode: string;
-      addressCity: string;
-      addressStreet: string;
-      addressHouseNumber: string;
-      addressHouseNumberAddition: string;
-      addressee: string;
-    };
-  }) {
+    noOfCards,
+    addressee,
+    addressPostalCode,
+    addressCity,
+    addressStreet,
+    addressHouseNumber,
+    addressHouseNumberAddition,
+  }: OrderDebitCardOrder) {
     const visaCardOrdersTable = new TableComponent(
       this.page,
       'program-ordered-visa-cards-table',
@@ -415,11 +407,11 @@ class ProgramMonitoring extends BasePage {
       'Ordered On',
     ]);
 
-    const addressColumn = `${orderDebitCardOrder.addressee}, ${orderDebitCardOrder.addressStreet} ${orderDebitCardOrder.addressHouseNumber} ${orderDebitCardOrder.addressHouseNumberAddition}, ${orderDebitCardOrder.addressPostalCode}, ${orderDebitCardOrder.addressCity}`;
+    const addressColumn = `${addressee}, ${addressStreet} ${addressHouseNumber} ${addressHouseNumberAddition}, ${addressPostalCode}, ${addressCity}`;
     const rowValues = await visaCardOrdersTable.getTextArrayFromRow(1);
 
     expect(rowValues).toEqual([
-      orderDebitCardOrder.noOfCards,
+      noOfCards,
       addressColumn,
       'admin@example.org',
       expect.any(String), // Ordered On can be variable, so we just check that it's a string

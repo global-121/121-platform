@@ -31,7 +31,7 @@ test('Should not be able to order debit cards when card distribution by mail is 
 
   await test.step("Navigate to monitoring's 'Debit Cards' tab and order cards", async () => {
     await programMonitoringPage.selectTab({ tabName: 'Debit Cards' });
-    await programMonitoringPage.orderCards({ orderDebitCardOrder });
+    await programMonitoringPage.orderCards(orderDebitCardOrder);
   });
 
   await test.step('Verify that an error is shown', async () => {
@@ -68,16 +68,16 @@ test('Should be able to order debit cards when card distribution by mail is disa
       `/program/${programIdOCW}/monitoring/dashboard`,
     );
     await programMonitoringPage.selectTab({ tabName: 'Debit Cards' });
-    await programMonitoringPage.orderCards({ orderDebitCardOrder });
+    await programMonitoringPage.orderCards(orderDebitCardOrder);
     await programMonitoringPage.validateToastMessage(
       'Debit cards ordered successfully',
     );
   });
 
   await test.step('Verify that the order is listed in the table', async () => {
-    await programMonitoringPage.expectCardOrdersTableToContainOrder({
+    await programMonitoringPage.expectCardOrdersTableToContainOrder(
       orderDebitCardOrder,
-    });
+    );
   });
 });
 
