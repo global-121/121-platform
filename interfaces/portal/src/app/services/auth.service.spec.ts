@@ -317,4 +317,43 @@ describe('AuthService - permission checks', () => {
       expect(result).toBe(false);
     });
   });
+
+  describe('hasSomePermission', () => {
+    it('should return true when at least one optional permission is present', () => {
+      // Arrange
+      const user = createMockUser({
+        6: [PermissionEnum.RegistrationREAD],
+      });
+      getItemSpy.mockReturnValue(JSON.stringify(user));
+
+      // Act
+      const result = service.hasSomePermission({
+        programId: 6,
+        optionalPermissions: [
+          PermissionEnum.RegistrationREAD,
+          PermissionEnum.RegistrationBulkUPDATE,
+        ],
+      });
+
+      // Assert
+      expect(result).toBe(true);
+    });
+
+    it('should return false when none of the optional permissions are present', () => {
+      // Arrange
+      const user = createMockUser({
+        7: [PermissionEnum.RegistrationREAD],
+      });
+      getItemSpy.mockReturnValue(JSON.stringify(user));
+
+      // Act
+      const result = service.hasSomePermission({
+        programId: 7,
+        optionalPermissions: [PermissionEnum.RegistrationBulkUPDATE],
+      });
+
+      // Assert
+      expect(result).toBe(false);
+    });
+  });
 });

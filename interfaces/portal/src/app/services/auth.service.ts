@@ -282,6 +282,22 @@ export class AuthService {
     );
   }
 
+  public hasSomePermission({
+    programId,
+    optionalPermissions,
+  }: {
+    programId: number | string;
+    optionalPermissions: PermissionEnum[];
+  }): boolean {
+    return optionalPermissions.some((permissionName) =>
+      this.hasPermission({
+        programId,
+        requiredPermission: permissionName,
+        user: this.user,
+      }),
+    );
+  }
+
   public handleAuthCallback() {
     const returnUrl = getReturnUrlFromLocalStorage();
 
