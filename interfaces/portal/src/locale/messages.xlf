@@ -2541,23 +2541,23 @@
       <trans-unit id="7801717660956820159" datatype="html">
         <source>For more information about how to link a registration tool see <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/></source>
       </trans-unit>
-      <trans-unit id="8812462738085550597" datatype="html">
-        <source>Add general information to define your programs details.</source>
-      </trans-unit>
       <trans-unit id="create-new-program-label" datatype="html">
         <source>Create new program</source>
       </trans-unit>
       <trans-unit id="1417693714872528491" datatype="html">
         <source>This field is required.</source>
       </trans-unit>
-      <trans-unit id="7559562807385539910" datatype="html">
-        <source>Make sure the default language in the &apos;form&apos; tab of kobo to the main language of the program. One language must be set to English (EN).</source>
-      </trans-unit>
       <trans-unit id="8227576772021299128" datatype="html">
         <source>We couldn&apos;t find this form in Kobo. Check the URL to make sure the form is deployed.</source>
       </trans-unit>
       <trans-unit id="4625810362559566622" datatype="html">
         <source>FSP integration</source>
+      </trans-unit>
+      <trans-unit id="1840148350593500398" datatype="html">
+        <source>Make sure the default language in the &apos;Form&apos; tab of Kobo matches the main language of the program. One language must be set to English (EN).</source>
+      </trans-unit>
+      <trans-unit id="5731103713915660185" datatype="html">
+        <source>Add general information to define your program details.</source>
       </trans-unit>
     </body>
   </file>
