@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
 import * as request from 'supertest';
 import TestAgent from 'supertest/lib/agent';
 
@@ -17,8 +18,7 @@ import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 
 export function generateUniqueTestId(): string {
   const timestamp = Date.now();
-  const randomSuffix = Math.random().toString(36).substring(7);
-  return `${timestamp}_${randomSuffix}`;
+  return `${timestamp}_${randomUUID().slice(0, 8)}`;
 }
 
 export function getHostname(): string {

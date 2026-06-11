@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
 import { lastValueFrom } from 'rxjs';
 import { joinURL } from 'ufo';
 
@@ -461,7 +462,7 @@ export class KoboMockService {
   } {
     // Mock implementation - return the created webhook with a generated uid
     return {
-      uid: 'hook_' + Math.random().toString(36).substring(2, 15),
+      uid: `hook_${randomUUID()}`,
       ...body,
     };
   }
