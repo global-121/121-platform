@@ -35,9 +35,6 @@
       <trans-unit id="1160840788795450422" datatype="html">
         <source>At least one column must be selected</source>
       </trans-unit>
-      <trans-unit id="1181318683745969549" datatype="html">
-        <source>Expected Types</source>
-      </trans-unit>
       <trans-unit id="1181910457994920507" datatype="html">
         <source>Proceed</source>
       </trans-unit>
@@ -143,6 +140,9 @@
       <trans-unit id="1647547699224335647" datatype="html">
         <source>Threshold amounts must be unique.</source>
       </trans-unit>
+      <trans-unit id="1650073357556875190" datatype="html">
+        <source>Attribute</source>
+      </trans-unit>
       <trans-unit id="165273856698591793" datatype="html">
         <source>Contact Us:</source>
       </trans-unit>
@@ -221,6 +221,9 @@
       </trans-unit>
       <trans-unit id="1918076919963278361" datatype="html">
         <source>Registration information</source>
+      </trans-unit>
+      <trans-unit id="1923578383026793370" datatype="html">
+        <source>Required Type</source>
       </trans-unit>
       <trans-unit id="1941641831210864467" datatype="html">
         <source>Replace visa card</source>
@@ -500,9 +503,6 @@
       </trans-unit>
       <trans-unit id="3086423071988594984" datatype="html">
         <source>Assign scope*</source>
-      </trans-unit>
-      <trans-unit id="3099255451612236434" datatype="html">
-        <source>Current Type</source>
       </trans-unit>
       <trans-unit id="3099882906994173432" datatype="html">
         <source>Linked</source>
@@ -1823,6 +1823,9 @@
       </trans-unit>
       <trans-unit id="8953033926734869941" datatype="html">
         <source>Name</source>
+      </trans-unit>
+      <trans-unit id="8955262959341258667" datatype="html">
+        <source>Current Type</source>
       </trans-unit>
       <trans-unit id="8980999496899249966" datatype="html">
         <source>Table columns:</source>
