@@ -11,50 +11,20 @@
       <ng-container i18n>Kobo form integration error</ng-container>
     </h3>
   </ng-template>
+
+  @let grouped = groupedErrors();
+
   <p i18n>
     The Kobo form could not be linked to your program due to the following
     errors:
   </p>
 
-  @if (uniqueMissingFields().length) {
+  @if (grouped[KoboValidationErrorType.FormConfiguration]; as errors) {
     <h4
       i18n
       class="mt-4 font-semibold"
     >
-      Missing fields
-    </h4>
-    <div class="flex gap-2">
-      @for (field of uniqueMissingFields(); track $index) {
-        <p-tag
-          [value]="field"
-          severity="info"
-        />
-      }
-    </div>
-  }
-
-  @let grouped = groupedErrors();
-
-  @if (grouped[KoboValidationErrorType.TypeMismatch]; as errors) {
-    <h4
-      i18n
-      class="mt-4 font-semibold"
-    >
-      Type mismatches
-    </h4>
-    <app-query-table
-      [columns]="parsedErrorsColumns()"
-      [items]="grouped[KoboValidationErrorType.TypeMismatch] ?? []"
-      [isPending]="false"
-    />
-  }
-
-  @if (grouped[KoboValidationErrorType.InvalidChoice]; as errors) {
-    <h4
-      i18n
-      class="mt-4 font-semibold"
-    >
-      Invalid choices
+      Form configuration
     </h4>
     <ul class="mt-1 list-disc ps-5">
       @for (error of errors; track $index) {
@@ -63,12 +33,66 @@
     </ul>
   }
 
-  @if (grouped[KoboValidationErrorType.FormConfiguration]; as errors) {
+  @if (uniqueMissingFields().length) {
+    <h4
+      i18n
+      class="mt-4 mb-2 font-semibold"
+    >
+      Missing fields
+    </h4>
+    <div class="flex gap-2">
+      @for (field of uniqueMissingFields(); track $index) {
+        <p-tag
+          [value]="field"
+          severity="secondary"
+        />
+      }
+    </div>
+  }
+
+  @if (grouped[KoboValidationErrorType.TypeMismatch]; as errors) {
+    <h4
+      i18n
+      class="mt-4 mb-2 font-semibold"
+    >
+      Type mismatches
+    </h4>
+
+    <p-table
+      [value]="grouped[KoboValidationErrorType.TypeMismatch]"
+      [tableStyle]="{ 'min-width': '50rem' }"
+    >
+      <ng-template #header>
+        <tr class="text-sm">
+          <th i18n>Attribute</th>
+          <th i18n>Required Type</th>
+          <th
+            i18n
+            class="text-nowrap"
+          >
+            Current Type
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template
+        #body
+        let-error
+      >
+        <tr class="align-top text-sm">
+          <td class="">{{ error.attributeName }}</td>
+          <td class="w-full">{{ error.expectedTypes.join(', ') }}</td>
+          <td class="">{{ error.actualType }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  }
+
+  @if (grouped[KoboValidationErrorType.InvalidChoice]; as errors) {
     <h4
       i18n
       class="mt-4 font-semibold"
     >
-      Form configuration
+      Invalid choices
     </h4>
     <ul class="mt-1 list-disc ps-5">
       @for (error of errors; track $index) {
