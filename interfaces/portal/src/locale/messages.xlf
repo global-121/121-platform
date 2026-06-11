@@ -222,9 +222,6 @@
       <trans-unit id="1918076919963278361" datatype="html">
         <source>Registration information</source>
       </trans-unit>
-      <trans-unit id="1936229512844722191" datatype="html">
-        <source>XX</source>
-      </trans-unit>
       <trans-unit id="1941641831210864467" datatype="html">
         <source>Replace visa card</source>
       </trans-unit>
@@ -503,6 +500,9 @@
       </trans-unit>
       <trans-unit id="3086423071988594984" datatype="html">
         <source>Assign scope*</source>
+      </trans-unit>
+      <trans-unit id="3099255451612236434" datatype="html">
+        <source>Current Type</source>
       </trans-unit>
       <trans-unit id="3099882906994173432" datatype="html">
         <source>Linked</source>
@@ -883,9 +883,6 @@
       </trans-unit>
       <trans-unit id="4725718925572069565" datatype="html">
         <source>Click to integrate</source>
-      </trans-unit>
-      <trans-unit id="4734021473638517000" datatype="html">
-        <source>Actual Type</source>
       </trans-unit>
       <trans-unit id="4746344653872488527" datatype="html">
         <source>Export payment list</source>
