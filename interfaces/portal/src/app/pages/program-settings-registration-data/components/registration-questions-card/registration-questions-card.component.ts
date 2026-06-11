@@ -1,3 +1,4 @@
+import { TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,23 +17,24 @@ import {
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
+import { TabsModule } from 'primeng/tabs';
 
+import { UpdateProgramRegistrationAttributesBatchDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
-import { UpdateProgramRegistrationAttributesBatchDto } from '../../../../../../../../services/121-service/src/programs/dto/program-registration-attribute.dto';
-
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
-import { ProgramLanguageTabsComponent } from '~/components/program-language-tabs/program-language-tabs.component';
 import { getTranslatableFormGroup } from '~/components/program-language-tabs/program-language-tabs.helper';
 import { isKoboIntegrated } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Attribute } from '~/domains/program/program.model';
 import { ToastService } from '~/services/toast.service';
+import { getLinguonym } from '~/utils/get-linguonym';
 import {
   getUILanguageFromLocale,
+  getUserPreferredUILanguage,
   isSupportedUILanguage,
   Locale,
 } from '~/utils/locale';
@@ -42,13 +44,14 @@ import { environment } from '~environment';
   selector: 'app-registration-questions-card',
   imports: [
     CardModule,
-    ProgramLanguageTabsComponent,
     CardEditableComponent,
     TableModule,
     ReactiveFormsModule,
     InputTextModule,
     CardEditableComponent,
     InfoTooltipComponent,
+    TabsModule,
+    TitleCasePipe,
   ],
   templateUrl: './registration-questions-card.component.html',
   styles: ``,
@@ -162,18 +165,22 @@ export class RegistrationQuestionsCardComponent {
 
     const program = this.program.data();
     const programAttributes = this.programAttributes();
-    this.formGroup = new FormGroup(
-      Object.fromEntries(
-        programAttributes.map((attribute) => [
-          attribute.name,
-          getTranslatableFormGroup({
-            program,
-            getInitialValue: (language) =>
-              this.attributeLabels().get(attribute.name)?.get(language),
-          }),
-        ]),
-      ),
+    const formGroupObject = Object.fromEntries(
+      programAttributes.map((attribute) => [
+        attribute.name,
+        getTranslatableFormGroup({
+          program,
+          getInitialValue: (language) =>
+            this.attributeLabels().get(attribute.name)?.get(language),
+        }),
+      ]),
     );
+    console.log(
+      '🚀 ~ RegistrationQuestionsCardComponent ~ formGroupObject:',
+      formGroupObject,
+    );
+
+    this.formGroup = new FormGroup(formGroupObject);
   });
 
   readonly attributeLabels = computed(() => {
@@ -214,6 +221,20 @@ export class RegistrationQuestionsCardComponent {
       : labelDescription;
   });
 
+  readonly tabLabels = computed(() => {
+    const labels = new Map<RegistrationPreferredLanguage, string>();
+
+    for (const language of this.programLanguages()) {
+      labels.set(
+        language,
+        getLinguonym({
+          languageToDisplayNameOf: language,
+          languageToShowNameIn: getUserPreferredUILanguage(),
+        }),
+      );
+    }
+    return labels;
+  });
   private getLabelToShow({
     language,
     attribute,

@@ -20,75 +20,93 @@
     <p i18n>You can edit each column label to a shorter version.</p>
   }
 
-  <app-program-language-tabs
-    [programId]="programId()"
-    [(selectedTabLanguage)]="selectedTabLanguage"
-    [languages]="programLanguages()"
-  >
-    <ng-template #languageTemplate>
-      @if (!isSupportedUILanguage(selectedTabLanguage())) {
-        <p class="my-2 flex items-center">
-          <i class="pi pi-exclamation-triangle me-2 text-xl text-red-500"></i>
-          <span i18n>
-            Please note, the portal does not support this language currently.
-          </span>
-        </p>
-      }
-
-      <p-table
-        [value]="programAttributes()"
-        data-testid="program-attributes-table"
-      >
-        <ng-template #header>
-          <tr>
-            <th class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase">
-              <span
-                class="me-1"
-                i18n
-              >
-                Data column name</span
-              >
-              <app-info-tooltip
-                message="The data column name of the question."
-                i18n-message
-              ></app-info-tooltip>
-            </th>
-            <th class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase">
-              <span
-                class="me-1"
-                i18n
-                >Question label</span
-              >
-              <app-info-tooltip
-                [message]="tableHeaderLabelTooltipMessage()"
-              ></app-info-tooltip>
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template
-          #body
-          let-attribute
+  <p-tabs [(value)]="selectedTabLanguage">
+    <p-tablist>
+      @for (language of programLanguages(); track language) {
+        <p-tab
+          [value]="language"
+          data-testid="language-tab"
         >
-          <tr [formGroupName]="attribute.name">
-            <td>{{ attribute.name }}</td>
-            <td>
-              @if (isEditing()) {
-                <input
-                  type="text"
-                  pInputText
-                  [formControlName]="selectedTabLanguage()"
-                />
-              } @else {
-                {{
-                  attributeLabels()
-                    .get(attribute.name)
-                    ?.get(selectedTabLanguage())
-                }}
-              }
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </ng-template>
-  </app-program-language-tabs>
+          <i class="pi pi-globe"></i>
+          {{ tabLabels().get(language) | titlecase }}
+        </p-tab>
+      }
+    </p-tablist>
+    <p-tabpanels class="p-0">
+      @for (language of programLanguages(); track language) {
+        <p-tabpanel [value]="language">
+          @if (!isSupportedUILanguage(selectedTabLanguage())) {
+            <p class="my-2 flex items-center">
+              <i
+                class="pi pi-exclamation-triangle me-2 text-xl text-red-500"
+              ></i>
+              <span i18n>
+                Please note, the portal does not support this language
+                currently.
+              </span>
+            </p>
+          }
+          <p-table
+            [value]="programAttributes()"
+            data-testid="program-attributes-table"
+          >
+            <ng-template #header>
+              <tr>
+                <th
+                  class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
+                >
+                  <span
+                    class="me-1"
+                    i18n
+                  >
+                    Data column name</span
+                  >
+                  <app-info-tooltip
+                    message="The data column name of the question."
+                    i18n-message
+                  ></app-info-tooltip>
+                </th>
+                <th
+                  class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
+                >
+                  <span
+                    class="me-1"
+                    i18n
+                    >Question label</span
+                  >
+                  <app-info-tooltip
+                    [message]="tableHeaderLabelTooltipMessage()"
+                  ></app-info-tooltip>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template
+              #body
+              let-attribute
+            >
+              <tr [formGroupName]="attribute.name">
+                <td>{{ attribute.name }}</td>
+                <td>
+                  @if (isEditing()) {
+                    <input
+                      type="text"
+                      pInputText
+                      [formControlName]="language"
+                      [attr.data-testid]="`attribute-label-input-${language}-${attribute.name}`"
+                    />
+                  } @else {
+                    {{
+                      attributeLabels()
+                        .get(attribute.name)
+                        ?.get(selectedTabLanguage())
+                    }}
+                  }
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabpanel>
+      }
+    </p-tabpanels>
+  </p-tabs>
 </app-card-editable>
