@@ -16,21 +16,24 @@
     errors:
   </p>
 
-  @let grouped = groupedErrors();
-
-  @if (grouped[KoboValidationErrorType.MissingField]; as errors) {
+  @if (uniqueMissingFields().length) {
     <h4
       i18n
       class="mt-4 font-semibold"
     >
       Missing fields
     </h4>
-    <ul class="mt-1 list-disc ps-5">
-      @for (error of errors; track $index) {
-        <li>{{ error.message }}</li>
+    <div class="flex gap-2">
+      @for (field of uniqueMissingFields(); track $index) {
+        <p-tag
+          [value]="field"
+          severity="info"
+        />
       }
-    </ul>
+    </div>
   }
+
+  @let grouped = groupedErrors();
 
   @if (grouped[KoboValidationErrorType.TypeMismatch]; as errors) {
     <h4
@@ -39,15 +42,11 @@
     >
       Type mismatches
     </h4>
-    <ul class="mt-1 list-disc ps-5">
-      @for (error of errors; track $index) {
-        <li>
-          <strong>{{ error }}</strong>
-          <!-- : expected {{ error.expectedTypes.join(', ') }}, got
-          {{ error.actualType }} -->
-        </li>
-      }
-    </ul>
+    <app-query-table
+      [columns]="parsedErrorsColumns()"
+      [items]="grouped[KoboValidationErrorType.TypeMismatch] ?? []"
+      [isPending]="false"
+    />
   }
 
   @if (grouped[KoboValidationErrorType.InvalidChoice]; as errors) {
@@ -93,12 +92,6 @@
   }
 
   <div class="mt-4 flex justify-end gap-4">
-    <p-button
-      label="XX"
-      i18n-label
-      outlined
-      rounded
-    />
     <p-button
       [rounded]="true"
       label="Close"
