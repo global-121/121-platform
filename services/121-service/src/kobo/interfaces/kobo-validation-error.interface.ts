@@ -13,35 +13,45 @@ export type KoboFormConfigurationRule =
   | 'select-one-no-choices'
   | 'missing-fullname-attributes';
 
+export interface KoboMissingFieldError {
+  type: KoboValidationErrorType.MissingField;
+  attributeName: string;
+  context?: string;
+  message?: string;
+}
+
+export interface KoboTypeMismatchError {
+  type: KoboValidationErrorType.TypeMismatch;
+  attributeName: string;
+  expectedTypes: string[];
+  actualType: string;
+  message?: string;
+}
+
+export interface KoboInvalidChoiceError {
+  type: KoboValidationErrorType.InvalidChoice;
+  attributeName: string;
+  invalidChoices: string[];
+  validChoices: string[];
+  message?: string;
+}
+
+export interface KoboFormConfigurationError {
+  type: KoboValidationErrorType.FormConfiguration;
+  rule: KoboFormConfigurationRule;
+  detail?: string;
+  message?: string;
+}
+
+export interface KoboForbiddenAttributeError {
+  type: KoboValidationErrorType.ForbiddenAttribute;
+  attributeName: string;
+  message?: string;
+}
+
 export type KoboValidationError =
-  | {
-      type: KoboValidationErrorType.MissingField;
-      attributeName: string;
-      context?: string;
-      message?: string;
-    }
-  | {
-      type: KoboValidationErrorType.TypeMismatch;
-      attributeName: string;
-      expectedTypes: string[];
-      actualType: string;
-      message?: string;
-    }
-  | {
-      type: KoboValidationErrorType.InvalidChoice;
-      attributeName: string;
-      invalidChoices: string[];
-      validChoices: string[];
-      message?: string;
-    }
-  | {
-      type: KoboValidationErrorType.FormConfiguration;
-      rule: KoboFormConfigurationRule;
-      detail?: string;
-      message?: string;
-    }
-  | {
-      type: KoboValidationErrorType.ForbiddenAttribute;
-      attributeName: string;
-      message?: string;
-    };
+  | KoboMissingFieldError
+  | KoboTypeMismatchError
+  | KoboInvalidChoiceError
+  | KoboFormConfigurationError
+  | KoboForbiddenAttributeError;
