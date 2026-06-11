@@ -210,6 +210,9 @@
       <trans-unit id="1873935802798572654" datatype="html">
         <source>Tip: Press Command / Ctrl + Enter to submit.</source>
       </trans-unit>
+      <trans-unit id="1878692701354160278" datatype="html">
+        <source>The Kobo form could not be linked to your program due to the following errors:</source>
+      </trans-unit>
       <trans-unit id="1890300073702152532" datatype="html">
         <source>E-mail</source>
       </trans-unit>
@@ -437,9 +440,6 @@
       </trans-unit>
       <trans-unit id="2840088863087373358" datatype="html">
         <source>Updating registration(s)</source>
-      </trans-unit>
-      <trans-unit id="2850086782953482141" datatype="html">
-        <source><x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ koboFormName() }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> could not be linked to your program.</source>
       </trans-unit>
       <trans-unit id="2867000227530087117" datatype="html">
         <source>Date is</source>
@@ -860,6 +860,9 @@
       <trans-unit id="4625810362559566622" datatype="html">
         <source>FSP integration</source>
       </trans-unit>
+      <trans-unit id="4662745841536194054" datatype="html">
+        <source>Type mismatches</source>
+      </trans-unit>
       <trans-unit id="4667279955724574149" datatype="html">
         <source>Export status &amp; data changes</source>
       </trans-unit>
@@ -943,6 +946,9 @@
       </trans-unit>
       <trans-unit id="4983372178316388330" datatype="html">
         <source>Reconfigure</source>
+      </trans-unit>
+      <trans-unit id="4984416130459666389" datatype="html">
+        <source>Forbidden attributes</source>
       </trans-unit>
       <trans-unit id="4996479555480005226" datatype="html">
         <source>Program description</source>
@@ -1178,6 +1184,9 @@
       <trans-unit id="5918723526444903137" datatype="html">
         <source>Add user</source>
       </trans-unit>
+      <trans-unit id="592855405283080137" datatype="html">
+        <source>Invalid choices</source>
+      </trans-unit>
       <trans-unit id="593137515549076612" datatype="html">
         <source>(Scope - <x equiv-text="{{ duplicate.scope }}" id="INTERPOLATION"/>)</source>
       </trans-unit>
@@ -1343,6 +1352,9 @@
       </trans-unit>
       <trans-unit id="6820887192467365708" datatype="html">
         <source>Edit basic information</source>
+      </trans-unit>
+      <trans-unit id="6880404450986223489" datatype="html">
+        <source>Missing fields</source>
       </trans-unit>
       <trans-unit id="6885844978916799621" datatype="html">
         <source>Budget</source>
@@ -1640,6 +1652,9 @@
       </trans-unit>
       <trans-unit id="8135595255350159325" datatype="html">
         <source>No Programs found</source>
+      </trans-unit>
+      <trans-unit id="813895512660297044" datatype="html">
+        <source>Form configuration</source>
       </trans-unit>
       <trans-unit id="8140989446664265922" datatype="html">
         <source>Enter the basic details of your program, these details will define your program&apos;s setup and structure.</source>
