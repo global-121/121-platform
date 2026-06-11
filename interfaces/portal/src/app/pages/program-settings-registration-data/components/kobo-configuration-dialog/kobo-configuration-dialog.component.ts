@@ -24,6 +24,10 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { extractServerAndAssetIdFromUrl } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
+import {
+  err,
+  KoboErrorDialogComponent,
+} from '~/pages/program-settings-registration-data/components/kobo-error-dialog/kobo-error-dialog.component';
 import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
@@ -39,6 +43,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     Dialog,
     Button,
     PasswordModule,
+    KoboErrorDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './kobo-configuration-dialog.component.html',
@@ -47,6 +52,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
 })
 export class KoboConfigurationDialogComponent {
   readonly programId = input.required<number | string>();
+  readonly koboIntegrationErrors = signal(err);
 
   private readonly koboApiService = inject(KoboApiService);
   private readonly toastService = inject(ToastService);
@@ -56,6 +62,10 @@ export class KoboConfigurationDialogComponent {
 
   readonly koboConfigurationDialog = viewChild.required<FormDialogComponent>(
     'koboConfigurationDialog',
+  );
+
+  readonly koboErrorDialog = viewChild.required<KoboErrorDialogComponent>(
+    'koboIntegrationErrorDialog',
   );
 
   readonly linkKoboDialog =
@@ -129,9 +139,11 @@ export class KoboConfigurationDialogComponent {
       });
       this.linkKoboDialog().show();
     },
-    onError: (errorResponse) => {
-      const errorPayload = (errorResponse.cause as { error: unknown[] }).error;
-      console.log('errorPayload', errorPayload);
+    onError: (errorResponse: Error) => {
+      console.log('onError raw:', errorResponse);
+      console.log('onError cause:', errorResponse.cause);
+      this.koboConfigurationDialog().hide();
+      this.koboErrorDialog().show();
     },
   }));
 
