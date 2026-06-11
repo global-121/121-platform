@@ -27,13 +27,7 @@ import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-kobo-integration-card',
-  imports: [
-    CardWithLinkComponent,
-    DatePipe,
-    KoboConfigurationDialogComponent,
-    KoboImportExistingRegistrationsDialogComponent,
-    KoboErrorDialogComponent,
-  ],
+  imports: [CardWithLinkComponent, DatePipe, KoboConfigurationDialogComponent],
   templateUrl: './kobo-integration-card.component.html',
   styles: ``,
   providers: [ToastService],

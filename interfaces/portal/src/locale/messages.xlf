@@ -2547,14 +2547,29 @@
       <trans-unit id="1936229512844722191" datatype="html">
         <source>XX</source>
       </trans-unit>
-      <trans-unit id="2850086782953482141" datatype="html">
-        <source><x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ koboFormName() }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> could not be linked to your program.</source>
-      </trans-unit>
       <trans-unit id="4734021473638517000" datatype="html">
         <source>Actual Type</source>
       </trans-unit>
       <trans-unit id="4872421840981590914" datatype="html">
         <source>Kobo form integration error</source>
+      </trans-unit>
+      <trans-unit id="1878692701354160278" datatype="html">
+        <source>The Kobo form could not be linked to your program due to the following errors:</source>
+      </trans-unit>
+      <trans-unit id="4662745841536194054" datatype="html">
+        <source>Type mismatches</source>
+      </trans-unit>
+      <trans-unit id="4984416130459666389" datatype="html">
+        <source>Forbidden attributes</source>
+      </trans-unit>
+      <trans-unit id="592855405283080137" datatype="html">
+        <source>Invalid choices</source>
+      </trans-unit>
+      <trans-unit id="6880404450986223489" datatype="html">
+        <source>Missing fields</source>
+      </trans-unit>
+      <trans-unit id="813895512660297044" datatype="html">
+        <source>Form configuration</source>
       </trans-unit>
     </body>
   </file>
