@@ -144,16 +144,17 @@ export class KoboConfigurationDialogComponent {
       };
 
       // If the error contains Kobo validation errors, we want to show them in the KoboErrorDialog.
-
-      if (cause.error.errors.length === 0) {
+      if (cause.error.errors.length > 0) {
         this.koboIntegrationErrors.set(cause.error.errors);
         this.koboConfigurationDialog().hide();
         this.koboErrorDialog().show();
 
         this.toastService.showToast({
           severity: 'error',
-          detail: errorResponse.message,
+          detail: $localize`Error while integrating Kobo form`,
         });
+
+        return;
       }
     },
   }));
