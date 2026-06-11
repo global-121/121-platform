@@ -65,12 +65,17 @@
       <ng-template #header>
         <tr class="text-sm">
           <th i18n>Attribute</th>
-          <th i18n>Required Type</th>
           <th
             i18n
             class="text-nowrap"
           >
             Current Type
+          </th>
+          <th
+            i18n
+            class="text-nowrap"
+          >
+            Required Type
           </th>
         </tr>
       </ng-template>
@@ -80,8 +85,8 @@
       >
         <tr class="align-top text-sm">
           <td class="">{{ error.attributeName }}</td>
-          <td class="w-full">{{ error.expectedTypes.join(', ') }}</td>
           <td class="">{{ error.actualType }}</td>
+          <td class="w-full">{{ error.expectedTypes.join(', ') }}</td>
         </tr>
       </ng-template>
     </p-table>

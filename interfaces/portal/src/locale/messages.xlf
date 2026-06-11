@@ -222,9 +222,6 @@
       <trans-unit id="1918076919963278361" datatype="html">
         <source>Registration information</source>
       </trans-unit>
-      <trans-unit id="1923578383026793370" datatype="html">
-        <source>Required Type</source>
-      </trans-unit>
       <trans-unit id="1941641831210864467" datatype="html">
         <source>Replace visa card</source>
       </trans-unit>
@@ -657,6 +654,9 @@
       </trans-unit>
       <trans-unit id="3845427937485595400" datatype="html">
         <source>Enable scope</source>
+      </trans-unit>
+      <trans-unit id="3847581538132296641" datatype="html">
+        <source>Required Type</source>
       </trans-unit>
       <trans-unit id="3851949706407638075" datatype="html">
         <source>The system will create registrations with the status <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;&apos;blue&apos;&quot; label=&quot;&apos;New&apos;&quot; i18n-label /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;&apos;blue&apos;&quot; label=&quot;&apos;New&apos;&quot; i18n-label /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/></source>
