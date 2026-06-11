@@ -18,15 +18,14 @@ import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 
+import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
+
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { extractServerAndAssetIdFromUrl } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
-import {
-  err,
-  KoboErrorDialogComponent,
-} from '~/pages/program-settings-registration-data/components/kobo-error-dialog/kobo-error-dialog.component';
+import { KoboErrorDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-error-dialog/kobo-error-dialog.component';
 import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
@@ -51,7 +50,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
 })
 export class KoboConfigurationDialogComponent {
   readonly programId = input.required<number | string>();
-  readonly koboIntegrationErrors = signal(err);
+  readonly koboIntegrationErrors = signal<KoboValidationError[]>([]);
 
   private readonly koboApiService = inject(KoboApiService);
   private readonly toastService = inject(ToastService);
@@ -134,8 +133,10 @@ export class KoboConfigurationDialogComponent {
       this.linkKoboDialog().show();
     },
     onError: (errorResponse: Error) => {
-      console.log('onError raw:', errorResponse);
-      console.log('onError cause:', errorResponse.cause);
+      const errors = errorResponse.cause as {
+        error: { errors: KoboValidationError[] };
+      };
+      this.koboIntegrationErrors.set(errors.error.errors); // <-- wut?
       this.koboConfigurationDialog().hide();
       this.koboErrorDialog().show();
     },

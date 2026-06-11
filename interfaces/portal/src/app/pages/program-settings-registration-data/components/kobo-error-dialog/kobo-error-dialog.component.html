@@ -1,7 +1,7 @@
 <p-dialog
   [modal]="true"
   [closeOnEscape]="false"
-  [visible]="dialogVisible()"
+  [(visible)]="dialogVisible"
   styleClass="max-w-[90vw] sm:min-w-[40rem]"
   [attr.data-testid]="'kobo-error-dialog'"
 >
@@ -42,10 +42,9 @@
     <ul class="mt-1 list-disc ps-5">
       @for (error of errors; track $index) {
         <li>
-          <!-- <strong>{{ error }}</strong
-          >: expected {{ error.expectedTypes.join(', ') }}, got
-          {{ error.actualType }}
-        </li> -->
+          <strong>{{ error }}</strong>
+          <!-- : expected {{ error.expectedTypes.join(', ') }}, got
+          {{ error.actualType }} -->
         </li>
       }
     </ul>
