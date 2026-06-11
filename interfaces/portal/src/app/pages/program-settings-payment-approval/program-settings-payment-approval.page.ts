@@ -109,7 +109,7 @@ export class ProgramSettingsPaymentApprovalPageComponent implements ComponentCan
   readonly canManageAidworkers = computed(() =>
     this.authService.hasPermission({
       programId: this.programId(),
-      requiredPermission: PermissionEnum.AidWorkerProgramUPDATE,
+      requiredPermission: PermissionEnum.ProgramApprovalThresholdsUPDATE,
     }),
   );
 

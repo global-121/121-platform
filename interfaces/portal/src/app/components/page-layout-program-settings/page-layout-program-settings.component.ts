@@ -35,6 +35,7 @@ export class PageLayoutProgramSettingsComponent {
   readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
+  // NOTE: Make sure to align the permissions used here with those used in the routing config in: `app.routes.ts`
   readonly menuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`Program information`,
@@ -86,9 +87,12 @@ export class PageLayoutProgramSettingsComponent {
         AppRoutes.users,
         AppRoutes.programSettingsTeam,
       ],
-      visible: this.authService.hasPermission({
+      visible: this.authService.hasSomePermission({
         programId: this.programId(),
-        requiredPermission: PermissionEnum.AidWorkerProgramREAD,
+        optionalPermissions: [
+          PermissionEnum.AidWorkerProgramREAD,
+          PermissionEnum.ProgramApprovalThresholdsREAD,
+        ],
       }),
       items: [
         {
@@ -101,6 +105,10 @@ export class PageLayoutProgramSettingsComponent {
             AppRoutes.users,
             AppRoutes.programSettingsTeam,
           ],
+          visible: this.authService.hasPermission({
+            programId: this.programId(),
+            requiredPermission: PermissionEnum.AidWorkerProgramREAD,
+          }),
         },
         {
           label: $localize`:@@page-title-program-settings-payment-approval:Payment approval`,
@@ -112,7 +120,10 @@ export class PageLayoutProgramSettingsComponent {
             AppRoutes.users,
             AppRoutes.programSettingsPaymentApproval,
           ],
-          visible: this.authService.isOrganizationAdmin,
+          visible: this.authService.hasPermission({
+            programId: this.programId(),
+            requiredPermission: PermissionEnum.ProgramApprovalThresholdsREAD,
+          }),
         },
       ],
     },

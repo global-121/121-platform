@@ -25,6 +25,7 @@ import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/pro
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
 import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
@@ -35,7 +36,9 @@ export class ProgramApprovalThresholdsController {
     private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
   ) {}
 
-  @AuthenticatedUser({ isOrganizationAdmin: true })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramApprovalThresholdsUPDATE],
+  })
   @ApiOperation({
     summary: 'Replace all approval thresholds for a program',
     description:
@@ -65,7 +68,9 @@ export class ProgramApprovalThresholdsController {
     );
   }
 
-  @AuthenticatedUser({ isOrganizationAdmin: true })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramApprovalThresholdsREAD],
+  })
   @ApiOperation({
     summary: 'Get all approval thresholds for a program',
   })

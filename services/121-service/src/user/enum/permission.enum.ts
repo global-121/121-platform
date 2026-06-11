@@ -23,6 +23,9 @@ export enum PermissionEnum {
   ProgramREAD = 'program.read',
   ProgramUPDATE = 'program.update',
 
+  ProgramApprovalThresholdsREAD = 'program:approval-thresholds.read',
+  ProgramApprovalThresholdsUPDATE = 'program:approval-thresholds.update',
+
   ProgramAttachmentsREAD = 'program:attachments.read',
   ProgramAttachmentsCREATE = 'program:attachments.create',
   ProgramAttachmentsUPDATE = 'program:attachments.update',
