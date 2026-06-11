@@ -2619,9 +2619,6 @@
       <trans-unit id="4228319514212568219" datatype="html">
         <source>Users</source>
       </trans-unit>
-      <trans-unit id="2669137255472752633" datatype="html">
-        <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> You can edit each column name to a shorter version.</source>
-      </trans-unit>
       <trans-unit id="5236492962293730127" datatype="html">
         <source>Registration questions</source>
       </trans-unit>
@@ -2679,11 +2676,23 @@
       <trans-unit id="5971081331538192247" datatype="html">
         <source>Data column name</source>
       </trans-unit>
-      <trans-unit id="4900165365190016920" datatype="html">
-        <source>The label that will be shown in the registration page table header and registration&apos;s profile. The labels cand be edited by clicking on the pencil icon above.</source>
-      </trans-unit>
       <trans-unit id="8089925871034232084" datatype="html">
         <source>The data column name of the question.</source>
+      </trans-unit>
+      <trans-unit id="1477824553612612348" datatype="html">
+        <source>Required fields</source>
+      </trans-unit>
+      <trans-unit id="4621223146689163852" datatype="html">
+        <source>You can edit each column label to a shorter version.</source>
+      </trans-unit>
+      <trans-unit id="4717961463592418280" datatype="html">
+        <source>The labels cand be edited by clicking on the pencil icon above.</source>
+      </trans-unit>
+      <trans-unit id="7935380647269698508" datatype="html">
+        <source>Your form must include the following required fields, using these <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>exact data column names<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> (these would be the column headers in excel).</source>
+      </trans-unit>
+      <trans-unit id="8205345907908611941" datatype="html">
+        <source>The label that will be shown in the registration page table header and registration&apos;s profile.</source>
       </trans-unit>
     </body>
   </file>

@@ -246,19 +246,6 @@ export class ProgramApiService extends DomainApiService {
     });
   }
 
-  getProgramRegistrationAttributesWithUntranslatedLabels({
-    programId,
-  }: {
-    programId: Signal<number | string>;
-  }) {
-    return this.generateQueryOptions<Attribute[]>({
-      path: [BASE_ENDPOINT, programId, 'attributes'],
-      params: {
-        includeProgramRegistrationAttributes: true,
-      },
-    });
-  }
-
   getProgramAttributes({
     programId,
     includeProgramRegistrationAttributes = false,
