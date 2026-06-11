@@ -26,6 +26,8 @@ import { CardEditableComponent } from '~/components/card-editable/card-editable.
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { ProgramLanguageTabsComponent } from '~/components/program-language-tabs/program-language-tabs.component';
 import { getTranslatableFormGroup } from '~/components/program-language-tabs/program-language-tabs.helper';
+import { isKoboIntegrated } from '~/domains/kobo/kobo.helpers';
+import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Attribute } from '~/domains/program/program.model';
 import { ToastService } from '~/services/toast.service';
@@ -56,23 +58,31 @@ export class RegistrationQuestionsCardComponent {
   readonly programId = input.required<number | string>();
 
   readonly programApiService = inject(ProgramApiService);
+  private readonly koboApiService = inject(KoboApiService);
+
+  readonly koboIntegration = injectQuery(() => ({
+    ...this.koboApiService.getKoboIntegration(this.programId)(),
+    enabled: !!this.programId(),
+  }));
+
+  readonly isKoboIntegrated = computed<boolean>(() =>
+    isKoboIntegrated(this.koboIntegration),
+  );
 
   readonly isSupportedUILanguage = isSupportedUILanguage;
 
   RegistrationPreferredLanguage = RegistrationPreferredLanguage;
 
-  readonly programAttributes = injectQuery(() => ({
-    ...this.programApiService.getProgramRegistrationAttributesWithUntranslatedLabels(
-      {
-        programId: this.programId,
-      },
-    )(),
-    enabled: !!this.programId(),
-  }));
-
   readonly program = injectQuery(
     this.programApiService.getProgram(this.programId),
   );
+
+  readonly programAttributes = computed(() => {
+    if (!this.program.isSuccess()) {
+      return [];
+    }
+    return this.program.data().programRegistrationAttributes;
+  });
 
   readonly programLanguages = computed(() => {
     if (!this.program.isSuccess()) {
@@ -146,12 +156,12 @@ export class RegistrationQuestionsCardComponent {
   );
 
   defineFormGroup = effect(() => {
-    if (!this.program.isSuccess() || !this.programAttributes.isSuccess()) {
+    if (!this.program.isSuccess()) {
       return;
     }
 
     const program = this.program.data();
-    const programAttributes = this.programAttributes.data();
+    const programAttributes = this.programAttributes();
     this.formGroup = new FormGroup(
       Object.fromEntries(
         programAttributes.map((attribute) => [
@@ -159,7 +169,7 @@ export class RegistrationQuestionsCardComponent {
           getTranslatableFormGroup({
             program,
             getInitialValue: (language) =>
-              this.attributeLabels()?.get(attribute.name)?.get(language),
+              this.attributeLabels().get(attribute.name)?.get(language),
           }),
         ]),
       ),
@@ -167,10 +177,7 @@ export class RegistrationQuestionsCardComponent {
   });
 
   readonly attributeLabels = computed(() => {
-    if (!this.programAttributes.isSuccess()) {
-      return;
-    }
-    const programAttributes = this.programAttributes.data();
+    const programAttributes = this.programAttributes();
     const labels = new Map<
       string,
       Map<RegistrationPreferredLanguage, string | undefined>
@@ -191,6 +198,20 @@ export class RegistrationQuestionsCardComponent {
     }
 
     return labels;
+  });
+
+  readonly cardHeader = computed(() =>
+    this.isKoboIntegrated()
+      ? $localize`Registration questions`
+      : $localize`Required fields`,
+  );
+
+  readonly tableHeaderLabelTooltipMessage = computed(() => {
+    const labelDescription = $localize`The label that will be shown in the registration page table header and registration's profile.`;
+    const editInstruction = $localize`The labels cand be edited by clicking on the pencil icon above.`;
+    return this.isKoboIntegrated()
+      ? `${labelDescription} ${editInstruction}`
+      : labelDescription;
   });
 
   private getLabelToShow({

@@ -1,9 +1,8 @@
 <app-card-editable
-  header="Registration questions"
-  i18n-header
+  [header]="cardHeader()"
   editPencilTitle="Edit registration questions"
   i18n-editPencilTitle
-  [canEdit]="true"
+  [canEdit]="isKoboIntegrated()"
   [(isEditing)]="isEditing"
   [formGroup]="formGroup"
   [mutation]="updateAttributeLabelsMutation"
@@ -13,10 +12,13 @@
     i18n
     class="mb-4"
   >
-    Below are the {{ programAttributes.data()?.length }} questions that will be
-    displayed in the data table and on the profile page.<br />
-    You can edit each column name to a shorter version.
+    Your form must include the following required fields, using these
+    <strong>exact data column names</strong> (these would be the column headers
+    in excel).
   </p>
+  @if (isKoboIntegrated()) {
+    <p i18n>You can edit each column label to a shorter version.</p>
+  }
 
   <app-program-language-tabs
     [programId]="programId()"
@@ -34,7 +36,7 @@
       }
 
       <p-table
-        [value]="programAttributes.data() ?? []"
+        [value]="programAttributes()"
         data-testid="program-attributes-table"
       >
         <ng-template #header>
@@ -58,8 +60,7 @@
                 >Question label</span
               >
               <app-info-tooltip
-                message="The label that will be shown in the registration page table header and registration's profile. The labels cand be edited by clicking on the pencil icon above."
-                i18n-message
+                [message]="tableHeaderLabelTooltipMessage()"
               ></app-info-tooltip>
             </th>
           </tr>
@@ -80,7 +81,7 @@
               } @else {
                 {{
                   attributeLabels()
-                    ?.get(attribute.name)
+                    .get(attribute.name)
                     ?.get(selectedTabLanguage())
                 }}
               }
