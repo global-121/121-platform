@@ -46,7 +46,11 @@ describe('ProgramSettingsPaymentApprovalPageComponent', () => {
     getProgramUsers: ReturnType<typeof vi.fn>;
     createOrReplaceApprovalThresholds: ReturnType<typeof vi.fn>;
   };
-  let mockAuthService: { hasPermission: ReturnType<typeof vi.fn> };
+  let mockAuthService: {
+    hasAllPermissions: ReturnType<typeof vi.fn>;
+    hasSomePermission: ReturnType<typeof vi.fn>;
+    hasPermission: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(async () => {
     Object.defineProperty(globalThis, 'ResizeObserver', {
@@ -74,6 +78,14 @@ describe('ProgramSettingsPaymentApprovalPageComponent', () => {
         .mockResolvedValue([]),
     };
     mockAuthService = {
+      hasAllPermissions: vi
+        .fn()
+        .mockName('AuthService.hasAllPermissions')
+        .mockReturnValue(false),
+      hasSomePermission: vi
+        .fn()
+        .mockName('AuthService.hasSomePermission')
+        .mockReturnValue(false),
       hasPermission: vi
         .fn()
         .mockName('AuthService.hasPermission')

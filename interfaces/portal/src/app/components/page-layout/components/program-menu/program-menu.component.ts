@@ -60,15 +60,13 @@ export class ProgramMenuComponent {
       routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programSettings}`,
       styleClass: 'ms-auto',
       icon: 'pi pi-cog',
-      visible:
-        this.authService.hasPermission({
-          programId: this.programId(),
-          requiredPermission: PermissionEnum.AidWorkerProgramREAD,
-        }) ||
-        this.authService.hasPermission({
-          programId: this.programId(),
-          requiredPermission: PermissionEnum.ProgramUPDATE,
-        }),
+      visible: this.authService.hasSomePermission({
+        programId: this.programId(),
+        optionalPermissions: [
+          PermissionEnum.AidWorkerProgramREAD,
+          PermissionEnum.ProgramUPDATE,
+        ],
+      }),
     },
   ]);
 }
