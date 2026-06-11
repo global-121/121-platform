@@ -19,6 +19,7 @@
               (click)="isEditing.set(true)"
               [title]="editPencilTitle()"
               [ariaLabel]="editPencilTitle()"
+              data-testid="editable-card-edit-button"
             />
           } @else {
             <p-button
