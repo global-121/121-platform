@@ -38,8 +38,8 @@ interface ParsedFspAttributeError {
 })
 export class KoboErrorDialogComponent {
   readonly programId = input.required<number | string>();
-  readonly errors = input(err);
-  readonly dialogVisible = model(true);
+  readonly errors = input<KoboValidationError[]>([]);
+  readonly dialogVisible = model(false);
 
   readonly KoboValidationErrorType = KoboValidationErrorType;
 
@@ -76,92 +76,3 @@ export class KoboErrorDialogComponent {
     this.dialogVisible.set(false);
   }
 }
-
-export const err = [
-  {
-    type: 'missing_field',
-    attributeName: 'fullName',
-    context: "for FSP 'visa-debit-card'",
-    message:
-      "Missing required attribute 'fullName' (for FSP 'visa-debit-card').",
-  },
-  {
-    type: 'missing_field',
-    attributeName: 'addressCity',
-    context: "for FSP 'visa-debit-card'",
-    message:
-      "Missing required attribute 'addressCity' (for FSP 'visa-debit-card').",
-  },
-  {
-    type: 'missing_field',
-    attributeName: 'addressHouseNumber',
-    context: "for FSP 'visa-debit-card'",
-    message:
-      "Missing required attribute 'addressHouseNumber' (for FSP 'visa-debit-card').",
-  },
-  {
-    type: 'missing_field',
-    attributeName: 'addressHouseNumberAddition',
-    context: "for FSP 'visa-debit-card'",
-    message:
-      "Missing required attribute 'addressHouseNumberAddition' (for FSP 'visa-debit-card').",
-  },
-  {
-    type: 'missing_field',
-    attributeName: 'addressPostalCode',
-    context: "for FSP 'visa-debit-card'",
-    message:
-      "Missing required attribute 'addressPostalCode' (for FSP 'visa-debit-card').",
-  },
-  {
-    type: 'missing_field',
-    attributeName: 'addressStreet',
-    context: "for FSP 'visa-debit-card'",
-    message:
-      "Missing required attribute 'addressStreet' (for FSP 'visa-debit-card').",
-  },
-  {
-    type: 'missing_field',
-    attributeName: 'phoneNumber',
-    context: "for FSP 'visa-debit-card'",
-    message:
-      "Missing required attribute 'phoneNumber' (for FSP 'visa-debit-card').",
-  },
-  {
-    type: 'missing_field',
-    attributeName: 'phoneNumber',
-    context: "for FSP 'safaricom'",
-    message: "Missing required attribute 'phoneNumber' (for FSP 'safaricom').",
-  },
-  {
-    type: 'missing_field',
-    attributeName: 'nationalId',
-    context: "for FSP 'safaricom'",
-    message: "Missing required attribute 'nationalId' (for FSP 'safaricom').",
-  },
-  {
-    type: 'form_configuration',
-    rule: 'missing-english-language',
-    message: 'Kobo form must have English (en) as one of the languages.',
-  },
-  {
-    type: 'form_configuration',
-    rule: 'missing-fullname-attributes',
-    detail: 'fullName',
-    message:
-      'Kobo form must contain the following name attributes defined in program.fullnameNamingConvention. However the following attributes are missing: fullName',
-  },
-  {
-    type: 'missing_field',
-    attributeName: 'phoneNumber',
-    context:
-      'should be a text type and country code should be included, or program.allowEmptyPhoneNumber must be set to true',
-    message:
-      "Missing required attribute 'phoneNumber' (should be a text type and country code should be included, or program.allowEmptyPhoneNumber must be set to true).",
-  },
-  {
-    type: 'missing_field',
-    attributeName: 'fsp',
-    message: "Missing required attribute 'fsp'.",
-  },
-] as KoboValidationError[];
