@@ -84,7 +84,10 @@ export class RegistrationQuestionsCardComponent {
     if (!this.program.isSuccess()) {
       return [];
     }
-    return this.program.data().programRegistrationAttributes;
+
+    return this.program
+      .data()
+      .programRegistrationAttributes.sort((a, b) => (a.name > b.name ? 1 : -1));
   });
 
   readonly programLanguages = computed(() => {
