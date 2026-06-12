@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`Manage Fsp configurations should not delete existing program Fsp configuration because of active registrations with that config 1`] = `
+exports[`Manage FSP-configurations should not delete existing program FSP-configuration because of active registrations with that config 1`] = `
 {
-  "message": "Cannot delete program Fsp configuration Intersolve-voucher-whatsapp because it is still in use by registrations with referenceIds: 54e62864557597e034",
+  "message": "Cannot delete program FSP-configuration Intersolve-voucher-whatsapp because it is still in use by registrations with referenceIds: 54e62864557597e034",
   "statusCode": 409,
 }
 `;

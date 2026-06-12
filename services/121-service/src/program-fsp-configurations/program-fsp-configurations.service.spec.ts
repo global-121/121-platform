@@ -418,7 +418,7 @@ describe('ProgramFspConfigurationsService', () => {
         }),
       ).rejects.toThrow(
         new HttpException(
-          `Program Fsp configuration with name ${
+          `Program FSP-configuration with name ${
             nonExistingConfigName
           } not found`,
           HttpStatus.NOT_FOUND,
@@ -490,7 +490,7 @@ describe('ProgramFspConfigurationsService', () => {
         }),
       ).rejects.toThrow(
         new HttpException(
-          `Program Fsp configuration property with name ${propertyName} not found`,
+          `Program FSP-configuration property with name ${propertyName} not found`,
           HttpStatus.NOT_FOUND,
         ),
       );
