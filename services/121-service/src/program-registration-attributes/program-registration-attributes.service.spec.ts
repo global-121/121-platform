@@ -265,9 +265,9 @@ describe('ProgramRegistrationAttributesService', () => {
   });
 
   describe('update registration attributes in batch', () => {
-    it('should update attributes', async () => {
-      // Arrange
-      const programId = 1;
+    const programId = 1;
+
+    const makeExistingAttributes = () => {
       const existingFirstNameEntity = createAttributeEntity({
         id: 10,
         name: 'firstName',
@@ -280,6 +280,14 @@ describe('ProgramRegistrationAttributesService', () => {
         label: { en: 'Old Last Name Label' },
         isRequired: false,
       });
+
+      return { existingFirstNameEntity, existingLastNameEntity };
+    };
+
+    it('should update attributes and return updated entities', async () => {
+      // Arrange
+      const { existingFirstNameEntity, existingLastNameEntity } =
+        makeExistingAttributes();
 
       const attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[] =
         [
@@ -306,37 +314,35 @@ describe('ProgramRegistrationAttributesService', () => {
         .mockImplementation(async (entities: any) => entities);
 
       // Act
-      await programRegistrationAttributesService.updateBatchProgramRegistrationAttributes(
-        {
-          programId,
-          attributesToUpdate,
-        },
-      );
+      const result =
+        await programRegistrationAttributesService.updateBatchProgramRegistrationAttributes(
+          {
+            programId,
+            attributesToUpdate,
+          },
+        );
 
       // Assert
-      const savedEntities = saveSpy.mock.calls[0][0];
-      expect(savedEntities).toHaveLength(2);
-      expect(savedEntities[0].label).toEqual({
-        en: 'New First Name Label',
-      });
-      expect(savedEntities[1].label).toEqual({ en: 'New Last Name Label' });
+      expect(result).toHaveLength(2);
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            name: 'firstName',
+            label: { en: 'New First Name Label' },
+          }),
+          expect.objectContaining({
+            name: 'lastName',
+            label: { en: 'New Last Name Label' },
+          }),
+        ]),
+      );
+      expect(saveSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should return not found when updating a non existing attribute', async () => {
       // Arrange
-      const programId = 1;
-      const existingFirstNameEntity = createAttributeEntity({
-        id: 10,
-        name: 'firstName',
-        label: { en: 'Old First Name Label' },
-        isRequired: false,
-      });
-      const existingLastNameEntity = createAttributeEntity({
-        id: 11,
-        name: 'lastName',
-        label: { en: 'Old Last Name Label' },
-        isRequired: false,
-      });
+      const { existingFirstNameEntity, existingLastNameEntity } =
+        makeExistingAttributes();
 
       const attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[] =
         [
@@ -358,21 +364,15 @@ describe('ProgramRegistrationAttributesService', () => {
         .spyOn(programRegistrationAttributeRepository, 'find')
         .mockResolvedValue([existingFirstNameEntity, existingLastNameEntity]);
 
-      // Act
-      let error;
-      try {
-        await programRegistrationAttributesService.updateBatchProgramRegistrationAttributes(
+      // Act + Assert
+      await expect(
+        programRegistrationAttributesService.updateBatchProgramRegistrationAttributes(
           {
             programId,
             attributesToUpdate,
           },
-        );
-      } catch (e) {
-        error = e;
-      }
-
-      // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.NOT_FOUND);
+        ),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.NOT_FOUND);
     });
   });
 });

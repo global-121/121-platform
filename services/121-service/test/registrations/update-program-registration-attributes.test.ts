@@ -8,7 +8,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
-const programIdOcw = 3;
+const OCW_PROGRAM_ID = 3;
 
 async function setupNlrcEnvironment() {
   await resetDB({ seedScript: SeedScript.nlrcMultiple });
@@ -20,9 +20,11 @@ async function setupNlrcEnvironment() {
 describe('Update program registration attributes in batch', () => {
   let accessToken: string;
 
-  it('should successfully update multiple attributes', async () => {
-    // Arrange
+  beforeEach(async () => {
     accessToken = await setupNlrcEnvironment();
+  });
+
+  it('should successfully update multiple attributes', async () => {
     const attributesToUpdateSuccess: UpdateProgramRegistrationAttributesBatchDto[] =
       [
         {
@@ -42,7 +44,7 @@ describe('Update program registration attributes in batch', () => {
 
     // Act
     const response = await patchProgramRegistrationAttributesInBatch({
-      programId: programIdOcw,
+      programId: OCW_PROGRAM_ID,
       accessToken,
       attributesToUpdate: attributesToUpdateSuccess,
     });
@@ -59,11 +61,9 @@ describe('Update program registration attributes in batch', () => {
   });
 
   it('should fail on updating a non existing attribute name', async () => {
-    // Arrange
-    accessToken = await setupNlrcEnvironment();
     const attributesToUpdateFail = [
       {
-        programRegistrationAttributeName: 'attibuteFailNotFound',
+        programRegistrationAttributeName: 'attributeFailNotFound',
         updateProgramRegistrationAttribute: {
           label: { en: 'WhatsApp Phone Number' },
         },
@@ -73,7 +73,7 @@ describe('Update program registration attributes in batch', () => {
     // Act
 
     const response = await patchProgramRegistrationAttributesInBatch({
-      programId: programIdOcw,
+      programId: OCW_PROGRAM_ID,
       accessToken,
       attributesToUpdate: attributesToUpdateFail,
     });
