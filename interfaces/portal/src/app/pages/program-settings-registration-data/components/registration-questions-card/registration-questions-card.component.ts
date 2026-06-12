@@ -25,7 +25,6 @@ import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
-import { getTranslatableFormGroup } from '~/components/program-language-tabs/program-language-tabs.helper';
 import { isKoboIntegrated } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
@@ -165,22 +164,23 @@ export class RegistrationQuestionsCardComponent {
     if (!this.program.isSuccess()) {
       return;
     }
-
-    const program = this.program.data();
-    const programAttributes = this.programAttributes();
     const formGroupObject = Object.fromEntries(
-      programAttributes.map((attribute) => [
+      this.programAttributes().map((attribute) => [
         attribute.name,
-        getTranslatableFormGroup({
-          program,
-          getInitialValue: (language) =>
-            this.attributeLabels().get(attribute.name)?.get(language),
-        }),
+        new FormGroup(
+          Object.fromEntries(
+            this.programLanguages().map((language) => [
+              language,
+              new FormControl(
+                this.attributeLabels().get(attribute.name)?.get(language),
+                {
+                  nonNullable: true,
+                },
+              ),
+            ]),
+          ),
+        ),
       ]),
-    );
-    console.log(
-      '🚀 ~ RegistrationQuestionsCardComponent ~ formGroupObject:',
-      formGroupObject,
     );
 
     this.formGroup = new FormGroup(formGroupObject);
