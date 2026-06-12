@@ -82,7 +82,7 @@ export class ProgramFspConfigurationsService {
 
     if (existingConfig) {
       throw new HttpException(
-        `Program Fsp with name ${programFspConfigurationDto.name} already exists`,
+        `Program FSP-configuration with name ${programFspConfigurationDto.name} already exists`,
         HttpStatus.CONFLICT,
       );
     }
