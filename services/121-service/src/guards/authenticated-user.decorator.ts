@@ -29,7 +29,7 @@ export const AuthenticatedUser = (parameters?: AuthenticatedUserParameters) => {
     }),
     ApiResponse({
       status: HttpStatus.FORBIDDEN,
-      description: `User does not have the right permission to access this endpoint. \n (${permissionsDescription})`,
+      description: `User does not have the required permission(s) to access this endpoint. \n (${permissionsDescription})`,
     }),
     ApiResponse({
       status: HttpStatus.UNAUTHORIZED,

@@ -85,7 +85,7 @@ const createProgramFspConfigurationDtoSafaricom: CreateProgramFspConfigurationDt
     properties: [],
   };
 
-describe('Manage Fsp configurations', () => {
+describe('Manage FSP-configurations', () => {
   let accessToken: string;
 
   beforeEach(async () => {
@@ -93,7 +93,7 @@ describe('Manage Fsp configurations', () => {
     accessToken = await getAccessToken();
   });
 
-  it('should add program Fsp configuration to an existing program', async () => {
+  it('should add program FSP-configuration to an existing program', async () => {
     // Act
     const result = await postProgramFspConfiguration({
       programId: programIdVisa,
@@ -137,7 +137,7 @@ describe('Manage Fsp configurations', () => {
     expect(getResultConfig).toEqual(result.body);
   });
 
-  it('should add missing required program registration attributes when adding a program Fsp configuration', async () => {
+  it('should add missing required program registration attributes when adding a program FSP-configuration', async () => {
     // Arrange
     const program = await getProgram(programIdVisa, accessToken);
     const programRegistrationAttributes =
@@ -179,7 +179,7 @@ describe('Manage Fsp configurations', () => {
     ).toEqual(originalPhoneNumberProgramRegistrationAttribute);
   });
 
-  it('should patch existing program Fsp configuration', async () => {
+  it('should patch existing program FSP-configuration', async () => {
     // Act
     const updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto = {
       label: {
@@ -238,7 +238,7 @@ describe('Manage Fsp configurations', () => {
     expect(getResultConfig).toEqual(result.body);
   });
 
-  it('should delete existing program Fsp configuration', async () => {
+  it('should delete existing program FSP-configuration', async () => {
     // Act
     const name = seededFspConfigVoucher.fsp;
     const result = await deleteProgramFspConfiguration({
@@ -258,7 +258,7 @@ describe('Manage Fsp configurations', () => {
     expect(getResultConfig).toBeUndefined();
   });
 
-  it('should not delete existing program Fsp configuration because of active registrations with that config', async () => {
+  it('should not delete existing program FSP-configuration because of active registrations with that config', async () => {
     // Prepare
     await seedPaidRegistrations({
       registrations: [registrationOCW5],
@@ -287,7 +287,7 @@ describe('Manage Fsp configurations', () => {
   });
 
   // Checking this exception in api test because it's hard to unit test the more complex transaction querybuilder part
-  it('deleting program Fsp configuration with existing transactions should set programFspConfigurationId of transactions to null', async () => {
+  it('deleting program FSP-configuration with existing transactions should set programFspConfigurationId of transactions to null', async () => {
     // Prepare
     await seedPaidRegistrations({
       registrations: [registrationOCW5],
@@ -342,7 +342,7 @@ describe('Manage Fsp configurations', () => {
     expect(transactions[0].programFspConfigurationName).toBe(null);
   });
 
-  it('should add program Fsp configuration properties to an existing program Fsp configuration', async () => {
+  it('should add program FSP-configuration properties to an existing program FSP-configuration', async () => {
     // Prepare
     const createProgramFspConfigurationDtoNoProperties = {
       ...createProgramFspConfigurationDtoIntersolveVoucher,
@@ -390,7 +390,7 @@ describe('Manage Fsp configurations', () => {
     expect(getResultConfig?.properties.sort()).toEqual(result.body.sort());
   });
 
-  it('should patch a property of an existing program Fsp configuration', async () => {
+  it('should patch a property of an existing program FSP-configuration', async () => {
     // Prepare
     const updatedPropertyDto: UpdateProgramFspConfigurationPropertyDto = {
       value: 'user1234',
@@ -437,7 +437,7 @@ describe('Manage Fsp configurations', () => {
     );
   });
 
-  it('should delete a property of an existing program Fsp configuration', async () => {
+  it('should delete a property of an existing program FSP-configuration', async () => {
     // Act
     const deleteResult = await deleteProgramFspConfigurationProperty({
       programId: programIdVisa,
@@ -466,7 +466,7 @@ describe('Manage Fsp configurations', () => {
     );
   });
 
-  it('Should return all visible properties of a program Fsp configuration', async () => {
+  it('Should return all visible properties of a program FSP-configuration', async () => {
     // Arrange
     const enumValues = Object.values(FspConfigurationProperties);
     // Act
@@ -490,7 +490,7 @@ describe('Manage Fsp configurations', () => {
     });
   });
 
-  it('Returns masked values for hidden properties of a program Fsp configuration', async () => {
+  it('Returns masked values for hidden properties of a program FSP-configuration', async () => {
     // Act
     const getHiddenProperties = await getProgramFspConfigurationProperties({
       programId: programIdVisa,
@@ -513,7 +513,7 @@ describe('Manage Fsp configurations', () => {
     });
   });
 
-  it('Should return allowlisted public properties of a program Fsp configuration for users with program.read permission', async () => {
+  it('Should return allowlisted public properties of a program FSP-configuration for users with program.read permission', async () => {
     // Arrange
     const programReadAccessToken = await createAccessTokenWithPermissions({
       permissions: [PermissionEnum.ProgramREAD],

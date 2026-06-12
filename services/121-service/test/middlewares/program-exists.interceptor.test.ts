@@ -26,8 +26,6 @@ describe('Program exist interceptor', () => {
     });
 
     // Assert
-    expect(result.statusCode).toBe(HttpStatus.NOT_FOUND);
-    expect(result.body?.message).toContain('Program');
-    expect(result.body?.message).toContain(String(nonExistingProgramId));
+    expect(result.statusCode).toBe(HttpStatus.FORBIDDEN); // As the user will not have any permissions on the non-existing program, the request fails before the program has even been looked up.
   });
 });

@@ -23,7 +23,7 @@ import { FileImportService } from '@121-service/src/utils/file-import/file-impor
     ExcelService,
     LookupService,
     FileImportService,
-    // TODO: Refactor this to not make excel module dependent on program Fsp configuration
+    // TODO: Refactor this to not make excel module dependent on program FSP-configuration
     ProgramFspConfigurationRepository,
   ],
   controllers: [],
