@@ -434,6 +434,26 @@ export class ProgramRegistrationAttributesService {
     return updatedProgramRegistrationAttribute;
   }
 
+  private validateNoDuplicateNamesInBatch({
+    attributesToUpdate,
+  }: {
+    attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[];
+  }): void {
+    const names = attributesToUpdate.map(
+      (attr) => attr.programRegistrationAttributeName,
+    );
+    const duplicateNames = names.filter(
+      (name, index) => names.indexOf(name) !== index,
+    );
+
+    if (duplicateNames.length > 0) {
+      const errors = `Duplicate programRegistrationAttributeName values are not allowed: ${[
+        ...new Set(duplicateNames),
+      ].join(', ')}`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   public async updateBatchProgramRegistrationAttributes({
     programId,
     attributesToUpdate,
@@ -441,20 +461,24 @@ export class ProgramRegistrationAttributesService {
     programId: number;
     attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[];
   }): Promise<ProgramRegistrationAttributeEntity[]> {
+    this.validateNoDuplicateNamesInBatch({ attributesToUpdate });
+
     const attributesToUpdateNames = attributesToUpdate.map(
       (attr) => attr.programRegistrationAttributeName,
     );
-    const attributesFromRepoNames = (
-      await this.programRegistrationAttributeRepository.find({
-        where: {
-          name: In(attributesToUpdateNames),
-          programId: Equal(programId),
-        },
-      })
-    ).map((attr) => attr.name);
+    const attributesFromRepoNames = new Set(
+      (
+        await this.programRegistrationAttributeRepository.find({
+          where: {
+            name: In(attributesToUpdateNames),
+            programId: Equal(programId),
+          },
+        })
+      ).map((attr) => attr.name),
+    );
 
     const namesNotFound = attributesToUpdateNames.filter(
-      (attributeName) => !attributesFromRepoNames.includes(attributeName),
+      (attributeName) => !attributesFromRepoNames.has(attributeName),
     );
     if (namesNotFound.length > 0) {
       const errors = `No programRegistrationAttribute found with name ${namesNotFound.join(', ')} for program ${programId}`;
@@ -471,8 +495,8 @@ export class ProgramRegistrationAttributesService {
         programAttributesToUpdateChunk,
       });
       updatedAttributes.push(...updatedChunk);
-      await this.programRegistrationAttributeRepository.save(updatedChunk);
     }
+    await this.programRegistrationAttributeRepository.save(updatedAttributes);
 
     return updatedAttributes;
   }
