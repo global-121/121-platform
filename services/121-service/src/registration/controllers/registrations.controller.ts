@@ -407,7 +407,7 @@ export class RegistrationsController {
         GenericRegistrationAttributes.programFspConfigurationName
       ) {
         if (!hasUpdateFspConfigPermission) {
-          const errors = `User does not have permission to update chosen program Fsp configuration`;
+          const errors = `User does not have permission to update chosen program FSP-configuration`;
           throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
         }
       } else {

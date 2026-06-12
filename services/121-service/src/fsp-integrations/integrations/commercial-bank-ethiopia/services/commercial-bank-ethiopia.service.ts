@@ -107,10 +107,10 @@ export class CommercialBankEthiopiaService {
         fspName: Fsps.commercialBankEthiopia,
       });
 
-    // For now we only support one CBE FSP configuration per program
+    // For now we only support one CBE FSP-configuration per program
     if (configs.length !== 1) {
       throw new HttpException(
-        `Expected exactly one program Fsp configuration for program ${programId} and Fsp ${Fsps.commercialBankEthiopia}`,
+        `Expected exactly one program FSP-configuration for program ${programId} and Fsp ${Fsps.commercialBankEthiopia}`,
         HttpStatus.NOT_FOUND,
       );
     }
@@ -122,7 +122,7 @@ export class CommercialBankEthiopiaService {
 
     if (credentials.password == null || credentials.username == null) {
       throw new HttpException(
-        `Missing username or password for program ${programId} Fsp configuration.`,
+        `Missing username or password for program ${programId} FSP-configuration.`,
         HttpStatus.NOT_FOUND,
       );
     }
