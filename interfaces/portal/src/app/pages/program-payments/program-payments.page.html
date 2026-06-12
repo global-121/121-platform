@@ -16,6 +16,7 @@
   </div>
 
   @if (paymentStatus.data()?.inProgress) {
+    <!-- @TODO: REFACTOR THIS - Name is incorrect, could also be nested, or at bottom of page. Change to `app-message` -->
     <app-top-page-banner
       color="orange"
       data-testid="payment-in-progress-banner"

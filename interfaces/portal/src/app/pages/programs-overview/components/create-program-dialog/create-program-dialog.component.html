@@ -15,7 +15,12 @@
   </ng-template>
   <ng-template #step>
     <p-card>
-      <h2 i18n>Program name</h2>
+      <h2
+        i18n
+        class="mb-2"
+      >
+        Program name
+      </h2>
       <p
         i18n
         class="mb-4"
@@ -29,10 +34,17 @@
     <p-card>
       <h2
         i18n
-        class="mb-4"
+        class="mb-2"
       >
         Program information
       </h2>
+
+      <p
+        i18n
+        class="mb-4"
+      >
+        Add general information to define your program details.
+      </p>
       <app-program-form-information #formInformation />
     </p-card>
   </ng-template>
@@ -42,7 +54,7 @@
         i18n
         class="mb-4"
       >
-        Budget
+        Finance
       </h2>
       <app-program-form-budget #formBudget />
     </p-card>

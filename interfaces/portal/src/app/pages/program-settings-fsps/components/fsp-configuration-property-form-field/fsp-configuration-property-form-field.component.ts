@@ -56,10 +56,16 @@ export class FspConfigurationPropertyFormFieldComponent {
 
   readonly label = computed(() => {
     const propertyName = this.fspFormField().name;
+
+    const propertyIsOptional = !this.fspFormField().isRequired
+      ? ' ' + $localize`Optional`
+      : '';
+
     if (propertyName === 'displayName') {
-      return $localize`Display name`;
+      return $localize`Display name` + propertyIsOptional;
     }
-    return FSP_CONFIGURATION_PROPERTY_LABELS[propertyName];
+
+    return FSP_CONFIGURATION_PROPERTY_LABELS[propertyName] + propertyIsOptional;
   });
 
   readonly labelTooltip = computed(() =>

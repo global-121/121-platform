@@ -2,16 +2,20 @@
   <p-card class="[&_.p-card]:border-grey-300 mb-4 [&_.p-card]:border">
     <h2
       i18n
-      class="mb-4"
+      class="mb-1"
     >
       Registration integration
     </h2>
-    <p
-      i18n
-      class="mb-6"
-    >
-      Select a registration tool you want to integrate to the program
-    </p>
+    <div class="mb-6">
+      <p i18n>
+        Select a registration tool you want to integrate to the program.
+      </p>
+      <p i18n>
+        For more information about how to link a registration tool see
+        <app-manual-link />
+      </p>
+    </div>
+
     <app-kobo-integration-card
       [programId]="programId()"
       class="w-1/2"

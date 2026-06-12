@@ -52,7 +52,7 @@ export class PageLayoutProgramSettingsComponent {
       }),
     },
     {
-      label: $localize`FSP`,
+      label: $localize`FSP integration`,
       icon: 'pi pi-money-bill',
       routerLink: [
         '/',

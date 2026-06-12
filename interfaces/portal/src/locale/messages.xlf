@@ -77,9 +77,6 @@
       <trans-unit id="1369610904910546430" datatype="html">
         <source>Who we share information with</source>
       </trans-unit>
-      <trans-unit id="1383533176932798822" datatype="html">
-        <source>We couldn&apos;t process this URL. Please verify in KoboToolbox.</source>
-      </trans-unit>
       <trans-unit id="138735154290622738" datatype="html">
         <source>yourname@example.org</source>
       </trans-unit>
@@ -342,9 +339,6 @@
       <trans-unit id="2459708623953075527" datatype="html">
         <source>Import PDF, PNG, JPG or DOC files to your program. The files will be available for viewing and exporting to users with the permission to view files.</source>
       </trans-unit>
-      <trans-unit id="2467968235830364853" datatype="html">
-        <source>Select a registration tool you want to integrate to the program</source>
-      </trans-unit>
       <trans-unit id="2470271119948012900" datatype="html">
         <source>Editing personal information</source>
       </trans-unit>
@@ -542,9 +536,6 @@
       </trans-unit>
       <trans-unit id="3395013078330530672" datatype="html">
         <source>Threshold amount is required.</source>
-      </trans-unit>
-      <trans-unit id="3423420597317106513" datatype="html">
-        <source>Budget</source>
       </trans-unit>
       <trans-unit id="3443177849607577586" datatype="html">
         <source>Successfully imported submissions from Kobo form</source>
@@ -757,9 +748,6 @@
       </trans-unit>
       <trans-unit id="4249207548869932033" datatype="html">
         <source>Password reset successful</source>
-      </trans-unit>
-      <trans-unit id="4271975304760092696" datatype="html">
-        <source>Not integrated</source>
       </trans-unit>
       <trans-unit id="4273825032754891897" datatype="html">
         <source>* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.west<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</source>
@@ -1854,9 +1842,6 @@
       <trans-unit id="add-note" datatype="html">
         <source>Add note</source>
       </trans-unit>
-      <trans-unit id="add-program-label" datatype="html">
-        <source>Add program</source>
-      </trans-unit>
       <trans-unit id="add-user" datatype="html">
         <source>Add new user</source>
       </trans-unit>
@@ -2195,7 +2180,7 @@
         <source>The payment will be in progress while the transactions in the table below are loading.</source>
       </trans-unit>
       <trans-unit id="integrate-kobo-form-api-key-explanation" datatype="html">
-        <source>In KoboToolbox, go to &quot;Account Settings&quot; (top-right menu), sub-page &quot;Security&quot;.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Make sure to click &quot;Display&quot; next to the API Key before copying.</source>
+        <source>Copy the API key from the Kobo account settings (top right) &gt; security.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Make sure to click &apos;display&apos; next to the API Key before copying.</source>
       </trans-unit>
       <trans-unit id="integrate-kobo-form-url-explanation" datatype="html">
         <source>The full URL from the form&apos;s page in KoboToolbox, i.e: https://kobo.ifrc.org/#/forms/XXXXXX/summary</source>
@@ -2540,6 +2525,39 @@
       </trans-unit>
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
+      </trans-unit>
+      <trans-unit id="1252083718772366167" datatype="html">
+        <source>Program name</source>
+      </trans-unit>
+      <trans-unit id="2399772485291907075" datatype="html">
+        <source>Finance</source>
+      </trans-unit>
+      <trans-unit id="5063365640218451767" datatype="html">
+        <source>Select a registration tool you want to integrate to the program.</source>
+      </trans-unit>
+      <trans-unit id="5274418165298849960" datatype="html">
+        <source>Click to link</source>
+      </trans-unit>
+      <trans-unit id="7801717660956820159" datatype="html">
+        <source>For more information about how to link a registration tool see <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/></source>
+      </trans-unit>
+      <trans-unit id="create-new-program-label" datatype="html">
+        <source>Create new program</source>
+      </trans-unit>
+      <trans-unit id="1417693714872528491" datatype="html">
+        <source>This field is required.</source>
+      </trans-unit>
+      <trans-unit id="8227576772021299128" datatype="html">
+        <source>We couldn&apos;t find this form in Kobo. Check the URL to make sure the form is deployed.</source>
+      </trans-unit>
+      <trans-unit id="4625810362559566622" datatype="html">
+        <source>FSP integration</source>
+      </trans-unit>
+      <trans-unit id="1840148350593500398" datatype="html">
+        <source>Make sure the default language in the &apos;Form&apos; tab of Kobo matches the main language of the program. One language must be set to English (EN).</source>
+      </trans-unit>
+      <trans-unit id="5731103713915660185" datatype="html">
+        <source>Add general information to define your program details.</source>
       </trans-unit>
     </body>
   </file>
