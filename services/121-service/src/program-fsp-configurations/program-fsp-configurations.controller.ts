@@ -38,7 +38,9 @@ export class ProgramFspConfigurationsController {
     private readonly programFspConfigurationsService: ProgramFspConfigurationsService,
   ) {}
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramFspConfigREAD],
+  })
   @ApiOperation({
     summary: 'Get all FSP-configurations for a Program.',
   })
@@ -59,7 +61,9 @@ export class ProgramFspConfigurationsController {
     return this.programFspConfigurationsService.getByProgramId(programId);
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramFspConfigCREATE],
+  })
   @ApiOperation({
     summary: `
       Create an FSP-configuration for a Program.
@@ -96,7 +100,9 @@ export class ProgramFspConfigurationsController {
     );
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramFspConfigUPDATE],
+  })
   @ApiOperation({
     summary: `
       Update an FSP-configuration for a Program. Can only update the label and properties.
@@ -139,7 +145,9 @@ export class ProgramFspConfigurationsController {
     );
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramFspConfigDELETE],
+  })
   @ApiOperation({
     summary:
       'Delete an FSP-configuration. FSP-configurations cannot be deleted if they are associated with any transaction(s).',
@@ -173,7 +181,9 @@ export class ProgramFspConfigurationsController {
     await this.programFspConfigurationsService.delete(programId, name);
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramFspConfigREAD],
+  })
   @ApiOperation({
     summary: 'Retrieve visible properties for FSP-configuration.',
   })
@@ -203,7 +213,12 @@ export class ProgramFspConfigurationsController {
     );
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramREAD] })
+  @AuthenticatedUser({
+    permissions: [
+      PermissionEnum.ProgramREAD,
+      PermissionEnum.ProgramFspConfigREAD,
+    ],
+  })
   @ApiOperation({
     summary:
       'Retrieve allowlisted public properties for FSP-configuration. Only returns properties that are safe to expose to non-admin users based on the Program FSP-configuration Property type.',
@@ -234,7 +249,7 @@ export class ProgramFspConfigurationsController {
     );
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramFspConfigUPDATE] })
   @ApiOperation({
     summary: `Create properties for an FSP-configuration. See \`/api/fsps\` for allowed properties per FSP.`,
   })

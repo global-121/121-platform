@@ -62,7 +62,13 @@ export class PageLayoutProgramSettingsComponent {
         AppRoutes.programSettings,
         AppRoutes.programSettingsFsps,
       ],
-      visible: this.authService.isAdmin,
+      visible: this.authService.hasSomePermission({
+        programId: this.programId(),
+        optionalPermissions: [
+          PermissionEnum.ProgramFspConfigCREATE,
+          PermissionEnum.ProgramFspConfigUPDATE,
+        ],
+      }),
     },
     {
       label: $localize`Registration data`,
