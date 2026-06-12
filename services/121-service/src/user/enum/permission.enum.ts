@@ -33,6 +33,10 @@ export enum PermissionEnum {
 
   ProgramMetricsREAD = 'program:metrics.read',
 
+  // Kobo
+  ProgramKoboREAD = 'program:kobo.read',
+  ProgramKoboUPDATE = 'program:kobo.update',
+
   // Payment(s)
   PaymentREAD = 'payment.read',
   PaymentCREATE = 'payment.create',
