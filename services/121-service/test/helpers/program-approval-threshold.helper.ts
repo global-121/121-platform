@@ -1,14 +1,12 @@
 import { HttpStatus } from '@nestjs/common';
 import * as request from 'supertest';
 
-import { env } from '@121-service/src/env';
 import { ApproverInThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/approver-in-threshold-response.dto';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
-  createUser,
-  findUserByUsername,
-  generateUniqueTestId,
+  createUserWithPermissions,
   getAccessToken,
   getServer,
 } from '@121-service/test/helpers/utility.helper';
@@ -65,7 +63,7 @@ export async function getApprovers({
 }
 
 /**
- * Creates a dedicated org admin user for managing approval thresholds,
+ * Creates a dedicated user for managing approval thresholds,
  * avoiding self-assignment issues when approvers include the main admin user.
  */
 export async function createOrReplaceProgramApprovalThresholdsWithNewUser({
@@ -77,41 +75,20 @@ export async function createOrReplaceProgramApprovalThresholdsWithNewUser({
 }): Promise<request.Response> {
   const adminAccessToken = await getAccessToken();
 
-  const username = `threshold_admin_${generateUniqueTestId()}@example.org`;
-
-  await createUser({
-    username,
-    displayName: 'Threshold Admin',
-    adminAccessToken,
-  });
-
-  // Find the newly created user because we need their ID to assign them to the program and promote them to org admin
-  const thresholdAdminUserId = await findUserByUsername({
+  const thresholdManager = await createUserWithPermissions({
+    permissions: [PermissionEnum.ProgramApprovalThresholdsUPDATE],
     programId,
-    username,
     adminAccessToken,
   });
 
-  // Promote to organization admin so they can manage approval thresholds
-  const promoteResponse = await getServer()
-    .patch(`/users/${thresholdAdminUserId}`)
-    .set('Cookie', [adminAccessToken])
-    .send({ isOrganizationAdmin: true });
-
-  if (promoteResponse.status !== HttpStatus.OK) {
-    throw new Error(
-      `Failed to promote threshold admin to organization admin: ${promoteResponse.status}`,
-    );
-  }
-
-  const accessToken = await getAccessToken(
-    username,
-    env.USERCONFIG_121_SERVICE_PASSWORD_TESTING,
+  const thresholdAdminAccessToken = await getAccessToken(
+    thresholdManager.username,
+    thresholdManager.password,
   );
 
   return await createOrReplaceProgramApprovalThresholds({
     programId,
     thresholds,
-    accessToken,
+    accessToken: thresholdAdminAccessToken,
   });
 }

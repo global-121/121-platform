@@ -139,23 +139,23 @@ describe('do payment with 2 approval steps', () => {
       paymentId,
       accessToken: adminAccessToken,
     });
-    const getTransactionsResultAfter1stApprove =
+    const getTransactionsResultAfterFirstApproval =
       await getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
         accessToken: adminAccessToken,
       });
-    expect(getTransactionsResultAfter1stApprove.body.data[0].status).toBe(
+    expect(getTransactionsResultAfterFirstApproval.body.data[0].status).toBe(
       TransactionStatusEnum.pendingApproval,
     );
 
     // Check approval status after 1st approval
-    const paymentSummaryAfter1stApproval = await getPaymentSummary({
+    const paymentSummaryAfterFirstApproval = await getPaymentSummary({
       programId,
       paymentId,
       accessToken: adminAccessToken,
     });
-    expect(paymentSummaryAfter1stApproval.body).toMatchObject({
+    expect(paymentSummaryAfterFirstApproval.body).toMatchObject({
       isPaymentApproved: false,
       approvalsGiven: 1,
       approvalsRequired: 2,
@@ -169,12 +169,12 @@ describe('do payment with 2 approval steps', () => {
     });
 
     // Check approval status after 2nd approval
-    const paymentSummaryAfter2ndApproval = await getPaymentSummary({
+    const paymentSummaryAfterSecondApproval = await getPaymentSummary({
       programId,
       paymentId,
       accessToken: adminAccessToken,
     });
-    expect(paymentSummaryAfter2ndApproval.body).toMatchObject({
+    expect(paymentSummaryAfterSecondApproval.body).toMatchObject({
       isPaymentApproved: true,
       approvalsGiven: 2,
       approvalsRequired: 2,
@@ -210,7 +210,7 @@ describe('do payment with 2 approval steps', () => {
     );
   });
 
-  it('should create right approval payment events, including note', async () => {
+  it('should create correct approval payment events, including note', async () => {
     const note = '2nd approval note';
 
     // Act
@@ -271,13 +271,13 @@ describe('do payment with 2 approval steps', () => {
     });
 
     // Assert after 1st approval: step 2 approver (finance manager) is now current
-    const summaryAfter1stApproval = await getPaymentSummary({
+    const summaryAfterFirstApproval = await getPaymentSummary({
       programId,
       paymentId,
       accessToken: adminAccessToken,
     });
     expect(
-      summaryAfter1stApproval.body.approversForCurrentApprovalStep,
+      summaryAfterFirstApproval.body.approversForCurrentApprovalStep,
     ).toEqual([{ username: env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER }]);
 
     // Act - 2nd approve (finance manager)
