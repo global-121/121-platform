@@ -31,6 +31,11 @@ export enum PermissionEnum {
   ProgramAttachmentsUPDATE = 'program:attachments.update',
   ProgramAttachmentsDELETE = 'program:attachments.delete',
 
+  ProgramFspConfigREAD = 'program:fsp-config.read',
+  ProgramFspConfigCREATE = 'program:fsp-config.create',
+  ProgramFspConfigUPDATE = 'program:fsp-config.update',
+  ProgramFspConfigDELETE = 'program:fsp-config.delete',
+
   ProgramMetricsREAD = 'program:metrics.read',
 
   // Program Registration Attributes

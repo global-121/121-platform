@@ -14,6 +14,7 @@ import { CardModule } from 'primeng/card';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
@@ -22,6 +23,7 @@ import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.he
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { FspConfigurationCardComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-card/fsp-configuration-card.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import { AuthService } from '~/services/auth.service';
 
 @Component({
   selector: 'app-fsp-configuration-list',
@@ -38,6 +40,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FspConfigurationListComponent {
+  readonly authService = inject(AuthService);
   readonly programId = input.required<string>();
   readonly forceShowNewFspList = model.required<boolean>();
   readonly addFspConfiguration = output<Fsps>();
@@ -65,5 +68,12 @@ export class FspConfigurationListComponent {
     return this.fspConfigurations
       .data()
       ?.every((fspConfiguration) => fspConfiguration.fspName !== name);
+  }
+
+  canAddFsp() {
+    return this.authService.hasPermission({
+      programId: this.programId(),
+      requiredPermission: PermissionEnum.ProgramFspConfigCREATE,
+    });
   }
 }

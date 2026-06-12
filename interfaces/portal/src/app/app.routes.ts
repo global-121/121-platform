@@ -239,7 +239,12 @@ export const routes: Routes = [
                 (x) => x.ProgramSettingsFspsPageComponent,
               ),
             canActivate: [
-              authCapabilitiesGuard((authService) => authService.isAdmin),
+              programPermissionsGuard({
+                permission: PermissionEnum.ProgramFspConfigCREATE,
+              }),
+              programPermissionsGuard({
+                permission: PermissionEnum.ProgramFspConfigUPDATE,
+              }),
             ],
           },
           {
