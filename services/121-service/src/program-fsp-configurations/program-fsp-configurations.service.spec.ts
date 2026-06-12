@@ -235,7 +235,7 @@ describe('ProgramFspConfigurationsService', () => {
         service.create(programId, duplivateNameCreateDto),
       ).rejects.toThrow(
         new HttpException(
-          `Program Fsp with name ${duplivateNameCreateDto.name} already exists`,
+          `Program FSP-configuration with name ${duplivateNameCreateDto.name} already exists`,
           HttpStatus.CONFLICT,
         ),
       );
