@@ -296,9 +296,9 @@ export const routes: Routes = [
                     (x) => x.ProgramSettingsPaymentApprovalPageComponent,
                   ),
                 canActivate: [
-                  authCapabilitiesGuard(
-                    (authService) => authService.isOrganizationAdmin,
-                  ),
+                  programPermissionsGuard({
+                    permission: PermissionEnum.ProgramApprovalThresholdsREAD,
+                  }),
                 ],
                 canDeactivate: [pendingChangesGuard],
               },

@@ -138,3 +138,222 @@ describe('AuthService - hasDeprecatedPermissions', () => {
     });
   });
 });
+
+describe('AuthService - permission checks', () => {
+  const getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
+
+  let service: AuthService;
+  let mockRouter: MockedObject<Router>;
+  let mockLogService: MockedObject<LogService>;
+  let mockAuthStrategy: MockAuthStrategy;
+  let mockInjector: MockedObject<Injector>;
+  let mockUserApiService: MockedObject<UserApiService>;
+  let mockQueryClient: MockedObject<QueryClient>;
+
+  const createMockUser = (
+    permissions: Record<number, PermissionEnum[]>,
+  ): LocalStorageUser => ({
+    username: 'testuser',
+    isAdmin: false,
+    isOrganizationAdmin: false,
+    permissions,
+  });
+
+  beforeEach(() => {
+    getItemSpy.mockClear();
+    localStorage.clear();
+
+    mockRouter = vi.mocked({
+      navigate: vi.fn().mockName('Router.navigate'),
+    } as unknown as Router);
+    mockLogService = vi.mocked({
+      logEvent: vi.fn().mockName('LogService.logEvent'),
+    } as unknown as LogService);
+    mockInjector = vi.mocked({
+      get: vi.fn().mockName('Injector.get'),
+    } as unknown as Injector);
+    mockAuthStrategy = {
+      logout: vi.fn(),
+      isUserExpired: vi.fn(),
+    };
+    mockUserApiService = vi.mocked({
+      getCurrent: vi.fn().mockName('UserApiService.getCurrent'),
+    } as unknown as UserApiService);
+    mockQueryClient = vi.mocked({
+      fetchQuery: vi.fn().mockName('QueryClient.fetchQuery'),
+    } as unknown as QueryClient);
+
+    // eslint-disable-next-line @typescript-eslint/no-deprecated -- Did not manage to get test working otherwise
+    mockInjector.get.mockReturnValue(mockAuthStrategy);
+
+    TestBed.configureTestingModule({
+      providers: [
+        AuthService,
+        { provide: Router, useValue: mockRouter },
+        { provide: LogService, useValue: mockLogService },
+        { provide: Injector, useValue: mockInjector },
+        { provide: UserApiService, useValue: mockUserApiService },
+        { provide: QueryClient, useValue: mockQueryClient },
+      ],
+    });
+
+    service = TestBed.inject(AuthService);
+    mockAuthStrategy.isUserExpired.mockReturnValue(false);
+  });
+
+  afterEach(() => {
+    getItemSpy.mockClear();
+    localStorage.clear();
+  });
+
+  describe('getAssignedProgramIds', () => {
+    it('should return assigned program IDs as numbers', () => {
+      // Arrange
+      const user = createMockUser({
+        1: [PermissionEnum.RegistrationREAD],
+        7: [PermissionEnum.RegistrationBulkUPDATE],
+      });
+      getItemSpy.mockReturnValue(JSON.stringify(user));
+
+      // Act
+      const result = service.getAssignedProgramIds();
+
+      // Assert
+      expect(result).toEqual([1, 7]);
+    });
+
+    it('should return an empty array when no user is available', () => {
+      // Arrange
+      getItemSpy.mockReturnValue(null);
+
+      // Act
+      const result = service.getAssignedProgramIds();
+
+      // Assert
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('hasPermission', () => {
+    it('should return true when the user has the required permission in the program', () => {
+      // Arrange
+      const user = createMockUser({
+        2: [
+          PermissionEnum.RegistrationREAD,
+          PermissionEnum.RegistrationBulkUPDATE,
+        ],
+      });
+
+      // Act
+      const result = service.hasPermission({
+        programId: 2,
+        requiredPermission: PermissionEnum.RegistrationBulkUPDATE,
+        user,
+      });
+
+      // Assert
+      expect(result).toBe(true);
+    });
+
+    it('should return false when the user is not assigned to the program', () => {
+      // Arrange
+      const user = createMockUser({
+        3: [PermissionEnum.RegistrationREAD],
+      });
+
+      // Act
+      const result = service.hasPermission({
+        programId: 9,
+        requiredPermission: PermissionEnum.RegistrationREAD,
+        user,
+      });
+
+      // Assert
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('hasAllPermissions', () => {
+    it('should return true when all required permissions are present', () => {
+      // Arrange
+      const user = createMockUser({
+        4: [
+          PermissionEnum.RegistrationREAD,
+          PermissionEnum.RegistrationBulkUPDATE,
+        ],
+      });
+      getItemSpy.mockReturnValue(JSON.stringify(user));
+
+      // Act
+      const result = service.hasAllPermissions({
+        programId: 4,
+        requiredPermissions: [
+          PermissionEnum.RegistrationREAD,
+          PermissionEnum.RegistrationBulkUPDATE,
+        ],
+      });
+
+      // Assert
+      expect(result).toBe(true);
+    });
+
+    it('should return false when one or more required permissions are missing', () => {
+      // Arrange
+      const user = createMockUser({
+        5: [PermissionEnum.RegistrationREAD],
+      });
+      getItemSpy.mockReturnValue(JSON.stringify(user));
+
+      // Act
+      const result = service.hasAllPermissions({
+        programId: 5,
+        requiredPermissions: [
+          PermissionEnum.RegistrationREAD,
+          PermissionEnum.RegistrationBulkUPDATE,
+        ],
+      });
+
+      // Assert
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('hasSomePermission', () => {
+    it('should return true when at least one optional permission is present', () => {
+      // Arrange
+      const user = createMockUser({
+        6: [PermissionEnum.RegistrationREAD],
+      });
+      getItemSpy.mockReturnValue(JSON.stringify(user));
+
+      // Act
+      const result = service.hasSomePermission({
+        programId: 6,
+        optionalPermissions: [
+          PermissionEnum.RegistrationREAD,
+          PermissionEnum.RegistrationBulkUPDATE,
+        ],
+      });
+
+      // Assert
+      expect(result).toBe(true);
+    });
+
+    it('should return false when none of the optional permissions are present', () => {
+      // Arrange
+      const user = createMockUser({
+        7: [PermissionEnum.RegistrationREAD],
+      });
+      getItemSpy.mockReturnValue(JSON.stringify(user));
+
+      // Act
+      const result = service.hasSomePermission({
+        programId: 7,
+        optionalPermissions: [PermissionEnum.RegistrationBulkUPDATE],
+      });
+
+      // Assert
+      expect(result).toBe(false);
+    });
+  });
+});

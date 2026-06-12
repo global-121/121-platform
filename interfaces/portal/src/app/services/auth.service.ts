@@ -273,11 +273,35 @@ export class AuthService {
     programId: number | string;
     requiredPermissions: PermissionEnum[];
   }): boolean {
+    const user = this.user;
+    if (!user) {
+      return false;
+    }
     return requiredPermissions.every((permissionName) =>
       this.hasPermission({
         programId,
         requiredPermission: permissionName,
-        user: this.user,
+        user,
+      }),
+    );
+  }
+
+  public hasSomePermission({
+    programId,
+    optionalPermissions,
+  }: {
+    programId: number | string;
+    optionalPermissions: PermissionEnum[];
+  }): boolean {
+    const user = this.user;
+    if (!user) {
+      return false;
+    }
+    return optionalPermissions.some((permissionName) =>
+      this.hasPermission({
+        programId,
+        requiredPermission: permissionName,
+        user,
       }),
     );
   }
