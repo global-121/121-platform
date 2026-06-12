@@ -24,7 +24,7 @@ const defaultSafaricomAttributes = [
   { name: 'phoneNumber', label: 'Phone Number' },
 ];
 
-const kobooAttributes = [
+const koboAttributes = [
   { name: 'What_is_2_2_number', label: 'What is 2+2 (number)?' },
   {
     name: 'How_are_you_today_select_one',
@@ -32,17 +32,23 @@ const kobooAttributes = [
   },
 ];
 
-test('View program and kobo attributes in settings page', async ({
-  resetDBAndSeedRegistrations,
-  registrationDataPage,
-}) => {
+const labelUpdates = [
+  { name: 'fullName', label: 'New fullName label' },
+  { name: 'gender', label: 'New gender label' },
+];
+
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.safaricomProgram,
     registrations: registrationsSafaricom,
     programId: programIdSafaricom,
     navigateToPage: `/program/${programIdSafaricom}/settings/registration-data`,
   });
+});
 
+test('View registration attributes in settings page and edit them', async ({
+  registrationDataPage,
+}) => {
   await test.step('Validate language tabs', async () => {
     await registrationDataPage.validateLanguageTabs({
       languages: languagesBeforeIntegration,
@@ -70,7 +76,15 @@ test('View program and kobo attributes in settings page', async ({
 
   await test.step('Validate kobo attributes in table', async () => {
     await registrationDataPage.validateProgramAttributesTable({
-      attributes: kobooAttributes,
+      attributes: koboAttributes,
+    });
+  });
+
+  await test.step('Edit attribute labels', async () => {
+    await registrationDataPage.validateEditButton({ visible: true });
+    await registrationDataPage.editLabels({ labelUpdates });
+    await registrationDataPage.validateProgramAttributesTable({
+      attributes: labelUpdates,
     });
   });
 });
