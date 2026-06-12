@@ -94,7 +94,7 @@ export class ProgramController {
     }
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ isOrganizationAdmin: true })
   @ApiOperation({
     summary: `Create a program.`,
   })

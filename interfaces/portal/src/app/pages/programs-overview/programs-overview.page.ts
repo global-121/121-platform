@@ -26,7 +26,7 @@ export class ProgramsOverviewPageComponent {
   readonly rtlHelper = inject(RtlHelperService);
   private authService = inject(AuthService);
 
-  public canCreatePrograms = this.authService.isAdmin;
+  public canCreatePrograms = this.authService.isOrganizationAdmin;
 
   public assignedPrograms = this.authService.getAssignedProgramIds();
 }
