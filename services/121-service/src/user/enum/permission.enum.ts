@@ -38,6 +38,10 @@ export enum PermissionEnum {
   ProgramRegistrationAttributesUPDATE = 'program:registration-attributes.update',
   ProgramRegistrationAttributesDELETE = 'program:registration-attributes.delete',
 
+  // Kobo
+  ProgramKoboREAD = 'program:kobo.read',
+  ProgramKoboUPDATE = 'program:kobo.update',
+
   // Payment(s)
   PaymentREAD = 'payment.read',
   PaymentCREATE = 'payment.create',
