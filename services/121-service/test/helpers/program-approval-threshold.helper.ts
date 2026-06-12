@@ -81,7 +81,7 @@ export async function createOrReplaceProgramApprovalThresholdsWithNewUser({
     adminAccessToken,
   });
 
-  const thresholdAdminAccessToken = await getAccessToken(
+  const thresholdManagerAccessToken = await getAccessToken(
     thresholdManager.username,
     thresholdManager.password,
   );
@@ -89,6 +89,6 @@ export async function createOrReplaceProgramApprovalThresholdsWithNewUser({
   return await createOrReplaceProgramApprovalThresholds({
     programId,
     thresholds,
-    accessToken: thresholdAdminAccessToken,
+    accessToken: thresholdManagerAccessToken,
   });
 }
