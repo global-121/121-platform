@@ -196,11 +196,13 @@ export class PaymentsReportingService {
     fromDateString,
     toDateString,
     paymentId,
+    language,
   }: {
     programId: number;
     fromDateString?: string;
     toDateString?: string;
     paymentId?: number;
+    language?: string;
   }): Promise<FileDto> {
     // Convert string dates to Date objects
     const fromDate = fromDateString ? new Date(fromDateString) : undefined;
@@ -230,9 +232,10 @@ export class PaymentsReportingService {
       });
 
     return {
-      data: RegistrationViewsMapper.replaceDropdownValuesWithEnglishLabel({
+      data: RegistrationViewsMapper.replaceDropdownValuesWithLabel({
         rows: transactions,
         attributes: dropdownAttributes,
+        language,
       }),
       fileName,
     };
