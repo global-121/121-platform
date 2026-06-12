@@ -106,7 +106,7 @@ export class ProgramSettingsPaymentApprovalPageComponent implements ComponentCan
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
 
-  readonly canManageAidworkers = computed(() =>
+  readonly canManageApprovalThresholds = computed(() =>
     this.authService.hasPermission({
       programId: this.programId(),
       requiredPermission: PermissionEnum.ProgramApprovalThresholdsUPDATE,

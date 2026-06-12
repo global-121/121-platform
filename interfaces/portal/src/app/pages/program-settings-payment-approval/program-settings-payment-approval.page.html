@@ -4,7 +4,7 @@
     i18n-header="@@page-title-program-settings-payment-approval"
     editPencilTitle="Edit payment approval settings"
     i18n-editPencilTitle
-    [canEdit]="canManageAidworkers()"
+    [canEdit]="canManageApprovalThresholds()"
     [isEditing]="isEditing()"
     (isEditingChange)="isEditing.set($event)"
     [formGroup]="formGroup"
