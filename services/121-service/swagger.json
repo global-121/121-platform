@@ -563,6 +563,13 @@
     ]
   },
   {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registration-attributes-batch",
+    "params": [
+      "programId"
+    ]
+  },
+  {
     "method": "get",
     "path": "/api/fsps",
     "params": [],

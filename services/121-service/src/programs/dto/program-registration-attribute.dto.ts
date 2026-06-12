@@ -146,3 +146,13 @@ export class UpdateProgramRegistrationAttributeDto extends BaseProgramRegistrati
   @IsBoolean()
   public readonly isRequired?: boolean;
 }
+
+export class UpdateProgramRegistrationAttributesBatchDto extends BaseProgramRegistrationAttributeDto {
+  @ApiProperty({
+    example: 'whatsappPhoneNumber',
+  })
+  public readonly programRegistrationAttributeName: string;
+
+  @ApiProperty()
+  public readonly updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
+}
