@@ -121,9 +121,9 @@ export const mtnEnvVariablesSchema = {
 // These are not required as env variables at startup because the actual
 // credentials are stored in the database via program FSP configuration.
 const mtnOptionalEnvVariablesSchema = {
-  MTN_SUBSCRIPTION_KEY: z.string().optional(),
-  MTN_REFERENCE_ID: z.string().optional(),
   MTN_API_KEY: z.string().optional(),
+  MTN_REFERENCE_ID: z.string().optional(),
+  MTN_SUBSCRIPTION_KEY: z.string().optional(),
 };
 
 export const nedbankEnvVariablesSchema = {
