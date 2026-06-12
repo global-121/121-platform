@@ -295,7 +295,7 @@ export class ProgramFspConfigurationsController {
     });
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramFspConfigUPDATE] })
   @ApiOperation({
     summary: `Update a single property for an FSP-configuration. See \`/api/fsps\` for allowed properties per FSP.`,
   })
@@ -341,7 +341,7 @@ export class ProgramFspConfigurationsController {
     });
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramFspConfigDELETE] })
   @ApiOperation({
     summary: `Delete a single FSP-configuration property. See \`/api/fsps\` for required properties per FSP.`,
   })
