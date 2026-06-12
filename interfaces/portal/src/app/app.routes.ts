@@ -253,7 +253,9 @@ export const routes: Routes = [
                 (x) => x.ProgramSettingsRegistrationDataPageComponent,
               ),
             canActivate: [
-              authCapabilitiesGuard((authService) => authService.isAdmin),
+              programPermissionsGuard({
+                permission: PermissionEnum.ProgramKoboREAD,
+              }),
             ],
           },
           {

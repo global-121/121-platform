@@ -74,7 +74,10 @@ export class PageLayoutProgramSettingsComponent {
         AppRoutes.programSettings,
         AppRoutes.programSettingsRegistrationData,
       ],
-      visible: this.authService.isAdmin,
+      visible: this.authService.hasPermission({
+        programId: this.programId(),
+        requiredPermission: PermissionEnum.ProgramKoboREAD,
+      }),
     },
     {
       label: $localize`:@@page-title-users:Users`,
