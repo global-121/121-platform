@@ -26,6 +26,6 @@ describe('Program exist interceptor', () => {
     });
 
     // Assert
-    expect(result.statusCode).toBe(HttpStatus.FORBIDDEN); // As the users does not have any permissions on the non-existing program, the request fails before the program has even been looked up.
+    expect(result.statusCode).toBe(HttpStatus.FORBIDDEN); // As the user will not have any permissions on the non-existing program, the request fails before the program has even been looked up.
   });
 });
