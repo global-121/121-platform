@@ -1,79 +1,112 @@
 <app-card-editable
-  header="Registration questions"
-  i18n-header
+  [header]="cardHeader()"
   editPencilTitle="Edit registration questions"
   i18n-editPencilTitle
-  [canEdit]="false"
-  [isEditing]="false"
+  [canEdit]="isKoboIntegrated()"
+  [(isEditing)]="isEditing"
   [formGroup]="formGroup"
-  [mutation]="undefined"
+  [mutation]="updateAttributeLabelsMutation"
   [mutationData]="formGroup.getRawValue()"
 >
   <p
     i18n
     class="mb-4"
   >
-    Below are the {{ programAttributes.data()?.length }} questions that will be
-    displayed in the data table and on the profile page.<br />
-    You can edit each column name to a shorter version.
+    Your form must include the following required fields, using these
+    <strong>exact data column names</strong> (these would be the column headers
+    in excel).
   </p>
+  @if (isKoboIntegrated()) {
+    <p i18n>You can edit each column label to a shorter version.</p>
+  }
 
-  <app-program-language-tabs
-    [programId]="programId()"
-    [(selectedTabLanguage)]="selectedTabLanguage"
-    [languages]="programLanguages()"
-  >
-    <ng-template #languageTemplate>
-      @if (!isSupportedUILanguage(selectedTabLanguage())) {
-        <p class="my-2 flex items-center">
-          <i class="pi pi-exclamation-triangle me-2 text-xl text-red-500"></i>
-          <span i18n>
-            Please note, the portal does not support this language currently.
-          </span>
-        </p>
-      }
-      <p-table
-        [value]="programAttributes.data() ?? []"
-        data-testid="program-attributes-table"
-      >
-        <ng-template #header>
-          <tr>
-            <th
-              i18n
-              class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
-            >
-              Data column name
-              <app-info-tooltip
-                [message]="'The data column name of the question.'"
-              ></app-info-tooltip>
-            </th>
-            <th
-              i18n
-              class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
-            >
-              Question label
-              <app-info-tooltip
-                [message]="`The label that will be shown in the registration page table header and registration's profile. The labels cand be edited by clicking on the pencil icon above.`"
-              ></app-info-tooltip>
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template
-          #body
-          let-attribute
+  <p-tabs [(value)]="selectedTabLanguage">
+    <p-tablist>
+      @for (language of programLanguages(); track language) {
+        <p-tab
+          [value]="language"
+          data-testid="language-tab"
         >
-          <tr [formGroupName]="attribute.name">
-            <td>{{ attribute.name }}</td>
-            <td>
-              {{
-                attributeLabels()
-                  ?.get(attribute.name)
-                  ?.get(selectedTabLanguage()) ?? attribute.name
-              }}
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </ng-template>
-  </app-program-language-tabs>
+          <i class="pi pi-globe"></i>
+          {{ tabLabels().get(language) | titlecase }}
+        </p-tab>
+      }
+    </p-tablist>
+    <p-tabpanels class="p-0">
+      @for (language of programLanguages(); track language) {
+        <p-tabpanel [value]="language">
+          @if (!isSupportedUILanguage(selectedTabLanguage())) {
+            <p class="my-2 flex items-center">
+              <i
+                class="pi pi-exclamation-triangle me-2 text-xl text-red-500"
+              ></i>
+              <span i18n>
+                Please note, the portal does not support this language
+                currently.
+              </span>
+            </p>
+          }
+          <p-table
+            [value]="programAttributes()"
+            data-testid="program-attributes-table"
+          >
+            <ng-template #header>
+              <tr>
+                <th
+                  class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
+                >
+                  <span
+                    class="me-1"
+                    i18n
+                  >
+                    Data column name</span
+                  >
+                  <app-info-tooltip
+                    message="The data column name of the question."
+                    i18n-message
+                  ></app-info-tooltip>
+                </th>
+                <th
+                  class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
+                >
+                  <span
+                    class="me-1"
+                    i18n
+                    >Question label</span
+                  >
+                  <app-info-tooltip
+                    [message]="tableHeaderLabelTooltipMessage()"
+                  ></app-info-tooltip>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template
+              #body
+              let-attribute
+            >
+              <tr [formGroupName]="attribute.name">
+                <td>{{ attribute.name }}</td>
+                <td>
+                  @if (isEditing()) {
+                    <input
+                      type="text"
+                      pInputText
+                      [formControlName]="language"
+                      [attr.data-testid]="`attribute-label-input-${language}-${attribute.name}`"
+                    />
+                  } @else {
+                    {{
+                      attributeLabels()
+                        .get(attribute.name)
+                        ?.get(selectedTabLanguage())
+                    }}
+                  }
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabpanel>
+      }
+    </p-tabpanels>
+  </p-tabs>
 </app-card-editable>

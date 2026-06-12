@@ -15,6 +15,9 @@ class RegistrationDataPage extends BasePage {
   readonly closeImportDialog: Locator;
   readonly languageTabs: Locator;
   readonly programAttributesTable: Locator;
+  readonly editLabelsButton: Locator;
+  readonly cancelButton: Locator;
+  readonly saveButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -29,7 +32,6 @@ class RegistrationDataPage extends BasePage {
     this.initiateImportButton = this.page.getByRole('button', {
       name: 'Import registrations',
     });
-
     this.closeImportDialog = this.page.getByRole('button', {
       name: 'Close',
     });
@@ -37,6 +39,13 @@ class RegistrationDataPage extends BasePage {
     this.programAttributesTable = this.page.getByTestId(
       'program-attributes-table',
     );
+    this.editLabelsButton = this.page.getByTestId('editable-card-edit-button');
+    this.cancelButton = this.page.getByRole('button', {
+      name: 'Cancel',
+    });
+    this.saveButton = this.page.getByRole('button', {
+      name: 'Save',
+    });
   }
 
   async koboSuccessfullyLinkedDialog({
@@ -174,6 +183,53 @@ class RegistrationDataPage extends BasePage {
         attribute.label,
       );
     }
+  }
+  async validateEditButton({ visible }: { visible: boolean }) {
+    if (visible) {
+      await expect(this.editLabelsButton).toBeVisible();
+    } else {
+      await expect(this.editLabelsButton).toBeHidden();
+    }
+  }
+
+  async validateCancelButton({ visible }: { visible: boolean }) {
+    if (visible) {
+      await expect(this.cancelButton).toBeVisible();
+    } else {
+      await expect(this.cancelButton).toBeHidden();
+    }
+  }
+
+  async validateSaveButton({ visible }: { visible: boolean }) {
+    if (visible) {
+      await expect(this.saveButton).toBeVisible();
+    } else {
+      await expect(this.saveButton).toBeHidden();
+    }
+  }
+
+  async editLabels({
+    labelUpdates,
+  }: {
+    labelUpdates: { name: string; label: string }[];
+  }) {
+    await this.editLabelsButton.click();
+    await this.validateEditButton({ visible: false });
+    await this.validateCancelButton({ visible: true });
+    await this.validateSaveButton({ visible: true });
+
+    for (const update of labelUpdates) {
+      const input = this.page.getByTestId(
+        `attribute-label-input-en-${update.name}`,
+      );
+      await input.fill(update.label);
+    }
+
+    await this.saveButton.click();
+
+    await this.validateEditButton({ visible: true });
+    await this.validateCancelButton({ visible: false });
+    await this.validateSaveButton({ visible: false });
   }
 }
 
