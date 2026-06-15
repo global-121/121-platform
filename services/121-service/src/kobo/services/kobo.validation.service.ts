@@ -367,8 +367,8 @@ export class KoboValidationService {
       return {
         type: KoboValidationErrorType.FormConfiguration,
         rule: 'matrix-type-found',
-        detail: JSON.stringify(matrixItem.label),
-        message: `Kobo form must not contain a matrix item. Found: ${JSON.stringify(matrixItem.label)}.`,
+        detail: matrixItem.label?.join(', '),
+        message: `Kobo form must not contain a matrix item. Found: ${matrixItem.label?.join(', ')}.`,
       };
     }
   }
@@ -470,7 +470,7 @@ export class KoboValidationService {
       .map((surveyItem) => ({
         type: KoboValidationErrorType.ForbiddenAttribute as const,
         attributeName: surveyItem.name,
-        message: `Attribute "${surveyItem.name}" is a reserved attribute name and cannot be filled from Kobo.`,
+        message: `Attribute '${surveyItem.name}' is a reserved attribute name and cannot be filled from Kobo.`,
       }));
   }
 
@@ -509,7 +509,7 @@ export class KoboValidationService {
         attributeName: fspQuestionName,
         expectedTypes: [...validTypes],
         actualType: fspItem.type,
-        message: `Attribute "${fspQuestionName}" has incompatible type, expected one of: ${[...validTypes].map((t) => `"${t}"`).join(', ')}, got "${fspItem.type}".`,
+        message: `Attribute '${fspQuestionName}' has incompatible type, expected one of: ${[...validTypes].map((t) => `'${t}'`).join(', ')}, got '${fspItem.type}'.`,
       };
     }
 
@@ -540,7 +540,7 @@ export class KoboValidationService {
         attributeName: fspQuestionName,
         invalidChoices,
         validChoices: [...fspConfigNames],
-        message: `Attribute "${fspQuestionName}" has invalid choices: ${invalidChoices.join(', ')}. Expected one of: ${[...fspConfigNames].join(', ')}.`,
+        message: `Attribute '${fspQuestionName}' has invalid choices: ${invalidChoices.join(', ')}. Expected one of: ${[...fspConfigNames].join(', ')}.`,
       };
     }
     // There is no check to see if all FSP configs from the 121 program are represented in choices from kobo
@@ -558,7 +558,7 @@ export class KoboValidationService {
         type: KoboValidationErrorType.FormConfiguration as const,
         rule: 'select-one-no-choices' as const,
         detail: item.name,
-        message: `Attribute "${item.name}" is of type select_one or select_one_from_file but has no choices defined. Note that choices defined in a separate CSV file are not supported.`,
+        message: `Attribute '${item.name}' is of type select_one or select_one_from_file but has no choices defined. Note that choices defined in a separate CSV file are not supported.`,
       }));
   }
 

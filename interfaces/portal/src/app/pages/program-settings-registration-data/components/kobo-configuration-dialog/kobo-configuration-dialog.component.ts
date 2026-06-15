@@ -140,22 +140,21 @@ export class KoboConfigurationDialogComponent {
     },
     onError: (errorResponse: Error) => {
       const cause = errorResponse.cause as {
-        error: { errors: KoboValidationError[] };
+        error?: { errors?: KoboValidationError[] };
       };
+      const errors = cause.error?.errors;
 
       // If the error contains Kobo validation errors, we want to show them in the KoboErrorDialog.
-      if (cause.error.errors.length > 0) {
-        this.koboIntegrationErrors.set(cause.error.errors);
+      if (Array.isArray(errors) && errors.length > 0) {
+        this.koboIntegrationErrors.set(errors);
         this.koboConfigurationDialog().hide();
         this.koboErrorDialog().show();
-
-        this.toastService.showToast({
-          severity: 'error',
-          detail: $localize`Error while integrating Kobo form`,
-        });
-
-        return;
       }
+
+      this.toastService.showToast({
+        severity: 'error',
+        detail: $localize`Error while integrating Kobo form`,
+      });
     },
   }));
 
