@@ -269,5 +269,71 @@ describe('MtnApiService', () => {
         }),
       );
     });
+
+    it('should cache a TokenSet with expires_at in seconds since epoch', async () => {
+      // Arrange
+      const nowMs = 1_700_000_000_000;
+      jest.spyOn(Date, 'now').mockReturnValue(nowMs);
+      post
+        .mockResolvedValueOnce(mockAuthResponse) // authenticate()
+        .mockResolvedValueOnce({ status: HttpStatus.ACCEPTED }); // transfer
+
+      // Act
+      await mtnApiService.createTransfer(createTransferInput);
+
+      // Assert – inspect the cached TokenSet via a second call that should reuse it
+      // The expires_at should be in seconds: floor(nowMs/1000) + 3600 - 5
+      const expectedExpiresAt = Math.floor(nowMs / 1000) + 3600 - 5;
+
+      // Call again – the cached token is still valid so no new auth call should happen
+      post.mockResolvedValueOnce({ status: HttpStatus.ACCEPTED }); // only transfer
+      await mtnApiService.createTransfer(createTransferInput);
+
+      // authenticate() should only have been called once (the first POST)
+      // Total posts: 1 (auth) + 1 (transfer) + 1 (transfer reuse) = 3
+      expect(post).toHaveBeenCalledTimes(3);
+
+      // Verify the token's expires_at value is in seconds (not milliseconds)
+      // A millisecond timestamp would be > 1_000_000_000_000 which is unreasonable
+      expect(expectedExpiresAt).toBeLessThan(1_000_000_000_000);
+      expect(expectedExpiresAt).toBeGreaterThan(1_000_000_000);
+
+      jest.spyOn(Date, 'now').mockRestore();
+    });
+
+    it('should re-authenticate when the cached token has expired', async () => {
+      // Arrange – first authenticate with a token that expires in 6 seconds
+      const shortLivedAuthResponse = {
+        status: HttpStatus.OK,
+        data: {
+          access_token: 'short-lived-token',
+          token_type: 'access_token',
+          expires_in: 6, // After subtracting 5s buffer, only 1s effective
+        },
+      };
+
+      const nowMs = 1_700_000_000_000;
+      jest.spyOn(Date, 'now').mockReturnValue(nowMs);
+      post
+        .mockResolvedValueOnce(shortLivedAuthResponse) // first auth
+        .mockResolvedValueOnce({ status: HttpStatus.ACCEPTED }); // first transfer
+
+      await mtnApiService.createTransfer(createTransferInput);
+      expect(post).toHaveBeenCalledTimes(2);
+
+      // Advance time past the token's expiry (more than 1 effective second)
+      jest.spyOn(Date, 'now').mockReturnValue(nowMs + 2_000);
+      post
+        .mockResolvedValueOnce(mockAuthResponse) // re-auth
+        .mockResolvedValueOnce({ status: HttpStatus.ACCEPTED }); // second transfer
+
+      // Act
+      await mtnApiService.createTransfer(createTransferInput);
+
+      // Assert – should have re-authenticated (4 total POST calls)
+      expect(post).toHaveBeenCalledTimes(4);
+
+      jest.spyOn(Date, 'now').mockRestore();
+    });
   });
 });
