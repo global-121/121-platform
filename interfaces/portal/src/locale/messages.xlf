@@ -378,9 +378,6 @@
       <trans-unit id="2648503122381983554" datatype="html">
         <source>Duplicated with:</source>
       </trans-unit>
-      <trans-unit id="2669137255472752633" datatype="html">
-        <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> You can edit each column name to a shorter version.</source>
-      </trans-unit>
       <trans-unit id="2669678082320549438" datatype="html">
         <source>Reference ID</source>
       </trans-unit>
@@ -2558,6 +2555,18 @@
       </trans-unit>
       <trans-unit id="5731103713915660185" datatype="html">
         <source>Add general information to define your program details.</source>
+      </trans-unit>
+      <trans-unit id="1458092247208810553" datatype="html">
+        <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/></source>
+      </trans-unit>
+      <trans-unit id="192240291274328029" datatype="html">
+        <source>Your form must include the following required fields, using these <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>exact data column names<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> (these would be the column headers in excel).</source>
+      </trans-unit>
+      <trans-unit id="4494400617838412096" datatype="html">
+        <source>No required attributes found.</source>
+      </trans-unit>
+      <trans-unit id="6428648557710235460" datatype="html">
+        <source>Label</source>
       </trans-unit>
     </body>
   </file>

@@ -1,0 +1,57 @@
+<p
+  i18n
+  class="my-4"
+>
+  Your form must include the following required fields, using these
+  <strong>exact data column names</strong> (these would be the column headers in
+  excel).
+</p>
+<p-table [value]="requiredAttributes()">
+  <ng-template #header>
+    <tr>
+      <th
+        i18n
+        class="txt-body-s text-grey-700 px-2 py-1.5 font-semibold uppercase"
+      >
+        Label
+      </th>
+      <th
+        i18n
+        class="txt-body-s text-grey-700 px-2 py-1.5 font-semibold uppercase"
+      >
+        Data column name
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template
+    #body
+    let-attribute
+  >
+    <tr>
+      <td class="px-2">{{ attribute.label }}</td>
+      <td class="px-2">
+        {{ attribute.name }}
+
+        <p-button
+          (click)="copyToClipboard(attribute.name)"
+          ariaLabel="Copy to clipboard"
+          icon="pi pi-copy"
+          class="hover:text-purple hover:cursor-pointer"
+          [unstyled]="true"
+          i18n-ariaLabel
+          size="small"
+        />
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td
+        colspan="2"
+        i18n
+      >
+        No required attributes found.
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
