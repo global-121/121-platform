@@ -13,7 +13,7 @@ type KoboFormConfigurationRule =
   | 'select-one-no-choices'
   | 'missing-fullname-attributes';
 
-interface KoboMissingFieldError {
+export interface KoboMissingFieldError {
   type: KoboValidationErrorType.MissingField;
   attributeName: string;
   context?: string;
