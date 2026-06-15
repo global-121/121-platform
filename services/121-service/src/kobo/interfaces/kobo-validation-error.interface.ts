@@ -6,21 +6,21 @@ export enum KoboValidationErrorType {
   ForbiddenAttribute = 'forbidden_attribute',
 }
 
-export type KoboFormConfigurationRule =
+type KoboFormConfigurationRule =
   | 'missing-english-language'
   | 'matrix-type-found'
   | 'invalid-language-code'
   | 'select-one-no-choices'
   | 'missing-fullname-attributes';
 
-export interface KoboMissingFieldError {
+interface KoboMissingFieldError {
   type: KoboValidationErrorType.MissingField;
   attributeName: string;
   context?: string;
   message?: string;
 }
 
-export interface KoboTypeMismatchError {
+interface KoboTypeMismatchError {
   type: KoboValidationErrorType.TypeMismatch;
   attributeName: string;
   expectedTypes: string[];
@@ -28,7 +28,7 @@ export interface KoboTypeMismatchError {
   message?: string;
 }
 
-export interface KoboInvalidChoiceError {
+interface KoboInvalidChoiceError {
   type: KoboValidationErrorType.InvalidChoice;
   attributeName: string;
   invalidChoices: string[];
@@ -36,14 +36,14 @@ export interface KoboInvalidChoiceError {
   message?: string;
 }
 
-export interface KoboFormConfigurationError {
+interface KoboFormConfigurationError {
   type: KoboValidationErrorType.FormConfiguration;
   rule: KoboFormConfigurationRule;
   detail?: string;
   message?: string;
 }
 
-export interface KoboForbiddenAttributeError {
+interface KoboForbiddenAttributeError {
   type: KoboValidationErrorType.ForbiddenAttribute;
   attributeName: string;
   message?: string;
