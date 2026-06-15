@@ -80,6 +80,9 @@
       <trans-unit id="1369610904910546430" datatype="html">
         <source>Who we share information with</source>
       </trans-unit>
+      <trans-unit id="1373921927026664666" datatype="html">
+        <source>We couldn&apos;t complete the integration due to the following issues in your Kobo form. Please review your Kobo form and fix these errors, then save and redeploy:</source>
+      </trans-unit>
       <trans-unit id="138735154290622738" datatype="html">
         <source>yourname@example.org</source>
       </trans-unit>
@@ -204,14 +207,14 @@
       <trans-unit id="1867309401161150879" datatype="html">
         <source>The data of the 121 Platform is hosted in a Microsoft Azure-environment of The Netherlands Red Cross.</source>
       </trans-unit>
+      <trans-unit id="187187500641108332" datatype="html">
+        <source><x equiv-text="{{ info }}" id="INTERPOLATION"/></source>
+      </trans-unit>
       <trans-unit id="1872549287181572098" datatype="html">
         <source>Import existing registrations from your Kobo form.</source>
       </trans-unit>
       <trans-unit id="1873935802798572654" datatype="html">
         <source>Tip: Press Command / Ctrl + Enter to submit.</source>
-      </trans-unit>
-      <trans-unit id="1878692701354160278" datatype="html">
-        <source>The Kobo form could not be linked to your program due to the following errors:</source>
       </trans-unit>
       <trans-unit id="1890300073702152532" datatype="html">
         <source>E-mail</source>
@@ -860,9 +863,6 @@
       <trans-unit id="4625810362559566622" datatype="html">
         <source>FSP integration</source>
       </trans-unit>
-      <trans-unit id="4662745841536194054" datatype="html">
-        <source>Type mismatches</source>
-      </trans-unit>
       <trans-unit id="4667279955724574149" datatype="html">
         <source>Export status &amp; data changes</source>
       </trans-unit>
@@ -908,9 +908,6 @@
       <trans-unit id="4866288342540923037" datatype="html">
         <source>No of Cards Ordered</source>
       </trans-unit>
-      <trans-unit id="4872421840981590914" datatype="html">
-        <source>Kobo form integration error</source>
-      </trans-unit>
       <trans-unit id="4890152856739224001" datatype="html">
         <source>Optionally pass a start date and/or an end date to filter the payments. The export is limited to 100,000 records. Adapt your dates if needed.</source>
       </trans-unit>
@@ -943,9 +940,6 @@
       </trans-unit>
       <trans-unit id="4983372178316388330" datatype="html">
         <source>Reconfigure</source>
-      </trans-unit>
-      <trans-unit id="4984416130459666389" datatype="html">
-        <source>Forbidden attributes</source>
       </trans-unit>
       <trans-unit id="4996479555480005226" datatype="html">
         <source>Program description</source>
@@ -1181,9 +1175,6 @@
       <trans-unit id="5918723526444903137" datatype="html">
         <source>Add user</source>
       </trans-unit>
-      <trans-unit id="592855405283080137" datatype="html">
-        <source>Invalid choices</source>
-      </trans-unit>
       <trans-unit id="593137515549076612" datatype="html">
         <source>(Scope - <x equiv-text="{{ duplicate.scope }}" id="INTERPOLATION"/>)</source>
       </trans-unit>
@@ -1349,9 +1340,6 @@
       </trans-unit>
       <trans-unit id="6820887192467365708" datatype="html">
         <source>Edit basic information</source>
-      </trans-unit>
-      <trans-unit id="6880404450986223489" datatype="html">
-        <source>Missing fields</source>
       </trans-unit>
       <trans-unit id="6885844978916799621" datatype="html">
         <source>Budget</source>
@@ -1650,9 +1638,6 @@
       <trans-unit id="8135595255350159325" datatype="html">
         <source>No Programs found</source>
       </trans-unit>
-      <trans-unit id="813895512660297044" datatype="html">
-        <source>Form configuration</source>
-      </trans-unit>
       <trans-unit id="8140989446664265922" datatype="html">
         <source>Enter the basic details of your program, these details will define your program&apos;s setup and structure.</source>
       </trans-unit>
@@ -1685,6 +1670,9 @@
       </trans-unit>
       <trans-unit id="8255959026836387530" datatype="html">
         <source>Email copied to clipboard</source>
+      </trans-unit>
+      <trans-unit id="8267283367469506410" datatype="html">
+        <source>Kobo form integration errors</source>
       </trans-unit>
       <trans-unit id="8270214591182392971" datatype="html">
         <source>Brand code</source>
@@ -2213,6 +2201,9 @@
       </trans-unit>
       <trans-unit id="generic-success" datatype="html">
         <source>Success</source>
+      </trans-unit>
+      <trans-unit id="generic-try-again" datatype="html">
+        <source>Try again</source>
       </trans-unit>
       <trans-unit id="generic-type-or-select" datatype="html">
         <source>Type or select</source>
