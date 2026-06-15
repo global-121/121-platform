@@ -424,7 +424,7 @@ export class KoboValidationService {
         attributeName,
         expectedTypes: expectedKoboTypes,
         actualType: surveyItemType,
-        message: `Attribute "${attributeName}" has incompatible type, expected one of: ${expectedKoboTypes.map((t) => `"${t}"`).join(', ')}, got "${surveyItemType}".`,
+        message: `Attribute '${attributeName}' has incompatible type, expected one of: ${expectedKoboTypes.map((t) => `'${t}'`).join(', ')}, got '${surveyItemType}'.`,
       };
     }
   }

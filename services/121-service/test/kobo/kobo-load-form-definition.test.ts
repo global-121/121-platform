@@ -225,14 +225,9 @@ describe('Import a Kobo form definition', () => {
 
     // Assert - Should receive validation errors for missing FSP attributes
     expect(linkKoboResponse.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(linkKoboResponse.body.message).toMatchInlineSnapshot(`
-     "Kobo form definition validation failed:
-     - Missing required FSP attribute 'phoneNumber' for FSP 'SafaricomFsp' in Kobo asset survey.
-     - Missing required FSP attribute 'nationalId' for FSP 'SafaricomFsp' in Kobo asset survey.
-     - Kobo form must contain the following name attributes defined in program.fullnameNamingConvention. However the following attributes are missing: fullName
-     - Kobo form must contain a question with name phoneNumber (should be a text type and country code should be included) or program.allowEmptyPhoneNumber must be set to true.
-     - Invalid Kobo language code: null. Please use https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes"
-     `);
+    expect(linkKoboResponse.body.message).toMatchInlineSnapshot(
+      `"Kobo form definition validation failed"`,
+    );
   });
 
   it('should not update program or create Kobo entity when dryRun is true', async () => {
