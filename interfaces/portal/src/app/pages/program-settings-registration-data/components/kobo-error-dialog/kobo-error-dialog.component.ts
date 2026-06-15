@@ -1,9 +1,11 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   input,
   model,
+  output,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -20,17 +22,20 @@ import {
   KoboValidationErrorType,
 } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 
+import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-kobo-error-dialog',
   imports: [
+    NgTemplateOutlet,
     InputTextModule,
     ReactiveFormsModule,
     Dialog,
     Button,
     TableModule,
     TagModule,
+    InfoTooltipComponent,
   ],
   providers: [ToastService],
   templateUrl: './kobo-error-dialog.component.html',
@@ -41,6 +46,7 @@ export class KoboErrorDialogComponent {
   readonly programId = input.required<number | string>();
   readonly errors = input<[] | KoboValidationError[]>([]);
   readonly dialogVisible = model(false);
+  readonly tryAgain = output();
 
   readonly KoboValidationErrorType = KoboValidationErrorType;
 
@@ -71,5 +77,10 @@ export class KoboErrorDialogComponent {
 
   hide() {
     this.dialogVisible.set(false);
+  }
+
+  handleTryAgainClick() {
+    this.dialogVisible.set(false);
+    this.tryAgain.emit();
   }
 }
