@@ -12,6 +12,7 @@ import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
+import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
@@ -19,14 +20,14 @@ import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
-  selector: 'app-required-attributes-card',
+  selector: 'app-required-attributes',
   imports: [CardModule, TableModule, Button],
   providers: [ToastService],
-  templateUrl: './required-attributes-card.component.html',
+  templateUrl: './required-attributes.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RequiredAttributesCardComponent {
+export class RequiredAttributesComponent {
   readonly programId = input.required<number | string>();
   private readonly toastService = inject(ToastService);
 
@@ -53,7 +54,10 @@ export class RequiredAttributesCardComponent {
       return [];
     }
 
-    const requiredAttributeNames = new Set<string>();
+    const requiredAttributeNames = new Set<string>([
+      FspAttributes.fullName,
+      FspAttributes.phoneNumber,
+    ]);
 
     for (const fspConfig of fspConfigs) {
       const fspSetting = FSP_SETTINGS[fspConfig.fspName];
