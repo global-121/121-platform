@@ -543,7 +543,7 @@ describe('KoboValidationService', () => {
              "expectedTypes": [
                "text",
              ],
-             "message": "Attribute "phoneNumber" has incompatible type, expected one of: "text", got "integer".",
+             "message": "Attribute 'phoneNumber' has incompatible type, expected one of: 'text', got 'integer'.",
              "type": "type_mismatch",
            },
          ]
@@ -729,7 +729,7 @@ describe('KoboValidationService', () => {
                "time",
                "video",
              ],
-             "message": "Attribute "scope" has incompatible type, expected one of: "background-audio", "xml-external", "acknowledge", "audio", "barcode", "calculate", "date", "dateTime", "file", "geopoint", "geoshape", "geotrace", "hidden", "image", "rank", "select_multiple_from_file", "select_multiple", "text", "time", "video", got "integer".",
+             "message": "Attribute 'scope' has incompatible type, expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video', got 'integer'.",
              "type": "type_mismatch",
            },
          ]
@@ -781,7 +781,7 @@ describe('KoboValidationService', () => {
          [
            {
              "detail": "["Matrix question group"]",
-             "message": "Kobo form must not contain a matrix item. Found: ["Matrix question group"].",
+             "message": "Kobo form must not contain a matrix item. Found: Matrix question group.",
              "rule": "matrix-type-found",
              "type": "form_configuration",
            },
@@ -1008,7 +1008,7 @@ describe('KoboValidationService', () => {
              "time",
              "video",
            ],
-           "message": "Attribute "preferredLanguage" has incompatible type, expected one of: "background-audio", "xml-external", "acknowledge", "audio", "barcode", "calculate", "date", "dateTime", "file", "geopoint", "geoshape", "geotrace", "hidden", "image", "rank", "select_multiple_from_file", "select_multiple", "text", "time", "video", got "integer".",
+           "message": "Attribute 'preferredLanguage' has incompatible type, expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video', got 'integer'.",
            "type": "type_mismatch",
          },
        ]
@@ -1074,7 +1074,7 @@ describe('KoboValidationService', () => {
         [
           {
             "attributeName": "paymentCount",
-            "message": "Attribute "paymentCount" is a reserved attribute name and cannot be filled from Kobo.",
+            "message": "Attribute 'paymentCount' is a reserved attribute name and cannot be filled from Kobo.",
             "type": "forbidden_attribute",
           },
         ]
@@ -1231,7 +1231,7 @@ describe('KoboValidationService', () => {
               "Invalid FSP Name",
               "Another Invalid FSP",
             ],
-            "message": "Attribute "fsp" has invalid choices: Invalid FSP Name, Another Invalid FSP. Expected one of: Safaricom Kenya, Intersolve WhatsApp.",
+            "message": "Attribute 'fsp' has invalid choices: Invalid FSP Name, Another Invalid FSP. Expected one of: Safaricom Kenya, Intersolve WhatsApp.",
             "type": "invalid_choice",
             "validChoices": [
               "Safaricom Kenya",
@@ -1308,7 +1308,7 @@ describe('KoboValidationService', () => {
               "calculate",
               "select_one",
             ],
-            "message": "Attribute "fsp" has incompatible type, expected one of: "hidden", "calculate", "select_one", got "text".",
+            "message": "Attribute 'fsp' has incompatible type, expected one of: 'hidden', 'calculate', 'select_one', got 'text'.",
             "type": "type_mismatch",
           },
         ]
@@ -1355,7 +1355,7 @@ describe('KoboValidationService', () => {
       [
         {
           "detail": "gender",
-          "message": "Attribute "gender" is of type select_one or select_one_from_file but has no choices defined. Note that choices defined in a separate CSV file are not supported.",
+          "message": "Attribute 'gender' is of type select_one or select_one_from_file but has no choices defined. Note that choices defined in a separate CSV file are not supported.",
           "rule": "select-one-no-choices",
           "type": "form_configuration",
         },
