@@ -15,29 +15,39 @@ const koboIntegrationDetails = {
 };
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations, page }) => {
-  const registrationData = new RegistrationDataPage(page);
+  const registrationDataPage = new RegistrationDataPage(page);
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.safaricomProgram,
     registrations: registrationsSafaricom,
     programId: programIdSafaricom,
     navigateToPage: `/program/${programIdSafaricom}/settings/registration-data`,
   });
-  await registrationData.clickRegistrationDataSection();
+  await registrationDataPage.clickRegistrationDataSection();
 });
 
 test('Add Kobo integration with invalid details and validate error message', async ({
   page,
 }) => {
-  const registrationData = new RegistrationDataPage(page);
+  const registrationDataPage = new RegistrationDataPage(page);
 
   await test.step('Add Kobo integration un-successfully', async () => {
-    await registrationData.addKoboToolboxIntegration({
+    await registrationDataPage.addKoboToolboxIntegration({
       url: koboIntegrationDetails.url,
       apiKey: koboIntegrationDetails.apiKey,
     });
-    // Validate error message after adding Kobo integration with details that trigger errors in the mock service
-    await registrationData.validateKoboIntegration({
-      message: 'Something went wrong: "Kobo form definition validation failed',
+  });
+
+  await test.step('Validate error dialog for Kobo integration failure', async () => {
+    await registrationDataPage.validateToastMessage(
+      'Error while integrating Kobo form',
+    );
+
+    await registrationDataPage.validateErrorDialog({
+      missingFields: ['phoneNumber', 'nationalId'],
+      configurationErrors: [
+        'Kobo form must contain the following name attributes defined in program.fullnameNamingConvention. However the following attributes are missing: fullName',
+        'Invalid Kobo language code: null. Please use https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes',
+      ],
     });
   });
 });
