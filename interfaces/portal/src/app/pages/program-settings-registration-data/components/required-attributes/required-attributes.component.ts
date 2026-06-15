@@ -8,7 +8,6 @@ import {
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { Button } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
@@ -21,7 +20,7 @@ import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-required-attributes',
-  imports: [CardModule, TableModule, Button],
+  imports: [TableModule, Button],
   providers: [ToastService],
   templateUrl: './required-attributes.component.html',
   styles: ``,

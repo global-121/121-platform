@@ -2541,11 +2541,11 @@
       <trans-unit id="5731103713915660185" datatype="html">
         <source>Add general information to define your program details.</source>
       </trans-unit>
-      <trans-unit id="192240291274328029" datatype="html">
-        <source>Your form must include the following required fields, using these <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>exact data column names<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> (these would be the column headers in excel).</source>
-      </trans-unit>
       <trans-unit id="6428648557710235460" datatype="html">
         <source>Label</source>
+      </trans-unit>
+      <trans-unit id="6009734842721420603" datatype="html">
+        <source>Your form must include the following required fields, using these <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>exact data column names<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> (these would be the column headers in Excel).</source>
       </trans-unit>
     </body>
   </file>
