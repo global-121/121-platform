@@ -276,7 +276,7 @@ describe('KoboValidationService', () => {
              "time",
              "video",
            ],
-           "message": "Attribute "nationalId" has incompatible type, expected one of: "background-audio", "xml-external", "acknowledge", "audio", "barcode", "calculate", "date", "dateTime", "file", "geopoint", "geoshape", "geotrace", "hidden", "image", "rank", "select_multiple_from_file", "select_multiple", "text", "time", "video", got "integer".",
+           "message": "Attribute 'nationalId' has incompatible type, expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video', got 'integer'.",
            "type": "type_mismatch",
          },
        ]
@@ -780,7 +780,7 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
          [
            {
-             "detail": "["Matrix question group"]",
+             "detail": "Matrix question group",
              "message": "Kobo form must not contain a matrix item. Found: Matrix question group.",
              "rule": "matrix-type-found",
              "type": "form_configuration",
