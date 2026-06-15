@@ -33,6 +33,11 @@ export enum PermissionEnum {
 
   ProgramMetricsREAD = 'program:metrics.read',
 
+  // Program Registration Attributes
+  ProgramRegistrationAttributesCREATE = 'program:registration-attributes.create',
+  ProgramRegistrationAttributesUPDATE = 'program:registration-attributes.update',
+  ProgramRegistrationAttributesDELETE = 'program:registration-attributes.delete',
+
   // Payment(s)
   PaymentREAD = 'payment.read',
   PaymentCREATE = 'payment.create',

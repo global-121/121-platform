@@ -228,7 +228,12 @@ You can also leave the body empty.`,
     return await this.programService.updateProgram(programId, updateProgramDto);
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
+  @AuthenticatedUser({
+    permissions: [
+      PermissionEnum.ProgramUPDATE,
+      PermissionEnum.ProgramRegistrationAttributesCREATE,
+    ],
+  })
   @ApiOperation({ summary: 'Create registration attribute' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/registration-attributes')
@@ -246,7 +251,10 @@ You can also leave the body empty.`,
   }
 
   @AuthenticatedUser({
-    permissions: [PermissionEnum.ProgramUPDATE],
+    permissions: [
+      PermissionEnum.ProgramUPDATE,
+      PermissionEnum.ProgramRegistrationAttributesUPDATE,
+    ],
   })
   @ApiOperation({ summary: 'Update program registration attribute' })
   @ApiResponse({
@@ -284,7 +292,10 @@ You can also leave the body empty.`,
   }
 
   @AuthenticatedUser({
-    permissions: [PermissionEnum.ProgramUPDATE],
+    permissions: [
+      PermissionEnum.ProgramUPDATE,
+      PermissionEnum.ProgramRegistrationAttributesDELETE,
+    ],
   })
   @ApiOperation({
     summary:
