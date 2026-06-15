@@ -120,6 +120,7 @@ export const mtnEnvVariablesSchema = {
 
 // These are not required as env variables at startup because the actual
 // credentials are stored in the database via program FSP configuration.
+// TODO: Consider removing these from the env variables and only use the database values.
 const mtnOptionalEnvVariablesSchema = {
   MTN_API_KEY: z.string().optional(),
   MTN_REFERENCE_ID: z.string().optional(),
