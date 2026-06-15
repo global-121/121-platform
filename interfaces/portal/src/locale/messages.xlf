@@ -44,6 +44,9 @@
       <trans-unit id="1224115488810733068" datatype="html">
         <source>FSP(s)</source>
       </trans-unit>
+      <trans-unit id="1252083718772366167" datatype="html">
+        <source>Program name</source>
+      </trans-unit>
       <trans-unit id="1256134236732654436" datatype="html">
         <source>Done by</source>
       </trans-unit>
@@ -83,11 +86,17 @@
       <trans-unit id="1403545532790809587" datatype="html">
         <source>Reconfigure <x equiv-text="this.fspLabel()" id="fspName"/></source>
       </trans-unit>
+      <trans-unit id="1417693714872528491" datatype="html">
+        <source>This field is required.</source>
+      </trans-unit>
       <trans-unit id="1419676661357831374" datatype="html">
         <source>Registration data</source>
       </trans-unit>
       <trans-unit id="1431416938026210429" datatype="html">
         <source>Password</source>
+      </trans-unit>
+      <trans-unit id="1458092247208810553" datatype="html">
+        <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/></source>
       </trans-unit>
       <trans-unit id="1467059276438662086" datatype="html">
         <source>New status</source>
@@ -176,6 +185,9 @@
       </trans-unit>
       <trans-unit id="1817782792448180446" datatype="html">
         <source>Integration is already up to date.</source>
+      </trans-unit>
+      <trans-unit id="1840148350593500398" datatype="html">
+        <source>Make sure the default language in the &apos;Form&apos; tab of Kobo matches the main language of the program. One language must be set to English (EN).</source>
       </trans-unit>
       <trans-unit id="1846542227840529109" datatype="html">
         <source>Current Password</source>
@@ -327,6 +339,9 @@
       <trans-unit id="239975678969392453" datatype="html">
         <source>Retry transactions</source>
       </trans-unit>
+      <trans-unit id="2399772485291907075" datatype="html">
+        <source>Finance</source>
+      </trans-unit>
       <trans-unit id="2409672154570643758" datatype="html">
         <source>Display name</source>
       </trans-unit>
@@ -377,9 +392,6 @@
       </trans-unit>
       <trans-unit id="2648503122381983554" datatype="html">
         <source>Duplicated with:</source>
-      </trans-unit>
-      <trans-unit id="2669137255472752633" datatype="html">
-        <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> You can edit each column name to a shorter version.</source>
       </trans-unit>
       <trans-unit id="2669678082320549438" datatype="html">
         <source>Reference ID</source>
@@ -830,6 +842,9 @@
       <trans-unit id="4624691512001831810" datatype="html">
         <source>Corporate code</source>
       </trans-unit>
+      <trans-unit id="4625810362559566622" datatype="html">
+        <source>FSP integration</source>
+      </trans-unit>
       <trans-unit id="4667279955724574149" datatype="html">
         <source>Export status &amp; data changes</source>
       </trans-unit>
@@ -920,6 +935,9 @@
       <trans-unit id="5061826209151408276" datatype="html">
         <source>This privacy notice tells you what to expect us to do with your personal information when you use the 121 Platform.</source>
       </trans-unit>
+      <trans-unit id="5063365640218451767" datatype="html">
+        <source>Select a registration tool you want to integrate to the program.</source>
+      </trans-unit>
       <trans-unit id="5077622588607274492" datatype="html">
         <source>Below is a table showing the cards successfully ordered from Visa/ Intersolve. Please note, this table shows orders that were successfully sent to Intersolve but does not show the status of the order.</source>
       </trans-unit>
@@ -973,6 +991,9 @@
       </trans-unit>
       <trans-unit id="5270320047142620174" datatype="html">
         <source>Information automatically collected about you</source>
+      </trans-unit>
+      <trans-unit id="5274418165298849960" datatype="html">
+        <source>Click to link</source>
       </trans-unit>
       <trans-unit id="5306473977542913614" datatype="html">
         <source>Activity</source>
@@ -1106,6 +1127,9 @@
       <trans-unit id="5719725512817410618" datatype="html">
         <source>Select a user</source>
       </trans-unit>
+      <trans-unit id="5731103713915660185" datatype="html">
+        <source>Add general information to define your program details.</source>
+      </trans-unit>
       <trans-unit id="574910377369158209" datatype="html">
         <source>Save and switch language to translate relevant details.</source>
       </trans-unit>
@@ -1153,6 +1177,9 @@
       </trans-unit>
       <trans-unit id="6001336690636833920" datatype="html">
         <source>Basic information details saved successfully.</source>
+      </trans-unit>
+      <trans-unit id="6009734842721420603" datatype="html">
+        <source>Your form must include the following required fields, using these <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>exact data column names<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> (these would be the column headers in Excel).</source>
       </trans-unit>
       <trans-unit id="6041115344061899387" datatype="html">
         <source>Rename</source>
@@ -1220,6 +1247,9 @@
       </trans-unit>
       <trans-unit id="641865702986102945" datatype="html">
         <source>Are you sure you want to delete this payment? This action cannot be undone.</source>
+      </trans-unit>
+      <trans-unit id="6428648557710235460" datatype="html">
+        <source>Label</source>
       </trans-unit>
       <trans-unit id="6430223777327451722" datatype="html">
         <source>Total payment amount</source>
@@ -1521,6 +1551,9 @@
       <trans-unit id="7799902377740606724" datatype="html">
         <source>Select 1</source>
       </trans-unit>
+      <trans-unit id="7801717660956820159" datatype="html">
+        <source>For more information about how to link a registration tool see <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/></source>
+      </trans-unit>
       <trans-unit id="7814604735706675498" datatype="html">
         <source>Cards ordered</source>
       </trans-unit>
@@ -1616,6 +1649,9 @@
       </trans-unit>
       <trans-unit id="8221183084962199390" datatype="html">
         <source>Payment not found. Please check the URL and try again.</source>
+      </trans-unit>
+      <trans-unit id="8227576772021299128" datatype="html">
+        <source>We couldn&apos;t find this form in Kobo. Check the URL to make sure the form is deployed.</source>
       </trans-unit>
       <trans-unit id="8255959026836387530" datatype="html">
         <source>Email copied to clipboard</source>
@@ -1931,6 +1967,9 @@
       </trans-unit>
       <trans-unit id="confirmation-dialog-header" datatype="html">
         <source>Are you sure?</source>
+      </trans-unit>
+      <trans-unit id="create-new-program-label" datatype="html">
+        <source>Create new program</source>
       </trans-unit>
       <trans-unit id="create-payment" datatype="html">
         <source>Create new payment</source>
@@ -2525,39 +2564,6 @@
       </trans-unit>
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
-      </trans-unit>
-      <trans-unit id="1252083718772366167" datatype="html">
-        <source>Program name</source>
-      </trans-unit>
-      <trans-unit id="2399772485291907075" datatype="html">
-        <source>Finance</source>
-      </trans-unit>
-      <trans-unit id="5063365640218451767" datatype="html">
-        <source>Select a registration tool you want to integrate to the program.</source>
-      </trans-unit>
-      <trans-unit id="5274418165298849960" datatype="html">
-        <source>Click to link</source>
-      </trans-unit>
-      <trans-unit id="7801717660956820159" datatype="html">
-        <source>For more information about how to link a registration tool see <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/></source>
-      </trans-unit>
-      <trans-unit id="create-new-program-label" datatype="html">
-        <source>Create new program</source>
-      </trans-unit>
-      <trans-unit id="1417693714872528491" datatype="html">
-        <source>This field is required.</source>
-      </trans-unit>
-      <trans-unit id="8227576772021299128" datatype="html">
-        <source>We couldn&apos;t find this form in Kobo. Check the URL to make sure the form is deployed.</source>
-      </trans-unit>
-      <trans-unit id="4625810362559566622" datatype="html">
-        <source>FSP integration</source>
-      </trans-unit>
-      <trans-unit id="1840148350593500398" datatype="html">
-        <source>Make sure the default language in the &apos;Form&apos; tab of Kobo matches the main language of the program. One language must be set to English (EN).</source>
-      </trans-unit>
-      <trans-unit id="5731103713915660185" datatype="html">
-        <source>Add general information to define your program details.</source>
       </trans-unit>
     </body>
   </file>
