@@ -18,94 +18,98 @@
     redeploy:
   </p>
 
-  <section class="mt-4 mb-2">
-    <div class="mb-2">
-      <h1
-        i18n
-        class="text-base! font-semibold"
-      >
-        Missing required fields
-        <app-info-tooltip
-          message="These are the required fields that are missing from your Kobo form.
+  @if (missingFieldErrors().length > 0) {
+    <section class="mt-4 mb-2">
+      <div class="mb-2">
+        <h1
+          i18n
+          class="text-base! font-semibold"
+        >
+          Missing required fields
+          <app-info-tooltip
+            message="These are the required fields that are missing from your Kobo form.
         Please add these fields to your Kobo form, save and redeploy."
-          i18n-message
-        />
-      </h1>
-    </div>
+            i18n-message
+          />
+        </h1>
+      </div>
 
-    <div class="flex flex-wrap gap-2">
-      @for (field of missingFieldErrors(); track $index) {
-        <p-tag
-          [value]="field.field"
-          severity="info"
-        />
-      }
-    </div>
-  </section>
+      <div class="flex flex-wrap gap-2">
+        @for (field of missingFieldErrors(); track $index) {
+          <p-tag
+            [value]="field.field"
+            severity="info"
+          />
+        }
+      </div>
+    </section>
+  }
 
-  <section class="mt-4 mb-2">
-    <div class="mb-4">
-      <h1
-        i18n
-        class="text-base! font-semibold"
+  @if (otherErrors().length > 0) {
+    <section class="mt-4 mb-2">
+      <div class="mb-4">
+        <h1
+          i18n
+          class="text-base! font-semibold"
+        >
+          Other errors
+        </h1>
+      </div>
+      <p-table
+        [value]="otherErrors()"
+        size="small"
+        i18n-size
+        class="text-base"
       >
-        Other errors
-      </h1>
-    </div>
-    <p-table
-      [value]="otherErrors()"
-      size="small"
-      i18n-size
-      class="text-base"
-    >
-      <ng-template #header>
-        <tr>
-          <th
-            i18n
-            class="text-grey-700 px-2 py-1.5 font-semibold uppercase"
-          >
-            Field
-          </th>
-          <th
-            i18n
-            class="text-grey-700 px-2 py-1.5 font-semibold uppercase"
-          >
-            Error
-          </th>
-          <th
-            i18n
-            class="text-grey-700 px-2 py-1.5 font-semibold uppercase"
-          >
-            Solution
-          </th>
-        </tr>
-      </ng-template>
-      <ng-template
-        #body
-        let-error
-      >
-        <tr class="align-top">
-          <td class="px-2">
-            {{ error.field }}
-          </td>
-          <td class="px-2">
-            <div>
-              {{ error.error }}
-            </div>
-          </td>
-          <td class="px-2">
-            {{ error.solution }}
-            @if (error.info) {
-              <app-info-tooltip
-                message="{{ error.info }}"
-                i18n-message
-              />
-            }
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </section>
+        <ng-template #header>
+          <tr>
+            <th
+              i18n
+              class="text-grey-700 px-2 py-1.5 font-semibold uppercase"
+            >
+              Field
+            </th>
+            <th
+              i18n
+              class="text-grey-700 px-2 py-1.5 font-semibold uppercase"
+            >
+              Error
+            </th>
+            <th
+              i18n
+              class="text-grey-700 px-2 py-1.5 font-semibold uppercase"
+            >
+              Solution
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template
+          #body
+          let-error
+        >
+          <tr class="align-top">
+            <td class="px-2">
+              {{ error.field }}
+            </td>
+            <td class="px-2">
+              <div>
+                {{ error.error }}
+              </div>
+            </td>
+            <td class="px-2">
+              {{ error.solution }}
+              @if (error.info) {
+                <app-info-tooltip
+                  message="{{ error.info }}"
+                  i18n-message
+                />
+              }
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </section>
+  }
 
   <div class="mt-4 flex justify-end gap-4">
     <p-button
