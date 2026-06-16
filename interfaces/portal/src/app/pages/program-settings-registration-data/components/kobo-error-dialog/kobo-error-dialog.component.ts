@@ -32,7 +32,7 @@ export interface KoboErrorColumn extends KoboValidationErrorBase {
 })
 export class KoboErrorDialogComponent {
   readonly errors = input<[] | KoboValidationErrorBase[]>([]);
-  readonly dialogVisible = model(true);
+  readonly dialogVisible = model(false);
   readonly tryAgain = output();
 
   readonly missingFieldErrors = computed(() =>
