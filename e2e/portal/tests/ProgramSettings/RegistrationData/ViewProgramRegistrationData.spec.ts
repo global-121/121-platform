@@ -23,7 +23,7 @@ const defaultSafaricomAttributes = [
   { name: 'phoneNumber', label: 'Phone Number' },
 ];
 
-const kobooAttributes = [
+export const kobooAttributes = [
   { name: 'What_is_2_2_number', label: 'What is 2+2 (number)?' },
   {
     name: 'How_are_you_today_select_one',

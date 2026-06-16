@@ -7,6 +7,8 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
+import { kobooAttributes } from './ViewProgramRegistrationData.spec';
+
 // KOBO INTEGRATION DETAILS
 export const koboIntegrationDetails = {
   url: `${env.MOCK_SERVICE_URL}/api/kobo/#/forms/success-asset/summary`,
@@ -50,21 +52,9 @@ test('Add Kobo integration successfully', async ({
       closeDialog: true,
     });
     await registrationDataPage.validateKoboRequiredFieldsTableNotVisible();
-    await registrationDataPage.validateRegistrationQuestionTableVisibleWithCorrectDataColumns(
-      {
-        dataColumnNames: [
-          'fullName',
-          'gender',
-          'age',
-          'maritalStatus',
-          'nationalId',
-          'phoneNumber',
-          'photo',
-          'What_is_2_2_number',
-          'How_are_you_today_select_one',
-        ],
-      },
-    );
+    await registrationDataPage.validateProgramAttributesTable({
+      attributes: kobooAttributes,
+    });
   });
 
   await test.step('Validate Kobo integration details on Registrations page', async () => {
