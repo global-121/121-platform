@@ -395,7 +395,7 @@ export class KoboValidationService {
       })
       .map((language) => ({
         type: KoboValidationErrorType.InvalidLanguageCode as const,
-        field: language ?? 'unknown',
+        field: language ?? '-',
         error: `Invalid language code: '${language}'`,
         solution: 'Use a valid ISO 639 language code.',
         info: `See https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes for valid codes`,

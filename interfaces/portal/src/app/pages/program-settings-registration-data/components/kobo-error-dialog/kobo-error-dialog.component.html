@@ -37,8 +37,9 @@
       <div class="flex flex-wrap gap-2">
         @for (field of missingFieldErrors(); track $index) {
           <p-tag
-            [value]="field.field"
+            [value]="field"
             severity="info"
+            [attr.data-testid]="'kobo-integration-missing-field-' + field"
           />
         }
       </div>
@@ -60,24 +61,25 @@
         size="small"
         i18n-size
         class="text-base"
+        [attr.data-testid]="'kobo-integration-configuration-errors-table'"
       >
         <ng-template #header>
           <tr>
             <th
               i18n
-              class="text-grey-700 px-2 py-1.5 font-semibold uppercase"
+              class="text-grey-700 px-2 py-1.5 font-semibold"
             >
               Field
             </th>
             <th
               i18n
-              class="text-grey-700 px-2 py-1.5 font-semibold uppercase"
+              class="text-grey-700 px-2 py-1.5 font-semibold"
             >
               Error
             </th>
             <th
               i18n
-              class="text-grey-700 px-2 py-1.5 font-semibold uppercase"
+              class="text-grey-700 px-2 py-1.5 font-semibold"
             >
               Solution
             </th>
