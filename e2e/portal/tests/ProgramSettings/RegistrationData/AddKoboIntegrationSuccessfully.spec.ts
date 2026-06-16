@@ -1,4 +1,3 @@
-import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdSafaricom,
@@ -7,13 +6,10 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-import { kobooAttributes } from './ViewProgramRegistrationData.spec';
-
-// KOBO INTEGRATION DETAILS
-export const koboIntegrationDetails = {
-  url: `${env.MOCK_SERVICE_URL}/api/kobo/#/forms/success-asset/summary`,
-  apiKey: 'mock-token',
-};
+import {
+  koboIntegrationDetails,
+  kobooAttributes,
+} from './kobo-registration-data';
 
 const koboIntegrationFormColumns = [
   'What is 2+2 (number)?',
