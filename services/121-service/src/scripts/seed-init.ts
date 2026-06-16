@@ -95,6 +95,16 @@ export class SeedInit implements InterfaceScript {
         ],
       },
       {
+        role: DefaultUserRole.Helpdesk,
+        label: 'Helpdesk',
+        permissions: [
+          PermissionEnum.ProgramREAD,
+          PermissionEnum.ProgramUPDATE,
+          PermissionEnum.RegistrationREAD,
+          PermissionEnum.RegistrationAttributeUPDATE,
+        ],
+      },
+      {
         role: DefaultUserRole.View,
         label: 'Only view data, including Personally Identifiable Information',
         permissions: [

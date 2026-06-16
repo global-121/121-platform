@@ -10,4 +10,5 @@ export enum DefaultUserRole {
   FinanceManager = 'finance-manager',
   FinanceOfficer = 'finance-officer',
   Approver = 'approver',
+  Helpdesk = 'helpdesk',
 }
