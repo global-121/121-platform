@@ -105,7 +105,7 @@ export class UserService {
         permissions,
       })
       .getCount();
-    return results === 1;
+    return results >= 1;
   }
 
   public async getUserRoles(): Promise<UserRoleResponseDTO[]> {
