@@ -2562,9 +2562,6 @@
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
       </trans-unit>
-      <trans-unit id="142336827262543546" datatype="html">
-        <source>Integrated FSP&apos;s</source>
-      </trans-unit>
       <trans-unit id="3894066071729494357" datatype="html">
         <source>Field</source>
       </trans-unit>
