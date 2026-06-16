@@ -671,6 +671,9 @@
       <trans-unit id="3890824728366334701" datatype="html">
         <source>Below is a table of all <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/> registrations. Select registrations you would like to add to this payment.</source>
       </trans-unit>
+      <trans-unit id="3894066071729494357" datatype="html">
+        <source>Field</source>
+      </trans-unit>
       <trans-unit id="3894950702316166331" datatype="html">
         <source>Loading...</source>
       </trans-unit>
@@ -706,6 +709,9 @@
       </trans-unit>
       <trans-unit id="4034832711447871121" datatype="html">
         <source>Max. 60 characters</source>
+      </trans-unit>
+      <trans-unit id="4038197238266947223" datatype="html">
+        <source>You do not have permission to configure Kobo integration</source>
       </trans-unit>
       <trans-unit id="4044492363974277530" datatype="html">
         <source>You&apos;re about to download an Excel file with all of the registrations included in this payment.</source>
@@ -1179,7 +1185,7 @@
         <source>Basic information details saved successfully.</source>
       </trans-unit>
       <trans-unit id="6009734842721420603" datatype="html">
-        <source>Your form must include the following required fields, using these <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>exact data column names<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> (these would be the column headers in Excel).</source>
+        <source>Your form must include the following required fields, using these <x ctype="x-strong" equiv-text="&lt;strong class=&quot;font-display&quot;&gt;" id="START_TAG_STRONG"/>exact data column names<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> (these would be the column headers in Excel).</source>
       </trans-unit>
       <trans-unit id="6041115344061899387" datatype="html">
         <source>Rename</source>
@@ -1247,9 +1253,6 @@
       </trans-unit>
       <trans-unit id="641865702986102945" datatype="html">
         <source>Are you sure you want to delete this payment? This action cannot be undone.</source>
-      </trans-unit>
-      <trans-unit id="6428648557710235460" datatype="html">
-        <source>Label</source>
       </trans-unit>
       <trans-unit id="6430223777327451722" datatype="html">
         <source>Total payment amount</source>
@@ -2564,9 +2567,6 @@
       </trans-unit>
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
-      </trans-unit>
-      <trans-unit id="4038197238266947223" datatype="html">
-        <source>You do not have permission to configure Kobo integration</source>
       </trans-unit>
     </body>
   </file>
