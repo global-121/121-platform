@@ -344,13 +344,15 @@ svg-icon svg {
     }
   }
 
-  /* Prevent contents being cut off, always wrap and align checkboxes to the top */
+  /* Prevent contents being cut off */
 
   .p-select {
     .p-select-option {
       @apply items-start text-wrap;
     }
   }
+
+  /* Prevent contents being cut off, always wrap and align checkboxes to the top */
 
   .p-multiselect {
     .p-multiselect-option {
