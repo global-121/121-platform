@@ -3,9 +3,10 @@
   class="my-4"
 >
   Your form must include the following required fields, using these
-  <strong>exact data column names</strong> (these would be the column headers in
-  Excel).
+  <strong class="font-display">exact data column names</strong> (these would be
+  the column headers in Excel).
 </p>
+
 <p-table [value]="requiredAttributes()">
   <ng-template #header>
     <tr>
@@ -13,7 +14,7 @@
         i18n
         class="txt-body-s text-grey-700 px-2 py-1.5 font-semibold uppercase"
       >
-        Label
+        Field
       </th>
       <th
         i18n

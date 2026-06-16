@@ -32,11 +32,7 @@ const kobooAttributes = [
   },
 ];
 
-// We are hiding the component until the logic is fully implemented, so we can skip the test for now.
-// Once the component is visible, we should enable the test and make sure it works as expected.
-// REF: AB#42731
-
-test.skip('View program and kobo attributes in settings page', async ({
+test('View program and kobo attributes in settings page', async ({
   resetDBAndSeedRegistrations,
   registrationDataPage,
 }) => {
