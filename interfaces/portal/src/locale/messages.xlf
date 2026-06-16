@@ -143,9 +143,6 @@
       <trans-unit id="1647547699224335647" datatype="html">
         <source>Threshold amounts must be unique.</source>
       </trans-unit>
-      <trans-unit id="1650073357556875190" datatype="html">
-        <source>Attribute</source>
-      </trans-unit>
       <trans-unit id="165273856698591793" datatype="html">
         <source>Contact Us:</source>
       </trans-unit>
@@ -208,7 +205,7 @@
         <source>The data of the 121 Platform is hosted in a Microsoft Azure-environment of The Netherlands Red Cross.</source>
       </trans-unit>
       <trans-unit id="187187500641108332" datatype="html">
-        <source><x equiv-text="{{ info }}" id="INTERPOLATION"/></source>
+        <source><x equiv-text="{{ error.info }}" id="INTERPOLATION"/></source>
       </trans-unit>
       <trans-unit id="1872549287181572098" datatype="html">
         <source>Import existing registrations from your Kobo form.</source>
@@ -233,6 +230,9 @@
       </trans-unit>
       <trans-unit id="19569847887954644" datatype="html">
         <source>Included registrations</source>
+      </trans-unit>
+      <trans-unit id="1958302042402225521" datatype="html">
+        <source>These are the required fields that are missing from your Kobo form. Please add these fields to your Kobo form, save and redeploy.</source>
       </trans-unit>
       <trans-unit id="2012659005494284050" datatype="html">
         <source>Forgot your password?</source>
@@ -356,6 +356,9 @@
       </trans-unit>
       <trans-unit id="2413028101045997188" datatype="html">
         <source>You&apos;re about to reset <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.displayName }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b &gt;" id="CLOSE_BOLD_TEXT"/>&apos;s password. The user will receive an email with the new password sent to their registered email address. Only proceed if the user has requested this action.</source>
+      </trans-unit>
+      <trans-unit id="2438205306314074008" datatype="html">
+        <source>Integrated FSPs</source>
       </trans-unit>
       <trans-unit id="2438590582556677910" datatype="html">
         <source>Start!</source>
@@ -658,9 +661,6 @@
       <trans-unit id="3845427937485595400" datatype="html">
         <source>Enable scope</source>
       </trans-unit>
-      <trans-unit id="3847581538132296641" datatype="html">
-        <source>Required Type</source>
-      </trans-unit>
       <trans-unit id="3851949706407638075" datatype="html">
         <source>The system will create registrations with the status <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;&apos;blue&apos;&quot; label=&quot;&apos;New&apos;&quot; i18n-label /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;&apos;blue&apos;&quot; label=&quot;&apos;New&apos;&quot; i18n-label /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/></source>
       </trans-unit>
@@ -775,6 +775,9 @@
       </trans-unit>
       <trans-unit id="4228319514212568219" datatype="html">
         <source>Users</source>
+      </trans-unit>
+      <trans-unit id="4231630870580628223" datatype="html">
+        <source>Solution</source>
       </trans-unit>
       <trans-unit id="4249207548869932033" datatype="html">
         <source>Password reset successful</source>
@@ -1287,6 +1290,9 @@
       <trans-unit id="6533918067030990396" datatype="html">
         <source>Amount</source>
       </trans-unit>
+      <trans-unit id="6536020395223120161" datatype="html">
+        <source>Error</source>
+      </trans-unit>
       <trans-unit id="6555318547274416232" datatype="html">
         <source>Value</source>
       </trans-unit>
@@ -1401,6 +1407,9 @@
       <trans-unit id="7022921536845926478" datatype="html">
         <source>Payment reference prefix</source>
       </trans-unit>
+      <trans-unit id="704865667518683453" datatype="html">
+        <source>small</source>
+      </trans-unit>
       <trans-unit id="706820993579364519" datatype="html">
         <source>Where we get personal information from</source>
       </trans-unit>
@@ -1427,6 +1436,9 @@
       </trans-unit>
       <trans-unit id="7148904805726439689" datatype="html">
         <source>Target registrations</source>
+      </trans-unit>
+      <trans-unit id="7156619668472815007" datatype="html">
+        <source>Other errors</source>
       </trans-unit>
       <trans-unit id="718304168195158236" datatype="html">
         <source>Total registrations</source>
@@ -1674,6 +1686,9 @@
       <trans-unit id="8267283367469506410" datatype="html">
         <source>Kobo form integration errors</source>
       </trans-unit>
+      <trans-unit id="8267399258129447513" datatype="html">
+        <source>Missing required fields <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip message=&quot;These are the required fields that are missing from your Kobo form. Please add these fields to your Kobo form, save and redeploy.&quot; i18n-message /&gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip message=&quot;These are the required fields that are missing from your Kobo form. Please add these fields to your Kobo form, save and redeploy.&quot; i18n-message /&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
+      </trans-unit>
       <trans-unit id="8270214591182392971" datatype="html">
         <source>Brand code</source>
       </trans-unit>
@@ -1811,9 +1826,6 @@
       </trans-unit>
       <trans-unit id="8953033926734869941" datatype="html">
         <source>Name</source>
-      </trans-unit>
-      <trans-unit id="8955262959341258667" datatype="html">
-        <source>Current Type</source>
       </trans-unit>
       <trans-unit id="8980999496899249966" datatype="html">
         <source>Table columns:</source>
@@ -2588,9 +2600,6 @@
       </trans-unit>
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
-      </trans-unit>
-      <trans-unit id="2438205306314074008" datatype="html">
-        <source>Integrated FSPs</source>
       </trans-unit>
     </body>
   </file>
