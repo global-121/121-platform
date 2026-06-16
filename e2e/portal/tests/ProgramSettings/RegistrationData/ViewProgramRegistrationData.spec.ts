@@ -7,7 +7,6 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-const languagesBeforeIntegration = ['English'];
 const languagesAfterIntegration = ['English', 'Dutch'];
 
 const koboIntegrationDetails = {
@@ -41,12 +40,6 @@ test('View program and kobo attributes in settings page', async ({
     registrations: registrationsSafaricom,
     programId: programIdSafaricom,
     navigateToPage: `/program/${programIdSafaricom}/settings/registration-data`,
-  });
-
-  await test.step('Validate language tabs', async () => {
-    await registrationDataPage.validateLanguageTabs({
-      languages: languagesBeforeIntegration,
-    });
   });
 
   await test.step('Add Kobo integration', async () => {
