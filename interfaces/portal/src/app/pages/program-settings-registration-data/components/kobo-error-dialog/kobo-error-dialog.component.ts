@@ -35,11 +35,13 @@ export class KoboErrorDialogComponent {
   readonly dialogVisible = model(false);
   readonly tryAgain = output();
 
-  readonly missingFieldErrors = computed(() =>
-    this.errors().filter(
-      (error) => error.type === KoboValidationErrorType.MissingField,
-    ),
-  );
+  readonly missingFieldErrors = computed(() => {
+    const missingFields = this.errors()
+      .filter((error) => error.type === KoboValidationErrorType.MissingField)
+      .map((error) => error.field);
+
+    return [...new Set(missingFields)];
+  });
 
   readonly otherErrors = computed(() =>
     this.errors().filter(
