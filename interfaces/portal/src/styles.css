@@ -344,12 +344,20 @@ svg-icon svg {
     }
   }
 
+  /* Prevent contents being cut off, always wrap and align checkboxes to the top */
+
+  .p-select {
+    .p-select-option {
+      @apply items-start text-wrap;
+    }
+  }
+
   .p-multiselect {
-    /* Prevent contents being cut off, always wrap and align checkboxes to the top */
     .p-multiselect-option {
       @apply items-start text-wrap;
     }
   }
+
   /* To be able to remove this rule we need to be able to mark all form fields as "dirty" instead of "touched" on form submit
      Waiting for this to be merged & released in angular: https://github.com/angular/angular/pull/58663#issuecomment-2476844180 */
   .p-inputwrapper,
