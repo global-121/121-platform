@@ -82,7 +82,7 @@ export class ProgramFspConfigurationsService {
 
     if (existingConfig) {
       throw new HttpException(
-        `Program Fsp with name ${programFspConfigurationDto.name} already exists`,
+        `Program FSP-configuration with name ${programFspConfigurationDto.name} already exists`,
         HttpStatus.CONFLICT,
       );
     }
@@ -231,7 +231,7 @@ export class ProgramFspConfigurationsService {
         (r) => r.referenceId,
       );
       throw new HttpException(
-        `Cannot delete program Fsp configuration ${name} because it is still in use by registrations with referenceIds: ${registrationReferenceIds.join(
+        `Cannot delete program FSP-configuration ${name} because it is still in use by registrations with referenceIds: ${registrationReferenceIds.join(
           ', ',
         )}`,
         HttpStatus.CONFLICT,
@@ -497,7 +497,7 @@ export class ProgramFspConfigurationsService {
     });
     if (!config) {
       throw new HttpException(
-        `Program Fsp configuration with name ${name} not found`,
+        `Program FSP-configuration with name ${name} not found`,
         HttpStatus.NOT_FOUND,
       );
     }
@@ -517,7 +517,7 @@ export class ProgramFspConfigurationsService {
       });
     if (!property) {
       throw new HttpException(
-        `Program Fsp configuration property with name ${propertyName} not found`,
+        `Program FSP-configuration property with name ${propertyName} not found`,
         HttpStatus.NOT_FOUND,
       );
     }

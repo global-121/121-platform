@@ -354,7 +354,7 @@ export class ProgramService {
       });
     if (!programFspConfigurations) {
       throw new HttpException(
-        'Fsp configurations not found',
+        'FSP-configurations not found',
         HttpStatus.NOT_FOUND,
       );
     }

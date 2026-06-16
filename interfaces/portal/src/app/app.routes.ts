@@ -1,3 +1,4 @@
+import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -7,6 +8,7 @@ import { authCapabilitiesGuard } from '~/guards/auth-capabilities.guard';
 import { foundResourceGuard } from '~/guards/found-resource.guard';
 import { pendingChangesGuard } from '~/guards/pending-changes.guard';
 import { programPermissionsGuard } from '~/guards/program-permissions-guard';
+import { AuthService } from '~/services/auth.service';
 
 export enum AppRoutes {
   authCallback = 'auth-callback',
@@ -239,7 +241,16 @@ export const routes: Routes = [
                 (x) => x.ProgramSettingsFspsPageComponent,
               ),
             canActivate: [
-              authCapabilitiesGuard((authService) => authService.isAdmin),
+              (route) => {
+                const authService = inject(AuthService);
+                return authService.hasSomePermission({
+                  programId: Number(route.parent?.params.programId),
+                  optionalPermissions: [
+                    PermissionEnum.ProgramFspConfigCREATE,
+                    PermissionEnum.ProgramFspConfigUPDATE,
+                  ],
+                });
+              },
             ],
           },
           {

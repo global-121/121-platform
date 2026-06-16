@@ -17,7 +17,6 @@ import {
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
-import { EXTERNAL_API } from '@121-service/src/config';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
@@ -39,14 +38,16 @@ export class ProgramFspConfigurationsController {
     private readonly programFspConfigurationsService: ProgramFspConfigurationsService,
   ) {}
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramFspConfigREAD],
+  })
   @ApiOperation({
-    summary: 'Get all Fsp Configurations for a Program.',
+    summary: 'Get all FSP-configurations for a Program.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Return Fsp Configurations by Program Id.',
+    description: 'Returns all FSP-configurations for the given Program Id.',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -60,15 +61,19 @@ export class ProgramFspConfigurationsController {
     return this.programFspConfigurationsService.getByProgramId(programId);
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramFspConfigCREATE],
+  })
   @ApiOperation({
-    summary:
-      'Create a Fsp Configuration for a Program. You can also add properties in this API call or you can add them later using /programs/{programId}/fsp-configurations/{name}/properties',
+    summary: `
+      Create an FSP-configuration for a Program.
+      You can add properties in this API call or add them later using: \`/api/programs/{programId}/fsp-configurations/{name}/properties\`
+      `,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'The Fsp Configuration has been successfully created.',
+    description: 'FSP-configuration has been successfully created.',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -80,7 +85,7 @@ export class ProgramFspConfigurationsController {
   })
   @ApiResponse({
     status: HttpStatus.CONFLICT,
-    description: 'Program Fsp Configuration with same name already exists',
+    description: 'FSP-configuration with the same name already exists',
   })
   @Post(':programId/fsp-configurations')
   public async create(
@@ -95,10 +100,16 @@ export class ProgramFspConfigurationsController {
     );
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramFspConfigUPDATE],
+  })
   @ApiOperation({
-    summary:
-      'Update a Fsp Configuration for a Program. Can only update the label and properties. Posting an array with properties or an empty array of properties will delete all existing properties and create new ones. If you want to add properties it is therefore recommended to use this endpoint: /programs/{programId}/fsp-configurations/{name}/properties. Example of how to format properties can also be found there',
+    summary: `
+      Update an FSP-configuration for a Program. Can only update the label and properties.
+      Posting any (empty) array with properties will delete all _existing_ properties and create _new_ ones.
+      If you only want to _add_ properties it is therefore recommended to use the endpoint: \`/api/programs/{programId}/fsp-configurations/{name}/properties\`.
+      Example of how to format properties can also be found there.
+      `,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -108,7 +119,7 @@ export class ProgramFspConfigurationsController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'The Fsp Configuration has been successfully updated.',
+    description: 'FSP-configuration has been successfully updated.',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -134,20 +145,22 @@ export class ProgramFspConfigurationsController {
     );
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramFspConfigDELETE],
+  })
   @ApiOperation({
     summary:
-      'Delete a Fsp Configuration for a Program. Program Fsp Configurations cannot be deleted if they are associated with any transactions.',
+      'Delete an FSP-configuration. FSP-configurations cannot be deleted if they are associated with any transaction(s).',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @HttpCode(204)
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
-    description: 'The Fsp Configuration has been successfully deleted.',
+    description: 'FSP-configuration has been successfully deleted.',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Program does not exist or Fsp Configuration does not exist',
+    description: 'Program or FSP-configuration does not exist',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -156,7 +169,7 @@ export class ProgramFspConfigurationsController {
   @ApiResponse({
     status: HttpStatus.CONFLICT,
     description:
-      'Program Fsp Configuration is associated with transactions, so cannot be deleted',
+      'FSP-configuration is associated with transaction(s), so cannot be deleted',
   })
   @Delete(':programId/fsp-configurations/:name')
   public async delete(
@@ -168,9 +181,11 @@ export class ProgramFspConfigurationsController {
     await this.programFspConfigurationsService.delete(programId, name);
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramFspConfigREAD],
+  })
   @ApiOperation({
-    summary: 'Retrieve visible properties for Fsp Configuration.',
+    summary: 'Retrieve visible properties for FSP-configuration.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -181,11 +196,11 @@ export class ProgramFspConfigurationsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'The Fsp Configuration properties have been successfully retrieved.',
+      'FSP-configuration properties have been successfully retrieved.',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Program does not exist or Fsp Configuration does not exist',
+    description: 'Program or FSP-configuration does not exist',
   })
   @Get(':programId/fsp-configurations/:name/properties')
   public async getFspConfigurationProperties(
@@ -198,10 +213,15 @@ export class ProgramFspConfigurationsController {
     );
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramREAD] })
+  @AuthenticatedUser({
+    permissions: [
+      PermissionEnum.ProgramREAD,
+      PermissionEnum.ProgramFspConfigREAD,
+    ],
+  })
   @ApiOperation({
     summary:
-      'Retrieve allowlisted public properties for Fsp Configuration. Only returns properties that are safe to expose to non-admin users based on the Program Fsp Configuration Property type.',
+      'Retrieve allowlisted public properties for FSP-configuration. Only returns properties that are safe to expose to non-admin users based on the Program FSP-configuration Property type.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -212,11 +232,11 @@ export class ProgramFspConfigurationsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'The Fsp Configuration properties have been successfully retrieved.',
+      'FSP-configuration properties have been successfully retrieved.',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Program does not exist or Fsp Configuration does not exist',
+    description: 'Program or FSP-configuration does not exist',
   })
   @Get(':programId/fsp-configurations/:name/properties/public')
   public async getPublicFspConfigurationProperties(
@@ -229,9 +249,9 @@ export class ProgramFspConfigurationsController {
     );
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramFspConfigUPDATE] })
   @ApiOperation({
-    summary: `Create properties for a Program FSP Configuration. See ${EXTERNAL_API.rootApi}/fsps for allowed properties per FSP.`,
+    summary: `Create properties for an FSP-configuration. See \`/api/fsps\` for allowed properties per FSP.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -241,8 +261,7 @@ export class ProgramFspConfigurationsController {
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description:
-      'The Fsp Configuration properties have been successfully created.',
+    description: 'FSP-configuration properties have been successfully created.',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -250,7 +269,7 @@ export class ProgramFspConfigurationsController {
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Program does not exist or Fsp Configuration does not exist',
+    description: 'Program or FSP-configuration does not exist',
   })
   @ApiBody({
     isArray: true,
@@ -276,9 +295,9 @@ export class ProgramFspConfigurationsController {
     });
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramFspConfigUPDATE] })
   @ApiOperation({
-    summary: `Update a single property for a Program FSP Configuration.. See ${EXTERNAL_API.rootApi}/fsps for allowed properties per FSP.`,
+    summary: `Update a single property for an FSP-configuration. See \`/api/fsps\` for allowed properties per FSP.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -293,8 +312,7 @@ export class ProgramFspConfigurationsController {
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description:
-      'The Fsp Configuration property has been successfully updated.',
+    description: 'FSP-configuration property has been successfully updated.',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -302,8 +320,7 @@ export class ProgramFspConfigurationsController {
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description:
-      'Program does not exist or Fsp Configuration or property does not exist',
+    description: 'Program, FSP-configuration or property does not exist',
   })
   @Patch(':programId/fsp-configurations/:name/properties/:propertyName')
   public async updateProperty(
@@ -324,9 +341,9 @@ export class ProgramFspConfigurationsController {
     });
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramFspConfigDELETE] })
   @ApiOperation({
-    summary: `Delete a single Program FSP Configuration property. See ${EXTERNAL_API.rootApi}/fsps for required properties per FSP.`,
+    summary: `Delete a single FSP-configuration property. See \`/api/fsps\` for required properties per FSP.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -342,7 +359,7 @@ export class ProgramFspConfigurationsController {
   @HttpCode(204)
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
-    description: 'The Fsp Configuration property is successfully deleted.',
+    description: 'FSP-configuration property is successfully deleted.',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -350,8 +367,7 @@ export class ProgramFspConfigurationsController {
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description:
-      'Program does not exist or Fsp Configuration or property does not exist',
+    description: 'Program, FSP-configuration or property does not exist',
   })
   @Delete(':programId/fsp-configurations/:name/properties/:propertyName')
   public async deleteProperty(
