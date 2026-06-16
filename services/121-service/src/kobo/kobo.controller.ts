@@ -51,7 +51,7 @@ export class KoboController {
     private readonly koboSubmissionService: KoboSubmissionService,
   ) {}
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramKoboUPDATE] })
   @ApiOperation({
     summary: 'Integrate a Kobo form with a Program',
     description: `Integrates a deployed Kobo form with the specified program. This will:
@@ -93,7 +93,7 @@ export class KoboController {
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description:
-      'User is not authenticated, Kobo API token is invalid, or user lacks admin privileges',
+      'User is not authenticated, Kobo API token is invalid, or user lacks required permissions',
   })
   @ApiQuery({
     name: 'dryRun',
@@ -131,7 +131,7 @@ export class KoboController {
     };
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramKoboREAD] })
   @ApiOperation({
     summary: 'Get Kobo integration data for a Program',
     description:
@@ -169,7 +169,7 @@ export class KoboController {
     return this.koboService.getKoboData({ programId });
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramKoboUPDATE] })
   @ApiOperation({
     summary: 'Refresh Kobo form integration for a Program',
     description:
@@ -212,7 +212,7 @@ export class KoboController {
     };
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramKoboUPDATE] })
   @ApiOperation({
     summary: 'Import existing Kobo submissions as registrations',
     description: `Fetches all submissions from the linked Kobo form, filters out submissions that have already been imported (by matching Kobo submission UUID against registration referenceId), and imports the remaining existing submissions as registrations. Returns an error if the total number of submissions on the form exceeds the maximum fetch limit (${MAX_IMPORT_RECORDS}).`,

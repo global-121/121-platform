@@ -21,7 +21,7 @@ import { AuthService } from '~/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgramMenuComponent {
-  private authService = inject(AuthService);
+  private readonly authService = inject(AuthService);
   readonly programId = input.required<string>();
 
   readonly navMenuItems = computed<MenuItem[]>(() => [
@@ -65,6 +65,7 @@ export class ProgramMenuComponent {
         optionalPermissions: [
           PermissionEnum.AidWorkerProgramREAD,
           PermissionEnum.ProgramUPDATE,
+          PermissionEnum.ProgramKoboREAD,
         ],
       }),
     },

@@ -14,6 +14,8 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import {
   buildKoboFormUrl,
@@ -22,6 +24,7 @@ import {
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { KoboConfigurationDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-configuration-dialog/kobo-configuration-dialog.component';
 import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
+import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -41,6 +44,7 @@ export class KoboIntegrationCardComponent {
   readonly programId = input.required<number | string>();
 
   private readonly koboApiService = inject(KoboApiService);
+  private readonly authService = inject(AuthService);
   private readonly toastService = inject(ToastService);
 
   readonly koboConfigurationDialog =
@@ -63,6 +67,13 @@ export class KoboIntegrationCardComponent {
 
   readonly titleColoredChipLabel = computed(() =>
     this.isKoboIntegrated() ? $localize`Linked` : undefined,
+  );
+
+  readonly canUpdateKoboIntegration = computed(() =>
+    this.authService.hasPermission({
+      programId: this.programId(),
+      requiredPermission: PermissionEnum.ProgramKoboUPDATE,
+    }),
   );
 
   readonly externalFormUrl = computed<null | string>(() => {
@@ -120,4 +131,28 @@ export class KoboIntegrationCardComponent {
       },
     },
   ]);
+
+  readonly writableMenuItems = computed<MenuItem[]>(() =>
+    this.canUpdateKoboIntegration() ? this.menuItems() : [],
+  );
+
+  public openConfigurationDialog(): void {
+    this.koboConfigurationDialog().show();
+  }
+
+  public handleCardClicked(): void {
+    if (this.isKoboIntegrated()) {
+      return;
+    }
+
+    if (!this.canUpdateKoboIntegration()) {
+      this.toastService.showToast({
+        severity: 'warn',
+        detail: $localize`You do not have permission to configure Kobo integration`,
+      });
+      return;
+    }
+
+    this.openConfigurationDialog();
+  }
 }

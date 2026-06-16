@@ -8,16 +8,23 @@ import { AuthService } from '~/services/auth.service';
 
 export const PERMISSION_DENIED_QUERY_KEY = 'permissionDenied';
 
-interface programPermissionsGuardType {
-  permission: PermissionEnum;
-  fallbackRoute?: string[];
-}
+type programPermissionsGuardType =
+  | {
+      permission: PermissionEnum;
+      optionalPermissions?: never;
+      fallbackRoute?: string[];
+    }
+  | {
+      permission?: never;
+      optionalPermissions: PermissionEnum[];
+      fallbackRoute?: string[];
+    };
 
-export const programPermissionsGuard: ({
+export const programPermissionsGuard: (
+  config: programPermissionsGuardType,
+) => CanActivateFn = ({
   permission,
-  fallbackRoute,
-}: programPermissionsGuardType) => CanActivateFn = ({
-  permission,
+  optionalPermissions,
   fallbackRoute,
 }: programPermissionsGuardType) =>
   function programPermissionsCanActivateFn(route: ActivatedRouteSnapshot) {
@@ -25,9 +32,17 @@ export const programPermissionsGuard: ({
 
     const programId = route.params.programId as number;
 
-    if (
-      authService.hasPermission({ programId, requiredPermission: permission })
-    ) {
+    const hasAccess = optionalPermissions
+      ? authService.hasSomePermission({
+          programId,
+          optionalPermissions,
+        })
+      : authService.hasPermission({
+          programId,
+          requiredPermission: permission,
+        });
+
+    if (hasAccess) {
       return true;
     }
 

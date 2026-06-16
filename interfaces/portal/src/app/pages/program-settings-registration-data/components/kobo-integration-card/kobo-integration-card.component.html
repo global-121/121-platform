@@ -1,15 +1,13 @@
 <app-card-with-link
   [image]="'assets/registration-data/kobo-toolbox.svg'"
   [titleColoredChipLabel]="titleColoredChipLabel()"
-  [menuItems]="isKoboIntegrated() ? menuItems() : []"
+  [menuItems]="isKoboIntegrated() ? writableMenuItems() : []"
   [attr.data-testid]="'kobo-integration-card'"
   [enableLink]="!isKoboIntegrated()"
   [titleColoredChipColor]="'green'"
   title="KoboToolbox"
   i18n-title
-  (cardClicked)="
-    isKoboIntegrated() ? undefined : koboConfigurationDialog.show()
-  "
+  (cardClicked)="handleCardClicked()"
 >
   <ng-container card-subtitle>
     @if (isKoboIntegrated()) {
