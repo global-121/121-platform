@@ -184,6 +184,63 @@ class RegistrationDataPage extends BasePage {
       );
     }
   }
+
+  async validateKoboRequiredFieldsTable({
+    requiredDataColumnNames,
+  }: {
+    requiredDataColumnNames: string[];
+  }) {
+    const requiredFieldsTable = new TableComponent(
+      this.page,
+      'required-attributes-table',
+    );
+
+    const columnHeaders = await requiredFieldsTable.getTextArrayFromHeader();
+    const dataColumnNames = await requiredFieldsTable.tableRows
+      .locator('td:nth-child(2)')
+      .allInnerTexts();
+
+    const trimmedDataColumnNames = dataColumnNames.map((row) => row.trim());
+
+    console.log('trimmedDataColumnNames', trimmedDataColumnNames);
+
+    expect(columnHeaders).toEqual(['Field', 'Data column name']);
+    expect(trimmedDataColumnNames).toEqual(requiredDataColumnNames);
+  }
+
+  async validateKoboRequiredFieldsTableNotVisible() {
+    const requiredFieldsTable = new TableComponent(
+      this.page,
+      'required-attributes-table',
+    );
+
+    await expect(requiredFieldsTable.table).toBeHidden();
+  }
+
+  async validateRegistrationQuestionTableVisibleWithCorrectDataColumns({
+    dataColumnNames,
+  }: {
+    dataColumnNames: string[];
+  }) {
+    await expect(
+      this.page.getByTestId('registration-questions-card'),
+    ).toBeVisible();
+
+    // Can't use the TableComponent here because the table structure is differientiates from the standard table
+    const table = this.page
+      .getByTestId('registration-questions-card')
+      .getByRole('table');
+
+    const dataColumnNamesFromTable = await table
+      .locator('td:nth-child(1)')
+      .allInnerTexts();
+
+    const trimmedDataColumnNames = dataColumnNamesFromTable.map((row) =>
+      row.trim(),
+    );
+
+    expect(trimmedDataColumnNames).toEqual(dataColumnNames);
+  }
 }
 
 export default RegistrationDataPage;

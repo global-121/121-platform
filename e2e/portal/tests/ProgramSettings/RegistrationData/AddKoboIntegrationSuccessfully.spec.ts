@@ -8,7 +8,7 @@ import {
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 // KOBO INTEGRATION DETAILS
-const koboIntegrationDetails = {
+export const koboIntegrationDetails = {
   url: `${env.MOCK_SERVICE_URL}/api/kobo/#/forms/success-asset/summary`,
   apiKey: 'mock-token',
 };
@@ -49,6 +49,22 @@ test('Add Kobo integration successfully', async ({
     await registrationDataPage.koboSuccessfullyLinkedDialog({
       closeDialog: true,
     });
+    await registrationDataPage.validateKoboRequiredFieldsTableNotVisible();
+    await registrationDataPage.validateRegistrationQuestionTableVisibleWithCorrectDataColumns(
+      {
+        dataColumnNames: [
+          'fullName',
+          'gender',
+          'age',
+          'maritalStatus',
+          'nationalId',
+          'phoneNumber',
+          'photo',
+          'What_is_2_2_number',
+          'How_are_you_today_select_one',
+        ],
+      },
+    );
   });
 
   await test.step('Validate Kobo integration details on Registrations page', async () => {
