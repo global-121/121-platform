@@ -2,7 +2,7 @@
   [modal]="true"
   [closeOnEscape]="false"
   [(visible)]="dialogVisible"
-  styleClass="max-w-[60rem] sm:min-w-[40rem]"
+  styleClass="max-w-[70rem] sm:min-w-[60rem]"
   [attr.data-testid]="'kobo-integration-error-dialog'"
 >
   <ng-template #header>
@@ -12,140 +12,100 @@
     </h3>
   </ng-template>
 
-  @let grouped = groupedErrors();
-
   <p i18n>
     We couldn't complete the integration due to the following issues in your
     Kobo form. Please review your Kobo form and fix these errors, then save and
     redeploy:
   </p>
 
-  @if (uniqueMissingFields().length) {
-    <section>
-      <ng-container
-        *ngTemplateOutlet="
-          errorSectionHeader;
-          context: {
-            title: 'Missing fields',
-            info: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur eum fugit aliquam quia impedit dolor molestias ut nobis',
-          }
-        "
-      />
-
-      <div class="flex flex-wrap gap-2">
-        @for (field of uniqueMissingFields(); track $index) {
-          <p-tag
-            [value]="field"
-            severity="secondary"
-          />
-        }
-      </div>
-    </section>
-  }
-
-  @if (grouped[KoboValidationErrorType.TypeMismatch]; as errors) {
-    <section>
-      <ng-container
-        *ngTemplateOutlet="
-          errorSectionHeader;
-          context: {
-            title: 'Type mismatches',
-            info: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur eum fugit aliquam quia impedit dolor molestias ut nobis',
-          }
-        "
-      />
-
-      <p-table
-        [value]="grouped[KoboValidationErrorType.TypeMismatch]"
-        [tableStyle]="{ 'min-width': '50rem' }"
+  <section class="mt-4 mb-2">
+    <div class="mb-2">
+      <h1
+        i18n
+        class="text-base! font-semibold"
       >
-        <ng-template #header>
-          <tr>
-            <th i18n>Attribute</th>
-            <th
-              i18n
-              class="text-nowrap"
-            >
-              Current Type
-            </th>
-            <th
-              i18n
-              class="text-nowrap"
-            >
-              Required Type
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template
-          #body
-          let-error
-        >
-          <tr class="align-top">
-            <td class="">{{ error.attributeName }}</td>
-            <td class="">{{ error.actualType }}</td>
-            <td class="w-full">{{ error.expectedTypes.join(', ') }}</td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </section>
-  }
+        Missing required fields
+        <app-info-tooltip
+          message="These are the required fields that are missing from your Kobo form.
+        Please add these fields to your Kobo form, save and redeploy."
+          i18n-message
+        />
+      </h1>
+    </div>
 
-  @if (grouped[KoboValidationErrorType.InvalidChoice]; as errors) {
-    <section>
-      <ng-container
-        *ngTemplateOutlet="
-          errorSectionHeader;
-          context: {
-            title: 'Invalid choices',
-            info: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur eum fugit aliquam quia impedit dolor molestias ut nobis',
-          }
-        "
-      />
-      <ul class="mt-1 list-disc ps-5">
-        @for (error of errors; track $index) {
-          <li>{{ error.message }}</li>
-        }
-      </ul>
-    </section>
-  }
+    <div class="flex flex-wrap gap-2">
+      @for (field of missingFieldErrors(); track $index) {
+        <p-tag
+          [value]="field.field"
+          severity="info"
+        />
+      }
+    </div>
+  </section>
 
-  @if (grouped[KoboValidationErrorType.ForbiddenAttribute]; as errors) {
-    <section>
-      <ng-container
-        *ngTemplateOutlet="
-          errorSectionHeader;
-          context: {
-            title: 'Forbidden attributes',
-            info: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur eum fugit aliquam quia impedit dolor molestias ut nobis',
-          }
-        "
-      />
-      <ul class="mt-1 list-disc ps-5">
-        @for (error of errors; track $index) {
-          <li>{{ error.message }}</li>
-        }
-      </ul>
-    </section>
-  }
-
-  @if (grouped[KoboValidationErrorType.FormConfiguration]; as errors) {
-    <section>
-      <ng-container
-        *ngTemplateOutlet="
-          errorSectionHeader;
-          context: {
-            title: 'Form configuration',
-            info: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur eum fugit aliquam quia impedit dolor molestias ut nobis',
-          }
-        "
-      />
-      <ul class="mt-1 list-disc ps-5">
-        @for (error of errors; track $index) {
-          <li>{{ error.message }}</li>
-        }
-      </ul>
-    </section>
-  }
+  <section class="mt-4 mb-2">
+    <div class="mb-4">
+      <h1
+        i18n
+        class="text-base! font-semibold"
+      >
+        Other errors
+      </h1>
+    </div>
+    <p-table
+      [value]="otherErrors()"
+      size="small"
+      i18n-size
+      class="text-base"
+    >
+      <ng-template #header>
+        <tr>
+          <th
+            i18n
+            class="text-grey-700 px-2 py-1.5 font-semibold uppercase"
+          >
+            Field
+          </th>
+          <th
+            i18n
+            class="text-grey-700 px-2 py-1.5 font-semibold uppercase"
+          >
+            Error
+          </th>
+          <th
+            i18n
+            class="text-grey-700 px-2 py-1.5 font-semibold uppercase"
+          >
+            Solution
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template
+        #body
+        let-error
+      >
+        <tr class="align-top">
+          <td class="px-2">
+            {{ error.field }}
+          </td>
+          <td class="px-2">
+            <div>
+              {{ error.error }}
+            </div>
+          </td>
+          <td class="px-2">
+            {{ error.solution }}
+            @if (error.info) {
+              <app-info-tooltip
+                message="{{ error.info }}"
+                i18n-message
+              />
+            }
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </section>
 
   <div class="mt-4 flex justify-end gap-4">
     <p-button
@@ -164,21 +124,3 @@
     />
   </div>
 </p-dialog>
-
-<ng-template
-  #errorSectionHeader
-  let-title="title"
-  let-info="info"
->
-  <div class="mt-4 mb-2">
-    <h4 class="font-semibold">
-      {{ title }}
-      @if (info) {
-        <app-info-tooltip
-          message="{{ info }}"
-          i18n-message
-        />
-      }
-    </h4>
-  </div>
-</ng-template>

@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,58 +10,42 @@ import {
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
-import { group } from 'radashi';
+import { Tag } from 'primeng/tag';
 
 import {
-  KoboMissingFieldError,
-  KoboValidationError,
+  KoboValidationErrorBase,
   KoboValidationErrorType,
 } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 
+export interface KoboErrorColumn extends KoboValidationErrorBase {
+  id: number;
+}
+
 @Component({
   selector: 'app-kobo-error-dialog',
-  imports: [
-    NgTemplateOutlet,
-    Dialog,
-    Button,
-    TableModule,
-    TagModule,
-    InfoTooltipComponent,
-  ],
+  imports: [Dialog, Button, InfoTooltipComponent, Tag, TableModule],
   templateUrl: './kobo-error-dialog.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KoboErrorDialogComponent {
-  readonly errors = input<[] | KoboValidationError[]>([]);
-  readonly dialogVisible = model(false);
+  readonly errors = input<[] | KoboValidationErrorBase[]>([]);
+  readonly dialogVisible = model(true);
   readonly tryAgain = output();
 
-  readonly KoboValidationErrorType = KoboValidationErrorType;
+  readonly missingFieldErrors = computed(() =>
+    this.errors().filter(
+      (error) => error.type === KoboValidationErrorType.MissingField,
+    ),
+  );
 
-  // Group errors by type to display them in separate sections in the UI.
-  readonly groupedErrors = computed(() => {
-    if (this.errors().length) {
-      return group(this.errors(), (e) => e.type);
-    }
-    return [];
-  });
-
-  // Extract unique missing field names from the errors to display them in a list in the UI.
-  readonly uniqueMissingFields = computed(() => {
-    if (!this.errors().length) {
-      return [];
-    }
-
-    const missingFieldErrors = this.errors()
-      .filter((error) => error.type === KoboValidationErrorType.MissingField)
-      .map((error) => (error as KoboMissingFieldError).attributeName);
-    const uniqueFields = new Set(missingFieldErrors);
-    return Array.from(uniqueFields);
-  });
+  readonly otherErrors = computed(() =>
+    this.errors().filter(
+      (error) => error.type !== KoboValidationErrorType.MissingField,
+    ),
+  );
 
   show() {
     this.dialogVisible.set(true);
