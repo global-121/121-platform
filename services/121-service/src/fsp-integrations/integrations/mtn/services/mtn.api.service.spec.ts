@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { TokenSet } from 'openid-client';
 
 import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-error-types.enum';
 import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
@@ -281,9 +282,17 @@ describe('MtnApiService', () => {
       // Act
       await mtnApiService.createTransfer(createTransferInput);
 
-      // Assert – inspect the cached TokenSet via a second call that should reuse it
-      // The expires_at should be in seconds: floor(nowMs/1000) + 3600 - 5
+      // Assert – the cached TokenSet should store expires_at in seconds since
+      // epoch: floor(nowMs/1000) + expires_in - 5s buffer. A millisecond value
+      // would be ~1000x larger and would make the token effectively never expire.
       const expectedExpiresAt = Math.floor(nowMs / 1000) + 3600 - 5;
+      const tokenCache = (
+        mtnApiService as unknown as {
+          tokenCache: Map<string, TokenSet>;
+        }
+      ).tokenCache;
+      const cachedToken = tokenCache.get(testRequestIdentity.referenceId);
+      expect(cachedToken?.expires_at).toBe(expectedExpiresAt);
 
       // Call again – the cached token is still valid so no new auth call should happen
       post.mockResolvedValueOnce({ status: HttpStatus.ACCEPTED }); // only transfer
@@ -292,11 +301,6 @@ describe('MtnApiService', () => {
       // authenticate() should only have been called once (the first POST)
       // Total posts: 1 (auth) + 1 (transfer) + 1 (transfer reuse) = 3
       expect(post).toHaveBeenCalledTimes(3);
-
-      // Verify the token's expires_at value is in seconds (not milliseconds)
-      // A millisecond timestamp would be > 1_000_000_000_000 which is unreasonable
-      expect(expectedExpiresAt).toBeLessThan(1_000_000_000_000);
-      expect(expectedExpiresAt).toBeGreaterThan(1_000_000_000);
 
       jest.spyOn(Date, 'now').mockRestore();
     });
