@@ -431,7 +431,7 @@ export class KoboValidationService {
         type: KoboValidationErrorType.TypeMismatch,
         field,
         error: `Attribute '${field}' has incompatible type '${surveyItemType}'`,
-        solution: `Change the field type to a accepted type`,
+        solution: `Change the field type to an accepted type`,
         info: `Expected one of: ${expectedKoboTypes.map((t) => `'${t}'`).join(', ')}`,
         message: `Attribute '${field}' has incompatible type, expected one of: ${expectedKoboTypes.map((t) => `'${t}'`).join(', ')}, got '${surveyItemType}'.`,
       };
@@ -521,7 +521,7 @@ export class KoboValidationService {
         type: KoboValidationErrorType.TypeMismatch,
         field: fspQuestionName,
         error: `Attribute '${fspQuestionName}' has incompatible type '${fspItem.type}'`,
-        solution: `Change the field type to a accepted type`,
+        solution: `Change the field type to an accepted type`,
         info: `Expected one of: ${[...validTypes].map((t) => `'${t}'`).join(', ')}`,
         message: `Attribute '${fspQuestionName}' has incompatible type, expected one of: ${[...validTypes].map((t) => `'${t}'`).join(', ')}, got '${fspItem.type}'.`,
       };
