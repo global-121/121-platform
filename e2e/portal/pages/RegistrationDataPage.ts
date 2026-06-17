@@ -226,6 +226,55 @@ class RegistrationDataPage extends BasePage {
 
     await expect(requiredFieldsTable.table).toBeHidden();
   }
+
+  async validateMissingFields({ missingFields }: { missingFields: string[] }) {
+    for (const field of missingFields) {
+      const missingFieldTag = this.page.getByTestId(
+        'kobo-integration-missing-field-' + field,
+      );
+      await expect(missingFieldTag).toBeVisible();
+      await expect(missingFieldTag).toHaveText(field);
+    }
+  }
+
+  async validateFormSettingError({
+    formSettingError,
+  }: {
+    formSettingError: string;
+  }) {
+    const formSettingErrorsList = this.page.getByTestId(
+      'kobo-integration-form-setting-errors',
+    );
+    await expect(formSettingErrorsList).toContainText(formSettingError);
+  }
+
+  async validateKoboConfigurationErrorsTable({
+    configurationErrorsTableColumns,
+    configurationErrors,
+  }: {
+    configurationErrorsTableColumns: string[];
+    configurationErrors: string[];
+  }) {
+    const configurationErrorsTable = this.page
+      .getByTestId('kobo-integration-configuration-errors-table')
+      .locator('table');
+    const columnHeaders = await configurationErrorsTable
+      .locator('th')
+      .allInnerTexts();
+    const rows = await configurationErrorsTable.locator('td').allInnerTexts();
+
+    await expect(columnHeaders).toEqual(configurationErrorsTableColumns);
+    await expect(rows.map((row) => row.trim())).toEqual(configurationErrors);
+  }
+
+  async validateErrorDialogIsShown() {
+    const koboIntegrationDialog = new DialogComponent(
+      this.page
+        .getByTestId('kobo-integration-error-dialog')
+        .locator('.p-dialog'),
+    );
+    await koboIntegrationDialog.waitForVisible();
+  }
 }
 
 export default RegistrationDataPage;
