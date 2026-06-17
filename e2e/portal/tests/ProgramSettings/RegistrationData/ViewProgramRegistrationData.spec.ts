@@ -1,4 +1,3 @@
-import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdSafaricom,
@@ -7,12 +6,12 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-const languagesAfterIntegration = ['English', 'Dutch'];
+import {
+  koboIntegrationDetails,
+  kobooAttributes,
+} from './kobo-registration-data';
 
-const koboIntegrationDetails = {
-  url: `${env.MOCK_SERVICE_URL}/api/kobo/#/forms/success-asset/summary`,
-  apiKey: 'mock-token',
-};
+const languagesAfterIntegration = ['English', 'Dutch'];
 
 const defaultSafaricomAttributes = [
   { name: 'fullName', label: 'First Name' },
@@ -21,14 +20,6 @@ const defaultSafaricomAttributes = [
   { name: 'maritalStatus', label: 'Marital status of beneficiary' },
   { name: 'nationalId', label: 'ID number (MPESA)' },
   { name: 'phoneNumber', label: 'Phone Number' },
-];
-
-const kobooAttributes = [
-  { name: 'What_is_2_2_number', label: 'What is 2+2 (number)?' },
-  {
-    name: 'How_are_you_today_select_one',
-    label: 'How are you today (select one)?',
-  },
 ];
 
 test('View program and kobo attributes in settings page', async ({

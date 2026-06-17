@@ -58,7 +58,7 @@ test('Add all available FSPs', async ({
 
   await test.step('Delete All FSPs', async () => {
     await fspSettingsPage.deleteFsp({
-      fspName: fspsToDelete,
+      fspNames: fspsToDelete,
     });
   });
 

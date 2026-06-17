@@ -9,11 +9,7 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-// KOBO INTEGRATION DETAILS
-const koboIntegrationDetails = {
-  url: `${env.MOCK_SERVICE_URL}/api/kobo/#/forms/success-asset/summary`,
-  apiKey: 'mock-token',
-};
+import { koboIntegrationDetails } from './kobo-registration-data';
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
