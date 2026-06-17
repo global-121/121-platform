@@ -360,10 +360,17 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
        [
          {
-           "error": "The following attributes are missing: lastName, middleName",
-           "field": "program.fullnameNamingConvention",
+           "error": "Attribute 'lastName' is missing",
+           "field": "lastName",
            "message": "Kobo form must contain the following name attributes defined in program.fullnameNamingConvention. However the following attributes are missing: lastName, middleName",
-           "solution": "Add the missing attributes to the Kobo form: lastName, middleName",
+           "solution": "Add the missing attribute to the Kobo form",
+           "type": "missing-fullname-attributes",
+         },
+         {
+           "error": "Attribute 'middleName' is missing",
+           "field": "middleName",
+           "message": "Kobo form must contain the following name attributes defined in program.fullnameNamingConvention. However the following attributes are missing: lastName, middleName",
+           "solution": "Add the missing attribute to the Kobo form",
            "type": "missing-fullname-attributes",
          },
        ]
@@ -823,7 +830,7 @@ describe('KoboValidationService', () => {
              "field": "Invalid Language",
              "info": "See https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes for valid codes",
              "message": "Invalid Kobo language code: Invalid Language. Please use https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes",
-             "solution": "Use a valid ISO 639 language code.",
+             "solution": "use a valid ISO 639 language code.",
              "type": "invalid-language-code",
            },
            {
@@ -831,7 +838,7 @@ describe('KoboValidationService', () => {
              "field": "Another Invalid",
              "info": "See https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes for valid codes",
              "message": "Invalid Kobo language code: Another Invalid. Please use https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes",
-             "solution": "Use a valid ISO 639 language code.",
+             "solution": "use a valid ISO 639 language code.",
              "type": "invalid-language-code",
            },
          ]
@@ -878,7 +885,7 @@ describe('KoboValidationService', () => {
              "field": "Unknown (xx)",
              "info": "See https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes for valid codes",
              "message": "Invalid Kobo language code: Unknown (xx). Please use https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes",
-             "solution": "Use a valid ISO 639 language code.",
+             "solution": "use a valid ISO 639 language code.",
              "type": "invalid-language-code",
            },
          ]
