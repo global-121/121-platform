@@ -67,15 +67,15 @@
         </h1>
       </div>
 
-      <ul class="list-inside list-disc">
+      <ul
+        class="list-inside list-disc"
+        data-testid="kobo-integration-form-setting-errors"
+      >
         @for (error of formSettingErrors(); track $index) {
           <li>
             {{ error.error }}, {{ error.solution }}
             @if (error.info) {
-              <app-info-tooltip
-                message="{{ error.info }}"
-                i18n-message
-              />
+              <app-info-tooltip message="{{ error.info }}" />
             }
           </li>
         }
@@ -138,10 +138,7 @@
             <td class="px-2">
               {{ error.solution }}
               @if (error.info) {
-                <app-info-tooltip
-                  message="{{ error.info }}"
-                  i18n-message
-                />
+                <app-info-tooltip message="{{ error.info }}" />
               }
             </td>
           </tr>

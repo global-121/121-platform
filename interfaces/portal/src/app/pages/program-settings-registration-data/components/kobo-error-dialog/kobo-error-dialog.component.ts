@@ -27,7 +27,7 @@ import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.com
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KoboErrorDialogComponent {
-  readonly errors = input<[] | KoboValidationErrorBase[]>([]);
+  readonly errors = input<KoboValidationErrorBase[]>([]);
   readonly dialogVisible = model(false);
   readonly tryAgain = output();
 

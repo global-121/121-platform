@@ -41,19 +41,22 @@ test('Add Kobo integration with invalid details and validate error message', asy
     );
 
     await registrationDataPage.validateErrorDialogIsShown();
+
     await registrationDataPage.validateMissingFields({
       missingFields: ['phoneNumber', 'nationalId'],
+    });
+
+    await registrationDataPage.validateFormSettingError({
+      formSettingError:
+        "Invalid language code: 'null', use a valid ISO 639 language code.",
     });
 
     await registrationDataPage.validateKoboConfigurationErrorsTable({
       configurationErrorsTableColumns: ['Field', 'Error', 'Solution'],
       configurationErrors: [
-        'program.fullnameNamingConvention',
-        'The following attributes are missing: fullName',
-        'Add the missing attributes to the Kobo form: fullName',
-        '-',
-        "Invalid language code: 'null'",
-        'Use a valid ISO 639 language code.',
+        'fullName',
+        "Attribute 'fullName' is missing",
+        'Add the missing attribute to the Kobo form',
       ],
     });
   });

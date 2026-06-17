@@ -258,7 +258,7 @@ describe('KoboValidationService', () => {
            "field": "nationalId",
            "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
            "message": "Attribute 'nationalId' has incompatible type, expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video', got 'integer'.",
-           "solution": "Change the field type to a accepted type",
+           "solution": "Change the field type to an accepted type",
            "type": "type_mismatch",
          },
        ]
@@ -533,7 +533,7 @@ describe('KoboValidationService', () => {
              "field": "phoneNumber",
              "info": "Expected one of: 'text'",
              "message": "Attribute 'phoneNumber' has incompatible type, expected one of: 'text', got 'integer'.",
-             "solution": "Change the field type to a accepted type",
+             "solution": "Change the field type to an accepted type",
              "type": "type_mismatch",
            },
          ]
@@ -700,7 +700,7 @@ describe('KoboValidationService', () => {
              "field": "scope",
              "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
              "message": "Attribute 'scope' has incompatible type, expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video', got 'integer'.",
-             "solution": "Change the field type to a accepted type",
+             "solution": "Change the field type to an accepted type",
              "type": "type_mismatch",
            },
          ]
@@ -966,7 +966,7 @@ describe('KoboValidationService', () => {
            "field": "preferredLanguage",
            "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
            "message": "Attribute 'preferredLanguage' has incompatible type, expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video', got 'integer'.",
-           "solution": "Change the field type to a accepted type",
+           "solution": "Change the field type to an accepted type",
            "type": "type_mismatch",
          },
        ]
@@ -1262,7 +1262,7 @@ describe('KoboValidationService', () => {
             "field": "fsp",
             "info": "Expected one of: 'hidden', 'calculate', 'select_one'",
             "message": "Attribute 'fsp' has incompatible type, expected one of: 'hidden', 'calculate', 'select_one', got 'text'.",
-            "solution": "Change the field type to a accepted type",
+            "solution": "Change the field type to an accepted type",
             "type": "type_mismatch",
           },
         ]
