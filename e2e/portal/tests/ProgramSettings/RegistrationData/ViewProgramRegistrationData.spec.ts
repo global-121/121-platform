@@ -1,4 +1,3 @@
-import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdSafaricom,
@@ -7,13 +6,12 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-const languagesBeforeIntegration = ['English'];
-const languagesAfterIntegration = ['English', 'Dutch'];
+import {
+  koboIntegrationDetails,
+  kobooAttributes,
+} from './kobo-registration-data';
 
-const koboIntegrationDetails = {
-  url: `${env.MOCK_SERVICE_URL}/api/kobo/#/forms/success-asset/summary`,
-  apiKey: 'mock-token',
-};
+const languagesAfterIntegration = ['English', 'Dutch'];
 
 const defaultSafaricomAttributes = [
   { name: 'fullName', label: 'First Name' },
@@ -24,19 +22,7 @@ const defaultSafaricomAttributes = [
   { name: 'phoneNumber', label: 'Phone Number' },
 ];
 
-const kobooAttributes = [
-  { name: 'What_is_2_2_number', label: 'What is 2+2 (number)?' },
-  {
-    name: 'How_are_you_today_select_one',
-    label: 'How are you today (select one)?',
-  },
-];
-
-// We are hiding the component until the logic is fully implemented, so we can skip the test for now.
-// Once the component is visible, we should enable the test and make sure it works as expected.
-// REF: AB#42731
-
-test.skip('View program and kobo attributes in settings page', async ({
+test('View program and kobo attributes in settings page', async ({
   resetDBAndSeedRegistrations,
   registrationDataPage,
 }) => {
@@ -45,12 +31,6 @@ test.skip('View program and kobo attributes in settings page', async ({
     registrations: registrationsSafaricom,
     programId: programIdSafaricom,
     navigateToPage: `/program/${programIdSafaricom}/settings/registration-data`,
-  });
-
-  await test.step('Validate language tabs', async () => {
-    await registrationDataPage.validateLanguageTabs({
-      languages: languagesBeforeIntegration,
-    });
   });
 
   await test.step('Add Kobo integration', async () => {

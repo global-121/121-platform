@@ -295,7 +295,7 @@ const happyFlowFromDefinition: KoboAssetDeployment = {
           name: 'photo',
           type: 'image',
           $kuid: 'ph7rt99',
-          label: ['Upload aa important photo', 'Upload een belangrijke foto'],
+          label: ['Upload an important photo', 'Upload een belangrijke foto'],
           $xpath: 'photo',
           required: false,
           $autoname: 'photo',

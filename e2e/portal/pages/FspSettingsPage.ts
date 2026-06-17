@@ -237,8 +237,8 @@ class FspSettingsPage extends BasePage {
     await this.saveReconfigurationButton.click();
   }
 
-  async deleteFsp({ fspName }: { fspName: string[] }) {
-    for (const name of fspName) {
+  async deleteFsp({ fspNames }: { fspNames: string[] }) {
+    for (const name of fspNames) {
       const fspCardActions = this.fspCard
         .filter({ hasText: name })
         .getByLabel('More actions');

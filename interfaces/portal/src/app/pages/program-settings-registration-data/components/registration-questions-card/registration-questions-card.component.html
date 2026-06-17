@@ -8,7 +8,7 @@
   [formGroup]="formGroup"
   [mutation]="undefined"
   [mutationData]="formGroup.getRawValue()"
-  class="hidden"
+  [attr.data-testid]="'registration-questions-card'"
 >
   <p
     i18n
@@ -34,7 +34,7 @@
       }
       <p-table
         [value]="programAttributes.data() ?? []"
-        data-testid="program-attributes-table"
+        [attr.data-testid]="'program-attributes-table'"
       >
         <ng-template #header>
           <tr>
