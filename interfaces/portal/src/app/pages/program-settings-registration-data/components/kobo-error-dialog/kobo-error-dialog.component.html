@@ -39,6 +39,12 @@
           <p-tag
             [value]="field"
             severity="info"
+            rounded
+            style="
+              --p-tag-info-background: #e9f2ff;
+              --p-tag-info-color: #0d2a88;
+              --p-tag-padding: 0.25rem 0.875rem;
+            "
             [attr.data-testid]="'kobo-integration-missing-field-' + field"
           />
         }
@@ -144,7 +150,7 @@
     </section>
   }
 
-  <div class="mt-4 flex justify-end gap-4">
+  <div class="mt-5 flex justify-end gap-4">
     <p-button
       label="Cancel"
       i18n-label="@@generic-cancel"

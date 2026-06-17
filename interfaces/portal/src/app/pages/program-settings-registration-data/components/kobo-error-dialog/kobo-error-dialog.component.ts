@@ -35,6 +35,15 @@ export class KoboErrorDialogComponent {
   readonly dialogVisible = model(false);
   readonly tryAgain = output();
 
+  readonly errorTable = computed(() =>
+    this.errors().filter(
+      (error) =>
+        error.type !== KoboValidationErrorType.MissingField &&
+        error.type !== KoboValidationErrorType.MissingEnglishLanguage &&
+        error.type !== KoboValidationErrorType.InvalidLanguageCode,
+    ),
+  );
+
   readonly formSettingErrors = computed(() => {
     return this.errors()
       .filter(
@@ -52,12 +61,6 @@ export class KoboErrorDialogComponent {
 
     return [...new Set(missingFields)];
   });
-
-  readonly errorTable = computed(() =>
-    this.errors().filter(
-      (error) => error.type !== KoboValidationErrorType.MissingField,
-    ),
-  );
 
   show() {
     this.dialogVisible.set(true);
