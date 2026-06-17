@@ -24,7 +24,7 @@ export class MtnReconciliationService {
   public async processTransferCallback(
     mtnTransferCallback: MtnTransferCallbackDto,
   ): Promise<void> {
-
+    console.log('mtnTransferCallback: ', mtnTransferCallback);
     const { externalId } = mtnTransferCallback;
 
     if (!externalId) {
@@ -49,7 +49,6 @@ export class MtnReconciliationService {
   public async processMtnTransferCallbackJob(
     mtnTransferCallbackJob: MtnTransferCallbackJobDto,
   ): Promise<void> {
-
     const currentStatus = await this.transactionRepository.getStatusByIdOrThrow(
       mtnTransferCallbackJob.transactionId,
     );
