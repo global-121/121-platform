@@ -1067,6 +1067,9 @@
       <trans-unit id="5473276629033556345" datatype="html">
         <source>Funding token code</source>
       </trans-unit>
+      <trans-unit id="5474597937014071247" datatype="html">
+        <source>Form setting errors <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip message=&quot;These are the errors related to your Kobo form settings.&quot; i18n-message /&gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip message=&quot;These are the errors related to your Kobo form settings.&quot; i18n-message /&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
+      </trans-unit>
       <trans-unit id="5484768522828011721" datatype="html">
         <source>(matching fields: <x equiv-text="{{ matchingFieldNames }}" id="INTERPOLATION"/>)</source>
       </trans-unit>
@@ -1382,6 +1385,9 @@
       </trans-unit>
       <trans-unit id="7000649363168371045" datatype="html">
         <source>Save changes</source>
+      </trans-unit>
+      <trans-unit id="7003345492545522906" datatype="html">
+        <source>These are the errors related to your Kobo form settings.</source>
       </trans-unit>
       <trans-unit id="7003847942368840790" datatype="html">
         <source>Funds available</source>

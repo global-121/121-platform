@@ -46,7 +46,38 @@
     </section>
   }
 
-  @if (otherErrors().length > 0) {
+  @if (formSettingErrors().length > 0) {
+    <section class="mt-4 mb-2">
+      <div class="mb-2">
+        <h1
+          i18n
+          class="text-base! font-semibold"
+        >
+          Form setting errors
+          <app-info-tooltip
+            message="These are the errors related to your Kobo form settings."
+            i18n-message
+          />
+        </h1>
+      </div>
+
+      <ul class="list-inside list-disc">
+        @for (error of formSettingErrors(); track $index) {
+          <li>
+            {{ error.error }}, {{ error.solution }}
+            @if (error.info) {
+              <app-info-tooltip
+                message="{{ error.info }}"
+                i18n-message
+              />
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  @if (errorTable().length > 0) {
     <section class="mt-4 mb-2">
       <div class="mb-4">
         <h1
@@ -57,7 +88,7 @@
         </h1>
       </div>
       <p-table
-        [value]="otherErrors()"
+        [value]="errorTable()"
         size="small"
         i18n-size
         class="text-base"
