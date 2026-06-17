@@ -99,8 +99,9 @@ class RegistrationDataPage extends BasePage {
 
     expect(pillCount).toBe(fspNames.length);
 
-    for (const name of fspNames)
+    for (const name of fspNames) {
       await expect(pillsContainer).toContainText(name);
+    }
   }
 
   async addKoboToolboxIntegration({

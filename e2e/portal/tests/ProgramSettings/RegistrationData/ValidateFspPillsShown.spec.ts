@@ -20,7 +20,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Check if all FSPs are are shown in the Registration integration section', async ({
+test('Check if all FSPs are shown in the Registration integration section', async ({
   registrationDataPage,
 }) => {
   await test.step('Validate required fields', async () => {

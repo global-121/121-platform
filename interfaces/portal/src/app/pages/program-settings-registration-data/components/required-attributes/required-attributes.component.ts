@@ -35,13 +35,11 @@ export class RequiredAttributesComponent {
   readonly programApiService = inject(ProgramApiService);
 
   readonly fspNames = computed(() => {
-    const fspConfigs = this.fspConfigurations.data();
-    if (!fspConfigs) {
-      return [];
-    }
+    const fspConfigs = this.fspConfigurations.data() ?? [];
 
+    // @TODO: Should we localize FSP names?
     return fspConfigs.map(
-      (config) => FSP_SETTINGS[config.fspName].defaultLabel.en, // @TODO: Should we localize FSP names?
+      (config) => FSP_SETTINGS[config.fspName].defaultLabel.en,
     );
   });
 
