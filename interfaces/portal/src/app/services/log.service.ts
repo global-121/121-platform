@@ -14,6 +14,26 @@ import {
 import { environment } from '~environment';
 
 /**
+ * Global Angular error-handler that forwards every otherwise-uncaught error to
+ * Application Insights through the central `LogService`.
+ *
+ * Registering this (via `LogService.APP_PROVIDERS`) replaces Angular's default
+ * `ErrorHandler`, which would only log errors to the browser-console.
+ *
+ * See: https://angular.dev/api/core/ErrorHandler
+ */
+@Injectable()
+export class GlobalErrorHandler implements ErrorHandler {
+  private readonly logService = inject(LogService);
+
+  public handleError(error: unknown): void {
+    const exception = error instanceof Error ? error : new Error(String(error));
+
+    this.logService.logException(exception);
+  }
+}
+
+/**
  * Central service for all "telemetry"/logging towards Application Insights.
  *
  * This is the single, "standard" place to send events, traces and exceptions
@@ -40,9 +60,9 @@ export class LogService {
    *
    * See: https://angular.dev/api/core/ErrorHandler
    */
-  public static get APP_PROVIDERS(): Provider[] {
-    return [{ provide: ErrorHandler, useClass: GlobalErrorHandler }];
-  }
+  public static readonly APP_PROVIDERS: Provider[] = [
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
+  ];
 
   private appInsights: ApplicationInsights;
   private appInsightsInitialized: boolean;
@@ -129,25 +149,5 @@ export class LogService {
     if (isDevMode()) {
       console.info(`LOG Trace: "${message}"`, properties ?? '');
     }
-  }
-}
-
-/**
- * Global Angular error-handler that forwards every otherwise-uncaught error to
- * Application Insights through the central `LogService`.
- *
- * Registering this (via `LogService.APP_PROVIDERS`) replaces Angular's default
- * `ErrorHandler`, which would only log errors to the browser-console.
- *
- * See: https://angular.dev/api/core/ErrorHandler
- */
-@Injectable()
-export class GlobalErrorHandler implements ErrorHandler {
-  private readonly logService = inject(LogService);
-
-  public handleError(error: unknown): void {
-    const exception = error instanceof Error ? error : new Error(String(error));
-
-    this.logService.logException(exception);
   }
 }
