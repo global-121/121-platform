@@ -165,8 +165,8 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.RegistrationDuplicationDELETE,
           PermissionEnum.AidWorkerProgramREAD,
-          PermissionEnum.AidWorkerProgramUPDATE,
           PermissionEnum.RegistrationStatusPausedUPDATE,
+          PermissionEnum.RegistrationBulkUPDATE
         ],
       },
       {
@@ -268,6 +268,20 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationPersonalREAD,
         ],
       },
+      {
+        role: DefaultUserRole.UserManager,
+        label: 'User management',
+        permissions: [
+          PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.PaymentREAD,
+          PermissionEnum.PaymentTransactionREAD,
+          PermissionEnum.RegistrationREAD,
+          PermissionEnum.RegistrationNotificationREAD,
+          PermissionEnum.PaymentTransactionREAD,
+          PermissionEnum.AidWorkerProgramREAD,
+          PermissionEnum.AidWorkerProgramUPDATE
+        ]
+      }
     ];
 
     const userRoleEntities: UserRoleEntity[] = [];
