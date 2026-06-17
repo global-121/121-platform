@@ -284,7 +284,7 @@ export class KoboValidationService {
       type: KoboValidationErrorType.MissingEnglishLanguage,
       field: 'languages',
       error: 'Form is missing English (en) as a language',
-      solution: 'Add English (en) as a language to the Kobo form',
+      solution: 'add English (en) as a language to the Kobo form', // <--- Lowercase on purpose, because we mash it together on the FE
       message: 'Kobo form must have English (en) as one of the languages.',
     };
   }
@@ -395,7 +395,7 @@ export class KoboValidationService {
         type: KoboValidationErrorType.InvalidLanguageCode as const,
         field: language ?? '-',
         error: `Invalid language code: '${language}'`,
-        solution: 'Use a valid ISO 639 language code.',
+        solution: 'use a valid ISO 639 language code.', // <--- Lowercase on purpose, because we mash it together on the FE
         info: `See https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes for valid codes`,
         message: `Invalid Kobo language code: ${language}. Please use https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes`,
       }));
