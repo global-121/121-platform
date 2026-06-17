@@ -19,10 +19,6 @@ import {
 
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 
-export interface KoboErrorColumn extends KoboValidationErrorBase {
-  id: number;
-}
-
 @Component({
   selector: 'app-kobo-error-dialog',
   imports: [Dialog, Button, InfoTooltipComponent, Tag, TableModule],
