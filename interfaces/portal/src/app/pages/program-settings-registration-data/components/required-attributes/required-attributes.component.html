@@ -1,3 +1,27 @@
+@if (fspNames().length > 0) {
+  <div class="mt-4">
+    <h2
+      i18n
+      class="text-base!"
+    >
+      Integrated FSP's
+    </h2>
+
+    <ul
+      class="mt-2 flex flex-wrap gap-2"
+      data-testid="integrated-fsp-list"
+    >
+      @for (name of fspNames(); track $index) {
+        <p-tag
+          severity="info"
+          value="{{ name }}"
+          [rounded]="true"
+        />
+      }
+    </ul>
+  </div>
+}
+
 <p
   i18n
   class="my-4"
