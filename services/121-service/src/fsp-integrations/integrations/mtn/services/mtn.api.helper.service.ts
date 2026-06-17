@@ -53,9 +53,14 @@ export class MtnApiHelperService {
     headers.set('X-Reference-Id', referenceId);
     headers.set('X-Target-Environment', env.MTN_TARGET_ENVIRONMENT!);
     const url = `${env.EXTERNAL_121_SERVICE_URL}/api/fsps/mtn/transfer-callback`;
+    console.log('🚀 ~ MtnApiHelperService ~ createTransferHeaders ~ url:', url);
     if (env.EXTERNAL_121_SERVICE_URL) {
       headers.set('X-Callback-Url', url);
     }
+    console.log(
+      '🚀 ~ MtnApiHelperService ~ createTransferHeaders ~ headers:',
+      headers,
+    );
     return headers;
   }
 
