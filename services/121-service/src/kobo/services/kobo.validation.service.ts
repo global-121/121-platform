@@ -258,15 +258,13 @@ export class KoboValidationService {
       return [];
     }
 
-    return [
-      {
-        type: KoboValidationErrorType.MissingFullnameAttributes,
-        field: 'program.fullnameNamingConvention',
-        error: `The following attributes are missing: ${missingAttributes.join(', ')}`,
-        solution: `Add the missing attributes to the Kobo form: ${missingAttributes.join(', ')}`,
-        message: `Kobo form must contain the following name attributes defined in program.fullnameNamingConvention. However the following attributes are missing: ${missingAttributes.join(', ')}`,
-      },
-    ];
+    return missingAttributes.map((missingAttribute) => ({
+      type: KoboValidationErrorType.MissingFullnameAttributes,
+      field: missingAttribute,
+      error: `Attribute '${missingAttribute}' is missing`,
+      solution: `Add the missing attribute to the Kobo form`,
+      message: `Kobo form must contain the following name attributes defined in program.fullnameNamingConvention. However the following attributes are missing: ${missingAttributes.join(', ')}`,
+    }));
   }
 
   private validateFormHasEnglishLanguage({
