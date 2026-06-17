@@ -1,3 +1,4 @@
+/** @public */
 export enum KoboValidationErrorType {
   MissingField = 'missing_field',
   TypeMismatch = 'type_mismatch',
