@@ -192,14 +192,14 @@ describe('KoboValidationService', () => {
            "error": "Attribute 'bankAccountNumber' is missing",
            "field": "bankAccountNumber",
            "message": "Missing required attribute 'bankAccountNumber' (for FSP 'Commercial Bank Ethiopia').",
-           "solution": "Add 'bankAccountNumber' to the Kobo form (required for FSP 'Commercial Bank Ethiopia')",
+           "solution": "Add 'bankAccountNumber' to the Kobo form",
            "type": "missing_field",
          },
          {
            "error": "Attribute 'fullName' is missing",
            "field": "fullName",
            "message": "Missing required attribute 'fullName' (for FSP 'Commercial Bank Ethiopia').",
-           "solution": "Add 'fullName' to the Kobo form (required for FSP 'Commercial Bank Ethiopia')",
+           "solution": "Add 'fullName' to the Kobo form",
            "type": "missing_field",
          },
        ]
