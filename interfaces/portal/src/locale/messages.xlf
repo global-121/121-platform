@@ -1401,9 +1401,6 @@
       <trans-unit id="7022921536845926478" datatype="html">
         <source>Payment reference prefix</source>
       </trans-unit>
-      <trans-unit id="704865667518683453" datatype="html">
-        <source>small</source>
-      </trans-unit>
       <trans-unit id="706820993579364519" datatype="html">
         <source>Where we get personal information from</source>
       </trans-unit>
