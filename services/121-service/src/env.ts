@@ -114,11 +114,17 @@ export const mtnEnvVariablesSchema = {
     .url()
     .pipe(z.transform((url) => withoutTrailingSlash(url)))
     .optional(),
-  MTN_SUBSCRIPTION_KEY: z.string().optional(),
-  MTN_REFERENCE_ID: z.string().optional(),
   // In sandbox: 'sandbox'. In production: country-specific identifier (e.g., 'mtnuganda', 'mtnghana').
   MTN_TARGET_ENVIRONMENT: z.string().optional(),
+};
+
+// These are not required as env variables at startup because the actual
+// credentials are stored in the database via program FSP configuration.
+// TODO: Consider removing these from the env variables and only use the database values.
+const mtnOptionalEnvVariablesSchema = {
   MTN_API_KEY: z.string().optional(),
+  MTN_REFERENCE_ID: z.string().optional(),
+  MTN_SUBSCRIPTION_KEY: z.string().optional(),
 };
 
 export const nedbankEnvVariablesSchema = {
@@ -188,6 +194,7 @@ const fspEnvVariablesSchema = {
   ...intersolveVisaEnvVariablesSchema,
   ...intersolveVoucherEnvVariablesSchema,
   ...mtnEnvVariablesSchema,
+  ...mtnOptionalEnvVariablesSchema,
   ...nedbankEnvVariablesSchema,
   ...onafriqEnvVariablesSchema,
   ...safaricomEnvVariablesSchema,

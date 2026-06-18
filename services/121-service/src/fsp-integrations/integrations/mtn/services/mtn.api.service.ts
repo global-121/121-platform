@@ -218,13 +218,11 @@ export class MtnApiService {
     }
 
     // We subtract 5 seconds to ensure we don't use an expired token.
-    const expiresAtUnixTimestamp = (expiresInSeconds - 5) * 1000 + Date.now();
-
     this.tokenCache.set(
       requestIdentity.referenceId,
       new TokenSet({
         access_token: accessToken,
-        expires_at: expiresAtUnixTimestamp,
+        expires_in: expiresInSeconds - 5,
       }),
     );
   }
