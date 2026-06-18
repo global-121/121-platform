@@ -7,12 +7,8 @@ import { SkeletonModule } from 'primeng/skeleton';
   selector: 'app-card-grid',
   imports: [SkeletonModule, CardModule],
   templateUrl: './card-grid.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardGridComponent {
-  readonly empty = input.required<boolean>();
-  readonly emptyTitle = input.required<string>();
-  readonly emptySubtitle = input.required<string>();
   readonly loading = input<boolean>();
 }
