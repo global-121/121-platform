@@ -11,6 +11,11 @@ describe('InstanceReportingCsvMapper', () => {
         programId: 1,
         status: 'included',
         referenceId: 'ref-1',
+        createdDate: '2026-04-19T00:00:00.000Z',
+        preferredLanguage: 'en',
+        fspName: 'Safaricom',
+        paymentAmountMultiplier: 1,
+        maxPayments: 3,
         uploadDate: '2026-04-20',
       };
 
@@ -19,7 +24,9 @@ describe('InstanceReportingCsvMapper', () => {
         item: registration,
       });
 
-      expect(row).toBe('test,1,Cash for Work,1,included,ref-1,2026-04-20\n');
+      expect(row).toBe(
+        'test,1,Cash for Work,1,included,ref-1,2026-04-19T00:00:00.000Z,en,Safaricom,1,3,2026-04-20\n',
+      );
     });
 
     it('should wrap values containing commas in quotes', () => {

@@ -68,6 +68,11 @@ describe('InstanceReportingBlobService', () => {
             programId: 1,
             status: 'included',
             referenceId: 'ref-1',
+            createdDate: '2026-04-19T00:00:00.000Z',
+            preferredLanguage: 'en',
+            fspName: 'Safaricom',
+            paymentAmountMultiplier: 1,
+            maxPayments: 3,
             uploadDate: '2026-04-20',
           },
         ],
@@ -83,6 +88,7 @@ describe('InstanceReportingBlobService', () => {
             amount: 5000,
             localCurrency: 'ETB',
             createdDate: '2026-04-20T10:00:00.000Z',
+            startedDate: '2026-04-20T11:00:00.000Z',
             updatedDate: '2026-04-20T12:00:00.000Z',
             registrationReferenceId: 'ref-1',
             uploadDate: '2026-04-20',
@@ -100,12 +106,12 @@ describe('InstanceReportingBlobService', () => {
     );
 
     expect(registrationsCsv).toBe(
-      'instance,version,programTitle,programId,status,referenceId,uploadDate\n' +
-        'a,1,P1,1,included,ref-1,2026-04-20\n',
+      'instance,version,programTitle,programId,status,referenceId,createdDate,preferredLanguage,fspName,paymentAmountMultiplier,maxPayments,uploadDate\n' +
+        'a,1,P1,1,included,ref-1,2026-04-19T00:00:00.000Z,en,Safaricom,1,3,2026-04-20\n',
     );
     expect(transactionsCsv).toBe(
-      'instance,version,programId,programTitle,id,status,amountEuro,amount,localCurrency,createdDate,updatedDate,registrationReferenceId,uploadDate\n' +
-        'a,1,1,P1,42,success,100,5000,ETB,2026-04-20T10:00:00.000Z,2026-04-20T12:00:00.000Z,ref-1,2026-04-20\n',
+      'instance,version,programId,programTitle,id,status,amountEuro,amount,localCurrency,createdDate,startedDate,updatedDate,registrationReferenceId,uploadDate\n' +
+        'a,1,1,P1,42,success,100,5000,ETB,2026-04-20T10:00:00.000Z,2026-04-20T11:00:00.000Z,2026-04-20T12:00:00.000Z,ref-1,2026-04-20\n',
     );
   });
 });

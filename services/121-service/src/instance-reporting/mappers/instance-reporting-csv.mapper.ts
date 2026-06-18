@@ -16,6 +16,11 @@ const registrationHeaderRecord: Record<
   programId: true,
   status: true,
   referenceId: true,
+  createdDate: true,
+  preferredLanguage: true,
+  fspName: true,
+  paymentAmountMultiplier: true,
+  maxPayments: true,
   uploadDate: true,
 };
 
@@ -33,6 +38,7 @@ const transactionHeaderRecord: Record<
   amount: true,
   localCurrency: true,
   createdDate: true,
+  startedDate: true,
   updatedDate: true,
   registrationReferenceId: true,
   uploadDate: true,

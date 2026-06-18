@@ -95,11 +95,13 @@ describe('Push instance reporting data', () => {
       [
         {
           instance: expect.any(String),
+          createdDate: expect.any(String),
           referenceId: expect.any(String),
           uploadDate: expect.any(String),
         },
         {
           instance: expect.any(String),
+          createdDate: expect.any(String),
           referenceId: expect.any(String),
           uploadDate: expect.any(String),
         },
@@ -107,7 +109,12 @@ describe('Push instance reporting data', () => {
       `
      [
        {
+         "createdDate": Any<String>,
+         "fspName": "Intersolve-voucher-whatsapp",
          "instance": Any<String>,
+         "maxPayments": null,
+         "paymentAmountMultiplier": 1,
+         "preferredLanguage": "nl",
          "programId": 2,
          "programTitle": "NLRC Direct Digital Aid Program (PV)",
          "referenceId": Any<String>,
@@ -115,7 +122,12 @@ describe('Push instance reporting data', () => {
          "uploadDate": Any<String>,
        },
        {
+         "createdDate": Any<String>,
+         "fspName": "Intersolve-visa",
          "instance": Any<String>,
+         "maxPayments": null,
+         "paymentAmountMultiplier": 1,
+         "preferredLanguage": "en",
          "programId": 3,
          "programTitle": "NLRC OCW program",
          "referenceId": Any<String>,
@@ -159,6 +171,7 @@ describe('Push instance reporting data', () => {
           id: expect.any(Number),
           instance: expect.any(String),
           createdDate: expect.any(String),
+          startedDate: expect.any(String),
           updatedDate: expect.any(String),
           uploadDate: expect.any(String),
         },
@@ -166,6 +179,7 @@ describe('Push instance reporting data', () => {
           id: expect.any(Number),
           instance: expect.any(String),
           createdDate: expect.any(String),
+          startedDate: expect.any(String),
           updatedDate: expect.any(String),
           uploadDate: expect.any(String),
         },
@@ -182,6 +196,7 @@ describe('Push instance reporting data', () => {
          "programId": 2,
          "programTitle": "NLRC Direct Digital Aid Program (PV)",
          "registrationReferenceId": "44e62864557597e0d",
+         "startedDate": Any<String>,
          "status": "success",
          "updatedDate": Any<String>,
          "uploadDate": Any<String>,
@@ -196,6 +211,7 @@ describe('Push instance reporting data', () => {
          "programId": 3,
          "programTitle": "NLRC OCW program",
          "registrationReferenceId": "63e62864557597e0d",
+         "startedDate": Any<String>,
          "status": "success",
          "updatedDate": Any<String>,
          "uploadDate": Any<String>,

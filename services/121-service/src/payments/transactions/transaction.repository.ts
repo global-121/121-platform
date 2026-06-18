@@ -4,6 +4,7 @@ import { Equal, Repository } from 'typeorm';
 import { InstanceReportingTransactionRaw } from '@121-service/src/instance-reporting/interfaces/instance-reporting-transaction-raw.interface';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 
 export class TransactionRepository extends Repository<TransactionEntity> {
   constructor(
@@ -104,6 +105,8 @@ export class TransactionRepository extends Repository<TransactionEntity> {
         'transaction.transferValue',
         'transaction.created',
         'transaction.updated',
+        'startedEvent.id',
+        'startedEvent.created',
         'registration.id',
         'registration.referenceId',
         'program.id',
@@ -112,8 +115,15 @@ export class TransactionRepository extends Repository<TransactionEntity> {
       ])
       .innerJoin('transaction.registration', 'registration')
       .innerJoin('registration.program', 'program')
+      .leftJoin(
+        'transaction.transactionEvents',
+        'startedEvent',
+        'startedEvent.description = :startedDescription',
+        { startedDescription: TransactionEventDescription.initiated },
+      )
       .orderBy('program.id', 'ASC')
       .addOrderBy('transaction.created', 'ASC')
+      .addOrderBy('startedEvent.created', 'ASC')
       .getMany();
   }
 }
