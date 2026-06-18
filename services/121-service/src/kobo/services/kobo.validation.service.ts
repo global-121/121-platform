@@ -191,7 +191,7 @@ export class KoboValidationService {
         type: KoboValidationErrorType.MissingField as const,
         field: attribute,
         error: `Attribute '${attribute}' is missing`,
-        solution: `Add '${attribute}' to the Kobo form (required for FSP '${fspConfig.name}')`,
+        solution: `Add '${attribute}' to the Kobo form`,
         message: `Missing required attribute '${attribute}' (for FSP '${fspConfig.name}').`,
       }));
   }
