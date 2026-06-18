@@ -12,8 +12,14 @@ export class AppEmptyMessageComponent {
   readonly title = input.required<string>();
   readonly subtitle = input.required<string>();
 
+  sizeClassMap: Record<string, string> = {
+    small: 'h-8',
+    medium: 'h-16',
+    large: 'h-24',
+  };
+
   readonly customIcon = input<{
-    size: string;
+    size: 'large' | 'medium' | 'small';
     icon: string;
   }>();
 }

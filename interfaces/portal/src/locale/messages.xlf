@@ -2562,6 +2562,21 @@
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
       </trans-unit>
+<<<<<<< HEAD
+=======
+      <trans-unit id="1105070151875122157" datatype="html">
+        <source>No Payments found</source>
+      </trans-unit>
+      <trans-unit id="5308113426415499804" datatype="html">
+        <source>You are not assigned to any program(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
+      </trans-unit>
+      <trans-unit id="6819146217568220494" datatype="html">
+        <source>There are no payments for this program yet.</source>
+      </trans-unit>
+      <trans-unit id="8135595255350159325" datatype="html">
+        <source>No Programs found</source>
+      </trans-unit>
+>>>>>>> 52c080772 (Addressing copilot comments)
     </body>
   </file>
 </xliff>

@@ -2,7 +2,7 @@
   <div class="py-4 text-center">
     @if (customIcon(); as icon) {
       <img
-        class="mb-6 inline-block {{ icon.size }}"
+        class="mb-6 inline-block {{ sizeClassMap[icon.size] || 'h-16' }}"
         src="assets/{{ icon.icon }}.svg"
         alt=""
       />
@@ -14,10 +14,7 @@
       />
     }
 
-    <h2
-      class="mb-4 text-base"
-      i18n
-    >
+    <h2 class="mb-4 text-base">
       {{ title() }}
     </h2>
 

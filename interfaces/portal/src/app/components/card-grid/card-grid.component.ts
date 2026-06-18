@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'app-card-grid',
-  imports: [SkeletonModule, CardModule],
+  imports: [SkeletonModule],
   templateUrl: './card-grid.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

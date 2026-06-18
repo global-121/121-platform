@@ -38,8 +38,10 @@
 
   @if (paymentsSorted()?.length === 0) {
     <app-empty-message
-      [title]="'No Payments found'"
-      [subtitle]="'There are no payments for this program yet.'"
+      subtitle="There are no payments for this program yet."
+      title="No Payments found"
+      i18n-subtitle
+      i18n-title
     />
   } @else {
     <app-card-grid [loading]="payments.isPending()">
@@ -55,6 +57,5 @@
         </li>
       }
     </app-card-grid>
-    />
   }
 </app-page-layout>

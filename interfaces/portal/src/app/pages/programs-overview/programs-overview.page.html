@@ -19,8 +19,10 @@
 
   @if (assignedPrograms.length === 0) {
     <app-empty-message
-      [title]="'No Programs found'"
-      [subtitle]="'You are not assigned to any program(s) yet, contact the admin/supervisor to start using the 121 portal.'"
+      subtitle="You are not assigned to any program(s) yet, contact the admin/supervisor to start using the 121 portal."
+      title="No Programs found"
+      i18n-subtitle
+      i18n-title
     />
   } @else {
     <app-card-grid>
