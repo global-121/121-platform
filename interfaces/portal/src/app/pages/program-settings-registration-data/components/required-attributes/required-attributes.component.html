@@ -12,7 +12,7 @@
       data-testid="integrated-fsp-list"
     >
       @for (fsp of programFsps(); track $index) {
-        <li data-testid="integrated-fsp-list-item">
+        <li>
           <p-tag
             severity="info"
             [value]="fsp.defaultLabel | translatableString"
