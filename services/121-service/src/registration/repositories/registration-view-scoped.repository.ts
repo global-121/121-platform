@@ -1,7 +1,7 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { FilterComparator } from 'nestjs-paginate/lib/filter';
-import { Brackets, DataSource, FindOperator, FindOperatorType } from 'typeorm';
+import { DataSource, FindOperator, FindOperatorType } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -154,16 +154,17 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     if (!relationInfo) {
       return queryBuilder;
     }
-    queryBuilder.leftJoin('registration.data', 'rd');
-    queryBuilder.andWhere(
-      new Brackets((qb) => {
-        RegistrationViewRepositoryHelper.whereRegistrationDataIsOneOfIds(
-          relationInfo,
-          qb,
-          'rd',
-        );
-      }),
+
+    // The attribute condition is part of the LEFT JOIN ON clause. In a WHERE
+    // clause it would turn the LEFT JOIN into an INNER JOIN and drop
+    // registrations without a value for this attribute.
+    queryBuilder.leftJoin(
+      'registration.data',
+      'rd',
+      'rd."programRegistrationAttributeId" = :sortAttributeId',
+      { sortAttributeId: relationInfo.relation.programRegistrationAttributeId },
     );
+
     queryBuilder.orderBy('rd.value', sortByValue);
     queryBuilder.addSelect('rd.value');
     // This is somehow needed (without alias!) to make the orderBy work

@@ -1,9 +1,13 @@
+import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { postProgramRegistrationAttribute } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
   getRegistrations,
   importRegistrations,
+  updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -101,6 +105,77 @@ describe('Load PA table', () => {
       expect(data[2][field]).toBe(orderedInput[2][field]);
       expect(data[3][field]).toBe(orderedInput[3][field]);
       expect(meta.totalItems).toBe(4);
+    });
+
+    it('should order attributes without value correctly', async () => {
+      // Arrange
+      // An attribute that is added to the program *after* registrations already
+      // exist will not have a registration_data row for those existing
+      const newAttributeName = 'batchId';
+      const newAttribute: ProgramRegistrationAttributeDto = {
+        name: newAttributeName,
+        options: [],
+        scoring: {},
+        showInPeopleAffectedTable: true,
+        editableInPortal: true,
+        includeInTransactionExport: true,
+        label: {
+          en: 'Batch ID',
+        },
+        duplicateCheck: false,
+        type: RegistrationAttributeTypes.numeric,
+        isRequired: false,
+      };
+      await postProgramRegistrationAttribute(
+        newAttribute,
+        programIdOCW,
+        accessToken,
+      );
+
+      // Give only some registrations a value, leaving the others without a
+      // registration_data row for the attribute.
+      await updateRegistration(
+        programIdOCW,
+        registrationOCW1.referenceId,
+        { [newAttributeName]: 1 },
+        'Set batch id for sorting test',
+        accessToken,
+      );
+      await updateRegistration(
+        programIdOCW,
+        registrationOCW3.referenceId,
+        { [newAttributeName]: 2 },
+        'Set batch id for sorting test',
+        accessToken,
+      );
+
+      // Act
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        accessToken,
+        sort: { field: newAttributeName, direction: 'ASC' },
+      });
+      const data = getRegistrationsResponse.body.data;
+      const meta = getRegistrationsResponse.body.meta;
+
+      // Assert
+      expect(meta.totalItems).toBe(4);
+      expect(data).toHaveLength(4);
+
+      // Registrations with a value come first in ascending order, the ones
+      // without a value are ordered last (and must not be dropped).
+      expect(data[0].referenceId).toBe(registrationOCW1.referenceId);
+      expect(data[1].referenceId).toBe(registrationOCW3.referenceId);
+      const referenceIdsWithoutValue = [
+        data[2].referenceId,
+        data[3].referenceId,
+      ];
+      expect(referenceIdsWithoutValue).toEqual(
+        expect.arrayContaining([
+          registrationOCW2.referenceId,
+          registrationOCW4.referenceId,
+        ]),
+      );
     });
   });
 });
