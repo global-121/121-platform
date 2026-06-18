@@ -13,6 +13,9 @@ export class AddFspConfigurationState1781789936149 implements MigrationInterface
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_fsp_configuration" ALTER COLUMN "fspIntegrationState" SET NOT NULL`,
     );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."program_fsp_configuration" ALTER COLUMN "fspIntegrationState" SET DEFAULT 'not-integrated'`,
+    );
   }
 
   public async down(_queryRunner: QueryRunner): Promise<void> {
