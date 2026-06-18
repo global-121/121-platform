@@ -283,8 +283,8 @@ export class KoboValidationService {
     return {
       type: KoboValidationErrorType.MissingEnglishLanguage,
       field: 'languages',
-      error: 'Form is missing English (en) as a language',
-      solution: 'add English (en) as a language to the Kobo form', // <--- Lowercase on purpose, because we mash it together on the FE
+      error: 'English (en) is missing as a form language',
+      solution: 'Add English (en) as a language in your Kobo form.',
       message: 'Kobo form must have English (en) as one of the languages.',
     };
   }
@@ -372,7 +372,7 @@ export class KoboValidationService {
       return {
         type: KoboValidationErrorType.MatrixTypeFound,
         field: matrixItem.name,
-        error: `Form contains a matrix item: ${matrixItem.label?.join(', ')}`,
+        error: `Form contains a matrix question, which isn't supported`,
         solution: 'Remove the matrix item from the Kobo form',
         message: `Kobo form must not contain a matrix item. Found: ${matrixItem.label?.join(', ')}.`,
       };
@@ -430,7 +430,7 @@ export class KoboValidationService {
       return {
         type: KoboValidationErrorType.TypeMismatch,
         field,
-        error: `Attribute '${field}' has incompatible type '${surveyItemType}'`,
+        error: `Field type must not be '${surveyItemType}'`,
         solution: `Change the field type to an accepted type`,
         info: `Expected one of: ${expectedKoboTypes.map((t) => `'${t}'`).join(', ')}`,
         message: `Attribute '${field}' has incompatible type, expected one of: ${expectedKoboTypes.map((t) => `'${t}'`).join(', ')}, got '${surveyItemType}'.`,
@@ -505,7 +505,7 @@ export class KoboValidationService {
       return {
         type: KoboValidationErrorType.MissingField,
         field: fspQuestionName,
-        error: `Attribute '${fspQuestionName}' is missing`,
+        error: `Field is missing from your form`,
         solution: `Add a field named '${fspQuestionName}' to the Kobo form`,
         message: `Missing required attribute '${fspQuestionName}'.`,
       };

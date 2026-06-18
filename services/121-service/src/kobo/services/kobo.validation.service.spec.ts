@@ -254,7 +254,7 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
        [
          {
-           "error": "Attribute 'nationalId' has incompatible type 'integer'",
+           "error": "Field type must not be 'integer'",
            "field": "nationalId",
            "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
            "message": "Attribute 'nationalId' has incompatible type, expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video', got 'integer'.",
@@ -529,7 +529,7 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
          [
            {
-             "error": "Attribute 'phoneNumber' has incompatible type 'integer'",
+             "error": "Field type must not be 'integer'",
              "field": "phoneNumber",
              "info": "Expected one of: 'text'",
              "message": "Attribute 'phoneNumber' has incompatible type, expected one of: 'text', got 'integer'.",
@@ -696,7 +696,7 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
          [
            {
-             "error": "Attribute 'scope' has incompatible type 'integer'",
+             "error": "Field type must not be 'integer'",
              "field": "scope",
              "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
              "message": "Attribute 'scope' has incompatible type, expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video', got 'integer'.",
@@ -751,7 +751,7 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
          [
            {
-             "error": "Form contains a matrix item: Matrix question group",
+             "error": "Form contains a matrix question, which isn't supported",
              "field": "matrix_question",
              "message": "Kobo form must not contain a matrix item. Found: Matrix question group.",
              "solution": "Remove the matrix item from the Kobo form",
@@ -962,7 +962,7 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
        [
          {
-           "error": "Attribute 'preferredLanguage' has incompatible type 'integer'",
+           "error": "Field type must not be 'integer'",
            "field": "preferredLanguage",
            "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
            "message": "Attribute 'preferredLanguage' has incompatible type, expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video', got 'integer'.",
@@ -1099,7 +1099,7 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
         [
           {
-            "error": "Attribute 'fsp' is missing",
+            "error": "Field is missing from your form",
             "field": "fsp",
             "message": "Missing required attribute 'fsp'.",
             "solution": "Add a field named 'fsp' to the Kobo form",
@@ -1258,7 +1258,7 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
         [
           {
-            "error": "Attribute 'fsp' has incompatible type 'text'",
+            "error": "Field type must not be 'text'",
             "field": "fsp",
             "info": "Expected one of: 'hidden', 'calculate', 'select_one'",
             "message": "Attribute 'fsp' has incompatible type, expected one of: 'hidden', 'calculate', 'select_one', got 'text'.",
