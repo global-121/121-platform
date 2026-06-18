@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { isDefined } from 'class-validator';
 import { Equal } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
@@ -6,12 +7,10 @@ import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/
 import { getFspAttributeNames } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES } from '@121-service/src/kobo/consts/kobo-allowed-registration-view-attributes.const';
 import { KOBO_TO_121_TYPE_MAPPING } from '@121-service/src/kobo/consts/kobo-survey-to-121-attribute-type.const';
+import { KoboValidationErrorType } from '@121-service/src/kobo/enum/kobo-validation-error-base';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
-import {
-  KoboValidationErrorBase,
-  KoboValidationErrorType,
-} from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
+import { KoboValidationErrorBase } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 import { KoboLanguageMapper } from '@121-service/src/kobo/mappers/kobo-language.mapper';
 import { fspQuestionName } from '@121-service/src/kobo/services/kobo.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -188,11 +187,10 @@ export class KoboValidationService {
         (attribute) => !koboSurveyItems.find((item) => item.name === attribute),
       )
       .map((attribute) => ({
-        type: KoboValidationErrorType.MissingField as const,
-        field: attribute,
+        type: KoboValidationErrorType.missingField as const,
+        attributeName: attribute,
         error: `Attribute '${attribute}' is missing`,
         solution: `Add '${attribute}' to the Kobo form`,
-        message: `Missing required attribute '${attribute}' (for FSP '${fspConfig.name}').`,
       }));
   }
 
@@ -204,15 +202,20 @@ export class KoboValidationService {
     fspConfig: { fspName: Fsps; name: string };
   }): KoboValidationErrorBase[] {
     const fspAttributeNames = getFspAttributeNames(fspConfig.fspName);
+    const errors: KoboValidationErrorBase[] = [];
 
-    return fspAttributeNames
-      .map((fspAttributeName) =>
-        this.validateSingleFspAttributeType({
-          koboSurveyItems,
-          fspAttributeName,
-        }),
-      )
-      .filter((error): error is KoboValidationErrorBase => error !== undefined);
+    for (const fspAttributeName of fspAttributeNames) {
+      const error = this.validateSingleFspAttributeType({
+        koboSurveyItems,
+        fspAttributeName,
+      });
+
+      if (error) {
+        errors.push(error);
+      }
+    }
+
+    return errors;
   }
 
   private validateSingleFspAttributeType({
@@ -232,7 +235,7 @@ export class KoboValidationService {
     }
 
     return this.validateSurveyItemTypeMatchExpected121Type({
-      field: fspAttributeName,
+      attributeName: fspAttributeName,
       surveyItemType: surveyItem.type,
       expected121Type:
         FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING[fspAttributeName],
@@ -259,11 +262,10 @@ export class KoboValidationService {
     }
 
     return missingAttributes.map((missingAttribute) => ({
-      type: KoboValidationErrorType.MissingFullnameAttributes,
-      field: missingAttribute,
+      type: KoboValidationErrorType.missingFullnameAttributes,
+      attributeName: missingAttribute,
       error: `Attribute '${missingAttribute}' is missing`,
       solution: `Add the missing attribute to the Kobo form`,
-      message: `Kobo form must contain the following name attributes defined in program.fullnameNamingConvention. However the following attributes are missing: ${missingAttributes.join(', ')}`,
     }));
   }
 
@@ -281,11 +283,10 @@ export class KoboValidationService {
       }
     }
     return {
-      type: KoboValidationErrorType.MissingEnglishLanguage,
-      field: 'languages',
+      type: KoboValidationErrorType.missingEnglishLanguage,
+      attributeName: 'languages',
       error: 'English (en) is missing as a form language',
       solution: 'Add English (en) as a language in your Kobo form.',
-      message: 'Kobo form must have English (en) as one of the languages.',
     };
   }
 
@@ -306,12 +307,11 @@ export class KoboValidationService {
     // Only validate existence if empty phone numbers are not allowed
     if (!phoneNumberItem && !allowEmptyPhoneNumber) {
       errors.push({
-        type: KoboValidationErrorType.MissingField,
-        field: GenericRegistrationAttributes.phoneNumber,
+        type: KoboValidationErrorType.missingField,
+        attributeName: GenericRegistrationAttributes.phoneNumber,
         error: `Attribute '${GenericRegistrationAttributes.phoneNumber}' is missing`,
         solution:
           'Add a phoneNumber field with text type including country code, or set program.allowEmptyPhoneNumber to true',
-        message: `Missing required attribute '${GenericRegistrationAttributes.phoneNumber}' (should be a text type and country code should be included, or program.allowEmptyPhoneNumber must be set to true).`,
       });
     }
 
@@ -321,7 +321,7 @@ export class KoboValidationService {
 
     // Also validate type if the phone number item exists
     const error = this.validateSurveyItemTypeMatchExpected121Type({
-      field: GenericRegistrationAttributes.phoneNumber,
+      attributeName: GenericRegistrationAttributes.phoneNumber,
       surveyItemType: phoneNumberItem.type,
       expected121Type: RegistrationAttributeTypes.tel,
     });
@@ -347,17 +347,16 @@ export class KoboValidationService {
     );
     if (!scopeItem) {
       return {
-        type: KoboValidationErrorType.MissingField,
-        field: GenericRegistrationAttributes.scope,
+        type: KoboValidationErrorType.missingField,
+        attributeName: GenericRegistrationAttributes.scope,
         error: `Attribute '${GenericRegistrationAttributes.scope}' is missing`,
         solution:
           'Add a scope field to the Kobo form (required when program.enableScope is true)',
-        message: `Missing required attribute '${GenericRegistrationAttributes.scope}' (required when program.enableScope is true).`,
       };
     }
 
     return this.validateSurveyItemTypeMatchExpected121Type({
-      field: GenericRegistrationAttributes.scope,
+      attributeName: GenericRegistrationAttributes.scope,
       surveyItemType: scopeItem.type,
       expected121Type: RegistrationAttributeTypes.text,
     });
@@ -370,11 +369,10 @@ export class KoboValidationService {
     const matrixItem = koboSurveyItems.find((item) => item.type === typeName);
     if (matrixItem) {
       return {
-        type: KoboValidationErrorType.MatrixTypeFound,
-        field: matrixItem.name,
+        type: KoboValidationErrorType.matrixTypeFound,
+        attributeName: matrixItem.name,
         error: `Form contains a matrix question, which isn't supported`,
         solution: 'Remove the matrix item from the Kobo form',
-        message: `Kobo form must not contain a matrix item. Found: ${matrixItem.label?.join(', ')}.`,
       };
     }
   }
@@ -392,21 +390,20 @@ export class KoboValidationService {
         return !isoCode;
       })
       .map((language) => ({
-        type: KoboValidationErrorType.InvalidLanguageCode as const,
-        field: language ?? '-',
+        type: KoboValidationErrorType.invalidLanguageCode as const,
+        attributeName: language ?? '-',
         error: `Invalid language code: '${language}'`,
         solution: 'use a valid ISO 639 language code.', // <--- Lowercase on purpose, because we mash it together on the FE
         info: `See https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes for valid codes`,
-        message: `Invalid Kobo language code: ${language}. Please use https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes`,
       }));
   }
 
   private validateSurveyItemTypeMatchExpected121Type({
-    field,
+    attributeName,
     surveyItemType,
     expected121Type,
   }: {
-    field: string;
+    attributeName: string;
     surveyItemType: string;
     expected121Type: RegistrationAttributeTypes;
   }): KoboValidationErrorBase | undefined {
@@ -428,12 +425,11 @@ export class KoboValidationService {
 
     if (!expectedKoboTypes.includes(surveyItemType)) {
       return {
-        type: KoboValidationErrorType.TypeMismatch,
-        field,
+        type: KoboValidationErrorType.typeMismatch,
+        attributeName,
         error: `Field type must not be '${surveyItemType}'`,
         solution: `Change the field type to an accepted type`,
         info: `Expected one of: ${expectedKoboTypes.map((t) => `'${t}'`).join(', ')}`,
-        message: `Attribute '${field}' has incompatible type, expected one of: ${expectedKoboTypes.map((t) => `'${t}'`).join(', ')}, got '${surveyItemType}'.`,
       };
     }
   }
@@ -449,17 +445,29 @@ export class KoboValidationService {
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
   }): KoboValidationErrorBase[] {
-    return koboSurveyItems
-      .filter((item) => registrationViewAttributeNames.includes(item.name))
-      .filter((item) => item.name in KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES)
-      .map(({ name, type }) =>
-        this.validateSurveyItemTypeMatchExpected121Type({
-          field: name,
-          surveyItemType: type,
-          expected121Type: KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES[name],
-        }),
-      )
-      .filter((error): error is KoboValidationErrorBase => error !== undefined);
+    const hasRegistrationViewAttributeName = (item: KoboSurveyItemCleaned) => {
+      return registrationViewAttributeNames.includes(item.name);
+    };
+
+    const hasExpectedType = (item: KoboSurveyItemCleaned) => {
+      return item.name in KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES;
+    };
+
+    const getError = ({ name, type }: KoboSurveyItemCleaned) => {
+      return this.validateSurveyItemTypeMatchExpected121Type({
+        attributeName: name,
+        surveyItemType: type,
+        expected121Type: KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES[name],
+      });
+    };
+
+    const errorMessages = koboSurveyItems
+      .filter(hasRegistrationViewAttributeName)
+      .filter(hasExpectedType)
+      .map(getError)
+      .filter(isDefined);
+
+    return errorMessages;
   }
 
   private validateForbiddenRegistrationViewAttributes({
@@ -467,22 +475,24 @@ export class KoboValidationService {
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
   }): KoboValidationErrorBase[] {
-    return koboSurveyItems
-      .filter(
-        (surveyItem) => surveyItem.name !== GenericRegistrationAttributes.scope,
-      )
-      .filter(
-        (surveyItem) =>
-          this.isRegistrationViewAttributeName(surveyItem.name) &&
-          !KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES[surveyItem.name],
-      )
+    const isNotScope = (surveyItem: KoboSurveyItemCleaned) =>
+      surveyItem.name !== GenericRegistrationAttributes.scope;
+
+    const isForbiddenAttribute = (surveyItem: KoboSurveyItemCleaned) =>
+      this.isRegistrationViewAttributeName(surveyItem.name) &&
+      !KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES[surveyItem.name];
+
+    const errorMessages = koboSurveyItems
+      .filter(isNotScope)
+      .filter(isForbiddenAttribute)
       .map((surveyItem) => ({
-        type: KoboValidationErrorType.ForbiddenAttribute as const,
-        field: surveyItem.name,
+        type: KoboValidationErrorType.forbiddenAttribute as const,
+        attributeName: surveyItem.name,
         error: `'${surveyItem.name}' is a reserved attribute name and cannot be filled from Kobo`,
         solution: `Rename the field '${surveyItem.name}' to a non-reserved name`,
-        message: `Attribute '${surveyItem.name}' is a reserved attribute name and cannot be filled from Kobo.`,
       }));
+
+    return errorMessages;
   }
 
   private isRegistrationViewAttributeName(
@@ -503,11 +513,10 @@ export class KoboValidationService {
     );
     if (!fspItem) {
       return {
-        type: KoboValidationErrorType.MissingField,
-        field: fspQuestionName,
+        type: KoboValidationErrorType.missingField,
+        attributeName: fspQuestionName,
         error: `Field is missing from your form`,
         solution: `Add a field named '${fspQuestionName}' to the Kobo form`,
-        message: `Missing required attribute '${fspQuestionName}'.`,
       };
     }
 
@@ -518,12 +527,11 @@ export class KoboValidationService {
 
     if (!validTypes.has(fspItem.type)) {
       return {
-        type: KoboValidationErrorType.TypeMismatch,
-        field: fspQuestionName,
+        type: KoboValidationErrorType.typeMismatch,
+        attributeName: fspQuestionName,
         error: `Attribute '${fspQuestionName}' has incompatible type '${fspItem.type}'`,
         solution: `Change the field type to an accepted type`,
         info: `Expected one of: ${[...validTypes].map((t) => `'${t}'`).join(', ')}`,
-        message: `Attribute '${fspQuestionName}' has incompatible type, expected one of: ${[...validTypes].map((t) => `'${t}'`).join(', ')}, got '${fspItem.type}'.`,
       };
     }
 
@@ -550,12 +558,11 @@ export class KoboValidationService {
 
     if (invalidChoices.length > 0) {
       return {
-        type: KoboValidationErrorType.InvalidChoice,
-        field: fspQuestionName,
+        type: KoboValidationErrorType.invalidChoice,
+        attributeName: fspQuestionName,
         error: `Attribute '${fspQuestionName}' has invalid choices: ${invalidChoices.join(', ')}`,
         solution: `Update choices to match FSP configuration names`,
         info: `Valid FSP configuration names: ${[...fspConfigNames].join(', ')}`,
-        message: `Attribute '${fspQuestionName}' has invalid choices: ${invalidChoices.join(', ')}. Expected one of: ${[...fspConfigNames].join(', ')}.`,
       };
     }
     // There is no check to see if all FSP configs from the 121 program are represented in choices from kobo
@@ -570,12 +577,11 @@ export class KoboValidationService {
     return koboSurveyItems
       .filter((item) => item.type === 'select_one' && item.choices.length === 0)
       .map((item) => ({
-        type: KoboValidationErrorType.SelectOneNoChoices as const,
-        field: item.name,
+        type: KoboValidationErrorType.selectOneNoChoices as const,
+        attributeName: item.name,
         error: `'${item.name}' is of type select_one but has no choices defined`,
         solution:
           'Define choices directly in the Kobo form; external CSV choice files are not supported',
-        message: `Attribute '${item.name}' is of type select_one or select_one_from_file but has no choices defined. Note that choices defined in a separate CSV file are not supported.`,
       }));
   }
 

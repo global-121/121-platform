@@ -20,13 +20,13 @@
   @if (missingFieldErrors().length > 0) {
     <section class="mt-4 mb-2">
       <div class="mb-2">
-        <h1 class="text-base! font-semibold">
+        <h4 class="text-base! font-semibold">
           <span i18n>Required fields not found</span>
           <app-info-tooltip
             message="These fields are expected by 121 but are missing from your Kobo form. Add them before redeploying."
             i18n-message
           />
-        </h1>
+        </h4>
       </div>
 
       <ul class="flex flex-wrap gap-2">
@@ -52,13 +52,13 @@
   @if (formSettingErrors().length > 0) {
     <section class="mt-4 mb-2">
       <div class="mb-2">
-        <h1 class="text-base! font-semibold">
+        <h4 class="text-base! font-semibold">
           <span i18n>Form setting errors</span>
           <app-info-tooltip
             message="These are the errors related to your Kobo form settings."
             i18n-message
           />
-        </h1>
+        </h4>
       </div>
 
       <ul
@@ -80,17 +80,16 @@
   @if (errorTable().length > 0) {
     <section class="mt-4 mb-2">
       <div class="mb-4">
-        <h1
+        <h4
           i18n
           class="text-base! font-semibold"
         >
           Other errors
-        </h1>
+        </h4>
       </div>
       <p-table
         [value]="errorTable()"
-        size="small"
-        i18n-size
+        [size]="'small'"
         class="text-base"
         [attr.data-testid]="'kobo-integration-configuration-errors-table'"
       >

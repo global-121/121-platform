@@ -12,10 +12,8 @@ import { Dialog } from 'primeng/dialog';
 import { TableModule } from 'primeng/table';
 import { Tag } from 'primeng/tag';
 
-import {
-  KoboValidationErrorBase,
-  KoboValidationErrorType,
-} from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
+import { KoboValidationErrorType } from '@121-service/src/kobo/enum/kobo-validation-error-base';
+import { KoboValidationErrorBase } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 
@@ -34,9 +32,9 @@ export class KoboErrorDialogComponent {
   readonly errorTable = computed(() =>
     this.errors().filter(
       (error) =>
-        error.type !== KoboValidationErrorType.MissingField &&
-        error.type !== KoboValidationErrorType.MissingEnglishLanguage &&
-        error.type !== KoboValidationErrorType.InvalidLanguageCode,
+        error.type !== KoboValidationErrorType.missingField &&
+        error.type !== KoboValidationErrorType.missingEnglishLanguage &&
+        error.type !== KoboValidationErrorType.invalidLanguageCode,
     ),
   );
 
@@ -44,16 +42,16 @@ export class KoboErrorDialogComponent {
     return this.errors()
       .filter(
         (error) =>
-          error.type === KoboValidationErrorType.MissingEnglishLanguage ||
-          error.type === KoboValidationErrorType.InvalidLanguageCode,
+          error.type === KoboValidationErrorType.missingEnglishLanguage ||
+          error.type === KoboValidationErrorType.invalidLanguageCode,
       )
       .map((error) => error);
   });
 
   readonly missingFieldErrors = computed(() => {
     const missingFields = this.errors()
-      .filter((error) => error.type === KoboValidationErrorType.MissingField)
-      .map((error) => error.field);
+      .filter((error) => error.type === KoboValidationErrorType.missingField)
+      .map((error) => error.attributeName);
 
     return [...new Set(missingFields)];
   });
