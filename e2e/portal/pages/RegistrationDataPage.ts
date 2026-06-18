@@ -92,15 +92,15 @@ class RegistrationDataPage extends BasePage {
     await this.continueButton.first().click();
   }
 
-  async validateFspPills({ fspNames }: { fspNames: string[] }) {
-    const pillsContainer = this.page.getByTestId('integrated-fsp-list');
-    const pills = pillsContainer.getByRole('listitem');
-    const pillCount = await pills.count();
+  async validateProgramFsps({ fspNames }: { fspNames: string[] }) {
+    const list = this.page.getByTestId('integrated-fsp-list');
+    const fsps = list.getByRole('listitem');
+    const fspsCount = await fsps.count();
 
-    expect(pillCount).toBe(fspNames.length);
+    expect(fspsCount).toBe(fspNames.length);
 
-    for (const name of fspNames) {
-      await expect(pillsContainer).toContainText(name);
+    for (const fsp of fspNames) {
+      await expect(list).toContainText(fsp);
     }
   }
 

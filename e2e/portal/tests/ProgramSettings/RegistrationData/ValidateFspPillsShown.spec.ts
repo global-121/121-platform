@@ -25,7 +25,7 @@ test('Check if all FSPs are shown in the Registration integration section', asyn
 }) => {
   await test.step('Validate required fields', async () => {
     await registrationDataPage.clickRegistrationDataSection();
-    await registrationDataPage.validateFspPills({
+    await registrationDataPage.validateProgramFsps({
       fspNames: availableFsps,
     });
   });
