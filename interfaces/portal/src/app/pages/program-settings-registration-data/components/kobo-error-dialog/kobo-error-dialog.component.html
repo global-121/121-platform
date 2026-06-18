@@ -21,11 +21,8 @@
   @if (missingFieldErrors().length > 0) {
     <section class="mt-4 mb-2">
       <div class="mb-2">
-        <h1
-          i18n
-          class="text-base! font-semibold"
-        >
-          Missing required fields
+        <h1 class="text-base! font-semibold">
+          <span i18n>Missing required fields</span>
           <app-info-tooltip
             message="These are the required fields that are missing from your Kobo form.
         Please add these fields to your Kobo form, save and redeploy."
@@ -34,32 +31,31 @@
         </h1>
       </div>
 
-      <div class="flex flex-wrap gap-2">
+      <ul class="flex flex-wrap gap-2">
         @for (field of missingFieldErrors(); track $index) {
-          <p-tag
-            [value]="field"
-            severity="info"
-            rounded
-            style="
-              --p-tag-info-background: #e9f2ff;
-              --p-tag-info-color: #0d2a88;
-              --p-tag-padding: 0.25rem 1rem;
-            "
-            [attr.data-testid]="'kobo-integration-missing-field-' + field"
-          />
+          <li>
+            <p-tag
+              [attr.data-testid]="'kobo-integration-missing-field-' + field"
+              severity="info"
+              [value]="field"
+              rounded
+              style="
+                --p-tag-info-background: #e9f2ff;
+                --p-tag-info-color: #0d2a88;
+                --p-tag-padding: 0.25rem 1rem;
+              "
+            />
+          </li>
         }
-      </div>
+      </ul>
     </section>
   }
 
   @if (formSettingErrors().length > 0) {
     <section class="mt-4 mb-2">
       <div class="mb-2">
-        <h1
-          i18n
-          class="text-base! font-semibold"
-        >
-          Form setting errors
+        <h1 class="text-base! font-semibold">
+          <span i18n>Form setting errors</span>
           <app-info-tooltip
             message="These are the errors related to your Kobo form settings."
             i18n-message
