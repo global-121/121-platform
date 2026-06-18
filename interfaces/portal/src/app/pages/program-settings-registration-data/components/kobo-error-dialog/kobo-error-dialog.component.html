@@ -13,19 +13,17 @@
   </ng-template>
 
   <p i18n>
-    We couldn't complete the integration due to the following issues in your
-    Kobo form. Please review your Kobo form and fix these errors, then save and
-    redeploy:
+    There are issues in your Kobo form that are blocking the integration. Fix
+    the errors below in Kobo, then save, redeploy, and try again.
   </p>
 
   @if (missingFieldErrors().length > 0) {
     <section class="mt-4 mb-2">
       <div class="mb-2">
         <h1 class="text-base! font-semibold">
-          <span i18n>Missing required fields</span>
+          <span i18n>Required fields not found</span>
           <app-info-tooltip
-            message="These are the required fields that are missing from your Kobo form.
-        Please add these fields to your Kobo form, save and redeploy."
+            message="These fields are expected by 121 but are missing from your Kobo form. Add them before redeploying."
             i18n-message
           />
         </h1>
