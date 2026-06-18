@@ -38,7 +38,7 @@ export class ProgramFspConfigurationEntity extends Base121Entity {
   @Column('json')
   public label: UILanguageTranslation;
 
-  @Column({ type: 'character varying' })
+  @Column({ type: 'character varying', default: FspIntegrationStates.NotIntegrated })
   public fspIntegrationState: FspIntegrationStates;
 
   @OneToMany(
