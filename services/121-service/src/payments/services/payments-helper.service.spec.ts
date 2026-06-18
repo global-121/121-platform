@@ -1,5 +1,6 @@
 import { HttpException } from '@nestjs/common';
 
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import * as fspSettingsHelpers from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -29,7 +30,7 @@ describe('PaymentsHelperService', () => {
     });
     jest
       .spyOn(fspSettingsHelpers, 'getFspConfigurationRequiredProperties')
-      .mockReturnValue(['prop1']);
+      .mockReturnValue([FspConfigurationProperties.username]);
     await expect(
       service.checkFspConfigurationsOrThrow(1, ['ConfigA']),
     ).rejects.toThrow(HttpException);
@@ -38,11 +39,11 @@ describe('PaymentsHelperService', () => {
   it('should not throw if all required properties are present', async () => {
     (repo.findOne as jest.Mock).mockResolvedValueOnce({
       fspName: 'TestFsp',
-      properties: [{ name: 'prop1' }],
+      properties: [{ name: FspConfigurationProperties.username }],
     });
     jest
       .spyOn(fspSettingsHelpers, 'getFspConfigurationRequiredProperties')
-      .mockReturnValue(['prop1']);
+      .mockReturnValue([FspConfigurationProperties.username]);
     await expect(
       service.checkFspConfigurationsOrThrow(1, ['ConfigA']),
     ).resolves.toBeUndefined();

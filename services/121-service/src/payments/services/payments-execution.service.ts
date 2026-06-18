@@ -6,10 +6,10 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
-import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
+import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -22,7 +22,6 @@ export class PaymentsExecutionService {
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly transactionJobsCreationService: TransactionJobsCreationService,
     private readonly paymentsProgressService: PaymentsProgressService,
-    private readonly paymentsHelperService: PaymentsHelperService,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly transactionsService: TransactionsService,
     private readonly paymentsReportingService: PaymentsReportingService,
@@ -70,33 +69,25 @@ export class PaymentsExecutionService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      const fspConfigNames = uniqueFspConfigsForApprovedTransactions.map(
-        (p) => p.programFspConfigurationName,
-      );
-      await this.paymentsHelperService.checkFspConfigurationsOrThrow(
-        programId,
-        fspConfigNames,
-      );
 
-      // store payment event
       await this.paymentEventsService.createEvent({
         paymentId,
         userId,
         type: PaymentEvent.started,
       });
 
-      // process transactions to-fail ..
-      const fspConfigIds = uniqueFspConfigsForApprovedTransactions.map(
-        (p) => p.programFspConfigurationId,
-      );
-      await this.markTransactionsAsFailed({
-        fspConfigIds,
+      await this.markTransactionsAsFailedForNotConfiguredFsps({
         userId,
         programId,
         paymentId,
       });
 
-      // .. and to start
+      await this.markTransactionsAsFailedForNotIncludedRegistrations({
+        userId,
+        programId,
+        paymentId,
+      });
+
       await this.startQueue({
         userId,
         programId,
@@ -132,13 +123,11 @@ export class PaymentsExecutionService {
     });
   }
 
-  private async markTransactionsAsFailed({
-    fspConfigIds,
+  private async markTransactionsAsFailedForNotIncludedRegistrations({
     userId,
     programId,
     paymentId,
   }: {
-    fspConfigIds: number[];
     userId: number;
     programId: number;
     paymentId: number;
@@ -151,27 +140,82 @@ export class PaymentsExecutionService {
           status: TransactionStatusEnum.approved,
         },
       );
-    for (const programFspConfigurationId of fspConfigIds) {
-      const fspConfigTransactions = transactionsToFail.filter(
-        (t) => t.programFspConfigurationId === programFspConfigurationId,
+    await this.failTransactions({
+      transactions: transactionsToFail,
+      userId,
+      errorMessage:
+        'Registration did not have status included at the time of starting the payment',
+    });
+  }
+
+  private async markTransactionsAsFailedForNotConfiguredFsps({
+    userId,
+    programId,
+    paymentId,
+  }: {
+    userId: number;
+    programId: number;
+    paymentId: number;
+  }) {
+    const transactionsToFail =
+      await this.transactionViewScopedRepository.getByStatusOfNonConfiguredFsps(
+        {
+          programId,
+          paymentId,
+          status: TransactionStatusEnum.approved,
+        },
       );
-      if (fspConfigTransactions.length === 0) {
-        continue;
-      }
+    await this.failTransactions({
+      transactions: transactionsToFail,
+      userId,
+      errorMessage: 'FSP configuration is not fully configured',
+    });
+  }
+
+  private async failTransactions({
+    transactions,
+    userId,
+    errorMessage,
+  }: {
+    transactions: TransactionViewEntity[];
+    userId: number;
+    errorMessage: string;
+  }) {
+    const transactionIdsByFspConfigId = this.mapTransactionIdsToFspConfigId(transactions);
+
+    for (const [
+      programFspConfigurationId,
+      transactionIds,
+    ] of transactionIdsByFspConfigId) {
       await this.transactionsService.saveProgressBulk({
         newTransactionStatus: TransactionStatusEnum.error,
-        transactionIds: transactionsToFail.map((t) => t.id),
+        transactionIds,
         description: TransactionEventDescription.approval,
         userId,
         programFspConfigurationId,
-        errorMessages: new Map<number, string>(
-          transactionsToFail.map((t) => [
-            t.id,
-            'Registration did not have status included at the time of starting the payment',
-          ]),
-        ),
+        errorMessages: new Map(transactionIds.map((id) => [id, errorMessage])),
       });
     }
+  }
+
+  private mapTransactionIdsToFspConfigId(
+    transactions: TransactionViewEntity[],
+  ): Map<number, number[]> {
+    const transactionIdsByFspConfigId = new Map<number, number[]>();
+
+    for (const { id, programFspConfigurationId } of transactions) {
+      if (programFspConfigurationId === null) {
+        continue;
+      }
+      const transactionIds =
+        transactionIdsByFspConfigId.get(programFspConfigurationId) ?? [];
+      transactionIds.push(id);
+      transactionIdsByFspConfigId.set(
+        programFspConfigurationId,
+        transactionIds,
+      );
+    }
+    return transactionIdsByFspConfigId;
   }
 
   public async retryPayment({

@@ -90,6 +90,7 @@ describe('ProgramFspConfigurationsService', () => {
       save: jest.fn().mockImplementation((entity) => {
         return entity; // Return the entity it receives
       }),
+      update: jest.fn(),
       delete: jest.fn(),
       createQueryBuilder: jest.fn().mockReturnValue({
         innerJoin: jest.fn().mockReturnThis(),

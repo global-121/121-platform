@@ -6,6 +6,8 @@ import { Equal, FindOperator, In, Not, Repository } from 'typeorm';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -352,6 +354,31 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       status,
       registrationStatusCondition: Not(Equal(RegistrationStatusEnum.included)),
     });
+  }
+
+  public async getByStatusOfNonConfiguredFsps({
+    programId,
+    paymentId,
+    status,
+  }: {
+    programId: number;
+    paymentId: number;
+    status: TransactionStatusEnum;
+  }): Promise<TransactionViewEntity[]> {
+    return this.createQueryBuilder('transaction')
+      .leftJoin('transaction.payment', 'payment')
+      .innerJoin(
+        ProgramFspConfigurationEntity,
+        'programFspConfiguration',
+        'transaction.programFspConfigurationId = programFspConfiguration.id',
+      )
+      .andWhere('payment.id = :paymentId', { paymentId })
+      .andWhere('payment.programId = :programId', { programId })
+      .andWhere('transaction.status = :status', { status })
+      .andWhere('programFspConfiguration.state != :configuredState', {
+        configuredState: FspConfigurationStates.configured,
+      })
+      .getMany();
   }
 
   private async getTransactionsByStatusAndRegistrationStatus({

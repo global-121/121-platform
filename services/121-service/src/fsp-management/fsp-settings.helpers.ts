@@ -1,12 +1,17 @@
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 
-export function getFspConfigurationProperties(fspName: Fsps): string[] {
+export function getFspConfigurationProperties(
+  fspName: Fsps,
+): FspConfigurationProperties[] {
   const foundFsp = FSP_SETTINGS[fspName];
   return foundFsp.configurationProperties.map((property) => property.name);
 }
 
-export function getFspConfigurationRequiredProperties(fspName: Fsps): string[] {
+export function getFspConfigurationRequiredProperties(
+  fspName: Fsps,
+): FspConfigurationProperties[] {
   const foundFsp = FSP_SETTINGS[fspName];
   return foundFsp.configurationProperties
     .filter((property) => property.isRequired)
