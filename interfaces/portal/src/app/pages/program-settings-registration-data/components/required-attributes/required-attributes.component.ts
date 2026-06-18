@@ -16,11 +16,12 @@ import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp
 
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
+import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
 @Component({
   selector: 'app-required-attributes',
-  imports: [TableModule, Button, TagModule],
+  imports: [TableModule, Button, TagModule, TranslatableStringPipe],
   providers: [ToastService],
   templateUrl: './required-attributes.component.html',
   styles: ``,
@@ -34,13 +35,9 @@ export class RequiredAttributesComponent {
   readonly fspConfigurationService = inject(FspConfigurationService);
   readonly programApiService = inject(ProgramApiService);
 
-  readonly fspNames = computed(() => {
+  readonly programFsps = computed(() => {
     const fspConfigs = this.fspConfigurations.data() ?? [];
-
-    // @TODO: Should we localize FSP names?
-    return fspConfigs.map(
-      (config) => FSP_SETTINGS[config.fspName].defaultLabel.en,
-    );
+    return fspConfigs.map((config) => FSP_SETTINGS[config.fspName]);
   });
 
   readonly fspConfigurations = injectQuery(

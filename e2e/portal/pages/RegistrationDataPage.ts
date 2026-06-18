@@ -94,7 +94,7 @@ class RegistrationDataPage extends BasePage {
 
   async validateFspPills({ fspNames }: { fspNames: string[] }) {
     const pillsContainer = this.page.getByTestId('integrated-fsp-list');
-    const pills = pillsContainer.locator('.p-tag');
+    const pills = pillsContainer.getByRole('listitem');
     const pillCount = await pills.count();
 
     expect(pillCount).toBe(fspNames.length);

@@ -1,4 +1,4 @@
-@if (fspNames().length > 0) {
+@if (programFsps().length > 0) {
   <div class="mt-4">
     <h2
       i18n
@@ -7,18 +7,20 @@
       Integrated FSPs
     </h2>
 
-    <div
+    <ol
       class="mt-2 flex flex-wrap gap-2"
       data-testid="integrated-fsp-list"
     >
-      @for (name of fspNames(); track $index) {
-        <p-tag
-          severity="info"
-          value="{{ name }}"
-          [rounded]="true"
-        />
+      @for (fsp of programFsps(); track $index) {
+        <li data-testid="integrated-fsp-list-item">
+          <p-tag
+            severity="info"
+            [value]="fsp.defaultLabel | translatableString"
+            [rounded]="true"
+          />
+        </li>
       }
-    </div>
+    </ol>
   </div>
 }
 
