@@ -18,7 +18,7 @@ import { MessageTemplateEntity } from '@121-service/src/notifications/message-te
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
-import { FspIntegrationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-integration-states.enum';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
@@ -449,7 +449,7 @@ export class SeedHelperService {
       : fspObject.name;
     fspConfigEntity.transactionEvents = [];
     fspConfigEntity.programId = programId;
-    fspConfigEntity.fspIntegrationState = FspIntegrationStates.Integrated;
+    fspConfigEntity.state = FspConfigurationStates.configured;
     return fspConfigEntity;
   }
 

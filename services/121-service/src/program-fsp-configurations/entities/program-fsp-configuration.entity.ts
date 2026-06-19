@@ -12,7 +12,7 @@ import { Base121Entity } from '@121-service/src/base.entity';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
-import { FspIntegrationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-integration-states.enum';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
@@ -38,8 +38,8 @@ export class ProgramFspConfigurationEntity extends Base121Entity {
   @Column('json')
   public label: UILanguageTranslation;
 
-  @Column({ type: 'character varying', default: FspIntegrationStates.NotIntegrated })
-  public fspIntegrationState: FspIntegrationStates;
+  @Column({ type: 'character varying' })
+  public state: FspConfigurationStates;
 
   @OneToMany(
     (_type) => ProgramFspConfigurationPropertyEntity,
