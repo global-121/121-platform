@@ -257,16 +257,7 @@ export class ProgramService {
       program[key] = updateProgramDto[key];
     }
 
-    let savedProgram: ProgramEntity;
-    try {
-      savedProgram = await this.programRepository.save(program);
-    } catch (err) {
-      console.log('Error updating program ', err);
-      throw new HttpException(
-        'Error updating program',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    const savedProgram = await this.programRepository.save(program);
 
     const programDto: ProgramReturnDto =
       this.fillProgramReturnDto(savedProgram);

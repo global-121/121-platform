@@ -517,14 +517,15 @@ describe('IntersolveVisaAccountManagementService', () => {
     });
 
     it('throws when persisting the order record fails', async () => {
-      cardOrderRepository.save.mockRejectedValue(new Error('db down'));
+      const dbError = new Error('db down');
+      cardOrderRepository.save.mockRejectedValue(dbError);
 
       await expect(
         service.createVisaCardOrder(buildOrderInput()),
       ).rejects.toMatchObject({
         message:
           'Cards were ordered, but saving the batch record failed. Please contact support for reconciliation.',
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        cause: dbError,
       });
     });
 

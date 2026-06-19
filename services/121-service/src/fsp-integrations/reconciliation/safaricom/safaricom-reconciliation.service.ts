@@ -1,9 +1,4 @@
-import {
-  Inject,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Redis } from 'ioredis';
 
 import { SafaricomTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/safaricom/repositories/safaricom-transfer.scoped.repository';
@@ -135,7 +130,7 @@ export class SafaricomReconciliationService {
     } catch (error) {
       // This should never happen. This way, if it happens, we receive an alert
       if (error instanceof NotFoundException) {
-        throw new InternalServerErrorException(error.message);
+        throw new Error(error.message);
       }
 
       throw error;
