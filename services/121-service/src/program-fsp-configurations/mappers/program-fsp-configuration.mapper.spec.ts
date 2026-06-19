@@ -5,6 +5,7 @@ import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-c
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 
 describe('ProgramFspConfigurationMapper', () => {
@@ -104,6 +105,7 @@ describe('ProgramFspConfigurationMapper', () => {
       expect(entity.fspName).toBe(dto.fspName);
       expect(entity.name).toBe(dto.name);
       expect(entity.label).toEqual(dto.label);
+      expect(entity.state).toBe(FspConfigurationStates.configured);
     });
   });
 
