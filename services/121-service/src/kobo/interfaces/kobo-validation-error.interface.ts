@@ -1,6 +1,8 @@
-import { KoboValidationErrorType } from '@121-service/src/kobo/enum/kobo-validation-error-base';
+import { KoboValidationErrorType } from '@121-service/src/kobo/enum/kobo-validation-error-type';
 
-export interface KoboValidationErrorBase {
+/** @public */
+
+export interface KoboValidationError {
   type: KoboValidationErrorType;
   attributeName: string;
   error: string;

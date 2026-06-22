@@ -12,10 +12,35 @@ import { Dialog } from 'primeng/dialog';
 import { TableModule } from 'primeng/table';
 import { Tag } from 'primeng/tag';
 
-import { KoboValidationErrorType } from '@121-service/src/kobo/enum/kobo-validation-error-base';
-import { KoboValidationErrorBase } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
+import { KoboValidationErrorType } from '@121-service/src/kobo/enum/kobo-validation-error-type';
+import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
+
+enum KoboErrorDisplayType {
+  formSetting = 'formSetting',
+  missingField = 'missingField',
+  table = 'table',
+}
+
+const koboErrorDisplayTypeMap: Record<
+  KoboValidationErrorType,
+  KoboErrorDisplayType
+> = {
+  [KoboValidationErrorType.missingField]: KoboErrorDisplayType.missingField,
+  [KoboValidationErrorType.missingEnglishLanguage]:
+    KoboErrorDisplayType.formSetting,
+  [KoboValidationErrorType.invalidLanguageCode]:
+    KoboErrorDisplayType.formSetting,
+  [KoboValidationErrorType.typeMismatch]: KoboErrorDisplayType.table,
+  [KoboValidationErrorType.invalidChoice]: KoboErrorDisplayType.table,
+  [KoboValidationErrorType.formConfiguration]: KoboErrorDisplayType.table,
+  [KoboValidationErrorType.forbiddenAttribute]: KoboErrorDisplayType.table,
+  [KoboValidationErrorType.matrixTypeFound]: KoboErrorDisplayType.table,
+  [KoboValidationErrorType.selectOneNoChoices]: KoboErrorDisplayType.table,
+  [KoboValidationErrorType.missingFullnameAttributes]:
+    KoboErrorDisplayType.table,
+};
 
 @Component({
   selector: 'app-kobo-error-dialog',
@@ -25,35 +50,34 @@ import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.com
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KoboErrorDialogComponent {
-  readonly errors = input<KoboValidationErrorBase[]>([]);
+  readonly errors = input<KoboValidationError[]>([]);
   readonly dialogVisible = model(false);
   readonly tryAgain = output();
 
-  readonly errorTable = computed(() =>
+  readonly errorTable = computed(() => {
+    return this.errors().filter(
+      (error) =>
+        koboErrorDisplayTypeMap[error.type] === KoboErrorDisplayType.table,
+    );
+  });
+
+  readonly formSettingErrors = computed(() =>
     this.errors().filter(
       (error) =>
-        error.type !== KoboValidationErrorType.missingField &&
-        error.type !== KoboValidationErrorType.missingEnglishLanguage &&
-        error.type !== KoboValidationErrorType.invalidLanguageCode,
+        koboErrorDisplayTypeMap[error.type] ===
+        KoboErrorDisplayType.formSetting,
     ),
   );
 
-  readonly formSettingErrors = computed(() => {
-    return this.errors()
+  readonly missingFieldErrors = computed(() => {
+    const fields = this.errors()
       .filter(
         (error) =>
-          error.type === KoboValidationErrorType.missingEnglishLanguage ||
-          error.type === KoboValidationErrorType.invalidLanguageCode,
+          koboErrorDisplayTypeMap[error.type] ===
+          KoboErrorDisplayType.missingField,
       )
-      .map((error) => error);
-  });
-
-  readonly missingFieldErrors = computed(() => {
-    const missingFields = this.errors()
-      .filter((error) => error.type === KoboValidationErrorType.missingField)
-      .map((error) => error.attributeName);
-
-    return [...new Set(missingFields)];
+      .map((error: KoboValidationError) => error.attributeName);
+    return [...new Set(fields)];
   });
 
   show() {
