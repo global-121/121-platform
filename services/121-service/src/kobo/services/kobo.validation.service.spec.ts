@@ -190,17 +190,15 @@ describe('KoboValidationService', () => {
        [
          {
            "error": "Attribute 'bankAccountNumber' is missing",
-           "field": "bankAccountNumber",
-           "message": "Missing required attribute 'bankAccountNumber' (for FSP 'Commercial Bank Ethiopia').",
+           "attributeName": "bankAccountNumber",
            "solution": "Add 'bankAccountNumber' to the Kobo form",
-           "type": "missing_field",
+           "type": "missingField",
          },
          {
            "error": "Attribute 'fullName' is missing",
-           "field": "fullName",
-           "message": "Missing required attribute 'fullName' (for FSP 'Commercial Bank Ethiopia').",
+           "attributeName": "fullName",
            "solution": "Add 'fullName' to the Kobo form",
-           "type": "missing_field",
+           "type": "missingField",
          },
        ]
       `);
@@ -255,11 +253,10 @@ describe('KoboValidationService', () => {
        [
          {
            "error": "Field type must not be 'integer'",
-           "field": "nationalId",
+           "attributeName": "nationalId",
            "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
-           "message": "Attribute 'nationalId' has incompatible type, expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video', got 'integer'.",
            "solution": "Change the field type to an accepted type",
-           "type": "type_mismatch",
+           "type": "typeMismatch",
          },
        ]
       `);
@@ -361,17 +358,15 @@ describe('KoboValidationService', () => {
        [
          {
            "error": "Attribute 'lastName' is missing",
-           "field": "lastName",
-           "message": "Kobo form must contain the following name attributes defined in program.fullnameNamingConvention. However the following attributes are missing: lastName, middleName",
+           "attributeName": "lastName",
            "solution": "Add the missing attribute to the Kobo form",
-           "type": "missing-fullname-attributes",
+           "type": "missingFullnameAttributes",
          },
          {
            "error": "Attribute 'middleName' is missing",
-           "field": "middleName",
-           "message": "Kobo form must contain the following name attributes defined in program.fullnameNamingConvention. However the following attributes are missing: lastName, middleName",
+           "attributeName": "middleName",
            "solution": "Add the missing attribute to the Kobo form",
-           "type": "missing-fullname-attributes",
+           "type": "missingFullnameAttributes",
          },
        ]
       `);
@@ -450,10 +445,9 @@ describe('KoboValidationService', () => {
        [
          {
            "error": "Attribute 'phoneNumber' is missing",
-           "field": "phoneNumber",
-           "message": "Missing required attribute 'phoneNumber' (should be a text type and country code should be included, or program.allowEmptyPhoneNumber must be set to true).",
+           "attributeName": "phoneNumber",
            "solution": "Add a phoneNumber field with text type including country code, or set program.allowEmptyPhoneNumber to true",
-           "type": "missing_field",
+           "type": "missingField",
          },
        ]
       `);
@@ -530,11 +524,10 @@ describe('KoboValidationService', () => {
          [
            {
              "error": "Field type must not be 'integer'",
-             "field": "phoneNumber",
+             "attributeName": "phoneNumber",
              "info": "Expected one of: 'text'",
-             "message": "Attribute 'phoneNumber' has incompatible type, expected one of: 'text', got 'integer'.",
              "solution": "Change the field type to an accepted type",
-             "type": "type_mismatch",
+             "type": "typeMismatch",
            },
          ]
         `);
@@ -645,10 +638,9 @@ describe('KoboValidationService', () => {
          [
            {
              "error": "Attribute 'scope' is missing",
-             "field": "scope",
-             "message": "Missing required attribute 'scope' (required when program.enableScope is true).",
+             "attributeName": "scope",
              "solution": "Add a scope field to the Kobo form (required when program.enableScope is true)",
-             "type": "missing_field",
+             "type": "missingField",
            },
          ]
         `);
@@ -697,11 +689,10 @@ describe('KoboValidationService', () => {
          [
            {
              "error": "Field type must not be 'integer'",
-             "field": "scope",
+             "attributeName": "scope",
              "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
-             "message": "Attribute 'scope' has incompatible type, expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video', got 'integer'.",
              "solution": "Change the field type to an accepted type",
-             "type": "type_mismatch",
+             "type": "typeMismatch",
            },
          ]
         `);
@@ -752,10 +743,9 @@ describe('KoboValidationService', () => {
          [
            {
              "error": "Form contains a matrix question, which isn't supported",
-             "field": "matrix_question",
-             "message": "Kobo form must not contain a matrix item. Found: Matrix question group.",
+             "attributeName": "matrix_question",
              "solution": "Remove the matrix item from the Kobo form",
-             "type": "matrix-type-found",
+             "type": "matrixTypeFound",
            },
          ]
         `);
@@ -827,19 +817,17 @@ describe('KoboValidationService', () => {
          [
            {
              "error": "Invalid language code: 'Invalid Language'",
-             "field": "Invalid Language",
+             "attributeName": "Invalid Language",
              "info": "See https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes for valid codes",
-             "message": "Invalid Kobo language code: Invalid Language. Please use https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes",
              "solution": "use a valid ISO 639 language code.",
-             "type": "invalid-language-code",
+             "type": "invalidLanguageCode",
            },
            {
              "error": "Invalid language code: 'Another Invalid'",
-             "field": "Another Invalid",
+             "attributeName": "Another Invalid",
              "info": "See https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes for valid codes",
-             "message": "Invalid Kobo language code: Another Invalid. Please use https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes",
              "solution": "use a valid ISO 639 language code.",
-             "type": "invalid-language-code",
+             "type": "invalidLanguageCode",
            },
          ]
         `);
@@ -882,11 +870,10 @@ describe('KoboValidationService', () => {
          [
            {
              "error": "Invalid language code: 'Unknown (xx)'",
-             "field": "Unknown (xx)",
+             "attributeName": "Unknown (xx)",
              "info": "See https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes for valid codes",
-             "message": "Invalid Kobo language code: Unknown (xx). Please use https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes",
              "solution": "use a valid ISO 639 language code.",
-             "type": "invalid-language-code",
+             "type": "invalidLanguageCode",
            },
          ]
         `);
@@ -963,11 +950,10 @@ describe('KoboValidationService', () => {
        [
          {
            "error": "Field type must not be 'integer'",
-           "field": "preferredLanguage",
+           "attributeName": "preferredLanguage",
            "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
-           "message": "Attribute 'preferredLanguage' has incompatible type, expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video', got 'integer'.",
            "solution": "Change the field type to an accepted type",
-           "type": "type_mismatch",
+           "type": "typeMismatch",
          },
        ]
       `);
@@ -1032,10 +1018,9 @@ describe('KoboValidationService', () => {
         [
           {
             "error": "'paymentCount' is a reserved attribute name and cannot be filled from Kobo",
-            "field": "paymentCount",
-            "message": "Attribute 'paymentCount' is a reserved attribute name and cannot be filled from Kobo.",
+            "attributeName": "paymentCount",
             "solution": "Rename the field 'paymentCount' to a non-reserved name",
-            "type": "forbidden_attribute",
+            "type": "forbiddenAttribute",
           },
         ]
        `);
@@ -1100,10 +1085,9 @@ describe('KoboValidationService', () => {
         [
           {
             "error": "Field is missing from your form",
-            "field": "fsp",
-            "message": "Missing required attribute 'fsp'.",
+            "attributeName": "fsp",
             "solution": "Add a field named 'fsp' to the Kobo form",
-            "type": "missing_field",
+            "type": "missingField",
           },
         ]
       `);
@@ -1189,11 +1173,10 @@ describe('KoboValidationService', () => {
         [
           {
             "error": "Attribute 'fsp' has invalid choices: Invalid FSP Name, Another Invalid FSP",
-            "field": "fsp",
+            "attributeName": "fsp",
             "info": "Valid FSP configuration names: Safaricom Kenya, Intersolve WhatsApp",
-            "message": "Attribute 'fsp' has invalid choices: Invalid FSP Name, Another Invalid FSP. Expected one of: Safaricom Kenya, Intersolve WhatsApp.",
             "solution": "Update choices to match FSP configuration names",
-            "type": "invalid_choice",
+            "type": "invalidChoice",
           },
         ]
       `);
@@ -1259,11 +1242,10 @@ describe('KoboValidationService', () => {
         [
           {
             "error": "Field type must not be 'text'",
-            "field": "fsp",
+            "attributeName": "fsp",
             "info": "Expected one of: 'hidden', 'calculate', 'select_one'",
-            "message": "Attribute 'fsp' has incompatible type, expected one of: 'hidden', 'calculate', 'select_one', got 'text'.",
             "solution": "Change the field type to an accepted type",
-            "type": "type_mismatch",
+            "type": "typeMismatch",
           },
         ]
       `);
@@ -1309,10 +1291,9 @@ describe('KoboValidationService', () => {
       [
         {
           "error": "'gender' is of type select_one but has no choices defined",
-          "field": "gender",
-          "message": "Attribute 'gender' is of type select_one or select_one_from_file but has no choices defined. Note that choices defined in a separate CSV file are not supported.",
+          "attributeName": "gender",
           "solution": "Define choices directly in the Kobo form; external CSV choice files are not supported",
-          "type": "select-one-no-choices",
+          "type": "selectOneNoChoices",
         },
       ]
     `);
