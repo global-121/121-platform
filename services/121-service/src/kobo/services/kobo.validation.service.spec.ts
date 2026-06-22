@@ -1242,7 +1242,7 @@ describe('KoboValidationService', () => {
         [
           {
             "attributeName": "fsp",
-            "error": "Field type must not be 'text'",
+            "error": "Attribute 'fsp' has incompatible type 'text'",
             "info": "Expected one of: 'hidden', 'calculate', 'select_one'",
             "solution": "Change the field type to an accepted type",
             "type": "typeMismatch",
