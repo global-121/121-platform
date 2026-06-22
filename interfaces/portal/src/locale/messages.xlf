@@ -26,6 +26,9 @@
       <trans-unit id="1087779437885680611" datatype="html">
         <source>Card successfully closed</source>
       </trans-unit>
+      <trans-unit id="1105070151875122157" datatype="html">
+        <source>No Payments found</source>
+      </trans-unit>
       <trans-unit id="1131264372756277854" datatype="html">
         <source>Payments</source>
       </trans-unit>
@@ -1004,6 +1007,9 @@
       <trans-unit id="5306473977542913614" datatype="html">
         <source>Activity</source>
       </trans-unit>
+      <trans-unit id="5308113426415499804" datatype="html">
+        <source>You are not assigned to any program(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
+      </trans-unit>
       <trans-unit id="5312727456282218392" datatype="html">
         <source>User name</source>
       </trans-unit>
@@ -1320,6 +1326,9 @@
       <trans-unit id="6770883928375952203" datatype="html">
         <source>KoboToolbox</source>
       </trans-unit>
+      <trans-unit id="6819146217568220494" datatype="html">
+        <source>There are no payments for this program yet.</source>
+      </trans-unit>
       <trans-unit id="6820887192467365708" datatype="html">
         <source>Edit basic information</source>
       </trans-unit>
@@ -1524,9 +1533,6 @@
       <trans-unit id="7703736032933423612" datatype="html">
         <source>Error while importing existing Kobo registrations</source>
       </trans-unit>
-      <trans-unit id="7708270344948043036" datatype="html">
-        <source><x equiv-text="{{ title() }}" id="INTERPOLATION"/></source>
-      </trans-unit>
       <trans-unit id="7724483709075923163" datatype="html">
         <source>Downloading file</source>
       </trans-unit>
@@ -1619,6 +1625,9 @@
       </trans-unit>
       <trans-unit id="8117831125016931547" datatype="html">
         <source>User removed</source>
+      </trans-unit>
+      <trans-unit id="8135595255350159325" datatype="html">
+        <source>No Programs found</source>
       </trans-unit>
       <trans-unit id="8140989446664265922" datatype="html">
         <source>Enter the basic details of your program, these details will define your program&apos;s setup and structure.</source>
@@ -2562,21 +2571,6 @@
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
       </trans-unit>
-<<<<<<< HEAD
-=======
-      <trans-unit id="1105070151875122157" datatype="html">
-        <source>No Payments found</source>
-      </trans-unit>
-      <trans-unit id="5308113426415499804" datatype="html">
-        <source>You are not assigned to any program(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
-      </trans-unit>
-      <trans-unit id="6819146217568220494" datatype="html">
-        <source>There are no payments for this program yet.</source>
-      </trans-unit>
-      <trans-unit id="8135595255350159325" datatype="html">
-        <source>No Programs found</source>
-      </trans-unit>
->>>>>>> 52c080772 (Addressing copilot comments)
     </body>
   </file>
 </xliff>
