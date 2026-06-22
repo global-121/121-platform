@@ -54,6 +54,17 @@ export class KoboErrorDialogComponent {
   readonly dialogVisible = model(false);
   readonly tryAgain = output();
 
+  readonly isKoboIntegrated = input<boolean>();
+
+  readonly modalText = computed(() => ({
+    title: this.isKoboIntegrated()
+      ? $localize`Kobo form refresh errors`
+      : $localize`Kobo form integration errors`,
+    message: this.isKoboIntegrated()
+      ? $localize`There are issues in your Kobo form that are blocking the refresh. Fix the errors below in Kobo, then save, redeploy, and try again.`
+      : $localize`There are issues in your Kobo form that are blocking the integration. Fix the errors below in Kobo, then save, redeploy, and try again.`,
+  }));
+
   readonly errorTable = computed(() => {
     return this.errors().filter(
       (error) =>

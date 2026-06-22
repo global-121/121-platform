@@ -3,18 +3,17 @@
   [closeOnEscape]="false"
   [(visible)]="dialogVisible"
   styleClass="max-w-[70rem] sm:min-w-[60rem]"
-  [attr.data-testid]="'kobo-integration-error-dialog'"
+  [attr.data-testid]="'kobo-error-dialog'"
 >
   <ng-template #header>
     <h3>
       <i class="pi pi-exclamation-triangle me-2"></i>
-      <ng-container i18n>Kobo form integration errors</ng-container>
+      {{ modalText().title }}
     </h3>
   </ng-template>
 
-  <p i18n>
-    There are issues in your Kobo form that are blocking the integration. Fix
-    the errors below in Kobo, then save, redeploy, and try again.
+  <p>
+    {{ modalText().message }}
   </p>
 
   @if (missingFieldErrors().length > 0) {
@@ -23,6 +22,7 @@
         <h4 class="text-base! font-semibold">
           <span i18n>Required fields not found</span>
           <app-info-tooltip
+            class="ms-1"
             message="These fields are expected by 121 but are missing from your Kobo form. Add them before redeploying."
             i18n-message
           />
@@ -55,6 +55,7 @@
         <h4 class="text-base! font-semibold">
           <span i18n>Form setting errors</span>
           <app-info-tooltip
+            class="ms-1"
             message="These are the errors related to your Kobo form settings."
             i18n-message
           />
@@ -69,7 +70,10 @@
           <li>
             {{ error.error }}, {{ error.solution }}
             @if (error.info) {
-              <app-info-tooltip message="{{ error.info }}" />
+              <app-info-tooltip
+                class="ms-1"
+                message="{{ error.info }}"
+              />
             }
           </li>
         }
@@ -131,7 +135,10 @@
             <td class="px-2">
               {{ error.solution }}
               @if (error.info) {
-                <app-info-tooltip message="{{ error.info }}" />
+                <app-info-tooltip
+                  class="ms-1"
+                  message="{{ error.info }}"
+                />
               }
             </td>
           </tr>
@@ -141,19 +148,28 @@
   }
 
   <div class="mt-5 flex justify-end gap-4">
-    <p-button
-      label="Cancel"
-      i18n-label="@@generic-cancel"
-      (click)="dialogVisible.set(false)"
-      outlined
-      rounded
-      severity="contrast"
-    />
-    <p-button
-      rounded
-      label="Try again"
-      i18n-label="@@generic-try-again"
-      (click)="handleTryAgainClick()"
-    />
+    @if (!isKoboIntegrated()) {
+      <p-button
+        label="Cancel"
+        i18n-label="@@generic-cancel"
+        (click)="dialogVisible.set(false)"
+        outlined
+        rounded
+        severity="contrast"
+      />
+      <p-button
+        rounded
+        label="Try again"
+        i18n-label="@@generic-try-again"
+        (click)="handleTryAgainClick()"
+      />
+    } @else {
+      <p-button
+        rounded
+        label="Close"
+        i18n-label="@@generic-close"
+        (click)="dialogVisible.set(false)"
+      />
+    }
   </div>
 </p-dialog>
