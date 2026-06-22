@@ -22,14 +22,14 @@
     ></app-kobo-integration-card>
 
     @if (!isKoboIntegrated()) {
-    <app-required-attributes
-      [programId]="programId()"
-    ></app-required-attributes>
+      <app-required-attributes
+        [programId]="programId()"
+      ></app-required-attributes>
     }
   </p-card>
   @if (isKoboIntegrated()) {
-  <app-registration-questions-card
-    [programId]="programId()"
-  ></app-registration-questions-card>
+    <app-registration-questions-card
+      [programId]="programId()"
+    ></app-registration-questions-card>
   }
 </app-page-layout-program-settings>
