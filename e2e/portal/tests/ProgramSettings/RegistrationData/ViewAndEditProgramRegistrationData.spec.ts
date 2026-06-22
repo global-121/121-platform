@@ -22,7 +22,15 @@ const defaultSafaricomAttributes = [
   { name: 'phoneNumber', label: 'Phone Number' },
 ];
 
-test('View program and kobo attributes in settings page', async ({
+const labelUpdates = [
+  { name: 'What_is_2_2_number', label: 'Updated what is 2+2' },
+  {
+    name: 'gender',
+    label: 'Updated gender',
+  },
+];
+
+test('View program and edit kobo attributes in settings page', async ({
   resetDBAndSeedRegistrations,
   registrationDataPage,
 }) => {
@@ -55,6 +63,12 @@ test('View program and kobo attributes in settings page', async ({
   await test.step('Validate kobo attributes in table', async () => {
     await registrationDataPage.validateProgramAttributesTable({
       attributes: kobooAttributes,
+    });
+  });
+
+  await test.step('Edit attribute labels', async () => {
+    await registrationDataPage.editLabels({
+      labelUpdates,
     });
   });
 });

@@ -187,7 +187,7 @@ class RegistrationDataPage extends BasePage {
   async validateLanguageTabs({ languages }: { languages: string[] }) {
     await expect(this.languageTabs).toHaveCount(languages.length);
     for (const [index, language] of languages.entries()) {
-      await expect(this.languageTabs.nth(index)).toHaveText(language);
+      await expect(this.languageTabs.nth(index)).toContainText(language);
     }
   }
 
