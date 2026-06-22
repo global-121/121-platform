@@ -2598,14 +2598,14 @@
       <trans-unit id="2818334334996550834" datatype="html">
         <source>Kobo form refresh errors</source>
       </trans-unit>
-      <trans-unit id="6147099473186988952" datatype="html">
-        <source>Kobo refresh unsuccessful</source>
-      </trans-unit>
       <trans-unit id="6622197825860768013" datatype="html">
         <source>There are issues in your Kobo form that are blocking the refresh. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
       </trans-unit>
       <trans-unit id="7749949386756709227" datatype="html">
         <source>There are issues in your Kobo form that are blocking the integration. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
+      </trans-unit>
+      <trans-unit id="508499092676439201" datatype="html">
+        <source>Integration update unsuccessful. Please try again.</source>
       </trans-unit>
     </body>
   </file>

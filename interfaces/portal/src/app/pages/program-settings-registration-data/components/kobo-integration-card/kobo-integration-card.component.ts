@@ -127,7 +127,7 @@ export class KoboIntegrationCardComponent {
 
       this.toastService.showToast({
         severity: 'error',
-        detail: $localize`Kobo refresh unsuccessful`,
+        detail: $localize`Integration update unsuccessful. Please try again.`,
       });
     },
   }));
