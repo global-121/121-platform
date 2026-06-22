@@ -7,10 +7,10 @@ import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/
 import { getFspAttributeNames } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES } from '@121-service/src/kobo/consts/kobo-allowed-registration-view-attributes.const';
 import { KOBO_TO_121_TYPE_MAPPING } from '@121-service/src/kobo/consts/kobo-survey-to-121-attribute-type.const';
-import { KoboValidationErrorType } from '@121-service/src/kobo/enum/kobo-validation-error-base';
+import { KoboValidationErrorType } from '@121-service/src/kobo/enum/kobo-validation-error-type';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
-import { KoboValidationErrorBase } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
+import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 import { KoboLanguageMapper } from '@121-service/src/kobo/mappers/kobo-language.mapper';
 import { fspQuestionName } from '@121-service/src/kobo/services/kobo.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -140,7 +140,7 @@ export class KoboValidationService {
     this.throwErrorsIfAny(errors);
   }
 
-  private throwErrorsIfAny(errors: KoboValidationErrorBase[]): void {
+  private throwErrorsIfAny(errors: KoboValidationError[]): void {
     if (errors.length > 0) {
       throw new HttpException(
         { message: 'Kobo form definition validation failed', errors },
@@ -155,8 +155,8 @@ export class KoboValidationService {
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
     fspConfigs: { fspName: Fsps; name: string }[];
-  }): KoboValidationErrorBase[] {
-    const errors: KoboValidationErrorBase[] = [];
+  }): KoboValidationError[] {
+    const errors: KoboValidationError[] = [];
 
     for (const fspConfig of fspConfigs) {
       errors.push(
@@ -179,7 +179,7 @@ export class KoboValidationService {
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
     fspConfig: { fspName: Fsps; name: string };
-  }): KoboValidationErrorBase[] {
+  }): KoboValidationError[] {
     const attributes = getFspAttributeNames(fspConfig.fspName);
 
     return attributes
@@ -200,9 +200,9 @@ export class KoboValidationService {
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
     fspConfig: { fspName: Fsps; name: string };
-  }): KoboValidationErrorBase[] {
+  }): KoboValidationError[] {
     const fspAttributeNames = getFspAttributeNames(fspConfig.fspName);
-    const errors: KoboValidationErrorBase[] = [];
+    const errors: KoboValidationError[] = [];
 
     for (const fspAttributeName of fspAttributeNames) {
       const error = this.validateSingleFspAttributeType({
@@ -224,7 +224,7 @@ export class KoboValidationService {
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
     fspAttributeName: string;
-  }): KoboValidationErrorBase | undefined {
+  }): KoboValidationError | undefined {
     const surveyItem = koboSurveyItems.find(
       (item) => item.name === fspAttributeName,
     );
@@ -248,7 +248,7 @@ export class KoboValidationService {
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
     fullnameNamingConvention: string[];
-  }): KoboValidationErrorBase[] {
+  }): KoboValidationError[] {
     const koboAttributeNames = new Set(
       koboSurveyItems.map((item) => item.name),
     );
@@ -273,7 +273,7 @@ export class KoboValidationService {
     languages,
   }: {
     languages: (string | undefined)[];
-  }): KoboValidationErrorBase | undefined {
+  }): KoboValidationError | undefined {
     for (const language of languages) {
       const isoCode = KoboLanguageMapper.extractIsoCode({
         koboSurveyLanguage: language,
@@ -297,8 +297,8 @@ export class KoboValidationService {
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
     allowEmptyPhoneNumber: boolean;
-  }): KoboValidationErrorBase[] {
-    const errors: KoboValidationErrorBase[] = [];
+  }): KoboValidationError[] {
+    const errors: KoboValidationError[] = [];
 
     const phoneNumberItem = koboSurveyItems.find(
       (item) => item.name === GenericRegistrationAttributes.phoneNumber,
@@ -338,7 +338,7 @@ export class KoboValidationService {
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
     scopeEnabled: boolean;
-  }): KoboValidationErrorBase | undefined {
+  }): KoboValidationError | undefined {
     if (!scopeEnabled) {
       return;
     }
@@ -364,7 +364,7 @@ export class KoboValidationService {
 
   private validateNoMatrixType(
     koboSurveyItems: KoboSurveyItemCleaned[],
-  ): KoboValidationErrorBase | undefined {
+  ): KoboValidationError | undefined {
     const typeName = 'begin_kobomatrix';
     const matrixItem = koboSurveyItems.find((item) => item.type === typeName);
     if (matrixItem) {
@@ -381,7 +381,7 @@ export class KoboValidationService {
     koboSurveyLanguages,
   }: {
     koboSurveyLanguages: (string | undefined)[];
-  }): KoboValidationErrorBase[] {
+  }): KoboValidationError[] {
     return koboSurveyLanguages
       .filter((language) => {
         const isoCode = KoboLanguageMapper.extractIsoCode({
@@ -406,7 +406,7 @@ export class KoboValidationService {
     attributeName: string;
     surveyItemType: string;
     expected121Type: RegistrationAttributeTypes;
-  }): KoboValidationErrorBase | undefined {
+  }): KoboValidationError | undefined {
     // Hidden and 'calculate' fields are allowed for any attribute type as they are now used by our cash-im team for any values
     // They are too difficult to validate as of this moment
     if (
@@ -444,7 +444,7 @@ export class KoboValidationService {
     koboSurveyItems,
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
-  }): KoboValidationErrorBase[] {
+  }): KoboValidationError[] {
     const hasRegistrationViewAttributeName = (item: KoboSurveyItemCleaned) => {
       return registrationViewAttributeNames.includes(item.name);
     };
@@ -474,7 +474,7 @@ export class KoboValidationService {
     koboSurveyItems,
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
-  }): KoboValidationErrorBase[] {
+  }): KoboValidationError[] {
     const isNotScope = (surveyItem: KoboSurveyItemCleaned) =>
       surveyItem.name !== GenericRegistrationAttributes.scope;
 
@@ -507,7 +507,7 @@ export class KoboValidationService {
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
     fspConfigs: { fspName: Fsps; name: string }[];
-  }): KoboValidationErrorBase | undefined {
+  }): KoboValidationError | undefined {
     const fspItem = koboSurveyItems.find(
       (item) => item.name === fspQuestionName,
     );
@@ -547,7 +547,7 @@ export class KoboValidationService {
   }: {
     fspItem: KoboSurveyItemCleaned;
     fspConfigs: { fspName: Fsps; name: string }[];
-  }): KoboValidationErrorBase | undefined {
+  }): KoboValidationError | undefined {
     const fspConfigNames = new Set(fspConfigs.map((config) => config.name));
     const choiceNames = fspItem.choices.map((choice) => choice.name);
 
@@ -573,7 +573,7 @@ export class KoboValidationService {
     koboSurveyItems,
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
-  }): KoboValidationErrorBase[] {
+  }): KoboValidationError[] {
     return koboSurveyItems
       .filter((item) => item.type === 'select_one' && item.choices.length === 0)
       .map((item) => ({
@@ -589,9 +589,9 @@ export class KoboValidationService {
     accumulatedErrors,
     error,
   }: {
-    accumulatedErrors: KoboValidationErrorBase[];
-    error: KoboValidationErrorBase[] | KoboValidationErrorBase | undefined;
-  }): KoboValidationErrorBase[] {
+    accumulatedErrors: KoboValidationError[];
+    error: KoboValidationError[] | KoboValidationError | undefined;
+  }): KoboValidationError[] {
     if (!error) {
       return accumulatedErrors;
     }

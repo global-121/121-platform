@@ -19,7 +19,7 @@ import { Dialog } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 
-import { KoboValidationErrorBase } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
+import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
@@ -51,7 +51,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
 })
 export class KoboConfigurationDialogComponent {
   readonly programId = input.required<number | string>();
-  readonly koboIntegrationErrors = signal<KoboValidationErrorBase[]>([]);
+  readonly koboIntegrationErrors = signal<KoboValidationError[]>([]);
 
   private readonly koboApiService = inject(KoboApiService);
   private readonly toastService = inject(ToastService);
@@ -140,7 +140,7 @@ export class KoboConfigurationDialogComponent {
     },
     onError: (errorResponse: Error) => {
       const cause = errorResponse.cause as {
-        error?: { errors?: KoboValidationErrorBase[] };
+        error?: { errors?: KoboValidationError[] };
       };
       const errors = cause.error?.errors;
 

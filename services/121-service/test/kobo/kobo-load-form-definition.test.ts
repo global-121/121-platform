@@ -228,6 +228,22 @@ describe('Import a Kobo form definition', () => {
     expect(linkKoboResponse.body.message).toMatchInlineSnapshot(
       `"Kobo form definition validation failed"`,
     );
+
+    const { errors } = linkKoboResponse.body;
+    expect(errors).toEqual(expect.any(Array));
+    expect(errors.length).toBeGreaterThan(0);
+
+    // Spot-check one error has the expected shape
+    expect(errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: expect.any(String),
+          field: expect.any(String),
+          error: expect.any(String),
+          solution: expect.any(String),
+        }),
+      ]),
+    );
   });
 
   it('should not update program or create Kobo entity when dryRun is true', async () => {
