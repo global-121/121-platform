@@ -31,6 +31,9 @@ export class InstanceReportingTransactionDto {
   @ApiProperty({ example: '2026-03-30T12:00:00.000Z' })
   readonly createdDate: string;
 
+  @ApiProperty({ example: '2026-03-30T12:00:00.000Z', nullable: true })
+  readonly startedDate: string | null;
+
   @ApiProperty({ example: '2026-03-30T12:00:00.000Z' })
   readonly updatedDate: string;
 

@@ -1,23 +1,30 @@
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { InstanceReportingDataMapper } from '@121-service/src/instance-reporting/mappers/instance-reporting-data.mapper';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 describe('InstanceReportingDataMapper', () => {
   describe('mapping a registration to a DTO', () => {
     function createRegistrationRaw({
       programId = 1,
       titlePortal = { en: 'Test' },
-      registrationStatus = RegistrationStatusEnum.included,
+      status = RegistrationStatusEnum.included,
     }: {
       programId?: number;
       titlePortal?: Record<string, string> | null;
-      registrationStatus?: RegistrationStatusEnum;
+      status?: RegistrationStatusEnum;
     } = {}) {
       return {
         id: 1,
         referenceId: 'ref-1',
-        registrationStatus,
+        registrationStatus: status,
+        created: new Date('2026-01-10T08:00:00Z'),
+        preferredLanguage: RegistrationPreferredLanguage.en,
+        programFspConfiguration: { fspName: Fsps.safaricom },
+        paymentAmountMultiplier: 1,
+        maxPayments: 3,
         program: { id: programId, titlePortal },
       };
     }
@@ -40,7 +47,7 @@ describe('InstanceReportingDataMapper', () => {
         registration: createRegistrationRaw({
           programId: 1,
           titlePortal: { en: 'Test' },
-          registrationStatus: RegistrationStatusEnum.included,
+          status: RegistrationStatusEnum.included,
         }),
         instance: 'test-instance',
         uploadDate: '2026-04-20',
@@ -52,6 +59,11 @@ describe('InstanceReportingDataMapper', () => {
         programId: 1,
         status: RegistrationStatusEnum.included,
         referenceId: 'ref-1',
+        createdDate: '2026-01-10T08:00:00.000Z',
+        preferredLanguage: RegistrationPreferredLanguage.en,
+        fspName: Fsps.safaricom,
+        paymentAmountMultiplier: 1,
+        maxPayments: 3,
         uploadDate: '2026-04-20',
       });
       expect(result).toHaveProperty('version');
@@ -70,6 +82,9 @@ describe('InstanceReportingDataMapper', () => {
         transferValue: 500,
         created: new Date('2026-01-15T10:00:00Z'),
         updated: new Date('2026-01-15T12:00:00Z'),
+        transactionEvents: [
+          { id: 1, created: new Date('2026-01-15T11:00:00Z') },
+        ],
         registration: {
           id: 1,
           referenceId: 'REF-001',
@@ -98,6 +113,7 @@ describe('InstanceReportingDataMapper', () => {
         amountEuro: 100,
         localCurrency: 'ETB',
         createdDate: '2026-01-15T10:00:00.000Z',
+        startedDate: '2026-01-15T11:00:00.000Z',
         updatedDate: '2026-01-15T12:00:00.000Z',
         registrationReferenceId: 'REF-001',
         programId: 1,
@@ -105,6 +121,20 @@ describe('InstanceReportingDataMapper', () => {
         uploadDate: '2026-04-20',
       });
       expect(result).toHaveProperty('version');
+    });
+
+    it('should map startedDate to null when there is no started event', () => {
+      const transaction = createTransactionRaw();
+      transaction.transactionEvents = [];
+
+      const result = InstanceReportingDataMapper.mapTransaction({
+        transaction,
+        instance: 'test-instance',
+        amountEuro: 100,
+        uploadDate: '2026-04-20',
+      });
+
+      expect(result.startedDate).toBeNull();
     });
 
     it('should pass through null amountEuro', () => {

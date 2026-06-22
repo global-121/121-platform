@@ -29,10 +29,19 @@ export class RegistrationRepository extends Repository<RegistrationEntity> {
         'registration.id',
         'registration.referenceId',
         'registration.registrationStatus',
+        'registration.created',
+        'registration.preferredLanguage',
+        'registration.paymentAmountMultiplier',
+        'registration.maxPayments',
+        'programFspConfiguration.fspName',
         'program.id',
         'program.titlePortal',
       ])
       .innerJoin('registration.program', 'program')
+      .leftJoin(
+        'registration.programFspConfiguration',
+        'programFspConfiguration',
+      )
       .innerJoin(
         'registration.transactions',
         'transaction',
