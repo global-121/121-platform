@@ -22,6 +22,7 @@ import { TabsModule } from 'primeng/tabs';
 import { UpdateProgramRegistrationAttributesBatchDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
@@ -29,6 +30,7 @@ import { isKoboIntegrated } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Attribute } from '~/domains/program/program.model';
+import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { getLinguonym } from '~/utils/get-linguonym';
 import {
@@ -60,7 +62,8 @@ export class RegistrationQuestionsCardComponent {
   readonly programId = input.required<number | string>();
 
   readonly programApiService = inject(ProgramApiService);
-  private readonly koboApiService = inject(KoboApiService);
+  readonly koboApiService = inject(KoboApiService);
+  readonly authService = inject(AuthService);
 
   readonly koboIntegration = injectQuery(() => ({
     ...this.koboApiService.getKoboIntegration(this.programId)(),
@@ -238,6 +241,17 @@ export class RegistrationQuestionsCardComponent {
     }
     return labels;
   });
+
+  readonly canEditAttributes = computed(() =>
+    this.authService.hasAllPermissions({
+      programId: this.programId(),
+      requiredPermissions: [
+        PermissionEnum.ProgramUPDATE,
+        PermissionEnum.RegistrationAttributeUPDATE,
+      ],
+    }),
+  );
+
   private getLabelToShow({
     language,
     attribute,

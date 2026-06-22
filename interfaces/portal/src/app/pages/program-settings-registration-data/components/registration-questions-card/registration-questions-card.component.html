@@ -2,7 +2,7 @@
   [header]="cardHeader()"
   editPencilTitle="Edit registration questions"
   i18n-editPencilTitle
-  [canEdit]="isKoboIntegrated()"
+  [canEdit]="isKoboIntegrated() && canEditAttributes()"
   [(isEditing)]="isEditing"
   [formGroup]="formGroup"
   [mutation]="updateAttributeLabelsMutation"
