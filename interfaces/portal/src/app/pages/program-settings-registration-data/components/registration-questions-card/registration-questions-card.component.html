@@ -7,7 +7,7 @@
   [(isEditing)]="isEditing"
   [formGroup]="formGroup"
   [mutation]="updateAttributeLabelsMutation"
-  [mutationData]="formGroup.getRawValue()"
+  [mutationData]="{ formData: formGroup.getRawValue() }"
   [attr.data-testid]="'registration-questions-card'"
 >
   <p
@@ -106,7 +106,7 @@
                       pInputText
                       [formControlName]="language"
                       [attr.data-testid]="`attribute-label-input-${language}-${attribute.name}`"
-                      class="w-100"
+                      class="w-full"
                     />
                   } @else {
                     {{

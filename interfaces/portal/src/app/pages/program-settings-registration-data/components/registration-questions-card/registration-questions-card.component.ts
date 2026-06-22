@@ -78,9 +78,11 @@ export class RegistrationQuestionsCardComponent {
       return [];
     }
 
-    return this.program
-      .data()
-      .programRegistrationAttributes.sort((a, b) => (a.name > b.name ? 1 : -1));
+    const data = this.program.data();
+
+    return data.programRegistrationAttributes.sort((a, b) =>
+      a.name > b.name ? 1 : -1,
+    );
   });
 
   readonly programLanguages = computed(() => {
@@ -102,48 +104,56 @@ export class RegistrationQuestionsCardComponent {
     >
   >({});
 
-  updateAttributeLabelsMutation = injectMutation(() => ({
-    mutationFn: async (
-      formData: ReturnType<typeof this.formGroup.getRawValue>,
-    ) => {
-      const attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[] =
-        [];
+  updateAttributeLabelsMutation = injectMutation(() => {
+    type formGroupRawValueType = typeof this.formGroup.getRawValue;
 
-      for (const attributeName of Object.keys(formData)) {
-        const label: Record<string, string> = {};
-        const attributeLabel = formData[attributeName];
-        for (const language of Object.keys(attributeLabel)) {
-          const translatedLabel = attributeLabel[language] as
-            | string
-            | undefined;
-          if (translatedLabel) {
-            label[language] = translatedLabel;
+    return {
+      mutationFn: async ({
+        formData,
+      }: {
+        formData: ReturnType<formGroupRawValueType>;
+      }) => {
+        const attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[] =
+          [];
+
+        for (const attributeName of Object.keys(formData)) {
+          const label: Record<string, string> = {};
+          const attributeLabel = formData[attributeName];
+          for (const language of Object.keys(attributeLabel)) {
+            const translatedLabel = attributeLabel[language] as
+              | string
+              | undefined;
+            if (translatedLabel) {
+              label[language] = translatedLabel;
+            }
           }
+          attributesToUpdate.push({
+            programRegistrationAttributeName: attributeName,
+            updateProgramRegistrationAttribute: { label },
+          });
         }
-        attributesToUpdate.push({
-          programRegistrationAttributeName: attributeName,
-          updateProgramRegistrationAttribute: { label },
-        });
-      }
 
-      return this.programApiService.updateProgramRegistrationAttributesInBatch({
-        programId: this.programId,
-        attributesToUpdate,
-      });
-    },
-    onSuccess: () => {
-      this.isEditing.set(false);
-      this.toastService.showToast({
-        detail: $localize`Update successful.`,
-      });
-    },
-    onError: () => {
-      this.toastService.showToast({
-        severity: 'error',
-        detail: $localize`An error occurred while updating the labels.`,
-      });
-    },
-  }));
+        return this.programApiService.updateProgramRegistrationAttributesInBatch(
+          {
+            programId: this.programId,
+            attributesToUpdate,
+          },
+        );
+      },
+      onSuccess: () => {
+        this.isEditing.set(false);
+        this.toastService.showToast({
+          detail: $localize`Update successful.`,
+        });
+      },
+      onError: () => {
+        this.toastService.showToast({
+          severity: 'error',
+          detail: $localize`An error occurred while updating the labels.`,
+        });
+      },
+    };
+  });
 
   readonly isEditing = model(false);
 
@@ -165,7 +175,7 @@ export class RegistrationQuestionsCardComponent {
             this.programLanguages().map((language) => [
               language,
               new FormControl(
-                this.attributeLabels().get(attribute.name)?.get(language),
+                this.attributeLabels().get(attribute.name)?.get(language) ?? '',
                 {
                   nonNullable: true,
                 },
@@ -220,7 +230,7 @@ export class RegistrationQuestionsCardComponent {
   readonly canEditAttributes = computed(() =>
     this.authService.hasPermission({
       programId: this.programId(),
-      requiredPermission: PermissionEnum.RegistrationAttributeUPDATE,
+      requiredPermission: PermissionEnum.ProgramRegistrationAttributesUPDATE,
     }),
   );
 
