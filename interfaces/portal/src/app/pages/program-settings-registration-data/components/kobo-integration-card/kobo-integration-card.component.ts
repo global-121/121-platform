@@ -51,6 +51,7 @@ export class KoboIntegrationCardComponent {
     viewChild.required<KoboConfigurationDialogComponent>(
       'koboConfigurationDialog',
     );
+
   readonly koboImportExistingDialog =
     viewChild.required<KoboImportExistingRegistrationsDialogComponent>(
       'koboImportExistingDialog',

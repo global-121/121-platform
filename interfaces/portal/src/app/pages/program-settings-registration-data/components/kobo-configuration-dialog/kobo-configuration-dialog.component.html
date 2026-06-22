@@ -126,3 +126,9 @@
   #koboImportExistingDialog
   [programId]="programId()"
 />
+
+<app-kobo-error-dialog
+  #koboIntegrationErrorDialog
+  [errors]="koboIntegrationErrors()"
+  (tryAgain)="koboConfigurationDialog.show()"
+/>

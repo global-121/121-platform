@@ -348,6 +348,9 @@
       <trans-unit id="2413028101045997188" datatype="html">
         <source>You&apos;re about to reset <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.displayName }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b &gt;" id="CLOSE_BOLD_TEXT"/>&apos;s password. The user will receive an email with the new password sent to their registered email address. Only proceed if the user has requested this action.</source>
       </trans-unit>
+      <trans-unit id="2438205306314074008" datatype="html">
+        <source>Integrated FSPs</source>
+      </trans-unit>
       <trans-unit id="2438590582556677910" datatype="html">
         <source>Start!</source>
       </trans-unit>
@@ -763,6 +766,9 @@
       </trans-unit>
       <trans-unit id="4228319514212568219" datatype="html">
         <source>Users</source>
+      </trans-unit>
+      <trans-unit id="4231630870580628223" datatype="html">
+        <source>Solution</source>
       </trans-unit>
       <trans-unit id="4249207548869932033" datatype="html">
         <source>Password reset successful</source>
@@ -1275,6 +1281,9 @@
       <trans-unit id="6533918067030990396" datatype="html">
         <source>Amount</source>
       </trans-unit>
+      <trans-unit id="6536020395223120161" datatype="html">
+        <source>Error</source>
+      </trans-unit>
       <trans-unit id="6555318547274416232" datatype="html">
         <source>Value</source>
       </trans-unit>
@@ -1365,6 +1374,9 @@
       <trans-unit id="7000649363168371045" datatype="html">
         <source>Save changes</source>
       </trans-unit>
+      <trans-unit id="7003345492545522906" datatype="html">
+        <source>These are the errors related to your Kobo form settings.</source>
+      </trans-unit>
       <trans-unit id="7003847942368840790" datatype="html">
         <source>Funds available</source>
       </trans-unit>
@@ -1415,6 +1427,9 @@
       </trans-unit>
       <trans-unit id="7148904805726439689" datatype="html">
         <source>Target registrations</source>
+      </trans-unit>
+      <trans-unit id="7156619668472815007" datatype="html">
+        <source>Other errors</source>
       </trans-unit>
       <trans-unit id="718304168195158236" datatype="html">
         <source>Total registrations</source>
@@ -1658,6 +1673,9 @@
       </trans-unit>
       <trans-unit id="8255959026836387530" datatype="html">
         <source>Email copied to clipboard</source>
+      </trans-unit>
+      <trans-unit id="8267283367469506410" datatype="html">
+        <source>Kobo form integration errors</source>
       </trans-unit>
       <trans-unit id="8270214591182392971" datatype="html">
         <source>Brand code</source>
@@ -2184,6 +2202,9 @@
       <trans-unit id="generic-success" datatype="html">
         <source>Success</source>
       </trans-unit>
+      <trans-unit id="generic-try-again" datatype="html">
+        <source>Try again</source>
+      </trans-unit>
       <trans-unit id="generic-type-or-select" datatype="html">
         <source>Type or select</source>
       </trans-unit>
@@ -2568,8 +2589,17 @@
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
       </trans-unit>
-      <trans-unit id="2438205306314074008" datatype="html">
-        <source>Integrated FSPs</source>
+      <trans-unit id="6751289562324913219" datatype="html">
+        <source>Form setting errors</source>
+      </trans-unit>
+      <trans-unit id="6151408429233480883" datatype="html">
+        <source>Required fields not found</source>
+      </trans-unit>
+      <trans-unit id="7615933189038112184" datatype="html">
+        <source>These fields are expected by 121 but are missing from your Kobo form. Add them before redeploying.</source>
+      </trans-unit>
+      <trans-unit id="7968872754950254240" datatype="html">
+        <source>There are issues in your Kobo form that are blocking the integration. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
       </trans-unit>
     </body>
   </file>

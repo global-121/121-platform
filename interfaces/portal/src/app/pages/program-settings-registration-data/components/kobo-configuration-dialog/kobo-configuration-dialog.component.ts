@@ -19,11 +19,14 @@ import { Dialog } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 
+import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
+
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { extractServerAndAssetIdFromUrl } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
+import { KoboErrorDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-error-dialog/kobo-error-dialog.component';
 import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
@@ -39,6 +42,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     Dialog,
     Button,
     PasswordModule,
+    KoboErrorDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './kobo-configuration-dialog.component.html',
@@ -47,6 +51,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
 })
 export class KoboConfigurationDialogComponent {
   readonly programId = input.required<number | string>();
+  readonly koboIntegrationErrors = signal<KoboValidationError[]>([]);
 
   private readonly koboApiService = inject(KoboApiService);
   private readonly toastService = inject(ToastService);
@@ -56,6 +61,10 @@ export class KoboConfigurationDialogComponent {
 
   readonly koboConfigurationDialog = viewChild.required<FormDialogComponent>(
     'koboConfigurationDialog',
+  );
+
+  readonly koboErrorDialog = viewChild.required<KoboErrorDialogComponent>(
+    'koboIntegrationErrorDialog',
   );
 
   readonly linkKoboDialog =
@@ -128,6 +137,24 @@ export class KoboConfigurationDialogComponent {
         resetFormGroup: false, // Retain form values for the `linkKoboMutation`
       });
       this.linkKoboDialog().show();
+    },
+    onError: (errorResponse: Error) => {
+      const cause = errorResponse.cause as {
+        error?: { errors?: KoboValidationError[] };
+      };
+      const errors = cause.error?.errors;
+
+      // If the error contains Kobo validation errors, we want to show them in the KoboErrorDialog.
+      if (Array.isArray(errors) && errors.length > 0) {
+        this.koboIntegrationErrors.set(errors);
+        this.koboConfigurationDialog().hide();
+        this.koboErrorDialog().show();
+      }
+
+      this.toastService.showToast({
+        severity: 'error',
+        detail: $localize`Error while integrating Kobo form`,
+      });
     },
   }));
 

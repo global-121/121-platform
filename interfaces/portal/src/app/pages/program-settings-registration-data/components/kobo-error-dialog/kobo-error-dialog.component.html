@@ -1,0 +1,159 @@
+<p-dialog
+  [modal]="true"
+  [closeOnEscape]="false"
+  [(visible)]="dialogVisible"
+  styleClass="max-w-[70rem] sm:min-w-[60rem]"
+  [attr.data-testid]="'kobo-integration-error-dialog'"
+>
+  <ng-template #header>
+    <h3>
+      <i class="pi pi-exclamation-triangle me-2"></i>
+      <ng-container i18n>Kobo form integration errors</ng-container>
+    </h3>
+  </ng-template>
+
+  <p i18n>
+    There are issues in your Kobo form that are blocking the integration. Fix
+    the errors below in Kobo, then save, redeploy, and try again.
+  </p>
+
+  @if (missingFieldErrors().length > 0) {
+    <section class="mt-4 mb-2">
+      <div class="mb-2">
+        <h4 class="text-base! font-semibold">
+          <span i18n>Required fields not found</span>
+          <app-info-tooltip
+            message="These fields are expected by 121 but are missing from your Kobo form. Add them before redeploying."
+            i18n-message
+          />
+        </h4>
+      </div>
+
+      <ul class="flex flex-wrap gap-2">
+        @for (field of missingFieldErrors(); track $index) {
+          <li>
+            <p-tag
+              [attr.data-testid]="'kobo-integration-missing-field-' + field"
+              severity="info"
+              [value]="field"
+              rounded
+              style="
+                --p-tag-info-background: #e9f2ff;
+                --p-tag-info-color: #0d2a88;
+                --p-tag-padding: 0.25rem 1rem;
+              "
+            />
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  @if (formSettingErrors().length > 0) {
+    <section class="mt-4 mb-2">
+      <div class="mb-2">
+        <h4 class="text-base! font-semibold">
+          <span i18n>Form setting errors</span>
+          <app-info-tooltip
+            message="These are the errors related to your Kobo form settings."
+            i18n-message
+          />
+        </h4>
+      </div>
+
+      <ul
+        class="list-inside list-disc"
+        data-testid="kobo-integration-form-setting-errors"
+      >
+        @for (error of formSettingErrors(); track $index) {
+          <li>
+            {{ error.error }}, {{ error.solution }}
+            @if (error.info) {
+              <app-info-tooltip message="{{ error.info }}" />
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  @if (errorTable().length > 0) {
+    <section class="mt-4 mb-2">
+      <div class="mb-4">
+        <h4
+          i18n
+          class="text-base! font-semibold"
+        >
+          Other errors
+        </h4>
+      </div>
+      <p-table
+        [value]="errorTable()"
+        [size]="'small'"
+        class="text-base"
+        [attr.data-testid]="'kobo-integration-configuration-errors-table'"
+      >
+        <ng-template #header>
+          <tr>
+            <th
+              i18n
+              class="text-grey-700 px-2 py-1.5 font-semibold"
+            >
+              Field
+            </th>
+            <th
+              i18n
+              class="text-grey-700 px-2 py-1.5 font-semibold"
+            >
+              Error
+            </th>
+            <th
+              i18n
+              class="text-grey-700 px-2 py-1.5 font-semibold"
+            >
+              Solution
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template
+          #body
+          let-error
+        >
+          <tr class="align-top">
+            <td class="px-2">
+              {{ error.attributeName }}
+            </td>
+            <td class="px-2">
+              <div>
+                {{ error.error }}
+              </div>
+            </td>
+            <td class="px-2">
+              {{ error.solution }}
+              @if (error.info) {
+                <app-info-tooltip message="{{ error.info }}" />
+              }
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </section>
+  }
+
+  <div class="mt-5 flex justify-end gap-4">
+    <p-button
+      label="Cancel"
+      i18n-label="@@generic-cancel"
+      (click)="dialogVisible.set(false)"
+      outlined
+      rounded
+      severity="contrast"
+    />
+    <p-button
+      rounded
+      label="Try again"
+      i18n-label="@@generic-try-again"
+      (click)="handleTryAgainClick()"
+    />
+  </div>
+</p-dialog>
