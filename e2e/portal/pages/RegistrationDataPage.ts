@@ -330,6 +330,13 @@ class RegistrationDataPage extends BasePage {
     await this.validateCancelButton({ visible: false });
     await this.validateSaveButton({ visible: false });
   }
+
+  async validateUpdatedAtValue(updatedAt: string) {
+    const lastUpdatedTime = this.page.getByTestId(
+      'kobo-integration-last-updated',
+    );
+    await expect(lastUpdatedTime).toHaveText(updatedAt);
+  }
 }
 
 export default RegistrationDataPage;

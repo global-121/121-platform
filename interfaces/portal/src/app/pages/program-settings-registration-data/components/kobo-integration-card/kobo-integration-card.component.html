@@ -33,7 +33,12 @@
           i18n
           class="text-grey-700 text-end text-sm"
         >
-          Last updated: {{ koboIntegration.data()?.dateDeployed | date }}
+          Last updated:
+          <time
+            [attr.datetime]="koboIntegration.data()?.updated | date: 'short'"
+            data-testid="kobo-integration-last-updated"
+            >{{ koboIntegration.data()?.updated | date: 'short' }}</time
+          >
         </p>
       </div>
     }
