@@ -429,6 +429,9 @@
       <trans-unit id="2800411489772677471" datatype="html">
         <source>Fill up all 19 digits to link card</source>
       </trans-unit>
+      <trans-unit id="2818334334996550834" datatype="html">
+        <source>Kobo form refresh errors</source>
+      </trans-unit>
       <trans-unit id="2832894421278390919" datatype="html">
         <source>Invalid email or password. Double-check your credentials and try again.</source>
       </trans-unit>
@@ -956,6 +959,9 @@
       <trans-unit id="5081696702832953928" datatype="html">
         <source>Some of the registrations you have selected are not eligible for this payment. Change your selection and try again</source>
       </trans-unit>
+      <trans-unit id="508499092676439201" datatype="html">
+        <source>Integration update unsuccessful. Please try again.</source>
+      </trans-unit>
       <trans-unit id="5106050439674974101" datatype="html">
         <source>Choose an FSP from the FSPs integrated to this instance. You can add multiple FSPs to the same program. If you wish to integrate a new FSP, contact the 121 support team or talk to the account manager.</source>
       </trans-unit>
@@ -1199,6 +1205,9 @@
       <trans-unit id="6102855402615761891" datatype="html">
         <source>The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
       </trans-unit>
+      <trans-unit id="6151408429233480883" datatype="html">
+        <source>Required fields not found</source>
+      </trans-unit>
       <trans-unit id="6169902268775373280" datatype="html">
         <source>Select users for this approval step</source>
       </trans-unit>
@@ -1293,6 +1302,9 @@
       <trans-unit id="6582831988869863310" datatype="html">
         <source>You&apos;re about to edit the user <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ userToEdit()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> in your program team.</source>
       </trans-unit>
+      <trans-unit id="6622197825860768013" datatype="html">
+        <source>There are issues in your Kobo form that are blocking the refresh. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
+      </trans-unit>
       <trans-unit id="6627551976444260400" datatype="html">
         <source>or</source>
       </trans-unit>
@@ -1322,6 +1334,9 @@
       </trans-unit>
       <trans-unit id="6725574712013202474" datatype="html">
         <source>Payment created.</source>
+      </trans-unit>
+      <trans-unit id="6751289562324913219" datatype="html">
+        <source>Form setting errors</source>
       </trans-unit>
       <trans-unit id="6768832079771465748" datatype="html">
         <source>Field changed</source>
@@ -1527,6 +1542,9 @@
       <trans-unit id="7613791439001735010" datatype="html">
         <source>Template message</source>
       </trans-unit>
+      <trans-unit id="7615933189038112184" datatype="html">
+        <source>These fields are expected by 121 but are missing from your Kobo form. Add them before redeploying.</source>
+      </trans-unit>
       <trans-unit id="7617906385730294527" datatype="html">
         <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>)</source>
       </trans-unit>
@@ -1553,6 +1571,9 @@
       </trans-unit>
       <trans-unit id="7739650586737813677" datatype="html">
         <source>All Registrations</source>
+      </trans-unit>
+      <trans-unit id="7749949386756709227" datatype="html">
+        <source>There are issues in your Kobo form that are blocking the integration. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
       </trans-unit>
       <trans-unit id="7750731471522839997" datatype="html">
         <source>Editing in <x equiv-text="{{ languageName }}" id="INTERPOLATION"/>.</source>
@@ -2585,27 +2606,6 @@
       </trans-unit>
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
-      </trans-unit>
-      <trans-unit id="6751289562324913219" datatype="html">
-        <source>Form setting errors</source>
-      </trans-unit>
-      <trans-unit id="6151408429233480883" datatype="html">
-        <source>Required fields not found</source>
-      </trans-unit>
-      <trans-unit id="7615933189038112184" datatype="html">
-        <source>These fields are expected by 121 but are missing from your Kobo form. Add them before redeploying.</source>
-      </trans-unit>
-      <trans-unit id="2818334334996550834" datatype="html">
-        <source>Kobo form refresh errors</source>
-      </trans-unit>
-      <trans-unit id="6622197825860768013" datatype="html">
-        <source>There are issues in your Kobo form that are blocking the refresh. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
-      </trans-unit>
-      <trans-unit id="7749949386756709227" datatype="html">
-        <source>There are issues in your Kobo form that are blocking the integration. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
-      </trans-unit>
-      <trans-unit id="508499092676439201" datatype="html">
-        <source>Integration update unsuccessful. Please try again.</source>
       </trans-unit>
     </body>
   </file>
