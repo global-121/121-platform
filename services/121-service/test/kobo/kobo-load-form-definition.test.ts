@@ -238,7 +238,7 @@ describe('Import a Kobo form definition', () => {
       expect.arrayContaining([
         expect.objectContaining({
           type: expect.any(String),
-          field: expect.any(String),
+          attributeName: expect.any(String),
           error: expect.any(String),
           solution: expect.any(String),
         }),
