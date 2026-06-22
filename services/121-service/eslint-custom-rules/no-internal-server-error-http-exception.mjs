@@ -25,6 +25,20 @@ export default {
     },
   },
   create(context) {
+    function getClassName(node) {
+      if (node.type === 'Identifier') {
+        return node.name;
+      }
+      if (
+        node.type === 'MemberExpression' &&
+        !node.computed &&
+        node.property.type === 'Identifier'
+      ) {
+        return node.property.name;
+      }
+      return null;
+    }
+
     function isInternalServerErrorStatus(node) {
       if (!node) {
         return false;
@@ -35,10 +49,9 @@ export default {
       if (
         node.type === 'MemberExpression' &&
         !node.computed &&
-        node.object.type === 'Identifier' &&
-        node.object.name === 'HttpStatus' &&
         node.property.type === 'Identifier' &&
-        node.property.name === 'INTERNAL_SERVER_ERROR'
+        node.property.name === 'INTERNAL_SERVER_ERROR' &&
+        getClassName(node.object) === 'HttpStatus'
       ) {
         return true;
       }
@@ -51,12 +64,12 @@ export default {
         if (!argument || argument.type !== 'NewExpression') {
           return;
         }
-        const callee = argument.callee;
-        if (callee.type !== 'Identifier') {
+        const className = getClassName(argument.callee);
+        if (!className) {
           return;
         }
 
-        if (callee.name === 'InternalServerErrorException') {
+        if (className === 'InternalServerErrorException') {
           context.report({
             node: argument,
             messageId: 'noInternalServerErrorException',
@@ -65,7 +78,7 @@ export default {
         }
 
         if (
-          callee.name === 'HttpException' &&
+          className === 'HttpException' &&
           isInternalServerErrorStatus(argument.arguments[1])
         ) {
           context.report({
