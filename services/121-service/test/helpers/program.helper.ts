@@ -15,6 +15,7 @@ import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.d
 import {
   ProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
+  UpdateProgramRegistrationAttributesBatchDto,
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
@@ -95,6 +96,21 @@ export async function patchProgramRegistrationAttribute({
     )
     .set('Cookie', [accessToken])
     .send(programRegistrationAttribute);
+}
+
+export async function patchProgramRegistrationAttributesInBatch({
+  attributesToUpdate,
+  programId,
+  accessToken,
+}: {
+  attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[];
+  programId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .patch(`/programs/${programId}/registration-attributes-batch/`)
+    .set('Cookie', [accessToken])
+    .send(attributesToUpdate);
 }
 
 export async function createPayment({
