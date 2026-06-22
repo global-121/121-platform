@@ -331,7 +331,7 @@ class RegistrationDataPage extends BasePage {
     await this.validateSaveButton({ visible: false });
   }
 
-  async validateUpdatedAtValue(updatedAt: string) {
+  async validateUpdatedAtValue({ updatedAt }: { updatedAt: string }) {
     const lastUpdatedTime = this.page.getByTestId(
       'kobo-integration-last-updated',
     );

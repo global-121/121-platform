@@ -27,7 +27,8 @@ export class KoboResponseDto {
     example: '2024-12-19T10:30:00Z',
     type: 'string',
     format: 'date-time',
-    description: 'Date when the Kobo form was last updated',
+    description:
+      'Timestamp when this Kobo integration record was last updated in 121 Platform',
   })
   public readonly updated: Date;
 

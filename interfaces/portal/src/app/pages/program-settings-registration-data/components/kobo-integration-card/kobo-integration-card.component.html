@@ -35,8 +35,8 @@
         >
           Last updated:
           <time
-            [attr.datetime]="koboIntegration.data()?.updated | date: 'short'"
             data-testid="kobo-integration-last-updated"
+            [attr.datetime]="koboIntegration.data()?.updated | date: 'short'"
             >{{ koboIntegration.data()?.updated | date: 'short' }}</time
           >
         </p>

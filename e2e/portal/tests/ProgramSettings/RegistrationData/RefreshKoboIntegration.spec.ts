@@ -49,7 +49,7 @@ test('Refresh Kobo integration - happy flow (integration updated)', async ({
       minute: '2-digit',
       hour12: false,
     });
-    await registrationDataPage.validateUpdatedAtValue(updatedAt);
+    await registrationDataPage.validateUpdatedAtValue({ updatedAt });
     await registrationDataPage.validateToastMessageAndClose(
       'Integration updated successfully.',
     );
