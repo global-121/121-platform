@@ -119,12 +119,11 @@ export class RegistrationQuestionsCardComponent {
           if (translatedLabel) {
             label[language] = translatedLabel;
           }
-
-          attributesToUpdate.push({
-            programRegistrationAttributeName: attributeName,
-            updateProgramRegistrationAttribute: { label },
-          });
         }
+        attributesToUpdate.push({
+          programRegistrationAttributeName: attributeName,
+          updateProgramRegistrationAttribute: { label },
+        });
       }
 
       return this.programApiService.updateProgramRegistrationAttributesInBatch({
@@ -176,7 +175,6 @@ export class RegistrationQuestionsCardComponent {
         ),
       ]),
     );
-
     this.formGroup = new FormGroup(formGroupObject);
   });
 
