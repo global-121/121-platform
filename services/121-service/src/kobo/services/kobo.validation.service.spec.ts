@@ -189,14 +189,14 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
        [
          {
-           "error": "Attribute 'bankAccountNumber' is missing",
            "attributeName": "bankAccountNumber",
+           "error": "Attribute 'bankAccountNumber' is missing",
            "solution": "Add 'bankAccountNumber' to the Kobo form",
            "type": "missingField",
          },
          {
-           "error": "Attribute 'fullName' is missing",
            "attributeName": "fullName",
+           "error": "Attribute 'fullName' is missing",
            "solution": "Add 'fullName' to the Kobo form",
            "type": "missingField",
          },
@@ -252,8 +252,8 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
        [
          {
-           "error": "Field type must not be 'integer'",
            "attributeName": "nationalId",
+           "error": "Field type must not be 'integer'",
            "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
            "solution": "Change the field type to an accepted type",
            "type": "typeMismatch",
@@ -357,14 +357,14 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
        [
          {
-           "error": "Attribute 'lastName' is missing",
            "attributeName": "lastName",
+           "error": "Attribute 'lastName' is missing",
            "solution": "Add the missing attribute to the Kobo form",
            "type": "missingFullnameAttributes",
          },
          {
-           "error": "Attribute 'middleName' is missing",
            "attributeName": "middleName",
+           "error": "Attribute 'middleName' is missing",
            "solution": "Add the missing attribute to the Kobo form",
            "type": "missingFullnameAttributes",
          },
@@ -444,8 +444,8 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
        [
          {
-           "error": "Attribute 'phoneNumber' is missing",
            "attributeName": "phoneNumber",
+           "error": "Attribute 'phoneNumber' is missing",
            "solution": "Add a phoneNumber field with text type including country code, or set program.allowEmptyPhoneNumber to true",
            "type": "missingField",
          },
@@ -523,8 +523,8 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
          [
            {
-             "error": "Field type must not be 'integer'",
              "attributeName": "phoneNumber",
+             "error": "Field type must not be 'integer'",
              "info": "Expected one of: 'text'",
              "solution": "Change the field type to an accepted type",
              "type": "typeMismatch",
@@ -637,8 +637,8 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
          [
            {
-             "error": "Attribute 'scope' is missing",
              "attributeName": "scope",
+             "error": "Attribute 'scope' is missing",
              "solution": "Add a scope field to the Kobo form (required when program.enableScope is true)",
              "type": "missingField",
            },
@@ -688,8 +688,8 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
          [
            {
-             "error": "Field type must not be 'integer'",
              "attributeName": "scope",
+             "error": "Field type must not be 'integer'",
              "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
              "solution": "Change the field type to an accepted type",
              "type": "typeMismatch",
@@ -742,8 +742,8 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
          [
            {
-             "error": "Form contains a matrix question, which isn't supported",
              "attributeName": "matrix_question",
+             "error": "Form contains a matrix question, which isn't supported",
              "solution": "Remove the matrix item from the Kobo form",
              "type": "matrixTypeFound",
            },
@@ -816,15 +816,15 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
          [
            {
-             "error": "Invalid language code: 'Invalid Language'",
              "attributeName": "Invalid Language",
+             "error": "Invalid language code: 'Invalid Language'",
              "info": "See https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes for valid codes",
              "solution": "use a valid ISO 639 language code.",
              "type": "invalidLanguageCode",
            },
            {
-             "error": "Invalid language code: 'Another Invalid'",
              "attributeName": "Another Invalid",
+             "error": "Invalid language code: 'Another Invalid'",
              "info": "See https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes for valid codes",
              "solution": "use a valid ISO 639 language code.",
              "type": "invalidLanguageCode",
@@ -869,8 +869,8 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
          [
            {
-             "error": "Invalid language code: 'Unknown (xx)'",
              "attributeName": "Unknown (xx)",
+             "error": "Invalid language code: 'Unknown (xx)'",
              "info": "See https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes for valid codes",
              "solution": "use a valid ISO 639 language code.",
              "type": "invalidLanguageCode",
@@ -949,8 +949,8 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
        [
          {
-           "error": "Field type must not be 'integer'",
            "attributeName": "preferredLanguage",
+           "error": "Field type must not be 'integer'",
            "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
            "solution": "Change the field type to an accepted type",
            "type": "typeMismatch",
@@ -1017,8 +1017,8 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
         [
           {
-            "error": "'paymentCount' is a reserved attribute name and cannot be filled from Kobo",
             "attributeName": "paymentCount",
+            "error": "'paymentCount' is a reserved attribute name and cannot be filled from Kobo",
             "solution": "Rename the field 'paymentCount' to a non-reserved name",
             "type": "forbiddenAttribute",
           },
@@ -1084,8 +1084,8 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
         [
           {
-            "error": "Field is missing from your form",
             "attributeName": "fsp",
+            "error": "Field is missing from your form",
             "solution": "Add a field named 'fsp' to the Kobo form",
             "type": "missingField",
           },
@@ -1172,8 +1172,8 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
         [
           {
-            "error": "Attribute 'fsp' has invalid choices: Invalid FSP Name, Another Invalid FSP",
             "attributeName": "fsp",
+            "error": "Attribute 'fsp' has invalid choices: Invalid FSP Name, Another Invalid FSP",
             "info": "Valid FSP configuration names: Safaricom Kenya, Intersolve WhatsApp",
             "solution": "Update choices to match FSP configuration names",
             "type": "invalidChoice",
@@ -1241,8 +1241,8 @@ describe('KoboValidationService', () => {
       expect(error.response.errors).toMatchInlineSnapshot(`
         [
           {
-            "error": "Field type must not be 'text'",
             "attributeName": "fsp",
+            "error": "Field type must not be 'text'",
             "info": "Expected one of: 'hidden', 'calculate', 'select_one'",
             "solution": "Change the field type to an accepted type",
             "type": "typeMismatch",
@@ -1290,8 +1290,8 @@ describe('KoboValidationService', () => {
     expect(error.response.errors).toMatchInlineSnapshot(`
       [
         {
-          "error": "'gender' is of type select_one but has no choices defined",
           "attributeName": "gender",
+          "error": "'gender' is of type select_one but has no choices defined",
           "solution": "Define choices directly in the Kobo form; external CSV choice files are not supported",
           "type": "selectOneNoChoices",
         },
