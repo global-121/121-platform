@@ -956,9 +956,6 @@
       <trans-unit id="5081696702832953928" datatype="html">
         <source>Some of the registrations you have selected are not eligible for this payment. Change your selection and try again</source>
       </trans-unit>
-      <trans-unit id="508499092676439201" datatype="html">
-        <source>Integration update unsuccessful. Please try again.</source>
-      </trans-unit>
       <trans-unit id="5106050439674974101" datatype="html">
         <source>Choose an FSP from the FSPs integrated to this instance. You can add multiple FSPs to the same program. If you wish to integrate a new FSP, contact the 121 support team or talk to the account manager.</source>
       </trans-unit>
@@ -2598,7 +2595,16 @@
       <trans-unit id="7615933189038112184" datatype="html">
         <source>These fields are expected by 121 but are missing from your Kobo form. Add them before redeploying.</source>
       </trans-unit>
-      <trans-unit id="7968872754950254240" datatype="html">
+      <trans-unit id="2818334334996550834" datatype="html">
+        <source>Kobo form refresh errors</source>
+      </trans-unit>
+      <trans-unit id="6147099473186988952" datatype="html">
+        <source>Kobo refresh unsuccessful</source>
+      </trans-unit>
+      <trans-unit id="6622197825860768013" datatype="html">
+        <source>There are issues in your Kobo form that are blocking the refresh. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
+      </trans-unit>
+      <trans-unit id="7749949386756709227" datatype="html">
         <source>There are issues in your Kobo form that are blocking the integration. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
       </trans-unit>
     </body>

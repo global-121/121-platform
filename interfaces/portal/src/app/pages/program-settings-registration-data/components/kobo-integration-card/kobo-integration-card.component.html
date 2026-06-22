@@ -49,9 +49,16 @@
 <app-kobo-configuration-dialog
   #koboConfigurationDialog
   [programId]="programId()"
+  [isKoboIntegrated]="isKoboIntegrated()"
 />
 
 <app-kobo-import-existing-registration-dialog
   #koboImportExistingDialog
   [programId]="programId()"
+/>
+
+<app-kobo-error-dialog
+  #koboErrorDialog
+  [errors]="koboRefreshErrors()"
+  [isKoboIntegrated]="isKoboIntegrated()"
 />
