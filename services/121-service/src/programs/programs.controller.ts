@@ -399,7 +399,10 @@ You can also leave the body empty.`,
   }
 
   @AuthenticatedUser({
-    permissions: [PermissionEnum.ProgramUPDATE],
+    permissions: [
+      PermissionEnum.ProgramUPDATE,
+      PermissionEnum.ProgramRegistrationAttributesUPDATE,
+    ],
   })
   @ApiOperation({
     summary: 'Update program registration attributes in batch',
