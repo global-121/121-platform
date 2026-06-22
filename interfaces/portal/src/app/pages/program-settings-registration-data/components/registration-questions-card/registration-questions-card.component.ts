@@ -1,4 +1,4 @@
-import { TitleCasePipe } from '@angular/common';
+import { TitleCasePipe, UpperCasePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -18,6 +18,7 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TabsModule } from 'primeng/tabs';
+import { TagModule } from 'primeng/tag';
 
 import { UpdateProgramRegistrationAttributesBatchDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
@@ -26,8 +27,6 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
-import { isKoboIntegrated } from '~/domains/kobo/kobo.helpers';
-import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Attribute } from '~/domains/program/program.model';
 import { AuthService } from '~/services/auth.service';
@@ -53,6 +52,8 @@ import { environment } from '~environment';
     InfoTooltipComponent,
     TabsModule,
     TitleCasePipe,
+    UpperCasePipe,
+    TagModule,
   ],
   templateUrl: './registration-questions-card.component.html',
   styles: ``,
@@ -62,17 +63,7 @@ export class RegistrationQuestionsCardComponent {
   readonly programId = input.required<number | string>();
 
   readonly programApiService = inject(ProgramApiService);
-  readonly koboApiService = inject(KoboApiService);
   readonly authService = inject(AuthService);
-
-  readonly koboIntegration = injectQuery(() => ({
-    ...this.koboApiService.getKoboIntegration(this.programId)(),
-    enabled: !!this.programId(),
-  }));
-
-  readonly isKoboIntegrated = computed<boolean>(() =>
-    isKoboIntegrated(this.koboIntegration),
-  );
 
   readonly isSupportedUILanguage = isSupportedUILanguage;
 
@@ -213,20 +204,6 @@ export class RegistrationQuestionsCardComponent {
     return labels;
   });
 
-  readonly cardHeader = computed(() =>
-    this.isKoboIntegrated()
-      ? $localize`Registration questions`
-      : $localize`Required fields`,
-  );
-
-  readonly tableHeaderLabelTooltipMessage = computed(() => {
-    const labelDescription = $localize`The label that will be shown in the registration page table header and registration's profile.`;
-    const editInstruction = $localize`The labels cand be edited by clicking on the pencil icon above.`;
-    return this.isKoboIntegrated()
-      ? `${labelDescription} ${editInstruction}`
-      : labelDescription;
-  });
-
   readonly tabLabels = computed(() => {
     const labels = new Map<RegistrationPreferredLanguage, string>();
 
@@ -243,12 +220,9 @@ export class RegistrationQuestionsCardComponent {
   });
 
   readonly canEditAttributes = computed(() =>
-    this.authService.hasAllPermissions({
+    this.authService.hasPermission({
       programId: this.programId(),
-      requiredPermissions: [
-        PermissionEnum.ProgramUPDATE,
-        PermissionEnum.RegistrationAttributeUPDATE,
-      ],
+      requiredPermission: PermissionEnum.RegistrationAttributeUPDATE,
     }),
   );
 

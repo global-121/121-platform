@@ -96,7 +96,7 @@
         <source>Password</source>
       </trans-unit>
       <trans-unit id="1458092247208810553" datatype="html">
-        <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/></source>
+        <source>Below are the <x equiv-text="{{ programAttributes().length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/></source>
       </trans-unit>
       <trans-unit id="1467059276438662086" datatype="html">
         <source>New status</source>
@@ -389,9 +389,6 @@
       </trans-unit>
       <trans-unit id="2614607010577950577" datatype="html">
         <source>Overview</source>
-      </trans-unit>
-      <trans-unit id="2630979564408668981" datatype="html">
-        <source>Data column name <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip [message]=&quot;&apos;The data column name of the question.&apos;&quot; &gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;/app-info-tooltip&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
       </trans-unit>
       <trans-unit id="2648503122381983554" datatype="html">
         <source>Duplicated with:</source>
@@ -1106,9 +1103,6 @@
       <trans-unit id="561353031255604069" datatype="html">
         <source>There are <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registration(s) that don&apos;t support this action</source>
       </trans-unit>
-      <trans-unit id="5629376220566654518" datatype="html">
-        <source>Question label <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip [message]=&quot;`The label that will be shown in the registration page table header and registration&apos;s profile. The labels cand be edited by clicking on the pencil icon above.`&quot; &gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;/app-info-tooltip&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
-      </trans-unit>
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
       </trans-unit>
@@ -1271,9 +1265,6 @@
       </trans-unit>
       <trans-unit id="6456009373504868195" datatype="html">
         <source>Please correct the errors in the form.</source>
-      </trans-unit>
-      <trans-unit id="647536533882061546" datatype="html">
-        <source>Please note, the portal does not support this language currently.</source>
       </trans-unit>
       <trans-unit id="6502713313006518985" datatype="html">
         <source>Set up the payment&apos;s name.</source>
@@ -2616,54 +2607,6 @@
       <trans-unit id="7968872754950254240" datatype="html">
         <source>There are issues in your Kobo form that are blocking the integration. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
       </trans-unit>
-      <trans-unit id="4228319514212568219" datatype="html">
-        <source>Users</source>
-      </trans-unit>
-      <trans-unit id="5236492962293730127" datatype="html">
-        <source>Registration questions</source>
-      </trans-unit>
-      <trans-unit id="5357145550757146604" datatype="html">
-        <source>Edit registration questions</source>
-      </trans-unit>
-      <trans-unit id="647536533882061546" datatype="html">
-        <source>Please note, the portal does not support this language currently.</source>
-      </trans-unit>
-      <trans-unit id="1674202514578558795" datatype="html">
-        <source>New name</source>
-      </trans-unit>
-      <trans-unit id="1817782792448180446" datatype="html">
-        <source>Integration is already up to date.</source>
-      </trans-unit>
-      <trans-unit id="2701527640285744987" datatype="html">
-        <source>Rename payment</source>
-      </trans-unit>
-      <trans-unit id="4099904598600212843" datatype="html">
-        <source>Subscription key</source>
-      </trans-unit>
-      <trans-unit id="508499092676439201" datatype="html">
-        <source>Integration update unsuccessful. Please try again.</source>
-      </trans-unit>
-      <trans-unit id="5656654201977017111" datatype="html">
-        <source>Refresh link</source>
-      </trans-unit>
-      <trans-unit id="6041115344061899387" datatype="html">
-        <source>Rename</source>
-      </trans-unit>
-      <trans-unit id="7131024915833130123" datatype="html">
-        <source>Integration updated successfully.</source>
-      </trans-unit>
-      <trans-unit id="9088314425699939664" datatype="html">
-        <source>You&apos;re about to rename the payment created on <x equiv-text="{{ paymentDate() }}" id="INTERPOLATION"/>. Choose a clear name so other users can easily find it. If this payment has already started, make sure to inform relevant users.</source>
-      </trans-unit>
-      <trans-unit id="debit-card-status-blocked" datatype="html">
-        <source>Blocked</source>
-      </trans-unit>
-      <trans-unit id="generic-info" datatype="html">
-        <source>Info</source>
-      </trans-unit>
-      <trans-unit id="payment-event-log-item-type-renamed" datatype="html">
-        <source>Renamed</source>
-      </trans-unit>
       <trans-unit id="3560595744015834305" datatype="html">
         <source>Update successful.</source>
       </trans-unit>
@@ -2679,20 +2622,20 @@
       <trans-unit id="8089925871034232084" datatype="html">
         <source>The data column name of the question.</source>
       </trans-unit>
-      <trans-unit id="1477824553612612348" datatype="html">
-        <source>Required fields</source>
-      </trans-unit>
       <trans-unit id="4621223146689163852" datatype="html">
         <source>You can edit each column label to a shorter version.</source>
       </trans-unit>
-      <trans-unit id="4717961463592418280" datatype="html">
-        <source>The labels cand be edited by clicking on the pencil icon above.</source>
+      <trans-unit id="2583667945049138476" datatype="html">
+        <source>Unsupported language</source>
       </trans-unit>
-      <trans-unit id="7935380647269698508" datatype="html">
-        <source>Your form must include the following required fields, using these <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>exact data column names<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> (these would be the column headers in excel).</source>
+      <trans-unit id="3422018461298008380" datatype="html">
+        <source>Since the 121 portal does not currently support this language, users will not be able to see column names and answers in this language. Contact your account manager to add this language to the portal.</source>
       </trans-unit>
-      <trans-unit id="8205345907908611941" datatype="html">
-        <source>The label that will be shown in the registration page table header and registration&apos;s profile.</source>
+      <trans-unit id="6710855517991446782" datatype="html">
+        <source>121 does not support this language currently.</source>
+      </trans-unit>
+      <trans-unit id="8718149515078931594" datatype="html">
+        <source>The label that will be shown in the registration page table header and registration&apos;s profile. The labels can be edited by clicking on the pencil icon above.</source>
       </trans-unit>
     </body>
   </file>

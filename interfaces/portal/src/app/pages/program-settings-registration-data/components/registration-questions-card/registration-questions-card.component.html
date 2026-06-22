@@ -1,8 +1,9 @@
 <app-card-editable
-  [header]="cardHeader()"
+  header="Registration questions"
+  i18n-header
   editPencilTitle="Edit registration questions"
   i18n-editPencilTitle
-  [canEdit]="isKoboIntegrated() && canEditAttributes()"
+  [canEdit]="canEditAttributes()"
   [(isEditing)]="isEditing"
   [formGroup]="formGroup"
   [mutation]="updateAttributeLabelsMutation"
@@ -16,9 +17,8 @@
     Below are the {{ programAttributes().length }} questions that will be
     displayed in the data table and on the profile page.<br />
   </p>
-  @if (isKoboIntegrated()) {
-    <p i18n>You can edit each column label to a shorter version.</p>
-  }
+
+  <p i18n>You can edit each column label to a shorter version.</p>
 
   <p-tabs [(value)]="selectedTabLanguage">
     <p-tablist>
@@ -27,7 +27,12 @@
           [value]="language"
           data-testid="language-tab"
         >
-          <i class="pi pi-globe"></i>
+          <p-tag
+            [value]="language | uppercase"
+            class="rounded-sm px-1 py-0.5 text-[0.6rem] text-white"
+            [class.bg-purple-700]="selectedTabLanguage() === language"
+            [class.bg-grey-700]="selectedTabLanguage() !== language"
+          />
           {{ tabLabels().get(language) | titlecase }}
         </p-tab>
       }
@@ -36,15 +41,22 @@
       @for (language of programLanguages(); track language) {
         <p-tabpanel [value]="language">
           @if (!isSupportedUILanguage(selectedTabLanguage())) {
-            <p class="my-2 flex items-center">
+            <div
+              class="mt-2 mb-5 flex w-full items-center rounded-xl border border-orange-500 bg-orange-100 px-5 py-3"
+            >
               <i
-                class="pi pi-exclamation-triangle me-2 text-xl text-red-500"
+                class="pi pi-exclamation-circle me-2 text-xl text-orange-700"
               ></i>
-              <span i18n>
-                Please note, the portal does not support this language
-                currently.
-              </span>
-            </p>
+              <span class="text-orange-700"
+                ><strong i18n>Unsupported language</strong></span
+              >
+              <span class="mx-1">-</span>
+              <span i18n>121 does not support this language currently.</span>
+              <app-info-tooltip
+                message="Since the 121 portal does not currently support this language, users will not be able to see column names and answers in this language. Contact your account manager to add this language to the portal."
+                i18n-message
+              ></app-info-tooltip>
+            </div>
           }
           <p-table
             [value]="programAttributes()"
@@ -75,7 +87,8 @@
                     >Question label</span
                   >
                   <app-info-tooltip
-                    [message]="tableHeaderLabelTooltipMessage()"
+                    message="The label that will be shown in the registration page table header and registration's profile. The labels can be edited by clicking on the pencil icon above."
+                    i18n-message
                   ></app-info-tooltip>
                 </th>
               </tr>
