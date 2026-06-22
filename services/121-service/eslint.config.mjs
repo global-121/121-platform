@@ -5,6 +5,7 @@ import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths'
 import tsEslint from 'typescript-eslint';
 
 import controllerAuthenticatedUser from './eslint-custom-rules/controller-authenticated-user.mjs';
+import noInternalServerErrorHttpException from './eslint-custom-rules/no-internal-server-error-http-exception.mjs';
 import noMethodApiTags from './eslint-custom-rules/no-method-api-tags.mjs';
 import typeormCascadeOndelete from './eslint-custom-rules/typeorm-cascade-ondelete.mjs';
 
@@ -14,6 +15,8 @@ const customRulesPlugin = {
     'typeorm-cascade-ondelete': typeormCascadeOndelete,
     'no-method-api-tags': noMethodApiTags,
     'controller-authenticated-user': controllerAuthenticatedUser,
+    'no-internal-server-error-http-exception':
+      noInternalServerErrorHttpException,
   },
 };
 
@@ -107,6 +110,17 @@ export default defineConfig(
     },
     rules: {
       'custom-rules/typeorm-cascade-ondelete': 'error',
+    },
+  },
+  {
+    name: 'Source files - no 500 HttpException',
+    files: ['src/**/*.ts'],
+    ignores: ['**/*.spec.ts', '**/*.test.ts'],
+    plugins: {
+      'custom-rules': customRulesPlugin,
+    },
+    rules: {
+      'custom-rules/no-internal-server-error-http-exception': 'error',
     },
   },
   {

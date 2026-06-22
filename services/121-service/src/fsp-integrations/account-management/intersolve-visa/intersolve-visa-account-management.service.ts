@@ -28,7 +28,6 @@ import { RegistrationsService } from '@121-service/src/registration/services/reg
 
 @Injectable()
 export class IntersolveVisaAccountManagementService {
-
   public constructor(
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -605,9 +604,8 @@ export class IntersolveVisaAccountManagementService {
     try {
       await this.cardOrderRepository.save(order);
     } catch (error) {
-      throw new HttpException(
+      throw new Error(
         'Cards were ordered, but saving the batch record failed. Please contact support for reconciliation.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
         { cause: error },
       );
     }
