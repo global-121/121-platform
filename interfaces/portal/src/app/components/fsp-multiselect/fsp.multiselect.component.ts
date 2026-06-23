@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   effect,
   inject,
   input,
@@ -64,9 +63,9 @@ export class FspMultiselectComponent implements ControlValueAccessor {
     enabled: !!this.programId(),
   }));
 
-  readonly configurableFsps = computed(() =>
-    Object.values(FSP_SETTINGS).filter(this.canConfigureFsp.bind(this)),
-  );
+  // readonly configurableFsps = computed(() =>
+  //   Object.values(FSP_SETTINGS).filter(this.canConfigureFsp.bind(this)),
+  // );
 
   readonly fspMultiselectOptions = Object.values(FSP_SETTINGS).map((fsp) => ({
     name: fsp.defaultLabel.en,
@@ -80,18 +79,18 @@ export class FspMultiselectComponent implements ControlValueAccessor {
     });
   }
 
-  private canConfigureFsp({ name }: { name: Fsps }) {
-    if (name === Fsps.excel) {
-      // @TODO: This will be a problem when adding via program flow
-      // Can always add multiple Excel FSP configurations
-      return true;
-    }
+  // private canConfigureFsp({ name }: { name: Fsps }) {
+  //   if (name === Fsps.excel) {
+  //     // @TODO: This will be a problem when adding via program flow
+  //     // Can always add multiple Excel FSP configurations
+  //     return true;
+  //   }
 
-    // For other FSPs, only allow adding if not already configured
-    return this.fspConfigurations
-      .data()
-      ?.every((fspConfiguration) => fspConfiguration.fspName !== name);
-  }
+  //   // For other FSPs, only allow adding if not already configured
+  //   return this.fspConfigurations
+  //     .data()
+  //     ?.every((fspConfiguration) => fspConfiguration.fspName !== name);
+  // }
 
   writeValue(value: Fsps[] | null) {
     this.selectedOptions.set(value ?? []);
