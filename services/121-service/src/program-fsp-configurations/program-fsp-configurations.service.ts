@@ -458,7 +458,7 @@ export class ProgramFspConfigurationsService {
     const requiredProperties = getFspConfigurationRequiredProperties(fspName);
 
     if (requiredProperties.length === 0) {
-      return FspConfigurationStates.configurationPending;
+      return FspConfigurationStates.configured;
     }
 
     const propertyNames = fspConfigurationProperties.map((p) => p.name) ?? [];
