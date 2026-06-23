@@ -1,5 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -17,6 +19,7 @@ import {
   waitForPaymentAndTransactionsToComplete,
   waitForPaymentNotInProgress,
 } from '@121-service/test/helpers/program.helper';
+import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   awaitChangeRegistrationStatus,
   getRegistrations,
@@ -151,6 +154,69 @@ describe('Payment start', () => {
       accessToken,
     });
     expect(summaryAfterStart.body.hasBeenStarted).toBe(true);
+  });
+
+  it('should fail transactions where the FSP configuration is pending', async () => {
+    // Arrange
+    const registration = registrationPV5;
+    await seedIncludedRegistrations([registration], programId, accessToken);
+    const paymentReferenceIds = [registration.referenceId];
+
+    // Create and approve the payment while the FSP is still fully configured
+    // This would fail if the FSP configuration is pending
+    const createPaymentResponse = await createPayment({
+      programId,
+      transferValue,
+      referenceIds: paymentReferenceIds,
+      accessToken,
+    });
+    const paymentId = createPaymentResponse.body.id;
+    await approvePayment({
+      programId,
+      paymentId,
+      accessToken,
+    });
+
+    // Remove a required property so the FSP configuration becomes pending
+    await deleteProgramFspConfigurationProperty({
+      programId,
+      configName: Fsps.intersolveVoucherWhatsapp,
+      propertyName: FspConfigurationProperties.password,
+      accessToken,
+    });
+
+    // Act
+    const startPaymentResponse = await startPayment({
+      programId,
+      paymentId,
+      accessToken,
+    });
+    await waitForPaymentAndTransactionsToComplete({
+      programId,
+      paymentReferenceIds,
+      paymentId,
+      accessToken,
+      maxWaitTimeMs: 20_000,
+      completeStatuses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
+    });
+
+    // Assert
+    const getTransactionsResponse = await getTransactionsByPaymentIdPaginated({
+      programId,
+      paymentId,
+      registrationReferenceId: registration.referenceId,
+      accessToken,
+    });
+    const transactions = getTransactionsResponse.body.data;
+
+    expect(startPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(transactions[0].status).toBe(TransactionStatusEnum.error);
+    expect(transactions[0].errorMessage).toBe(
+      'FSP configuration is not fully configured',
+    );
   });
 
   describe('with included and non-included registrations', () => {
