@@ -560,6 +560,7 @@ describe('ProgramFspConfigurationsService', () => {
     it('should successfully delete the property', async () => {
       mockProgramFspConfigurationRepository.findOne.mockResolvedValue({
         id: 10,
+        fspName: Fsps.intersolveVisa,
       });
       mockProgramFspConfigurationPropertyRepository.findOne.mockResolvedValue({
         id: 100,
