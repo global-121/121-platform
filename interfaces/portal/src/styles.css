@@ -167,6 +167,16 @@ svg-icon svg {
     --toolbar-height: calc(48 / 14 * 1rem);
   }
 
+  .wrapped-chip-multiselect {
+    .p-multiselect-label-container {
+      @apply overflow-visible;
+
+      .p-multiselect-label {
+        @apply flex flex-wrap;
+      }
+    }
+  }
+
   .p-button {
     .p-button-label {
       @apply txt-system-bold-m;

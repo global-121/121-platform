@@ -1,8 +1,8 @@
 <app-form-field-wrapper
-  label="Fixed transfer value"
+  label="Financial service providers:"
   i18n-label
   [errorMessage]=""
-  [isRequired]="true"
+  [isRequired]="false"
 >
   <p-multiselect
     [options]="fspMultiselectOptions"
@@ -12,8 +12,14 @@
     i18n-placeholder
     optionLabel="name"
     i18n-optionLabel
+    optionValue="name"
+    i18n-optionValue
     display="chip"
     i18n-display
     [maxSelectedLabels]="100"
+    [loading]="programId() ? fspConfigurations.isPending() : false"
+    filter="false"
+    showToggleAll="false"
+    [className]="'wrapped-chip-multiselect'"
   />
 </app-form-field-wrapper>
