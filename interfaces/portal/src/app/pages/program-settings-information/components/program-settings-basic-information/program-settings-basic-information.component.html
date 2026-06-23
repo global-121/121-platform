@@ -28,12 +28,6 @@
       <span i18n>Save and switch language to translate relevant details.</span>
     </p>
 
-    <app-fsp-multiselect
-      [selectedOptions]="selectedFsps()"
-      [programId]="programId()"
-      (selectionChange)="onSelectionChange($event)"
-    ></app-fsp-multiselect>
-
     <app-program-form-name
       #programFormName
       [program]="program.data()"
