@@ -24,6 +24,15 @@ export class KoboResponseDto {
   public readonly dateDeployed: Date;
 
   @ApiProperty({
+    example: '2024-12-19T10:30:00Z',
+    type: 'string',
+    format: 'date-time',
+    description:
+      'Timestamp when this Kobo integration record was last updated in 121 Platform',
+  })
+  public readonly updated: Date;
+
+  @ApiProperty({
     example: 'https://kobo.example.com',
     type: 'string',
     description: 'Kobo server URL',

@@ -7,6 +7,7 @@ export class KoboEntityMapper {
     const dto: KoboResponseDto = {
       assetUid: entity.assetUid,
       versionId: entity.versionId,
+      updated: entity.updated,
       dateDeployed: entity.dateDeployed,
       url: entity.url,
       programId: entity.programId,

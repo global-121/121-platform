@@ -41,6 +41,7 @@ test('Refresh Kobo integration - happy flow (integration updated)', async ({
   });
 
   await test.step('Validate success toast: integration updated', async () => {
+    await registrationDataPage.validateUpdatedAtValue();
     await registrationDataPage.validateToastMessageAndClose(
       'Integration updated successfully.',
     );
