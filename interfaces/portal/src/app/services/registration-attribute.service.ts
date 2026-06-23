@@ -14,6 +14,7 @@ import {
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import {
+  DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -27,6 +28,7 @@ import { Program } from '~/domains/program/program.model';
 import {
   ATTRIBUTE_EDIT_INFO,
   ATTRIBUTE_LABELS,
+  DEFAULT_ATTRIBUTE_EDIT_INFO,
   isGenericAttribute,
 } from '~/domains/program/program-attribute.helpers';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -58,8 +60,6 @@ const getGenericAttributeType = (
       return RegistrationAttributeTypes.text;
     case GenericRegistrationAttributes.created:
       return RegistrationAttributeTypes.date;
-    case GenericRegistrationAttributes.phoneNumber:
-      return RegistrationAttributeTypes.tel;
   }
 };
 
@@ -182,7 +182,6 @@ export class RegistrationAttributeService {
     registration?: Registration,
   ): NormalizedRegistrationAttribute[] {
     const genericAttributeNames: GenericRegistrationAttributes[] = [
-      GenericRegistrationAttributes.phoneNumber,
       GenericRegistrationAttributes.programFspConfigurationName,
       GenericRegistrationAttributes.paymentAmountMultiplier,
       GenericRegistrationAttributes.preferredLanguage,
@@ -219,9 +218,7 @@ export class RegistrationAttributeService {
           attributeName,
           program,
         }),
-        isRequired:
-          attributeName === GenericRegistrationAttributes.phoneNumber &&
-          !program.allowEmptyPhoneNumber,
+        isRequired: false,
       };
     });
   }
@@ -252,6 +249,10 @@ export class RegistrationAttributeService {
         isRequired: isRequired ?? false,
         name,
         label,
+        editInfo:
+          DEFAULT_ATTRIBUTE_EDIT_INFO[
+            name as DefaultRegistrationDataAttributeNames
+          ],
         pattern,
         options,
         value,
@@ -347,11 +348,7 @@ export class RegistrationAttributeService {
               ],
             },
             ...genericAttributes,
-            ...programSpecificAttributes.filter(
-              (attribute) =>
-                // we show this in the generic attributes already
-                attribute.name !== 'phoneNumber',
-            ),
+            ...programSpecificAttributes,
           ];
         },
       });

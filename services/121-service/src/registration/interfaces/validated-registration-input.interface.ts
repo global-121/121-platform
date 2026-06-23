@@ -12,7 +12,6 @@ type RegistrationEntityProperties = Partial<
     | 'programId'
     | 'registrationStatus'
     | 'referenceId'
-    | 'phoneNumber'
     | 'preferredLanguage'
     | 'inclusionScore'
     | 'paymentAmountMultiplier'

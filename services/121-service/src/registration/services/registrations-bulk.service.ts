@@ -296,7 +296,7 @@ export class RegistrationsBulkService {
       query.select.push(
         DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
       );
-      query.select.push(GenericRegistrationAttributes.phoneNumber);
+      query.select.push(DefaultRegistrationDataAttributeNames.phoneNumber);
     }
     if (usedPlaceholders && usedPlaceholders?.length > 0) {
       query.select = [...query.select, ...usedPlaceholders];
@@ -460,7 +460,7 @@ export class RegistrationsBulkService {
     selectedColumns.push(
       DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
     );
-    selectedColumns.push(GenericRegistrationAttributes.phoneNumber);
+    selectedColumns.push(DefaultRegistrationDataAttributeNames.phoneNumber);
 
     const registrationsToSendMessageTo =
       await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
@@ -617,10 +617,6 @@ export class RegistrationsBulkService {
     await this.whatsappPendingMessageRepository.delete({
       registrationId: In(registrationsIds),
     });
-    await this.registrationScopedRepository.updateUnscoped(
-      { id: In(registrationsIds) },
-      { phoneNumber: null },
-    );
 
     const voucherImageQueryResult = await this.registrationScopedRepository
       .createQueryBuilder('registration')

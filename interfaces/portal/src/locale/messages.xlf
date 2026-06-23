@@ -1932,9 +1932,6 @@
       <trans-unit id="attribute-edit-info-paymentCountRemaining" datatype="html">
         <source>This field is calculated by subtracting the sent payments from the planned payments. If the limit is removed from the planned payments this field will be empty.</source>
       </trans-unit>
-      <trans-unit id="attribute-edit-info-phoneNumber" datatype="html">
-        <source>Required format: numbers only (including country-code).</source>
-      </trans-unit>
       <trans-unit id="attribute-edit-info-scope" datatype="html">
         <source>Separate the parts with a dot (i.e. &apos;amsterdam.west&apos;).</source>
       </trans-unit>
@@ -1955,9 +1952,6 @@
       </trans-unit>
       <trans-unit id="attribute-label-paymentCountRemaining" datatype="html">
         <source>Remaining payments</source>
-      </trans-unit>
-      <trans-unit id="attribute-label-phoneNumber" datatype="html">
-        <source>Phone Number</source>
       </trans-unit>
       <trans-unit id="attribute-label-preferredLanguage" datatype="html">
         <source>Preferred Language</source>
@@ -2606,6 +2600,9 @@
       </trans-unit>
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-phoneNumber" datatype="html">
+        <source>Required format: numbers only (including country-code).</source>
       </trans-unit>
     </body>
   </file>

@@ -46,7 +46,7 @@ test('User can view the registration data of registration that has all data type
     'Account Nr.': '123,456,789',
     'Open Answer': 'I know nothing',
     'Health area': 'north',
-    'Phone Number': '14155235554',
+    'Phone Nr.': '14155235554',
     'Transfer value multiplier': '2',
     'Inclusion Score': '8',
     'Birth date': '—', // TODO: Add birth date to registration data for now this is skipped because type 'date' has a known bug
@@ -100,7 +100,7 @@ test('User can view the registration data of registration that has only the requ
     'Account Nr.': '—',
     'Open Answer': '',
     'Health area': '',
-    'Phone Number': '14155235554',
+    'Phone Nr.': '14155235554',
     'Transfer value multiplier': '1',
     'Inclusion Score': '6',
     'Birth date': '—',

@@ -75,27 +75,41 @@ describe('Filter registrations', () => {
     expect(meta.totalItems).toBe(1);
   });
 
-  it('should filter based on registration data', async () => {
-    // Act
-    const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
-      accessToken,
-      filter: {
-        'filter.whatsappPhoneNumber': registrationOCW4.whatsappPhoneNumber,
-      },
-    });
-    const data = getRegistrationsResponse.body.data;
-    const meta = getRegistrationsResponse.body.meta;
+  it.each([
+    {
+      attribute: 'whatsappPhoneNumber',
+      filterKey: 'filter.whatsappPhoneNumber',
+      filterValue: registrationOCW4.whatsappPhoneNumber,
+    },
+    {
+      attribute: 'phoneNumber',
+      filterKey: 'filter.phoneNumber',
+      filterValue: registrationOCW4.phoneNumber,
+    },
+  ])(
+    'should filter based on $attribute registration data',
+    async ({ filterKey, filterValue }) => {
+      // Act
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        accessToken,
+        filter: {
+          [filterKey]: filterValue,
+        },
+      });
+      const data = getRegistrationsResponse.body.data;
+      const meta = getRegistrationsResponse.body.meta;
 
-    // Assert
-    expect(data[0]).toMatchObject(
-      createExpectedValueObject(registrationOCW4, 4),
-    );
-    for (const attribute of expectedAttributes) {
-      expect(data[0]).toHaveProperty(attribute);
-    }
-    expect(meta.totalItems).toBe(1);
-  });
+      // Assert
+      expect(data[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW4, 4),
+      );
+      for (const attribute of expectedAttributes) {
+        expect(data[0]).toHaveProperty(attribute);
+      }
+      expect(meta.totalItems).toBe(1);
+    },
+  );
 
   it('should filter based on root attributes', async () => {
     const filterAssertionConfig: Partial<
@@ -110,10 +124,6 @@ describe('Filter registrations', () => {
       referenceId: {
         filterValue: '63e6286',
         expectedReferenceIds: [registrationOCW1.referenceId],
-      },
-      phoneNumber: {
-        filterValue: '14155235555',
-        expectedReferenceIds: [registrationOCW4.referenceId],
       },
       preferredLanguage: {
         filterValue: UILanguage.en,

@@ -65,9 +65,6 @@ export class RegistrationEntity extends Base121Entity {
   public data: Relation<RegistrationAttributeDataEntity[]>;
 
   @Column({ type: 'character varying', nullable: true })
-  public phoneNumber: string | null;
-
-  @Column({ type: 'character varying', nullable: true })
   @IsEnum(RegistrationPreferredLanguage)
   public preferredLanguage: WrapperType<RegistrationPreferredLanguage | null>;
 
