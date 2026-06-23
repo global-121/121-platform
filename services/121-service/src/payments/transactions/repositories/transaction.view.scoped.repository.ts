@@ -367,7 +367,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
   }): Promise<TransactionViewEntity[]> {
     return this.createQueryBuilder('transaction')
       .leftJoin('transaction.payment', 'payment')
-      .innerJoin(
+      .leftJoin(
         ProgramFspConfigurationEntity,
         'programFspConfiguration',
         'transaction.programFspConfigurationId = programFspConfiguration.id',
@@ -375,9 +375,12 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       .andWhere('payment.id = :paymentId', { paymentId })
       .andWhere('payment.programId = :programId', { programId })
       .andWhere('transaction.status = :status', { status })
-      .andWhere('programFspConfiguration.state != :configuredState', {
-        configuredState: FspConfigurationStates.configured,
-      })
+      .andWhere(
+        '(programFspConfiguration.id IS NULL OR programFspConfiguration.state != :configuredState)',
+        {
+          configuredState: FspConfigurationStates.configured,
+        },
+      )
       .getMany();
   }
 

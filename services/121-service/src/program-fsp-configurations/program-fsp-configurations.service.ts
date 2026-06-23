@@ -164,10 +164,10 @@ export class ProgramFspConfigurationsService {
       programId,
     );
 
-    newConfigEntity.state = this.computeFspConfigurationState(
-      programFspConfigurationDto.fspName,
-      programFspConfigurationDto.properties ?? [],
-    );
+    newConfigEntity.state = this.computeFspConfigurationState({
+      fspName: programFspConfigurationDto.fspName,
+      fspConfigurationProperties: programFspConfigurationDto.properties ?? [],
+    });
 
     const savedEntity =
       await this.programFspConfigurationRepository.save(newConfigEntity);
@@ -220,10 +220,10 @@ export class ProgramFspConfigurationsService {
         updateProgramFspConfigurationDto.properties,
       );
 
-      config.state = this.computeFspConfigurationState(
-        config.fspName,
-        updateProgramFspConfigurationDto.properties,
-      );
+      config.state = this.computeFspConfigurationState({
+        fspName: config.fspName,
+        fspConfigurationProperties: updateProgramFspConfigurationDto.properties,
+      });
     }
 
     const savedEntity =
@@ -306,7 +306,10 @@ export class ProgramFspConfigurationsService {
       config.id,
       inputProperties,
     );
-    await this.syncFspConfigurationState(config.id, config.fspName);
+    await this.syncFspConfigurationState({
+      programFspConfigurationId: config.id,
+      fspName: config.fspName,
+    });
     return ProgramFspConfigurationMapper.mapPropertyEntitiesToDtos(properties);
   }
 
@@ -439,20 +442,26 @@ export class ProgramFspConfigurationsService {
     await this.programFspConfigurationPropertyRepository.delete({
       id: existingProperty.id,
     });
-    await this.syncFspConfigurationState(config.id, config.fspName);
+    await this.syncFspConfigurationState({
+      programFspConfigurationId: config.id,
+      fspName: config.fspName,
+    });
   }
 
-  private computeFspConfigurationState(
-    fspName: Fsps,
-    fspConfigurationProperties: CreateProgramFspConfigurationPropertyDto[],
-  ): FspConfigurationStates {
-    const propertyNames = fspConfigurationProperties.map((p) => p.name) ?? [];
+  private computeFspConfigurationState({
+    fspName,
+    fspConfigurationProperties,
+  }: {
+    fspName: Fsps;
+    fspConfigurationProperties: CreateProgramFspConfigurationPropertyDto[];
+  }): FspConfigurationStates {
+    const requiredProperties = getFspConfigurationRequiredProperties(fspName);
 
-    if (propertyNames.length === 0) {
+    if (requiredProperties.length === 0) {
       return FspConfigurationStates.configurationPending;
     }
-  
-    const requiredProperties = getFspConfigurationRequiredProperties(fspName);
+
+    const propertyNames = fspConfigurationProperties.map((p) => p.name) ?? [];
     const hasAllRequiredProperties = requiredProperties.every((required) =>
       propertyNames.includes(required),
     );
@@ -462,17 +471,23 @@ export class ProgramFspConfigurationsService {
       : FspConfigurationStates.configurationPending;
   }
 
-  private async syncFspConfigurationState(
-    programFspConfigurationId: number,
-    fspName: Fsps,
-  ): Promise<void> {
+  private async syncFspConfigurationState({
+    programFspConfigurationId,
+    fspName,
+  }: {
+    programFspConfigurationId: number;
+    fspName: Fsps;
+  }): Promise<void> {
     const properties =
       await this.programFspConfigurationPropertyRepository.find({
         where: {
           programFspConfigurationId: Equal(programFspConfigurationId),
         },
       });
-    const state = this.computeFspConfigurationState(fspName, properties);
+    const state = this.computeFspConfigurationState({
+      fspName,
+      fspConfigurationProperties: properties,
+    });
 
     await this.programFspConfigurationRepository.update(
       programFspConfigurationId,

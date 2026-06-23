@@ -181,7 +181,9 @@ export class PaymentsExecutionService {
     userId: number;
     errorMessage: string;
   }) {
-    const transactionIdsByFspConfigId = this.mapTransactionIdsToFspConfigId(transactions);
+    const transactionIdsByFspConfigId = this.mapTransactionIdsToFspConfigId({
+      transactions,
+    });
 
     for (const [
       programFspConfigurationId,
@@ -198,9 +200,11 @@ export class PaymentsExecutionService {
     }
   }
 
-  private mapTransactionIdsToFspConfigId(
-    transactions: TransactionViewEntity[],
-  ): Map<number, number[]> {
+  private mapTransactionIdsToFspConfigId({
+    transactions,
+  }: {
+    transactions: TransactionViewEntity[];
+  }): Map<number, number[]> {
     const transactionIdsByFspConfigId = new Map<number, number[]>();
 
     for (const { id, programFspConfigurationId } of transactions) {
