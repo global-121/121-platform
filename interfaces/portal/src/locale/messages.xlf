@@ -96,7 +96,7 @@
         <source>Password</source>
       </trans-unit>
       <trans-unit id="1458092247208810553" datatype="html">
-        <source>Below are the <x equiv-text="{{ programAttributes.data()?.length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/></source>
+        <source>Below are the <x equiv-text="{{ programAttributes().length }}" id="INTERPOLATION"/> questions that will be displayed in the data table and on the profile page.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/></source>
       </trans-unit>
       <trans-unit id="1467059276438662086" datatype="html">
         <source>New status</source>
@@ -389,9 +389,6 @@
       </trans-unit>
       <trans-unit id="2614607010577950577" datatype="html">
         <source>Overview</source>
-      </trans-unit>
-      <trans-unit id="2630979564408668981" datatype="html">
-        <source>Data column name <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip [message]=&quot;&apos;The data column name of the question.&apos;&quot; &gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;/app-info-tooltip&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
       </trans-unit>
       <trans-unit id="2648503122381983554" datatype="html">
         <source>Duplicated with:</source>
@@ -1106,9 +1103,6 @@
       <trans-unit id="561353031255604069" datatype="html">
         <source>There are <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registration(s) that don&apos;t support this action</source>
       </trans-unit>
-      <trans-unit id="5629376220566654518" datatype="html">
-        <source>Question label <x ctype="x-app_info_tooltip" equiv-text="&lt;app-info-tooltip [message]=&quot;`The label that will be shown in the registration page table header and registration&apos;s profile. The labels cand be edited by clicking on the pencil icon above.`&quot; &gt;" id="START_TAG_APP_INFO_TOOLTIP"/><x ctype="x-app_info_tooltip" equiv-text="&lt;/app-info-tooltip&gt;" id="CLOSE_TAG_APP_INFO_TOOLTIP"/></source>
-      </trans-unit>
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
       </trans-unit>
@@ -1271,9 +1265,6 @@
       </trans-unit>
       <trans-unit id="6456009373504868195" datatype="html">
         <source>Please correct the errors in the form.</source>
-      </trans-unit>
-      <trans-unit id="647536533882061546" datatype="html">
-        <source>Please note, the portal does not support this language currently.</source>
       </trans-unit>
       <trans-unit id="6502713313006518985" datatype="html">
         <source>Set up the payment&apos;s name.</source>
@@ -2603,6 +2594,36 @@
       </trans-unit>
       <trans-unit id="attribute-edit-info-phoneNumber" datatype="html">
         <source>Required format: numbers only (including country-code).</source>
+      </trans-unit>
+      <trans-unit id="3560595744015834305" datatype="html">
+        <source>Update successful.</source>
+      </trans-unit>
+      <trans-unit id="8094115796114921772" datatype="html">
+        <source>An error occurred while updating the labels.</source>
+      </trans-unit>
+      <trans-unit id="6011590435574005771" datatype="html">
+        <source>Question label</source>
+      </trans-unit>
+      <trans-unit id="5971081331538192247" datatype="html">
+        <source>Data column name</source>
+      </trans-unit>
+      <trans-unit id="8089925871034232084" datatype="html">
+        <source>The data column name of the question.</source>
+      </trans-unit>
+      <trans-unit id="4621223146689163852" datatype="html">
+        <source>You can edit each column label to a shorter version.</source>
+      </trans-unit>
+      <trans-unit id="2583667945049138476" datatype="html">
+        <source>Unsupported language</source>
+      </trans-unit>
+      <trans-unit id="3422018461298008380" datatype="html">
+        <source>Since the 121 portal does not currently support this language, users will not be able to see column names and answers in this language. Contact your account manager to add this language to the portal.</source>
+      </trans-unit>
+      <trans-unit id="6710855517991446782" datatype="html">
+        <source>121 does not support this language currently.</source>
+      </trans-unit>
+      <trans-unit id="8718149515078931594" datatype="html">
+        <source>The label that will be shown in the registration page table header and registration&apos;s profile. The labels can be edited by clicking on the pencil icon above.</source>
       </trans-unit>
     </body>
   </file>

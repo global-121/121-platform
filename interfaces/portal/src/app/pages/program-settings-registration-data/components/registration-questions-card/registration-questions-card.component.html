@@ -3,77 +3,124 @@
   i18n-header
   editPencilTitle="Edit registration questions"
   i18n-editPencilTitle
-  [canEdit]="false"
-  [isEditing]="false"
+  [canEdit]="canEditAttributes()"
+  [(isEditing)]="isEditing"
   [formGroup]="formGroup"
-  [mutation]="undefined"
-  [mutationData]="formGroup.getRawValue()"
+  [mutation]="updateAttributeLabelsMutation"
+  [mutationData]="{ formData: formGroup.getRawValue() }"
   [attr.data-testid]="'registration-questions-card'"
 >
   <p
     i18n
     class="mb-4"
   >
-    Below are the {{ programAttributes.data()?.length }} questions that will be
+    Below are the {{ programAttributes().length }} questions that will be
     displayed in the data table and on the profile page.<br />
   </p>
 
-  <app-program-language-tabs
-    [programId]="programId()"
-    [(selectedTabLanguage)]="selectedTabLanguage"
-    [languages]="programLanguages()"
-  >
-    <ng-template #languageTemplate>
-      @if (!isSupportedUILanguage(selectedTabLanguage())) {
-        <p class="my-2 flex items-center">
-          <i class="pi pi-exclamation-triangle me-2 text-xl text-red-500"></i>
-          <span i18n>
-            Please note, the portal does not support this language currently.
-          </span>
-        </p>
-      }
-      <p-table
-        [value]="programAttributes.data() ?? []"
-        [attr.data-testid]="'program-attributes-table'"
-      >
-        <ng-template #header>
-          <tr>
-            <th
-              i18n
-              class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
-            >
-              Data column name
-              <app-info-tooltip
-                [message]="'The data column name of the question.'"
-              ></app-info-tooltip>
-            </th>
-            <th
-              i18n
-              class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
-            >
-              Question label
-              <app-info-tooltip
-                [message]="`The label that will be shown in the registration page table header and registration's profile. The labels cand be edited by clicking on the pencil icon above.`"
-              ></app-info-tooltip>
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template
-          #body
-          let-attribute
+  <p i18n>You can edit each column label to a shorter version.</p>
+
+  <p-tabs [(value)]="selectedTabLanguage">
+    <p-tablist>
+      @for (language of programLanguages(); track language) {
+        <p-tab
+          [value]="language"
+          data-testid="language-tab"
         >
-          <tr [formGroupName]="attribute.name">
-            <td>{{ attribute.name }}</td>
-            <td>
-              {{
-                attributeLabels()
-                  ?.get(attribute.name)
-                  ?.get(selectedTabLanguage()) ?? attribute.name
-              }}
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </ng-template>
-  </app-program-language-tabs>
+          <p-tag
+            [value]="language | uppercase"
+            class="rounded-sm px-1 py-0.5 text-[0.6rem] text-white"
+            [class.bg-purple-700]="selectedTabLanguage() === language"
+            [class.bg-grey-700]="selectedTabLanguage() !== language"
+          />
+          {{ tabLabels().get(language) | titlecase }}
+        </p-tab>
+      }
+    </p-tablist>
+    <p-tabpanels class="p-0">
+      @for (language of programLanguages(); track language) {
+        <p-tabpanel [value]="language">
+          @if (!isSupportedUILanguage(selectedTabLanguage())) {
+            <div
+              class="mt-2 mb-5 flex w-full items-center rounded-xl border border-orange-500 bg-orange-100 px-5 py-3"
+            >
+              <i
+                class="pi pi-exclamation-circle me-2 text-xl text-orange-700"
+              ></i>
+              <span class="text-orange-700"
+                ><strong i18n>Unsupported language</strong></span
+              >
+              <span class="mx-1">-</span>
+              <span i18n>121 does not support this language currently.</span>
+              <app-info-tooltip
+                message="Since the 121 portal does not currently support this language, users will not be able to see column names and answers in this language. Contact your account manager to add this language to the portal."
+                i18n-message
+              ></app-info-tooltip>
+            </div>
+          }
+          <p-table
+            [value]="programAttributes()"
+            data-testid="program-attributes-table"
+          >
+            <ng-template #header>
+              <tr>
+                <th
+                  class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
+                >
+                  <span
+                    class="me-1"
+                    i18n
+                  >
+                    Data column name</span
+                  >
+                  <app-info-tooltip
+                    message="The data column name of the question."
+                    i18n-message
+                  ></app-info-tooltip>
+                </th>
+                <th
+                  class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
+                >
+                  <span
+                    class="me-1"
+                    i18n
+                    >Question label</span
+                  >
+                  <app-info-tooltip
+                    message="The label that will be shown in the registration page table header and registration's profile. The labels can be edited by clicking on the pencil icon above."
+                    i18n-message
+                  ></app-info-tooltip>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template
+              #body
+              let-attribute
+            >
+              <tr [formGroupName]="attribute.name">
+                <td>{{ attribute.name }}</td>
+                <td>
+                  @if (isEditing()) {
+                    <input
+                      type="text"
+                      pInputText
+                      [formControlName]="language"
+                      [attr.data-testid]="`attribute-label-input-${language}-${attribute.name}`"
+                      class="w-full"
+                    />
+                  } @else {
+                    {{
+                      attributeLabels()
+                        .get(attribute.name)
+                        ?.get(selectedTabLanguage())
+                    }}
+                  }
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabpanel>
+      }
+    </p-tabpanels>
+  </p-tabs>
 </app-card-editable>

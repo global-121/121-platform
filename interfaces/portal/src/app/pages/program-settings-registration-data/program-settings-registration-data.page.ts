@@ -41,7 +41,7 @@ export class ProgramSettingsRegistrationDataPageComponent {
     enabled: !!this.programId(),
   }));
 
-  readonly isKoboIntegrated = computed(() =>
+  readonly isKoboIntegrated = computed<boolean>(() =>
     isKoboIntegrated(this.koboIntegration),
   );
 }
