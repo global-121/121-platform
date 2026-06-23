@@ -105,3 +105,75 @@ test('Refresh Kobo integration - unsuccessful', async ({
     );
   });
 });
+
+test('Refresh Kobo integration - unsuccessful with error payload', async ({
+  registrationDataPage,
+  page,
+}) => {
+  await test.step('Add Kobo integration with always-new-version asset', async () => {
+    await registrationDataPage.addKoboIntegration({
+      url: alwaysNewVersionUrl,
+      apiKey: koboIntegrationBase.apiKey,
+    });
+    await registrationDataPage.koboSuccessfullyLinkedDialog({
+      closeDialog: true,
+    });
+  });
+
+  await test.step('Intercept PATCH /kobo to simulate a validation error response', async () => {
+    await page.route(`**/api/programs/*/kobo`, async (route) => {
+      if (route.request().method() === 'PATCH') {
+        await route.fulfill({
+          status: 400,
+          contentType: 'application/json',
+          body: JSON.stringify(koboRefreshErrorPayload),
+        });
+        return;
+      }
+      await route.continue();
+    });
+  });
+
+  await test.step('Click "Refresh link" from the ellipsis menu', async () => {
+    await registrationDataPage.refreshKoboIntegration();
+  });
+
+  await test.step('Validate error dialog for Kobo integration failure', async () => {
+    await registrationDataPage.validateToastMessage(
+      'Integration update unsuccessful. Please try again.',
+    );
+
+    await registrationDataPage.validateErrorDialogIsShown();
+
+    await registrationDataPage.validateMissingFields({
+      missingFields: ['phoneNumber'],
+    });
+
+    await registrationDataPage.validateKoboConfigurationErrorsTable({
+      configurationErrorsTableColumns: ['Field', 'Error', 'Solution'],
+      configurationErrors: [
+        'fullName',
+        "Attribute 'fullName' is missing",
+        'Add the missing attribute to the Kobo form',
+      ],
+    });
+  });
+});
+
+const koboRefreshErrorPayload = {
+  message: 'Kobo form definition validation failed',
+  errors: [
+    {
+      type: 'missingField',
+      attributeName: 'phoneNumber',
+      error: "Attribute 'phoneNumber' is missing",
+      solution: "Add 'phoneNumber' to the Kobo form",
+    },
+    {
+      type: 'missingFullnameAttributes',
+      attributeName: 'fullName',
+      error: "Attribute 'fullName' is missing",
+      solution: 'Add the missing attribute to the Kobo form',
+    },
+  ],
+};

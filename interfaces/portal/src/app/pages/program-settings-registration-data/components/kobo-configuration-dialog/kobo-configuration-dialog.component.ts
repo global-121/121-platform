@@ -51,7 +51,6 @@ import { generateFieldErrors } from '~/utils/form-validation';
 })
 export class KoboConfigurationDialogComponent {
   readonly programId = input.required<number | string>();
-  readonly isKoboIntegrated = input<boolean>();
   readonly koboIntegrationErrors = signal<KoboValidationError[]>([]);
 
   private readonly koboApiService = inject(KoboApiService);
