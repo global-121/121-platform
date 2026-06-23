@@ -63,9 +63,8 @@ export class KoboConfigurationDialogComponent {
     'koboConfigurationDialog',
   );
 
-  readonly koboErrorDialog = viewChild.required<KoboErrorDialogComponent>(
-    'koboIntegrationErrorDialog',
-  );
+  readonly koboErrorDialog =
+    viewChild.required<KoboErrorDialogComponent>('koboErrorDialog');
 
   readonly linkKoboDialog =
     viewChild.required<FormDialogComponent>('linkKoboDialog');

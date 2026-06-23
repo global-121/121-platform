@@ -55,3 +55,9 @@
   #koboImportExistingDialog
   [programId]="programId()"
 />
+
+<app-kobo-error-dialog
+  #koboErrorDialog
+  [errors]="koboRefreshErrors()"
+  [isKoboIntegrated]="isKoboIntegrated()"
+/>

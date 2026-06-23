@@ -5,6 +5,7 @@ import {
   computed,
   inject,
   input,
+  signal,
   viewChild,
 } from '@angular/core';
 
@@ -14,6 +15,7 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 
+import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
@@ -23,6 +25,7 @@ import {
 } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { KoboConfigurationDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-configuration-dialog/kobo-configuration-dialog.component';
+import { KoboErrorDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-error-dialog/kobo-error-dialog.component';
 import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
@@ -34,6 +37,7 @@ import { ToastService } from '~/services/toast.service';
     DatePipe,
     KoboConfigurationDialogComponent,
     KoboImportExistingRegistrationsDialogComponent,
+    KoboErrorDialogComponent,
   ],
   templateUrl: './kobo-integration-card.component.html',
   styles: ``,
@@ -46,6 +50,11 @@ export class KoboIntegrationCardComponent {
   private readonly koboApiService = inject(KoboApiService);
   private readonly authService = inject(AuthService);
   private readonly toastService = inject(ToastService);
+
+  readonly koboRefreshErrors = signal<KoboValidationError[]>([]);
+
+  readonly koboErrorDialog =
+    viewChild.required<KoboErrorDialogComponent>('koboErrorDialog');
 
   readonly koboConfigurationDialog =
     viewChild.required<KoboConfigurationDialogComponent>(
@@ -104,7 +113,18 @@ export class KoboIntegrationCardComponent {
         detail: $localize`Integration is already up to date.`,
       });
     },
-    onError: () => {
+    onError: (errorResponse: Error) => {
+      const cause = errorResponse.cause as {
+        error?: { errors?: KoboValidationError[] };
+      };
+      const errors = cause.error?.errors;
+
+      // If the error contains Kobo validation errors, we want to show them in the KoboErrorDialog.
+      if (Array.isArray(errors) && errors.length > 0) {
+        this.koboRefreshErrors.set(errors);
+        this.koboErrorDialog().show();
+      }
+
       this.toastService.showToast({
         severity: 'error',
         detail: $localize`Integration update unsuccessful. Please try again.`,

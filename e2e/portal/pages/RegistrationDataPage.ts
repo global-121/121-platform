@@ -269,9 +269,7 @@ class RegistrationDataPage extends BasePage {
 
   async validateErrorDialogIsShown() {
     const koboIntegrationDialog = new DialogComponent(
-      this.page
-        .getByTestId('kobo-integration-error-dialog')
-        .locator('.p-dialog'),
+      this.page.getByTestId('kobo-error-dialog').locator('.p-dialog'),
     );
     await koboIntegrationDialog.waitForVisible();
   }
