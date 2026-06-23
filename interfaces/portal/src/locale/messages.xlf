@@ -2595,18 +2595,6 @@
       <trans-unit id="attribute-edit-info-phoneNumber" datatype="html">
         <source>Required format: numbers only (including country-code).</source>
       </trans-unit>
-      <trans-unit id="6751289562324913219" datatype="html">
-        <source>Form setting errors</source>
-      </trans-unit>
-      <trans-unit id="6151408429233480883" datatype="html">
-        <source>Required fields not found</source>
-      </trans-unit>
-      <trans-unit id="7615933189038112184" datatype="html">
-        <source>These fields are expected by 121 but are missing from your Kobo form. Add them before redeploying.</source>
-      </trans-unit>
-      <trans-unit id="7968872754950254240" datatype="html">
-        <source>There are issues in your Kobo form that are blocking the integration. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
-      </trans-unit>
       <trans-unit id="3560595744015834305" datatype="html">
         <source>Update successful.</source>
       </trans-unit>
