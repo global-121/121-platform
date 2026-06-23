@@ -15,7 +15,6 @@ import {
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 
-import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
@@ -23,7 +22,6 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { FspMultiselectComponent } from '~/components/fsp-multiselect/fsp.multiselect.component';
 import {
   ProgramFormInformationComponent,
   ProgramInformationFormGroup,
@@ -54,7 +52,6 @@ import {
     ProgramFormNameComponent,
     ProgramFormInformationComponent,
     DataListComponent,
-    FspMultiselectComponent,
   ],
   templateUrl: './program-settings-basic-information.component.html',
   providers: [ToastService],
@@ -69,7 +66,7 @@ export class ProgramSettingsBasicInformationComponent {
   readonly programId = input.required<string>();
 
   readonly isEditing = signal(false);
-  readonly selectedFsps = signal<Fsps[]>([]);
+  // readonly selectedFsps = signal<Fsps[]>([]);
 
   authService = inject(AuthService);
   programApiService = inject(ProgramApiService);
@@ -219,9 +216,4 @@ export class ProgramSettingsBasicInformationComponent {
       loading: this.program.isPending(),
     }));
   });
-
-  onSelectionChange(fsps: Fsps[]) {
-    this.selectedFsps.set(fsps);
-    console.log('selectionChange  -->', this.selectedFsps());
-  }
 }

@@ -21,5 +21,12 @@
     filter="false"
     showToggleAll="false"
     [className]="'wrapped-chip-multiselect'"
-  />
+  >
+    <ng-template
+      let-fsp
+      #item
+    >
+      <div>{{ fsp.name | translatableString }}</div>
+    </ng-template>
+  </p-multiselect>
 </app-form-field-wrapper>

@@ -13,9 +13,11 @@ import { Router } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { AppRoutes } from '~/app.routes';
+import { FspMultiselectComponent } from '~/components/fsp-multiselect/fsp.multiselect.component';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import {
   ProgramBudgetFormGroup,
@@ -42,6 +44,7 @@ import { ToastService } from '~/services/toast.service';
     ProgramFormNameComponent,
     ProgramFormInformationComponent,
     ProgramFormBudgetComponent,
+    FspMultiselectComponent,
   ],
   providers: [ToastService],
   templateUrl: './create-program-dialog.component.html',
@@ -67,6 +70,8 @@ export class CreateProgramDialogComponent {
   // 2 = step 2: information
   // 3 = step 3: budget
   readonly currentStep = signal<0 | 1 | 2 | 3>(0);
+
+  readonly selectedFsps = signal<Fsps[]>([]);
 
   readonly formGroup = computed(() => {
     const nameGroup = this.formName()?.formGroup;
@@ -131,6 +136,7 @@ export class CreateProgramDialogComponent {
         location,
         targetNrRegistrations,
         validation,
+        fsps: this.selectedFsps(),
       }),
     onSuccess: async (result) => {
       // The keys of the user permissions determine which programs a user can see
@@ -225,5 +231,10 @@ export class CreateProgramDialogComponent {
   show() {
     this.formGroup()?.reset();
     this.goToNextStep();
+  }
+
+  onSelectionChange(fsps: Fsps[]) {
+    this.selectedFsps.set(fsps);
+    console.log('selectionChange  -->', this.selectedFsps());
   }
 }
