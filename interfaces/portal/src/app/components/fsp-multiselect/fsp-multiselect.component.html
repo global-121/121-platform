@@ -5,20 +5,22 @@
   i18n-label
 >
   <p-multiselect
-    (ngModelChange)="selectedOptions.set($event); selectionChange.emit($event)"
-    [className]="'wrapped-chip-multiselect'"
-    [loading]="programId() ? fspConfigurations.isPending() : false"
-    [maxSelectedLabels]="100"
-    [ngModel]="selectedOptions()"
     [options]="fspMultiselectOptions"
-    [showToggleAll]="false"
-    [display]="'chip'"
-    [filter]="false"
-    itemcheckboxicon="false"
-    [optionLabel]="'name'"
-    [optionValue]="'fspName'"
+    [ngModel]="selectedOptions()"
+    (ngModelChange)="selectedOptions.set($event); selectionChange.emit($event)"
     placeholder="Select FSPs"
     i18n-placeholder
+    optionLabel="name"
+    i18n-optionLabel
+    optionValue="name"
+    i18n-optionValue
+    display="chip"
+    i18n-display
+    [maxSelectedLabels]="100"
+    [loading]="programId() ? fspConfigurations.isPending() : false"
+    filter="false"
+    showToggleAll="false"
+    [className]="'wrapped-chip-multiselect'"
   >
     <ng-template
       let-fsp
