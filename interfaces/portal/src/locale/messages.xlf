@@ -528,6 +528,9 @@
       <trans-unit id="3302381073867974185" datatype="html">
         <source><x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>This action can not be undone.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Are you sure you want to delete these registrations?</source>
       </trans-unit>
+      <trans-unit id="3325180562659478330" datatype="html">
+        <source>name</source>
+      </trans-unit>
       <trans-unit id="3341509391681329837" datatype="html">
         <source>Payments are named by date and time by default. Rename the payment for clarity if needed.</source>
       </trans-unit>
@@ -1175,6 +1178,9 @@
       <trans-unit id="5971081331538192247" datatype="html">
         <source>Data column name</source>
       </trans-unit>
+      <trans-unit id="5974806166105337525" datatype="html">
+        <source>chip</source>
+      </trans-unit>
       <trans-unit id="5995232414192798763" datatype="html">
         <source>Financial Service Provider(s)</source>
       </trans-unit>
@@ -1646,6 +1652,9 @@
       </trans-unit>
       <trans-unit id="8140989446664265922" datatype="html">
         <source>Enter the basic details of your program, these details will define your program&apos;s setup and structure.</source>
+      </trans-unit>
+      <trans-unit id="8149069993716610284" datatype="html">
+        <source>Select FSPs</source>
       </trans-unit>
       <trans-unit id="8153112678957419197" datatype="html">
         <source>Error while integrating Kobo form</source>

@@ -1,0 +1,19 @@
+<app-form-field-wrapper
+  label="Fixed transfer value"
+  i18n-label
+  [errorMessage]=""
+  [isRequired]="true"
+>
+  <p-multiselect
+    [options]="fspMultiselectOptions"
+    [ngModel]="selectedOptions()"
+    (ngModelChange)="selectedOptions.set($event); selectionChange.emit($event)"
+    placeholder="Select FSPs"
+    i18n-placeholder
+    optionLabel="name"
+    i18n-optionLabel
+    display="chip"
+    i18n-display
+    [maxSelectedLabels]="100"
+  />
+</app-form-field-wrapper>
