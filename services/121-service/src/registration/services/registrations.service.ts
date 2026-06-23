@@ -571,11 +571,13 @@ export class RegistrationsService {
       registration[attribute] = value;
     }
 
-    if (
-      !Object.values(AdditionalAttributes).includes(
+    const registrationStatus: keyof RegistrationEntity = 'registrationStatus';
+    const isEntityLevelAttribute =
+      Object.values(AdditionalAttributes).includes(
         attribute as AdditionalAttributes,
-      )
-    ) {
+      ) || attribute === registrationStatus;
+
+    if (!isEntityLevelAttribute) {
       if (value === null) {
         await this.registrationDataService.deleteProgramRegistrationAttributeData(
           registration,
