@@ -19,6 +19,7 @@ import { SelectModule } from 'primeng/select';
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
+import { FspMultiselectComponent } from '~/components/fsp-multiselect/fsp.multiselect.component';
 import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
 import { Program } from '~/domains/program/program.model';
 import { generateFieldErrors } from '~/utils/form-validation';
@@ -34,6 +35,7 @@ export type ProgramBudgetFormGroup =
     ReactiveFormsModule,
     InputTextModule,
     SelectModule,
+    FspMultiselectComponent,
   ],
   templateUrl: './program-form-budget.component.html',
   styles: ``,
