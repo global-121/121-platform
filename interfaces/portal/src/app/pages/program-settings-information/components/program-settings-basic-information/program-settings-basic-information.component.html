@@ -27,18 +27,21 @@
       <strong i18n>Editing in {{ languageName }}.</strong><br />
       <span i18n>Save and switch language to translate relevant details.</span>
     </p>
-    <app-program-form-name
-      #programFormName
-      [program]="program.data()"
-    />
-    <app-program-form-information
-      #programFormInformation
-      [program]="program.data()"
-    />
+
     <app-fsp-multiselect
       [selectedOptions]="selectedFsps()"
       [programId]="programId()"
       (selectionChange)="onSelectionChange($event)"
     ></app-fsp-multiselect>
+
+    <app-program-form-name
+      #programFormName
+      [program]="program.data()"
+    />
+
+    <app-program-form-information
+      #programFormInformation
+      [program]="program.data()"
+    />
   }
 </app-card-editable>

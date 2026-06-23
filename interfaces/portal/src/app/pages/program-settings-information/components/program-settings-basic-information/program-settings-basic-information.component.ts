@@ -220,12 +220,6 @@ export class ProgramSettingsBasicInformationComponent {
     }));
   });
 
-  // constructor() {
-  //   effect(() => {
-  //     console.log('selectedFsps', this.selectedFsps());
-  //   });
-  // }
-
   onSelectionChange(fsps: Fsps[]) {
     this.selectedFsps.set(fsps);
     console.log('selectionChange  -->', this.selectedFsps());

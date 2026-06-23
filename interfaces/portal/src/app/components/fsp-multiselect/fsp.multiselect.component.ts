@@ -43,11 +43,15 @@ export interface FspMultiselectOption {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FspMultiselectComponent implements ControlValueAccessor {
+  readonly programId = input<string>();
+
   readonly selectedOptions = model<Fsps[]>([]);
   readonly selectionChange = output<Fsps[]>();
-  readonly programId = input<string>();
+
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
 
+  // FETCHING CURRENT FSP CONFIGURATIONS FOR PROGRAM
+  // SKIPPED IF NO PROGRAM ID IS PROVIDED (E.G. WHEN CREATING A NEW PROGRAM)
   fspConfigurations = injectQuery(() => ({
     ...this.fspConfigurationApiService.getFspConfigurations(
       this.programId as Signal<string>,
