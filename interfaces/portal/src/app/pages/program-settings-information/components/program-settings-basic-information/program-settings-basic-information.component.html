@@ -35,5 +35,10 @@
       #programFormInformation
       [program]="program.data()"
     />
+    <app-fsp-multiselect
+      [selectedOptions]="selectedFsps()"
+      [programId]="programId()"
+      (selectionChange)="onSelectionChange($event)"
+    ></app-fsp-multiselect>
   }
 </app-card-editable>

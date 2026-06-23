@@ -15,6 +15,7 @@ import {
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
@@ -22,6 +23,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { FspMultiselectComponent } from '~/components/fsp-multiselect/fsp.multiselect.component';
 import {
   ProgramFormInformationComponent,
   ProgramInformationFormGroup,
@@ -52,6 +54,7 @@ import {
     ProgramFormNameComponent,
     ProgramFormInformationComponent,
     DataListComponent,
+    FspMultiselectComponent,
   ],
   templateUrl: './program-settings-basic-information.component.html',
   providers: [ToastService],
@@ -66,13 +69,13 @@ export class ProgramSettingsBasicInformationComponent {
   readonly programId = input.required<string>();
 
   readonly isEditing = signal(false);
+  readonly selectedFsps = signal<Fsps[]>([]);
 
   authService = inject(AuthService);
   programApiService = inject(ProgramApiService);
   registrationsTableColumnService = inject(RegistrationsTableColumnService);
   toastService = inject(ToastService);
   translatableStringService = inject(TranslatableStringService);
-
   program = injectQuery(this.programApiService.getProgram(this.programId));
 
   readonly canEdit = computed(() =>
@@ -87,8 +90,6 @@ export class ProgramSettingsBasicInformationComponent {
   readonly programFormInformation = viewChild<ProgramFormInformationComponent>(
     'programFormInformation',
   );
-
-  // These are two separate components/formGroups because they are also
   // used separately in the program creation flow
   readonly formGroup = computed(() => {
     const nameGroup = this.programFormName()?.formGroup;
@@ -103,6 +104,8 @@ export class ProgramSettingsBasicInformationComponent {
       informationGroup,
     });
   });
+
+  // These are two separate components/formGroups because they are also
 
   updateProgramMutation = injectMutation(() => ({
     mutationFn: async ({
@@ -216,4 +219,15 @@ export class ProgramSettingsBasicInformationComponent {
       loading: this.program.isPending(),
     }));
   });
+
+  // constructor() {
+  //   effect(() => {
+  //     console.log('selectedFsps', this.selectedFsps());
+  //   });
+  // }
+
+  onSelectionChange(fsps: Fsps[]) {
+    this.selectedFsps.set(fsps);
+    console.log('selectionChange  -->', this.selectedFsps());
+  }
 }
