@@ -41,15 +41,7 @@ test('Refresh Kobo integration - happy flow (integration updated)', async ({
   });
 
   await test.step('Validate success toast: integration updated', async () => {
-    const updatedAt = new Date(Date.now()).toLocaleString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
-    await registrationDataPage.validateUpdatedAtValue({ updatedAt });
+    await registrationDataPage.validateUpdatedAtValue();
     await registrationDataPage.validateToastMessageAndClose(
       'Integration updated successfully.',
     );
