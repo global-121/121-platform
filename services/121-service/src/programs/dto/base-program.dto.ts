@@ -3,11 +3,13 @@ import {
   IsArray,
   IsBoolean,
   IsDateString,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
 
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -112,4 +114,9 @@ export abstract class BaseProgramDto {
   @IsOptional()
   @IsNumber()
   public readonly budget?: number;
+
+  @ApiProperty({ example: ['Airtel'], required: false })
+  @IsOptional()
+  @IsEnum(Fsps, { each: true })
+  public readonly fsps?: Fsps[];
 }

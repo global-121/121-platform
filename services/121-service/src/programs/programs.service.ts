@@ -6,9 +6,11 @@ import { GetTokenResult } from '@121-service/src/fsp-integrations/integrations/i
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
@@ -37,6 +39,7 @@ export class ProgramService {
     private readonly programAttachmentsService: ProgramAttachmentsService,
     private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly programFspConfigurationsService: ProgramFspConfigurationsService,
     private readonly intersolveVisaService: IntersolveVisaService,
   ) {}
 
@@ -226,11 +229,37 @@ export class ProgramService {
       await queryRunner.release();
     }
 
+    if (programData.fsps && programData.fsps.length > 0) {
+      await this.assignFspConfigurationsToProgram(
+        savedProgram.id,
+        programData.fsps,
+      );
+    }
+
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.Admin],
       scope: undefined,
     });
+
     return newProgram;
+  }
+
+  private async assignFspConfigurationsToProgram(
+    programId: number,
+    fspNames: Fsps[],
+  ): Promise<void> {
+    for (const fspName of fspNames) {
+      const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
+        {
+          name: fspName,
+          label: { en: fspName },
+          fspName,
+        };
+      await this.programFspConfigurationsService.create(
+        programId,
+        createProgramFspConfigurationDto,
+      );
+    }
   }
 
   public async deleteProgram(programId: number): Promise<void> {
