@@ -35,7 +35,7 @@ export interface FspMultiselectOption {
     MultiSelectModule,
     TranslatableStringPipe,
   ],
-  templateUrl: './fsp.multiselect.component.html',
+  templateUrl: './fsp-multiselect.component.html',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -79,14 +79,8 @@ export class FspMultiselectComponent implements ControlValueAccessor {
             return fspConfiguration.fspName;
           }) ?? [];
 
-        // console.log('I am in the effect', fsps);
-
         this.selectedOptions.set(fsps);
         this.selectionChange.emit(fsps);
-
-        // console.log('I fired');
-        // console.log('I set selectedOptions', fsps);
-        // console.log('I emitted selectionChange', fsps);
       }
     });
   }

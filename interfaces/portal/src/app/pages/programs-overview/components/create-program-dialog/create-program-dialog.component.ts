@@ -17,7 +17,7 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { AppRoutes } from '~/app.routes';
-import { FspMultiselectComponent } from '~/components/fsp-multiselect/fsp.multiselect.component';
+import { FspMultiselectComponent } from '~/components/fsp-multiselect/fsp-multiselect.component';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import {
   ProgramBudgetFormGroup,
