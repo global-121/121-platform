@@ -115,12 +115,20 @@ export class ProgramRegistrationDebitCardsPageComponent {
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
 
-  fspConfigurationProperties = injectQuery(
-    this.fspConfigurationApiService.getPublicFspConfigurationProperties({
-      programId: this.programId,
-      configurationName: 'Intersolve-visa',
-    }),
+  // The public FSP-configuration properties must be read from the configuration
+  // the registration is actually enrolled in (this page is only reachable for
+  // Intersolve Visa registrations).
+  readonly programFspConfigurationName = computed(
+    () => this.registration.data()?.programFspConfigurationName ?? '',
   );
+
+  fspConfigurationProperties = injectQuery(() => ({
+    ...this.fspConfigurationApiService.getPublicFspConfigurationProperties({
+      programId: this.programId,
+      configurationName: this.programFspConfigurationName,
+    })(),
+    enabled: !!this.programFspConfigurationName(),
+  }));
 
   readonly cardDistributionByMailEnabled = computed(() => {
     if (!this.fspConfigurationProperties.isSuccess()) {
