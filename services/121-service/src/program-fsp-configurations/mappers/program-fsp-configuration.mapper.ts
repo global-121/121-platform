@@ -36,6 +36,7 @@ export class ProgramFspConfigurationMapper {
       fspName: entity.fspName,
       name: entity.name,
       label: entity.label,
+      state: entity.state,
       fsp,
       properties: ProgramFspConfigurationMapper.mapPropertyEntitiesToDtos(
         entity.properties,
