@@ -54,8 +54,7 @@ export class FspMultiselectComponent implements ControlValueAccessor {
 
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
 
-  // FETCHING CURRENT FSP CONFIGURATIONS FOR PROGRAM
-  // SKIPPED IF NO PROGRAM ID IS PROVIDED (E.G. WHEN CREATING A NEW PROGRAM)
+  // Fetch FSP configurations for the given program ID. If no program ID is provided, the query will be skipped.
   fspConfigurations = injectQuery(() => ({
     ...this.fspConfigurationApiService.getFspConfigurations(
       this.programId as Signal<string>,
@@ -63,34 +62,27 @@ export class FspMultiselectComponent implements ControlValueAccessor {
     enabled: !!this.programId(),
   }));
 
-  // readonly configurableFsps = computed(() =>
-  //   Object.values(FSP_SETTINGS).filter(this.canConfigureFsp.bind(this)),
-  // );
-
   readonly fspMultiselectOptions = Object.values(FSP_SETTINGS).map((fsp) => ({
     name: fsp.defaultLabel.en,
   }));
 
   constructor() {
     effect(() => {
-      const fsps = this.fspConfigurations.data()?.map((c) => c.fspName) ?? [];
-      this.selectedOptions.set(fsps);
-      this.selectionChange.emit(fsps);
+      if (this.fspConfigurations.data()) {
+        const fsps =
+          this.fspConfigurations
+            .data()
+            ?.map((fspConfiguration) => fspConfiguration.fspName) ?? [];
+
+        this.selectedOptions.set(fsps);
+        this.selectionChange.emit(fsps);
+
+        console.log('I fired');
+        console.log('I set selectedOptions', fsps);
+        console.log('I emitted selectionChange', fsps);
+      }
     });
   }
-
-  // private canConfigureFsp({ name }: { name: Fsps }) {
-  //   if (name === Fsps.excel) {
-  //     // @TODO: This will be a problem when adding via program flow
-  //     // Can always add multiple Excel FSP configurations
-  //     return true;
-  //   }
-
-  //   // For other FSPs, only allow adding if not already configured
-  //   return this.fspConfigurations
-  //     .data()
-  //     ?.every((fspConfiguration) => fspConfiguration.fspName !== name);
-  // }
 
   writeValue(value: Fsps[] | null) {
     this.selectedOptions.set(value ?? []);
