@@ -161,6 +161,9 @@
       <trans-unit id="1693473022450987876" datatype="html">
         <source>Reset user password</source>
       </trans-unit>
+      <trans-unit id="1695651049528115492" datatype="html">
+        <source>fspName</source>
+      </trans-unit>
       <trans-unit id="1714518910559654498" datatype="html">
         <source>Approve payment</source>
       </trans-unit>
