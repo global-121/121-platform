@@ -13,9 +13,7 @@ import { Router } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 
-import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
-import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { AppRoutes } from '~/app.routes';
@@ -235,14 +233,7 @@ export class CreateProgramDialogComponent {
     this.goToNextStep();
   }
 
-  onSelectionChange(fspLabels: string[]) {
-    const fsps = (Object.entries(FSP_SETTINGS) as [Fsps, FspSettingsDto][])
-      .filter(([, setting]) =>
-        fspLabels.includes(setting.defaultLabel.en ?? ''),
-      )
-      .map(([fspName]) => fspName);
-
-    this.selectedFsps.set(fsps);
-    console.log('onSelectionChange', this.selectedFsps());
+  onSelectionChange(fspLabels: Fsps[]) {
+    console.log('onSelectionChange', fspLabels);
   }
 }
