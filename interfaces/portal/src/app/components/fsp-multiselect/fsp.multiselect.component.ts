@@ -50,7 +50,7 @@ export class FspMultiselectComponent implements ControlValueAccessor {
   readonly programId = input<string>();
 
   readonly selectedOptions = model<Fsps[]>([]);
-  readonly selectionChange = output<string[]>();
+  readonly selectionChange = output<Fsps[]>();
 
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
 
@@ -62,17 +62,24 @@ export class FspMultiselectComponent implements ControlValueAccessor {
     enabled: !!this.programId(),
   }));
 
-  readonly fspMultiselectOptions = Object.values(FSP_SETTINGS).map((fsp) => ({
-    name: fsp.defaultLabel.en,
-  }));
+  readonly fspMultiselectOptions = Object.values(FSP_SETTINGS).map((fsp) => {
+    console.log('fsp -->', fsp);
+    return {
+      fspName: fsp.name,
+      name: fsp.defaultLabel.en,
+    };
+  });
 
   constructor() {
     effect(() => {
       if (this.fspConfigurations.data()) {
         const fsps =
-          this.fspConfigurations
-            .data()
-            ?.map((fspConfiguration) => fspConfiguration.fspName) ?? [];
+          this.fspConfigurations.data()?.map((fspConfiguration) => {
+            console.log('fspConfiguration -->', fspConfiguration.fspName);
+            return fspConfiguration.fspName;
+          }) ?? [];
+
+        console.log('I am in the effect', fsps);
 
         this.selectedOptions.set(fsps);
         this.selectionChange.emit(fsps);

@@ -12,7 +12,7 @@
     i18n-placeholder
     optionLabel="name"
     i18n-optionLabel
-    optionValue="name"
+    optionValue="fspName"
     i18n-optionValue
     display="chip"
     i18n-display
@@ -27,7 +27,7 @@
       let-fsp
       #item
     >
-      <div>{{ fsp | translatableString }}</div>
+      <div>{{ fsp.name | translatableString }}</div>
     </ng-template>
   </p-multiselect>
 </app-form-field-wrapper>
