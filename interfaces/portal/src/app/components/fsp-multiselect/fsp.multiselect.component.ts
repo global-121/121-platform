@@ -79,14 +79,14 @@ export class FspMultiselectComponent implements ControlValueAccessor {
             return fspConfiguration.fspName;
           }) ?? [];
 
-        console.log('I am in the effect', fsps);
+        // console.log('I am in the effect', fsps);
 
         this.selectedOptions.set(fsps);
         this.selectionChange.emit(fsps);
 
-        console.log('I fired');
-        console.log('I set selectedOptions', fsps);
-        console.log('I emitted selectionChange', fsps);
+        // console.log('I fired');
+        // console.log('I set selectedOptions', fsps);
+        // console.log('I emitted selectionChange', fsps);
       }
     });
   }

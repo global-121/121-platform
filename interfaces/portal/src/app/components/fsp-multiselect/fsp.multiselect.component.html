@@ -1,27 +1,27 @@
 <app-form-field-wrapper
   label="Financial service providers:"
-  i18n-label
-  [errorMessage]=""
   [isRequired]="false"
+  [errorMessage]=""
+  i18n-label
 >
   <p-multiselect
+    (ngModelChange)="selectedOptions.set($event); selectionChange.emit($event)"
+    [loading]="programId() ? fspConfigurations.isPending() : false"
+    [className]="'wrapped-chip-multiselect'"
     [options]="fspMultiselectOptions"
     [ngModel]="selectedOptions()"
-    (ngModelChange)="selectedOptions.set($event); selectionChange.emit($event)"
     placeholder="Select FSPs"
-    i18n-placeholder
+    [maxSelectedLabels]="100"
+    itemcheckboxicon="false"
+    showToggleAll="false"
+    optionValue="fspName"
     optionLabel="name"
     i18n-optionLabel
-    optionValue="fspName"
+    i18n-placeholder
     i18n-optionValue
     display="chip"
-    i18n-display
-    [maxSelectedLabels]="100"
-    [loading]="programId() ? fspConfigurations.isPending() : false"
     filter="false"
-    showToggleAll="false"
-    itemcheckboxicon="false"
-    [className]="'wrapped-chip-multiselect'"
+    i18n-display
   >
     <ng-template
       let-fsp
