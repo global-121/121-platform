@@ -50,7 +50,7 @@ export class FspMultiselectComponent implements ControlValueAccessor {
   readonly programId = input<string>();
 
   readonly selectedOptions = model<Fsps[]>([]);
-  readonly selectionChange = output<Fsps[]>();
+  readonly selectionChange = output<string[]>();
 
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
 
