@@ -26,6 +26,13 @@
       "severity": "info"
     }
   ],
+  "github.copilot.chat.editorContext.fileExclusions": [
+    "**/.env",
+    "**/.env.*",
+    "**/secrets.*",
+    "**/*.pem",
+    "**/*.key"
+  ],
   "eslint.workingDirectories": [{ "mode": "auto" }],
   "js/ts.tsdk.path": "./node_modules/typescript/lib",
   "js/ts.tsdk.promptToUseWorkspaceVersion": true,

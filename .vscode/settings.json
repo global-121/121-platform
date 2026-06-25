@@ -28,6 +28,13 @@
     "source.removeUnusedImports": "explicit"
   },
   "js/ts.tsdk.path": "./node_modules/typescript/lib",
+  "github.copilot.chat.context.fileExclusions": [
+    "**/.env",
+    "**/.env.*",
+    "**/secrets.*",
+    "**/*.pem",
+    "**/*.key"
+  ],
   "js/ts.tsdk.promptToUseWorkspaceVersion": true,
   "regexrobin.rules": [
     {
@@ -43,6 +50,7 @@
       ]
     }
   ],
+
   "tailwindCSS.rootFontSize": 14,
   "tailwindCSS.showPixelEquivalents": true,
   "tailwindCSS.classAttributes": [
