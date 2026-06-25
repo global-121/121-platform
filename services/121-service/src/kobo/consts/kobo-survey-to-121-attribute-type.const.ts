@@ -1,6 +1,6 @@
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
-const { numeric, text, dropdown } = RegistrationAttributeTypes;
+const { numeric, text, dropdown, koboImage } = RegistrationAttributeTypes;
 type TypeMapping = Record<string, RegistrationAttributeTypes>;
 export const KOBO_TO_121_TYPE_MAPPING: TypeMapping = {
   // numeric
@@ -23,7 +23,9 @@ export const KOBO_TO_121_TYPE_MAPPING: TypeMapping = {
   geoshape: text,
   geotrace: text,
   hidden: text,
-  image: text,
+  // Kobo image questions are stored as a koboImage attribute (a URL to the
+  // attachment) so the portal can render the image via the proxy endpoint.
+  image: koboImage,
   rank: text,
   select_multiple_from_file: text,
   select_multiple: text,

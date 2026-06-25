@@ -6,8 +6,10 @@ import {
   HttpStatus,
   Param,
   Post,
+  Req,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 
 import {
   KoboAssetDeployment,
@@ -51,13 +53,19 @@ export class KoboMockController {
       'Returns a paginated list of all submissions for a specific Kobo asset. Matches Kobo API endpoint /api/v2/assets/{uid}/data/',
   })
   @Get(':uid_asset/data')
-  public getAllSubmissions(@Param('uid_asset') uid_asset: string): {
+  public getAllSubmissions(
+    @Param('uid_asset') uid_asset: string,
+    @Req() request: Request,
+  ): {
     count: number;
     next: null;
     previous: null;
     results: Record<string, any>[];
   } {
-    return this.koboMockService.getAllSubmissions(uid_asset);
+    return this.koboMockService.getAllSubmissions({
+      uid_asset,
+      origin: this.getRequestOrigin(request),
+    });
   }
 
   @ApiOperation({
@@ -75,8 +83,13 @@ export class KoboMockController {
   public getSubmission(
     @Param('uid_asset') uid_asset: string,
     @Param('id') id: string,
+    @Req() request: Request,
   ): Record<string, any> {
-    return this.koboMockService.getSubmission({ uid_asset, submissionId: id });
+    return this.koboMockService.getSubmission({
+      uid_asset,
+      submissionId: id,
+      origin: this.getRequestOrigin(request),
+    });
   }
 
   @ApiOperation({
@@ -120,5 +133,11 @@ export class KoboMockController {
       submissionUuid: body.submissionUuid,
       koboVersion: body.koboVersion,
     });
+  }
+
+  private getRequestOrigin(request: Request): string {
+    const protocol = request.protocol;
+    const host = request.get('host') ?? 'localhost';
+    return `${protocol}://${host}`;
   }
 }
