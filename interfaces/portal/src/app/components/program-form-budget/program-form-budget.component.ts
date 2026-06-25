@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   inject,
   input,
@@ -45,6 +46,8 @@ export type ProgramBudgetFormGroup =
 export class ProgramFormBudgetComponent {
   private readonly locale = inject<Locale>(LOCALE_ID);
   readonly program = input<Program>();
+
+  readonly programId = computed(() => this.program()?.id.toString());
 
   readonly currencies = Object.values(CurrencyCode)
     .map((code) => ({

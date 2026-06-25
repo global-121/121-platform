@@ -20,6 +20,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { FspTagsComponent } from '~/components/fsp-tags/fsp-tags.component';
 import {
   ProgramBudgetFormGroup,
   ProgramFormBudgetComponent,
@@ -113,6 +114,12 @@ export class ProgramSettingsBudgetComponent {
         value: programData?.fixedTransferValue,
         type: 'number',
         fullWidth: true,
+      },
+      {
+        label: '*' + $localize`Financial service providers`,
+        value: FspTagsComponent,
+        type: 'component',
+        inputs: { programId: this.programId() },
       },
     ];
 
