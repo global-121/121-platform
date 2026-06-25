@@ -9,6 +9,7 @@ import { NEDBANK_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations
 import { ONAFRIQ_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/onafriq/onafriq-env-variable-settings.const';
 import { SAFARICOM_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/safaricom/safaricom-env-variable-settings.const';
 import { FspEnvVariablesDto } from '@121-service/src/fsp-integrations/shared/dto/fsp-env-variables.dto';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 
 // Some ugliness around Intersolve Voucher. Technically it's a single FSP, but
@@ -41,4 +42,24 @@ export const FSP_ENV_VARIABLE_SETTINGS: FspEnvVariableSettingsRecord = {
   [Fsps.onafriq]: ONAFRIQ_ENV_VARIABLE_SETTINGS,
   [Fsps.safaricom]: SAFARICOM_ENV_VARIABLE_SETTINGS,
   [Fsps.mtn]: MTN_ENV_VARIABLE_SETTINGS,
+};
+
+// A complete mapping from every Fsps value to its configured FspMode.
+// This is needed because intersolveVoucherWhatsapp and intersolveVoucherPaper
+// are separate Fsps values but share one environment variable (AB#10288).
+export const FSP_MODES: Readonly<Record<Fsps, FspMode>> = {
+  [Fsps.airtel]: AIRTEL_ENV_VARIABLE_SETTINGS.mode,
+  [Fsps.commercialBankEthiopia]:
+    COMMERCIAL_BANK_ETHIOPIA_ENV_VARIABLE_SETTINGS.mode,
+  [Fsps.cooperativeBankOfOromia]:
+    COOPERATIVE_BANK_OF_OROMIA_ENV_VARIABLE_SETTINGS.mode,
+  [Fsps.excel]: EXCEL_ENV_VARIABLE_SETTINGS.mode,
+  [Fsps.intersolveVisa]: INTERSOLVE_VISA_ENV_VARIABLE_SETTINGS.mode,
+  [Fsps.intersolveVoucherPaper]: INTERSOLVE_VOUCHER_ENV_VARIABLE_SETTINGS.mode,
+  [Fsps.intersolveVoucherWhatsapp]:
+    INTERSOLVE_VOUCHER_ENV_VARIABLE_SETTINGS.mode,
+  [Fsps.mtn]: MTN_ENV_VARIABLE_SETTINGS.mode,
+  [Fsps.nedbank]: NEDBANK_ENV_VARIABLE_SETTINGS.mode,
+  [Fsps.onafriq]: ONAFRIQ_ENV_VARIABLE_SETTINGS.mode,
+  [Fsps.safaricom]: SAFARICOM_ENV_VARIABLE_SETTINGS.mode,
 };

@@ -14,6 +14,17 @@ import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-co
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 
+const mockFspModes: Record<string, string> = {};
+
+jest.mock(
+  '@121-service/src/fsp-integrations/settings/fsp-env-variable-settings.const',
+  () => ({
+    get FSP_MODES() {
+      return mockFspModes;
+    },
+  }),
+);
+
 const programId = 1;
 const mockProgramFspConfigPropertyEntity =
   new ProgramFspConfigurationPropertyEntity();
@@ -45,6 +56,8 @@ describe('ProgramFspConfigurationsService', () => {
   let service: ProgramFspConfigurationsService;
 
   beforeEach(async () => {
+    mockFspModes[Fsps.intersolveVisa] = 'MOCK';
+
     mockProgramFspConfigurationRepository = {
       find: jest.fn().mockImplementation((criteria) => {
         const programIdOfWhere = criteria.where.programId._value;
@@ -201,6 +214,18 @@ describe('ProgramFspConfigurationsService', () => {
         },
       });
       expect(mockProgramFspConfigurationRepository.save).toHaveBeenCalled();
+    });
+
+    it('should throw an exception if the FSP is not enabled on this instance', async () => {
+      mockFspModes[Fsps.intersolveVisa] = 'DISABLED';
+
+      await expect(service.create(programId, createDto)).rejects.toThrow(
+        new HttpException(
+          `FSP "${createDto.fspName}" is not enabled on this instance.`,
+          HttpStatus.BAD_REQUEST,
+        ),
+      );
+      expect(mockProgramFspConfigurationRepository.save).not.toHaveBeenCalled();
     });
 
     it('should throw an exception if english is not provided', async () => {

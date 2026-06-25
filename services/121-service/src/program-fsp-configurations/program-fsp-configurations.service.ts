@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
+import { FSP_MODES } from '@121-service/src/fsp-integrations/settings/fsp-env-variable-settings.const';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-types.const';
 import {
@@ -9,6 +10,7 @@ import {
   FspConfigurationPropertyVisibilityMap,
 } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-visibility.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/fsp-management/fsp-attribute-type-mapping';
@@ -69,6 +71,10 @@ export class ProgramFspConfigurationsService {
     programId: number,
     programFspConfigurationDto: CreateProgramFspConfigurationDto,
   ): Promise<void> {
+    this.validateFspIsEnabledOrThrow({
+      fspName: programFspConfigurationDto.fspName,
+    });
+
     this.validateLabelHasEnglishTranslation(programFspConfigurationDto.label);
 
     const existingConfig = await this.programFspConfigurationRepository.findOne(
@@ -427,6 +433,19 @@ export class ProgramFspConfigurationsService {
       programFspConfigurationId,
       properties,
     );
+  }
+
+  private validateFspIsEnabledOrThrow({
+    fspName,
+  }: {
+    readonly fspName: Fsps;
+  }): void {
+    if (FSP_MODES[fspName] === FspMode.disabled) {
+      throw new HttpException(
+        `FSP "${fspName}" is not enabled on this instance.`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   private validateLabelHasEnglishTranslation(label: any): void {
