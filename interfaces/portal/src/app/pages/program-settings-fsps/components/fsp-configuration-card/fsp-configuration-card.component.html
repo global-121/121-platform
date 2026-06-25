@@ -1,8 +1,8 @@
 <app-card-with-link
   (cardClicked)="reconfigureFsp.emit(configuration())"
   [title]="fspConfigurationLabel()"
-  [titleColoredChipLabel]="'Pending'"
-  [titleColoredChipColor]="'orange'"
+  [titleColoredChipLabel]="isPending() ? 'Pending' : 'Integrated'"
+  [titleColoredChipColor]="isPending() ? 'orange' : 'green'"
   [menuItems]="menuItems()"
   [image]="fspImage()"
 >
