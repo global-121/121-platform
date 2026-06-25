@@ -22,6 +22,16 @@
     ></app-kobo-integration-card>
 
     @if (!isKoboIntegrated()) {
+      <div class="mt-4">
+        <h2
+          i18n
+          class="mb-2 text-base!"
+        >
+          Integrated FSPs
+        </h2>
+        <app-fsp-tags [programId]="programId()" />
+      </div>
+
       <app-required-attributes
         [programId]="programId()"
       ></app-required-attributes>
