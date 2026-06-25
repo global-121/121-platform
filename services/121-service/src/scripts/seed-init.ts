@@ -180,8 +180,8 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.RegistrationDuplicationDELETE,
           PermissionEnum.AidWorkerProgramREAD,
-          PermissionEnum.AidWorkerProgramUPDATE,
           PermissionEnum.RegistrationStatusPausedUPDATE,
+          PermissionEnum.RegistrationBulkUPDATE,
         ],
       },
       {
@@ -281,6 +281,19 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.PaymentFspInstructionREAD,
           PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationPersonalREAD,
+        ],
+      },
+      {
+        role: DefaultUserRole.ProgramTeamManager,
+        label: 'Program Team Manager',
+        permissions: [
+          PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.PaymentREAD,
+          PermissionEnum.PaymentTransactionREAD,
+          PermissionEnum.RegistrationREAD,
+          PermissionEnum.RegistrationNotificationREAD,
+          PermissionEnum.AidWorkerProgramREAD,
+          PermissionEnum.AidWorkerProgramUPDATE,
         ],
       },
     ];
