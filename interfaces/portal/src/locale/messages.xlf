@@ -938,6 +938,9 @@
       <trans-unit id="5035732150329518917" datatype="html">
         <source>You&apos;re about to download an Excel file for all status &amp; data changes.</source>
       </trans-unit>
+      <trans-unit id="5045542275668853653" datatype="html">
+        <source>- <x equiv-text="{{ content.description }}" id="INTERPOLATION"/></source>
+      </trans-unit>
       <trans-unit id="5061826209151408276" datatype="html">
         <source>This privacy notice tells you what to expect us to do with your personal information when you use the 121 Platform.</source>
       </trans-unit>
@@ -1457,9 +1460,6 @@
       </trans-unit>
       <trans-unit id="7267039351824245641" datatype="html">
         <source>You&apos;re about to permanently close card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>. This means that the funds on the card will be booked back and the card will not be replaced.</source>
-      </trans-unit>
-      <trans-unit id="7271750268858294457" datatype="html">
-        <source>- <x equiv-text="{{ content.description }}" id="INTERPOLATION"/></source>
       </trans-unit>
       <trans-unit id="7313006626571837182" datatype="html">
         <source>There are no specific fields needed for this integration</source>

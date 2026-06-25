@@ -1,19 +1,21 @@
 @if (content()) {
   <div
-    class="mb-6 flex w-full items-center gap-1 rounded-2xl border px-4 py-3"
+    class="mb-6 flex w-full items-center rounded-2xl border p-4"
     [ngClass]="wrapperVariant()"
   >
     @if (content(); as content) {
       <span
-        class="me-1 text-xl"
+        class="me-2 text-xl"
         [ngClass]="iconVariant()"
       ></span>
-      <strong i18n>{{ content.title }}</strong>
-      <span
-        i18n
-        class="text-black"
-        >-&nbsp;{{ content.description }}</span
-      >
+      <div class="leading-tight">
+        <strong i18n>{{ content.title }}</strong>
+        <span
+          i18n
+          class="text-black"
+          >&nbsp;-&nbsp;{{ content.description }}</span
+        >
+      </div>
     }
   </div>
 } @else {

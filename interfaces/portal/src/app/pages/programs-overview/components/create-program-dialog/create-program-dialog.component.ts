@@ -17,7 +17,6 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { AppRoutes } from '~/app.routes';
-import { FspMultiselectComponent } from '~/components/fsp-multiselect/fsp-multiselect.component';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import {
   ProgramBudgetFormGroup,
@@ -44,7 +43,6 @@ import { ToastService } from '~/services/toast.service';
     ProgramFormNameComponent,
     ProgramFormInformationComponent,
     ProgramFormBudgetComponent,
-    FspMultiselectComponent,
   ],
   providers: [ToastService],
   templateUrl: './create-program-dialog.component.html',
@@ -111,6 +109,7 @@ export class CreateProgramDialogComponent {
         currency,
         distributionDuration,
         fixedTransferValue,
+        fsps,
       },
     }: ReturnType<
       FormGroup<{
@@ -136,7 +135,7 @@ export class CreateProgramDialogComponent {
         location,
         targetNrRegistrations,
         validation,
-        fsps: this.selectedFsps(),
+        fsps,
       }),
     onSuccess: async (result) => {
       // The keys of the user permissions determine which programs a user can see
@@ -231,9 +230,5 @@ export class CreateProgramDialogComponent {
   show() {
     this.formGroup()?.reset();
     this.goToNextStep();
-  }
-
-  onSelectionChange(fsps: Fsps[]) {
-    this.selectedFsps.set(fsps);
   }
 }
