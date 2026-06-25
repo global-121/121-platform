@@ -115,9 +115,6 @@ export class ProgramRegistrationDebitCardsPageComponent {
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
 
-  // The public FSP-configuration properties must be read from the configuration
-  // the registration is actually enrolled in (this page is only reachable for
-  // Intersolve Visa registrations).
   readonly programFspConfigurationName = computed(
     () => this.registration.data()?.programFspConfigurationName ?? '',
   );
