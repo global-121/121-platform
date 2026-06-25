@@ -5,13 +5,10 @@ import {
   inject,
   input,
   output,
-  viewChild,
 } from '@angular/core';
 
-import {
-  injectMutation,
-  injectQuery,
-} from '@tanstack/angular-query-experimental';
+import { injectQuery } from '@tanstack/angular-query-experimental';
+import { MentionModule } from 'angular-mentions';
 import { AccordionModule } from 'primeng/accordion';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -21,8 +18,7 @@ import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-set
 import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
-import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
-import { NotificationBannerComponent } from '~/components/notification-banner/notification-banner.component';
+import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.helper';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
@@ -35,33 +31,32 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   selector: 'app-fsp-configuration-card',
   imports: [
     ButtonModule,
-    FormDialogComponent,
     TableModule,
     CardWithLinkComponent,
     AccordionModule,
-    NotificationBannerComponent,
+    ColoredChipComponent,
+    MentionModule,
   ],
   templateUrl: './fsp-configuration-card.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ToastService],
 })
 export class FspConfigurationCardComponent {
   readonly programId = input.required<string>();
   readonly configuration = input.required<FspConfiguration>();
   readonly reconfigureFsp = output<FspConfiguration>();
 
-  readonly isPending = computed(
+  readonly fspConfigurationService = inject(FspConfigurationService);
+  readonly fspConfigurationApiService = inject(FspConfigurationApiService);
+  readonly programApiService = inject(ProgramApiService);
+  readonly translatableStringService = inject(TranslatableStringService);
+  readonly toastService = inject(ToastService);
+
+  readonly configurationPending = computed(
     () =>
       this.configuration().state ===
       FspConfigurationStates.configurationPending,
   );
-
-  fspConfigurationService = inject(FspConfigurationService);
-  fspConfigurationApiService = inject(FspConfigurationApiService);
-  programApiService = inject(ProgramApiService);
-  translatableStringService = inject(TranslatableStringService);
-  toastService = inject(ToastService);
 
   programAttributes = injectQuery(
     this.programApiService.getProgramAttributes({
@@ -70,18 +65,10 @@ export class FspConfigurationCardComponent {
     }),
   );
 
-  readonly deleteConfirmationDialog = viewChild.required<FormDialogComponent>(
-    'deleteConfigurationDialog',
-  );
-
   readonly fspConfigurationLabel = computed(
     () =>
       this.translatableStringService.translate(this.configuration().label) ??
       '',
-  );
-
-  readonly deleteConfigurationDialogHeader = computed(
-    () => $localize`Remove` + ` "${this.fspConfigurationLabel()}"`,
   );
 
   readonly fspSetting = computed(
@@ -92,22 +79,19 @@ export class FspConfigurationCardComponent {
     () => FSP_IMAGE_URLS[this.configuration().fspName],
   );
 
-  readonly menuItems = computed<MenuItem[]>(() => [
-    {
-      label: 'Reconfigure',
-      icon: 'pi pi-pencil',
-      command: () => {
-        this.reconfigureFsp.emit(this.configuration());
-      },
-    },
-    {
-      label: 'Delete',
-      icon: 'pi pi-trash',
-      command: () => {
-        this.deleteConfirmationDialog().show();
-      },
-    },
-  ]);
+  readonly menuItems = computed<MenuItem[]>(() =>
+    this.configurationPending()
+      ? []
+      : [
+          {
+            label: 'Reconfigure',
+            icon: 'pi pi-pencil',
+            command: () => {
+              this.reconfigureFsp.emit(this.configuration());
+            },
+          },
+        ],
+  );
 
   readonly requiredRegistrationAttributes = computed(() => {
     const requiredFspAttributes =
@@ -120,19 +104,6 @@ export class FspConfigurationCardComponent {
       this.programAttributes.data()?.find((attr) => attr.name === propertyName),
     );
   });
-
-  deleteConfigurationMutation = injectMutation(() => ({
-    mutationFn: () =>
-      this.fspConfigurationApiService.deleteFspConfiguration({
-        programId: this.programId,
-        configurationName: this.configuration().name,
-      }),
-    onSuccess: () => {
-      this.toastService.showToast({
-        detail: `FSP deleted.`,
-      });
-    },
-  }));
 
   copyToClipboard(text: string) {
     void navigator.clipboard.writeText(text);
