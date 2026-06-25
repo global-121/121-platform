@@ -36,6 +36,7 @@ import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
 import { KoboWebhookBasicAuthGuard } from '@121-service/src/kobo/guards/kobo-webhook-basic-auth.guard';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
+import { KoboImageService } from '@121-service/src/kobo/services/kobo-image.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
 import { MAX_IMPORT_RECORDS } from '@121-service/src/registration/services/registrations-creation.service';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -49,6 +50,7 @@ export class KoboController {
   public constructor(
     private readonly koboService: KoboService,
     private readonly koboSubmissionService: KoboSubmissionService,
+    private readonly koboImageService: KoboImageService,
   ) {}
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramKoboUPDATE] })
@@ -276,5 +278,47 @@ export class KoboController {
     @Body() body: KoboWebhookIncomingSubmission,
   ) {
     await this.koboSubmissionService.processKoboWebhookCall(body);
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationPersonalREAD] })
+  @ApiOperation({
+    summary: 'Get all Kobo image URLs for a registration',
+    description: `Returns the image URLs stored in every 'koboImage'-type registration attribute of the registration. Attributes without a stored image are omitted.`,
+  })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+    description: 'The unique identifier of the program',
+    example: 1,
+  })
+  @ApiParam({
+    name: 'referenceId',
+    required: true,
+    type: 'string',
+    description: 'The reference ID of the registration',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'The stored Kobo image URLs, each with its registration attribute name',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Registration not found',
+  })
+  @Get('programs/:programId/registrations/:referenceId/kobo-images')
+  public async getKoboImages(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('referenceId')
+    referenceId: string,
+  ): Promise<{ images: { attributeName: string; url: string }[] }> {
+    const images = await this.koboImageService.getKoboImageUrls({
+      programId,
+      referenceId,
+    });
+
+    return { images };
   }
 }
