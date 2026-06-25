@@ -467,7 +467,13 @@ export class KoboMockService {
     };
   }
 
-  public getAllSubmissions(uid_asset: string): {
+  public getAllSubmissions({
+    uid_asset,
+    origin,
+  }: {
+    uid_asset: string;
+    origin: string;
+  }): {
     count: number;
     next: null;
     previous: null;
@@ -496,9 +502,11 @@ export class KoboMockService {
           {
             filename:
               'username/attachments/form-id/submission-uuid/important_photo.jpg',
-            download_url:
-              'https://kobo.example.com/api/v2/assets/test/data/1/attachments/1',
-            mimetype: 'image/jpeg',
+            download_url: this.buildAttachmentDownloadUrl({
+              origin,
+              uid_asset,
+            }),
+            mimetype: 'image/png',
           },
         ],
         __version__: asset.version_id,
@@ -538,9 +546,11 @@ export class KoboMockService {
   public getSubmission({
     uid_asset,
     submissionId,
+    origin,
   }: {
     uid_asset: string;
     submissionId: string;
+    origin: string;
   }): Record<string, any> {
     const asset = this.getAssetDeployment(uid_asset);
 
@@ -565,9 +575,11 @@ export class KoboMockService {
           {
             filename:
               'username/attachments/form-id/submission-uuid/important_photo.jpg',
-            download_url:
-              'https://kobo.example.com/api/v2/assets/test/data/1/attachments/1',
-            mimetype: 'image/jpeg',
+            download_url: this.buildAttachmentDownloadUrl({
+              origin,
+              uid_asset,
+            }),
+            mimetype: 'image/png',
           },
         ],
         __version__: asset.version_id,
@@ -641,5 +653,25 @@ export class KoboMockService {
       message: 'Webhook triggered successfully',
       submissionUuid,
     };
+  }
+
+  /**
+   * Builds a self-referential download URL for a submission attachment so that
+   * the 121-service can both validate (origin/path must match the program's
+   * Kobo asset) and actually fetch the image from this mock service.
+   */
+  private buildAttachmentDownloadUrl({
+    origin,
+    uid_asset,
+  }: {
+    origin: string;
+    uid_asset: string;
+  }): string {
+    return joinURL(
+      origin,
+      'api/kobo/api/v2/assets',
+      uid_asset,
+      'data/1/attachments/1',
+    );
   }
 }
