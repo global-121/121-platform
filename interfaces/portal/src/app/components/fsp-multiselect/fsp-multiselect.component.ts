@@ -23,9 +23,6 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
-export interface FspMultiselectOption {
-  name: string;
-}
 
 @Component({
   selector: 'app-fsp-multiselect',
