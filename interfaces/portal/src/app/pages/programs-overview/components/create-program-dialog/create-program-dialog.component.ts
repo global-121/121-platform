@@ -233,7 +233,7 @@ export class CreateProgramDialogComponent {
     this.goToNextStep();
   }
 
-  onSelectionChange(fspLabels: Fsps[]) {
-    console.log('onSelectionChange', fspLabels);
+  onSelectionChange(fsps: Fsps[]) {
+    this.selectedFsps.set(fsps);
   }
 }
