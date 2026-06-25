@@ -120,6 +120,7 @@ export class ProgramSettingsBudgetComponent {
         value: FspTagsComponent,
         type: 'component',
         inputs: { programId: this.programId() },
+        fullWidth: true,
       },
     ];
 
