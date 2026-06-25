@@ -102,7 +102,7 @@ export class FspConfigurationApiService extends DomainApiService {
     configurationName,
   }: {
     programId: Signal<number | string>;
-    configurationName: string;
+    configurationName: Signal<string>;
   }) {
     return this.generateQueryOptions<FspConfigurationProperty[]>({
       path: [
