@@ -390,6 +390,9 @@
       <trans-unit id="2569677772635471712" datatype="html">
         <source>The card number you entered is already linked to another registration.</source>
       </trans-unit>
+      <trans-unit id="2583667945049138476" datatype="html">
+        <source>Unsupported language</source>
+      </trans-unit>
       <trans-unit id="2614607010577950577" datatype="html">
         <source>Overview</source>
       </trans-unit>
@@ -555,6 +558,9 @@
       <trans-unit id="3395013078330530672" datatype="html">
         <source>Threshold amount is required.</source>
       </trans-unit>
+      <trans-unit id="3422018461298008380" datatype="html">
+        <source>Since the 121 portal does not currently support this language, users will not be able to see column names and answers in this language. Contact your account manager to add this language to the portal.</source>
+      </trans-unit>
       <trans-unit id="3443177849607577586" datatype="html">
         <source>Successfully imported submissions from Kobo form</source>
       </trans-unit>
@@ -584,6 +590,9 @@
       </trans-unit>
       <trans-unit id="3553966999267805422" datatype="html">
         <source>Choose a user from the dropdown and assign one or more roles.</source>
+      </trans-unit>
+      <trans-unit id="3560595744015834305" datatype="html">
+        <source>Update successful.</source>
       </trans-unit>
       <trans-unit id="3573847364103936169" datatype="html">
         <source>Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.</source>
@@ -850,6 +859,9 @@
       </trans-unit>
       <trans-unit id="4606793880716021431" datatype="html">
         <source>Serial number</source>
+      </trans-unit>
+      <trans-unit id="4621223146689163852" datatype="html">
+        <source>You can edit each column label to a shorter version.</source>
       </trans-unit>
       <trans-unit id="462133179319783861" datatype="html">
         <source>Fixed transfer value</source>
@@ -1181,6 +1193,9 @@
       <trans-unit id="5969374450397102287" datatype="html">
         <source>Please enter file name.</source>
       </trans-unit>
+      <trans-unit id="5971081331538192247" datatype="html">
+        <source>Data column name</source>
+      </trans-unit>
       <trans-unit id="5995232414192798763" datatype="html">
         <source>Financial Service Provider(s)</source>
       </trans-unit>
@@ -1192,6 +1207,9 @@
       </trans-unit>
       <trans-unit id="6009734842721420603" datatype="html">
         <source>Your form must include the following required fields, using these <x ctype="x-strong" equiv-text="&lt;strong class=&quot;font-display&quot;&gt;" id="START_TAG_STRONG"/>exact data column names<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> (these would be the column headers in Excel).</source>
+      </trans-unit>
+      <trans-unit id="6011590435574005771" datatype="html">
+        <source>Question label</source>
       </trans-unit>
       <trans-unit id="6041115344061899387" datatype="html">
         <source>Rename</source>
@@ -1322,6 +1340,9 @@
       </trans-unit>
       <trans-unit id="6704198793956298786" datatype="html">
         <source>Coopbank verification report</source>
+      </trans-unit>
+      <trans-unit id="6710855517991446782" datatype="html">
+        <source>121 does not support this language currently.</source>
       </trans-unit>
       <trans-unit id="6722480348579256749" datatype="html">
         <source>Payment approved successfully.</source>
@@ -1632,6 +1653,12 @@
       <trans-unit id="8066608938393600549" datatype="html">
         <source>Message</source>
       </trans-unit>
+      <trans-unit id="8089925871034232084" datatype="html">
+        <source>The data column name of the question.</source>
+      </trans-unit>
+      <trans-unit id="8094115796114921772" datatype="html">
+        <source>An error occurred while updating the labels.</source>
+      </trans-unit>
       <trans-unit id="8097251469414276924" datatype="html">
         <source><x ctype="x-strong" equiv-text="&lt;strong class=&quot;txt-system-bold-s&quot;&gt;" id="START_TAG_STRONG"/> <x equiv-text="{{ registrations.data()?.length }}" id="INTERPOLATION"/> registration(s) <x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> found with this number.</source>
       </trans-unit>
@@ -1772,6 +1799,9 @@
       </trans-unit>
       <trans-unit id="8708938501870841219" datatype="html">
         <source>Approval flow</source>
+      </trans-unit>
+      <trans-unit id="8718149515078931594" datatype="html">
+        <source>The label that will be shown in the registration page table header and registration&apos;s profile. The labels can be edited by clicking on the pencil icon above.</source>
       </trans-unit>
       <trans-unit id="8733206904097373941" datatype="html">
         <source>This will download an Excel file with all unused voucher(s).</source>
@@ -1922,6 +1952,9 @@
       </trans-unit>
       <trans-unit id="attribute-edit-info-paymentCountRemaining" datatype="html">
         <source>This field is calculated by subtracting the sent payments from the planned payments. If the limit is removed from the planned payments this field will be empty.</source>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-phoneNumber" datatype="html">
+        <source>Required format: numbers only (including country-code).</source>
       </trans-unit>
       <trans-unit id="attribute-edit-info-scope" datatype="html">
         <source>Separate the parts with a dot (i.e. &apos;amsterdam.west&apos;).</source>
@@ -2591,39 +2624,6 @@
       </trans-unit>
       <trans-unit id="unsaved-changes-warning-label" datatype="html">
         <source>Unsaved changes warning</source>
-      </trans-unit>
-      <trans-unit id="attribute-edit-info-phoneNumber" datatype="html">
-        <source>Required format: numbers only (including country-code).</source>
-      </trans-unit>
-      <trans-unit id="3560595744015834305" datatype="html">
-        <source>Update successful.</source>
-      </trans-unit>
-      <trans-unit id="8094115796114921772" datatype="html">
-        <source>An error occurred while updating the labels.</source>
-      </trans-unit>
-      <trans-unit id="6011590435574005771" datatype="html">
-        <source>Question label</source>
-      </trans-unit>
-      <trans-unit id="5971081331538192247" datatype="html">
-        <source>Data column name</source>
-      </trans-unit>
-      <trans-unit id="8089925871034232084" datatype="html">
-        <source>The data column name of the question.</source>
-      </trans-unit>
-      <trans-unit id="4621223146689163852" datatype="html">
-        <source>You can edit each column label to a shorter version.</source>
-      </trans-unit>
-      <trans-unit id="2583667945049138476" datatype="html">
-        <source>Unsupported language</source>
-      </trans-unit>
-      <trans-unit id="3422018461298008380" datatype="html">
-        <source>Since the 121 portal does not currently support this language, users will not be able to see column names and answers in this language. Contact your account manager to add this language to the portal.</source>
-      </trans-unit>
-      <trans-unit id="6710855517991446782" datatype="html">
-        <source>121 does not support this language currently.</source>
-      </trans-unit>
-      <trans-unit id="8718149515078931594" datatype="html">
-        <source>The label that will be shown in the registration page table header and registration&apos;s profile. The labels can be edited by clicking on the pencil icon above.</source>
       </trans-unit>
     </body>
   </file>

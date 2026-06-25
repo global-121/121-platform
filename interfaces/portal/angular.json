@@ -183,7 +183,7 @@
             "outputPath": "src/locale",
             "prettyNestedTags": false,
             "resetTranslationState": false,
-            "sort": "stableAppendNew",
+            "sort": "idAsc",
             "sortNestedTagAttributes": true,
             "sourceFile": "messages.xlf",
             "targetFiles": [],
