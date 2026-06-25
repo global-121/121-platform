@@ -159,14 +159,15 @@ export class ProgramFspConfigurationsService {
     programId: number,
     programFspConfigurationDto: CreateProgramFspConfigurationDto,
   ): Promise<ProgramFspConfigurationResponseDto> {
-    const newConfigEntity = ProgramFspConfigurationMapper.mapDtoToEntity(
-      programFspConfigurationDto,
-      programId,
-    );
-
-    newConfigEntity.state = this.computeFspConfigurationState({
+    const configState = this.computeFspConfigurationState({
       fspName: programFspConfigurationDto.fspName,
       fspConfigurationProperties: programFspConfigurationDto.properties ?? [],
+    });
+
+    const newConfigEntity = ProgramFspConfigurationMapper.mapDtoToEntity({
+      dto: programFspConfigurationDto,
+      programId,
+      configState,
     });
 
     const savedEntity =

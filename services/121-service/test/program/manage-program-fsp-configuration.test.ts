@@ -182,9 +182,6 @@ describe('Manage FSP-configurations', () => {
       body: createProgramFspConfigurationDtoIncomplete,
       accessToken,
     });
-    expect(createResult.body.state).toBe(
-      FspConfigurationStates.configurationPending,
-    );
 
     // Act - update the config with all required properties
     const updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto = {
@@ -208,6 +205,9 @@ describe('Manage FSP-configurations', () => {
     });
 
     // Assert
+    expect(createResult.body.state).toBe(
+      FspConfigurationStates.configurationPending,
+    );
     expect(updateResult.statusCode).toBe(HttpStatus.OK);
     expect(updateResult.body.state).toBe(FspConfigurationStates.configured);
   });

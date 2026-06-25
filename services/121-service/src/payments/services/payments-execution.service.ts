@@ -76,13 +76,7 @@ export class PaymentsExecutionService {
         type: PaymentEvent.started,
       });
 
-      await this.markTransactionsAsFailedForNotConfiguredFsps({
-        userId,
-        programId,
-        paymentId,
-      });
-
-      await this.markTransactionsAsFailedForNotIncludedRegistrations({
+      await this.markTransactionsAsFailedForInvalidPaymentData({
         userId,
         programId,
         paymentId,
@@ -96,6 +90,28 @@ export class PaymentsExecutionService {
     } finally {
       await this.paymentsProgressService.unlockPaymentsForProgram(programId);
     }
+  }
+
+  private async markTransactionsAsFailedForInvalidPaymentData({
+    userId,
+    programId,
+    paymentId,
+  }: {
+    userId: number;
+    programId: number;
+    paymentId: number;
+  }): Promise<void> {
+    await this.markTransactionsAsFailedForNotConfiguredFsps({
+      userId,
+      programId,
+      paymentId,
+    });
+
+    await this.markTransactionsAsFailedForNotIncludedRegistrations({
+      userId,
+      programId,
+      paymentId,
+    });
   }
 
   private async startQueue({
@@ -281,6 +297,12 @@ export class PaymentsExecutionService {
         paymentId,
         userId,
         type: PaymentEvent.retry,
+      });
+
+      await this.markTransactionsAsFailedForInvalidPaymentData({
+        userId,
+        programId,
+        paymentId,
       });
 
       await this.createTransactionJobs({
