@@ -27,6 +27,13 @@
     "source.fixAll.eslint": "explicit",
     "source.removeUnusedImports": "explicit"
   },
+  "github.copilot.chat.context.fileExclusions": [
+    "**/.env",
+    "**/.env.*",
+    "**/secrets.*",
+    "**/*.pem",
+    "**/*.key"
+  ],
   "js/ts.tsdk.path": "./node_modules/typescript/lib",
   "js/ts.tsdk.promptToUseWorkspaceVersion": true,
   "regexrobin.rules": [
