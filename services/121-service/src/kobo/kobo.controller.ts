@@ -282,8 +282,8 @@ export class KoboController {
 
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationPersonalREAD] })
   @ApiOperation({
-    summary: 'Download a Kobo image for a registration attribute',
-    description: `Streams the actual image bytes for a specific 'koboImage'-type registration attribute. The backend fetches the image from Kobo using the stored API token and pipes it to the client.`,
+    summary: 'Get all Kobo image URLs for a registration',
+    description: `Returns the image URLs stored in every 'koboImage'-type registration attribute of the registration. Attributes without a stored image are omitted.`,
   })
   @ApiParam({
     name: 'programId',
@@ -298,45 +298,27 @@ export class KoboController {
     type: 'string',
     description: 'The reference ID of the registration',
   })
-  @ApiParam({
-    name: 'attributeName',
-    required: true,
-    type: 'string',
-    description: 'The name of the koboImage registration attribute',
-  })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'The image binary stream',
-    schema: { type: 'string', format: 'binary' },
+    description:
+      'The stored Kobo image URLs, each with its registration attribute name',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Registration, attribute, or image not found',
+    description: 'Registration not found',
   })
-  @Get(
-    'programs/:programId/registrations/:referenceId/kobo-images/:attributeName',
-  )
-  public async getKoboImage(
+  @Get('programs/:programId/registrations/:referenceId/kobo-images')
+  public async getKoboImages(
     @Param('programId', ParseIntPipe)
     programId: number,
     @Param('referenceId')
     referenceId: string,
-    @Param('attributeName')
-    attributeName: string,
-    @Res() res: Response,
-  ): Promise<void> {
-    const { stream, mimetype } = await this.koboImageService.getKoboImageStream(
-      {
-        programId,
-        referenceId,
-        attributeName,
-      },
-    );
-
-    res.writeHead(HttpStatus.OK, {
-      'Content-Type': mimetype,
+  ): Promise<{ images: { attributeName: string; url: string }[] }> {
+    const images = await this.koboImageService.getKoboImageUrls({
+      programId,
+      referenceId,
     });
 
-    stream.pipe(res);
+    return { images };
   }
 }
