@@ -1,6 +1,8 @@
 <app-card-with-link
   (cardClicked)="reconfigureFsp.emit(configuration())"
   [title]="fspConfigurationLabel()"
+  [titleColoredChipLabel]="'Pending'"
+  [titleColoredChipColor]="'orange'"
   [menuItems]="menuItems()"
   [image]="fspImage()"
 >
@@ -9,6 +11,17 @@
   </ng-container>
 
   <ng-container card-content>
+    @if (isPending()) {
+      <app-notification-banner
+        [color]="'orange'"
+        [content]="{
+          title: 'Pending FSP',
+          description: 'Complete the integration before starting payments.',
+          icon: 'alert',
+        }"
+      />
+    }
+
     @if (requiredRegistrationAttributes().length > 0) {
       <p-accordion
         style="

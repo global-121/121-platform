@@ -207,6 +207,9 @@
       <trans-unit id="1867309401161150879" datatype="html">
         <source>The data of the 121 Platform is hosted in a Microsoft Azure-environment of The Netherlands Red Cross.</source>
       </trans-unit>
+      <trans-unit id="187187500641108332" datatype="html">
+        <source><x equiv-text="{{ content.title }}" id="INTERPOLATION"/></source>
+      </trans-unit>
       <trans-unit id="1872549287181572098" datatype="html">
         <source>Import existing registrations from your Kobo form.</source>
       </trans-unit>
@@ -1100,9 +1103,6 @@
       <trans-unit id="5558547280081275233" datatype="html">
         <source>Approvals</source>
       </trans-unit>
-      <trans-unit id="5567795196823052308" datatype="html">
-        <source>please wait before creating a new payment.</source>
-      </trans-unit>
       <trans-unit id="5568900620756681669" datatype="html">
         <source>Your form must include the following required fields in this <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>exact format<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> for this FSP integration in the data column name:</source>
       </trans-unit>
@@ -1265,9 +1265,6 @@
       </trans-unit>
       <trans-unit id="6342731461089211149" datatype="html">
         <source>Should be an ISO 4217 currency code (full list available on Wikipedia).</source>
-      </trans-unit>
-      <trans-unit id="6350305312750969481" datatype="html">
-        <source>Payment in progress</source>
       </trans-unit>
       <trans-unit id="635399988713647542" datatype="html">
         <source>If you have any questions about our use of necessary cookies, please feel free to contact us at:</source>
@@ -1499,6 +1496,9 @@
       </trans-unit>
       <trans-unit id="7267039351824245641" datatype="html">
         <source>You&apos;re about to permanently close card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>. This means that the funds on the card will be booked back and the card will not be replaced.</source>
+      </trans-unit>
+      <trans-unit id="7271750268858294457" datatype="html">
+        <source>- <x equiv-text="{{ content.description }}" id="INTERPOLATION"/></source>
       </trans-unit>
       <trans-unit id="7313006626571837182" datatype="html">
         <source>There are no specific fields needed for this integration</source>

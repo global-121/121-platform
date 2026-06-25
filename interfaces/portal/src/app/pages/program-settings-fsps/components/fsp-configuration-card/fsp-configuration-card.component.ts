@@ -18,9 +18,11 @@ import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
+import { NotificationBannerComponent } from '~/components/notification-banner/notification-banner.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.helper';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
@@ -37,6 +39,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     TableModule,
     CardWithLinkComponent,
     AccordionModule,
+    NotificationBannerComponent,
   ],
   templateUrl: './fsp-configuration-card.component.html',
   styles: ``,
@@ -47,6 +50,12 @@ export class FspConfigurationCardComponent {
   readonly programId = input.required<string>();
   readonly configuration = input.required<FspConfiguration>();
   readonly reconfigureFsp = output<FspConfiguration>();
+
+  readonly isPending = computed(
+    () =>
+      this.configuration().state ===
+      FspConfigurationStates.configurationPending,
+  );
 
   fspConfigurationService = inject(FspConfigurationService);
   fspConfigurationApiService = inject(FspConfigurationApiService);

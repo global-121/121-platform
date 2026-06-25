@@ -10,7 +10,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TooltipModule } from 'primeng/tooltip';
 
-import { TopPageBannerComponent } from '~/components/top-page-banner/top-page-banner.component';
+import { NotificationBannerComponent } from '~/components/notification-banner/notification-banner.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { registrationLink } from '~/domains/registration/registration.helper';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -21,7 +21,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     SvgIconComponent,
     RouterLink,
     TooltipModule,
-    TopPageBannerComponent,
+    NotificationBannerComponent,
   ],
   templateUrl: './registration-duplicates-banner.component.html',
   styles: ``,
