@@ -14,15 +14,17 @@ export class FspsController {
   public constructor(private readonly fspService: FspsService) {}
 
   @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({ summary: 'Get all Financial Service Providers. (Fsps)' })
+  @ApiOperation({
+    summary: 'Get all enabled Financial Service Providers. (Fsps)',
+  })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'All Fsps with attributes',
+    description: 'All enabled Fsps with attributes',
     type: FspSettingsDto,
   })
   @Get()
   public async getAllFsps(): Promise<FspSettingsDto[]> {
-    return await this.fspService.getAllFsps();
+    return await this.fspService.getEnabledFsps();
   }
 
   @ApiOperation({ summary: 'Get Financial Service Provider (Fsp) by name.' })
