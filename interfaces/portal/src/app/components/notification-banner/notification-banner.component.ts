@@ -6,27 +6,43 @@ import {
   input,
 } from '@angular/core';
 
+interface NotificationBannerContent {
+  title: string;
+  description: string;
+  info?: string;
+  icon?: NotificationBannerIcon;
+}
+
+export type NotificationBannerColor =
+  | 'blue'
+  | 'contrast'
+  | 'green'
+  | 'grey'
+  | 'orange'
+  | 'purple'
+  | 'red'
+  | 'yellow';
+
+export type NotificationBannerIcon =
+  | 'alert'
+  | 'check'
+  | 'info'
+  | 'spinner'
+  | 'warning';
+
 @Component({
-  selector: 'app-top-page-banner',
+  selector: 'app-notification-banner',
   imports: [NgClass],
-  templateUrl: './top-page-banner.component.html',
+  templateUrl: './notification-banner.component.html',
   styles: ``,
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TopPageBannerComponent {
-  readonly color = input.required<
-    | 'blue'
-    | 'contrast'
-    | 'green'
-    | 'grey'
-    | 'orange'
-    | 'purple'
-    | 'red'
-    | 'yellow'
-  >();
+export class NotificationBannerComponent {
+  readonly content = input<NotificationBannerContent>();
+  readonly color = input.required<NotificationBannerColor>();
 
-  readonly ngClass = computed(() => {
+  readonly wrapperVariant = computed(() => {
     // Do not replace with something like `bg-${this.variant()}-100` as it would not work with tailwind's JIT compiler
     // https://tailwindcss.com/docs/just-in-time-mode
     switch (this.color()) {
@@ -46,6 +62,23 @@ export class TopPageBannerComponent {
         return `border-grey-500 bg-grey-100 text-grey-700`;
       case 'contrast':
         return `border-grey-50 bg-grey-50 text-grey-900`;
+      default:
+        return '';
+    }
+  });
+
+  readonly iconVariant = computed(() => {
+    switch (this.content()?.icon) {
+      case 'info':
+        return `pi pi-info`;
+      case 'check':
+        return `pi pi-check`;
+      case 'spinner':
+        return `pi pi-spinner animate-spin`;
+      case 'warning':
+        return `pi pi-exclamation-triangle`;
+      case 'alert':
+        return `pi pi-exclamation-circle`;
       default:
         return '';
     }

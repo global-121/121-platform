@@ -11,8 +11,8 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardGridComponent } from '~/components/card-grid/card-grid.component';
+import { NotificationBannerComponent } from '~/components/notification-banner/notification-banner.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
-import { TopPageBannerComponent } from '~/components/top-page-banner/top-page-banner.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { CreatePaymentComponent } from '~/pages/program-payments/components/create-payment/create-payment.component';
 import { ExportPaymentsComponent } from '~/pages/program-payments/components/export-payments/export-payments.component';
@@ -27,7 +27,7 @@ import { AuthService } from '~/services/auth.service';
     ExportPaymentsComponent,
     CardGridComponent,
     CreatePaymentComponent,
-    TopPageBannerComponent,
+    NotificationBannerComponent,
   ],
   templateUrl: './program-payments.page.html',
   styles: ``,
