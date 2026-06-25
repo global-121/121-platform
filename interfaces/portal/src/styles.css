@@ -168,6 +168,8 @@ svg-icon svg {
   }
 
   .wrapped-chip-multiselect {
+    anchor-name: --my-anchor-multiselect;
+
     .p-multiselect-header:empty {
       @apply hidden;
     }
@@ -180,11 +182,11 @@ svg-icon svg {
       proper way to position the overlay, so we have to override it ourselves
     */
     p-overlay {
-      @apply absolute! bottom-0;
-
-      .p-overlay {
-        @apply top-0!;
-      }
+      position: absolute;
+      position-anchor: --my-anchor-multiselect;
+      bottom: anchor(top);
+      position-try-fallbacks: flip-block;
+      justify-self: anchor-center;
     }
 
     /* 
