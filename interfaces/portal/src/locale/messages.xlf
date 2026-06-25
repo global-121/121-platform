@@ -116,9 +116,6 @@
       <trans-unit id="1545261806462361427" datatype="html">
         <source>Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></source>
       </trans-unit>
-      <trans-unit id="157548652954522016" datatype="html">
-        <source>Click to reconfigure</source>
-      </trans-unit>
       <trans-unit id="1579692722565712588" datatype="html">
         <source>Okay</source>
       </trans-unit>
@@ -163,9 +160,6 @@
       </trans-unit>
       <trans-unit id="17234570072885140" datatype="html">
         <source>Registrations</source>
-      </trans-unit>
-      <trans-unit id="173881015099071159" datatype="html">
-        <source>Add another FSP</source>
       </trans-unit>
       <trans-unit id="1755386264837692034" datatype="html">
         <source>User updated</source>
@@ -315,9 +309,6 @@
       <trans-unit id="2317261224640464417" datatype="html">
         <source>Write a reason for the update</source>
       </trans-unit>
-      <trans-unit id="2330756841114483977" datatype="html">
-        <source>Choose another FSP:</source>
-      </trans-unit>
       <trans-unit id="2336550011721758066" datatype="html">
         <source>Log in</source>
       </trans-unit>
@@ -365,6 +356,9 @@
       </trans-unit>
       <trans-unit id="2484327586042742796" datatype="html">
         <source>Date is after</source>
+      </trans-unit>
+      <trans-unit id="2506069337302541920" datatype="html">
+        <source><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [label]=&quot;configurationPending() ? &apos;Integration required&apos; : &apos;Integrated&apos;&quot; i18n-label [variant]=&quot;configurationPending() ? &apos;red&apos; : &apos;green&apos;&quot; &gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;/app-colored-chip&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/></source>
       </trans-unit>
       <trans-unit id="2511966165374777397" datatype="html">
         <source>This might take a few minutes. The file will be automatically downloaded when ready. Closing this notification will not cancel the export.</source>
@@ -884,9 +878,6 @@
       <trans-unit id="471816275243265264" datatype="html">
         <source>Location</source>
       </trans-unit>
-      <trans-unit id="4725718925572069565" datatype="html">
-        <source>Click to integrate</source>
-      </trans-unit>
       <trans-unit id="4746344653872488527" datatype="html">
         <source>Export payment list</source>
       </trans-unit>
@@ -901,12 +892,6 @@
       </trans-unit>
       <trans-unit id="4803523554231687262" datatype="html">
         <source>Delete payment</source>
-      </trans-unit>
-      <trans-unit id="4814285799071780083" datatype="html">
-        <source>Remove</source>
-      </trans-unit>
-      <trans-unit id="4821724891066824263" datatype="html">
-        <source>You&apos;re about to remove the &quot;<x equiv-text="{{ fspConfigurationLabel() }}" id="INTERPOLATION"/>&quot; FSP configuration from your program. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
       </trans-unit>
       <trans-unit id="4866288342540923037" datatype="html">
         <source>No of Cards Ordered</source>
@@ -1340,6 +1325,9 @@
       </trans-unit>
       <trans-unit id="6770883928375952203" datatype="html">
         <source>KoboToolbox</source>
+      </trans-unit>
+      <trans-unit id="6772516579263393122" datatype="html">
+        <source>Integrate</source>
       </trans-unit>
       <trans-unit id="6819146217568220494" datatype="html">
         <source>There are no payments for this program yet.</source>
@@ -2543,9 +2531,6 @@
       </trans-unit>
       <trans-unit id="registration-status-validated" datatype="html">
         <source>Validated</source>
-      </trans-unit>
-      <trans-unit id="remove-fsp" datatype="html">
-        <source>Remove FSP</source>
       </trans-unit>
       <trans-unit id="remove-user-button" datatype="html">
         <source>Remove user</source>
