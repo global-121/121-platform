@@ -1103,9 +1103,6 @@
       <trans-unit id="5587438863454126747" datatype="html">
         <source>New data</source>
       </trans-unit>
-      <trans-unit id="5590086849807274701" datatype="html">
-        <source>Scope</source>
-      </trans-unit>
       <trans-unit id="5595826100350402634" datatype="html">
         <source>Use the arrow keys or W A S D to play the game</source>
       </trans-unit>
@@ -1174,9 +1171,6 @@
       </trans-unit>
       <trans-unit id="5918723526444903137" datatype="html">
         <source>Add user</source>
-      </trans-unit>
-      <trans-unit id="593137515549076612" datatype="html">
-        <source>(Scope - <x equiv-text="{{ duplicate.scope }}" id="INTERPOLATION"/>)</source>
       </trans-unit>
       <trans-unit id="5951235042771324221" datatype="html">
         <source>&quot;<x equiv-text="text" id="PH"/>&quot; copied to clipboard</source>
@@ -2527,9 +2521,6 @@
       </trans-unit>
       <trans-unit id="registration-phone-number" datatype="html">
         <source>Phone number</source>
-      </trans-unit>
-      <trans-unit id="registration-scope" datatype="html">
-        <source>Scope</source>
       </trans-unit>
       <trans-unit id="registration-status" datatype="html">
         <source>Registration Status</source>
