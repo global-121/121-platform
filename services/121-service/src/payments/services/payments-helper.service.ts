@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { getFspConfigurationRequiredProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 @Injectable()
@@ -16,22 +16,21 @@ export class PaymentsHelperService {
   ): Promise<void> {
     const validationResults = await Promise.all(
       programFspConfigurationNames.map((name) =>
-        this.validateFspSettings(programId, name),
+        this.validateFspConfiguration(programId, name),
       ),
     );
-    const errorMessages = validationResults.flat();
+    const errorMessages = validationResults.filter(
+      (result): result is string => result !== undefined,
+    );
     if (errorMessages.length > 0) {
-      throw new HttpException(
-        `${errorMessages.join(', ')}`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(errorMessages.join(', '), HttpStatus.BAD_REQUEST);
     }
   }
 
-  private async validateFspSettings(
+  private async validateFspConfiguration(
     programId: number,
     programFspConfigurationName: string,
-  ): Promise<string[]> {
+  ): Promise<string | undefined> {
     const config = await this.programFspConfigurationRepository.findOne({
       where: {
         name: Equal(programFspConfigurationName),
@@ -40,33 +39,14 @@ export class PaymentsHelperService {
       relations: ['properties'],
     });
 
-    const errorMessages: string[] = [];
     if (!config) {
-      errorMessages.push(
-        `Missing Program FSP configuration with name ${programFspConfigurationName}`,
-      );
-      return errorMessages;
+      return `Missing Program FSP configuration with name ${programFspConfigurationName}`;
     }
 
-    const requiredConfigurations = getFspConfigurationRequiredProperties(
-      config.fspName,
-    );
-    // Early return for FSP that don't have required configurations
-    if (!requiredConfigurations) {
-      return [];
+    if (config.state !== FspConfigurationStates.configured) {
+      return `Program FSP configuration ${programFspConfigurationName} is not fully configured`;
     }
 
-    for (const requiredConfiguration of requiredConfigurations) {
-      const foundConfig = config.properties.find(
-        (c) => c.name === requiredConfiguration,
-      );
-      if (!foundConfig) {
-        errorMessages.push(
-          `Missing required configuration ${requiredConfiguration} for FSP ${config.fspName}`,
-        );
-      }
-    }
-
-    return errorMessages;
+    return;
   }
 }

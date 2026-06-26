@@ -9,32 +9,32 @@ import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
-  approvePayment,
-  createPayment,
-  getPaymentEvents,
-  getPaymentSummary,
-  getTransactionsByPaymentIdPaginated,
-  retryPayment,
-  startPayment,
-  waitForPaymentAndTransactionsToComplete,
-  waitForPaymentNotInProgress,
+    approvePayment,
+    createPayment,
+    getPaymentEvents,
+    getPaymentSummary,
+    getTransactionsByPaymentIdPaginated,
+    retryPayment,
+    startPayment,
+    waitForPaymentAndTransactionsToComplete,
+    waitForPaymentNotInProgress,
 } from '@121-service/test/helpers/program.helper';
 import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
-  awaitChangeRegistrationStatus,
-  getRegistrations,
-  seedIncludedRegistrations,
-  waitForRegistrationToHaveUpdatedPaymentCount,
+    awaitChangeRegistrationStatus,
+    getRegistrations,
+    seedIncludedRegistrations,
+    waitForRegistrationToHaveUpdatedPaymentCount,
 } from '@121-service/test/helpers/registration.helper';
 import {
-  createAccessTokenWithPermissions,
-  getAccessToken,
-  resetDB,
+    createAccessTokenWithPermissions,
+    getAccessToken,
+    resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
-  registrationPV5,
-  registrationPV6,
+    programIdPV,
+    registrationPV5,
+    registrationPV6,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Payment start', () => {
@@ -156,14 +156,13 @@ describe('Payment start', () => {
     expect(summaryAfterStart.body.hasBeenStarted).toBe(true);
   });
 
-  it('should fail transactions where the FSP configuration is pending', async () => {
+  it('should reject starting a payment when the FSP configuration is pending', async () => {
     // Arrange
     const registration = registrationPV5;
     await seedIncludedRegistrations([registration], programId, accessToken);
     const paymentReferenceIds = [registration.referenceId];
 
     // Create and approve the payment while the FSP is still fully configured
-    // This would fail if the FSP configuration is pending
     const createPaymentResponse = await createPayment({
       programId,
       transferValue,
@@ -191,31 +190,11 @@ describe('Payment start', () => {
       paymentId,
       accessToken,
     });
-    await waitForPaymentAndTransactionsToComplete({
-      programId,
-      paymentReferenceIds,
-      paymentId,
-      accessToken,
-      maxWaitTimeMs: 20_000,
-      completeStatuses: [
-        TransactionStatusEnum.success,
-        TransactionStatusEnum.error,
-      ],
-    });
 
     // Assert
-    const getTransactionsResponse = await getTransactionsByPaymentIdPaginated({
-      programId,
-      paymentId,
-      registrationReferenceId: registration.referenceId,
-      accessToken,
-    });
-    const transactions = getTransactionsResponse.body.data;
-
-    expect(startPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(transactions[0].status).toBe(TransactionStatusEnum.error);
-    expect(transactions[0].errorMessage).toBe(
-      'FSP configuration is not fully configured',
+    expect(startPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(startPaymentResponse.body.message).toBe(
+      `Program FSP configuration ${Fsps.intersolveVoucherWhatsapp} is not fully configured`,
     );
   });
 

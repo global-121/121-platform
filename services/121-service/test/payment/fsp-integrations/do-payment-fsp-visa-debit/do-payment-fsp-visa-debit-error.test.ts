@@ -361,12 +361,8 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
 
     expect(doPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
-    // Check if both properties are mentioned in the error message
     expect(doPaymentResponse.body.message).toContain(
-      FspConfigurationProperties.coverLetterCode,
-    );
-    expect(doPaymentResponse.body.message).toContain(
-      FspConfigurationProperties.fundingTokenCode,
+      `Program FSP configuration ${Fsps.intersolveVisa} is not fully configured`,
     );
   });
 
