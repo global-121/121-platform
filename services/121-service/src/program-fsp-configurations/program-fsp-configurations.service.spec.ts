@@ -5,6 +5,7 @@ import { Equal } from 'typeorm';
 
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
@@ -40,6 +41,9 @@ const validPropertyDto: CreateProgramFspConfigurationPropertyDto = {
 // Declaring mocks here so they are accessible through all files
 let mockProgramFspConfigurationRepository;
 let mockProgramFspConfigurationPropertyRepository;
+let mockPaymentsProgressService: {
+  checkPaymentInProgressAndThrow: jest.Mock;
+};
 
 describe('ProgramFspConfigurationsService', () => {
   let service: ProgramFspConfigurationsService;
@@ -90,6 +94,10 @@ describe('ProgramFspConfigurationsService', () => {
       }),
     };
 
+    mockPaymentsProgressService = {
+      checkPaymentInProgressAndThrow: jest.fn().mockResolvedValue(undefined),
+    };
+
     const moduleRef = await Test.createTestingModule({
       providers: [
         ProgramFspConfigurationsService,
@@ -112,6 +120,10 @@ describe('ProgramFspConfigurationsService', () => {
           useValue: {
             find: jest.fn().mockResolvedValue([]),
           },
+        },
+        {
+          provide: PaymentsProgressService,
+          useValue: mockPaymentsProgressService,
         },
       ],
     }).compile();
@@ -545,5 +557,97 @@ describe('ProgramFspConfigurationsService', () => {
         id: 100,
       });
     });
+  });
+
+  describe('Prevent mutations when payment is in progress', () => {
+    const paymentInProgressException = new HttpException(
+      { errors: 'Payment is already in progress' },
+      HttpStatus.BAD_REQUEST,
+    );
+
+    function expectNoMutations() {
+      expect(mockProgramFspConfigurationRepository.save).not.toHaveBeenCalled();
+      expect(
+        mockProgramFspConfigurationRepository.delete,
+      ).not.toHaveBeenCalled();
+      expect(
+        mockProgramFspConfigurationPropertyRepository.save,
+      ).not.toHaveBeenCalled();
+      expect(
+        mockProgramFspConfigurationPropertyRepository.delete,
+      ).not.toHaveBeenCalled();
+    }
+
+    const mutationCases = [
+      {
+        method: 'create',
+        invoke: (svc: ProgramFspConfigurationsService) =>
+          svc.create(programId, {
+            name: 'Test Configuration',
+            fspName: Fsps.intersolveVisa,
+            label: { en: 'Test Label' },
+            properties: [validPropertyDto],
+          }),
+      },
+      {
+        method: 'update',
+        invoke: (svc: ProgramFspConfigurationsService) =>
+          svc.update(programId, configName, {
+            label: { en: 'Updated Label' },
+            properties: [],
+          }),
+      },
+      {
+        method: 'delete',
+        invoke: (svc: ProgramFspConfigurationsService) =>
+          svc.delete(programId, configName),
+      },
+      {
+        method: 'createProperties',
+        invoke: (svc: ProgramFspConfigurationsService) =>
+          svc.createProperties({
+            programId,
+            name: configName,
+            properties: [validPropertyDto],
+          }),
+      },
+      {
+        method: 'updateProperty',
+        invoke: (svc: ProgramFspConfigurationsService) =>
+          svc.updateProperty({
+            programId,
+            name: configName,
+            propertyName: FspConfigurationProperties.brandCode,
+            property: { value: 'UpdatedValue' },
+          }),
+      },
+      {
+        method: 'deleteProperty',
+        invoke: (svc: ProgramFspConfigurationsService) =>
+          svc.deleteProperty({
+            programId,
+            name: configName,
+            propertyName: FspConfigurationProperties.brandCode,
+          }),
+      },
+    ];
+
+    it.each(mutationCases)(
+      'should throw and not mutate when a payment is in progress for $method',
+      async ({ invoke }) => {
+        mockPaymentsProgressService.checkPaymentInProgressAndThrow.mockRejectedValueOnce(
+          paymentInProgressException,
+        );
+
+        await expect(invoke(service)).rejects.toThrow(
+          paymentInProgressException,
+        );
+
+        expect(
+          mockPaymentsProgressService.checkPaymentInProgressAndThrow,
+        ).toHaveBeenCalledWith(programId);
+        expectNoMutations();
+      },
+    );
   });
 });

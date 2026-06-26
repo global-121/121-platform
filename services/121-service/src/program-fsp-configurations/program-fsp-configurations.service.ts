@@ -13,6 +13,7 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/fsp-management/fsp-attribute-type-mapping';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
+import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { ProgramFspConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
@@ -36,6 +37,7 @@ export class ProgramFspConfigurationsService {
   constructor(
     private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
     private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
+    private readonly paymentsProgressService: PaymentsProgressService,
   ) {}
 
   public async getByProgramId(
@@ -56,6 +58,9 @@ export class ProgramFspConfigurationsService {
     programId: number,
     programFspConfigurationDto: CreateProgramFspConfigurationDto,
   ): Promise<ProgramFspConfigurationResponseDto> {
+    await this.paymentsProgressService.checkPaymentInProgressAndThrow(
+      programId,
+    );
     await this.validate(programId, programFspConfigurationDto);
     await this.createMissingFspRegistrationAttributes(
       programId,
@@ -167,6 +172,9 @@ export class ProgramFspConfigurationsService {
     name: string,
     updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto,
   ): Promise<ProgramFspConfigurationResponseDto> {
+    await this.paymentsProgressService.checkPaymentInProgressAndThrow(
+      programId,
+    );
     const config = await this.programFspConfigurationRepository.findOne({
       where: {
         name: Equal(name),
@@ -212,6 +220,9 @@ export class ProgramFspConfigurationsService {
   }
 
   public async delete(programId: number, name: string): Promise<void> {
+    await this.paymentsProgressService.checkPaymentInProgressAndThrow(
+      programId,
+    );
     const config = await this.programFspConfigurationRepository.findOne({
       where: {
         name: Equal(name),
@@ -253,6 +264,9 @@ export class ProgramFspConfigurationsService {
     name: string;
     properties: CreateProgramFspConfigurationPropertyDto[];
   }): Promise<ProgramFspConfigurationPropertyResponseDto[]> {
+    await this.paymentsProgressService.checkPaymentInProgressAndThrow(
+      programId,
+    );
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
       name,
@@ -352,6 +366,9 @@ export class ProgramFspConfigurationsService {
     propertyName: FspConfigurationProperties;
     property: UpdateProgramFspConfigurationPropertyDto;
   }): Promise<ProgramFspConfigurationPropertyResponseDto> {
+    await this.paymentsProgressService.checkPaymentInProgressAndThrow(
+      programId,
+    );
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
       name,
@@ -386,6 +403,9 @@ export class ProgramFspConfigurationsService {
     name: string;
     propertyName: FspConfigurationProperties;
   }): Promise<void> {
+    await this.paymentsProgressService.checkPaymentInProgressAndThrow(
+      programId,
+    );
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
       name,

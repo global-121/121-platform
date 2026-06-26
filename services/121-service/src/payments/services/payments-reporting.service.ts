@@ -16,7 +16,7 @@ import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentRepository } from '@121-service/src/payments/repositories/payment.repository';
 import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
-import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
@@ -34,7 +34,7 @@ export class PaymentsReportingService {
   public constructor(
     private readonly paymentRepository: PaymentRepository,
     private readonly paymentsReportingHelperService: PaymentsReportingHelperService,
-    private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
+    private readonly paymentsProgressService: PaymentsProgressService,
     private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
     private readonly registrationPaginationService: RegistrationsPaginationService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
@@ -126,7 +126,7 @@ export class PaymentsReportingService {
   ): Promise<ProgramPaymentsStatusDto> {
     return {
       inProgress:
-        await this.paymentsProgressHelperService.isPaymentInProgress(programId),
+        await this.paymentsProgressService.isPaymentInProgress(programId),
     };
   }
 
