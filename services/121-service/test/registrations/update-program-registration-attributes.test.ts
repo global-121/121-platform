@@ -55,9 +55,10 @@ describe('Update program registration attributes in batch', () => {
     const updatedAttributes = response.body;
 
     expect(updatedAttributes).toHaveLength(2);
-    expect(updatedAttributes[0]['label']['en']).toBe('WhatsApp Phone Number');
-    expect(updatedAttributes[1]['label']['en']).toBe('Address PostalCode');
-    expect(updatedAttributes[1]['placeholder']['en']).toBe('Postal code');
+    // Results are ordered by name ASC: addressPostalCode before whatsappPhoneNumber
+    expect(updatedAttributes[0]['label']['en']).toBe('Address PostalCode');
+    expect(updatedAttributes[0]['placeholder']['en']).toBe('Postal code');
+    expect(updatedAttributes[1]['label']['en']).toBe('WhatsApp Phone Number');
   });
 
   it('should fail on updating a non existing attribute name', async () => {
