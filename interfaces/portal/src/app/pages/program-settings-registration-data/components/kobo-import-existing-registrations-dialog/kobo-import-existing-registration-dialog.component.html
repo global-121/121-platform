@@ -47,14 +47,14 @@
           severity="secondary"
           [rounded]="true"
           label="Cancel"
-          i18n-label
+          i18n-label="@@generic-cancel"
         />
         <p-button
           [loading]="importExistingSubmissions.isPending()"
           (click)="importExistingSubmissions.mutate()"
           label="Import registrations"
-          [rounded]="true"
           i18n-label
+          [rounded]="true"
         />
       </div>
     }
@@ -67,7 +67,7 @@
           (click)="closeDialog()"
           [rounded]="true"
           label="Close"
-          i18n-label
+          i18n-label="@@generic-close"
         />
       </div>
     }
@@ -136,7 +136,7 @@
       <div class="mt-5 flex justify-end gap-4">
         <p-button
           label="Close"
-          i18n-label
+          i18n-label="@@generic-close"
           (click)="closeDialog()"
           [rounded]="true"
         />

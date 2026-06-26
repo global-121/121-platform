@@ -35,9 +35,6 @@
       <trans-unit id="1160840788795450422" datatype="html">
         <source>At least one column must be selected</source>
       </trans-unit>
-      <trans-unit id="1181910457994920507" datatype="html">
-        <source>Proceed</source>
-      </trans-unit>
       <trans-unit id="11993744433894410" datatype="html">
         <source>Last updated: <x ctype="x-time" equiv-text="&lt;time data-testid=&quot;kobo-integration-last-updated&quot; [attr.datetime]=&quot;koboIntegration.data()?.updated | date: &apos;short&apos;&quot; &gt;" id="START_TAG_TIME"/><x equiv-text="{{ koboIntegration.data()?.updated | date: &apos;short&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time &gt;" id="CLOSE_TAG_TIME"/></source>
       </trans-unit>
@@ -248,9 +245,6 @@
       </trans-unit>
       <trans-unit id="2121303710925969971" datatype="html">
         <source>Ordered By</source>
-      </trans-unit>
-      <trans-unit id="2159130950882492111" datatype="html">
-        <source>Cancel</source>
       </trans-unit>
       <trans-unit id="2161871078253886554" datatype="html">
         <source>Unknown user</source>
@@ -638,9 +632,6 @@
       </trans-unit>
       <trans-unit id="3757859142679780974" datatype="html">
         <source>Kobo form ”<x equiv-text="this.koboIntegration.data()?.name" id="PH"/>” does not have existing registrations. New registrations will be synced to the program automatically.</source>
-      </trans-unit>
-      <trans-unit id="3768927257183755959" datatype="html">
-        <source>Save</source>
       </trans-unit>
       <trans-unit id="37959892232763790" datatype="html">
         <source>Welcome to <x equiv-text="{{ program.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
@@ -1383,9 +1374,6 @@
       <trans-unit id="6988584798455615907" datatype="html">
         <source>The new password must be at least 8 characters long.</source>
       </trans-unit>
-      <trans-unit id="7000649363168371045" datatype="html">
-        <source>Save changes</source>
-      </trans-unit>
       <trans-unit id="7003345492545522906" datatype="html">
         <source>These are the errors related to your Kobo form settings.</source>
       </trans-unit>
@@ -1586,9 +1574,6 @@
       </trans-unit>
       <trans-unit id="7814604735706675498" datatype="html">
         <source>Cards ordered</source>
-      </trans-unit>
-      <trans-unit id="7819314041543176992" datatype="html">
-        <source>Close</source>
       </trans-unit>
       <trans-unit id="7855962245426283369" datatype="html">
         <source>Pending reason</source>
@@ -2226,6 +2211,9 @@
       </trans-unit>
       <trans-unit id="generic-save" datatype="html">
         <source>Save</source>
+      </trans-unit>
+      <trans-unit id="generic-save-changes" datatype="html">
+        <source>Save changes</source>
       </trans-unit>
       <trans-unit id="generic-success" datatype="html">
         <source>Success</source>
