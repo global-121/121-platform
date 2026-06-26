@@ -520,6 +520,7 @@ export class ProgramRegistrationAttributesService {
           name: In(programAttributesToUpdateNames),
           programId: Equal(programId),
         },
+        order: { name: 'ASC' },
       });
 
     for (const programRegistrationAttributeFromRepo of programRegistrationAttributesFromRepo) {
