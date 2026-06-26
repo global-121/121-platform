@@ -36,6 +36,44 @@ export class RegistrationDataService {
     }
   }
 
+  /**
+   * Fetches the values for multiple registration attribute names in a single
+   * query to avoid an N+1 query pattern. Returns a Map keyed by attribute name;
+   * names without a stored value are omitted.
+   */
+  public async getRegistrationDataValuesByNames(
+    registration: RegistrationEntity,
+    names: string[],
+  ): Promise<Map<string, string>> {
+    const valuesByName = new Map<string, string>();
+    if (names.length === 0) {
+      return valuesByName;
+    }
+
+    const results = await this.registrationDataScopedRepository
+      .createQueryBuilder('registrationData')
+      .leftJoin('registrationData.registration', 'registration')
+      .leftJoin(
+        'registrationData.programRegistrationAttribute',
+        'programRegistrationAttribute',
+      )
+      .andWhere('registration.id = :id', { id: registration.id })
+      .andWhere('programRegistrationAttribute.name IN (:...names)', { names })
+      .select([
+        'programRegistrationAttribute.name as name',
+        'registrationData.value as value',
+      ])
+      .getRawMany<{ name: string; value: string | null }>();
+
+    for (const { name, value } of results) {
+      if (value) {
+        valuesByName.set(name, value);
+      }
+    }
+
+    return valuesByName;
+  }
+
   private getRegistrationDataQuery(
     registration: RegistrationEntity,
     name: string,

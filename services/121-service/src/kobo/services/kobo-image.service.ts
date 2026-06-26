@@ -34,13 +34,15 @@ export class KoboImageService {
       },
     );
 
+    const urlsByAttributeName =
+      await this.registrationDataService.getRegistrationDataValuesByNames(
+        registration,
+        koboImageAttributeNames,
+      );
+
     const images: { attributeName: string; url: string }[] = [];
     for (const attributeName of koboImageAttributeNames) {
-      const url =
-        await this.registrationDataService.getRegistrationDataValueByName(
-          registration,
-          attributeName,
-        );
+      const url = urlsByAttributeName.get(attributeName);
       if (url) {
         images.push({ attributeName, url });
       }
