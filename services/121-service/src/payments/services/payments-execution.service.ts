@@ -3,13 +3,13 @@ import { PaginateQuery } from 'nestjs-paginate';
 import { Equal } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { TransactionFailureParams } from '@121-service/src/payments/interfaces/transaction-failure-params.interface';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
 import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
-import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -76,10 +76,18 @@ export class PaymentsExecutionService {
         type: PaymentEvent.started,
       });
 
-      await this.markTransactionsAsFailedForInvalidPaymentData({
+      await this.markTransactionsAsFailedForNotConfiguredFsps({
         userId,
         programId,
         paymentId,
+        status: TransactionStatusEnum.approved,
+      });
+
+      await this.markTransactionsAsFailedForNotIncludedRegistrations({
+        userId,
+        programId,
+        paymentId,
+        status: TransactionStatusEnum.approved,
       });
 
       await this.startQueue({
@@ -90,28 +98,6 @@ export class PaymentsExecutionService {
     } finally {
       await this.paymentsProgressService.unlockPaymentsForProgram(programId);
     }
-  }
-
-  private async markTransactionsAsFailedForInvalidPaymentData({
-    userId,
-    programId,
-    paymentId,
-  }: {
-    userId: number;
-    programId: number;
-    paymentId: number;
-  }): Promise<void> {
-    await this.markTransactionsAsFailedForNotConfiguredFsps({
-      userId,
-      programId,
-      paymentId,
-    });
-
-    await this.markTransactionsAsFailedForNotIncludedRegistrations({
-      userId,
-      programId,
-      paymentId,
-    });
   }
 
   private async startQueue({
@@ -143,21 +129,29 @@ export class PaymentsExecutionService {
     userId,
     programId,
     paymentId,
+    status,
   }: {
     userId: number;
     programId: number;
     paymentId: number;
+    status: TransactionStatusEnum;
   }) {
-    const transactionsToFail =
+    const transactions =
       await this.transactionViewScopedRepository.getByStatusOfNonIncludedRegistrations(
         {
           programId,
           paymentId,
-          status: TransactionStatusEnum.approved,
+          status,
         },
       );
+
+    const transactionFailureParams =
+      this.mapTransactionsToTransactionFailureParams({
+        transactions,
+      });
+
     await this.failTransactions({
-      transactions: transactionsToFail,
+      transactions: transactionFailureParams,
       userId,
       errorMessage:
         'Registration did not have status included at the time of starting the payment',
@@ -168,24 +162,46 @@ export class PaymentsExecutionService {
     userId,
     programId,
     paymentId,
+    status
   }: {
     userId: number;
     programId: number;
     paymentId: number;
+    status: TransactionStatusEnum;
   }) {
-    const transactionsToFail =
+    const transactions =
       await this.transactionViewScopedRepository.getByStatusOfNonConfiguredFsps(
         {
           programId,
           paymentId,
-          status: TransactionStatusEnum.approved,
+          status,
         },
       );
+
+    const transactionFailureParams =
+      this.mapTransactionsToTransactionFailureParams({
+        transactions,
+      });
+
     await this.failTransactions({
-      transactions: transactionsToFail,
+      transactions: transactionFailureParams,
       userId,
       errorMessage: 'FSP configuration is not fully configured',
     });
+  }
+
+  private mapTransactionsToTransactionFailureParams({
+    transactions,
+  }: {
+    transactions: {
+      id: number;
+      programFspConfigurationId: number | null;
+    }[];
+  }): TransactionFailureParams[] {
+    return transactions.map(({ id, programFspConfigurationId }) => ({
+      id,
+      programFspConfigurationId,
+    }));
   }
 
   private async failTransactions({
@@ -193,7 +209,7 @@ export class PaymentsExecutionService {
     userId,
     errorMessage,
   }: {
-    transactions: TransactionViewEntity[];
+    transactions: TransactionFailureParams[];
     userId: number;
     errorMessage: string;
   }) {
@@ -219,7 +235,7 @@ export class PaymentsExecutionService {
   private mapTransactionIdsToFspConfigId({
     transactions,
   }: {
-    transactions: TransactionViewEntity[];
+    transactions: TransactionFailureParams[];
   }): Map<number, number[]> {
     const transactionIdsByFspConfigId = new Map<number, number[]>();
 
@@ -299,10 +315,11 @@ export class PaymentsExecutionService {
         type: PaymentEvent.retry,
       });
 
-      await this.markTransactionsAsFailedForInvalidPaymentData({
+      await this.markTransactionsAsFailedForNotConfiguredFsps({
         userId,
         programId,
         paymentId,
+        status: TransactionStatusEnum.error,
       });
 
       await this.createTransactionJobs({
