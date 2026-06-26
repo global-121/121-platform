@@ -506,7 +506,7 @@ export class KoboMockService {
               origin,
               uid_asset,
             }),
-            mimetype: 'image/png',
+            mimetype: 'image/jpeg',
           },
         ],
         __version__: asset.version_id,
