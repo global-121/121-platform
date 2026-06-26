@@ -4,8 +4,9 @@ import { chunk } from 'lodash';
 import { FilterOperator } from 'nestjs-paginate';
 import { Equal, In, QueryFailedError, Repository } from 'typeorm';
 
+import { ProgramRegistrationAttribute } from '@121-service/src/activities/interfaces/program-registration-attribute.interface';
 import {
-  ProgramRegistrationAttributeDto,
+  CreateProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributesBatchDto,
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
@@ -217,9 +218,9 @@ export class ProgramRegistrationAttributesService {
     attributesData,
     namingConventionData,
   }: {
-    attributesData: ProgramRegistrationAttributeDto[] | undefined;
+    attributesData: CreateProgramRegistrationAttributeDto[] | undefined;
     namingConventionData: string[];
-  }): Promise<ProgramRegistrationAttributeDto[]> {
+  }): Promise<ProgramRegistrationAttribute[]> {
     const programRegistrationAttributes = attributesData ?? [];
 
     // make sure phoneNumber is in programRegistrationAttributes
@@ -266,7 +267,7 @@ export class ProgramRegistrationAttributesService {
     programRegistrationAttributes,
   }: {
     programId: number;
-    programRegistrationAttributes: ProgramRegistrationAttributeDto[];
+    programRegistrationAttributes: ProgramRegistrationAttribute[];
   }): Promise<void> {
     // Fetch all existing attributes for this program in one query
     const existingAttributes =
@@ -305,8 +306,8 @@ export class ProgramRegistrationAttributesService {
     createProgramRegistrationAttributeDto,
   }: {
     programId: number;
-    createProgramRegistrationAttributeDto: ProgramRegistrationAttributeDto;
-  }): Promise<ProgramRegistrationAttributeDto> {
+    createProgramRegistrationAttributeDto: ProgramRegistrationAttribute;
+  }): Promise<ProgramRegistrationAttribute> {
     const entity = await this.createProgramRegistrationAttributeEntity({
       programId,
       createProgramRegistrationAttributeDto,
@@ -346,7 +347,7 @@ export class ProgramRegistrationAttributesService {
     repository,
   }: {
     programId: number;
-    createProgramRegistrationAttributeDto: ProgramRegistrationAttributeDto;
+    createProgramRegistrationAttributeDto: ProgramRegistrationAttribute;
     repository?: Repository<ProgramRegistrationAttributeEntity>;
   }): Promise<ProgramRegistrationAttributeEntity> {
     await this.validateAttributeName(
@@ -378,7 +379,7 @@ export class ProgramRegistrationAttributesService {
   }
 
   private programRegistrationAttributeDtoToEntity(
-    dto: ProgramRegistrationAttributeDto,
+    dto: ProgramRegistrationAttribute,
   ): ProgramRegistrationAttributeEntity {
     const programRegistrationAttribute =
       new ProgramRegistrationAttributeEntity();

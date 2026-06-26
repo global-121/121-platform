@@ -5,6 +5,7 @@ import { Equal, Repository } from 'typeorm';
 
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import {
+  CreateProgramRegistrationAttributeDto,
   ProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributesBatchDto,
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
@@ -25,7 +26,7 @@ describe('ProgramRegistrationAttributesService', () => {
     getRepositoryToken(ProgramRegistrationAttributeEntity);
 
   const createAttributeDto = (
-    overrides: Partial<ProgramRegistrationAttributeDto> = {},
+    overrides: Partial<CreateProgramRegistrationAttributeDto> = {},
   ): ProgramRegistrationAttributeDto => {
     return {
       name: 'defaultAttribute',
