@@ -2141,7 +2141,6 @@
       </trans-unit>
       <trans-unit id="generic-column" datatype="html">
         <source>Column</source>
-        <note priority="1" from="description">Table column header</note>
       </trans-unit>
       <trans-unit id="generic-continue" datatype="html">
         <source>Continue</source>
@@ -2160,7 +2159,6 @@
       </trans-unit>
       <trans-unit id="generic-error" datatype="html">
         <source>Error</source>
-        <note priority="1" from="description">Table column header</note>
       </trans-unit>
       <trans-unit id="generic-error-try-again" datatype="html">
         <source>An unexpected error has occurred. Please try again later.</source>
@@ -2179,7 +2177,6 @@
       </trans-unit>
       <trans-unit id="generic-line-number" datatype="html">
         <source>Line number</source>
-        <note priority="1" from="description">Table column header</note>
       </trans-unit>
       <trans-unit id="generic-loading" datatype="html">
         <source>Loading...</source>
@@ -2204,7 +2201,6 @@
       </trans-unit>
       <trans-unit id="generic-reference-id" datatype="html">
         <source>Reference ID</source>
-        <note priority="1" from="description">Table column header</note>
       </trans-unit>
       <trans-unit id="generic-required-field" datatype="html">
         <source>This field is required.</source>
@@ -2226,7 +2222,6 @@
       </trans-unit>
       <trans-unit id="generic-value" datatype="html">
         <source>Value</source>
-        <note priority="1" from="description">Table column header</note>
       </trans-unit>
       <trans-unit id="generic-warning" datatype="html">
         <source>Warning</source>
