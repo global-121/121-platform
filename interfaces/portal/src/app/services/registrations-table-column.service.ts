@@ -124,7 +124,7 @@ export class RegistrationsTableColumnService {
       },
       {
         field: 'referenceId',
-        header: $localize`Reference ID`,
+        header: $localize`:@@attribute-label-referenceId:Reference ID`,
         type: QueryTableColumnType.TEXT,
       },
       {
@@ -193,7 +193,7 @@ export class RegistrationsTableColumnService {
     return [
       {
         field: 'scope',
-        header: $localize`:@@registration-scope:Scope`,
+        header: $localize`:@@attribute-label-scope:Scope`,
         type: QueryTableColumnType.TEXT,
         defaultHidden: true,
         disableFiltering: true,

@@ -71,19 +71,19 @@ export class ImportFileDialogComponent {
   >(() => [
     {
       field: 'lineNumber',
-      header: $localize`Line number`,
+      header: $localize`:Table column header@@generic-line-number:Line number`,
     },
     {
       field: 'column',
-      header: $localize`Column`,
+      header: $localize`:Table column header@@generic-column:Column`,
     },
     {
       field: 'value',
-      header: $localize`Value`,
+      header: $localize`:Table column header@@generic-value:Value`,
     },
     {
       field: 'error',
-      header: $localize`Error`,
+      header: $localize`:Table column header@@generic-error:Error`,
       class: 'max-w-md',
     },
   ]);

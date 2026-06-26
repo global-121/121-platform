@@ -116,9 +116,6 @@
       <trans-unit id="1504719396709458010" datatype="html">
         <source>Continue to registration</source>
       </trans-unit>
-      <trans-unit id="1519954996184640001" datatype="html">
-        <source>Error</source>
-      </trans-unit>
       <trans-unit id="1545261806462361427" datatype="html">
         <source>Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></source>
       </trans-unit>
@@ -398,9 +395,6 @@
       </trans-unit>
       <trans-unit id="2648503122381983554" datatype="html">
         <source>Duplicated with:</source>
-      </trans-unit>
-      <trans-unit id="2669678082320549438" datatype="html">
-        <source>Reference ID</source>
       </trans-unit>
       <trans-unit id="2701527640285744987" datatype="html">
         <source>Rename payment</source>
@@ -1302,9 +1296,6 @@
       <trans-unit id="6536020395223120161" datatype="html">
         <source>Error</source>
       </trans-unit>
-      <trans-unit id="6555318547274416232" datatype="html">
-        <source>Value</source>
-      </trans-unit>
       <trans-unit id="6562860910125244453" datatype="html">
         <source>Use the &apos;Last Message Status&apos; column to check the progress of messages. Closing this notification will not cancel message sending.</source>
       </trans-unit>
@@ -1563,9 +1554,6 @@
       <trans-unit id="7617906385730294527" datatype="html">
         <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>)</source>
       </trans-unit>
-      <trans-unit id="763982378603811482" datatype="html">
-        <source>Column</source>
-      </trans-unit>
       <trans-unit id="7675424950942601762" datatype="html">
         <source>Optionally pass a start date and/or an end date to filter the data changes. The export is limited to 100,000 data changes. Adapt your dates if needed.</source>
       </trans-unit>
@@ -1592,9 +1580,6 @@
       </trans-unit>
       <trans-unit id="7750731471522839997" datatype="html">
         <source>Editing in <x equiv-text="{{ languageName }}" id="INTERPOLATION"/>.</source>
-      </trans-unit>
-      <trans-unit id="7761072359529249164" datatype="html">
-        <source>Line number</source>
       </trans-unit>
       <trans-unit id="7781301631011863993" datatype="html">
         <source>(<x equiv-text="selectedItemsCount.toString()" id="PH"/> selected)</source>
@@ -2178,6 +2163,10 @@
       <trans-unit id="generic-close" datatype="html">
         <source>Close</source>
       </trans-unit>
+      <trans-unit id="generic-column" datatype="html">
+        <source>Column</source>
+        <note priority="1" from="description">Table column header</note>
+      </trans-unit>
       <trans-unit id="generic-continue" datatype="html">
         <source>Continue</source>
       </trans-unit>
@@ -2192,6 +2181,7 @@
       </trans-unit>
       <trans-unit id="generic-error" datatype="html">
         <source>Error</source>
+        <note priority="1" from="description">Table column header</note>
       </trans-unit>
       <trans-unit id="generic-error-try-again" datatype="html">
         <source>An unexpected error has occurred. Please try again later.</source>
@@ -2207,6 +2197,10 @@
       </trans-unit>
       <trans-unit id="generic-info" datatype="html">
         <source>Info</source>
+      </trans-unit>
+      <trans-unit id="generic-line-number" datatype="html">
+        <source>Line number</source>
+        <note priority="1" from="description">Table column header</note>
       </trans-unit>
       <trans-unit id="generic-loading" datatype="html">
         <source>Loading...</source>
@@ -2229,6 +2223,10 @@
       <trans-unit id="generic-proceed" datatype="html">
         <source>Proceed</source>
       </trans-unit>
+      <trans-unit id="generic-reference-id" datatype="html">
+        <source>Reference ID</source>
+        <note priority="1" from="description">Table column header</note>
+      </trans-unit>
       <trans-unit id="generic-required-field" datatype="html">
         <source>This field is required.</source>
       </trans-unit>
@@ -2243,6 +2241,10 @@
       </trans-unit>
       <trans-unit id="generic-type-or-select" datatype="html">
         <source>Type or select</source>
+      </trans-unit>
+      <trans-unit id="generic-value" datatype="html">
+        <source>Value</source>
+        <note priority="1" from="description">Table column header</note>
       </trans-unit>
       <trans-unit id="generic-warning" datatype="html">
         <source>Warning</source>
