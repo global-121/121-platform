@@ -68,10 +68,12 @@
                     <p-button
                       (click)="copyToClipboard(attribute.name)"
                       ariaLabel="Copy to clipboard"
+                      i18n-ariaLabel="@@generic-copy-to-clipboard"
+                      title="Copy to clipboard"
+                      i18n-title="@@generic-copy-to-clipboard"
                       icon="pi pi-copy"
                       class="hover:text-purple hover:cursor-pointer"
                       [unstyled]="true"
-                      i18n-ariaLabel
                       size="small"
                     />
                   </td>
