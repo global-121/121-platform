@@ -123,8 +123,8 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
 })
 export class ApplicationModule implements OnApplicationBootstrap {
   constructor(
-    private dataSource: DataSource,
-    private permissionMaintenanceService: PermissionMaintenanceService,
+    private readonly dataSource: DataSource,
+    private readonly permissionMaintenanceService: PermissionMaintenanceService,
   ) {}
 
   public async onApplicationBootstrap(): Promise<void> {
@@ -132,6 +132,8 @@ export class ApplicationModule implements OnApplicationBootstrap {
     await this.dataSource.runMigrations();
 
     // Any additional bootstrap tasks only AFTER successful migrations
+    await this.permissionMaintenanceService.syncSupportedPermissions();
+    await this.permissionMaintenanceService.syncAdminRolePermissions();
     await this.permissionMaintenanceService.removeExtraneousPermissions();
   }
 }
