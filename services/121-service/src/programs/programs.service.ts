@@ -231,10 +231,10 @@ export class ProgramService {
     }
 
     if (programData.fsps && programData.fsps.length > 0) {
-      await this.assignFspConfigurationsToProgram(
-        savedProgram.id,
-        programData.fsps,
-      );
+      await this.assignFspConfigurationsToProgram({
+        programId: savedProgram.id,
+        fspNames: programData.fsps,
+      });
     }
 
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
@@ -245,10 +245,13 @@ export class ProgramService {
     return newProgram;
   }
 
-  private async assignFspConfigurationsToProgram(
-    programId: number,
-    fspNames: Fsps[],
-  ): Promise<void> {
+  private async assignFspConfigurationsToProgram({
+    programId,
+    fspNames,
+  }: {
+    programId: number;
+    fspNames: Fsps[];
+  }): Promise<void> {
     for (const fspName of fspNames) {
       const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
         {

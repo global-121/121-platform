@@ -117,6 +117,7 @@ export abstract class BaseProgramDto {
 
   @ApiProperty({ example: ['Airtel'], required: false })
   @IsOptional()
+  @IsArray()
   @IsEnum(Fsps, { each: true })
   public readonly fsps?: Fsps[];
 }

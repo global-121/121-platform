@@ -49,8 +49,6 @@ export class ProgramFspConfigurationsService {
         relations: ['properties'],
       });
 
-    console.log('programFspConfigurations', programFspConfigurations);
-
     return ProgramFspConfigurationMapper.mapEntitiesToDtos(
       programFspConfigurations,
     );
