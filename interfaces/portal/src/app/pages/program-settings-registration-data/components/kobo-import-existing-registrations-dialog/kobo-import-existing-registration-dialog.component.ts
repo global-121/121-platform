@@ -155,15 +155,15 @@ export class KoboImportExistingRegistrationsDialogComponent {
   >(() => [
     {
       field: 'referenceId',
-      header: $localize`Reference ID`,
+      header: $localize`:@@generic-reference-id:Reference ID`,
     },
     {
       field: 'column',
-      header: $localize`Column`,
+      header: $localize`:@@generic-column:Column`,
     },
     {
       field: 'error',
-      header: $localize`Error`,
+      header: $localize`:@@generic-error:Error`,
     },
   ]);
 

@@ -33,8 +33,9 @@
               @if (duplicate.isInScope) {
                 {{ duplicate.name }}
               } @else {
-                <ng-container i18n
-                  >(Scope - {{ duplicate.scope }})</ng-container
+                <ng-container
+                  >(<span i18n="@@attribute-label-scope">Scope</span> -
+                  {{ duplicate.scope }})</ng-container
                 >
               }
               <span class="pi pi-external-link ms-1"></span>

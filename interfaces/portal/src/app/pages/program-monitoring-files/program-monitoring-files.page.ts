@@ -162,7 +162,7 @@ export class ProgramMonitoringFilesPageComponent {
     const scopeColumns: QueryTableColumn<ProgramAttachment>[] = [
       {
         field: 'scope',
-        header: $localize`Scope`,
+        header: $localize`:@@attribute-label-scope:Scope`,
       },
     ];
 

@@ -20,7 +20,7 @@ export const FSP_CONFIGURATION_PROPERTY_LABELS: Record<
   [FspConfigurationProperties.cardDistributionByMail]: $localize`Card distribution by mail`,
   [FspConfigurationProperties.maxBalanceInCents]: $localize`Max amount to spend per month (in cents)`,
   [FspConfigurationProperties.subscriptionKeyMtn]: $localize`Subscription key`,
-  [FspConfigurationProperties.referenceIdMtn]: $localize`Reference ID`,
+  [FspConfigurationProperties.referenceIdMtn]: $localize`:@@attribute-label-referenceId:Reference ID`,
   [FspConfigurationProperties.apiKeyMtn]: $localize`API key`,
 };
 

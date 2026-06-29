@@ -57,7 +57,7 @@ export class UserDialogComponent {
     if (this.isEditing()) {
       return {
         header: $localize`Edit user`,
-        proceedLabel: $localize`Save changes`,
+        proceedLabel: $localize`:@@generic-save-changes:Save changes`,
         headerIcon: 'pi pi-pencil',
       };
     }

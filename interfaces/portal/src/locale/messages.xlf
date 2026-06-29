@@ -35,9 +35,6 @@
       <trans-unit id="1160840788795450422" datatype="html">
         <source>At least one column must be selected</source>
       </trans-unit>
-      <trans-unit id="1181910457994920507" datatype="html">
-        <source>Proceed</source>
-      </trans-unit>
       <trans-unit id="11993744433894410" datatype="html">
         <source>Last updated: <x ctype="x-time" equiv-text="&lt;time data-testid=&quot;kobo-integration-last-updated&quot; [attr.datetime]=&quot;koboIntegration.data()?.updated | date: &apos;short&apos;&quot; &gt;" id="START_TAG_TIME"/><x equiv-text="{{ koboIntegration.data()?.updated | date: &apos;short&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time &gt;" id="CLOSE_TAG_TIME"/></source>
       </trans-unit>
@@ -115,9 +112,6 @@
       </trans-unit>
       <trans-unit id="1504719396709458010" datatype="html">
         <source>Continue to registration</source>
-      </trans-unit>
-      <trans-unit id="1519954996184640001" datatype="html">
-        <source>Error</source>
       </trans-unit>
       <trans-unit id="1545261806462361427" datatype="html">
         <source>Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></source>
@@ -251,9 +245,6 @@
       </trans-unit>
       <trans-unit id="2121303710925969971" datatype="html">
         <source>Ordered By</source>
-      </trans-unit>
-      <trans-unit id="2159130950882492111" datatype="html">
-        <source>Cancel</source>
       </trans-unit>
       <trans-unit id="2161871078253886554" datatype="html">
         <source>Unknown user</source>
@@ -398,9 +389,6 @@
       </trans-unit>
       <trans-unit id="2648503122381983554" datatype="html">
         <source>Duplicated with:</source>
-      </trans-unit>
-      <trans-unit id="2669678082320549438" datatype="html">
-        <source>Reference ID</source>
       </trans-unit>
       <trans-unit id="2701527640285744987" datatype="html">
         <source>Rename payment</source>
@@ -644,9 +632,6 @@
       </trans-unit>
       <trans-unit id="3757859142679780974" datatype="html">
         <source>Kobo form ”<x equiv-text="this.koboIntegration.data()?.name" id="PH"/>” does not have existing registrations. New registrations will be synced to the program automatically.</source>
-      </trans-unit>
-      <trans-unit id="3768927257183755959" datatype="html">
-        <source>Save</source>
       </trans-unit>
       <trans-unit id="37959892232763790" datatype="html">
         <source>Welcome to <x equiv-text="{{ program.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
@@ -1109,9 +1094,6 @@
       <trans-unit id="5587438863454126747" datatype="html">
         <source>New data</source>
       </trans-unit>
-      <trans-unit id="5590086849807274701" datatype="html">
-        <source>Scope</source>
-      </trans-unit>
       <trans-unit id="5595826100350402634" datatype="html">
         <source>Use the arrow keys or W A S D to play the game</source>
       </trans-unit>
@@ -1180,9 +1162,6 @@
       </trans-unit>
       <trans-unit id="5918723526444903137" datatype="html">
         <source>Add user</source>
-      </trans-unit>
-      <trans-unit id="593137515549076612" datatype="html">
-        <source>(Scope - <x equiv-text="{{ duplicate.scope }}" id="INTERPOLATION"/>)</source>
       </trans-unit>
       <trans-unit id="5951235042771324221" datatype="html">
         <source>&quot;<x equiv-text="text" id="PH"/>&quot; copied to clipboard</source>
@@ -1302,9 +1281,6 @@
       <trans-unit id="6536020395223120161" datatype="html">
         <source>Error</source>
       </trans-unit>
-      <trans-unit id="6555318547274416232" datatype="html">
-        <source>Value</source>
-      </trans-unit>
       <trans-unit id="6562860910125244453" datatype="html">
         <source>Use the &apos;Last Message Status&apos; column to check the progress of messages. Closing this notification will not cancel message sending.</source>
       </trans-unit>
@@ -1397,9 +1373,6 @@
       </trans-unit>
       <trans-unit id="6988584798455615907" datatype="html">
         <source>The new password must be at least 8 characters long.</source>
-      </trans-unit>
-      <trans-unit id="7000649363168371045" datatype="html">
-        <source>Save changes</source>
       </trans-unit>
       <trans-unit id="7003345492545522906" datatype="html">
         <source>These are the errors related to your Kobo form settings.</source>
@@ -1563,9 +1536,6 @@
       <trans-unit id="7617906385730294527" datatype="html">
         <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>)</source>
       </trans-unit>
-      <trans-unit id="763982378603811482" datatype="html">
-        <source>Column</source>
-      </trans-unit>
       <trans-unit id="7675424950942601762" datatype="html">
         <source>Optionally pass a start date and/or an end date to filter the data changes. The export is limited to 100,000 data changes. Adapt your dates if needed.</source>
       </trans-unit>
@@ -1593,9 +1563,6 @@
       <trans-unit id="7750731471522839997" datatype="html">
         <source>Editing in <x equiv-text="{{ languageName }}" id="INTERPOLATION"/>.</source>
       </trans-unit>
-      <trans-unit id="7761072359529249164" datatype="html">
-        <source>Line number</source>
-      </trans-unit>
       <trans-unit id="7781301631011863993" datatype="html">
         <source>(<x equiv-text="selectedItemsCount.toString()" id="PH"/> selected)</source>
       </trans-unit>
@@ -1607,9 +1574,6 @@
       </trans-unit>
       <trans-unit id="7814604735706675498" datatype="html">
         <source>Cards ordered</source>
-      </trans-unit>
-      <trans-unit id="7819314041543176992" datatype="html">
-        <source>Close</source>
       </trans-unit>
       <trans-unit id="7855962245426283369" datatype="html">
         <source>Pending reason</source>
@@ -1808,9 +1772,6 @@
       </trans-unit>
       <trans-unit id="8735352957921555136" datatype="html">
         <source>Registrations that do not support this action will remain in their current status.</source>
-      </trans-unit>
-      <trans-unit id="8738732372986673558" datatype="html">
-        <source>Copy to clipboard</source>
       </trans-unit>
       <trans-unit id="8751327662526303646" datatype="html">
         <source>Scan the barcode in the back of the card you are handing over to the registration with a scanner, or manually fill in the 19 digit serial number found below the barcode.</source>
@@ -2178,8 +2139,14 @@
       <trans-unit id="generic-close" datatype="html">
         <source>Close</source>
       </trans-unit>
+      <trans-unit id="generic-column" datatype="html">
+        <source>Column</source>
+      </trans-unit>
       <trans-unit id="generic-continue" datatype="html">
         <source>Continue</source>
+      </trans-unit>
+      <trans-unit id="generic-copy-to-clipboard" datatype="html">
+        <source>Copy to clipboard</source>
       </trans-unit>
       <trans-unit id="generic-delete" datatype="html">
         <source>Delete</source>
@@ -2208,6 +2175,9 @@
       <trans-unit id="generic-info" datatype="html">
         <source>Info</source>
       </trans-unit>
+      <trans-unit id="generic-line-number" datatype="html">
+        <source>Line number</source>
+      </trans-unit>
       <trans-unit id="generic-loading" datatype="html">
         <source>Loading...</source>
       </trans-unit>
@@ -2229,11 +2199,17 @@
       <trans-unit id="generic-proceed" datatype="html">
         <source>Proceed</source>
       </trans-unit>
+      <trans-unit id="generic-reference-id" datatype="html">
+        <source>Reference ID</source>
+      </trans-unit>
       <trans-unit id="generic-required-field" datatype="html">
         <source>This field is required.</source>
       </trans-unit>
       <trans-unit id="generic-save" datatype="html">
         <source>Save</source>
+      </trans-unit>
+      <trans-unit id="generic-save-changes" datatype="html">
+        <source>Save changes</source>
       </trans-unit>
       <trans-unit id="generic-success" datatype="html">
         <source>Success</source>
@@ -2243,6 +2219,9 @@
       </trans-unit>
       <trans-unit id="generic-type-or-select" datatype="html">
         <source>Type or select</source>
+      </trans-unit>
+      <trans-unit id="generic-value" datatype="html">
+        <source>Value</source>
       </trans-unit>
       <trans-unit id="generic-warning" datatype="html">
         <source>Warning</source>
@@ -2525,9 +2504,6 @@
       </trans-unit>
       <trans-unit id="registration-phone-number" datatype="html">
         <source>Phone number</source>
-      </trans-unit>
-      <trans-unit id="registration-scope" datatype="html">
-        <source>Scope</source>
       </trans-unit>
       <trans-unit id="registration-status" datatype="html">
         <source>Registration Status</source>

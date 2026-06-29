@@ -196,7 +196,7 @@ export class PageLayoutRegistrationComponent {
     ];
     if (this.program.data()?.enableScope) {
       listData.push({
-        label: $localize`:@@registration-scope:Scope`,
+        label: $localize`:@@attribute-label-scope:Scope`,
         value: registrationRawData?.scope,
         type: 'text',
       });

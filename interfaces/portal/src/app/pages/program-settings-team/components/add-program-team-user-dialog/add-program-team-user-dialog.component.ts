@@ -111,7 +111,9 @@ export class AddProgramTeamUserDialogComponent {
   );
 
   readonly dialogProceedLabel = computed(() =>
-    this.isEditing() ? $localize`Save changes` : $localize`Add to team`,
+    this.isEditing()
+      ? $localize`:@@generic-save-changes:Save changes`
+      : $localize`Add to team`,
   );
 
   readonly userIsUpdatingItself = computed(() => {
