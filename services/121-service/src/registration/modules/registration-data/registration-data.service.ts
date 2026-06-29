@@ -23,7 +23,6 @@ export class RegistrationDataService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
   ) {}
 
-  // TODO: Refactor this to accept an array of keys
   public async getRegistrationDataValueByName(
     registration: RegistrationEntity,
     name: string,
@@ -50,15 +49,7 @@ export class RegistrationDataService {
       return valuesByName;
     }
 
-    const results = await this.registrationDataScopedRepository
-      .createQueryBuilder('registrationData')
-      .leftJoin('registrationData.registration', 'registration')
-      .leftJoin(
-        'registrationData.programRegistrationAttribute',
-        'programRegistrationAttribute',
-      )
-      .andWhere('registration.id = :id', { id: registration.id })
-      .andWhere('programRegistrationAttribute.name IN (:...names)', { names })
+    const results = await this.getRegistrationDataQuery(registration, names)
       .select([
         'programRegistrationAttribute.name as name',
         'registrationData.value as value',
@@ -76,7 +67,7 @@ export class RegistrationDataService {
 
   private getRegistrationDataQuery(
     registration: RegistrationEntity,
-    name: string,
+    names: string[],
   ): SelectQueryBuilder<RegistrationAttributeDataEntity> {
     return this.registrationDataScopedRepository
       .createQueryBuilder('registrationData')
@@ -86,14 +77,14 @@ export class RegistrationDataService {
         'programRegistrationAttribute',
       )
       .andWhere('registration.id = :id', { id: registration.id })
-      .andWhere(`programRegistrationAttribute.name = :name`, { name });
+      .andWhere('programRegistrationAttribute.name IN (:...names)', { names });
   }
 
   public async getRegistrationDataByName(
     registration: RegistrationEntity,
     name: string,
   ): Promise<RegistrationDataByNameDto | null> {
-    const query = this.getRegistrationDataQuery(registration, name);
+    const query = this.getRegistrationDataQuery(registration, [name]);
     const queryWithSelect = query.select([
       'programRegistrationAttribute.name as name',
       'registrationData.value as value',
@@ -107,7 +98,7 @@ export class RegistrationDataService {
     registration: RegistrationEntity,
     name: string,
   ): Promise<RegistrationAttributeDataEntity | null> {
-    const query = this.getRegistrationDataQuery(registration, name);
+    const query = this.getRegistrationDataQuery(registration, [name]);
     return query.getOne();
   }
 
