@@ -9,12 +9,9 @@
         [ngClass]="iconVariant()"
       ></span>
       <div class="leading-tight">
-        <strong i18n>{{ content.title }}</strong>
-        <span
-          i18n
-          class="text-black"
-          >&nbsp;-&nbsp;{{ content.description }}</span
-        >
+        <strong>{{ content.title }}</strong>
+        <span>&nbsp;-&nbsp;</span>
+        <span class="text-black">{{ content.description }}</span>
       </div>
     }
   </div>

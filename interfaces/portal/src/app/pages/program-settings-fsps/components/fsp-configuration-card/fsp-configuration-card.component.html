@@ -7,9 +7,8 @@
   <ng-container card-subtitle>
     <div i18n>
       <app-colored-chip
-        [label]="configurationPending() ? 'Integration required' : 'Integrated'"
-        i18n-label
-        [variant]="configurationPending() ? 'red' : 'green'"
+        [label]="coloredChipProps().label"
+        [variant]="coloredChipProps().variant"
       ></app-colored-chip>
     </div>
   </ng-container>

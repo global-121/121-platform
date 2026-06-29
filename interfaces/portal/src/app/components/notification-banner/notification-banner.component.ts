@@ -6,6 +6,9 @@ import {
   input,
 } from '@angular/core';
 
+/**
+ * `title`, `description`, and `info` must be translated strings.
+ */
 interface NotificationBannerContent {
   title: string;
   description: string;

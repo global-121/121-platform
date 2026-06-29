@@ -69,4 +69,10 @@ export class ProgramPaymentsPageComponent {
       requiredPermission: PermissionEnum.PaymentCREATE,
     }),
   );
+
+  readonly paymentInProgressBannerContent = {
+    title: $localize`Payment in progress`,
+    description: $localize`Please wait before creating a new payment.`,
+    icon: 'info' as const,
+  };
 }

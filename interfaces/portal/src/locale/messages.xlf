@@ -152,9 +152,6 @@
       <trans-unit id="1693473022450987876" datatype="html">
         <source>Reset user password</source>
       </trans-unit>
-      <trans-unit id="1695651049528115492" datatype="html">
-        <source>fspName</source>
-      </trans-unit>
       <trans-unit id="1714518910559654498" datatype="html">
         <source>Approve payment</source>
       </trans-unit>
@@ -194,9 +191,6 @@
       </trans-unit>
       <trans-unit id="1867309401161150879" datatype="html">
         <source>The data of the 121 Platform is hosted in a Microsoft Azure-environment of The Netherlands Red Cross.</source>
-      </trans-unit>
-      <trans-unit id="187187500641108332" datatype="html">
-        <source><x equiv-text="{{ content.title }}" id="INTERPOLATION"/></source>
       </trans-unit>
       <trans-unit id="1872549287181572098" datatype="html">
         <source>Import existing registrations from your Kobo form.</source>
@@ -358,7 +352,7 @@
         <source>Date is after</source>
       </trans-unit>
       <trans-unit id="2506069337302541920" datatype="html">
-        <source><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [label]=&quot;configurationPending() ? &apos;Integration required&apos; : &apos;Integrated&apos;&quot; i18n-label [variant]=&quot;configurationPending() ? &apos;red&apos; : &apos;green&apos;&quot; &gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;/app-colored-chip&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/></source>
+        <source><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [label]=&quot;coloredChipProps().label&quot; [variant]=&quot;coloredChipProps().variant&quot; &gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;/app-colored-chip&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/></source>
       </trans-unit>
       <trans-unit id="2511966165374777397" datatype="html">
         <source>This might take a few minutes. The file will be automatically downloaded when ready. Closing this notification will not cancel the export.</source>
@@ -528,9 +522,6 @@
       <trans-unit id="3302381073867974185" datatype="html">
         <source><x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>This action can not be undone.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Are you sure you want to delete these registrations?</source>
       </trans-unit>
-      <trans-unit id="3325180562659478330" datatype="html">
-        <source>name</source>
-      </trans-unit>
       <trans-unit id="3341509391681329837" datatype="html">
         <source>Payments are named by date and time by default. Rename the payment for clarity if needed.</source>
       </trans-unit>
@@ -572,6 +563,9 @@
       </trans-unit>
       <trans-unit id="350646349607555710" datatype="html">
         <source>Registered:</source>
+      </trans-unit>
+      <trans-unit id="3543826049207263566" datatype="html">
+        <source>Please wait before creating a new payment.</source>
       </trans-unit>
       <trans-unit id="3545183022492788567" datatype="html">
         <source>A payment is currently in progress. Please wait until it has finished.</source>
@@ -788,6 +782,9 @@
       <trans-unit id="4327471061205783634" datatype="html">
         <source>Currency</source>
       </trans-unit>
+      <trans-unit id="4336467119528049143" datatype="html">
+        <source>Integrated</source>
+      </trans-unit>
       <trans-unit id="434482942350930906" datatype="html">
         <source>There are <x equiv-text="{{ data.nonApplicableCount | number }}" id="INTERPOLATION"/> selected transaction(s) that are not on status &apos;Failed&apos; and will not be retried.</source>
       </trans-unit>
@@ -938,9 +935,6 @@
       <trans-unit id="5035732150329518917" datatype="html">
         <source>You&apos;re about to download an Excel file for all status &amp; data changes.</source>
       </trans-unit>
-      <trans-unit id="5045542275668853653" datatype="html">
-        <source>- <x equiv-text="{{ content.description }}" id="INTERPOLATION"/></source>
-      </trans-unit>
       <trans-unit id="5061826209151408276" datatype="html">
         <source>This privacy notice tells you what to expect us to do with your personal information when you use the 121 Platform.</source>
       </trans-unit>
@@ -1073,6 +1067,9 @@
       <trans-unit id="5544945972793965092" datatype="html">
         <source>The number of times a registration will receive transactions in the program by default.</source>
       </trans-unit>
+      <trans-unit id="5547837185378224000" datatype="html">
+        <source>Integration required</source>
+      </trans-unit>
       <trans-unit id="5558547280081275233" datatype="html">
         <source>Approvals</source>
       </trans-unit>
@@ -1169,9 +1166,6 @@
       <trans-unit id="5971081331538192247" datatype="html">
         <source>Data column name</source>
       </trans-unit>
-      <trans-unit id="5974806166105337525" datatype="html">
-        <source>chip</source>
-      </trans-unit>
       <trans-unit id="5995232414192798763" datatype="html">
         <source>Financial Service Provider(s)</source>
       </trans-unit>
@@ -1232,6 +1226,9 @@
       </trans-unit>
       <trans-unit id="6342731461089211149" datatype="html">
         <source>Should be an ISO 4217 currency code (full list available on Wikipedia).</source>
+      </trans-unit>
+      <trans-unit id="6350305312750969481" datatype="html">
+        <source>Payment in progress</source>
       </trans-unit>
       <trans-unit id="635399988713647542" datatype="html">
         <source>If you have any questions about our use of necessary cookies, please feel free to contact us at:</source>

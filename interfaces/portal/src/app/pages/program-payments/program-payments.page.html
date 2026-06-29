@@ -19,11 +19,7 @@
     <app-notification-banner
       [color]="'orange'"
       data-testid="payment-in-progress-banner"
-      [content]="{
-        title: 'Payment in progress',
-        description: 'Please wait before creating a new payment.',
-        icon: 'info',
-      }"
+      [content]="paymentInProgressBannerContent"
     />
   }
 

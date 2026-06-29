@@ -60,7 +60,6 @@ export class FspMultiselectComponent implements ControlValueAccessor {
   }));
 
   readonly fspMultiselectOptions = Object.values(FSP_SETTINGS).map((fsp) => {
-    console.log('fsp -->', fsp);
     return {
       fspName: fsp.name,
       name: fsp.defaultLabel.en,
@@ -72,7 +71,6 @@ export class FspMultiselectComponent implements ControlValueAccessor {
       if (this.fspConfigurations.data()) {
         const fsps =
           this.fspConfigurations.data()?.map((fspConfiguration) => {
-            console.log('fspConfiguration -->', fspConfiguration.fspName);
             return fspConfiguration.fspName;
           }) ?? [];
 

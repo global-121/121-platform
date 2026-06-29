@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MentionModule } from 'angular-mentions';
 import { AccordionModule } from 'primeng/accordion';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -18,7 +17,10 @@ import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-set
 import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
-import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import {
+  ChipVariant,
+  ColoredChipComponent,
+} from '~/components/colored-chip/colored-chip.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.helper';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
@@ -35,7 +37,6 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     CardWithLinkComponent,
     AccordionModule,
     ColoredChipComponent,
-    MentionModule,
   ],
   templateUrl: './fsp-configuration-card.component.html',
   styles: ``,
@@ -56,6 +57,17 @@ export class FspConfigurationCardComponent {
     () =>
       this.configuration().state ===
       FspConfigurationStates.configurationPending,
+  );
+
+  readonly coloredChipProps = computed<{ label: string; variant: ChipVariant }>(
+    () => {
+      return {
+        label: this.configurationPending()
+          ? $localize`Integration required`
+          : $localize`Integrated`,
+        variant: this.configurationPending() ? 'red' : 'green',
+      };
+    },
   );
 
   programAttributes = injectQuery(
