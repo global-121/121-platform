@@ -70,6 +70,11 @@
               @case ('options') {
                 {{ optionItemValue(item) }}
               }
+              @case ('component') {
+                <ng-container
+                  *ngComponentOutlet="item.value; inputs: item.inputs"
+                />
+              }
               @default {
                 @let routerLink = item.routerLink;
 
