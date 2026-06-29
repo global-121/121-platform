@@ -60,9 +60,9 @@
     <tr>
       <td class="px-2">
         {{ attribute.label }}
-        @if (attribute.name === 'fsp') {
+        @if (attribute.infoTooltip) {
           <app-info-tooltip
-            message="'fsp' should be a hidden field in your form that has the 'default response' set to the FSP name."
+            [message]="attribute.infoTooltip()"
             i18n-message
           />
         }

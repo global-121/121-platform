@@ -51,6 +51,9 @@ export class RequiredAttributesComponent {
     this.fspConfigurationApiService.getFspConfigurations(this.programId),
   );
 
+  program = injectQuery(this.programApiService.getProgram(this.programId));
+  readonly enableScope = computed(() => this.program.data()?.enableScope);
+
   readonly programAttributes = injectQuery(
     this.programApiService.getProgramAttributes({
       programId: this.programId,
@@ -93,10 +96,27 @@ export class RequiredAttributesComponent {
     const fspEntry = {
       name: 'fsp',
       label: 'Fsp',
+      infoTooltip: () => {
+        const fspNames = this.programFsps()
+          .map((fsp) => fsp.name)
+          .join(', ');
+        return this.programFsps().length === 1
+          ? `fsp should be a 'hidden' field in your form that has the 'default response' set to the FSP name: ${fspNames}`
+          : `fsp should be 'select many' with the following FSP names as options: ${fspNames}`;
+      },
+    };
+
+    // Scope is a field that is independent from the FSPs, so we hardcode it to the list of required attributes if the program has scope enabled.
+    const scope = {
+      name: 'scope',
+      label: 'Scope',
+      infoTooltip: () =>
+        "Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration",
     };
 
     return [
       fspEntry,
+      ...(this.enableScope() ? [scope] : []),
       ...attributes.filter((attr) => requiredAttributeNames.has(attr.name)),
     ];
   });
