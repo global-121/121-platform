@@ -51,7 +51,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript<SeedMultipleNLR
   }: SeedMultipleNLRCRunParams): Promise<void> {
     if (env.INTERSOLVE_MODE !== FspMode.mock || !env.MOCK_TWILIO) {
       throw new HttpException(
-        `INTERSOLVE_MODE is not MOCK or MOCK_TWILIO is not set to true. Which is required for seeding NLRC multiple mock data. Please use another reset script, or update your environment variables. Current INTERSOLVE_MODE: ${env.INTERSOLVE_MODE}, MOCK_TWILIO: ${env.MOCK_TWILIO}`,
+        `To seed NLRC multiple mock data, set INTERSOLVE_MODE=MOCK and MOCK_TWILIO=true. Use a different reset scenario/script or update your environment variables. Current values: INTERSOLVE_MODE=${env.INTERSOLVE_MODE}, MOCK_TWILIO=${env.MOCK_TWILIO}`
         HttpStatus.BAD_REQUEST,
       );
     }
