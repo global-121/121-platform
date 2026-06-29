@@ -287,15 +287,53 @@ export class ProgramService {
       );
     }
 
-    for (const key in updateProgramDto) {
-      program[key] = updateProgramDto[key];
+    const { fsps, ...programAttributes } = updateProgramDto;
+
+    for (const key in programAttributes) {
+      program[key] = programAttributes[key];
     }
 
     const savedProgram = await this.programRepository.save(program);
 
+    if (fsps) {
+      await this.updateFspConfigurationsOfProgram({ program, fspNames: fsps });
+      const updatedProgram = await this.findProgramOrThrow(programId);
+      return this.fillProgramReturnDto(updatedProgram);
+    }
+
     const programDto: ProgramReturnDto =
       this.fillProgramReturnDto(savedProgram);
     return programDto;
+  }
+
+  private async updateFspConfigurationsOfProgram({
+    program,
+    fspNames,
+  }: {
+    program: FoundProgramDto;
+    fspNames: Fsps[];
+  }): Promise<void> {
+    const existingFspNames = program.programFspConfigurations.map(
+      (config) => config.fspName,
+    );
+
+    const fspNamesToAdd = fspNames.filter(
+      (fspName) => !existingFspNames.includes(fspName),
+    );
+    const configsToDelete = program.programFspConfigurations.filter(
+      (config) => !fspNames.includes(config.fspName),
+    );
+
+    for (const config of configsToDelete) {
+      await this.programFspConfigurationsService.delete(
+        program.id,
+        config.name,
+      );
+    }
+
+    if (fspNamesToAdd.length > 0) {
+      await this.assignFspConfigurationsToProgram(program.id, fspNamesToAdd);
+    }
   }
 
   // This function takes a filled ProgramEntity and returns a filled ProgramReturnDto
