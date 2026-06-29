@@ -254,7 +254,7 @@ describe('KoboValidationService', () => {
          {
            "attributeName": "nationalId",
            "error": "Field type must not be 'integer'",
-           "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
+           "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
            "solution": "Change the field type to an accepted type",
            "type": "typeMismatch",
          },
@@ -690,7 +690,7 @@ describe('KoboValidationService', () => {
            {
              "attributeName": "scope",
              "error": "Field type must not be 'integer'",
-             "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
+             "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
              "solution": "Change the field type to an accepted type",
              "type": "typeMismatch",
            },
@@ -951,7 +951,7 @@ describe('KoboValidationService', () => {
          {
            "attributeName": "preferredLanguage",
            "error": "Field type must not be 'integer'",
-           "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'image', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
+           "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
            "solution": "Change the field type to an accepted type",
            "type": "typeMismatch",
          },
