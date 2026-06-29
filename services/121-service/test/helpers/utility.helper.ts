@@ -175,6 +175,13 @@ export async function runCronJobDoNedbankReconciliation(): Promise<request.Respo
     .set('Cookie', [accessToken]);
 }
 
+export async function runCronJobDoMtnReconciliation(): Promise<request.Response> {
+  const accessToken = await getAccessToken();
+  return await getServer()
+    .patch('/cronjobs/fsps/mtn')
+    .set('Cookie', [accessToken]);
+}
+
 export async function updatePermissionsOfRole(
   userRoleId: number,
   roleToUpdate: UpdateUserRoleDto,

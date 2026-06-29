@@ -1,15 +1,13 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 
 import { MtnModule } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.module';
-import { MtnReconciliationController } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.controller';
 import { MtnReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.service';
-import { TransferCallbackJobProcessorMtn } from '@121-service/src/fsp-integrations/reconciliation/mtn/processors/mtn-transfer-callback-job.processor';
+import { TransferReconciliationJobProcessorMtn } from '@121-service/src/fsp-integrations/reconciliation/mtn/processors/mtn-transfer-reconciliation-job.processor';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEventsModule } from '@121-service/src/payments/transactions/transaction-events/transaction-events.module';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
-import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-logger.middleware';
 
 @Module({
   imports: [
@@ -20,14 +18,7 @@ import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-
     ProgramFspConfigurationsModule,
     QueuesRegistryModule,
   ],
-  providers: [MtnReconciliationService, TransferCallbackJobProcessorMtn],
-  controllers: [MtnReconciliationController],
+  providers: [MtnReconciliationService, TransferReconciliationJobProcessorMtn],
   exports: [MtnReconciliationService],
 })
-export class MtnReconciliationModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): void {
-    consumer
-      .apply(AzureLoggerMiddleware)
-      .forRoutes(MtnReconciliationController);
-  }
-}
+export class MtnReconciliationModule {}

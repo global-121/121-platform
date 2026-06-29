@@ -116,33 +116,6 @@ describe('MtnApiHelperService', () => {
       expect(headers.get('X-Reference-Id')).toBe(referenceId);
       expect(headers.get('X-Target-Environment')).toBe('sandbox');
     });
-
-    it('should include X-Callback-Url when EXTERNAL_121_SERVICE_URL is set', () => {
-      // Act
-      const headers = mtnApiHelperService.createTransferHeaders({
-        referenceId: 'ref-uuid-123',
-        subscriptionKey: 'test-subscription-key',
-      });
-
-      // Assert
-      expect(headers.get('X-Callback-Url')).toBe(
-        `${env.EXTERNAL_121_SERVICE_URL}/api/fsps/mtn/transfer-callback`,
-      );
-    });
-
-    it('should not include X-Callback-Url when EXTERNAL_121_SERVICE_URL is empty', () => {
-      // Arrange
-      (env as any).EXTERNAL_121_SERVICE_URL = '';
-
-      // Act
-      const headers = mtnApiHelperService.createTransferHeaders({
-        referenceId: 'ref-uuid-123',
-        subscriptionKey: 'test-subscription-key',
-      });
-
-      // Assert
-      expect(headers.get('X-Callback-Url')).toBeNull();
-    });
   });
 
   describe('createGetTransferHeaders', () => {

@@ -22,6 +22,7 @@ graph LR
   CronjobModule-->IntersolveVisaReconciliationModule
   CronjobModule-->IntersolveVoucherModule
   CronjobModule-->IntersolveVoucherReconciliationModule
+  CronjobModule-->MtnReconciliationModule
   CronjobModule-->NedbankReconciliationModule
   CronjobModule-->OnafriqReconciliationModule
   EmailsModule-->GraphModule

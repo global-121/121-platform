@@ -6,14 +6,16 @@ import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.en
 import { RegisteredProcessor } from '@121-service/src/queues-registry/register-processor.decorator';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
-@RegisteredProcessor(QueueNames.paymentCallbackMtnTransfer)
-export class TransferCallbackJobProcessorMtn {
+@RegisteredProcessor(QueueNames.paymentReconciliationMtnTransfer)
+export class TransferReconciliationJobProcessorMtn {
   constructor(
     private readonly mtnReconciliationService: MtnReconciliationService,
   ) {}
 
   @Process(JobNames.default)
-  async handleMtnTransferCallbackJob(job: Job): Promise<void> {
-    await this.mtnReconciliationService.processMtnTransferCallbackJob(job.data);
+  async handleMtnTransferReconciliationJob(job: Job): Promise<void> {
+    await this.mtnReconciliationService.processMtnTransferReconciliationJob(
+      job.data,
+    );
   }
 }

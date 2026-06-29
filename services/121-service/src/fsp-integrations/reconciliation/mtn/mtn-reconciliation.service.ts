@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
-import { MtnTransferCallbackDto } from '@121-service/src/fsp-integrations/reconciliation/mtn/dtos/mtn-transfer-callback.dto';
-import { MtnTransferCallbackJobDto } from '@121-service/src/fsp-integrations/reconciliation/mtn/dtos/mtn-transfer-callback-job.dto';
+import { MtnTransferReconciliationJobDto } from '@121-service/src/fsp-integrations/reconciliation/mtn/dtos/mtn-transfer-reconciliation-job.dto';
+import { MTN_RECONCILIATION_MAX_TRANSACTIONS_PER_RUN } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.config';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -21,37 +22,35 @@ export class MtnReconciliationService {
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
   ) {}
 
-  public async processTransferCallback(
-    mtnTransferCallback: MtnTransferCallbackDto,
-  ): Promise<void> {
+  public async doMtnReconciliation(): Promise<number> {
+    const transactionIds =
+      await this.transactionRepository.getWaitingTransactionIdsByFsp({
+        fspName: Fsps.mtn,
+        limit: MTN_RECONCILIATION_MAX_TRANSACTIONS_PER_RUN,
+      });
 
-    const { externalId } = mtnTransferCallback;
+    for (const transactionId of transactionIds) {
+      const mtnTransferReconciliationJob: MtnTransferReconciliationJobDto = {
+        transactionId,
+      };
 
-    if (!externalId) {
-      return;
+      // Use the transactionId as a deterministic jobId so a transaction that is
+      // still queued from a previous run is not added to the queue twice.
+      await this.queuesService.mtnTransferReconciliationQueue.add(
+        JobNames.default,
+        mtnTransferReconciliationJob,
+        { jobId: transactionId },
+      );
     }
 
-    const transactionId = Number(externalId);
-    if (Number.isNaN(transactionId)) {
-      return;
-    }
-
-    const mtnTransferCallbackJob: MtnTransferCallbackJobDto = {
-      transactionId,
-    };
-
-    await this.queuesService.mtnTransferCallbackQueue.add(
-      JobNames.default,
-      mtnTransferCallbackJob,
-    );
+    return transactionIds.length;
   }
 
-  public async processMtnTransferCallbackJob(
-    mtnTransferCallbackJob: MtnTransferCallbackJobDto,
+  public async processMtnTransferReconciliationJob(
+    mtnTransferReconciliationJob: MtnTransferReconciliationJobDto,
   ): Promise<void> {
-
     const currentStatus = await this.transactionRepository.getStatusByIdOrThrow(
-      mtnTransferCallbackJob.transactionId,
+      mtnTransferReconciliationJob.transactionId,
     );
     if (currentStatus !== TransactionStatusEnum.waiting) {
       return;
@@ -60,24 +59,24 @@ export class MtnReconciliationService {
     // 1. Look up registration referenceId from transaction
     const registrationReferenceId =
       await this.transactionRepository.getReferenceIdByTransactionIdOrThrow(
-        mtnTransferCallbackJob.transactionId,
+        mtnTransferReconciliationJob.transactionId,
       );
 
     // 2. Regenerate mtnReferenceId to verify transfer status via MTN API
     const failedTransactionAttempts =
       await this.transactionEventScopedRepository.countFailedTransactionAttempts(
-        mtnTransferCallbackJob.transactionId,
+        mtnTransferReconciliationJob.transactionId,
       );
     const mtnReferenceId = this.mtnService.generateMtnReferenceId({
       referenceId: registrationReferenceId,
-      transactionId: mtnTransferCallbackJob.transactionId,
+      transactionId: mtnTransferReconciliationJob.transactionId,
       failedTransactionAttempts,
     });
 
     // 3. Look up per-program MTN wallet credentials
     const latestEvent =
       await this.transactionEventScopedRepository.findLatestEventByTransactionId(
-        mtnTransferCallbackJob.transactionId,
+        mtnTransferReconciliationJob.transactionId,
       );
     const requestIdentity = await this.mtnService.getMtnFspConfig({
       programFspConfigurationId: latestEvent.programFspConfigurationId,
@@ -94,8 +93,8 @@ export class MtnReconciliationService {
     });
 
     await this.transactionsService.saveProgressFromExternalSource({
-      transactionId: mtnTransferCallbackJob.transactionId,
-      description: TransactionEventDescription.mtnCallbackReceived,
+      transactionId: mtnTransferReconciliationJob.transactionId,
+      description: TransactionEventDescription.mtnReconciliationProcessed,
       newTransactionStatus: transactionStatus,
       errorMessage:
         transactionStatus === TransactionStatusEnum.error

@@ -113,6 +113,17 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'patch', headers);
   }
 
+  @Cron(CronExpression.EVERY_5_MINUTES, {
+    disabled: !env.CRON_MTN_RECONCILIATION,
+  })
+  public async cronDoMtnReconciliation(cronJobMethodName): cronReturn {
+    const { baseCronUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
+    // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
+    const url = `${baseCronUrl}/fsps/mtn`;
+    return await this.callEndpoint(url, 'patch', headers);
+  }
+
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
     disabled: !env.CRON_GET_DAILY_EXCHANGE_RATES,
   })
