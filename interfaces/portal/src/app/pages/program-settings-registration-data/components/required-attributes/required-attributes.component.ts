@@ -101,8 +101,8 @@ export class RequiredAttributesComponent {
           .map((fsp) => fsp.name)
           .join(', ');
         return this.programFsps().length === 1
-          ? `fsp should be a 'hidden' field in your form that has the 'default response' set to the FSP name: ${fspNames}`
-          : `fsp should be 'select many' with the following FSP names as options: ${fspNames}`;
+          ? $localize`fsp should be a 'hidden' field in your form that has the 'default response' set to the FSP name: ${fspNames}`
+          : $localize`fsp should be 'select many' with the following FSP names as options: ${fspNames}`;
       },
     };
 
@@ -111,7 +111,7 @@ export class RequiredAttributesComponent {
       name: 'scope',
       label: 'Scope',
       infoTooltip: () =>
-        "Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration",
+        $localize`Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration`,
     };
 
     return [
