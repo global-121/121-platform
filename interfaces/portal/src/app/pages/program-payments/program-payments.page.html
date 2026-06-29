@@ -37,10 +37,10 @@
   }
 
   @if (paymentsSorted()?.length === 0) {
-    <app-empty-message
+    <app-info-card
       subtitle="There are no payments for this program yet."
-      title="No Payments found"
       i18n-subtitle
+      title="No Payments found"
       i18n-title
     />
   } @else {

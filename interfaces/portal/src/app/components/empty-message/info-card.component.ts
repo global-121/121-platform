@@ -3,14 +3,15 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CardModule } from 'primeng/card';
 
 @Component({
-  selector: 'app-empty-message',
+  selector: 'app-info-card',
   imports: [CardModule],
-  templateUrl: './empty-message.component.html',
+  templateUrl: './info-card.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppEmptyMessageComponent {
+export class AppInfoCardComponent {
   readonly title = input.required<string>();
   readonly subtitle = input.required<string>();
+  readonly omitIcon = input<boolean>();
 
   sizeClassMap: Record<string, string> = {
     small: 'h-8',

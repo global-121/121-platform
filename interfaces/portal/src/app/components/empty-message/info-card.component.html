@@ -6,7 +6,7 @@
         src="assets/{{ icon.icon }}.svg"
         alt=""
       />
-    } @else {
+    } @else if (!omitIcon()) {
       <img
         class="mb-6 inline-block h-16"
         src="assets/no-results.svg"
