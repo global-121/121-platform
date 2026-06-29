@@ -51,7 +51,7 @@ export type DataListItem = {
     }
   | {
       type: 'component';
-      value?: Type<unknown>;
+      value: Type<unknown>;
       inputs?: Record<string, unknown>;
     }
   | {
