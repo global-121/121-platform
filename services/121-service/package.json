@@ -146,6 +146,8 @@
     "typescript-eslint": "^8.58.0"
   },
   "overrides": {
-    "multer": "^2.2.0"
+    "@nestjs/platform-express": {
+      "multer": "^2.2.0"
+    }
   }
 }
