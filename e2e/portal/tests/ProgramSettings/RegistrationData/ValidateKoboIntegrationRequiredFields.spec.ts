@@ -14,6 +14,7 @@ const fspsToAdd = [FSP_SETTINGS[Fsps.safaricom].defaultLabel.en].filter(
 );
 
 const requiredFieldsFromSeed = [
+  'fsp',
   'fullName',
   'phoneNumber',
   'whatsappPhoneNumber',
@@ -57,6 +58,7 @@ test('Check if all required fields are updated when deleting a FSP', async ({
     await registrationDataPage.clickRegistrationDataSection();
     await registrationDataPage.validateKoboRequiredFieldsTable({
       requiredDataColumnNames: [
+        'fsp',
         'fullName',
         'phoneNumber',
         'whatsappPhoneNumber',
