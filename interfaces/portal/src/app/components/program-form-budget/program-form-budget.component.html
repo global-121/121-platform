@@ -61,5 +61,6 @@
   <app-fsp-multiselect
     (selectionChange)="onFspSelectionChange($event)"
     [programId]="program() ? programId() : undefined"
+    [direction]="!programId() ? 'bottom' : 'top'"
   ></app-fsp-multiselect>
 </ng-container>

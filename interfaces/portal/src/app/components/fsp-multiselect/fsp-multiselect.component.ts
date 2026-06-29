@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   inject,
   input,
@@ -48,6 +49,13 @@ export class FspMultiselectComponent implements ControlValueAccessor {
 
   readonly selectedOptions = model<Fsps[]>([]);
   readonly selectionChange = output<Fsps[]>();
+  readonly direction = input<'bottom' | 'top'>('top');
+
+  readonly className = computed(() =>
+    this.direction() === 'bottom'
+      ? 'wrapped-chip-multiselect wrapped-chip-multiselect-direction-bottom'
+      : 'wrapped-chip-multiselect',
+  );
 
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
 
