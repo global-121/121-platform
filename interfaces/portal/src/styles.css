@@ -168,8 +168,6 @@ svg-icon svg {
   }
 
   .wrapped-chip-multiselect {
-    anchor-name: --my-anchor-multiselect;
-
     .p-multiselect-header:empty {
       @apply hidden;
     }
@@ -181,12 +179,15 @@ svg-icon svg {
       This is caused by PrimeNG being a shitty library and not having a
       proper way to position the overlay, so we have to override it ourselves
     */
-    p-overlay {
-      position: absolute;
-      position-anchor: --my-anchor-multiselect;
-      bottom: anchor(top);
-      position-try-fallbacks: flip-block;
-      justify-self: anchor-center;
+
+    &.wrapped-chip-multiselect-direction-bottom {
+      p-overlay {
+        @apply absolute! bottom-0;
+
+        .p-overlay {
+          @apply top-0!;
+        }
+      }
     }
 
     /* 
