@@ -29,19 +29,21 @@ export class MtnReconciliationService {
         limit: MTN_RECONCILIATION_MAX_TRANSACTIONS_PER_RUN,
       });
 
-    for (const transactionId of transactionIds) {
-      const mtnTransferReconciliationJob: MtnTransferReconciliationJobDto = {
-        transactionId,
-      };
+    await Promise.all(
+      transactionIds.map(async (transactionId) => {
+        const mtnTransferReconciliationJob: MtnTransferReconciliationJobDto = {
+          transactionId,
+        };
 
-      // Use the transactionId as a deterministic jobId so a transaction that is
-      // still queued from a previous run is not added to the queue twice.
-      await this.queuesService.mtnTransferReconciliationQueue.add(
-        JobNames.default,
-        mtnTransferReconciliationJob,
-        { jobId: transactionId },
-      );
-    }
+        // Use the transactionId as a deterministic jobId so a transaction that is
+        // still queued from a previous run is not added to the queue twice.
+        await this.queuesService.mtnTransferReconciliationQueue.add(
+          JobNames.default,
+          mtnTransferReconciliationJob,
+          { jobId: transactionId, removeOnFail: true },
+        );
+      }),
+    );
 
     return transactionIds.length;
   }
