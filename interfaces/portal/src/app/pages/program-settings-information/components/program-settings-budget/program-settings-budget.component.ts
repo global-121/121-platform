@@ -70,6 +70,7 @@ export class ProgramSettingsBudgetComponent {
       currency,
       distributionDuration,
       fixedTransferValue,
+      fsps,
     }: ReturnType<ProgramBudgetFormGroup['getRawValue']>) =>
       this.programApiService.updateProgram({
         programId: this.programId,
@@ -78,6 +79,7 @@ export class ProgramSettingsBudgetComponent {
           currency,
           distributionDuration,
           fixedTransferValue,
+          fsps,
         },
       }),
     onSuccess: () => {
