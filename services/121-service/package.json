@@ -144,5 +144,8 @@
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.9",
     "typescript-eslint": "^8.58.0"
+  },
+  "overrides": {
+    "multer": "^2.2.0"
   }
 }
