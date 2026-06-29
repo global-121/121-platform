@@ -1121,6 +1121,9 @@
       <trans-unit id="5677475450475961620" datatype="html">
         <source><x equiv-text="label" id="PH"/> payment</source>
       </trans-unit>
+      <trans-unit id="5685138490353099762" datatype="html">
+        <source>Fsp should be a hidden field in your form, that has the &apos;default response&apos; set to the FSP name.</source>
+      </trans-unit>
       <trans-unit id="5685760925247156053" datatype="html">
         <source>This might take a few minutes. Closing this notification will not cancel the update.</source>
       </trans-unit>

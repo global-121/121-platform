@@ -58,7 +58,15 @@
     let-attribute
   >
     <tr>
-      <td class="px-2">{{ attribute.label }}</td>
+      <td class="px-2">
+        {{ attribute.label }}
+        @if (attribute.name === 'fsp') {
+          <app-info-tooltip
+            message="Fsp should be a hidden field in your form, that has the 'default response' set to the FSP name."
+            i18n-message
+          />
+        }
+      </td>
       <td class="px-2">
         {{ attribute.name }}
 
