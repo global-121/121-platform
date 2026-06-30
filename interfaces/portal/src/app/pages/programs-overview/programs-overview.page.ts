@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 
 import { CardGridComponent } from '~/components/card-grid/card-grid.component';
-import { AppInfoCardComponent } from '~/components/empty-message/info-card.component';
+import { AppInfoCardComponent } from '~/components/info-card/info-card.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { CreateProgramDialogComponent } from '~/pages/programs-overview/components/create-program-dialog/create-program-dialog.component';
 import { ProgramSummaryCardComponent } from '~/pages/programs-overview/components/program-summary-card/program-summary-card.component';

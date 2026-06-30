@@ -11,7 +11,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardGridComponent } from '~/components/card-grid/card-grid.component';
-import { AppInfoCardComponent } from '~/components/empty-message/info-card.component';
+import { AppInfoCardComponent } from '~/components/info-card/info-card.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { TopPageBannerComponent } from '~/components/top-page-banner/top-page-banner.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
