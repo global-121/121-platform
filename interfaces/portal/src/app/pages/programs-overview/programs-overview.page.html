@@ -17,20 +17,23 @@
     }
   </div>
 
-  <app-card-grid
-    [empty]="assignedPrograms.length === 0"
-    emptyTitle="No Programs found"
-    i18n-emptyTitle
-    emptySubtitle="You are not assigned to any program(s) yet, contact the admin/supervisor to start using the 121 portal."
-    i18n-emptySubtitle
-  >
-    @for (id of assignedPrograms; track $index) {
-      <li>
-        <app-program-summary-card
-          [id]="id"
-          class="h-full"
-        />
-      </li>
-    }
-  </app-card-grid>
+  @if (assignedPrograms.length === 0) {
+    <app-info-card
+      subtitle="You are not assigned to any program(s) yet, contact the admin/supervisor to start using the 121 portal."
+      i18n-subtitle
+      title="No Programs found"
+      i18n-title
+    />
+  } @else {
+    <app-card-grid>
+      @for (id of assignedPrograms; track $index) {
+        <li>
+          <app-program-summary-card
+            [id]="id"
+            class="h-full"
+          />
+        </li>
+      }
+    </app-card-grid>
+  }
 </app-page-layout>
