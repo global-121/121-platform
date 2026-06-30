@@ -83,8 +83,6 @@ test('Create program successfully', async ({ page }) => {
       omitListItemWithLabel: '*Financial service providers',
     });
 
-    console.log('budgetData:', budgetData);
-
     expect(budgetData).toEqual({
       'Funds available': programInfo.fundsAvailable,
       '*Currency': programInfo.currency,
