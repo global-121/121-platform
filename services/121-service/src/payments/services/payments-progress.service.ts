@@ -11,7 +11,7 @@ import {
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 
 @Injectable()
-export class PaymentsProgressHelperService {
+export class PaymentsProgressService {
   @InjectRepository(ProgramEntity)
   private programRepository: Repository<ProgramEntity>;
   public constructor(

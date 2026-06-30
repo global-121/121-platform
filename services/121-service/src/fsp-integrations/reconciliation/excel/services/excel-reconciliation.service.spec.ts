@@ -4,10 +4,10 @@ import { ExcelReconciliationService } from '@121-service/src/fsp-integrations/re
 
 describe('ExcelReconciliationService', () => {
   let service: ExcelReconciliationService;
-  let paymentsProgressHelperService: { isPaymentInProgress: jest.Mock };
+  let paymentsProgressService: { isPaymentInProgress: jest.Mock };
 
   beforeEach(() => {
-    paymentsProgressHelperService = {
+    paymentsProgressService = {
       isPaymentInProgress: jest.fn(),
     } as any;
 
@@ -15,7 +15,7 @@ describe('ExcelReconciliationService', () => {
       /* excelService */ {} as any,
       /* fileImportService */ {} as any,
       /* registrationViewScopedRepository */ {} as any,
-      paymentsProgressHelperService as any,
+      paymentsProgressService as any,
       /* programRegistrationAttributeRepository */ {} as any,
       /* transactionsService */ {} as any,
       /* transactionEventsScopedRepository */ {} as any,
@@ -25,7 +25,7 @@ describe('ExcelReconciliationService', () => {
   });
 
   it('should throw if payment is in progress', async () => {
-    paymentsProgressHelperService.isPaymentInProgress.mockResolvedValue(true);
+    paymentsProgressService.isPaymentInProgress.mockResolvedValue(true);
 
     await expect(
       service.upsertFspReconciliationData({

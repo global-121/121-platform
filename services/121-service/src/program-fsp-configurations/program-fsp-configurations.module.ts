@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { PaymentsProgressModule } from '@121-service/src/payments/payments-progress.module';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationsController } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.controller';
@@ -15,6 +16,7 @@ import { ProgramRegistrationAttributesModule } from '@121-service/src/program-re
       ProgramFspConfigurationPropertyEntity,
     ]),
     ProgramRegistrationAttributesModule,
+    PaymentsProgressModule,
   ],
   providers: [
     ProgramFspConfigurationsService,

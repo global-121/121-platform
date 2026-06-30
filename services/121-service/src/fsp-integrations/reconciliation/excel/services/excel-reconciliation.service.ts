@@ -9,7 +9,7 @@ import { ExcelReconciliationFeedbackService } from '@121-service/src/fsp-integra
 import { ExcelReconciliationValidationService } from '@121-service/src/fsp-integrations/reconciliation/excel/services/excel-reconciliation-validation.service';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
-import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
@@ -31,7 +31,7 @@ export class ExcelReconciliationService {
     private readonly excelService: ExcelService,
     private readonly fileImportService: FileImportService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
+    private readonly paymentsProgressService: PaymentsProgressService,
     private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
 
     private readonly transactionsService: TransactionsService,
@@ -106,9 +106,7 @@ export class ExcelReconciliationService {
     ////////////////////////////////////////////////////////////////////////////
     // Preparing
     ////////////////////////////////////////////////////////////////////////////
-    if (
-      await this.paymentsProgressHelperService.isPaymentInProgress(programId)
-    ) {
+    if (await this.paymentsProgressService.isPaymentInProgress(programId)) {
       throw new HttpException(
         'Cannot import FSP reconciliation data while payment is in progress',
         HttpStatus.BAD_REQUEST,
