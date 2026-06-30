@@ -91,7 +91,6 @@ export class PaymentsExecutionService {
         userId,
         programId,
         paymentId,
-        status: TransactionStatusEnum.approved,
       });
 
       await this.startQueue({
@@ -134,20 +133,18 @@ export class PaymentsExecutionService {
     userId,
     programId,
     paymentId,
-    status,
   }: {
     fspConfigIds: number[];
     userId: number;
     programId: number;
     paymentId: number;
-    status: TransactionStatusEnum;
   }) {
     const transactions =
       await this.transactionViewScopedRepository.getByStatusOfNonIncludedRegistrations(
         {
           programId,
           paymentId,
-          status,
+          status: TransactionStatusEnum.approved,
         },
       );
 

@@ -16,7 +16,7 @@ export class PaymentsHelperService {
   ): Promise<void> {
     const validationResults = await Promise.all(
       programFspConfigurationNames.map((name) =>
-        this.validateFspConfiguration(programId, name),
+        this.getFspConfigurationErrorMessage(programId, name),
       ),
     );
     const errorMessages = validationResults.filter(
@@ -27,7 +27,7 @@ export class PaymentsHelperService {
     }
   }
 
-  private async validateFspConfiguration(
+  private async getFspConfigurationErrorMessage(
     programId: number,
     programFspConfigurationName: string,
   ): Promise<string | undefined> {
@@ -36,7 +36,6 @@ export class PaymentsHelperService {
         name: Equal(programFspConfigurationName),
         programId: Equal(programId),
       },
-      relations: ['properties'],
     });
 
     if (!config) {
