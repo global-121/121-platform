@@ -130,6 +130,17 @@ You can also leave the body empty.`,
     type: 'string',
     description: 'A valid Kobo asset-ID (required when `importFromKobo=true`)',
   })
+  @ApiQuery({
+    name: 'copyFromProgramId',
+    required: false,
+    type: 'integer',
+    description: `
+Create a program as a copy of an existing program.  \n
+
+When set, the new program is seeded from the program with this id and its
+configuration relations are copied. Any specified program-properties in the
+body overwrite the copied values. You can also leave the body empty.`,
+  })
   @ApiBody({
     type: CreateProgramDto,
     required: false,
@@ -153,9 +164,20 @@ You can also leave the body empty.`,
     @Query('koboAssetId')
     koboAssetId: string,
 
+    @Query('copyFromProgramId', new ParseIntPipe({ optional: true }))
+    copyFromProgramId: number | undefined,
+
     @Req() req: ScopedUserRequest,
   ): Promise<ProgramEntity> {
     const userId = RequestHelper.getUserId(req);
+
+    if (copyFromProgramId) {
+      return this.programService.duplicateProgram({
+        copyFromProgramId,
+        overrides: programData,
+        userId,
+      });
+    }
 
     if (importFromKobo) {
       if (koboToken && koboAssetId)
