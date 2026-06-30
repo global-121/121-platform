@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   effect,
   inject,
   input,
@@ -18,10 +17,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
-import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
-import { FspMultiselectComponent } from '~/components/fsp-multiselect/fsp-multiselect.component';
 import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
 import { Program } from '~/domains/program/program.model';
 import { generateFieldErrors } from '~/utils/form-validation';
@@ -37,7 +34,6 @@ export type ProgramBudgetFormGroup =
     ReactiveFormsModule,
     InputTextModule,
     SelectModule,
-    FspMultiselectComponent,
   ],
   templateUrl: './program-form-budget.component.html',
   styles: ``,
@@ -46,8 +42,6 @@ export type ProgramBudgetFormGroup =
 export class ProgramFormBudgetComponent {
   private readonly locale = inject<Locale>(LOCALE_ID);
   readonly program = input<Program>();
-
-  readonly programId = computed(() => this.program()?.id.toString());
 
   readonly currencies = Object.values(CurrencyCode)
     .map((code) => ({
@@ -81,9 +75,6 @@ export class ProgramFormBudgetComponent {
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required, Validators.min(0)],
     }),
-    fsps: new FormControl<Fsps[]>([], {
-      nonNullable: true,
-    }),
   });
 
   formFieldErrors = generateFieldErrors(this.formGroup);
@@ -104,8 +95,4 @@ export class ProgramFormBudgetComponent {
   });
 
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
-
-  onFspSelectionChange(fsps: Fsps[]) {
-    this.formGroup.patchValue({ fsps });
-  }
 }
