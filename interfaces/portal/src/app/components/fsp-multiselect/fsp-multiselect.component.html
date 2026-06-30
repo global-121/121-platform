@@ -14,8 +14,8 @@
     [display]="'chip'"
     [filter]="false"
     itemcheckboxicon="false"
-    [optionLabel]="'name'"
-    [optionValue]="'fspName'"
+    [optionLabel]="'label'"
+    [optionValue]="'name'"
     placeholder="Select FSPs"
     [showToggleAll]="false"
     i18n-placeholder
@@ -24,7 +24,7 @@
       let-fsp
       #item
     >
-      <div>{{ fsp.name | translatableString }}</div>
+      <div>{{ fsp.label | translatableString }}</div>
     </ng-template>
   </p-multiselect>
 </app-form-field-wrapper>
