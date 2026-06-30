@@ -12,8 +12,8 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardGridComponent } from '~/components/card-grid/card-grid.component';
 import { AppInfoCardComponent } from '~/components/info-card/info-card.component';
+import { NotificationBannerComponent } from '~/components/notification-banner/notification-banner.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
-import { TopPageBannerComponent } from '~/components/top-page-banner/top-page-banner.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { CreatePaymentComponent } from '~/pages/program-payments/components/create-payment/create-payment.component';
 import { ExportPaymentsComponent } from '~/pages/program-payments/components/export-payments/export-payments.component';
@@ -28,7 +28,7 @@ import { AuthService } from '~/services/auth.service';
     ExportPaymentsComponent,
     CardGridComponent,
     CreatePaymentComponent,
-    TopPageBannerComponent,
+    NotificationBannerComponent,
     AppInfoCardComponent,
   ],
   templateUrl: './program-payments.page.html',
@@ -71,4 +71,10 @@ export class ProgramPaymentsPageComponent {
       requiredPermission: PermissionEnum.PaymentCREATE,
     }),
   );
+
+  readonly paymentInProgressBannerContent = {
+    title: $localize`Payment in progress`,
+    description: $localize`Please wait before creating a new payment.`,
+    icon: 'info' as const,
+  };
 }
