@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { AppRoutes } from '~/app.routes';
@@ -68,6 +69,8 @@ export class CreateProgramDialogComponent {
   // 3 = step 3: budget
   readonly currentStep = signal<0 | 1 | 2 | 3>(0);
 
+  readonly selectedFsps = signal<Fsps[]>([]);
+
   readonly formGroup = computed(() => {
     const nameGroup = this.formName()?.formGroup;
     const informationGroup = this.formInformation()?.formGroup;
@@ -106,6 +109,7 @@ export class CreateProgramDialogComponent {
         currency,
         distributionDuration,
         fixedTransferValue,
+        fsps,
       },
     }: ReturnType<
       FormGroup<{
@@ -131,6 +135,7 @@ export class CreateProgramDialogComponent {
         location,
         targetNrRegistrations,
         validation,
+        fsps,
       }),
     onSuccess: async (result) => {
       // The keys of the user permissions determine which programs a user can see
