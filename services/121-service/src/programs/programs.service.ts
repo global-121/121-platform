@@ -230,17 +230,17 @@ export class ProgramService {
       await queryRunner.release();
     }
 
-    if (programData.fsps && programData.fsps.length > 0) {
-      await this.assignFspConfigurationsToProgram({
-        programId: savedProgram.id,
-        fspNames: programData.fsps,
-      });
-    }
-
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.Admin],
       scope: undefined,
     });
+
+    if (programData.fsps && programData.fsps.length > 0) {
+      await this.assignFspConfigurationsToProgram({
+        programId: newProgram.id,
+        fspNames: programData.fsps,
+      });
+    }
 
     return newProgram;
   }
@@ -252,7 +252,7 @@ export class ProgramService {
     programId: number;
     fspNames: Fsps[];
   }): Promise<void> {
-    for (const fspName of fspNames) {
+    for (const fspName of new Set(fspNames)) {
       const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
         {
           name: fspName,
@@ -289,6 +289,10 @@ export class ProgramService {
 
     const { fsps, ...programAttributes } = updateProgramDto;
 
+    if (fsps) {
+      await this.updateFspConfigurationsOfProgram({ program, fspNames: fsps });
+    }
+
     for (const key in programAttributes) {
       program[key] = programAttributes[key];
     }
@@ -296,14 +300,11 @@ export class ProgramService {
     const savedProgram = await this.programRepository.save(program);
 
     if (fsps) {
-      await this.updateFspConfigurationsOfProgram({ program, fspNames: fsps });
       const updatedProgram = await this.findProgramOrThrow(programId);
       return this.fillProgramReturnDto(updatedProgram);
     }
 
-    const programDto: ProgramReturnDto =
-      this.fillProgramReturnDto(savedProgram);
-    return programDto;
+    return this.fillProgramReturnDto(savedProgram);
   }
 
   private async updateFspConfigurationsOfProgram({
