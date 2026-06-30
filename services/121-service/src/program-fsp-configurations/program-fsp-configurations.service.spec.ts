@@ -11,6 +11,7 @@ import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/progr
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
@@ -208,6 +209,7 @@ describe('ProgramFspConfigurationsService', () => {
       name: 'Test Configuration',
       fspName: Fsps.intersolveVisa,
       label: { en: 'Test Label' },
+      state: FspConfigurationStates.configured,
       properties: [
         {
           name: FspConfigurationProperties.brandCode,
@@ -261,19 +263,19 @@ describe('ProgramFspConfigurationsService', () => {
 
     it('should throw an exception if a configuration with the same name exists', async () => {
       // Mocking the check for existing configuration
-      const duplivateNameCreateDto = {
+      const duplicateNameCreateDto = {
         ...createDto,
         name: configName,
       };
 
       await expect(
-        service.create(programId, duplivateNameCreateDto),
+        service.create(programId, duplicateNameCreateDto),
       ).rejects.toThrow(HttpException);
       await expect(
-        service.create(programId, duplivateNameCreateDto),
+        service.create(programId, duplicateNameCreateDto),
       ).rejects.toThrow(
         new HttpException(
-          `Program FSP-configuration with name ${duplivateNameCreateDto.name} already exists`,
+          `Program FSP-configuration with name ${duplicateNameCreateDto.name} already exists`,
           HttpStatus.CONFLICT,
         ),
       );
