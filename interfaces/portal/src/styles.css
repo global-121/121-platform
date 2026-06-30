@@ -167,6 +167,45 @@ svg-icon svg {
     --toolbar-height: calc(48 / 14 * 1rem);
   }
 
+  .wrapped-chip-multiselect {
+    .p-multiselect-header:empty {
+      @apply hidden;
+    }
+
+    /* 
+      OVERLAY POSITION OVERRIDES:
+      When adding x amount of chips to the multiselect, the overlay will be
+      positioned over the select itself obfuscating the multiselect.
+      This is caused by PrimeNG being a shitty library and not having a
+      proper way to position the overlay, so we have to override it ourselves
+    */
+
+    &.wrapped-chip-multiselect-direction-bottom {
+      p-overlay {
+        @apply absolute! bottom-0;
+
+        .p-overlay {
+          @apply top-0!;
+        }
+      }
+    }
+
+    /* 
+      DISABLE OVERFLOW FOR MULTISELECT:
+      If you disable a maximum amount of chips to be displayed in the multiselect,
+      the overflow will be hidden and the user won't be able to see the rest of the chips.
+      This is caused by PrimeNG being a shitty library and not having a proper way to
+      display the overflow, so we have to override it ourselves
+    */
+    .p-multiselect-label-container {
+      @apply overflow-visible;
+
+      .p-multiselect-label {
+        @apply flex flex-wrap;
+      }
+    }
+  }
+
   .p-button {
     .p-button-label {
       @apply txt-system-bold-m;
