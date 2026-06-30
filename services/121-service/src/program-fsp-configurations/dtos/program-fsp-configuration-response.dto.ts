@@ -27,6 +27,9 @@ export class ProgramFspConfigurationResponseDto {
   @ApiProperty({ example: { en: 'FSP display name' } })
   public readonly label: UILanguageTranslation;
 
+  @ApiProperty({ enum: FspConfigurationStates })
+  public readonly state: FspConfigurationStates;
+
   /// Can sometimes be undefined if the Fsp has been removed from the codebase
   @ApiProperty()
   public readonly fsp?: FspWithoutConfigProps;
