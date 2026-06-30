@@ -41,5 +41,4 @@ export const API_PATHS = {
   safaricomTransferCallback: 'fsps/safaricom/transfer-callback',
   safaricomTimeoutCallback: 'fsps/safaricom/timeout-callback',
   onafriqCallback: 'fsps/onafriq/callback',
-  mtnTransferCallback: 'fsps/mtn/transfer-callback',
 };

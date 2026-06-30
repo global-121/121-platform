@@ -153,6 +153,20 @@ export class CronjobController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
+      '[CRON] Reconcile MTN transactions by enqueueing waiting transactions to check their latest status',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Number of MTN transactions enqueued for reconciliation',
+  })
+  @Patch('fsps/mtn')
+  public async cronDoMtnReconciliation(): Promise<number | undefined> {
+    return await this.cronjobExecutionService.cronDoMtnReconciliation();
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary:
       '[CRON] GET all exchange rates for all programs and store them in the database',
   })
   @ApiResponse({

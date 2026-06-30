@@ -1,6 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { InstanceReportingTransactionRaw } from '@121-service/src/instance-reporting/interfaces/instance-reporting-transaction-raw.interface';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -57,6 +58,29 @@ export class TransactionRepository extends Repository<TransactionEntity> {
       throw new Error(`Transaction with id ${transactionId} not found`);
     }
     return transaction.status as TransactionStatusEnum;
+  }
+
+  public async getWaitingTransactionIdsByFsp({
+    fspName,
+    limit,
+  }: {
+    fspName: Fsps;
+    limit: number;
+  }): Promise<number[]> {
+    const transactions = await this.createQueryBuilder('transaction')
+      .select('transaction.id', 'id')
+      .innerJoin('transaction.lastTransactionEvent', 'lastTransactionEvent')
+      .innerJoin('lastTransactionEvent.transactionEvent', 'transactionEvent')
+      .innerJoin('transactionEvent.programFspConfiguration', 'fspConfig')
+      .where('transaction.status = :status', {
+        status: TransactionStatusEnum.waiting,
+      })
+      .andWhere('fspConfig.fspName = :fspName', { fspName })
+      .orderBy('transaction.created', 'ASC')
+      .limit(limit)
+      .getRawMany();
+
+    return transactions.map((transaction) => transaction.id);
   }
 
   public async getReferenceIdByTransactionIdOrThrow(

@@ -15,7 +15,7 @@ export enum QueueNames {
   paymentCallbackSafaricomTransfer = 'safaricomTransferCallback',
   paymentCallbackSafaricomTimeout = 'safaricomTimeoutCallback',
   paymentCallbackOnafriq = 'onafriqCallback',
-  paymentCallbackMtnTransfer = 'mtnTransferCallback',
+  paymentReconciliationMtnTransfer = 'mtnTransferReconciliation',
 
   // create message jobs
   createMessageReplyOnIncoming = 'replyOnIncoming',
