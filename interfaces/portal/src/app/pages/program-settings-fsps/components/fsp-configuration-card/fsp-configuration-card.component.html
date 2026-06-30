@@ -1,11 +1,28 @@
 <app-card-with-link
-  (cardClicked)="reconfigureFsp.emit(configuration())"
   [title]="fspConfigurationLabel()"
-  [menuItems]="menuItems()"
   [image]="fspImage()"
+  [menuItems]="menuItems()"
+  [enableLink]="false"
 >
   <ng-container card-subtitle>
-    <div i18n>Click to reconfigure</div>
+    <div i18n>
+      <app-colored-chip
+        [label]="coloredChipProps().label"
+        [variant]="coloredChipProps().variant"
+      ></app-colored-chip>
+    </div>
+  </ng-container>
+
+  <ng-container card-action>
+    @if (configurationPending()) {
+      <p-button
+        (click)="reconfigureFsp.emit(configuration())"
+        label="Integrate"
+        i18n-label
+        icon="pi pi-link"
+        rounded
+      />
+    }
   </ng-container>
 
   <ng-container card-content>
@@ -96,18 +113,3 @@
     }
   </ng-container>
 </app-card-with-link>
-
-<app-form-dialog
-  #deleteConfigurationDialog
-  [header]="deleteConfigurationDialogHeader()"
-  headerIcon="pi pi-trash"
-  proceedLabel="Remove FSP"
-  i18n-proceedLabel="@@remove-fsp"
-  [mutation]="deleteConfigurationMutation"
-  [mutationData]="undefined"
-  i18n
->
-  You're about to remove the "{{ fspConfigurationLabel() }}" FSP configuration
-  from your program. Payments with this FSP will not go through, Registrations
-  with this FSP will not be paid unless changed to an integrated FSP.
-</app-form-dialog>
