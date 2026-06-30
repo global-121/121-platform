@@ -518,7 +518,8 @@
     "params": [
       "importFromKobo",
       "koboToken",
-      "koboAssetId"
+      "koboAssetId",
+      "copyFromProgramId"
     ],
     "returnType": "ProgramEntity"
   },

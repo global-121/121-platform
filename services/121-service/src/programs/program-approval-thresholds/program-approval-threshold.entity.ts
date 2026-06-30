@@ -1,10 +1,10 @@
 import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  Relation,
+    Column,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    Relation,
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
