@@ -9,7 +9,6 @@ import {
   LOCALE_ID,
   provideZonelessChangeDetection,
 } from '@angular/core';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {
   provideRouter,
   TitleStrategy,
@@ -72,8 +71,6 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
   providers: [
     provideRouter(routes, withComponentInputBinding()),
     provideZonelessChangeDetection(),
-    // eslint-disable-next-line @typescript-eslint/no-deprecated -- this is needed by primeng for now https://github.com/primefaces/primeng/issues/18803
-    provideAnimationsAsync(),
     provideHttpClient(withInterceptorsFromDi()),
     provideAngularSvgIcon(),
     providePrimeNG({
