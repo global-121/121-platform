@@ -9,7 +9,7 @@ import {
   output,
   Signal,
 } from '@angular/core';
-import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -30,14 +30,6 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
     TranslatableStringPipe,
   ],
   templateUrl: './fsp-multiselect.component.html',
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: FspMultiselectComponent,
-      multi: true,
-    },
-  ],
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FspMultiselectComponent {
@@ -65,8 +57,8 @@ export class FspMultiselectComponent {
 
   readonly fspMultiselectOptions = Object.values(FSP_SETTINGS).map((fsp) => {
     return {
-      fspName: fsp.name,
-      name: fsp.defaultLabel.en,
+      name: fsp.name,
+      label: fsp.defaultLabel,
     };
   });
 
@@ -83,6 +75,19 @@ export class FspMultiselectComponent {
       }
     });
   }
+}
+
+/*
+@TODO: Check if we can use the `ControlValueAccessor` interface instead of manually implementing `writeValue` and `registerOnChange`.
+This would allow us to use the component with Angular forms more seamlessly.
+
+ providers: [
+   {
+     provide: NG_VALUE_ACCESSOR,
+     useExisting: FspMultiselectComponent,
+     multi: true,
+   },
+ ],
 
   writeValue(value: Fsps[] | null) {
     this.selectedOptions.set(value ?? []);
@@ -91,4 +96,7 @@ export class FspMultiselectComponent {
   registerOnChange(fn: (value: Fsps[]) => void) {
     this.selectedOptions.subscribe(fn);
   }
-}
+
+  etc...
+
+*/
