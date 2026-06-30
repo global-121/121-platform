@@ -9,7 +9,7 @@ import {
 /**
  * `title`, `description`, and `info` must be translated strings.
  */
-interface NotificationBannerContent {
+export interface NotificationBannerContent {
   title: string;
   description: string;
   info?: string;
