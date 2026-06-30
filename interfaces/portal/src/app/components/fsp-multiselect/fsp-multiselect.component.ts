@@ -9,11 +9,7 @@ import {
   output,
   Signal,
 } from '@angular/core';
-import {
-  ControlValueAccessor,
-  FormsModule,
-  NG_VALUE_ACCESSOR,
-} from '@angular/forms';
+import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -44,7 +40,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FspMultiselectComponent implements ControlValueAccessor {
+export class FspMultiselectComponent {
   readonly programId = input<string>();
 
   readonly selectedOptions = model<Fsps[]>([]);
@@ -95,7 +91,4 @@ export class FspMultiselectComponent implements ControlValueAccessor {
   registerOnChange(fn: (value: Fsps[]) => void) {
     this.selectedOptions.subscribe(fn);
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-function -- Required by ControlValueAccessor, needs to be implemented but can be empty
-  registerOnTouched() {}
 }
