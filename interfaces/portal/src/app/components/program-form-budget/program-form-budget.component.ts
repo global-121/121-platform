@@ -104,4 +104,8 @@ export class ProgramFormBudgetComponent {
   });
 
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
+
+  onFspSelectionChange(fsps: Fsps[]) {
+    this.formGroup.patchValue({ fsps });
+  }
 }
