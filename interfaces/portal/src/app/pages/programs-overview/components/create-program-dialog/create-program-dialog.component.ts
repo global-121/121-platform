@@ -71,6 +71,8 @@ export class CreateProgramDialogComponent {
   // 3 = step 3: budget
   readonly currentStep = signal<0 | 1 | 2 | 3>(0);
 
+  readonly selectedFsps = signal<Fsps[]>([]);
+
   readonly formGroup = computed(() => {
     const nameGroup = this.formName()?.formGroup;
     const informationGroup = this.formInformation()?.formGroup;

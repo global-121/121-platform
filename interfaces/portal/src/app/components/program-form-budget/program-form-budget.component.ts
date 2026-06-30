@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   inject,
   input,
@@ -37,6 +38,7 @@ export type ProgramBudgetFormGroup =
     ReactiveFormsModule,
     InputTextModule,
     SelectModule,
+    FspMultiselectComponent,
   ],
   templateUrl: './program-form-budget.component.html',
   styles: ``,
@@ -46,6 +48,8 @@ export class ProgramFormBudgetComponent {
   private readonly locale = inject<Locale>(LOCALE_ID);
   readonly program = input<Program>();
   readonly programId = input<string>();
+
+  readonly programId = computed(() => this.program()?.id.toString());
 
   readonly currencies = Object.values(CurrencyCode)
     .map((code) => ({
@@ -102,4 +106,8 @@ export class ProgramFormBudgetComponent {
   });
 
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
+
+  onFspSelectionChange(fsps: Fsps[]) {
+    this.formGroup.patchValue({ fsps });
+  }
 }
