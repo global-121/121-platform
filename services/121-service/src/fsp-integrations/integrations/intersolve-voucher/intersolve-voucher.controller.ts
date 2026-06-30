@@ -29,6 +29,7 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import { IMAGE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
+import { IMAGE_FILE_UPLOAD_LIMITS } from '@121-service/src/shared/file-upload-limits';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { sendImageResponse } from '@121-service/src/utils/send-image-response.helper';
 
@@ -159,7 +160,9 @@ export class IntersolveVoucherController {
     description: 'Post intersolve instructions',
   })
   @Post('programs/:programId/fsps/intersolve-voucher/instructions')
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(
+    FileInterceptor('image', { limits: IMAGE_FILE_UPLOAD_LIMITS }),
+  )
   public async postIntersolveInstructions(
     @UploadedFile() instructionsFileBlob: Express.Multer.File,
     @Param('programId', ParseIntPipe)
