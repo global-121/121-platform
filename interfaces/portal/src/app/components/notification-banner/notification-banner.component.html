@@ -1,0 +1,25 @@
+@if (content()) {
+  <div
+    class="mb-6 flex w-full items-center rounded-2xl border p-4"
+    [ngClass]="wrapperVariant()"
+  >
+    @if (content(); as content) {
+      <span
+        class="me-2 text-xl"
+        [ngClass]="iconVariant()"
+      ></span>
+      <div class="leading-tight">
+        <strong>{{ content.title }}</strong>
+        <span>&nbsp;-&nbsp;</span>
+        <span class="text-black">{{ content.description }}</span>
+      </div>
+    }
+  </div>
+} @else {
+  <div
+    class="mb-6 flex w-full items-center rounded-2xl border p-4"
+    [ngClass]="wrapperVariant()"
+  >
+    <ng-content></ng-content>
+  </div>
+}
