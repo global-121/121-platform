@@ -426,6 +426,9 @@
       <trans-unit id="2832894421278390919" datatype="html">
         <source>Invalid email or password. Double-check your credentials and try again.</source>
       </trans-unit>
+      <trans-unit id="2835677509514958966" datatype="html">
+        <source>fsp should be a &apos;hidden&apos; field in your form that has the &apos;default response&apos; set to the FSP name: <x equiv-text="fspNames" id="PH"/></source>
+      </trans-unit>
       <trans-unit id="2840088863087373358" datatype="html">
         <source>Updating registration(s)</source>
       </trans-unit>
@@ -1085,6 +1088,9 @@
       <trans-unit id="5568900620756681669" datatype="html">
         <source>Your form must include the following required fields in this <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>exact format<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> for this FSP integration in the data column name:</source>
       </trans-unit>
+      <trans-unit id="5577392467072414418" datatype="html">
+        <source>fsp should be &apos;select many&apos; with the following FSP names as options: <x equiv-text="fspNames" id="PH"/></source>
+      </trans-unit>
       <trans-unit id="5578437656517849832" datatype="html">
         <source>Order cards to your branch by filling in this form and clicking on order. If the order is sent successfully it will be logged in the table on the &apos;Debit cards&apos; tab.</source>
       </trans-unit>
@@ -1153,6 +1159,9 @@
       </trans-unit>
       <trans-unit id="5817489058335953799" datatype="html">
         <source>Debit cards ordered successfully</source>
+      </trans-unit>
+      <trans-unit id="5833271673900301518" datatype="html">
+        <source>Scope should be a &apos;hidden&apos; field in your form that has the &apos;default response&apos; set to the scope of the registration</source>
       </trans-unit>
       <trans-unit id="5906272961955453157" datatype="html">
         <source>Approved</source>

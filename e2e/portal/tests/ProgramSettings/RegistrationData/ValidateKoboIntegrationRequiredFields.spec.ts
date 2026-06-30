@@ -14,6 +14,8 @@ const fspsToAdd = [FSP_SETTINGS[Fsps.safaricom].defaultLabel.en].filter(
 );
 
 const requiredFieldsFromSeed = [
+  'fsp',
+  'scope',
   'fullName',
   'phoneNumber',
   'whatsappPhoneNumber',
@@ -57,6 +59,8 @@ test('Check if all required fields are updated when deleting a FSP', async ({
     await registrationDataPage.clickRegistrationDataSection();
     await registrationDataPage.validateKoboRequiredFieldsTable({
       requiredDataColumnNames: [
+        'fsp',
+        'scope',
         'fullName',
         'phoneNumber',
         'whatsappPhoneNumber',
@@ -80,6 +84,41 @@ test('Check if all required fields are updated when adding a FSP', async ({
     await registrationDataPage.clickRegistrationDataSection();
     await registrationDataPage.validateKoboRequiredFieldsTable({
       requiredDataColumnNames: [...requiredFieldsFromSeed, 'nationalId'],
+    });
+  });
+});
+
+test('Check if scope is not shown when scope is disabled', async ({
+  programSettingsPage,
+  registrationDataPage,
+  page,
+}) => {
+  await test.step('Disable scope', async () => {
+    await programSettingsPage.navigateToProgramPage('Settings');
+    await programSettingsPage.clickEditProgramInformationSectionByTitle(
+      'Basic information',
+    );
+
+    const scopeSwitch = page.getByRole('switch', {
+      name: 'Use "scope" in this program',
+    });
+
+    if ((await scopeSwitch.getAttribute('aria-checked')) !== 'false') {
+      await scopeSwitch.click();
+    }
+
+    await programSettingsPage.saveChanges();
+    await programSettingsPage.validateToastMessageAndClose(
+      'Basic information details saved successfully.',
+    );
+  });
+
+  await test.step('Validate scope not shown as required field', async () => {
+    await registrationDataPage.clickRegistrationDataSection();
+    await registrationDataPage.validateKoboRequiredFieldsTable({
+      requiredDataColumnNames: [...requiredFieldsFromSeed].filter(
+        (field) => field !== 'scope',
+      ),
     });
   });
 });

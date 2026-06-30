@@ -14,6 +14,7 @@ import { TagModule } from 'primeng/tag';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 
+import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
@@ -21,7 +22,13 @@ import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
 @Component({
   selector: 'app-required-attributes',
-  imports: [TableModule, Button, TagModule, TranslatableStringPipe],
+  imports: [
+    TableModule,
+    Button,
+    TagModule,
+    TranslatableStringPipe,
+    InfoTooltipComponent,
+  ],
   providers: [ToastService],
   templateUrl: './required-attributes.component.html',
   styles: ``,
@@ -43,6 +50,9 @@ export class RequiredAttributesComponent {
   readonly fspConfigurations = injectQuery(
     this.fspConfigurationApiService.getFspConfigurations(this.programId),
   );
+
+  program = injectQuery(this.programApiService.getProgram(this.programId));
+  readonly enableScope = computed(() => this.program.data()?.enableScope);
 
   readonly programAttributes = injectQuery(
     this.programApiService.getProgramAttributes({
@@ -81,7 +91,34 @@ export class RequiredAttributesComponent {
       }
     }
 
-    return attributes.filter((attr) => requiredAttributeNames.has(attr.name));
+    // The FSP is a hidden field that is always required, so we hardcode it to the list of required attributes
+    // until we do not require it anymore for programs with only one FSP configured.
+    const fspEntry = {
+      name: 'fsp',
+      label: 'Fsp',
+      infoTooltip: () => {
+        const fspNames = this.programFsps()
+          .map((fsp) => fsp.name)
+          .join(', ');
+        return this.programFsps().length === 1
+          ? $localize`fsp should be a 'hidden' field in your form that has the 'default response' set to the FSP name: ${fspNames}`
+          : $localize`fsp should be 'select many' with the following FSP names as options: ${fspNames}`;
+      },
+    };
+
+    // Scope is a field that is independent from the FSPs, so we hardcode it to the list of required attributes if the program has scope enabled.
+    const scope = {
+      name: 'scope',
+      label: 'Scope',
+      infoTooltip: () =>
+        $localize`Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration`,
+    };
+
+    return [
+      fspEntry,
+      ...(this.enableScope() ? [scope] : []),
+      ...attributes.filter((attr) => requiredAttributeNames.has(attr.name)),
+    ];
   });
 
   copyToClipboard(text: string) {
