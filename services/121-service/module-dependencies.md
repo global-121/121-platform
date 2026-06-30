@@ -115,6 +115,7 @@ graph LR
   PaymentsModule-->MessageTemplateModule
   PaymentsModule-->PaymentEmailsModule
   PaymentsModule-->PaymentEventsModule
+  PaymentsModule-->PaymentsProgressModule
   PaymentsModule-->ProgramAidworkerAssignmentsModule
   PaymentsModule-->ProgramApprovalThresholdsModule
   PaymentsModule-->ProgramFspConfigurationsModule
@@ -128,7 +129,9 @@ graph LR
   PaymentsModule-->TransactionQueuesModule
   PaymentsModule-->TransactionsModule
   PaymentsModule-->UserModule
+  PaymentsProgressModule-->RedisModule
   ProgramApprovalThresholdsModule-->ProgramAidworkerAssignmentsModule
+  ProgramFspConfigurationsModule-->PaymentsProgressModule
   ProgramFspConfigurationsModule-->ProgramRegistrationAttributesModule
   ProgramModule-->FspsModule
   ProgramModule-->IntersolveVisaModule

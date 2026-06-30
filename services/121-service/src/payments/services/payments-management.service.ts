@@ -12,7 +12,7 @@ import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-even
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
-import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -38,7 +38,7 @@ export class PaymentsManagementService {
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly paymentsHelperService: PaymentsHelperService,
     private readonly paymentEventsService: PaymentEventsService,
-    private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
+    private readonly paymentsProgressService: PaymentsProgressService,
     private readonly transactionsService: TransactionsService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
@@ -65,14 +65,14 @@ export class PaymentsManagementService {
     note?: string;
   }): Promise<BulkActionResultPaymentDto> {
     if (dryRun) {
-      await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
+      await this.paymentsProgressService.checkPaymentInProgressAndThrow(
         programId,
       );
     } else {
       // Only lock payments when not a dry run
-      await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
-        { programId },
-      );
+      await this.paymentsProgressService.checkAndLockPaymentProgressOrThrow({
+        programId,
+      });
     }
 
     // put all operations in try, to be able to always end with an unlock-payments action, also in case of failure
@@ -130,9 +130,7 @@ export class PaymentsManagementService {
     } finally {
       if (!dryRun) {
         // make sure to unblock payments also in case of failure
-        await this.paymentsProgressHelperService.unlockPaymentsForProgram(
-          programId,
-        );
+        await this.paymentsProgressService.unlockPaymentsForProgram(programId);
       }
     }
   }
@@ -524,7 +522,7 @@ export class PaymentsManagementService {
 
     // Throw if payment is in progress
     const isInProgress =
-      await this.paymentsProgressHelperService.isPaymentInProgress(programId);
+      await this.paymentsProgressService.isPaymentInProgress(programId);
     if (isInProgress) {
       throw new HttpException(
         'Cannot delete a payment when a payment is already in progress',

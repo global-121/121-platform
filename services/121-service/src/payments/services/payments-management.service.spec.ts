@@ -6,7 +6,7 @@ import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-even
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
-import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
@@ -19,7 +19,7 @@ import '@121-service/src/utils/test-helpers/matchers/httpExceptionMatcher';
 
 describe('PaymentsManagementService', () => {
   let service: PaymentsManagementService;
-  let paymentsProgressHelperService: PaymentsProgressHelperService;
+  let paymentsProgressService: PaymentsProgressService;
   let paymentsHelperService: PaymentsHelperService;
   let paymentEventsService: PaymentEventsService;
   let transactionsService: TransactionsService;
@@ -44,7 +44,7 @@ describe('PaymentsManagementService', () => {
       PaymentsManagementService,
     ).compile();
     service = unit;
-    paymentsProgressHelperService = unitRef.get(PaymentsProgressHelperService);
+    paymentsProgressService = unitRef.get(PaymentsProgressService);
     paymentsHelperService = unitRef.get(PaymentsHelperService);
     paymentEventsService = unitRef.get(PaymentEventsService);
     transactionsService = unitRef.get(TransactionsService);
@@ -96,10 +96,10 @@ describe('PaymentsManagementService', () => {
 
     // Assert
     expect(
-      paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow,
+      paymentsProgressService.checkAndLockPaymentProgressOrThrow,
     ).not.toHaveBeenCalled();
     expect(
-      paymentsProgressHelperService.unlockPaymentsForProgram,
+      paymentsProgressService.unlockPaymentsForProgram,
     ).not.toHaveBeenCalled();
     expect(paymentEventsService.createEvent).not.toHaveBeenCalled();
     expect(
@@ -148,7 +148,7 @@ describe('PaymentsManagementService', () => {
 
     // Assert
     expect(
-      paymentsProgressHelperService.unlockPaymentsForProgram,
+      paymentsProgressService.unlockPaymentsForProgram,
     ).toHaveBeenCalledWith(basePaymentParams.programId);
     expect(paymentEventsService.createEvent).toHaveBeenCalledWith({
       userId: 1,
@@ -185,7 +185,7 @@ describe('PaymentsManagementService', () => {
       'Simulated error',
     );
     expect(
-      paymentsProgressHelperService.unlockPaymentsForProgram,
+      paymentsProgressService.unlockPaymentsForProgram,
     ).toHaveBeenCalledWith(basePaymentParams.programId);
   });
 
@@ -225,7 +225,7 @@ describe('PaymentsManagementService', () => {
       programFspConfigurationNames: [],
     });
     expect(
-      paymentsProgressHelperService.unlockPaymentsForProgram,
+      paymentsProgressService.unlockPaymentsForProgram,
     ).toHaveBeenCalledWith(basePaymentParams.programId);
   });
 
@@ -508,7 +508,7 @@ describe('PaymentsManagementService', () => {
         .fn()
         .mockResolvedValue(undefined);
       (
-        paymentsProgressHelperService.isPaymentInProgress as jest.Mock
+        paymentsProgressService.isPaymentInProgress as jest.Mock
       ).mockResolvedValue(false);
       (
         transactionViewScopedRepository.hasBeenStarted as jest.Mock
@@ -530,7 +530,7 @@ describe('PaymentsManagementService', () => {
     it('should throw if payment is in progress', async () => {
       // Arrange
       (
-        paymentsProgressHelperService.isPaymentInProgress as jest.Mock
+        paymentsProgressService.isPaymentInProgress as jest.Mock
       ).mockResolvedValue(true);
 
       // Act & Assert
@@ -604,7 +604,9 @@ describe('PaymentsManagementService', () => {
         expect.objectContaining({ name: 'New name' }),
       );
 
-      expect((service as any).paymentEventsService.createEvent).toHaveBeenCalledWith(
+      expect(
+        (service as any).paymentEventsService.createEvent,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           paymentId: 5,
           userId: 1,
@@ -637,7 +639,9 @@ describe('PaymentsManagementService', () => {
 
       // Assert
       expect((service as any).paymentRepository.save).not.toHaveBeenCalled();
-      expect((service as any).paymentEventsService.createEvent).not.toHaveBeenCalled();
+      expect(
+        (service as any).paymentEventsService.createEvent,
+      ).not.toHaveBeenCalled();
     });
   });
 });

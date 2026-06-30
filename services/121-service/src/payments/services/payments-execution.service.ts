@@ -7,7 +7,7 @@ import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/pay
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
-import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -21,7 +21,7 @@ export class PaymentsExecutionService {
   public constructor(
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly transactionJobsCreationService: TransactionJobsCreationService,
-    private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
+    private readonly paymentsProgressService: PaymentsProgressService,
     private readonly paymentsHelperService: PaymentsHelperService,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly transactionsService: TransactionsService,
@@ -38,9 +38,9 @@ export class PaymentsExecutionService {
     programId: number;
     paymentId: number;
   }): Promise<void> {
-    await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
-      { programId },
-    );
+    await this.paymentsProgressService.checkAndLockPaymentProgressOrThrow({
+      programId,
+    });
 
     try {
       const notCompletedApprovals = await this.paymentApprovalRepository.count({
@@ -103,9 +103,7 @@ export class PaymentsExecutionService {
         paymentId,
       });
     } finally {
-      await this.paymentsProgressHelperService.unlockPaymentsForProgram(
-        programId,
-      );
+      await this.paymentsProgressService.unlockPaymentsForProgram(programId);
     }
   }
 
@@ -195,14 +193,14 @@ export class PaymentsExecutionService {
     );
 
     if (dryRun) {
-      await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
+      await this.paymentsProgressService.checkPaymentInProgressAndThrow(
         programId,
       );
     } else {
       // Only lock payments when not a dry run
-      await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
-        { programId },
-      );
+      await this.paymentsProgressService.checkAndLockPaymentProgressOrThrow({
+        programId,
+      });
     }
 
     // do all operations UP TO starting the queue in a try, so that we can always end with a unblock-payments action, also in case of failure
@@ -247,9 +245,7 @@ export class PaymentsExecutionService {
       return bulkActionResult;
     } finally {
       if (!dryRun) {
-        await this.paymentsProgressHelperService.unlockPaymentsForProgram(
-          programId,
-        );
+        await this.paymentsProgressService.unlockPaymentsForProgram(programId);
       }
     }
   }

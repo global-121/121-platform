@@ -4,7 +4,7 @@ import { Equal, In } from 'typeorm';
 import { ExcelService } from '@121-service/src/fsp-integrations/integrations/excel/excel.service';
 import { ExcelReconciliationInstructions } from '@121-service/src/fsp-integrations/reconciliation/excel/dtos/excel-reconciliation-instructions.dto';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
-import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -20,7 +20,7 @@ export class ExcelReconciliationInstructionsService {
   public constructor(
     private readonly excelService: ExcelService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
-    private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
+    private readonly paymentsProgressService: PaymentsProgressService,
     private readonly paymentsReportingService: PaymentsReportingService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
   ) {}
@@ -33,9 +33,7 @@ export class ExcelReconciliationInstructionsService {
     // Validation & preparation
     /////////////////////////////////////
 
-    if (
-      await this.paymentsProgressHelperService.isPaymentInProgress(programId)
-    ) {
+    if (await this.paymentsProgressService.isPaymentInProgress(programId)) {
       throw new HttpException(
         'Cannot export FSP instructions while payment is in progress',
         HttpStatus.BAD_REQUEST,
