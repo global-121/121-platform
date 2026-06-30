@@ -1,8 +1,9 @@
 import { Locator, Page } from 'playwright';
 
+import BasePage from '../pages/BasePage';
 import { PrimeNGDatePicker } from './PrimeNGDatePicker';
 
-class CreateProgramDialog {
+class CreateProgramDialog extends BasePage {
   readonly page: Page;
   readonly nextButton: Locator;
   readonly submitButton: Locator;
@@ -11,6 +12,7 @@ class CreateProgramDialog {
   readonly currencyDropdown: Locator;
 
   constructor(page: Page) {
+    super(page);
     this.page = page;
     this.nextButton = this.page.getByRole('button', { name: 'Continue' });
     this.submitButton = this.page.getByRole('button', {
@@ -62,11 +64,13 @@ class CreateProgramDialog {
     currency,
     defaultNrOfTransactions,
     fixedTransferValue,
+    fsps,
   }: {
     fundsAvailable: string;
     currency: string;
     defaultNrOfTransactions: string;
     fixedTransferValue: string;
+    fsps: string[];
   }) {
     await this.page.getByLabel('Funds available').fill(fundsAvailable);
     await this.currencyDropdown.click();
@@ -79,6 +83,15 @@ class CreateProgramDialog {
     await this.page
       .getByLabel('*Fixed transfer value')
       .fill(fixedTransferValue);
+
+    // Select the FSPs from the multiselect component
+    await this.page.getByTestId('fsp-multiselect').click();
+    for (const fsp of fsps) {
+      await this.page.getByRole('option', { name: fsp }).click();
+    }
+    await this.closeOpenSelectOrMultiselectWithRetries();
+
+    // Submit the form to create the program
     await this.submitButton.click();
   }
 }
