@@ -96,7 +96,8 @@ export class ProgramFormBudgetComponent {
 
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
 
-  onFspSelectionChange({ fsps }: { fsps: Fsps[] }) {
+  // @TODO: Change onFspSelectionChange to accept an object with fsps property
+  onFspSelectionChange(fsps: Fsps[]) {
     this.formGroup.patchValue({ fsps });
   }
 }
