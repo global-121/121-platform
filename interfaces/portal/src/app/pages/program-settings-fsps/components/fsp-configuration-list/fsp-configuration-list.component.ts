@@ -15,7 +15,10 @@ import { CardModule } from 'primeng/card';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 
-import { NotificationBannerComponent } from '~/components/notification-banner/notification-banner.component';
+import {
+  NotificationBannerComponent,
+  NotificationBannerIcon,
+} from '~/components/notification-banner/notification-banner.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
@@ -48,13 +51,20 @@ export class FspConfigurationListComponent {
     this.fspConfigurationApiService.getFspConfigurations(this.programId),
   );
 
-  readonly notAllFspsIntegrated = computed(() =>
-    this.fspConfigurations
-      .data()
-      ?.some(
-        (fspConfiguration) =>
-          fspConfiguration.state ===
-          FspConfigurationStates.configurationPending,
-      ),
+  readonly integrationRequiredBannerContent = {
+    title: $localize`Integration required`,
+    description: $localize`Integrate your FSPs before paying your registrations.`,
+    icon: 'alert' as NotificationBannerIcon,
+  };
+
+  readonly notAllFspsIntegrated = computed(
+    () =>
+      this.fspConfigurations
+        .data()
+        ?.some(
+          (fspConfiguration) =>
+            fspConfiguration.state ===
+            FspConfigurationStates.configurationPending,
+        ) ?? false,
   );
 }
