@@ -4,6 +4,7 @@ import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-cod
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -28,6 +29,7 @@ const fspConfiguration: CreateProgramFspConfigurationDto = {
   name: 'Safaricom',
   label: { en: 'Safaricom' },
   fspName: Fsps.safaricom,
+  state: FspConfigurationStates.configured,
   properties: [],
 };
 

@@ -6,7 +6,9 @@ import { GetTokenResult } from '@121-service/src/fsp-integrations/integrations/i
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
@@ -228,6 +230,13 @@ export class ProgramService {
       await queryRunner.release();
     }
 
+    if (programData.fsps && programData.fsps.length > 0) {
+      await this.assignFspConfigurationsToProgram({
+        programId: savedProgram.id,
+        fspNames: programData.fsps,
+      });
+    }
+
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.Admin],
       scope: undefined,
@@ -243,6 +252,28 @@ export class ProgramService {
     }
   
     return newProgram;
+  }
+
+  private async assignFspConfigurationsToProgram({
+    programId,
+    fspNames,
+  }: {
+    programId: number;
+    fspNames: Fsps[];
+  }): Promise<void> {
+    for (const fspName of fspNames) {
+      const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
+        {
+          name: fspName,
+          label: { en: fspName },
+          fspName,
+          state: FspConfigurationStates.configurationPending,
+        };
+      await this.programFspConfigurationsService.create(
+        programId,
+        createProgramFspConfigurationDto,
+      );
+    }
   }
 
   public async deleteProgram(programId: number): Promise<void> {
@@ -282,6 +313,39 @@ export class ProgramService {
     );
     const updatedProgram = await this.findProgramOrThrow(programId);
     return this.fillProgramReturnDto(updatedProgram);
+  }
+
+  private async updateFspConfigurationsOfProgram({
+    program,
+    fspNames,
+  }: {
+    program: FoundProgramDto;
+    fspNames: Fsps[];
+  }): Promise<void> {
+    const existingFspNames = program.programFspConfigurations.map(
+      (config) => config.fspName,
+    );
+
+    const fspNamesToAdd = fspNames.filter(
+      (fspName) => !existingFspNames.includes(fspName),
+    );
+    const configsToDelete = program.programFspConfigurations.filter(
+      (config) => !fspNames.includes(config.fspName),
+    );
+
+    for (const config of configsToDelete) {
+      await this.programFspConfigurationsService.delete(
+        program.id,
+        config.name,
+      );
+    }
+
+    if (fspNamesToAdd.length > 0) {
+      await this.assignFspConfigurationsToProgram({
+        programId: program.id,
+        fspNames: fspNamesToAdd,
+      });
+    }
   }
 
   // This function takes a filled ProgramEntity and returns a filled ProgramReturnDto

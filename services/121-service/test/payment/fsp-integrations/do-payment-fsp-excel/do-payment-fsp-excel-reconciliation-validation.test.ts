@@ -4,6 +4,7 @@ import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getTransactionsByPaymentIdPaginated,
@@ -88,7 +89,10 @@ describe('Reconciliate excel FSP data', () => {
     };
     await postProgramFspConfiguration({
       programId: programIdWesteros,
-      body: excelFspConfigWithDifferentMatchColumn,
+      body: {
+        ...excelFspConfigWithDifferentMatchColumn,
+        state: FspConfigurationStates.configured,
+      },
       accessToken,
     });
   });
