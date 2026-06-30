@@ -99,7 +99,14 @@ test('Check if scope is not shown when scope is disabled', async ({
       'Basic information',
     );
 
-    await page.getByLabel('Use "scope" in this program').click();
+    const scopeSwitch = page.getByRole('switch', {
+      name: 'Use "scope" in this program',
+    });
+
+    if ((await scopeSwitch.getAttribute('aria-checked')) !== 'false') {
+      await scopeSwitch.click();
+    }
+
     await programSettingsPage.saveChanges();
     await programSettingsPage.validateToastMessageAndClose(
       'Basic information details saved successfully.',
