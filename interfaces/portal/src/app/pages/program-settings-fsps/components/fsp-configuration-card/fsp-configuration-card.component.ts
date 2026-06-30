@@ -5,13 +5,9 @@ import {
   inject,
   input,
   output,
-  viewChild,
 } from '@angular/core';
 
-import {
-  injectMutation,
-  injectQuery,
-} from '@tanstack/angular-query-experimental';
+import { injectQuery } from '@tanstack/angular-query-experimental';
 import { AccordionModule } from 'primeng/accordion';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -151,19 +147,6 @@ export class FspConfigurationCardComponent {
       this.programAttributes.data()?.find((attr) => attr.name === propertyName),
     );
   });
-
-  deleteConfigurationMutation = injectMutation(() => ({
-    mutationFn: () =>
-      this.fspConfigurationApiService.deleteFspConfiguration({
-        programId: this.programId,
-        configurationName: this.configuration().name,
-      }),
-    onSuccess: () => {
-      this.toastService.showToast({
-        detail: `FSP deleted.`,
-      });
-    },
-  }));
 
   copyToClipboard(text: string) {
     void navigator.clipboard.writeText(text);
