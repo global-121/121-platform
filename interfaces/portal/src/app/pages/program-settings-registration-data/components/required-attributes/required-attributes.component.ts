@@ -9,7 +9,6 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
@@ -21,7 +20,7 @@ import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
 @Component({
   selector: 'app-required-attributes',
-  imports: [TableModule, Button, TagModule, InfoTooltipComponent],
+  imports: [TableModule, Button, InfoTooltipComponent],
   providers: [ToastService],
   templateUrl: './required-attributes.component.html',
   styles: ``,
