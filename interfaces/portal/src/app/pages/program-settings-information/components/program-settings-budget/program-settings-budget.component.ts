@@ -20,6 +20,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { FspTagsComponent } from '~/components/fsp-tags/fsp-tags.component';
 import {
   ProgramBudgetFormGroup,
   ProgramFormBudgetComponent,
@@ -69,6 +70,7 @@ export class ProgramSettingsBudgetComponent {
       currency,
       distributionDuration,
       fixedTransferValue,
+      fsps,
     }: ReturnType<ProgramBudgetFormGroup['getRawValue']>) =>
       this.programApiService.updateProgram({
         programId: this.programId,
@@ -77,6 +79,7 @@ export class ProgramSettingsBudgetComponent {
           currency,
           distributionDuration,
           fixedTransferValue,
+          fsps,
         },
       }),
     onSuccess: () => {
@@ -112,6 +115,13 @@ export class ProgramSettingsBudgetComponent {
         label: '*' + $localize`Fixed transfer value`,
         value: programData?.fixedTransferValue,
         type: 'number',
+        fullWidth: true,
+      },
+      {
+        label: '*' + $localize`Financial service providers`,
+        value: FspTagsComponent,
+        type: 'component',
+        inputs: { programId: this.programId() },
         fullWidth: true,
       },
     ];
