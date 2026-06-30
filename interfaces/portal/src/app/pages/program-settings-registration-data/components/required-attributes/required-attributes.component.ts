@@ -14,21 +14,13 @@ import { TagModule } from 'primeng/tag';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 
-import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
 @Component({
   selector: 'app-required-attributes',
-  imports: [
-    TableModule,
-    Button,
-    TagModule,
-    TranslatableStringPipe,
-    InfoTooltipComponent,
-  ],
+  imports: [TableModule, Button, TagModule],
   providers: [ToastService],
   templateUrl: './required-attributes.component.html',
   styles: ``,
@@ -41,11 +33,6 @@ export class RequiredAttributesComponent {
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
   readonly fspConfigurationService = inject(FspConfigurationService);
   readonly programApiService = inject(ProgramApiService);
-
-  readonly programFsps = computed(() => {
-    const fspConfigs = this.fspConfigurations.data() ?? [];
-    return fspConfigs.map((config) => FSP_SETTINGS[config.fspName]);
-  });
 
   readonly fspConfigurations = injectQuery(
     this.fspConfigurationApiService.getFspConfigurations(this.programId),
