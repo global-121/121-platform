@@ -10,6 +10,7 @@ import { CooperativeBankOfOromiaAccountManagementModule } from '@121-service/src
 import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/intersolve-voucher.module';
 import { IntersolveVisaReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/intersolve-visa/intersolve-visa-reconciliation.module';
 import { IntersolveVoucherReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/intersolve-voucher/intersolve-voucher-reconciliation.module';
+import { MtnReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.module';
 import { NedbankReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/nedbank/nedbank-reconciliation.module';
 import { OnafriqReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/onafriq/onafriq-reconciliation.module';
 import { InstanceReportingModule } from '@121-service/src/instance-reporting/instance-reporting.module';
@@ -24,6 +25,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     CooperativeBankOfOromiaAccountManagementModule,
     NedbankReconciliationModule,
     OnafriqReconciliationModule,
+    MtnReconciliationModule,
     ExchangeRatesModule,
     InstanceReportingModule,
   ],

@@ -31,10 +31,10 @@ describe('MtnReconciliationService', () => {
   let queuesRegistryService: jest.Mocked<QueuesRegistryService>;
   let transactionRepository: jest.Mocked<TransactionRepository>;
   let transactionEventsScopedRepository: jest.Mocked<TransactionEventsScopedRepository>;
-  let mockMtnTransferCallbackQueue: jest.Mocked<Queue>;
+  let mockMtnTransferReconciliationQueue: jest.Mocked<Queue>;
 
   beforeEach(() => {
-    mockMtnTransferCallbackQueue = {
+    mockMtnTransferReconciliationQueue = {
       add: jest.fn().mockResolvedValue({ id: 'job-1' }),
     } as any;
 
@@ -51,8 +51,8 @@ describe('MtnReconciliationService', () => {
       TransactionEventsScopedRepository,
     );
 
-    (queuesRegistryService as any).mtnTransferCallbackQueue =
-      mockMtnTransferCallbackQueue;
+    (queuesRegistryService as any).mtnTransferReconciliationQueue =
+      mockMtnTransferReconciliationQueue;
 
     (transactionRepository.getStatusByIdOrThrow as jest.Mock).mockResolvedValue(
       TransactionStatusEnum.waiting,
@@ -74,48 +74,38 @@ describe('MtnReconciliationService', () => {
       referenceId: 'test-reference-id',
       apiKey: 'test-api-key',
     });
+    (
+      transactionRepository.getWaitingTransactionIdsByFsp as jest.Mock
+    ).mockResolvedValue([]);
   });
 
-  describe('processTransferCallback', () => {
-    it('should enqueue a callback job with the correct data', async () => {
+  describe('doMtnReconciliation', () => {
+    it('should enqueue each waiting transaction with a deterministic jobId and return the count', async () => {
+      // Arrange
+      (
+        transactionRepository.getWaitingTransactionIdsByFsp as jest.Mock
+      ).mockResolvedValue([42, 43]);
+
       // Act
-      await mtnReconciliationService.processTransferCallback({
-        externalId: '42',
-        referenceId: 'ref-uuid-123',
-        status: MtnTransferStatus.successful,
-        reason: undefined,
-      });
+      const count = await mtnReconciliationService.doMtnReconciliation();
 
       // Assert
-      expect(mockMtnTransferCallbackQueue.add).toHaveBeenCalledWith(
+      expect(mockMtnTransferReconciliationQueue.add).toHaveBeenCalledTimes(2);
+      expect(mockMtnTransferReconciliationQueue.add).toHaveBeenCalledWith(
         JobNames.default,
         { transactionId: 42 },
+        { jobId: 42, removeOnFail: true },
       );
-    });
-
-    it('should drop callback when externalId is missing', async () => {
-      // Act
-      await mtnReconciliationService.processTransferCallback({
-        status: MtnTransferStatus.successful,
-      });
-
-      // Assert
-      expect(mockMtnTransferCallbackQueue.add).not.toHaveBeenCalled();
-    });
-
-    it('should drop callback when externalId is not numeric', async () => {
-      // Act
-      await mtnReconciliationService.processTransferCallback({
-        externalId: 'not-a-number',
-        status: MtnTransferStatus.successful,
-      });
-
-      // Assert
-      expect(mockMtnTransferCallbackQueue.add).not.toHaveBeenCalled();
+      expect(mockMtnTransferReconciliationQueue.add).toHaveBeenCalledWith(
+        JobNames.default,
+        { transactionId: 43 },
+        { jobId: 43, removeOnFail: true },
+      );
+      expect(count).toBe(2);
     });
   });
 
-  describe('processMtnTransferCallbackJob', () => {
+  describe('processMtnTransferReconciliationJob', () => {
     it('should skip processing if the transaction is not in waiting status', async () => {
       // Arrange
       (
@@ -123,7 +113,7 @@ describe('MtnReconciliationService', () => {
       ).mockResolvedValue(TransactionStatusEnum.success);
 
       // Act
-      await mtnReconciliationService.processMtnTransferCallbackJob({
+      await mtnReconciliationService.processMtnTransferReconciliationJob({
         transactionId: 42,
       });
 
@@ -143,7 +133,7 @@ describe('MtnReconciliationService', () => {
       );
 
       // Act
-      await mtnReconciliationService.processMtnTransferCallbackJob({
+      await mtnReconciliationService.processMtnTransferReconciliationJob({
         transactionId: 42,
       });
 
@@ -152,7 +142,7 @@ describe('MtnReconciliationService', () => {
         transactionsService.saveProgressFromExternalSource,
       ).toHaveBeenCalledWith({
         transactionId: 42,
-        description: TransactionEventDescription.mtnCallbackReceived,
+        description: TransactionEventDescription.mtnReconciliationProcessed,
         newTransactionStatus: TransactionStatusEnum.success,
         errorMessage: undefined,
       });

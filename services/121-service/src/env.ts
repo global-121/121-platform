@@ -110,6 +110,8 @@ export const intersolveVoucherEnvVariablesSchema = {
 export const mtnEnvVariablesSchema = {
   MTN_MODE: FspModeSchema,
 
+  CRON_MTN_RECONCILIATION: z.stringbool().default(false),
+
   MTN_API_URL: z
     .url()
     .pipe(z.transform((url) => withoutTrailingSlash(url)))

@@ -8,6 +8,7 @@ import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/inte
 import { IntersolveVoucherCronService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher-cron.service';
 import { IntersolveVisaReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/intersolve-visa/intersolve-visa-reconciliation.service';
 import { IntersolveVoucherReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/intersolve-voucher/intersolve-voucher-reconciliation.service';
+import { MtnReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.service';
 import { NedbankReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/nedbank/nedbank-reconciliation.service';
 import { OnafriqReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/onafriq/onafriq-reconciliation.service';
 
@@ -22,6 +23,7 @@ export class CronjobExecutionService {
     private readonly cooperativeBankOfOromiaAccountManagementService: CooperativeBankOfOromiaAccountManagementService,
     private readonly nedbankReconciliationService: NedbankReconciliationService,
     private readonly onafriqReconciliationService: OnafriqReconciliationService,
+    private readonly mtnReconciliationService: MtnReconciliationService,
     private readonly exchangeRatesService: ExchangeRatesService,
     private readonly cronjobExecutionHelperService: CronjobExecutionHelperService,
   ) {}
@@ -75,6 +77,13 @@ export class CronjobExecutionService {
     await this.cronjobExecutionHelperService.executeWithLogging(
       'cronDoNedbankReconciliation',
       () => this.nedbankReconciliationService.doNedbankReconciliation(),
+    );
+  }
+
+  public async cronDoMtnReconciliation(): Promise<number | undefined> {
+    return await this.cronjobExecutionHelperService.executeWithLogging(
+      'cronDoMtnReconciliation',
+      () => this.mtnReconciliationService.doMtnReconciliation(),
     );
   }
 

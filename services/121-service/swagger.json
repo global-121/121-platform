@@ -61,6 +61,11 @@
     "params": []
   },
   {
+    "method": "patch",
+    "path": "/api/cronjobs/fsps/mtn",
+    "params": []
+  },
+  {
     "method": "put",
     "path": "/api/cronjobs/exchange-rates",
     "params": []
@@ -1130,11 +1135,6 @@
       "programId",
       "paymentId"
     ]
-  },
-  {
-    "method": "post",
-    "path": "/api/fsps/mtn/transfer-callback",
-    "params": []
   },
   {
     "method": "post",

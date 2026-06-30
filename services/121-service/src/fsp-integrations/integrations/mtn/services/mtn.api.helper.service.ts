@@ -53,12 +53,6 @@ export class MtnApiHelperService {
     headers.set('X-Reference-Id', referenceId);
     headers.set('X-Target-Environment', env.MTN_TARGET_ENVIRONMENT!);
 
-    if (env.EXTERNAL_121_SERVICE_URL) {
-      headers.set(
-        'X-Callback-Url',
-        `${env.EXTERNAL_121_SERVICE_URL}/api/fsps/mtn/transfer-callback`,
-      );
-    }
     return headers;
   }
 
