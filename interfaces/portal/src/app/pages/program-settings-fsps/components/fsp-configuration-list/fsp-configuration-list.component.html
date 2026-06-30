@@ -18,11 +18,7 @@
   @if (notAllFspsIntegrated()) {
     <app-notification-banner
       [color]="'orange'"
-      [content]="{
-        title: 'Integration required',
-        description: 'Integrate your FSPs before paying your registrations.',
-        icon: 'alert',
-      }"
+      [content]="integrationRequiredBannerContent"
     />
   }
 
