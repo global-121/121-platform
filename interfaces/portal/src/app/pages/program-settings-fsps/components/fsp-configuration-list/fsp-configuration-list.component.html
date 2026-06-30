@@ -15,6 +15,17 @@
     contact the 121 support team or talk to the account manager.
   </p>
 
+  @if (notAllFspsIntegrated()) {
+    <app-notification-banner
+      [color]="'orange'"
+      [content]="{
+        title: 'Integration required',
+        description: 'Integrate your FSPs before paying your registrations.',
+        icon: 'alert',
+      }"
+    />
+  }
+
   @if (fspConfigurations.isPending()) {
     <app-skeleton-inline />
   } @else if (fspConfigurations.isSuccess()) {
@@ -35,7 +46,7 @@
       </div>
     }
 
-    @if (fspConfigs.length === 0 || forceShowNewFspList()) {
+    <!-- @if (fspConfigs.length === 0 || forceShowNewFspList()) {
       @if (fspConfigs.length > 0) {
         <p
           i18n
@@ -70,6 +81,6 @@
         rounded
         styleClass="mbs-6"
       />
-    }
+    } -->
   }
 </p-card>
