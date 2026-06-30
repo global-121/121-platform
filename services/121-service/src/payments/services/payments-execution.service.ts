@@ -42,41 +42,41 @@ export class PaymentsExecutionService {
       programId,
     });
 
-    const notCompletedApprovals = await this.paymentApprovalRepository.count({
-      where: {
-        paymentId: Equal(paymentId),
-        approved: Equal(false),
-      },
-    });
-    if (notCompletedApprovals > 0) {
-      throw new HttpException(
-        `Cannot start payment. There are ${notCompletedApprovals} approval(s) to be done for this payment.`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const uniqueFspConfigsForApprovedTransactions =
-      await this.transactionViewScopedRepository.getUniqueProgramFspConfigForApprovedTransactions(
-        {
-          programId,
-          paymentId,
-        },
-      );
-    if (uniqueFspConfigsForApprovedTransactions.length === 0) {
-      throw new HttpException(
-        'No "approved" transactions found for this payment.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const programFspConfigurationNames = uniqueFspConfigsForApprovedTransactions.map(
-      (config) => config.programFspConfigurationName,
-    );
-    await this.paymentsHelperService.checkFspConfigurationsOrThrow(
-      programId,
-      programFspConfigurationNames,
-    );
-
     try {
+      const notCompletedApprovals = await this.paymentApprovalRepository.count({
+        where: {
+          paymentId: Equal(paymentId),
+          approved: Equal(false),
+        },
+      });
+      if (notCompletedApprovals > 0) {
+        throw new HttpException(
+          `Cannot start payment. There are ${notCompletedApprovals} approval(s) to be done for this payment.`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const uniqueFspConfigsForApprovedTransactions =
+        await this.transactionViewScopedRepository.getUniqueProgramFspConfigForApprovedTransactions(
+          {
+            programId,
+            paymentId,
+          },
+        );
+      if (uniqueFspConfigsForApprovedTransactions.length === 0) {
+        throw new HttpException(
+          'No "approved" transactions found for this payment.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      const programFspConfigurationNames = uniqueFspConfigsForApprovedTransactions.map(
+        (config) => config.programFspConfigurationName,
+      );
+      await this.paymentsHelperService.checkFspConfigurationsOrThrow(
+        programId,
+        programFspConfigurationNames,
+      );
+
       await this.paymentEventsService.createEvent({
         paymentId,
         userId,
