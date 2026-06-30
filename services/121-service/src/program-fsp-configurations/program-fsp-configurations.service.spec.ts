@@ -11,6 +11,7 @@ import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/progr
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { ProgramFspConfigurationsHelperService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.helper';
 import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
@@ -213,6 +214,7 @@ describe('ProgramFspConfigurationsService', () => {
       name: 'Test Configuration',
       fspName: Fsps.intersolveVisa,
       label: { en: 'Test Label' },
+      state: FspConfigurationStates.configured,
       properties: [
         {
           name: FspConfigurationProperties.brandCode,
