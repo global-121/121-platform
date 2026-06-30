@@ -13,6 +13,7 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
+import { DuplicateRelation } from '@121-service/src/utils/entity-duplication/duplicate-relation.decorator';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 @Entity('program')
@@ -63,6 +64,7 @@ export class ProgramEntity extends Base121Entity {
     () => ProgramAidworkerAssignmentEntity,
     (assignment) => assignment.program,
   )
+  @DuplicateRelation()
   public aidworkerAssignments: Relation<ProgramAidworkerAssignmentEntity[]>;
 
   @OneToMany(
