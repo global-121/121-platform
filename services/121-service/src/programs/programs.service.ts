@@ -332,7 +332,10 @@ export class ProgramService {
     }
 
     if (fspNamesToAdd.length > 0) {
-      await this.assignFspConfigurationsToProgram(program.id, fspNamesToAdd);
+      await this.assignFspConfigurationsToProgram({
+        programId: program.id,
+        fspNames: fspNamesToAdd,
+      });
     }
   }
 
