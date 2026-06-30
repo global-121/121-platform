@@ -9,6 +9,7 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 
+import { FspTagsComponent } from '~/components/fsp-tags/fsp-tags.component';
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-program-settings/page-layout-program-settings.component';
 import { isKoboIntegrated } from '~/domains/kobo/kobo.helpers';
@@ -26,6 +27,7 @@ import { RequiredAttributesComponent } from '~/pages/program-settings-registrati
     RequiredAttributesComponent,
     ManualLinkComponent,
     RegistrationQuestionsCardComponent,
+    FspTagsComponent,
   ],
   templateUrl: './program-settings-registration-data.page.html',
   styles: ``,
