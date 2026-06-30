@@ -57,4 +57,11 @@
       i18n-placeholder
     />
   </app-form-field-wrapper>
+
+  <!-- @TODO: Change onFspSelectionChange to accept an object with fsps property -->
+  <app-fsp-multiselect
+    (selectionChange)="onFspSelectionChange($event)"
+    [programId]="program() ? programId() : undefined"
+    [direction]="!programId() ? 'bottom' : 'top'"
+  ></app-fsp-multiselect>
 </ng-container>
