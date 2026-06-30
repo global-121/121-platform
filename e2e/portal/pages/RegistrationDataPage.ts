@@ -101,18 +101,6 @@ class RegistrationDataPage extends BasePage {
     await this.continueButton.first().click();
   }
 
-  async validateProgramFsps({ fspNames }: { fspNames: string[] }) {
-    const list = this.page.getByTestId('integrated-fsp-list');
-    const fsps = list.getByRole('listitem');
-    const fspsCount = await fsps.count();
-
-    expect(fspsCount).toBe(fspNames.length);
-
-    for (const fsp of fspNames) {
-      await expect(list).toContainText(fsp);
-    }
-  }
-
   async addKoboToolboxIntegration({
     url,
     apiKey,
