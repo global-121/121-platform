@@ -81,6 +81,7 @@ export class ProgramSettingsBudgetComponent {
           currency,
           distributionDuration,
           fixedTransferValue,
+          fsps,
         },
       });
 
