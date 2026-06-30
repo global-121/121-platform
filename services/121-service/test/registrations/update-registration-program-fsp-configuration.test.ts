@@ -3,7 +3,6 @@ import { HttpStatus } from '@nestjs/common';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
-import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -176,7 +175,6 @@ describe('Update program fsp configuration of PA', () => {
       name: newProgramFspConfigurationName,
       fspName: Fsps.intersolveVoucherWhatsapp,
       label: newProgramFspConfigurationLabel,
-      state: FspConfigurationStates.configured,
       properties: [
         {
           name: FspConfigurationProperties.password,
