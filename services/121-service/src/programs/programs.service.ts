@@ -230,13 +230,6 @@ export class ProgramService {
       await queryRunner.release();
     }
 
-    if (programData.fsps && programData.fsps.length > 0) {
-      await this.assignFspConfigurationsToProgram({
-        programId: savedProgram.id,
-        fspNames: programData.fsps,
-      });
-    }
-
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.Admin],
       scope: undefined,
@@ -261,7 +254,7 @@ export class ProgramService {
     programId: number;
     fspNames: Fsps[];
   }): Promise<void> {
-    for (const fspName of fspNames) {
+    for (const fspName of new Set(fspNames)) {
       const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
         {
           name: fspName,
@@ -297,6 +290,10 @@ export class ProgramService {
     }
 
     const { fsps, ...programAttributes } = updateProgramDto;
+
+    if (fsps) {
+      await this.updateFspConfigurationsOfProgram({ program, fspNames: fsps });
+    }
 
     for (const key in programAttributes) {
       program[key] = programAttributes[key];
