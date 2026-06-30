@@ -94,12 +94,12 @@ describe('MtnReconciliationService', () => {
       expect(mockMtnTransferReconciliationQueue.add).toHaveBeenCalledWith(
         JobNames.default,
         { transactionId: 42 },
-        { jobId: 42 },
+        { jobId: 42, removeOnFail: true },
       );
       expect(mockMtnTransferReconciliationQueue.add).toHaveBeenCalledWith(
         JobNames.default,
         { transactionId: 43 },
-        { jobId: 43 },
+        { jobId: 43, removeOnFail: true },
       );
       expect(count).toBe(2);
     });
