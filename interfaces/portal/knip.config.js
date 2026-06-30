@@ -2,7 +2,6 @@
 module.exports = {
   ignoreDependencies: [
     // Known issues with "Unused dependencies":
-    '@angular/platform-browser-dynamic', // Probably not 100% required
     'primeicons',
     // Known issues with "Unused devDependencies":
     'autoprefixer',
