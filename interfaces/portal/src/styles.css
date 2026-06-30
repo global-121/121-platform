@@ -162,23 +162,25 @@ svg-icon svg {
 
    So there will only be ONE section/grouping per PrimeNG component.
 */
+
 @layer primeng-customisations {
   :root {
     --toolbar-height: calc(48 / 14 * 1rem);
   }
 
+  /* 
+    OVERLAY POSITION AND OVERFLOW OVERRIDES:
+    When adding x amount of chips to the multiselect, the overlay will be
+    positioned over the select itself obfuscating the multiselect. Also the 
+    overflow will be hidden and the user won't be able to see the rest of the chips.
+    This is caused by PrimeNG being a very limited library and not having a
+    proper way to position the overlay, so we have to override it ourselves
+  */
+
   .wrapped-chip-multiselect {
     .p-multiselect-header:empty {
       @apply hidden;
     }
-
-    /* 
-      OVERLAY POSITION OVERRIDES:
-      When adding x amount of chips to the multiselect, the overlay will be
-      positioned over the select itself obfuscating the multiselect.
-      This is caused by PrimeNG being a shitty library and not having a
-      proper way to position the overlay, so we have to override it ourselves
-    */
 
     &.wrapped-chip-multiselect-direction-bottom {
       p-overlay {
@@ -190,13 +192,6 @@ svg-icon svg {
       }
     }
 
-    /* 
-      DISABLE OVERFLOW FOR MULTISELECT:
-      If you disable a maximum amount of chips to be displayed in the multiselect,
-      the overflow will be hidden and the user won't be able to see the rest of the chips.
-      This is caused by PrimeNG being a shitty library and not having a proper way to
-      display the overflow, so we have to override it ourselves
-    */
     .p-multiselect-label-container {
       @apply overflow-visible;
 
