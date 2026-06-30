@@ -6,7 +6,6 @@ import { Equal, Repository } from 'typeorm';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import {
   CreateProgramRegistrationAttributeDto,
-  ProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributesBatchDto,
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -27,7 +26,7 @@ describe('ProgramRegistrationAttributesService', () => {
 
   const createAttributeDto = (
     overrides: Partial<CreateProgramRegistrationAttributeDto> = {},
-  ): ProgramRegistrationAttributeDto => {
+  ): CreateProgramRegistrationAttributeDto => {
     return {
       name: 'defaultAttribute',
       type: RegistrationAttributeTypes.text,

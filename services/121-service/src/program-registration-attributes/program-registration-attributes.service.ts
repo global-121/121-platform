@@ -303,14 +303,14 @@ export class ProgramRegistrationAttributesService {
 
   public async createProgramRegistrationAttribute({
     programId,
-    createProgramRegistrationAttributeDto,
+    createProgramRegistrationAttribute,
   }: {
     programId: number;
-    createProgramRegistrationAttributeDto: ProgramRegistrationAttribute;
+    createProgramRegistrationAttribute: ProgramRegistrationAttribute;
   }): Promise<ProgramRegistrationAttribute> {
     const entity = await this.createProgramRegistrationAttributeEntity({
       programId,
-      createProgramRegistrationAttributeDto,
+      createProgramRegistrationAttributeDto: createProgramRegistrationAttribute,
     });
     return ProgramRegistrationAttributeMapper.entityToDto(entity);
   }

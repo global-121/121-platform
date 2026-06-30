@@ -4,7 +4,6 @@ import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
 import * as XLSX from 'xlsx';
 
 import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
-import { ProgramRegistrationAttribute } from '@121-service/src/activities/interfaces/program-registration-attribute.interface';
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import {
@@ -14,6 +13,7 @@ import {
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import {
+  CreateProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributesBatchDto,
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
@@ -69,7 +69,7 @@ export async function getProgram(
 }
 
 export async function postProgramRegistrationAttribute(
-  programRegistrationAttribute: ProgramRegistrationAttribute,
+  programRegistrationAttribute: CreateProgramRegistrationAttributeDto,
   programId: number,
   accessToken: string,
 ): Promise<request.Response> {

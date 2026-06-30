@@ -247,7 +247,7 @@ You can also leave the body empty.`,
     return await this.programRegistrationAttributesService.createProgramRegistrationAttribute(
       {
         programId,
-        createProgramRegistrationAttributeDto: programRegistrationAttribute,
+        createProgramRegistrationAttribute: programRegistrationAttribute,
       },
     );
   }
