@@ -59,7 +59,7 @@
   </app-form-field-wrapper>
 
   <app-fsp-multiselect
-    (selectionChange)="onFspSelectionChange($event)"
+    (selectionChange)="onFspSelectionChange({ fsps: $event })"
     [programId]="program() ? programId() : undefined"
     [direction]="!programId() ? 'bottom' : 'top'"
   ></app-fsp-multiselect>
