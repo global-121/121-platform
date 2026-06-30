@@ -1,0 +1,25 @@
+<p-card>
+  <div class="py-4 text-center">
+    @if (customIcon(); as icon) {
+      <img
+        class="mb-6 inline-block {{ sizeClassMap[icon.size] || 'h-16' }}"
+        src="assets/{{ icon.icon }}.svg"
+        alt=""
+      />
+    } @else if (!omitIcon()) {
+      <img
+        class="mb-6 inline-block h-16"
+        src="assets/no-results.svg"
+        alt=""
+      />
+    }
+
+    <h2 class="mb-4 text-base">
+      {{ title() }}
+    </h2>
+
+    <p>
+      {{ subtitle() }}
+    </p>
+  </div>
+</p-card>
