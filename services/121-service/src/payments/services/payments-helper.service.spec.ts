@@ -1,7 +1,7 @@
 import { HttpException } from '@nestjs/common';
 
-import * as fspSettingsHelpers from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 describe('PaymentsHelperService', () => {
@@ -22,40 +22,21 @@ describe('PaymentsHelperService', () => {
     ).rejects.toThrow(HttpException);
   });
 
-  it('should throw if required properties are missing', async () => {
+  it('should throw if the configuration is not fully configured', async () => {
     (repo.findOne as jest.Mock).mockResolvedValueOnce({
       fspName: 'TestFsp',
-      properties: [],
+      state: FspConfigurationStates.configurationPending,
     });
-    jest
-      .spyOn(fspSettingsHelpers, 'getFspConfigurationRequiredProperties')
-      .mockReturnValue(['prop1']);
     await expect(
       service.checkFspConfigurationsOrThrow(1, ['ConfigA']),
     ).rejects.toThrow(HttpException);
   });
 
-  it('should not throw if all required properties are present', async () => {
+  it('should not throw if the configuration is configured', async () => {
     (repo.findOne as jest.Mock).mockResolvedValueOnce({
       fspName: 'TestFsp',
-      properties: [{ name: 'prop1' }],
+      state: FspConfigurationStates.configured,
     });
-    jest
-      .spyOn(fspSettingsHelpers, 'getFspConfigurationRequiredProperties')
-      .mockReturnValue(['prop1']);
-    await expect(
-      service.checkFspConfigurationsOrThrow(1, ['ConfigA']),
-    ).resolves.toBeUndefined();
-  });
-
-  it('should not throw if FSP has no required configurations', async () => {
-    (repo.findOne as jest.Mock).mockResolvedValueOnce({
-      fspName: 'TestFsp',
-      properties: [],
-    });
-    jest
-      .spyOn(fspSettingsHelpers, 'getFspConfigurationRequiredProperties')
-      .mockReturnValue([]);
     await expect(
       service.checkFspConfigurationsOrThrow(1, ['ConfigA']),
     ).resolves.toBeUndefined();

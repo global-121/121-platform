@@ -36,6 +36,7 @@ export class ProgramFspConfigurationMapper {
       fspName: entity.fspName,
       name: entity.name,
       label: entity.label,
+      state: entity.state,
       fsp,
       properties: ProgramFspConfigurationMapper.mapPropertyEntitiesToDtos(
         entity.properties,
@@ -44,16 +45,21 @@ export class ProgramFspConfigurationMapper {
     return dto;
   }
 
-  public static mapDtoToEntity(
-    dto: CreateProgramFspConfigurationDto,
-    programId: number,
-  ): ProgramFspConfigurationEntity {
+  public static mapDtoToEntity({
+    dto,
+    programId,
+    configState,
+  }: {
+    dto: CreateProgramFspConfigurationDto;
+    programId: number;
+    configState: FspConfigurationStates;
+  }): ProgramFspConfigurationEntity {
     const entity = new ProgramFspConfigurationEntity();
     entity.programId = programId;
     entity.fspName = dto.fspName;
     entity.name = dto.name;
     entity.label = dto.label;
-    entity.state = FspConfigurationStates.configured;
+    entity.state = configState;
     return entity;
   }
 

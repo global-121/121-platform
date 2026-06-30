@@ -17,6 +17,7 @@ describe('ProgramFspConfigurationMapper', () => {
       testEntity.fspName = Fsps.intersolveVisa;
       testEntity.name = 'Intersolve Visa';
       testEntity.label = { en: 'Visa Debit Card' };
+      testEntity.state = FspConfigurationStates.configured;
       testEntity.properties = [
         {
           name: FspConfigurationProperties.brandCode,
@@ -36,6 +37,7 @@ describe('ProgramFspConfigurationMapper', () => {
       expect(result.fspName).toBe(testEntity.fspName);
       expect(result.name).toBe(testEntity.name);
       expect(result.label).toEqual(testEntity.label);
+      expect(result.state).toBe(testEntity.state);
 
       const expectedFsp = FSP_SETTINGS[testEntity.fspName];
       // Remove unnecessary properties from the fsp object
@@ -62,6 +64,7 @@ describe('ProgramFspConfigurationMapper', () => {
       testEntity.fspName = Fsps.safaricom;
       testEntity.name = 'Safaricom M-Pesa';
       testEntity.label = { en: 'Safaricom' };
+      testEntity.state = FspConfigurationStates.configurationPending;
       testEntity.properties = [];
 
       // Act
@@ -72,6 +75,7 @@ describe('ProgramFspConfigurationMapper', () => {
       expect(result.fspName).toBe(testEntity.fspName);
       expect(result.name).toBe(testEntity.name);
       expect(result.label).toEqual(testEntity.label);
+      expect(result.state).toBe(testEntity.state);
       const expectedFsp = FSP_SETTINGS[testEntity.fspName];
       // Remove unnecessary properties from the fsp object
       const {
@@ -96,8 +100,7 @@ describe('ProgramFspConfigurationMapper', () => {
 
       // Act
       const entity = ProgramFspConfigurationMapper.mapDtoToEntity(
-        dto,
-        programId,
+        { dto, programId, configState: FspConfigurationStates.configured },
       );
 
       // Assert

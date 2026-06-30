@@ -1,5 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationAHWhatsapp } from '@121-service/src/seed-data/mock/registration-pv.data';
@@ -8,6 +10,7 @@ import {
   retryPayment,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
+import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   seedPaidRegistrations,
   updateRegistration,
@@ -92,6 +95,36 @@ describe('Do payment retry', () => {
     // Assert
     expect(retryResponse.status).toBe(HttpStatus.NOT_FOUND);
     expect(retryResponse.body).toMatchSnapshot();
+  });
+
+  it('should reject retrying a payment when the FSP configuration is pending', async () => {
+    // Arrange
+    const paymentId = await seedPaidRegistrations({
+      registrations: [registrationError1],
+      programId,
+      completeStatuses: [TransactionStatusEnum.error],
+    });
+
+    // Remove a required property so the FSP configuration becomes pending
+    await deleteProgramFspConfigurationProperty({
+      programId,
+      configName: Fsps.intersolveVoucherWhatsapp,
+      propertyName: FspConfigurationProperties.password,
+      accessToken,
+    });
+
+    // Act
+    const retryResponse = await retryPayment({
+      programId,
+      paymentId,
+      accessToken,
+    });
+
+    // Assert
+    expect(retryResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(retryResponse.body.message).toBe(
+      `Program FSP configuration ${Fsps.intersolveVoucherWhatsapp} is not fully configured`,
+    );
   });
 
   it('should retry all failed transactions if no filter is used', async () => {

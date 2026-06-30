@@ -8,6 +8,7 @@ import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 import {
@@ -24,6 +25,7 @@ const createStubExistingConfiguration = (
   fspName: Fsps.intersolveVisa,
   name: 'Some internal name',
   label: { en: 'Existing Label' },
+  state: FspConfigurationStates.configured,
   properties: [
     {
       name: FspConfigurationProperties.brandCode,
