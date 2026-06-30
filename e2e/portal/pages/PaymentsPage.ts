@@ -231,6 +231,14 @@ class PaymentsPage extends BasePage {
     expect(actualText).toBe(expectedText);
   }
 
+  async openExportMenu() {
+    // The export menu options are a computed signal derived from the payments
+    // and program queries. Wait until those requests have settled so that
+    // opening the menu isn't dismissed by a background re-render.
+    await this.page.waitForLoadState('networkidle');
+    await this.exportButton.click();
+  }
+
   async selectPaymentExportOption({
     option,
     dateRange,
@@ -238,9 +246,7 @@ class PaymentsPage extends BasePage {
     option: string;
     dateRange?: { start: Date; end: Date };
   }) {
-    await this.page.waitForLoadState('networkidle');
-    await this.page.waitForTimeout(200); // wait for the export options to be rendered
-    await this.exportButton.click();
+    await this.openExportMenu();
     await this.page.getByRole('menuitem', { name: option }).click();
     if (dateRange) {
       await this.dateRangeStartInput.selectDate({
