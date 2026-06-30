@@ -129,6 +129,7 @@ const createProgramFspConfigurationDtoIntersolveVoucher: CreateProgramFspConfigu
         value: 'password123',
       },
     ],
+    state: FspConfigurationStates.configured,
   };
 
 const createProgramFspConfigurationDtoSafaricom: CreateProgramFspConfigurationDto =
@@ -138,6 +139,7 @@ const createProgramFspConfigurationDtoSafaricom: CreateProgramFspConfigurationDt
       en: 'Safaricom label',
     },
     fspName: Fsps.safaricom,
+    state: FspConfigurationStates.configured,
     properties: [],
   };
 
