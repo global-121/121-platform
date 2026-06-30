@@ -92,6 +92,7 @@ describe('ProgramFspConfigurationMapper', () => {
         fspName: Fsps.intersolveVisa,
         name: 'Intersolve Visa in program 1',
         label: { en: 'Visa Debit Card' },
+        state: FspConfigurationStates.configured,
       };
 
       // Act
@@ -105,7 +106,7 @@ describe('ProgramFspConfigurationMapper', () => {
       expect(entity.fspName).toBe(dto.fspName);
       expect(entity.name).toBe(dto.name);
       expect(entity.label).toEqual(dto.label);
-      expect(entity.state).toBe(FspConfigurationStates.configured);
+      expect(entity.state).toBe(dto.state);
     });
   });
 

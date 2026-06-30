@@ -10,7 +10,6 @@ import { ProgramFspConfigurationPropertyResponseDto } from '@121-service/src/pro
 import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
-import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 
 export class ProgramFspConfigurationMapper {
   public static mapEntitiesToDtos(
@@ -36,6 +35,7 @@ export class ProgramFspConfigurationMapper {
       fspName: entity.fspName,
       name: entity.name,
       label: entity.label,
+      state: entity.state,
       fsp,
       properties: ProgramFspConfigurationMapper.mapPropertyEntitiesToDtos(
         entity.properties,
@@ -53,7 +53,7 @@ export class ProgramFspConfigurationMapper {
     entity.fspName = dto.fspName;
     entity.name = dto.name;
     entity.label = dto.label;
-    entity.state = FspConfigurationStates.configured;
+    entity.state = dto.state;
     return entity;
   }
 

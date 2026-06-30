@@ -11,6 +11,7 @@ import { getFspConfigurationProperties } from '@121-service/src/fsp-management/f
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -73,6 +74,7 @@ const createProgramFspConfigurationDtoIntersolveVoucher: CreateProgramFspConfigu
         value: 'password123',
       },
     ],
+    state: FspConfigurationStates.configured,
   };
 
 const createProgramFspConfigurationDtoSafaricom: CreateProgramFspConfigurationDto =
@@ -82,6 +84,7 @@ const createProgramFspConfigurationDtoSafaricom: CreateProgramFspConfigurationDt
       en: 'Safaricom label',
     },
     fspName: Fsps.safaricom,
+    state: FspConfigurationStates.configured,
     properties: [],
   };
 
