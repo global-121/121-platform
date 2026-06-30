@@ -16,24 +16,11 @@
   </div>
 
   @if (paymentStatus.data()?.inProgress) {
-    <!-- @TODO: REFACTOR THIS - Name is incorrect, could also be nested, or at bottom of page. Change to `app-message` -->
-    <app-top-page-banner
-      color="orange"
+    <app-notification-banner
+      [color]="'orange'"
       data-testid="payment-in-progress-banner"
-    >
-      <span class="pi pi-spinner me-2 animate-spin self-center text-xl"></span>
-      <strong
-        class="me-1"
-        i18n
-        >Payment in progress</strong
-      >
-      <strong class="me-1">-</strong>
-      <span
-        i18n
-        class="text-black"
-        >please wait before creating a new payment.</span
-      >
-    </app-top-page-banner>
+      [content]="paymentInProgressBannerContent"
+    />
   }
 
   <app-card-grid
