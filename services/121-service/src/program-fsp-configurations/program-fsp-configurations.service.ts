@@ -58,9 +58,6 @@ export class ProgramFspConfigurationsService {
     programId: number,
     programFspConfigurationDto: CreateProgramFspConfigurationDto,
   ): Promise<ProgramFspConfigurationResponseDto> {
-    await this.paymentsProgressService.checkPaymentInProgressAndThrow(
-      programId,
-    );
     await this.validate(programId, programFspConfigurationDto);
     await this.createMissingFspRegistrationAttributes(
       programId,

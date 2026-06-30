@@ -580,16 +580,6 @@ describe('ProgramFspConfigurationsService', () => {
 
     const mutationCases = [
       {
-        method: 'create',
-        invoke: (svc: ProgramFspConfigurationsService) =>
-          svc.create(programId, {
-            name: 'Test Configuration',
-            fspName: Fsps.intersolveVisa,
-            label: { en: 'Test Label' },
-            properties: [validPropertyDto],
-          }),
-      },
-      {
         method: 'update',
         invoke: (svc: ProgramFspConfigurationsService) =>
           svc.update(programId, configName, {
