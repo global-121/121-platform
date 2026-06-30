@@ -22,11 +22,11 @@ export class PaymentsExecutionService {
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly transactionJobsCreationService: TransactionJobsCreationService,
     private readonly paymentsProgressService: PaymentsProgressService,
-    private readonly paymentsHelperService: PaymentsHelperService,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly transactionsService: TransactionsService,
     private readonly paymentsReportingService: PaymentsReportingService,
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
+    private readonly paymentsHelperService: PaymentsHelperService,
   ) {}
 
   public async startPayment({
@@ -56,7 +56,6 @@ export class PaymentsExecutionService {
         );
       }
 
-      // check that all FSP configurations are still valid
       const uniqueFspConfigsForApprovedTransactions =
         await this.transactionViewScopedRepository.getUniqueProgramFspConfigForApprovedTransactions(
           {
@@ -70,33 +69,30 @@ export class PaymentsExecutionService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      const fspConfigNames = uniqueFspConfigsForApprovedTransactions.map(
-        (p) => p.programFspConfigurationName,
+      const programFspConfigurationNames = uniqueFspConfigsForApprovedTransactions.map(
+        (config) => config.programFspConfigurationName,
       );
       await this.paymentsHelperService.checkFspConfigurationsOrThrow(
         programId,
-        fspConfigNames,
+        programFspConfigurationNames,
       );
 
-      // store payment event
       await this.paymentEventsService.createEvent({
         paymentId,
         userId,
         type: PaymentEvent.started,
       });
 
-      // process transactions to-fail ..
       const fspConfigIds = uniqueFspConfigsForApprovedTransactions.map(
         (p) => p.programFspConfigurationId,
       );
-      await this.markTransactionsAsFailed({
+      await this.failTransactionsForNotIncludedRegistrations({
         fspConfigIds,
         userId,
         programId,
         paymentId,
       });
 
-      // .. and to start
       await this.startQueue({
         userId,
         programId,
@@ -132,7 +128,7 @@ export class PaymentsExecutionService {
     });
   }
 
-  private async markTransactionsAsFailed({
+  private async failTransactionsForNotIncludedRegistrations({
     fspConfigIds,
     userId,
     programId,
@@ -143,7 +139,7 @@ export class PaymentsExecutionService {
     programId: number;
     paymentId: number;
   }) {
-    const transactionsToFail =
+    const transactions =
       await this.transactionViewScopedRepository.getByStatusOfNonIncludedRegistrations(
         {
           programId,
@@ -151,8 +147,9 @@ export class PaymentsExecutionService {
           status: TransactionStatusEnum.approved,
         },
       );
+
     for (const programFspConfigurationId of fspConfigIds) {
-      const fspConfigTransactions = transactionsToFail.filter(
+      const fspConfigTransactions = transactions.filter(
         (t) => t.programFspConfigurationId === programFspConfigurationId,
       );
       if (fspConfigTransactions.length === 0) {
@@ -160,12 +157,12 @@ export class PaymentsExecutionService {
       }
       await this.transactionsService.saveProgressBulk({
         newTransactionStatus: TransactionStatusEnum.error,
-        transactionIds: transactionsToFail.map((t) => t.id),
+        transactionIds: transactions.map((t) => t.id),
         description: TransactionEventDescription.approval,
         userId,
         programFspConfigurationId,
         errorMessages: new Map<number, string>(
-          transactionsToFail.map((t) => [
+          transactions.map((t) => [
             t.id,
             'Registration did not have status included at the time of starting the payment',
           ]),
@@ -218,6 +215,14 @@ export class PaymentsExecutionService {
         paymentId,
         inputReferenceIds: referenceIds,
       });
+
+      const programFspConfigurationNames = transactionDetails.map(
+        (t) => t.programFspConfigurationName,
+      );
+      await this.paymentsHelperService.checkFspConfigurationsOrThrow(
+        programId,
+        programFspConfigurationNames,
+      );
 
       const bulkActionResult: BulkActionResultDto = {
         totalFilterCount: referenceIds.length,

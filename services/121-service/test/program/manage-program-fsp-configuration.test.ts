@@ -11,6 +11,7 @@ import { getFspConfigurationProperties } from '@121-service/src/fsp-management/f
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -135,6 +136,101 @@ describe('Manage FSP-configurations', () => {
     });
     // Ensure that the update data is reflected in the get response so actually updated in the db
     expect(getResultConfig).toEqual(result.body);
+  });
+
+  it('should save a program FSP-configuration without properties with state "configurationPending"', async () => {
+    // Arrange
+    const createProgramFspConfigurationDtoIncomplete: CreateProgramFspConfigurationDto =
+      {
+        name: 'Intersolve Visa incomplete config',
+        label: {
+          en: 'Intersolve Visa incomplete config label',
+        },
+        fspName: Fsps.intersolveVisa,
+      };
+
+    // Act
+    const result = await postProgramFspConfiguration({
+      programId: programIdVisa,
+      body: createProgramFspConfigurationDtoIncomplete,
+      accessToken,
+    });
+
+    // Assert
+    expect(result.statusCode).toBe(HttpStatus.CREATED);
+    expect(result.body.state).toBe(FspConfigurationStates.configurationPending);
+  });
+
+  it('should set program FSP-configuration state to "configured" after updating with all required properties', async () => {
+    // Arrange - create a config that is missing a required property
+    const createProgramFspConfigurationDtoIncomplete: CreateProgramFspConfigurationDto =
+      {
+        name: 'Intersolve Voucher incomplete config',
+        label: {
+          en: 'Intersolve Voucher incomplete config label',
+        },
+        fspName: Fsps.intersolveVoucherWhatsapp,
+        properties: [
+          {
+            name: FspConfigurationProperties.username,
+            value: 'user123',
+          },
+        ],
+      };
+    const createResult = await postProgramFspConfiguration({
+      programId: programIdVisa,
+      body: createProgramFspConfigurationDtoIncomplete,
+      accessToken,
+    });
+
+    // Act - update the config with all required properties
+    const updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto = {
+      label: createProgramFspConfigurationDtoIncomplete.label,
+      properties: [
+        {
+          name: FspConfigurationProperties.username,
+          value: 'user123',
+        },
+        {
+          name: FspConfigurationProperties.password,
+          value: 'password123',
+        },
+      ],
+    };
+    const updateResult = await patchProgramFspConfiguration({
+      programId: programIdVisa,
+      name: createProgramFspConfigurationDtoIncomplete.name,
+      body: updateProgramFspConfigurationDto,
+      accessToken,
+    });
+
+    // Assert
+    expect(createResult.body.state).toBe(
+      FspConfigurationStates.configurationPending,
+    );
+    expect(updateResult.statusCode).toBe(HttpStatus.OK);
+    expect(updateResult.body.state).toBe(FspConfigurationStates.configured);
+  });
+
+  it('should set program FSP-configuration state to "configurationPending" after removing a required property', async () => {
+    // Act - remove a required property from a fully configured config
+    await deleteProgramFspConfigurationProperty({
+      programId: programIdVisa,
+      configName: seededFspConfigVoucher.fsp,
+      propertyName: FspConfigurationProperties.username,
+      accessToken,
+    });
+
+    const getResult = await getProgramFspConfigurations({
+      programId: programIdVisa,
+      accessToken,
+    });
+    const config = getResult.body.find(
+      (config) => config.name === seededFspConfigVoucher.fsp,
+    );
+
+    // Assert
+    expect(config?.state).toBe(FspConfigurationStates.configurationPending);
   });
 
   it('should add missing required program registration attributes when adding a program FSP-configuration', async () => {

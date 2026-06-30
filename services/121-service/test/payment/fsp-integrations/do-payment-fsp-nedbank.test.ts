@@ -645,7 +645,7 @@ describe('Do payment', () => {
         // Assert
         expect(doPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
         expect(doPaymentResponse.body.message).toContain(
-          FspConfigurationProperties.paymentReferencePrefix,
+          `Program FSP configuration ${Fsps.nedbank} is not fully configured`
         );
       });
     });

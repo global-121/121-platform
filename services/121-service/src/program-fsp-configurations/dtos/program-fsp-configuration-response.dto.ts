@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
 import { ProgramFspConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 type FspWithoutConfigProps = Omit<
@@ -19,6 +20,9 @@ export class ProgramFspConfigurationResponseDto {
 
   @ApiProperty({ example: 'FSP Name', type: 'string' })
   public readonly name: string;
+
+  @ApiProperty({ enum: FspConfigurationStates })
+  public readonly state: FspConfigurationStates;
 
   @ApiProperty({ example: { en: 'FSP display name' } })
   public readonly label: UILanguageTranslation;

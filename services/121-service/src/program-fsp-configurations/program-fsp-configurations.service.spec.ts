@@ -90,6 +90,7 @@ describe('ProgramFspConfigurationsService', () => {
       save: jest.fn().mockImplementation((entity) => {
         return entity; // Return the entity it receives
       }),
+      update: jest.fn(),
       delete: jest.fn(),
       createQueryBuilder: jest.fn().mockReturnValue({
         innerJoin: jest.fn().mockReturnThis(),
@@ -559,6 +560,7 @@ describe('ProgramFspConfigurationsService', () => {
     it('should successfully delete the property', async () => {
       mockProgramFspConfigurationRepository.findOne.mockResolvedValue({
         id: 10,
+        fspName: Fsps.intersolveVisa,
       });
       mockProgramFspConfigurationPropertyRepository.findOne.mockResolvedValue({
         id: 100,

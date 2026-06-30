@@ -35,7 +35,7 @@ test('[Excel fsp]: Error message should be shown in case no matching column was 
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({ onlyStep1: true });
     await paymentPage.validateToastMessageAndClose(
-      'Something went wrong: "Missing required configuration columnToMatch for FSP Excel"',
+      'Error Something went wrong: "Program FSP configuration Excel is not fully configured"',
     );
   });
 });
