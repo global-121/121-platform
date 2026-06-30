@@ -2,6 +2,8 @@ import { expect, test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
@@ -25,6 +27,11 @@ const programInfo = {
   paymentFrequency: '2-months',
   defaultNrOfTransactions: '5',
   fixedTransferValue: '100',
+  fsps: [
+    FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
+    FSP_SETTINGS[Fsps.safaricom].defaultLabel.en,
+    FSP_SETTINGS[Fsps.intersolveVoucherPaper].defaultLabel.en,
+  ].filter((fsp): fsp is string => fsp !== undefined),
 };
 
 test.beforeEach(async ({ page }) => {
@@ -72,7 +79,12 @@ test('Create program successfully', async ({ page }) => {
       'Enable scope': 'No',
     });
 
-    const budgetData = await programSettings.budgetDataList.getData();
+    const budgetData = await programSettings.budgetDataList.getData({
+      omitListItemWithLabel: '*Financial service providers',
+    });
+
+    console.log('budgetData:', budgetData);
+
     expect(budgetData).toEqual({
       'Funds available': programInfo.fundsAvailable,
       '*Currency': programInfo.currency,
@@ -80,6 +92,9 @@ test('Create program successfully', async ({ page }) => {
         programInfo.defaultNrOfTransactions,
       '*Fixed transfer value': programInfo.fixedTransferValue,
     });
+
+    // Validating the FSPs in the multiselect component separately, as the dataListData returns a concatenated string of the FSPs
+    await homePage.validateProgramFsps({ fspNames: programInfo.fsps });
   });
 });
 
