@@ -9,13 +9,13 @@
     [loading]="programId() ? fspConfigurations.isPending() : false"
     [maxSelectedLabels]="100"
     [ngModel]="selectedOptions()"
-    [options]="fspMultiselectOptions.data() ?? []"
+    [options]="fspMultiselectOptions()"
     (ngModelChange)="selectedOptions.set($event); selectionChange.emit($event)"
     [display]="'chip'"
     [filter]="false"
     itemcheckboxicon="false"
-    [optionLabel]="'label'"
-    [optionValue]="'name'"
+    [optionLabel]="'name'"
+    [optionValue]="'fspName'"
     placeholder="Select FSPs"
     [showToggleAll]="false"
     i18n-placeholder
@@ -24,7 +24,7 @@
       let-fsp
       #item
     >
-      <div>{{ fsp.label | translatableString }}</div>
+      <div>{{ fsp.name | translatableString }}</div>
     </ng-template>
   </p-multiselect>
 </app-form-field-wrapper>
