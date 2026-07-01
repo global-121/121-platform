@@ -28,6 +28,7 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { FILE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
+import { EXCEL_FILE_UPLOAD_LIMITS } from '@121-service/src/shared/file-upload-limits';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
@@ -81,7 +82,9 @@ export class ExcelReconciliationController {
   @Post('programs/:programId/payments/:paymentId/excel-reconciliation')
   @ApiConsumes('multipart/form-data')
   @ApiBody(FILE_UPLOAD_API_FORMAT)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', { limits: EXCEL_FILE_UPLOAD_LIMITS }),
+  )
   public async upsertExcelReconciliationData(
     @UploadedFile() file: Express.Multer.File,
     @Param('programId', ParseIntPipe)
