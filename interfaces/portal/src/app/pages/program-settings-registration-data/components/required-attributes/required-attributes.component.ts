@@ -17,21 +17,13 @@ import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
 @Component({
   selector: 'app-required-attributes',
-  imports: [
-    TableModule,
-    Button,
-    TagModule,
-    TranslatableStringPipe,
-    InfoTooltipComponent,
-  ],
+  imports: [TableModule, Button, TagModule, InfoTooltipComponent],
   providers: [ToastService],
   templateUrl: './required-attributes.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RequiredAttributesComponent {
