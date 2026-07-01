@@ -8,7 +8,6 @@ import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/sh
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
-import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
@@ -251,13 +250,12 @@ export class ProgramService {
     programId: number;
     fspNames: Fsps[];
   }): Promise<void> {
-    for (const fspName of new Set(fspNames)) {
+    for (const fspName of fspNames) {
       const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
         {
           name: fspName,
           label: { en: fspName },
           fspName,
-          state: FspConfigurationStates.configurationPending,
         };
       await this.programFspConfigurationsService.create(
         programId,
@@ -288,22 +286,19 @@ export class ProgramService {
 
     const { fsps, ...programAttributes } = updateProgramDto;
 
-    if (fsps) {
-      await this.updateFspConfigurationsOfProgram({ program, fspNames: fsps });
-    }
-
     for (const key in programAttributes) {
       program[key] = programAttributes[key];
     }
 
     const savedProgram = await this.programRepository.save(program);
 
-    if (fsps) {
-      const updatedProgram = await this.findProgramOrThrow(programId);
-      return this.fillProgramReturnDto(updatedProgram);
+    if (!fsps) {
+      return this.fillProgramReturnDto(savedProgram);
     }
 
-    return this.fillProgramReturnDto(savedProgram);
+    await this.updateFspConfigurationsOfProgram({ program, fspNames: fsps });
+    const updatedProgram = await this.findProgramOrThrow(programId);
+    return this.fillProgramReturnDto(updatedProgram);
   }
 
   private async updateFspConfigurationsOfProgram({
@@ -317,13 +312,9 @@ export class ProgramService {
       (config) => config.fspName,
     );
 
-    const fspNamesToAdd = fspNames.filter(
-      (fspName) => !existingFspNames.includes(fspName),
-    );
     const configsToDelete = program.programFspConfigurations.filter(
       (config) => !fspNames.includes(config.fspName),
     );
-
     for (const config of configsToDelete) {
       await this.programFspConfigurationsService.delete(
         program.id,
@@ -331,6 +322,9 @@ export class ProgramService {
       );
     }
 
+    const fspNamesToAdd = fspNames.filter(
+      (fspName) => !existingFspNames.includes(fspName),
+    );
     if (fspNamesToAdd.length > 0) {
       await this.assignFspConfigurationsToProgram({
         programId: program.id,
