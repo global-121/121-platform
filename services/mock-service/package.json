@@ -31,7 +31,7 @@
     "@nestjs/common": "^11.1.23",
     "@nestjs/core": "^11.1.23",
     "@nestjs/platform-express": "^11.1.27",
-    "@nestjs/swagger": "^11.4.4",
+    "@nestjs/swagger": "^11.4.5",
     "@nestjs/testing": "^11.1.23",
     "@t3-oss/env-core": "^0.13.11",
     "class-transformer": "^0.5.1",
