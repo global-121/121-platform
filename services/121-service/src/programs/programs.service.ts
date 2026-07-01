@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, EntityManager, Equal, Repository } from 'typeorm';
+import { DataSource, Equal, Repository } from 'typeorm';
 
 import { GetTokenResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/get-token-result.interface';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
@@ -17,14 +17,14 @@ import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.d
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
-import { programRelationsToDuplicate } from '@121-service/src/programs/program-duplication.const';
+import { propertiesToDuplicate } from '@121-service/src/programs/program-duplication.const';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
+import { duplicateEntity } from '@121-service/src/utils/entity-duplication/duplicate-entity.helper';
 
 @Injectable()
 export class ProgramService {
@@ -250,36 +250,18 @@ export class ProgramService {
     overrides: Partial<CreateProgramDto>;
     userId: number;
   }): Promise<ProgramEntity> {
-    const sourceProgram = await this.programRepository.findOne({
-      where: { id: Equal(copyFromProgramId) },
-      // Load the relations that are duplicated (see `programRelationsToDuplicate`).
-      relations: { aidworkerAssignments: { roles: true } },
-    });
-    if (!sourceProgram) {
-      throw new HttpException(
-        { errors: `No program found with id ${copyFromProgramId}` },
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
-    const manager = queryRunner.manager;
 
     let newProgram: ProgramEntity;
     try {
-      newProgram = await manager
-        .getRepository(ProgramEntity)
-        .save(this.buildProgramCopy({ source: sourceProgram, overrides }));
-
-      for (const relation of programRelationsToDuplicate) {
-        await this.duplicateProgramRelation({
-          manager,
-          relation,
-          source: sourceProgram,
-          newProgramId: newProgram.id,
-        });
-      }
+      newProgram = await duplicateEntity({
+        manager: queryRunner.manager,
+        entity: ProgramEntity,
+        id: copyFromProgramId,
+        propertiesToDuplicate,
+        overrides,
+      });
 
       await queryRunner.commitTransaction();
     } catch (err) {
@@ -307,92 +289,6 @@ export class ProgramService {
     return newProgram;
   }
 
-  private buildProgramCopy({
-    source,
-    overrides,
-  }: {
-    source: ProgramEntity;
-    overrides: Partial<CreateProgramDto>;
-  }): ProgramEntity {
-    const program = new ProgramEntity();
-    program.validation = overrides.validation ?? source.validation;
-    program.location = overrides.location ?? source.location;
-    program.ngo = overrides.ngo ?? source.ngo;
-    program.titlePortal = overrides.titlePortal ?? source.titlePortal;
-    program.description = overrides.description ?? source.description;
-    program.startDate = overrides.startDate ?? source.startDate;
-    program.endDate = overrides.endDate ?? source.endDate;
-    program.currency = overrides.currency ?? source.currency;
-    program.distributionFrequency =
-      overrides.distributionFrequency ?? source.distributionFrequency;
-    program.distributionDuration =
-      overrides.distributionDuration ?? source.distributionDuration;
-    program.fixedTransferValue =
-      overrides.fixedTransferValue ?? source.fixedTransferValue;
-    program.paymentAmountMultiplierFormula =
-      overrides.paymentAmountMultiplierFormula ??
-      source.paymentAmountMultiplierFormula;
-    program.targetNrRegistrations =
-      overrides.targetNrRegistrations ?? source.targetNrRegistrations;
-    program.fullnameNamingConvention =
-      overrides.fullnameNamingConvention ?? source.fullnameNamingConvention;
-    program.languages = overrides.languages ?? source.languages;
-    program.enableMaxPayments =
-      overrides.enableMaxPayments ?? source.enableMaxPayments;
-    program.enableScope = overrides.enableScope ?? source.enableScope;
-    program.allowEmptyPhoneNumber =
-      overrides.allowEmptyPhoneNumber ?? source.allowEmptyPhoneNumber;
-    program.monitoringDashboardUrl =
-      overrides.monitoringDashboardUrl ?? source.monitoringDashboardUrl;
-    program.budget = overrides.budget ?? source.budget;
-    return program;
-  }
-
-  private async duplicateProgramRelation({
-    manager,
-    relation,
-    source,
-    newProgramId,
-  }: {
-    manager: EntityManager;
-    relation: (typeof programRelationsToDuplicate)[number];
-    source: ProgramEntity;
-    newProgramId: number;
-  }): Promise<void> {
-    switch (relation) {
-      case 'aidworkerAssignments':
-        await this.copyAidworkerAssignments({ manager, source, newProgramId });
-        return;
-      default: {
-        const exhaustiveCheck: never = relation;
-        throw new Error(
-          `No duplication handler implemented for relation "${exhaustiveCheck}"`,
-        );
-      }
-    }
-  }
-
-  private async copyAidworkerAssignments({
-    manager,
-    source,
-    newProgramId,
-  }: {
-    manager: EntityManager;
-    source: ProgramEntity;
-    newProgramId: number;
-  }): Promise<void> {
-    const copies = source.aidworkerAssignments.map((assignment) => {
-      const copy = new ProgramAidworkerAssignmentEntity();
-      copy.programId = newProgramId;
-      copy.userId = assignment.userId;
-      copy.scope = assignment.scope;
-      // Re-use the existing role entities; saving the assignment inserts the
-      // many-to-many join rows.
-      copy.roles = assignment.roles;
-      return copy;
-    });
-    await manager.getRepository(ProgramAidworkerAssignmentEntity).save(copies);
-  }
 
   public async updateProgram(
     programId: number,
