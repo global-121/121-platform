@@ -12,12 +12,19 @@
       class="border-grey-300 flex items-center border-b px-2 py-4"
       [ngClass]="{
         'col-span-2': item.fullWidth,
+        'items-start': item.type === 'koboImage',
       }"
     >
       @if (item.loading) {
         <p-skeleton
           [width]="skeletonWidth()"
           class="py-1"
+        />
+      } @else if (item.type === 'koboImage') {
+        <app-kobo-image-renderer
+          class="w-full"
+          [label]="item.label"
+          [imageUrl]="item.value"
         />
       } @else {
         <div class="me-1">
