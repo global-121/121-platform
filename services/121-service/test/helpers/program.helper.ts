@@ -13,7 +13,7 @@ import {
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import {
-  ProgramRegistrationAttributeDto,
+  CreateProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributesBatchDto,
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
@@ -69,7 +69,7 @@ export async function getProgram(
 }
 
 export async function postProgramRegistrationAttribute(
-  programRegistrationAttribute: ProgramRegistrationAttributeDto,
+  programRegistrationAttribute: CreateProgramRegistrationAttributeDto,
   programId: number,
   accessToken: string,
 ): Promise<request.Response> {

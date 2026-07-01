@@ -112,6 +112,42 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
   public readonly isRequired?: boolean;
 }
 
+export class CreateProgramRegistrationAttributeDto extends BaseProgramRegistrationAttributeDto {
+  @ApiProperty({})
+  @IsNotEmpty()
+  @IsString()
+  public readonly name: string;
+
+  @ApiProperty({
+    example: {
+      en: 'Please enter your last name:',
+      fr: "Remplissez votre nom, s'il vous plaît:",
+    },
+  })
+  public readonly label?: RegistrationPreferredLanguageTranslation | null;
+
+  @ApiProperty({
+    example: RegistrationAttributeTypes.text,
+  })
+  @IsString()
+  @IsIn([
+    RegistrationAttributeTypes.numeric,
+    RegistrationAttributeTypes.dropdown,
+    RegistrationAttributeTypes.tel,
+    RegistrationAttributeTypes.text,
+    RegistrationAttributeTypes.date,
+  ])
+  public readonly type: WrapperType<RegistrationAttributeTypes>;
+
+  @ApiProperty({
+    example: false,
+    required: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  public readonly isRequired?: boolean;
+}
+
 export class UpdateProgramRegistrationAttributeDto extends BaseProgramRegistrationAttributeDto {
   @ApiProperty({
     example: {

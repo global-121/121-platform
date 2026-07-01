@@ -1,4 +1,4 @@
-import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import { CreateProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -112,7 +112,7 @@ describe('Load PA table', () => {
       // An attribute that is added to the program *after* registrations already
       // exist will not have a registration_data row for those existing
       const newAttributeName = 'batchId';
-      const newAttribute: ProgramRegistrationAttributeDto = {
+      const newAttribute: CreateProgramRegistrationAttributeDto = {
         name: newAttributeName,
         options: [],
         scoring: {},

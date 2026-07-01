@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
-import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import { CreateProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { postProgramRegistrationAttribute } from '@121-service/test/helpers/program.helper';
@@ -14,7 +14,7 @@ import { programIdPV } from '@121-service/test/registrations/pagination/paginati
 describe('Create program', () => {
   let accessToken: string;
 
-  const programRegistrationAttribute: ProgramRegistrationAttributeDto = {
+  const programRegistrationAttribute: CreateProgramRegistrationAttributeDto = {
     name: 'string',
     options: [],
     scoring: {},

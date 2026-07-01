@@ -33,6 +33,7 @@ import { KoboConnectService } from '@121-service/src/kobo-connect/kobo-connect.s
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import {
+  CreateProgramRegistrationAttributeDto,
   ProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributesBatchDto,
@@ -239,14 +240,14 @@ You can also leave the body empty.`,
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/registration-attributes')
   public async createProgramRegistrationAttribute(
-    @Body() programRegistrationAttribute: ProgramRegistrationAttributeDto,
+    @Body() programRegistrationAttribute: CreateProgramRegistrationAttributeDto,
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<ProgramRegistrationAttributeDto> {
     return await this.programRegistrationAttributesService.createProgramRegistrationAttribute(
       {
         programId,
-        createProgramRegistrationAttributeDto: programRegistrationAttribute,
+        createProgramRegistrationAttribute: programRegistrationAttribute,
       },
     );
   }
