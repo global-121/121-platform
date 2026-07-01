@@ -12,27 +12,32 @@
       i18n
       >Editing personal information</span
     >
-    <p-button
-      label="Cancel"
-      i18n-label="@@generic-cancel"
-      (click)="cancelEditing.emit()"
-      icon="pi pi-times"
-      [iconPos]="rtlHelper.createPosition('start')()"
-      outlined
-      rounded
-      severity="contrast"
-      class="me-4"
-    />
-    <p-button
-      type="submit"
-      label="Save"
-      i18n-label="@@generic-save"
-      icon="pi pi-check"
-      [iconPos]="rtlHelper.createPosition('start')()"
-      rounded
-    />
+    @if (showActionButtons()) {
+      <p-button
+        label="Cancel"
+        i18n-label="@@generic-cancel"
+        (click)="cancelEditing.emit()"
+        icon="pi pi-times"
+        [iconPos]="rtlHelper.createPosition('start')()"
+        outlined
+        rounded
+        severity="contrast"
+        class="me-4"
+      />
+      <p-button
+        type="submit"
+        label="Save"
+        i18n-label="@@generic-save"
+        icon="pi pi-check"
+        [iconPos]="rtlHelper.createPosition('start')()"
+        rounded
+      />
+    }
   </div>
-  <div class="grid grid-cols-1 gap-x-5 gap-y-8 md:grid-cols-2">
+  <div
+    class="grid grid-cols-1 gap-x-5 gap-y-8"
+    [class.md:grid-cols-2]="!forceOneColumn()"
+  >
     @for (attribute of attributeList(); track $index) {
       <div class="">
         <app-form-field-wrapper

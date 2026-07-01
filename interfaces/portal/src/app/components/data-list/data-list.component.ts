@@ -24,6 +24,7 @@ import {
   ChipVariant,
   ColoredChipComponent,
 } from '~/components/colored-chip/colored-chip.component';
+import { ImageListComponent } from '~/components/image-list/image-list.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -60,6 +61,10 @@ export type DataListItem = {
       value?: Date | null | number | string;
     }
   | {
+      type: 'koboImage';
+      value: string;
+    }
+  | {
       type: 'number';
       value?: null | number;
     }
@@ -87,6 +92,7 @@ export type DataListItem = {
     DecimalPipe,
     SkeletonModule,
     ColoredChipComponent,
+    ImageListComponent,
     TranslatableStringPipe,
     NgClass,
     NgComponentOutlet,

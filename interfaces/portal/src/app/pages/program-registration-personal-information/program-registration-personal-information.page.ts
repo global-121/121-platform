@@ -20,6 +20,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { ImageListComponent } from '~/components/image-list/image-list.component';
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -36,6 +37,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
     SkeletonModule,
     ButtonModule,
     DataListComponent,
+    ImageListComponent,
     EditPersonalInformationComponent,
   ],
   templateUrl: './program-registration-personal-information.page.html',
@@ -112,6 +114,15 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
               value: value as string | string[],
             };
           case RegistrationAttributeTypes.koboImage:
+            return {
+              ...attribute,
+              type: 'koboImage',
+              value:
+                typeof value === 'string' &&
+                value.trim().toLowerCase() !== 'null'
+                  ? value
+                  : '',
+            };
           case RegistrationAttributeTypes.tel:
           case RegistrationAttributeTypes.text:
           default:
@@ -124,6 +135,44 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
       },
     ),
   );
+
+  readonly textDataList = computed(() =>
+    this.dataList().filter(
+      (item): item is Exclude<DataListItem, { type: 'koboImage' }> =>
+        item.type !== 'koboImage',
+    ),
+  );
+
+  readonly imageDataList = computed(() =>
+    this.dataList().filter(
+      (item): item is Extract<DataListItem, { type: 'koboImage' }> =>
+        item.type === 'koboImage',
+    ),
+  );
+
+  readonly koboImages = computed(() =>
+    this.imageDataList().map((item) => ({
+      label: item.label,
+      imageUrl: item.value,
+      dataTestId: item.dataTestId,
+    })),
+  );
+
+  readonly editableAttributeList = computed(() =>
+    (this.registrationAttributes.data() ?? []).filter(
+      (attribute) => attribute.type !== RegistrationAttributeTypes.koboImage,
+    ),
+  );
+
+  readonly hasKoboImages = computed(() => this.imageDataList().length > 0);
+
+  submitEditPersonalInformation(): void {
+    this.editPersonalInformationComponent().onSubmit();
+  }
+
+  cancelEditPersonalInformation(): void {
+    this.isEditing.set(false);
+  }
 
   onRegistrationUpdated() {
     this.isEditing.set(false);
