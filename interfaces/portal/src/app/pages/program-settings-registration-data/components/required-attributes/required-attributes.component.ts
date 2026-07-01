@@ -9,17 +9,19 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 
+import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
 @Component({
   selector: 'app-required-attributes',
-  imports: [TableModule, Button],
+  imports: [TableModule, Button, TagModule, InfoTooltipComponent],
   providers: [ToastService],
   templateUrl: './required-attributes.component.html',
   styles: ``,
@@ -33,11 +35,18 @@ export class RequiredAttributesComponent {
   readonly fspConfigurationService = inject(FspConfigurationService);
   readonly programApiService = inject(ProgramApiService);
 
+  readonly programFsps = computed(() => {
+    const fspConfigs = this.fspConfigurations.data() ?? [];
+    return fspConfigs.map((config) => FSP_SETTINGS[config.fspName]);
+  });
+
   readonly fspConfigurations = injectQuery(
     this.fspConfigurationApiService.getFspConfigurations(this.programId),
   );
 
-  program = injectQuery(this.programApiService.getProgram(this.programId));
+  readonly program = injectQuery(
+    this.programApiService.getProgram(this.programId),
+  );
   readonly enableScope = computed(() => this.program.data()?.enableScope);
 
   readonly programAttributes = injectQuery(
