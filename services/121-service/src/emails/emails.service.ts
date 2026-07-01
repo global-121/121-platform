@@ -4,7 +4,7 @@ import { SUPPORT_EMAIL } from '@121-service/src/emails/emails.const';
 import { GraphService } from '@121-service/src/emails/graph/graph.service';
 import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
-import { stripHtmlTags } from '@121-service/src/utils/strip-html-tags.helper';
+import { sanitizeInput } from '@121-service/src/utils/sanitize-input.helper';
 
 @Injectable()
 export class EmailsService {
@@ -23,7 +23,7 @@ export class EmailsService {
   }): Promise<void> {
     const sanitizedInput = {
       ...input,
-      recipientName: stripHtmlTags(input.recipientName),
+      recipientName: sanitizeInput(input.recipientName),
     };
 
     const { subject, body } = templateBuilder(sanitizedInput);
