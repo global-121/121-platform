@@ -182,16 +182,6 @@ svg-icon svg {
       @apply hidden;
     }
 
-    &.wrapped-chip-multiselect-direction-bottom {
-      p-overlay {
-        @apply absolute! bottom-0;
-
-        .p-overlay {
-          @apply top-0!;
-        }
-      }
-    }
-
     .p-multiselect-label-container {
       @apply overflow-visible;
 
