@@ -14,10 +14,10 @@ import { FormsModule } from '@angular/forms';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MultiSelectModule } from 'primeng/multiselect';
 
-import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
+import { FspApiService } from '~/domains/fsp/fsp.api.service';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
@@ -46,6 +46,7 @@ export class FspMultiselectComponent {
   );
 
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
+  readonly fspApiService = inject(FspApiService);
 
   // Fetch FSP configurations for the given program ID. If no program ID is provided, the query will be skipped.
   fspConfigurations = injectQuery(() => ({
@@ -55,12 +56,7 @@ export class FspMultiselectComponent {
     enabled: !!this.programId(),
   }));
 
-  readonly fspMultiselectOptions = Object.values(FSP_SETTINGS).map((fsp) => {
-    return {
-      name: fsp.name,
-      label: fsp.defaultLabel,
-    };
-  });
+  fspMultiselectOptions = injectQuery(this.fspApiService.getAllFsps());
 
   constructor() {
     effect(() => {
