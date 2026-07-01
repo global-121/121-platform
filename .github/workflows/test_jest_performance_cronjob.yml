@@ -19,7 +19,7 @@ jobs:
     outputs:
       should_skip: ${{ steps.filter.outputs.should_skip }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         if: github.event_name == 'pull_request'
         with:
           filter: blob:none
@@ -43,7 +43,7 @@ jobs:
       long_test_2: ${{ steps.discover.outputs.long_test_2 }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Set up test files per shard
         id: discover
         run: |
@@ -74,7 +74,7 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set ENV-variables for test-environment
         run: |
