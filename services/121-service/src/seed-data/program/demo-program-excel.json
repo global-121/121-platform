@@ -22,14 +22,25 @@
   "programFspConfigurations": [
     {
       "fsp": "Excel",
+      "name": "Excel",
+      "label": {
+        "en": "Locale Bank"
+      },
       "properties": [
         {
           "name": "columnToMatch",
-          "value": "nationalId"
+          "value": "phoneNumber"
         },
         {
           "name": "columnsToExport",
-          "value": "[\"fullName\",\"nationalId\"]"
+          "value": [
+            "fullName",
+            "nationalId",
+            "phoneNumber",
+            "village",
+            "gender",
+            "age"
+          ]
         }
       ]
     }
