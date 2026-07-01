@@ -1,0 +1,49 @@
+<p-accordion [value]="accordionPanelValues()">
+  @for (image of images(); track index; let index = $index) {
+    @let isAvailable = isImageAvailable({ imageUrl: image.imageUrl });
+    <p-accordion-panel
+      [value]="index.toString()"
+      [attr.data-testid]="image.dataTestId"
+      [class]="
+        'border-grey-300 border-b [&_.p-accordionheader]:px-2 [&_.p-accordionheader]:py-4 [&_.p-accordionheader]:text-black' +
+        (!isAvailable
+          ? ' [&_.p-accordionheader]:pointer-events-none [&_.p-accordionheader-toggle-icon]:hidden'
+          : '')
+      "
+    >
+      <p-accordion-header>
+        <span class="flex items-center gap-2">
+          <i class="pi pi-image"></i>
+          <span class="font-semibold"
+            >{{ image.label | translatableString }}:</span
+          >
+          <app-colored-chip
+            class="[&_.p-chip]:px-3 [&_.p-chip]:py-0"
+            [label]="isAvailable ? availableChipLabel : notAvailableChipLabel"
+            [variant]="
+              isAvailable ? availableChipVariant : notAvailableChipVariant
+            "
+          />
+        </span>
+      </p-accordion-header>
+      <p-accordion-content class="px-2 pt-0">
+        @if (isAvailable && !imageLoadFailedByUrl().has(image.imageUrl)) {
+          <img
+            [src]="image.imageUrl"
+            (error)="onImageLoadError({ imageUrl: image.imageUrl })"
+            alt=""
+            class="w-full object-cover"
+          />
+        } @else if (isAvailable) {
+          <a
+            [href]="image.imageUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-purple break-all"
+            >{{ image.imageUrl }}</a
+          >
+        }
+      </p-accordion-content>
+    </p-accordion-panel>
+  }
+</p-accordion>
