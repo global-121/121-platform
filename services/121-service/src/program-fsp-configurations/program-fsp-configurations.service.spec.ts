@@ -261,19 +261,19 @@ describe('ProgramFspConfigurationsService', () => {
 
     it('should throw an exception if a configuration with the same name exists', async () => {
       // Mocking the check for existing configuration
-      const duplivateNameCreateDto = {
+      const duplicateNameCreateDto = {
         ...createDto,
         name: configName,
       };
 
       await expect(
-        service.create(programId, duplivateNameCreateDto),
+        service.create(programId, duplicateNameCreateDto),
       ).rejects.toThrow(HttpException);
       await expect(
-        service.create(programId, duplivateNameCreateDto),
+        service.create(programId, duplicateNameCreateDto),
       ).rejects.toThrow(
         new HttpException(
-          `Program FSP-configuration with name ${duplivateNameCreateDto.name} already exists`,
+          `Program FSP-configuration with name ${duplicateNameCreateDto.name} already exists`,
           HttpStatus.CONFLICT,
         ),
       );
