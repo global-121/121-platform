@@ -56,7 +56,14 @@ export class FspMultiselectComponent {
     enabled: !!this.programId(),
   }));
 
-  fspMultiselectOptions = injectQuery(this.fspApiService.getAllFsps());
+  readonly availableFsps = injectQuery(this.fspApiService.getAllFsps());
+  readonly fspMultiselectOptions = computed(() => {
+    const availableFsps = this.availableFsps.data() ?? [];
+    return availableFsps.map((fsp) => ({
+      fspName: fsp.name,
+      name: fsp.defaultLabel.en,
+    }));
+  });
 
   constructor() {
     effect(() => {
