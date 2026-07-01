@@ -10,27 +10,6 @@ import {
     ObjectLiteral,
 } from 'typeorm';
 
-/**
- * Generic, metadata-driven entity duplication.
- *
- * Loads the entity with the given id, creates a copy of its columns (resetting
- * the primary key and audit columns), applies the provided overrides, and then
- * copies every relation that is marked to duplicate in `propertiesToDuplicate`,
- * re-pointing each child at the new parent.
- *
- * `propertiesToDuplicate` is a flat map of every entity property to a boolean.
- * Columns are only copied when their value is `true`; relations are only
- * duplicated when their value is `true`. Primary key, audit and version columns
- * are always reset regardless of their value.
- *
- * Scope: one-to-many and one-to-one relations can be duplicated. Many-to-many
- * relations on the copied children (e.g. roles) are re-linked to the existing
- * targets rather than cloned. Foreign keys other than the parent reference are
- * preserved as-is.
- *
- * Must be called with a transactional `EntityManager` so that the copy is
- * atomic.
- */
 export async function duplicateEntity<T extends ObjectLiteral>({
   manager,
   entity,
