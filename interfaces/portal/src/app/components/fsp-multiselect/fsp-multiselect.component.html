@@ -1,0 +1,30 @@
+<app-form-field-wrapper
+  label="Financial service providers:"
+  [isRequired]="false"
+  [errorMessage]=""
+  i18n-label
+>
+  <p-multiselect
+    [className]="className()"
+    [loading]="programId() ? fspConfigurations.isPending() : false"
+    [maxSelectedLabels]="100"
+    [ngModel]="selectedOptions()"
+    [options]="fspMultiselectOptions.data() ?? []"
+    (ngModelChange)="selectedOptions.set($event); selectionChange.emit($event)"
+    [display]="'chip'"
+    [filter]="false"
+    itemcheckboxicon="false"
+    [optionLabel]="'label'"
+    [optionValue]="'name'"
+    placeholder="Select FSPs"
+    [showToggleAll]="false"
+    i18n-placeholder
+  >
+    <ng-template
+      let-fsp
+      #item
+    >
+      <div>{{ fsp.label | translatableString }}</div>
+    </ng-template>
+  </p-multiselect>
+</app-form-field-wrapper>
