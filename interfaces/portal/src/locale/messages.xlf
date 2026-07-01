@@ -649,6 +649,9 @@
       <trans-unit id="3805310091097915389" datatype="html">
         <source>How long we keep information</source>
       </trans-unit>
+      <trans-unit id="3841989706323728259" datatype="html">
+        <source>Not available</source>
+      </trans-unit>
       <trans-unit id="3845427937485595400" datatype="html">
         <source>Enable scope</source>
       </trans-unit>
@@ -694,6 +697,9 @@
       </trans-unit>
       <trans-unit id="3948071530536352020" datatype="html">
         <source>Are you sure you want to delete this file?</source>
+      </trans-unit>
+      <trans-unit id="3955868613858648955" datatype="html">
+        <source>Available</source>
       </trans-unit>
       <trans-unit id="3978034238801036238" datatype="html">
         <source>Kobo form URL</source>
