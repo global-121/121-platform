@@ -3,13 +3,17 @@ import {
   Component,
   computed,
   effect,
+  forwardRef,
   inject,
   input,
   model,
-  output,
   Signal,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormsModule,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -31,22 +35,26 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
   ],
   templateUrl: './fsp-multiselect.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => FspMultiselectComponent),
+      multi: true,
+    },
+  ],
 })
-export class FspMultiselectComponent {
+export class FspMultiselectComponent implements ControlValueAccessor {
   readonly programId = input<string>();
-
   readonly selectedOptions = model<Fsps[]>([]);
-  readonly selectionChange = output<Fsps[]>();
-  readonly direction = input<'bottom' | 'top'>('top');
 
-  readonly className = computed(() =>
-    this.direction() === 'bottom'
-      ? 'wrapped-chip-multiselect wrapped-chip-multiselect-direction-bottom'
-      : 'wrapped-chip-multiselect',
-  );
-
+  // Services
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
   readonly fspApiService = inject(FspApiService);
+
+  isDisabled = false;
+
+  private onChange: (value: Fsps[]) => void = () => undefined;
+  private onTouched: () => void = () => undefined;
 
   // Fetch FSP configurations for the given program ID. If no program ID is provided, the query will be skipped.
   fspConfigurations = injectQuery(() => ({
@@ -73,33 +81,52 @@ export class FspMultiselectComponent {
             return fspConfiguration.fspName;
           }) ?? [];
 
-        this.selectedOptions.set(fsps);
-        this.selectionChange.emit(fsps);
+        this.updateSelection({
+          fsps,
+          notifyForm: true,
+        });
       }
     });
   }
+
+  writeValue(value: Fsps[] | null): void {
+    this.updateSelection({
+      fsps: value ?? [],
+      notifyForm: false,
+    });
+  }
+
+  registerOnChange(fn: (value: Fsps[]) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.isDisabled = isDisabled;
+  }
+
+  onSelectionChange(fsps: Fsps[]): void {
+    this.updateSelection({ fsps, notifyForm: true });
+  }
+
+  markAsTouched(): void {
+    this.onTouched();
+  }
+
+  private updateSelection({
+    fsps,
+    notifyForm,
+  }: {
+    fsps: Fsps[];
+    notifyForm: boolean;
+  }): void {
+    this.selectedOptions.set(fsps);
+
+    if (notifyForm) {
+      this.onChange(fsps);
+    }
+  }
 }
-
-/*
-@TODO: Check if we can use the `ControlValueAccessor` interface instead of manually implementing `writeValue` and `registerOnChange`.
-This would allow us to use the component with Angular forms more seamlessly.
-
- providers: [
-   {
-     provide: NG_VALUE_ACCESSOR,
-     useExisting: FspMultiselectComponent,
-     multi: true,
-   },
- ],
-
-  writeValue(value: Fsps[] | null) {
-    this.selectedOptions.set(value ?? []);
-  }
-
-  registerOnChange(fn: (value: Fsps[]) => void) {
-    this.selectedOptions.subscribe(fn);
-  }
-
-  etc...
-
-*/
