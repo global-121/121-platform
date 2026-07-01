@@ -30,7 +30,7 @@ class FspSettingsPage extends BasePage {
   }
 
   async clickEditFspSection() {
-    await this.page.getByRole('link', { name: 'FSP' }).click();
+    await this.page.getByRole('link', { name: 'FSP integration' }).click();
   }
 
   async openEditFspConfigurationByName(fspName: string) {
