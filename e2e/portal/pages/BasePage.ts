@@ -236,6 +236,21 @@ class BasePage {
     return filePath;
   }
 
+  // @TODO: Maybe we should make a input helper file that handles all of the input varaints (checkbox, select, text, etc.)
+  async selectMultiselectOptions({
+    dropdownTestId,
+    optionsToClick,
+  }: {
+    dropdownTestId: string;
+    optionsToClick: string[];
+  }) {
+    await this.page.getByTestId(dropdownTestId).click();
+    for (const option of optionsToClick) {
+      await this.page.getByRole('option', { name: option }).click();
+    }
+    await this.closeOpenSelectOrMultiselectWithRetries();
+  }
+
   async closeOpenSelectOrMultiselectWithRetries(retries = 3) {
     for (let i = 0; i < retries; i++) {
       try {
