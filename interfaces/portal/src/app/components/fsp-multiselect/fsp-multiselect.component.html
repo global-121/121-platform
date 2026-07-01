@@ -9,7 +9,7 @@
     [loading]="programId() ? fspConfigurations.isPending() : false"
     [maxSelectedLabels]="100"
     [ngModel]="selectedOptions()"
-    [options]="fspMultiselectOptions"
+    [options]="fspMultiselectOptions.data() ?? []"
     (ngModelChange)="selectedOptions.set($event); selectionChange.emit($event)"
     [display]="'chip'"
     [filter]="false"
