@@ -5,12 +5,13 @@ import { FilterOperator } from 'nestjs-paginate';
 import { Equal, In, QueryFailedError, Repository } from 'typeorm';
 
 import {
-  ProgramRegistrationAttributeDto,
+  CreateProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributesBatchDto,
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { ProgramRegistrationAttribute } from '@121-service/src/programs/interfaces/program-registration-attribute.interface';
 import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
 import {
   AllowedFiltersNumber,
@@ -217,9 +218,9 @@ export class ProgramRegistrationAttributesService {
     attributesData,
     namingConventionData,
   }: {
-    attributesData: ProgramRegistrationAttributeDto[] | undefined;
+    attributesData: CreateProgramRegistrationAttributeDto[] | undefined;
     namingConventionData: string[];
-  }): Promise<ProgramRegistrationAttributeDto[]> {
+  }): Promise<ProgramRegistrationAttribute[]> {
     const programRegistrationAttributes = attributesData ?? [];
 
     // make sure phoneNumber is in programRegistrationAttributes
@@ -266,7 +267,7 @@ export class ProgramRegistrationAttributesService {
     programRegistrationAttributes,
   }: {
     programId: number;
-    programRegistrationAttributes: ProgramRegistrationAttributeDto[];
+    programRegistrationAttributes: ProgramRegistrationAttribute[];
   }): Promise<void> {
     // Fetch all existing attributes for this program in one query
     const existingAttributes =
@@ -302,14 +303,14 @@ export class ProgramRegistrationAttributesService {
 
   public async createProgramRegistrationAttribute({
     programId,
-    createProgramRegistrationAttributeDto,
+    createProgramRegistrationAttribute,
   }: {
     programId: number;
-    createProgramRegistrationAttributeDto: ProgramRegistrationAttributeDto;
-  }): Promise<ProgramRegistrationAttributeDto> {
+    createProgramRegistrationAttribute: ProgramRegistrationAttribute;
+  }): Promise<ProgramRegistrationAttribute> {
     const entity = await this.createProgramRegistrationAttributeEntity({
       programId,
-      createProgramRegistrationAttributeDto,
+      createProgramRegistrationAttribute,
     });
     return ProgramRegistrationAttributeMapper.entityToDto(entity);
   }
@@ -342,20 +343,20 @@ export class ProgramRegistrationAttributesService {
 
   public async createProgramRegistrationAttributeEntity({
     programId,
-    createProgramRegistrationAttributeDto,
+    createProgramRegistrationAttribute,
     repository,
   }: {
     programId: number;
-    createProgramRegistrationAttributeDto: ProgramRegistrationAttributeDto;
+    createProgramRegistrationAttribute: ProgramRegistrationAttribute;
     repository?: Repository<ProgramRegistrationAttributeEntity>;
   }): Promise<ProgramRegistrationAttributeEntity> {
     await this.validateAttributeName(
       programId,
-      createProgramRegistrationAttributeDto.name,
+      createProgramRegistrationAttribute.name,
     );
     const programRegistrationAttribute =
       this.programRegistrationAttributeDtoToEntity(
-        createProgramRegistrationAttributeDto,
+        createProgramRegistrationAttribute,
       );
     programRegistrationAttribute.programId = programId;
 
@@ -378,26 +379,27 @@ export class ProgramRegistrationAttributesService {
   }
 
   private programRegistrationAttributeDtoToEntity(
-    dto: ProgramRegistrationAttributeDto,
+    attribute: ProgramRegistrationAttribute,
   ): ProgramRegistrationAttributeEntity {
     const programRegistrationAttribute =
       new ProgramRegistrationAttributeEntity();
-    programRegistrationAttribute.name = dto.name;
-    programRegistrationAttribute.label = dto.label ?? null;
-    programRegistrationAttribute.koboLabel = dto.koboLabel ?? null;
-    programRegistrationAttribute.type = dto.type;
-    programRegistrationAttribute.options = dto.options ?? null;
-    programRegistrationAttribute.scoring = dto.scoring ?? {};
-    programRegistrationAttribute.pattern = dto.pattern ?? null;
+    programRegistrationAttribute.name = attribute.name;
+    programRegistrationAttribute.label = attribute.label ?? null;
+    programRegistrationAttribute.koboLabel = attribute.koboLabel ?? null;
+    programRegistrationAttribute.type = attribute.type;
+    programRegistrationAttribute.options = attribute.options ?? null;
+    programRegistrationAttribute.scoring = attribute.scoring ?? {};
+    programRegistrationAttribute.pattern = attribute.pattern ?? null;
     programRegistrationAttribute.editableInPortal =
-      dto.editableInPortal ?? true;
+      attribute.editableInPortal ?? true;
     programRegistrationAttribute.includeInTransactionExport =
-      dto.includeInTransactionExport ?? false;
-    programRegistrationAttribute.duplicateCheck = dto.duplicateCheck ?? false;
-    programRegistrationAttribute.placeholder = dto.placeholder ?? null;
-    programRegistrationAttribute.isRequired = dto.isRequired ?? false;
+      attribute.includeInTransactionExport ?? false;
+    programRegistrationAttribute.duplicateCheck =
+      attribute.duplicateCheck ?? false;
+    programRegistrationAttribute.placeholder = attribute.placeholder ?? null;
+    programRegistrationAttribute.isRequired = attribute.isRequired ?? false;
     programRegistrationAttribute.showInPeopleAffectedTable =
-      dto.showInPeopleAffectedTable ?? false;
+      attribute.showInPeopleAffectedTable ?? false;
     return programRegistrationAttribute;
   }
 

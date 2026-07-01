@@ -11,14 +11,14 @@ import {
 
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { BaseProgramDto } from '@121-service/src/programs/dto/base-program.dto';
-import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import { CreateProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 // This declared at the top of the file because it is used in the CreateProgramDto and else it is not defined yet
 // It's not defined inline because typing works more convenient here
-const exampleAttributes: ProgramRegistrationAttributeDto[] = [
+const exampleAttributes: CreateProgramRegistrationAttributeDto[] = [
   {
     name: 'nameFirst',
     type: RegistrationAttributeTypes.text,
@@ -106,6 +106,6 @@ export class CreateProgramDto extends BaseProgramDto {
   @IsArray()
   @ValidateNested()
   @IsDefined()
-  @Type(() => ProgramRegistrationAttributeDto)
-  public readonly programRegistrationAttributes?: ProgramRegistrationAttributeDto[];
+  @Type(() => CreateProgramRegistrationAttributeDto)
+  public readonly programRegistrationAttributes?: CreateProgramRegistrationAttributeDto[];
 }

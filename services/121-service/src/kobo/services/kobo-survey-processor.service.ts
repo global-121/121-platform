@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { KOBO_TO_121_TYPE_MAPPING } from '@121-service/src/kobo/consts/kobo-survey-to-121-attribute-type.const';
 import { KoboChoiceCleaned } from '@121-service/src/kobo/interfaces/kobo-choice-cleaned.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
-import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import { ProgramRegistrationAttribute } from '@121-service/src/programs/interfaces/program-registration-attribute.interface';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { RegistrationPreferredLanguageTranslation } from '@121-service/src/shared/types/registration-preferred-language-translation.type';
 
@@ -21,8 +21,8 @@ export class KoboSurveyProcessorService {
   }: {
     surveyItems: KoboSurveyItemCleaned[];
     languageIsoCodes: RegistrationPreferredLanguage[];
-  }): ProgramRegistrationAttributeDto[] {
-    const registrationAttributes: ProgramRegistrationAttributeDto[] = [];
+  }): ProgramRegistrationAttribute[] {
+    const registrationAttributes: ProgramRegistrationAttribute[] = [];
     for (const item of surveyItems) {
       const attribute = this.surveyItemToProgramRegistrationAttribute({
         koboSurveyItem: item,
@@ -42,7 +42,7 @@ export class KoboSurveyProcessorService {
   }: {
     koboSurveyItem: KoboSurveyItemCleaned;
     languageIsoCodes: RegistrationPreferredLanguage[];
-  }): ProgramRegistrationAttributeDto | undefined {
+  }): ProgramRegistrationAttribute | undefined {
     const attributeType = KOBO_TO_121_TYPE_MAPPING[koboSurveyItem.type];
 
     if (!attributeType) {

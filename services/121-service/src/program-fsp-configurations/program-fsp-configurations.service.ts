@@ -140,7 +140,7 @@ export class ProgramFspConfigurationsService {
         await this.programRegistrationAttributesService.createProgramRegistrationAttribute(
           {
             programId,
-            createProgramRegistrationAttributeDto: {
+            createProgramRegistrationAttribute: {
               name: requiredAttributeName,
               type: FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING[
                 requiredAttributeName

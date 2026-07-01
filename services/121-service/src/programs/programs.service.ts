@@ -199,8 +199,7 @@ export class ProgramService {
             {
               // we save the program twice because we need a program id to create program registrations attributes
               programId: savedProgram.id,
-              createProgramRegistrationAttributeDto:
-                programRegistrationAttribute,
+              createProgramRegistrationAttribute: programRegistrationAttribute,
               repository: programRegistrationAttributeRepository,
             },
           );
