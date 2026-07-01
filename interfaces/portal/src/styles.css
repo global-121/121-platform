@@ -178,8 +178,8 @@ svg-icon svg {
   */
 
   .wrapped-chip-multiselect {
-    .p-multiselect-header:empty {
-      @apply hidden;
+    p-overlay {
+      bottom: 100%;
     }
 
     .p-multiselect-label-container {
