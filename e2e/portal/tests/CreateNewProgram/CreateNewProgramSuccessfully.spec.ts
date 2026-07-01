@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { format } from 'date-fns';
 
-import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -12,27 +11,7 @@ import HomePage from '@121-e2e/portal/pages/HomePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import ProgramSettingsPage from '@121-e2e/portal/pages/ProgramSettingsPage';
 
-const todaysDate = new Date();
-const futureDate = new Date();
-futureDate.setDate(futureDate.getDate() + 1);
-
-const programInfo = {
-  name: 'TUiR Warta',
-  description: 'TUiR Warta description',
-  dateRange: { start: todaysDate, end: futureDate },
-  location: 'Polen',
-  targetRegistrations: '200',
-  fundsAvailable: '200',
-  currency: CurrencyCode.CAD,
-  paymentFrequency: '2-months',
-  defaultNrOfTransactions: '5',
-  fixedTransferValue: '100',
-  fsps: [
-    FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
-    FSP_SETTINGS[Fsps.safaricom].defaultLabel.en,
-    FSP_SETTINGS[Fsps.intersolveVoucherPaper].defaultLabel.en,
-  ].filter((fsp): fsp is string => fsp !== undefined),
-};
+import { getProgramInfo } from './program-info.helper';
 
 test.beforeEach(async ({ page }) => {
   await resetDB({
@@ -44,30 +23,32 @@ test.beforeEach(async ({ page }) => {
   await loginPage.loginAsAdmin();
 });
 
+const programInfo = getProgramInfo({
+  fsps: [
+    FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
+    FSP_SETTINGS[Fsps.safaricom].defaultLabel.en,
+    FSP_SETTINGS[Fsps.intersolveVoucherPaper].defaultLabel.en,
+  ] as string[],
+});
+
 test('Create program successfully', async ({ page }) => {
   const homePage = new HomePage(page);
   const createProgramDialog = new CreateProgramDialog(page);
-  const programSettings = new ProgramSettingsPage(page);
+  const programSettingsPage = new ProgramSettingsPage(page);
 
   // Act
   await test.step('Should navigate to main page and select "Create new program" button and fill in the form', async () => {
     await homePage.openCreateNewProgram();
-    await expect(page.getByText('Step 1 of 3')).toBeVisible();
-    await createProgramDialog.fillInStep1(programInfo);
-    await expect(page.getByText('Step 2 of 3')).toBeVisible();
-    await createProgramDialog.fillInStep2(programInfo);
-    await expect(page.getByText('Step 3 of 3')).toBeVisible();
-    await createProgramDialog.fillInStep3(programInfo);
-    const newProgramId = 3; // Id of newly created program based on SeedScript.testMultiple
-    await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/program/${newProgramId}/settings`),
-    );
+    await createProgramDialog.createProgram({
+      programInfo,
+      navigateToSettingsPageWithId: 3,
+    });
     await homePage.validateToastMessage('Program successfully created.');
   });
 
   await test.step('Should display correct program details in settings page', async () => {
     const basicInformationData =
-      await programSettings.basicInformationDataList.getData();
+      await programSettingsPage.basicInformationDataList.getData();
     expect(basicInformationData).toEqual({
       '*Program name': programInfo.name,
       'Program description': programInfo.description,
@@ -79,7 +60,7 @@ test('Create program successfully', async ({ page }) => {
       'Enable scope': 'No',
     });
 
-    const budgetData = await programSettings.budgetDataList.getData({
+    const budgetData = await programSettingsPage.budgetDataList.getData({
       omitListItemWithLabel: '*Financial service providers',
     });
 
@@ -92,13 +73,17 @@ test('Create program successfully', async ({ page }) => {
     });
 
     // Validating the FSPs in the multiselect component separately, as the dataListData returns a concatenated string of the FSPs
-    await homePage.validateProgramFsps({ fspNames: programInfo.fsps });
+    if (programInfo.fsps) {
+      await programSettingsPage.validateProgramFsps({
+        fspNames: programInfo.fsps,
+      });
+    }
   });
 });
 
 test('Create program validation checks on each step', async ({ page }) => {
-  const homePage = new HomePage(page);
   const createProgramDialog = new CreateProgramDialog(page);
+  const homePage = new HomePage(page);
 
   // Act
   await test.step('Should navigate to main page and select "Create new program" button', async () => {
