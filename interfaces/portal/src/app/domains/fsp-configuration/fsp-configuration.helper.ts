@@ -46,7 +46,7 @@ export const FSP_IMAGE_URLS: Record<Fsps, string> = {
   [Fsps.mtn]: 'assets/fsps/mtn.png',
 };
 
-export const hasPendingFspConfiguration = ({
+const hasPendingFspConfiguration = ({
   fspConfigurations,
 }: {
   fspConfigurations: FspConfiguration[] | undefined;
