@@ -30,6 +30,8 @@ export class FspTagsComponent {
 
   readonly programFsps = computed(() => {
     const fspConfigs = this.fspConfigurations.data() ?? [];
-    return fspConfigs.map((config) => FSP_SETTINGS[config.fspName]);
+    return [
+      ...new Set(fspConfigs.map((config) => FSP_SETTINGS[config.fspName])), // Removing possible duplicates (Excel)
+    ];
   });
 }
