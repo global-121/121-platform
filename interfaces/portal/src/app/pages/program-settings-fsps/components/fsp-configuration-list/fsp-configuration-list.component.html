@@ -21,6 +21,7 @@
       i18n-subtitle
       title="No FSPs found"
       i18n-title
+      [dataTestId]="'fsp-integration-no-fsps-card'"
     />
   }
 
@@ -37,7 +38,10 @@
     @let fspConfigs = fspConfigurations.data();
 
     @if (fspConfigs.length > 0) {
-      <div class="space-y-4">
+      <div
+        class="space-y-4"
+        [attr.data-testid]="'integrated-fsp-list'"
+      >
         @for (fspConfiguration of fspConfigs; track fspConfiguration.name) {
           <app-fsp-configuration-card
             [programId]="programId()"

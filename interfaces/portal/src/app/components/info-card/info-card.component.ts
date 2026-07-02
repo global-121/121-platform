@@ -12,6 +12,7 @@ export class AppInfoCardComponent {
   readonly title = input.required<string>();
   readonly subtitle = input.required<string>();
   readonly omitIcon = input<boolean>();
+  readonly dataTestId = input<string>();
 
   sizeClassMap: Record<string, string> = {
     small: 'h-8',

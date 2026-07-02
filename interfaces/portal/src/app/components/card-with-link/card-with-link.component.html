@@ -71,6 +71,7 @@
     <span
       class="line-clamp-2 text-ellipsis"
       [title]="title()"
+      [attr.data-testid]="'card-with-link-title'"
     >
       {{ title() }}
       @if (!!titleColoredChipLabel()) {
