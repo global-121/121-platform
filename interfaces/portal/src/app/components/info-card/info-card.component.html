@@ -1,4 +1,7 @@
-<p-card class="border-0!">
+<p-card
+  class="border-0!"
+  [attr.data-testid]="dataTestId() || 'info-card'"
+>
   <div class="py-4 text-center">
     @if (customIcon(); as icon) {
       <img

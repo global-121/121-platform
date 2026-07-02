@@ -179,6 +179,18 @@ class BasePage {
     await this.page.goto(path);
   }
 
+  async validateInfoCardMessage({
+    expectedMessage,
+    dataTestId,
+  }: {
+    expectedMessage: string;
+    dataTestId: string;
+  }) {
+    const infoCard = this.page.getByTestId(dataTestId);
+    await expect(infoCard).toBeVisible();
+    await expect(infoCard).toContainText(expectedMessage);
+  }
+
   async validateErrorMessage(errorMessage: string) {
     const errorElement = this.page
       .locator('app-form-error')
@@ -229,6 +241,21 @@ class BasePage {
     return filePath;
   }
 
+  // @TODO: Maybe we should make a input helper file that handles all of the input varaints (checkbox, select, text, etc.)
+  async selectMultiselectOptions({
+    dropdownTestId,
+    optionsToClick,
+  }: {
+    dropdownTestId: string;
+    optionsToClick: string[];
+  }) {
+    await this.page.getByTestId(dropdownTestId).click();
+    for (const option of optionsToClick) {
+      await this.page.getByRole('option', { name: option }).click();
+    }
+    await this.closeOpenSelectOrMultiselectWithRetries();
+  }
+
   async closeOpenSelectOrMultiselectWithRetries(retries = 3) {
     for (let i = 0; i < retries; i++) {
       try {
@@ -241,6 +268,21 @@ class BasePage {
       } catch (error) {
         console.log(`Click failed. Retrying... Attempt ${i + 1}/${retries}`);
       }
+    }
+  }
+
+  async validateProgramFsps({ fspNames }: { fspNames: string[] }) {
+    const list = this.page.getByTestId('integrated-fsp-list');
+    const fsps = list.getByTestId('card-with-link');
+    const fspsCount = await fsps.count();
+
+    expect(fspsCount).toBe(fspNames.length);
+
+    for (const [index, fsp] of fspNames.entries()) {
+      const card = fsps.nth(index);
+      const cardTitle = card.getByTestId('card-with-link-title');
+      await expect(cardTitle).toBeVisible();
+      await expect(cardTitle).toContainText(fsp);
     }
   }
 
