@@ -62,6 +62,7 @@ export class KoboImageService {
     this.validateUrlBelongsToKoboAsset({
       imageUrl,
       koboBaseUrl: koboEntity.url,
+      assetId: koboEntity.assetUid,
     });
 
     const headers = new Headers({
@@ -129,16 +130,25 @@ export class KoboImageService {
   private validateUrlBelongsToKoboAsset({
     imageUrl,
     koboBaseUrl,
+    assetId,
   }: {
     imageUrl: string;
     koboBaseUrl: string;
+    assetId: string;
   }): void {
     const imageOrigin = new URL(imageUrl).origin;
     const koboOrigin = new URL(koboBaseUrl).origin;
+    const assetIdFromUrl = imageUrl.split('/').find((part) => part === assetId);
 
     if (imageOrigin !== koboOrigin) {
       throw new BadRequestException(
         'Image URL does not belong to the configured Kobo server',
+      );
+    }
+
+    if (assetId && !assetIdFromUrl) {
+      throw new BadRequestException(
+        `Image URL does not contain the expected asset ID: ${assetId}`,
       );
     }
   }
