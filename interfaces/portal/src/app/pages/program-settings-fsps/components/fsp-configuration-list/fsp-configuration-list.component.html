@@ -33,50 +33,12 @@
           <app-fsp-configuration-card
             [programId]="programId()"
             [configuration]="fspConfiguration"
-            (reconfigureFsp)="
-              reconfigureFspConfiguration.emit(fspConfiguration)
-            "
+            (reconfigureFsp)="reconfigureFspConfiguration.emit($event)"
+            (addFspConfiguration)="addFspConfiguration.emit($event)"
             class="block"
           />
         }
       </div>
     }
-
-    <!-- @if (fspConfigs.length === 0 || forceShowNewFspList()) {
-      @if (fspConfigs.length > 0) {
-        <p
-          i18n
-          class="txt-body-m mbs-8 mbe-3 font-bold"
-        >
-          Choose another FSP:
-        </p>
-      }
-
-      <div class="space-y-2">
-        @for (fsp of configurableFsps(); track fsp.name) {
-          <div>
-            <app-card-with-link
-              [title]="fsp.defaultLabel | translatableString"
-              (cardClicked)="addFspConfiguration.emit(fsp.name)"
-              [image]="FSP_IMAGE_URLS[fsp.name]"
-            >
-              <ng-container card-subtitle>
-                <div i18n>Click to integrate</div>
-              </ng-container>
-            </app-card-with-link>
-          </div>
-        }
-      </div>
-    } @else if (canAddFsp()) {
-      <p-button
-        label="Add another FSP"
-        i18n-label
-        icon="pi pi-plus"
-        (click)="forceShowNewFspList.set(true)"
-        outlined
-        rounded
-        styleClass="mbs-6"
-      />
-    } -->
   }
 </p-card>
