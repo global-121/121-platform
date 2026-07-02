@@ -7,9 +7,12 @@ import {
   Param,
   Post,
   Req,
+  Res,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
+import { Request, Response } from 'express';
+import { createReadStream } from 'node:fs';
+import { join } from 'node:path';
 
 import {
   KoboAssetDeployment,
@@ -133,6 +136,22 @@ export class KoboMockController {
       submissionUuid: body.submissionUuid,
       koboVersion: body.koboVersion,
     });
+  }
+
+  @ApiOperation({
+    description:
+      'Streams a test image as an attachment download. Matches Kobo API endpoint /api/v2/assets/{uid}/data/{dataId}/attachments/{attachmentId}/',
+  })
+  @Get(':uid_asset/data/:dataId/attachments/:attachmentId')
+  public downloadAttachment(
+    @Param('uid_asset') _uid_asset: string,
+    @Param('dataId') _dataId: string,
+    @Param('attachmentId') _attachmentId: string,
+    @Res() res: Response,
+  ): void {
+    const imagePath = join(__dirname, 'assets', 'test-image.jpg');
+    res.setHeader('Content-Type', 'image/jpeg');
+    createReadStream(imagePath).pipe(res);
   }
 
   private getRequestOrigin(request: Request): string {

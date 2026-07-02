@@ -659,8 +659,7 @@ export class KoboMockService {
    * Builds a self-referential download URL for a submission attachment that
    * mirrors the shape of a real Kobo attachment URL. The URL is stored on the
    * submission so the 121-service can validate it (origin/path must match the
-   * program's Kobo asset). The mock does not serve the attachment itself, so
-   * the URL is not meant to be fetched/downloaded.
+   * program's Kobo asset). The mock serves a test image at this URL.
    */
   private buildAttachmentDownloadUrl({
     origin,
