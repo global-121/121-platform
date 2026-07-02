@@ -74,7 +74,7 @@ test('Create program successfully', async ({ page }) => {
 
     // Validating the FSPs in the multiselect component separately, as the dataListData returns a concatenated string of the FSPs
     if (programInfo.fsps) {
-      await programSettingsPage.validateProgramFsps({
+      await programSettingsPage.validateProgramFspsPills({
         fspNames: programInfo.fsps,
       });
     }

@@ -278,6 +278,20 @@ class BasePage {
     }
   }
 
+  // On the budget page and kobo requirement page we show the FSPs in a pill format, so we need to validate that the pills are shown correctly
+  async validateProgramFspsPills({ fspNames }: { fspNames: string[] }) {
+    const list = this.page.getByTestId('integrated-fsp-list');
+    const fsps = list.getByRole('listitem');
+    const fspsCount = await fsps.count();
+
+    expect(fspsCount).toBe(fspNames.length);
+
+    for (const fsp of fspNames) {
+      await expect(list).toContainText(fsp);
+    }
+  }
+
+  // On the FSP integration page we show the FSPs in a card format, so we need to validate that the cards are shown correctly
   async validateProgramFsps({ fspNames }: { fspNames: string[] }) {
     const list = this.page.getByTestId('integrated-fsp-list');
     const fsps = list.getByTestId('card-with-link');
