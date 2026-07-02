@@ -23,16 +23,11 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FspApiService } from '~/domains/fsp/fsp.api.service';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
-import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
   selector: 'app-fsp-multiselect',
-  imports: [
-    FormFieldWrapperComponent,
-    FormsModule,
-    MultiSelectModule,
-    TranslatableStringPipe,
-  ],
+  imports: [FormFieldWrapperComponent, FormsModule, MultiSelectModule],
   templateUrl: './fsp-multiselect.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
@@ -50,6 +45,7 @@ export class FspMultiselectComponent implements ControlValueAccessor {
   // Services
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
   readonly fspApiService = inject(FspApiService);
+  readonly translatableStringService = inject(TranslatableStringService);
 
   isDisabled = false;
 
@@ -81,7 +77,9 @@ export class FspMultiselectComponent implements ControlValueAccessor {
       return [
         {
           fspName: fsp.name,
-          name: fsp.defaultLabel.en,
+          defaultLabel: fsp.defaultLabel,
+          translatedLabel:
+            this.translatableStringService.translate(fsp.defaultLabel) ?? '',
         },
       ];
     });
