@@ -63,7 +63,7 @@
       "multer": "2.2.0"
     },
     "@swc/cli": {
-      "piscina": "^4.9.3"
+      "piscina": "4.9.3"
     }
   }
 }
