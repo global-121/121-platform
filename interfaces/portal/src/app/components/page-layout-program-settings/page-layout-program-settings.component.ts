@@ -76,6 +76,7 @@ export class PageLayoutProgramSettingsComponent {
             PermissionEnum.ProgramFspConfigUPDATE,
           ],
         }),
+        showWarningIcon: this.notAllFspsIntegrated(),
       },
       {
         label: $localize`Registration data`,
@@ -94,7 +95,6 @@ export class PageLayoutProgramSettingsComponent {
             PermissionEnum.RegistrationREAD,
           ],
         }),
-        showWarningIcon: this.notAllFspsIntegrated(),
       },
       {
         label: $localize`:@@page-title-users:Users`,
