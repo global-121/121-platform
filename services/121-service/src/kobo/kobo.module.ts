@@ -16,7 +16,6 @@ import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-con
 import { ProgramRegistrationAttributesModule } from '@121-service/src/program-registration-attributes/program-registration-attributes.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -28,7 +27,6 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
     ProgramFspConfigurationsModule,
     HttpModule,
     RegistrationsModule,
-    RegistrationDataModule,
   ],
   providers: [
     KoboService,
