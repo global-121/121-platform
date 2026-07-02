@@ -20,14 +20,6 @@ const ALLOWED_IMAGE_MIMETYPES = new Set([
   'image/svg',
 ]);
 
-const ALLOWED_IMAGE_MIMETYPES = new Set([
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/gif',
-  'image/webp',
-]);
-
 @Injectable()
 export class KoboImageService {
   @InjectRepository(KoboEntity)
