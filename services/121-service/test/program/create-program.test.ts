@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import programCbe from '@121-service/src/seed-data/program/program-cbe.json';
 import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
@@ -16,6 +17,13 @@ import {
 
 describe('Create program', () => {
   let accessToken: string;
+
+  const minimalProgram = {
+    titlePortal: {
+      en: 'Test Title',
+    },
+    currency: CurrencyCode.EUR,
+  };
 
   beforeEach(async () => {
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
@@ -52,14 +60,6 @@ describe('Create program', () => {
   });
 
   it('should post a program with the minimum amount of attributes', async () => {
-    // Arrange
-    const minimalProgram = {
-      titlePortal: {
-        en: 'Test Title',
-      },
-      currency: CurrencyCode.EUR,
-    };
-
     // Act
     const createProgramResponse = await postProgram(
       minimalProgram,
@@ -241,5 +241,33 @@ describe('Create program', () => {
 
     // A new program should not have been created
     expect(getProgramResponse.statusCode).toBe(HttpStatus.NOT_FOUND);
+  });
+
+  it('should add fsps to a program when creating it', async () => {
+    // Arrange
+    const programWithFsps = {
+      ...minimalProgram,
+      fsps: [Fsps.intersolveVisa, Fsps.excel],
+    };
+
+    // Act
+    const createProgramResponse = await postProgram(
+      programWithFsps,
+      accessToken,
+    );
+    const programId = createProgramResponse.body.id;
+    const getProgramResponse = await getProgram(programId, accessToken);
+
+    // Assert
+    expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
+    expect(getProgramResponse.body).toEqual(
+      expect.objectContaining({
+        fspConfigurations: expect.arrayContaining([
+          expect.objectContaining({ fspName: Fsps.intersolveVisa }),
+          expect.objectContaining({ fspName: Fsps.excel }),
+        ]),
+      }),
+    );
+    expect(getProgramResponse.body.fspConfigurations).toHaveLength(2);
   });
 });
