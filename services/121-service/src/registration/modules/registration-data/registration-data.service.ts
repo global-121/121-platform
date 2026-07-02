@@ -23,6 +23,7 @@ export class RegistrationDataService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
   ) {}
 
+  // TODO: Refactor this to accept an array of keys
   public async getRegistrationDataValueByName(
     registration: RegistrationEntity,
     name: string,
