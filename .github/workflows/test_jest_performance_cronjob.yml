@@ -101,7 +101,7 @@ jobs:
         uses: global-121/collect-container-logs@78594c6154439e32858bf3dc17c9ff36561a1d31
 
   performance-test-shard-resolution:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     needs: [performance-test-shard]
     if: always()
     steps:
