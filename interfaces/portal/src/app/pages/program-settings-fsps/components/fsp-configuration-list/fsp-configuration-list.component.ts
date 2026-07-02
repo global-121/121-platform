@@ -12,6 +12,7 @@ import { CardModule } from 'primeng/card';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 
+import { AppInfoCardComponent } from '~/components/info-card/info-card.component';
 import {
   NotificationBannerComponent,
   NotificationBannerIcon,
@@ -30,9 +31,9 @@ import { AuthService } from '~/services/auth.service';
     SkeletonInlineComponent,
     FspConfigurationCardComponent,
     NotificationBannerComponent,
+    AppInfoCardComponent,
   ],
   templateUrl: './fsp-configuration-list.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FspConfigurationListComponent {
