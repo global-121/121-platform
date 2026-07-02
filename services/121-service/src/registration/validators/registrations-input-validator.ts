@@ -903,7 +903,11 @@ export class RegistrationsInputValidator {
       isValid = value != null && !isNaN(+value);
     } else if (type === RegistrationAttributeTypes.numericNullable) {
       isValid = value == null || !isNaN(+value);
-    } else if (type === RegistrationAttributeTypes.text) {
+    } else if (
+      type === RegistrationAttributeTypes.text ||
+      type === RegistrationAttributeTypes.koboImage
+    ) {
+      // A koboImage value is the URL string pointing to the Kobo attachment.
       isValid = typeof value === 'string';
     } else if (type === RegistrationAttributeTypes.boolean) {
       isValid = this.valueIsBool(value);

@@ -322,6 +322,7 @@ export class RegistrationsTableColumnService {
     attribute: NormalizedRegistrationAttribute,
   ) {
     switch (attribute.type) {
+      case RegistrationAttributeTypes.koboImage:
       case RegistrationAttributeTypes.tel:
       case RegistrationAttributeTypes.text:
       case RegistrationAttributeTypes.boolean:

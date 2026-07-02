@@ -1274,5 +1274,14 @@
     "method": "post",
     "path": "/api/kobo/webhook",
     "params": []
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/kobo-images/{attributeName}",
+    "params": [
+      "programId",
+      "referenceId",
+      "attributeName"
+    ]
   }
 ]
