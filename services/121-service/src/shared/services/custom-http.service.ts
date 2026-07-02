@@ -54,6 +54,37 @@ export class CustomHttpService {
     );
   }
 
+  public async getStream<T>(url: string, headers?: Headers): Promise<T> {
+    return await lastValueFrom(
+      this.httpService
+        .get(url, {
+          headers: this.createHeaders(headers),
+          responseType: 'stream',
+        })
+        .pipe(
+          map((response) => {
+            this.logMessageRequest(
+              { headers, url, payload: null },
+              {
+                status: response.status,
+                statusText: response.statusText,
+                data: '[stream]',
+              },
+            );
+            return response;
+          }),
+          catchError((err) => {
+            const errorResponse = err.response || this.setNoResponseError(err);
+            this.logErrorRequest(
+              { headers, url, payload: null },
+              errorResponse,
+            );
+            return of(errorResponse);
+          }),
+        ),
+    );
+  }
+
   public async post<T>(
     url: string,
     payload: any,
