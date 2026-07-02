@@ -116,9 +116,6 @@
       <trans-unit id="1545261806462361427" datatype="html">
         <source>Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></source>
       </trans-unit>
-      <trans-unit id="157548652954522016" datatype="html">
-        <source>Click to reconfigure</source>
-      </trans-unit>
       <trans-unit id="1579692722565712588" datatype="html">
         <source>Okay</source>
       </trans-unit>
@@ -160,9 +157,6 @@
       </trans-unit>
       <trans-unit id="17234570072885140" datatype="html">
         <source>Registrations</source>
-      </trans-unit>
-      <trans-unit id="173881015099071159" datatype="html">
-        <source>Add another FSP</source>
       </trans-unit>
       <trans-unit id="1755386264837692034" datatype="html">
         <source>User updated</source>
@@ -309,9 +303,6 @@
       <trans-unit id="2317261224640464417" datatype="html">
         <source>Write a reason for the update</source>
       </trans-unit>
-      <trans-unit id="2330756841114483977" datatype="html">
-        <source>Choose another FSP:</source>
-      </trans-unit>
       <trans-unit id="2336550011721758066" datatype="html">
         <source>Log in</source>
       </trans-unit>
@@ -359,6 +350,9 @@
       </trans-unit>
       <trans-unit id="2484327586042742796" datatype="html">
         <source>Date is after</source>
+      </trans-unit>
+      <trans-unit id="2506069337302541920" datatype="html">
+        <source><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [label]=&quot;coloredChipProps().label&quot; [variant]=&quot;coloredChipProps().variant&quot; &gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;/app-colored-chip&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/></source>
       </trans-unit>
       <trans-unit id="2511966165374777397" datatype="html">
         <source>This might take a few minutes. The file will be automatically downloaded when ready. Closing this notification will not cancel the export.</source>
@@ -573,6 +567,9 @@
       <trans-unit id="350646349607555710" datatype="html">
         <source>Registered:</source>
       </trans-unit>
+      <trans-unit id="3543826049207263566" datatype="html">
+        <source>Please wait before creating a new payment.</source>
+      </trans-unit>
       <trans-unit id="3545183022492788567" datatype="html">
         <source>A payment is currently in progress. Please wait until it has finished.</source>
       </trans-unit>
@@ -698,6 +695,9 @@
       <trans-unit id="3978034238801036238" datatype="html">
         <source>Kobo form URL</source>
       </trans-unit>
+      <trans-unit id="3985321583109084184" datatype="html">
+        <source>Integrate your FSPs before paying your registrations.</source>
+      </trans-unit>
       <trans-unit id="4026691210548476882" datatype="html">
         <source>Failed to load options</source>
       </trans-unit>
@@ -787,6 +787,9 @@
       </trans-unit>
       <trans-unit id="4327471061205783634" datatype="html">
         <source>Currency</source>
+      </trans-unit>
+      <trans-unit id="4336467119528049143" datatype="html">
+        <source>Integrated</source>
       </trans-unit>
       <trans-unit id="434482942350930906" datatype="html">
         <source>There are <x equiv-text="{{ data.nonApplicableCount | number }}" id="INTERPOLATION"/> selected transaction(s) that are not on status &apos;Failed&apos; and will not be retried.</source>
@@ -878,9 +881,6 @@
       <trans-unit id="471816275243265264" datatype="html">
         <source>Location</source>
       </trans-unit>
-      <trans-unit id="4725718925572069565" datatype="html">
-        <source>Click to integrate</source>
-      </trans-unit>
       <trans-unit id="4746344653872488527" datatype="html">
         <source>Export payment list</source>
       </trans-unit>
@@ -895,12 +895,6 @@
       </trans-unit>
       <trans-unit id="4803523554231687262" datatype="html">
         <source>Delete payment</source>
-      </trans-unit>
-      <trans-unit id="4814285799071780083" datatype="html">
-        <source>Remove</source>
-      </trans-unit>
-      <trans-unit id="4821724891066824263" datatype="html">
-        <source>You&apos;re about to remove the &quot;<x equiv-text="{{ fspConfigurationLabel() }}" id="INTERPOLATION"/>&quot; FSP configuration from your program. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
       </trans-unit>
       <trans-unit id="4866288342540923037" datatype="html">
         <source>No of Cards Ordered</source>
@@ -1079,11 +1073,11 @@
       <trans-unit id="5544945972793965092" datatype="html">
         <source>The number of times a registration will receive transactions in the program by default.</source>
       </trans-unit>
+      <trans-unit id="5547837185378224000" datatype="html">
+        <source>Integration required</source>
+      </trans-unit>
       <trans-unit id="5558547280081275233" datatype="html">
         <source>Approvals</source>
-      </trans-unit>
-      <trans-unit id="5567795196823052308" datatype="html">
-        <source>please wait before creating a new payment.</source>
       </trans-unit>
       <trans-unit id="5568900620756681669" datatype="html">
         <source>Your form must include the following required fields in this <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>exact format<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> for this FSP integration in the data column name:</source>
@@ -1251,6 +1245,9 @@
       <trans-unit id="635399988713647542" datatype="html">
         <source>If you have any questions about our use of necessary cookies, please feel free to contact us at:</source>
       </trans-unit>
+      <trans-unit id="6369233867484626800" datatype="html">
+        <source>Financial service providers</source>
+      </trans-unit>
       <trans-unit id="6369488977592373957" datatype="html">
         <source>This means that they will not be included in payments.</source>
       </trans-unit>
@@ -1343,6 +1340,9 @@
       </trans-unit>
       <trans-unit id="6770883928375952203" datatype="html">
         <source>KoboToolbox</source>
+      </trans-unit>
+      <trans-unit id="6772516579263393122" datatype="html">
+        <source>Integrate</source>
       </trans-unit>
       <trans-unit id="6819146217568220494" datatype="html">
         <source>There are no payments for this program yet.</source>
@@ -1656,6 +1656,9 @@
       <trans-unit id="8140989446664265922" datatype="html">
         <source>Enter the basic details of your program, these details will define your program&apos;s setup and structure.</source>
       </trans-unit>
+      <trans-unit id="8149069993716610284" datatype="html">
+        <source>Select FSPs</source>
+      </trans-unit>
       <trans-unit id="8153112678957419197" datatype="html">
         <source>Error while integrating Kobo form</source>
       </trans-unit>
@@ -1781,6 +1784,9 @@
       </trans-unit>
       <trans-unit id="8735352957921555136" datatype="html">
         <source>Registrations that do not support this action will remain in their current status.</source>
+      </trans-unit>
+      <trans-unit id="8747826357702572054" datatype="html">
+        <source>Financial service providers:</source>
       </trans-unit>
       <trans-unit id="8751327662526303646" datatype="html">
         <source>Scan the barcode in the back of the card you are handing over to the registration with a scanner, or manually fill in the 19 digit serial number found below the barcode.</source>
@@ -2537,9 +2543,6 @@
       </trans-unit>
       <trans-unit id="registration-status-validated" datatype="html">
         <source>Validated</source>
-      </trans-unit>
-      <trans-unit id="remove-fsp" datatype="html">
-        <source>Remove FSP</source>
       </trans-unit>
       <trans-unit id="remove-user-button" datatype="html">
         <source>Remove user</source>

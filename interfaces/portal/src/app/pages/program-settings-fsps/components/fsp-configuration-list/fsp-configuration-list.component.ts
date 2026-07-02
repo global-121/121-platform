@@ -12,17 +12,17 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
-import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 
-import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
+import {
+  NotificationBannerComponent,
+  NotificationBannerIcon,
+} from '~/components/notification-banner/notification-banner.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
-import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.helper';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { FspConfigurationCardComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-card/fsp-configuration-card.component';
-import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { AuthService } from '~/services/auth.service';
 
 @Component({
@@ -32,8 +32,7 @@ import { AuthService } from '~/services/auth.service';
     ButtonModule,
     SkeletonInlineComponent,
     FspConfigurationCardComponent,
-    CardWithLinkComponent,
-    TranslatableStringPipe,
+    NotificationBannerComponent,
   ],
   templateUrl: './fsp-configuration-list.component.html',
   styles: ``,
@@ -52,28 +51,20 @@ export class FspConfigurationListComponent {
     this.fspConfigurationApiService.getFspConfigurations(this.programId),
   );
 
-  FSP_IMAGE_URLS = FSP_IMAGE_URLS;
+  readonly integrationRequiredBannerContent = {
+    title: $localize`Integration required`,
+    description: $localize`Integrate your FSPs before paying your registrations.`,
+    icon: 'alert' as NotificationBannerIcon,
+  };
 
-  readonly configurableFsps = computed(() =>
-    Object.values(FSP_SETTINGS).filter(this.canConfigureFsp.bind(this)),
+  readonly notAllFspsIntegrated = computed(
+    () =>
+      this.fspConfigurations
+        .data()
+        ?.some(
+          (fspConfiguration) =>
+            fspConfiguration.state ===
+            FspConfigurationStates.configurationPending,
+        ) ?? false,
   );
-
-  private canConfigureFsp({ name }: { name: Fsps }) {
-    if (name === Fsps.excel) {
-      // Can always add multiple Excel FSP configurations
-      return true;
-    }
-
-    // For other FSPs, only allow adding if not already configured
-    return this.fspConfigurations
-      .data()
-      ?.every((fspConfiguration) => fspConfiguration.fspName !== name);
-  }
-
-  canAddFsp() {
-    return this.authService.hasPermission({
-      programId: this.programId(),
-      requiredPermission: PermissionEnum.ProgramFspConfigCREATE,
-    });
-  }
 }
