@@ -68,10 +68,23 @@ export class FspMultiselectComponent implements ControlValueAccessor {
 
   readonly fspMultiselectOptions = computed(() => {
     const fsps = this.enabledFsps.data() ?? [];
-    return fsps.map((fsp) => ({
-      fspName: fsp.name,
-      name: fsp.defaultLabel.en,
-    }));
+    const uniqueFsps = new Set<Fsps>();
+
+    // Removing possible duplicates (Excel)
+    return fsps.flatMap((fsp) => {
+      if (uniqueFsps.has(fsp.name)) {
+        return [];
+      }
+
+      uniqueFsps.add(fsp.name);
+
+      return [
+        {
+          fspName: fsp.name,
+          name: fsp.defaultLabel.en,
+        },
+      ];
+    });
   });
 
   constructor() {
@@ -124,10 +137,11 @@ export class FspMultiselectComponent implements ControlValueAccessor {
     fsps: Fsps[];
     notifyForm: boolean;
   }): void {
-    this.selectedOptions.set(fsps);
+    const uniqueFsps = [...new Set(fsps)]; // Removing possible duplicates (Excel)
+    this.selectedOptions.set(uniqueFsps);
 
     if (notifyForm) {
-      this.onChange(fsps);
+      this.onChange(uniqueFsps);
     }
   }
 }
