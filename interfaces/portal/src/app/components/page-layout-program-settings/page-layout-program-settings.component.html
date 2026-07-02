@@ -19,6 +19,10 @@
               >
                 <i [class]="item.icon"></i>
                 {{ item.label }}
+
+                @if (item.showWarningIcon) {
+                  <i class="pi pi-exclamation-circle text-orange-500"></i>
+                }
               </a>
               <ul class="mt-2 space-y-2 ps-8">
                 @for (subItem of item.items; track $index) {

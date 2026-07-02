@@ -746,6 +746,9 @@
       <trans-unit id="4151726167516719564" datatype="html">
         <source>Select 1 or more</source>
       </trans-unit>
+      <trans-unit id="4161967011396993650" datatype="html">
+        <source>No FSPs found</source>
+      </trans-unit>
       <trans-unit id="4171707170007579661" datatype="html">
         <source>Program information</source>
       </trans-unit>
@@ -754,6 +757,9 @@
       </trans-unit>
       <trans-unit id="4200238680914053517" datatype="html">
         <source>Max. <x equiv-text="{{ MAX_PAYMENT_NAME_LENGTH }}" id="INTERPOLATION"/> characters</source>
+      </trans-unit>
+      <trans-unit id="420289963657563216" datatype="html">
+        <source>Add FSPs to your program in the Program information page.</source>
       </trans-unit>
       <trans-unit id="4207014437413577720" datatype="html">
         <source>Start payment</source>

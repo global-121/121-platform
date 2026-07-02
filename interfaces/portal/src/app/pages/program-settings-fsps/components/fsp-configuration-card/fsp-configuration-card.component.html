@@ -1,11 +1,26 @@
 <app-card-with-link
-  (cardClicked)="reconfigureFsp.emit(configuration())"
   [title]="fspConfigurationLabel()"
-  [menuItems]="menuItems()"
   [image]="fspImage()"
+  [menuItems]="menuItems()"
+  [enableLink]="false"
 >
   <ng-container card-subtitle>
-    <div i18n>Click to reconfigure</div>
+    <app-colored-chip
+      [label]="coloredChipProps().label"
+      [variant]="coloredChipProps().variant"
+    ></app-colored-chip>
+  </ng-container>
+
+  <ng-container card-action>
+    @if (configurationPending()) {
+      <p-button
+        (click)="reconfigureFsp.emit(configuration())"
+        label="Integrate"
+        i18n-label
+        icon="pi pi-link"
+        rounded
+      />
+    }
   </ng-container>
 
   <ng-container card-content>

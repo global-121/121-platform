@@ -15,6 +15,22 @@
     contact the 121 support team or talk to the account manager.
   </p>
 
+  @if (fspConfigurations.data()?.length === 0) {
+    <app-info-card
+      subtitle="Add FSPs to your program in the Program information page."
+      i18n-subtitle
+      title="No FSPs found"
+      i18n-title
+    />
+  }
+
+  @if (notAllFspsIntegrated()) {
+    <app-notification-banner
+      [color]="'orange'"
+      [content]="integrationRequiredBannerContent"
+    />
+  }
+
   @if (fspConfigurations.isPending()) {
     <app-skeleton-inline />
   } @else if (fspConfigurations.isSuccess()) {
@@ -26,50 +42,12 @@
           <app-fsp-configuration-card
             [programId]="programId()"
             [configuration]="fspConfiguration"
-            (reconfigureFsp)="
-              reconfigureFspConfiguration.emit(fspConfiguration)
-            "
+            (reconfigureFsp)="reconfigureFspConfiguration.emit($event)"
+            (addFspConfiguration)="addFspConfiguration.emit($event)"
             class="block"
           />
         }
       </div>
-    }
-
-    @if (fspConfigs.length === 0 || forceShowNewFspList()) {
-      @if (fspConfigs.length > 0) {
-        <p
-          i18n
-          class="txt-body-m mt-8 mb-3 font-bold"
-        >
-          Choose another FSP:
-        </p>
-      }
-
-      <div class="space-y-2">
-        @for (fsp of configurableFsps(); track fsp.name) {
-          <div>
-            <app-card-with-link
-              [title]="fsp.defaultLabel | translatableString"
-              (cardClicked)="addFspConfiguration.emit(fsp.name)"
-              [image]="FSP_IMAGE_URLS[fsp.name]"
-            >
-              <ng-container card-subtitle>
-                <div i18n>Click to integrate</div>
-              </ng-container>
-            </app-card-with-link>
-          </div>
-        }
-      </div>
-    } @else if (canAddFsp()) {
-      <p-button
-        label="Add another FSP"
-        i18n-label
-        icon="pi pi-plus"
-        (click)="forceShowNewFspList.set(true)"
-        outlined
-        rounded
-        styleClass="mt-6"
-      />
     }
   }
 </p-card>
