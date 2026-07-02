@@ -103,7 +103,7 @@
     "ssh2-sftp-client": "^12.1.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "twilio": "^6.0.0",
+    "twilio": "^6.0.2",
     "typeorm": "npm:@global121/typeorm@1.0.4",
     "typescript": "^5.9.3",
     "ufo": "^1.6.3",
