@@ -61,7 +61,6 @@ graph LR
   KoboModule-->ProgramFspConfigurationsModule
   KoboModule-->ProgramModule
   KoboModule-->ProgramRegistrationAttributesModule
-  KoboModule-->RegistrationDataModule
   KoboModule-->RegistrationsModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->IntersolveVoucherModule
