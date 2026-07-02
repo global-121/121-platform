@@ -24,8 +24,8 @@ export const propertiesToDuplicate: Record<keyof ProgramEntity, boolean> = {
   languages: true,
   enableMaxPayments: true,
   enableScope: true,
-  budget: false,
-  monitoringDashboardUrl: false,
+  budget: true,
+  monitoringDashboardUrl: true,
   allowEmptyPhoneNumber: true,
   paymentsAreLocked: false,
 
