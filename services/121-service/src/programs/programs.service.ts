@@ -269,7 +269,7 @@ export class ProgramService {
         throw err;
       }
       throw new HttpException(
-        'Error duplicating program',
+        `Error duplicating program: ${err instanceof Error ? err.message : String(err)}`,
         HttpStatus.BAD_GATEWAY,
       );
     } finally {

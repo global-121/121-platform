@@ -118,11 +118,13 @@ function cloneColumns({
   source,
   overrides,
   propertiesToDuplicate,
+  excludeForeignKeyColumns = false,
 }: {
   metadata: EntityMetadata;
   source: ObjectLiteral;
   overrides: Record<string, unknown>;
   propertiesToDuplicate?: Record<string, boolean>;
+  excludeForeignKeyColumns?: boolean;
 }): Record<string, unknown> {
   const result: Record<string, unknown> = {};
   for (const column of metadata.columns) {
@@ -132,14 +134,18 @@ function cloneColumns({
 
     const propertyName = column.propertyName;
 
+    if (excludeForeignKeyColumns && column.relationMetadata && column.isNullable) {
+      continue;
+    }
+
     if (propertiesToDuplicate && propertiesToDuplicate[propertyName] !== true) {
       continue;
     }
 
     if (!(propertyName in source)) {
-      // Column was not selected (e.g. `select: false`); let the default apply.
       continue;
     }
+
     result[propertyName] = source[propertyName];
   }
 
@@ -239,6 +245,7 @@ async function copyRelation({
       metadata: childMetadata,
       source: child,
       overrides: {},
+      excludeForeignKeyColumns: true,
     });
     childColumns[parentForeignKeyProperty] = newParentId;
 
