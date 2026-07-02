@@ -14,6 +14,7 @@ import { TableModule } from 'primeng/table';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 
+import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
@@ -46,7 +47,14 @@ export class RequiredAttributesComponent {
     this.fspConfigurationApiService.getFspConfigurations(this.programId),
   );
 
-  program = injectQuery(this.programApiService.getProgram(this.programId));
+  readonly programFsps = computed(() => {
+    const fspConfigs = this.fspConfigurations.data() ?? [];
+    return fspConfigs.map((config) => FSP_SETTINGS[config.fspName]);
+  });
+
+  readonly program = injectQuery(
+    this.programApiService.getProgram(this.programId),
+  );
   readonly enableScope = computed(() => this.program.data()?.enableScope);
 
   readonly programAttributes = injectQuery(

@@ -106,6 +106,7 @@ export class CreateProgramDialogComponent {
         currency,
         distributionDuration,
         fixedTransferValue,
+        fsps,
       },
     }: ReturnType<
       FormGroup<{
@@ -131,6 +132,7 @@ export class CreateProgramDialogComponent {
         location,
         targetNrRegistrations,
         validation,
+        fsps,
       }),
     onSuccess: async (result) => {
       // The keys of the user permissions determine which programs a user can see
