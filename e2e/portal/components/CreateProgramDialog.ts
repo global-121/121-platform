@@ -1,8 +1,10 @@
+import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
 
+import BasePage from '../pages/BasePage';
+import { ProgramInfo } from '../tests/CreateNewProgram/program-info.helper';
 import { PrimeNGDatePicker } from './PrimeNGDatePicker';
-
-class CreateProgramDialog {
+class CreateProgramDialog extends BasePage {
   readonly page: Page;
   readonly nextButton: Locator;
   readonly submitButton: Locator;
@@ -11,6 +13,7 @@ class CreateProgramDialog {
   readonly currencyDropdown: Locator;
 
   constructor(page: Page) {
+    super(page);
     this.page = page;
     this.nextButton = this.page.getByRole('button', { name: 'Continue' });
     this.submitButton = this.page.getByRole('button', {
@@ -25,6 +28,25 @@ class CreateProgramDialog {
       datePicker: this.page.getByLabel('End date'),
     });
     this.currencyDropdown = this.page.locator(`[formControlName="currency"]`);
+  }
+
+  async createProgram({
+    programInfo,
+    navigateToSettingsPageWithId,
+  }: {
+    programInfo: ProgramInfo;
+    navigateToSettingsPageWithId: number;
+  }): Promise<void> {
+    const programId = navigateToSettingsPageWithId;
+    await expect(this.page.getByText('Step 1 of 3')).toBeVisible();
+    await this.fillInStep1(programInfo);
+    await expect(this.page.getByText('Step 2 of 3')).toBeVisible();
+    await this.fillInStep2(programInfo);
+    await expect(this.page.getByText('Step 3 of 3')).toBeVisible();
+    await this.fillInStep3(programInfo);
+    await this.page.waitForURL((url) =>
+      url.pathname.startsWith(`/en-GB/program/${programId}/settings`),
+    );
   }
 
   async fillInStep1({
@@ -62,11 +84,13 @@ class CreateProgramDialog {
     currency,
     defaultNrOfTransactions,
     fixedTransferValue,
+    fsps,
   }: {
     fundsAvailable: string;
     currency: string;
     defaultNrOfTransactions: string;
     fixedTransferValue: string;
+    fsps?: string[];
   }) {
     await this.page.getByLabel('Funds available').fill(fundsAvailable);
     await this.currencyDropdown.click();
@@ -79,6 +103,16 @@ class CreateProgramDialog {
     await this.page
       .getByLabel('*Fixed transfer value')
       .fill(fixedTransferValue);
+
+    // Select the FSPs from the multiselect component
+    if (fsps && fsps.length > 0) {
+      await this.selectMultiselectOptions({
+        dropdownTestId: 'fsp-multiselect',
+        optionsToClick: fsps,
+      });
+    }
+
+    // Submit the form to create the program
     await this.submitButton.click();
   }
 }
