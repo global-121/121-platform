@@ -1277,10 +1277,11 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/kobo-images",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/kobo-images/{attributeName}",
     "params": [
       "programId",
-      "referenceId"
+      "referenceId",
+      "attributeName"
     ]
   }
 ]
