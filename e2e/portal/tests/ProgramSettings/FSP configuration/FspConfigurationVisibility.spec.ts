@@ -34,26 +34,23 @@ test('Validate that only configured FSPs are present as configured', async ({
   registrationsPage,
   fspSettingsPage,
 }) => {
-  // await test.step('Navigate to program', async () => {
-  //   await homePage.selectProgram('NLRC OCW program');
-  // });
-  // await test.step('Navigate to FSP configuration', async () => {
-  //   await registrationsPage.navigateToProgramPage('Settings');
-  //   await fspSettingsPage.clickEditFspSection();
-  // });
-  // await test.step('Validate only assigned FSPs are visible at first', async () => {
-  //   await fspSettingsPage.validateFspVisibility({ fspNames: configuredFsps });
-  // });
-  // await test.step('Validate unassigned FSPs are not visible', async () => {
-  //   await fspSettingsPage.validateFspVisibility({
-  //     fspNames: availableFsps,
-  //     visible: false,
-  //   });
-  // });
-  // await test.step('Validate that both assigned and configurable FSPs are visible', async () => {
-  //   await fspSettingsPage.clickAddAnotherFspButton();
-  //   await fspSettingsPage.validateFspVisibility({
-  //     fspNames: [...configuredFsps, ...availableFsps],
-  //   });
-  // });
+  await test.step('Navigate to program', async () => {
+    await homePage.selectProgram('NLRC OCW program');
+  });
+
+  await test.step('Navigate to FSP configuration', async () => {
+    await registrationsPage.navigateToProgramPage('Settings');
+    await fspSettingsPage.clickEditFspSection();
+  });
+
+  await test.step('Validate only assigned FSPs are visible at first', async () => {
+    await fspSettingsPage.validateFspVisibility({ fspNames: configuredFsps });
+  });
+
+  await test.step('Validate unassigned FSPs are not visible', async () => {
+    await fspSettingsPage.validateFspVisibility({
+      fspNames: availableFsps,
+      visible: false,
+    });
+  });
 });
