@@ -51,6 +51,11 @@ export class KoboImageService {
       throw new NotFoundException('No Kobo integration found for this program');
     }
 
+    await this.registrationsService.getRegistrationOrThrow({
+      referenceId,
+      programId,
+    });
+
     await this.validateAttributeIsKoboImage({ programId, attributeName });
 
     const imageUrl = await this.getImageUrlForAttribute({
