@@ -58,5 +58,8 @@
     />
   </app-form-field-wrapper>
 
-  <app-fsp-multiselect formControlName="fsps"></app-fsp-multiselect>
+  <app-fsp-multiselect
+    formControlName="fsps"
+    [programId]="program() ? programId() : undefined"
+  ></app-fsp-multiselect>
 </ng-container>
