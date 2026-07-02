@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { env } from '@121-service/src/env';
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import programCbe from '@121-service/src/seed-data/program/program-cbe.json';
@@ -11,6 +12,7 @@ import {
 import {
   cleanProgramForAssertions,
   getAccessToken,
+  logoutUser,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
@@ -241,5 +243,75 @@ describe('Create program', () => {
 
     // A new program should not have been created
     expect(getProgramResponse.statusCode).toBe(HttpStatus.NOT_FOUND);
+  });
+
+  it('should not be able to post a program without correct permissions', async () => {
+    // Arrange
+    const users = [
+      {
+        email: env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
+      },
+
+      {
+        email: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+      },
+
+      {
+        email: env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_REGISTRATION,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_REGISTRATION,
+      },
+
+      {
+        email: env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_VALIDATION,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_VALIDATION,
+      },
+
+      {
+        email: env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
+      },
+
+      {
+        email: env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
+      },
+
+      {
+        email: env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_MANAGER,
+      },
+
+      {
+        email: env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_OFFICER,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_OFFICER,
+      },
+
+      {
+        email: env.USERCONFIG_121_SERVICE_EMAIL_VIEW_WITHOUT_PII,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_VIEW_WITHOUT_PII,
+      },
+    ];
+
+    // we do this because dates in JSON are not Date objects
+    const programOcwJson = JSON.parse(JSON.stringify(programOCW));
+    const programCbeJson = JSON.parse(JSON.stringify(programCbe));
+    const seedPrograms = [programOcwJson, programCbeJson];
+
+    for (const user of users) {
+      await logoutUser(accessToken);
+      accessToken = await getAccessToken(user.email, user.password);
+
+      for (const seedProgram of seedPrograms) {
+        // Act
+        const createProgramResponse = await postProgram(
+          seedProgram,
+          accessToken,
+        );
+
+        expect(createProgramResponse.statusCode).toBe(HttpStatus.FORBIDDEN);
+      }
+    }
   });
 });
