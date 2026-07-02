@@ -2,16 +2,16 @@ import { ProgramEntity } from "@121-service/src/programs/entities/program.entity
 
 export const propertiesToDuplicate: Record<keyof ProgramEntity, boolean> = {
   // Primary and audit columns
-  id: true,
-  created: true,
-  updated: true,
+  id: false,
+  created: false,
+  updated: false,
 
   // Columns
   location: true,
   titlePortal: true,
   ngo: true,
-  startDate: false,
-  endDate: false,
+  startDate: true,
+  endDate: true,
   currency: true,
   distributionFrequency: true,
   distributionDuration: true,
@@ -25,22 +25,22 @@ export const propertiesToDuplicate: Record<keyof ProgramEntity, boolean> = {
   enableMaxPayments: true,
   enableScope: true,
   budget: true,
-  monitoringDashboardUrl: true,
+  monitoringDashboardUrl: false,
   allowEmptyPhoneNumber: true,
   paymentsAreLocked: false,
 
   // Non-persisted property
-  editableAttributes: true,
+  editableAttributes: false,
 
   // One-to-many relations
   aidworkerAssignments: true,
-  programRegistrationAttributes: true,
-  registrations: true,
-  payments: true,
+  programRegistrationAttributes: false,
+  registrations: false,
+  payments: false,
   programFspConfigurations: true,
   messageTemplates: true,
-  attachments: true,
+  attachments: false,
 
   // One-to-one relations
-  kobo: true,
+  kobo: false,
 };
