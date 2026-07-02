@@ -49,7 +49,7 @@ test('Reconfigure FSP', async ({
 
   await test.step('Navigate to FSP configuration', async () => {
     await registrationsPage.navigateToProgramPage('Settings');
-    await fspSettingsPage.clickEditFspSection();
+    await fspSettingsPage.clickFspIntegration();
   });
 
   await test.step('Validate that configured FSPs are visible', async () => {

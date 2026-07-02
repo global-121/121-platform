@@ -7,8 +7,6 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 import { getFspLabels } from './get-fsp-labels.helper';
 
-// Get program info without FSP's
-
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.safaricomProgram,
@@ -38,38 +36,25 @@ test('Add all available FSPs via the budget page', async ({
   programSettingsPage,
 }) => {
   await test.step('Remove Safaricom FSP', async () => {
-    await programSettingsPage.clickEditProgramInformationSectionByTitle(
-      'Budget',
-    );
-    await programSettingsPage.selectMultiselectOptions({
-      dropdownTestId: 'fsp-multiselect',
-      optionsToClick: [FSP_SETTINGS[Fsps.safaricom].defaultLabel.en!],
+    await programSettingsPage.changeFspSelectionForProgram({
+      fspNames: [FSP_SETTINGS[Fsps.safaricom].defaultLabel.en!],
     });
-
-    await programSettingsPage.saveChanges();
-    await programSettingsPage.validateToastMessageAndClose(
-      'Budget details saved successfully.',
-    );
+    await fspSettingsPage.clickFspIntegration();
+    await fspSettingsPage.validateInfoCardMessage({
+      dataTestId: 'fsp-integration-no-fsps-card',
+      expectedMessage: 'No FSPs found',
+    });
   });
 
   await test.step('Add all available FSPs', async () => {
-    await programSettingsPage.clickEditProgramInformationSectionByTitle(
-      'Budget',
-    );
-    await programSettingsPage.selectMultiselectOptions({
-      dropdownTestId: 'fsp-multiselect',
-      optionsToClick: allFsps,
+    await programSettingsPage.clickProgramInformation();
+    await programSettingsPage.changeFspSelectionForProgram({
+      fspNames: allFsps,
     });
-
-    await programSettingsPage.saveChanges();
-    await programSettingsPage.validateToastMessageAndClose(
-      'Budget details saved successfully.',
-    );
   });
 
-  // Assert
   await test.step('Validate that all FSPs are added on the budget page', async () => {
-    await fspSettingsPage.clickEditFspSection();
+    await fspSettingsPage.clickFspIntegration();
     await programSettingsPage.validateProgramFsps({
       fspNames: allFsps,
     });

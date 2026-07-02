@@ -29,7 +29,7 @@ class FspSettingsPage extends BasePage {
     this.cancelButton = this.page.getByRole('button', { name: 'Cancel' });
   }
 
-  async clickEditFspSection() {
+  async clickFspIntegration() {
     await this.page.getByRole('link', { name: 'FSP integration' }).click();
   }
 

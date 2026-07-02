@@ -179,6 +179,18 @@ class BasePage {
     await this.page.goto(path);
   }
 
+  async validateInfoCardMessage({
+    expectedMessage,
+    dataTestId,
+  }: {
+    expectedMessage: string;
+    dataTestId: string;
+  }) {
+    const infoCard = this.page.getByTestId(dataTestId);
+    await expect(infoCard).toBeVisible();
+    await expect(infoCard).toContainText(expectedMessage);
+  }
+
   async validateErrorMessage(errorMessage: string) {
     const errorElement = this.page
       .locator('app-form-error')
@@ -261,13 +273,16 @@ class BasePage {
 
   async validateProgramFsps({ fspNames }: { fspNames: string[] }) {
     const list = this.page.getByTestId('integrated-fsp-list');
-    const fsps = list.getByRole('listitem');
+    const fsps = list.getByTestId('card-with-link');
     const fspsCount = await fsps.count();
 
     expect(fspsCount).toBe(fspNames.length);
 
-    for (const fsp of fspNames) {
-      await expect(list).toContainText(fsp);
+    for (const [index, fsp] of fspNames.entries()) {
+      const card = fsps.nth(index);
+      const cardTitle = card.getByTestId('card-with-link-title');
+      await expect(cardTitle).toBeVisible();
+      await expect(cardTitle).toContainText(fsp);
     }
   }
 
