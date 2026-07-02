@@ -115,7 +115,12 @@ export abstract class BaseProgramDto {
   @IsNumber()
   public readonly budget?: number;
 
-  @ApiProperty({ example: ['Airtel'], required: false })
+  @ApiProperty({
+    enum: Fsps,
+    isArray: true,
+    required: false,
+    example: [Fsps.airtel],
+  })
   @IsOptional()
   @IsArray()
   @IsEnum(Fsps, { each: true })
