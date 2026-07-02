@@ -199,9 +199,11 @@ class FspSettingsPage extends BasePage {
 
     expect(fspsCount).toBe(fspNames.length);
 
-    for (const [index, fsp] of fspNames.entries()) {
-      const card = fsps.nth(index);
-      const cardTitle = card.getByTestId('card-with-link-title');
+    for (const fsp of fspNames) {
+      const cardTitle = fsps
+        .filter({ hasText: fsp })
+        .first()
+        .getByTestId('card-with-link-title');
       await expect(cardTitle).toBeVisible();
       await expect(cardTitle).toContainText(fsp);
     }

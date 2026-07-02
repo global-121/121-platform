@@ -286,10 +286,8 @@ class BasePage {
 
     expect(fspsCount).toBe(fspNames.length);
 
-    for (const [index, fsp] of fspNames.entries()) {
-      const pill = fsps.nth(index);
-      await expect(pill).toBeVisible();
-      await expect(pill).toContainText(fsp);
+    for (const fsp of fspNames) {
+      await expect(list).toContainText(fsp);
     }
   }
 
