@@ -55,7 +55,7 @@ test('Add all available FSPs via the budget page', async ({
 
   await test.step('Validate that all FSPs are added on the budget page', async () => {
     await fspSettingsPage.clickFspIntegration();
-    await programSettingsPage.validateProgramFsps({
+    await fspSettingsPage.validateProgramFspCards({
       fspNames: allFsps,
     });
   });

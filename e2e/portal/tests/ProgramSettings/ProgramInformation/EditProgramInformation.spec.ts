@@ -2,6 +2,8 @@ import { expect } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getProgram,
@@ -51,6 +53,10 @@ test('Edit Program Information', async ({ programSettingsPage }) => {
     paymentFrequency: '2-months',
     defaultTransferValue: '200',
     fixedTransferValue: '100',
+    fsps: [
+      FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
+      FSP_SETTINGS[Fsps.intersolveVoucherWhatsapp].defaultLabel.en,
+    ] as string[],
   };
 
   // Act
@@ -138,7 +144,10 @@ test('Edit Program Information', async ({ programSettingsPage }) => {
 
     // expect with a timeout because we might need to wait for the cache to invalidate
     await expect(async () => {
-      const budgetData = await programSettingsPage.budgetDataList.getData();
+      const budgetData = await programSettingsPage.budgetDataList.getData({
+        omitListItemWithLabel: '*Financial service providers',
+      });
+
       expect(budgetData).toEqual({
         'Funds available': budgetInfo.fundsAvailable,
         '*Currency': budgetInfo.currency,
@@ -147,5 +156,11 @@ test('Edit Program Information', async ({ programSettingsPage }) => {
         '*Fixed transfer value': budgetInfo.fixedTransferValue,
       });
     }).toPass({ timeout: 2000 });
+
+    if (budgetInfo.fsps) {
+      await programSettingsPage.validateProgramFspsPills({
+        fspNames: budgetInfo.fsps,
+      });
+    }
   });
 });

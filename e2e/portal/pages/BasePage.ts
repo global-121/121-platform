@@ -286,24 +286,10 @@ class BasePage {
 
     expect(fspsCount).toBe(fspNames.length);
 
-    for (const fsp of fspNames) {
-      await expect(list).toContainText(fsp);
-    }
-  }
-
-  // On the FSP integration page we show the FSPs in a card format, so we need to validate that the cards are shown correctly
-  async validateProgramFsps({ fspNames }: { fspNames: string[] }) {
-    const list = this.page.getByTestId('integrated-fsp-list');
-    const fsps = list.getByTestId('card-with-link');
-    const fspsCount = await fsps.count();
-
-    expect(fspsCount).toBe(fspNames.length);
-
     for (const [index, fsp] of fspNames.entries()) {
-      const card = fsps.nth(index);
-      const cardTitle = card.getByTestId('card-with-link-title');
-      await expect(cardTitle).toBeVisible();
-      await expect(cardTitle).toContainText(fsp);
+      const pill = fsps.nth(index);
+      await expect(pill).toBeVisible();
+      await expect(pill).toContainText(fsp);
     }
   }
 
