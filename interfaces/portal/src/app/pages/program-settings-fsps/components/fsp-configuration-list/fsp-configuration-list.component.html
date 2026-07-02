@@ -15,6 +15,15 @@
     contact the 121 support team or talk to the account manager.
   </p>
 
+  @if (fspConfigurations.data()?.length === 0) {
+    <app-info-card
+      subtitle="Add FSPs to your program in the Program information page."
+      i18n-subtitle
+      title="No FSPs found"
+      i18n-title
+    />
+  }
+
   @if (notAllFspsIntegrated()) {
     <app-notification-banner
       [color]="'orange'"
