@@ -15,9 +15,7 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/fsp-management/fsp-attribute-type-mapping';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
-import {
-  getFspConfigurationRequiredProperties
-} from '@121-service/src/fsp-management/fsp-settings.helpers';
+import { getFspConfigurationRequiredProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -30,6 +28,7 @@ import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-
 import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
+import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
@@ -523,6 +522,53 @@ export class ProgramFspConfigurationsService {
       programFspConfigurationId,
       properties,
     );
+  }
+
+  public async createFspConfigurationsForProgram({
+    programId,
+    fspNames,
+  }: {
+    programId: number;
+    fspNames: Fsps[];
+  }): Promise<void> {
+    for (const fspName of fspNames) {
+      const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
+        {
+          name: fspName,
+          label: { ...FSP_SETTINGS[fspName].defaultLabel },
+          fspName,
+        };
+      await this.create(programId, createProgramFspConfigurationDto);
+    }
+  }
+
+  public async updateFspConfigurationsForProgram({
+    program,
+    fspNames,
+  }: {
+    program: FoundProgramDto;
+    fspNames: Fsps[];
+  }): Promise<void> {
+    const existingFspNames = program.programFspConfigurations.map(
+      (config) => config.fspName,
+    );
+
+    const configsToDelete = program.programFspConfigurations.filter(
+      (config) => !fspNames.includes(config.fspName),
+    );
+    for (const config of configsToDelete) {
+      await this.delete(program.id, config.name);
+    }
+
+    const fspNamesToAdd = fspNames.filter(
+      (fspName) => !existingFspNames.includes(fspName),
+    );
+    if (fspNamesToAdd.length > 0) {
+      await this.createFspConfigurationsForProgram({
+        programId: program.id,
+        fspNames: fspNamesToAdd,
+      });
+    }
   }
 
   private validateFspIsEnabledOrThrow({
