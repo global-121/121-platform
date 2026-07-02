@@ -169,7 +169,7 @@ export class RegistrationsService {
    * This method can be used to get the same formatted data as the pagination query using referenceId.
    * This is a registration view with flattened version of its registrationData.
    */
-  private async getOnePaginatedRegistrationByReferenceId({
+  public async getOnePaginatedRegistrationByReferenceId({
     referenceId,
     programId,
     select,
