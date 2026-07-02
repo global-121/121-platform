@@ -33,7 +33,7 @@ jobs:
     outputs:
       should_skip: ${{ steps.filter.outputs.should_skip }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         # Other events (from the merge-queue) can safely ignore the path-filter; Its output would default to 'NOT true'
         if: github.event_name == 'pull_request'
         with:
@@ -64,7 +64,7 @@ jobs:
         shardCount: ['6']
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set ENV-variables for test-environment
         run: |
@@ -107,7 +107,7 @@ jobs:
     needs: path-filter
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Set up Node.js version
         uses: actions/setup-node@v6
@@ -153,7 +153,7 @@ jobs:
     needs: [test-shard, test]
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Download coverage reports from previous jobs
         uses: actions/download-artifact@v8
@@ -169,7 +169,7 @@ jobs:
       # Coverage reports will be merged automatically by QLTY
       # See: https://docs.qlty.sh/coverage/merging#client-side-merging
       - name: Upload all coverage reports to QLTY
-        uses: qltysh/qlty-action/coverage@141b881236146435192435eb7b0e06ea0b70b4d9
+        uses: qltysh/qlty-action/coverage@fd52dc852530a708d68c3b7342f8d33d1df4cd55
         with:
           command: publish
           oidc: true
