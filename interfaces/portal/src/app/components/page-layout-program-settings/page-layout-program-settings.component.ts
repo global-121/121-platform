@@ -13,6 +13,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { injectFspConfigurations } from '~/domains/fsp-configuration/fsp-configuration.helper';
 import { AuthService } from '~/services/auth.service';
 
 const BASE_URL = (programId: number | string) => [
@@ -31,115 +32,123 @@ const BASE_URL = (programId: number | string) => [
 })
 export class PageLayoutProgramSettingsComponent {
   readonly programId = input.required<string>();
+  readonly fspConfigurationsData = injectFspConfigurations({
+    programId: this.programId,
+  });
+  readonly notAllFspsIntegrated =
+    this.fspConfigurationsData.notAllFspsIntegrated;
 
   readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   // NOTE: Make sure to align the permissions used here with those used in the routing config in: `app.routes.ts`
-  readonly menuItems = computed<MenuItem[]>(() => [
-    {
-      label: $localize`Program information`,
-      icon: 'pi pi-info-circle',
-      routerLink: [
-        '/',
-        AppRoutes.program,
-        this.programId(),
-        AppRoutes.programSettings,
-        AppRoutes.programSettingsInformation,
-      ],
-      visible: this.authService.hasPermission({
-        programId: this.programId(),
-        requiredPermission: PermissionEnum.ProgramUPDATE,
-      }),
-    },
-    {
-      label: $localize`FSP integration`,
-      icon: 'pi pi-money-bill',
-      routerLink: [
-        '/',
-        AppRoutes.program,
-        this.programId(),
-        AppRoutes.programSettings,
-        AppRoutes.programSettingsFsps,
-      ],
-      visible: this.authService.hasSomePermission({
-        programId: this.programId(),
-        optionalPermissions: [
-          PermissionEnum.ProgramFspConfigCREATE,
-          PermissionEnum.ProgramFspConfigUPDATE,
+  readonly menuItems = computed<{ showWarningIcon?: boolean } & MenuItem[]>(
+    () => [
+      {
+        label: $localize`Program information`,
+        icon: 'pi pi-info-circle',
+        routerLink: [
+          '/',
+          AppRoutes.program,
+          this.programId(),
+          AppRoutes.programSettings,
+          AppRoutes.programSettingsInformation,
         ],
-      }),
-    },
-    {
-      label: $localize`Registration data`,
-      icon: 'pi pi-file-edit',
-      routerLink: [
-        '/',
-        AppRoutes.program,
-        this.programId(),
-        AppRoutes.programSettings,
-        AppRoutes.programSettingsRegistrationData,
-      ],
-      visible: this.authService.hasSomePermission({
-        programId: this.programId(),
-        optionalPermissions: [
-          PermissionEnum.ProgramKoboREAD,
-          PermissionEnum.RegistrationREAD,
+        visible: this.authService.hasPermission({
+          programId: this.programId(),
+          requiredPermission: PermissionEnum.ProgramUPDATE,
+        }),
+      },
+      {
+        label: $localize`FSP integration`,
+        icon: 'pi pi-money-bill',
+        routerLink: [
+          '/',
+          AppRoutes.program,
+          this.programId(),
+          AppRoutes.programSettings,
+          AppRoutes.programSettingsFsps,
         ],
-      }),
-    },
-    {
-      label: $localize`:@@page-title-users:Users`,
-      icon: 'pi pi-users',
-      routerLink: [
-        '/',
-        AppRoutes.program,
-        this.programId(),
-        AppRoutes.programSettings,
-        AppRoutes.users,
-        AppRoutes.programSettingsTeam,
-      ],
-      visible: this.authService.hasSomePermission({
-        programId: this.programId(),
-        optionalPermissions: [
-          PermissionEnum.AidWorkerProgramREAD,
-          PermissionEnum.ProgramApprovalThresholdsREAD,
-        ],
-      }),
-      items: [
-        {
-          label: $localize`:@@page-title-program-settings-team:Program team`,
-          routerLink: [
-            '/',
-            AppRoutes.program,
-            this.programId(),
-            AppRoutes.programSettings,
-            AppRoutes.users,
-            AppRoutes.programSettingsTeam,
+        visible: this.authService.hasSomePermission({
+          programId: this.programId(),
+          optionalPermissions: [
+            PermissionEnum.ProgramFspConfigCREATE,
+            PermissionEnum.ProgramFspConfigUPDATE,
           ],
-          visible: this.authService.hasPermission({
-            programId: this.programId(),
-            requiredPermission: PermissionEnum.AidWorkerProgramREAD,
-          }),
-        },
-        {
-          label: $localize`:@@page-title-program-settings-payment-approval:Payment approval`,
-          routerLink: [
-            '/',
-            AppRoutes.program,
-            this.programId(),
-            AppRoutes.programSettings,
-            AppRoutes.users,
-            AppRoutes.programSettingsPaymentApproval,
+        }),
+      },
+      {
+        label: $localize`Registration data`,
+        icon: 'pi pi-file-edit',
+        routerLink: [
+          '/',
+          AppRoutes.program,
+          this.programId(),
+          AppRoutes.programSettings,
+          AppRoutes.programSettingsRegistrationData,
+        ],
+        visible: this.authService.hasSomePermission({
+          programId: this.programId(),
+          optionalPermissions: [
+            PermissionEnum.ProgramKoboREAD,
+            PermissionEnum.RegistrationREAD,
           ],
-          visible: this.authService.hasPermission({
-            programId: this.programId(),
-            requiredPermission: PermissionEnum.ProgramApprovalThresholdsREAD,
-          }),
-        },
-      ],
-    },
-  ]);
+        }),
+        showWarningIcon: this.notAllFspsIntegrated(),
+      },
+      {
+        label: $localize`:@@page-title-users:Users`,
+        icon: 'pi pi-users',
+        routerLink: [
+          '/',
+          AppRoutes.program,
+          this.programId(),
+          AppRoutes.programSettings,
+          AppRoutes.users,
+          AppRoutes.programSettingsTeam,
+        ],
+        visible: this.authService.hasSomePermission({
+          programId: this.programId(),
+          optionalPermissions: [
+            PermissionEnum.AidWorkerProgramREAD,
+            PermissionEnum.ProgramApprovalThresholdsREAD,
+          ],
+        }),
+        items: [
+          {
+            label: $localize`:@@page-title-program-settings-team:Program team`,
+            routerLink: [
+              '/',
+              AppRoutes.program,
+              this.programId(),
+              AppRoutes.programSettings,
+              AppRoutes.users,
+              AppRoutes.programSettingsTeam,
+            ],
+            visible: this.authService.hasPermission({
+              programId: this.programId(),
+              requiredPermission: PermissionEnum.AidWorkerProgramREAD,
+            }),
+          },
+          {
+            label: $localize`:@@page-title-program-settings-payment-approval:Payment approval`,
+            routerLink: [
+              '/',
+              AppRoutes.program,
+              this.programId(),
+              AppRoutes.programSettings,
+              AppRoutes.users,
+              AppRoutes.programSettingsPaymentApproval,
+            ],
+            visible: this.authService.hasPermission({
+              programId: this.programId(),
+              requiredPermission: PermissionEnum.ProgramApprovalThresholdsREAD,
+            }),
+          },
+        ],
+      },
+    ],
+  );
 
   isParentActive(routerLink: (number | string)[]) {
     const slicedBaseUrl = new Set(BASE_URL(this.programId()).slice(1));
