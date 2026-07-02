@@ -11,7 +11,6 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
-<<<<<<< HEAD
 
 import { AppInfoCardComponent } from '~/components/info-card/info-card.component';
 import {
@@ -20,13 +19,6 @@ import {
 } from '~/components/notification-banner/notification-banner.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { injectFspConfigurations } from '~/domains/fsp-configuration/fsp-configuration.helper';
-=======
-import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
-
-import { NotificationBannerComponent } from '~/components/notification-banner/notification-banner.component';
-import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
-import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
->>>>>>> 26f7b4f3a (feat: UI changes for FSP settings page)
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { FspConfigurationCardComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-card/fsp-configuration-card.component';
 import { AuthService } from '~/services/auth.service';
