@@ -4,6 +4,7 @@ import { DataSource, Equal, Repository } from 'typeorm';
 
 import { GetTokenResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/get-token-result.interface';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
+import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
@@ -255,7 +256,7 @@ export class ProgramService {
       const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
         {
           name: fspName,
-          label: { en: fspName },
+          label: { ...FSP_SETTINGS[fspName].defaultLabel },
           fspName,
         };
       await this.programFspConfigurationsService.create(
