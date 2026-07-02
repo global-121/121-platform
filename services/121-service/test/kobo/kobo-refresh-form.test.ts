@@ -157,5 +157,3 @@ describe('Refresh Kobo form', () => {
     );
   });
 });
-
-
