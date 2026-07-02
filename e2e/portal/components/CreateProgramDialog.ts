@@ -5,7 +5,6 @@ import BasePage from '../pages/BasePage';
 import { ProgramInfo } from '../tests/CreateNewProgram/program-info.helper';
 import { PrimeNGDatePicker } from './PrimeNGDatePicker';
 class CreateProgramDialog extends BasePage {
-  readonly page: Page;
   readonly nextButton: Locator;
   readonly submitButton: Locator;
   readonly dateRangeStartInput: PrimeNGDatePicker;
@@ -14,7 +13,6 @@ class CreateProgramDialog extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.page = page;
     this.nextButton = this.page.getByRole('button', { name: 'Continue' });
     this.submitButton = this.page.getByRole('button', {
       name: 'Create program',

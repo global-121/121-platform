@@ -248,7 +248,7 @@ class BasePage {
     return filePath;
   }
 
-  // @TODO: Maybe we should make a input helper file that handles all of the input varaints (checkbox, select, text, etc.)
+  // @TODO: Maybe we should make an input helper file that handles all of the input variants (checkbox, select, text, etc.)
   async selectMultiselectOptions({
     dropdownTestId,
     optionsToClick,
