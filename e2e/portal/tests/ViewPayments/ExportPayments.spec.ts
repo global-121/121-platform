@@ -76,8 +76,7 @@ test('ExportPayments', async ({ paymentsPage, exportDataComponent }) => {
 test('View available actions for admin', async ({ page, paymentsPage }) => {
   await test.step('Validate export options', async () => {
     await paymentsPage.navigateToProgramPage('Payments');
-    await page.waitForTimeout(200); // wait for the export options to be rendered
-    await paymentsPage.exportButton.click();
+    await paymentsPage.openExportMenu();
 
     const expectedMenuItems = [
       'Payments',
