@@ -1,25 +1,23 @@
-import { HttpService } from '@nestjs/axios';
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Readable } from 'node:stream';
-import { lastValueFrom } from 'rxjs';
 import { Equal, Repository } from 'typeorm';
 
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 const ALLOWED_IMAGE_MIMETYPES = new Set([
   'image/jpeg',
-  'image/jpg',
   'image/png',
-  'image/gif',
-  'image/webp',
+  'image/svg',
 ]);
 
 @Injectable()
@@ -28,7 +26,7 @@ export class KoboImageService {
   private readonly koboRepository: Repository<KoboEntity>;
 
   constructor(
-    private readonly httpService: HttpService,
+    private readonly httpService: CustomHttpService,
     private readonly registrationsService: RegistrationsService,
     private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
   ) {}
@@ -66,11 +64,13 @@ export class KoboImageService {
       koboBaseUrl: koboEntity.url,
     });
 
-    const response = await lastValueFrom(
-      this.httpService.get(imageUrl, {
-        headers: { Authorization: `Token ${koboEntity.token}` },
-        responseType: 'stream',
-      }),
+    const headers = new Headers({
+      Authorization: `Token ${koboEntity.token}`,
+    });
+
+    const response = await this.httpService.getStream<AxiosResponse<Readable>>(
+      imageUrl,
+      headers,
     );
 
     const contentType = response.headers['content-type'] as string | undefined;
@@ -80,7 +80,7 @@ export class KoboImageService {
       throw new BadRequestException(`Disallowed image mimetype: ${mimetype}`);
     }
 
-    return { stream: response.data as Readable, mimetype };
+    return { stream: response.data, mimetype };
   }
 
   private async validateAttributeIsKoboImage({
