@@ -20,7 +20,20 @@
             />
           </div>
         }
-        <app-data-list [data]="dataList()"> </app-data-list>
+        @if (hasKoboImages()) {
+          <div class="grid gap-4 lg:grid-cols-2">
+            <app-data-list
+              [data]="textDataList()"
+              [forceOneColumn]="true"
+            />
+            <app-data-list
+              [data]="imageDataList()"
+              [forceOneColumn]="true"
+            />
+          </div>
+        } @else {
+          <app-data-list [data]="dataList()" />
+        }
       } @else {
         <app-edit-personal-information
           #editPersonalInformation

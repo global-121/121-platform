@@ -695,6 +695,9 @@
       <trans-unit id="3948071530536352020" datatype="html">
         <source>Are you sure you want to delete this file?</source>
       </trans-unit>
+      <trans-unit id="3955868613858648955" datatype="html">
+        <source>Available</source>
+      </trans-unit>
       <trans-unit id="3978034238801036238" datatype="html">
         <source>Kobo form URL</source>
       </trans-unit>
@@ -2272,6 +2275,9 @@
       <trans-unit id="integrate-kobo-form-url-explanation" datatype="html">
         <source>The full URL from the form&apos;s page in KoboToolbox, i.e: https://kobo.ifrc.org/#/forms/XXXXXX/summary</source>
         <note priority="1" from="description">Do NOT translate the URL!</note>
+      </trans-unit>
+      <trans-unit id="kobo-image-alt" datatype="html">
+        <source>Kobo image</source>
       </trans-unit>
       <trans-unit id="language-switcher-selected" datatype="html">
         <source>Language: <x equiv-text="{{ selectedLocaleLabel() }}" id="INTERPOLATION"/></source>

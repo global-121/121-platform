@@ -111,6 +111,12 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
               type: 'options',
               value: value as string | string[],
             };
+          case RegistrationAttributeTypes.koboImage:
+            return {
+              ...attribute,
+              type: 'koboImage',
+              value: value as string,
+            };
           case RegistrationAttributeTypes.tel:
           case RegistrationAttributeTypes.text:
             return {
@@ -122,6 +128,22 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
       },
     ),
   );
+
+  readonly textDataList = computed(() =>
+    this.dataList().filter(
+      (item): item is Exclude<DataListItem, { type: 'koboImage' }> =>
+        item.type !== 'koboImage',
+    ),
+  );
+
+  readonly imageDataList = computed(() =>
+    this.dataList().filter(
+      (item): item is Extract<DataListItem, { type: 'koboImage' }> =>
+        item.type === 'koboImage',
+    ),
+  );
+
+  readonly hasKoboImages = computed(() => this.imageDataList().length > 0);
 
   onRegistrationUpdated() {
     this.isEditing.set(false);
