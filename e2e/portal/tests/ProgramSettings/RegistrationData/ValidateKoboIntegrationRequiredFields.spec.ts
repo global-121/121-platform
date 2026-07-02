@@ -49,7 +49,7 @@ test('Check if all required fields are updated when deleting a FSP', async ({
   fspSettingsPage,
 }) => {
   await test.step('delete FSP', async () => {
-    await fspSettingsPage.clickEditFspSection();
+    await fspSettingsPage.clickFspIntegration();
     await fspSettingsPage.deleteFsp({
       fspNames: fspsToDelete,
     });
@@ -71,11 +71,10 @@ test('Check if all required fields are updated when deleting a FSP', async ({
 
 test('Check if all required fields are updated when adding a FSP', async ({
   registrationDataPage,
-  fspSettingsPage,
+  programSettingsPage,
 }) => {
   await test.step('add FSP', async () => {
-    await fspSettingsPage.clickEditFspSection();
-    await fspSettingsPage.addFsp({
+    await programSettingsPage.changeFspSelectionForProgram({
       fspNames: fspsToAdd,
     });
   });

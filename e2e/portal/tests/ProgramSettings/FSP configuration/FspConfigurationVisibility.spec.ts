@@ -40,7 +40,7 @@ test('Validate that only configured FSPs are present as configured', async ({
 
   await test.step('Navigate to FSP configuration', async () => {
     await registrationsPage.navigateToProgramPage('Settings');
-    await fspSettingsPage.clickEditFspSection();
+    await fspSettingsPage.clickFspIntegration();
   });
 
   await test.step('Validate only assigned FSPs are visible at first', async () => {
