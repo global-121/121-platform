@@ -276,10 +276,6 @@ export class ProgramService {
       await queryRunner.release();
     }
 
-    // Mirror `create`: ensure the acting user is an administrator on the copy.
-    // This runs after the transaction (like `create`) so the acting user always
-    // ends up as an administrator, even if they had a different role on the
-    // source program.
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.Admin],
       scope: undefined,
