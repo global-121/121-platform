@@ -18,4 +18,8 @@ export class GetRegistrationEventsQueryDto {
   @IsOptional()
   @IsEnum(ExportFileFormat)
   public format?: ExportFileFormat;
+
+  @IsOptional()
+  @IsString()
+  public language?: string;
 }

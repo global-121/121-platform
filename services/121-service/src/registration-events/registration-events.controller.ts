@@ -63,6 +63,13 @@ export class RegistrationEventsController {
     description:
       'Format to return the data in. Options are "json" and "xlsx". Defaults to "json" if not specified. If "xlsx" is selected, the response will be a file download in which the data is slightly differently formatted for portal users.',
   })
+  @ApiQuery({
+    name: 'language',
+    required: false,
+    type: 'string',
+    description:
+      'Language for translating export column values. Uses ISO 639-1 two-letter code. Defaults to English if the language is not available.',
+  })
   @Get('programs/:programId/registration-events')
   public async getRegistrationEventsExport(
     @Param('programId', ParseIntPipe) programId: number,
