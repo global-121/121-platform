@@ -18,6 +18,7 @@ import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramFspConfigurationsHelperService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.helper';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
+import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
@@ -93,14 +94,10 @@ export class ProgramFspConfigurationsService {
     }
 
     if (programFspConfigurationDto.properties) {
-      this.programFspConfigurationsHelperService.validateAllowedPropertyNames(
-        {
-          propertyNames: programFspConfigurationDto.properties.map(
-            (p) => p.name,
-          ),
-          fspName: programFspConfigurationDto.fspName,
-        },
-      );
+      this.programFspConfigurationsHelperService.validateAllowedPropertyNames({
+        propertyNames: programFspConfigurationDto.properties.map((p) => p.name),
+        fspName: programFspConfigurationDto.fspName,
+      });
 
       this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow(
         {
@@ -478,6 +475,122 @@ export class ProgramFspConfigurationsService {
       programFspConfigurationId,
       properties,
     );
+  }
+
+  public async createFspConfigurationsForProgram({
+    programId,
+    fspNames,
+  }: {
+    programId: number;
+    fspNames: Fsps[];
+  }): Promise<void> {
+    for (const fspName of fspNames) {
+      const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
+        {
+          name: fspName,
+          label: { ...FSP_SETTINGS[fspName].defaultLabel },
+          fspName,
+        };
+      await this.create(programId, createProgramFspConfigurationDto);
+    }
+  }
+
+  public async updateFspConfigurationsForProgram({
+    program,
+    fspNames,
+  }: {
+    program: FoundProgramDto;
+    fspNames: Fsps[];
+  }): Promise<void> {
+    const existingFspNames = program.programFspConfigurations.map(
+      (config) => config.fspName,
+    );
+
+    const configsToDelete = program.programFspConfigurations.filter(
+      (config) => !fspNames.includes(config.fspName),
+    );
+    for (const config of configsToDelete) {
+      await this.delete(program.id, config.name);
+    }
+
+    const fspNamesToAdd = fspNames.filter(
+      (fspName) => !existingFspNames.includes(fspName),
+    );
+    if (fspNamesToAdd.length > 0) {
+      await this.createFspConfigurationsForProgram({
+        programId: program.id,
+        fspNames: fspNamesToAdd,
+      });
+    }
+  }
+
+  private validateFspIsEnabledOrThrow({
+    fspName,
+  }: {
+    readonly fspName: Fsps;
+  }): void {
+    if (FSP_MODES[fspName] === FspMode.disabled) {
+      throw new HttpException(
+        `FSP "${fspName}" is not enabled on this instance.`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  private validateLabelHasEnglishTranslation(label: any): void {
+    if (!label.en) {
+      throw new HttpException(
+        `Label must have an English translation`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  private validatePropertyValueTypesOrThrow(
+    properties: readonly {
+      readonly name: FspConfigurationProperties;
+      readonly value: FspConfigurationPropertyType;
+    }[],
+  ): void {
+    for (const property of properties) {
+      this.validatePropertyValueTypeOrThrow({
+        propertyName: property.name,
+        propertyValue: property.value,
+      });
+    }
+  }
+
+  private validatePropertyValueTypeOrThrow({
+    propertyName,
+    propertyValue,
+  }: {
+    propertyName: FspConfigurationProperties;
+    propertyValue: FspConfigurationPropertyType;
+  }) {
+    const expectedType = fspConfigurationPropertyTypes[propertyName];
+    let actualType: string = typeof propertyValue;
+
+    // we have a special case for arrays, because typeof [] is 'object'
+    if (Array.isArray(propertyValue)) {
+      actualType = 'array';
+
+      // Check if all items in the array are strings
+      if (!propertyValue.every((item) => typeof item === 'string')) {
+        actualType = 'non-string-array';
+      }
+    }
+
+    // typeof NaN is 'number' but we want to catch it as an invalid value
+    if (actualType === 'number' && Number.isNaN(propertyValue as number)) {
+      actualType = 'NaN';
+    }
+
+    if (expectedType !== actualType) {
+      throw new HttpException(
+        `Invalid value type for property "${propertyName}". Expected ${expectedType}, got ${actualType}.`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   private async getProgramFspConfigurationOrThrow(
