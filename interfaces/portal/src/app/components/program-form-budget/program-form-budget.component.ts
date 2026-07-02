@@ -37,7 +37,6 @@ export type ProgramBudgetFormGroup =
     ReactiveFormsModule,
     InputTextModule,
     SelectModule,
-    FspMultiselectComponent,
   ],
   templateUrl: './program-form-budget.component.html',
   styles: ``,
@@ -103,8 +102,4 @@ export class ProgramFormBudgetComponent {
   });
 
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
-
-  onFspSelectionChange(fsps: Fsps[]) {
-    this.formGroup.patchValue({ fsps });
-  }
 }
