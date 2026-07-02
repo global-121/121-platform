@@ -212,6 +212,14 @@ export class ProgramService {
       }
 
       newProgram = await programRepository.save(savedProgram);
+
+      if (programData.fsps && programData.fsps.length > 0) {
+        await this.assignFspConfigurationsToProgram({
+          programId: newProgram.id,
+          fspNames: programData.fsps,
+        });
+      }
+
       await queryRunner.commitTransaction();
     } catch (err) {
       console.log('Error creating new program ', err);
@@ -232,13 +240,6 @@ export class ProgramService {
       roles: [DefaultUserRole.Admin],
       scope: undefined,
     });
-
-    if (programData.fsps && programData.fsps.length > 0) {
-      await this.assignFspConfigurationsToProgram({
-        programId: newProgram.id,
-        fspNames: programData.fsps,
-      });
-    }
 
     return newProgram;
   }
