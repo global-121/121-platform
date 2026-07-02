@@ -497,23 +497,23 @@ export class ProgramFspConfigurationsService {
 
   public async updateFspConfigurationsForProgram({
     program,
-    fspNames,
+    fsps,
   }: {
     program: FoundProgramDto;
-    fspNames: Fsps[];
+    fsps: Fsps[];
   }): Promise<void> {
     const existingFspNames = program.programFspConfigurations.map(
       (config) => config.fspName,
     );
 
     const configsToDelete = program.programFspConfigurations.filter(
-      (config) => !fspNames.includes(config.fspName),
+      (config) => !fsps.includes(config.fspName),
     );
     for (const config of configsToDelete) {
       await this.delete(program.id, config.name);
     }
 
-    const fspNamesToAdd = fspNames.filter(
+    const fspNamesToAdd = fsps.filter(
       (fspName) => !existingFspNames.includes(fspName),
     );
     if (fspNamesToAdd.length > 0) {
