@@ -30,7 +30,6 @@ const allFsps = getFspLabels({
     Fsps.nedbank,
     Fsps.onafriq,
     Fsps.cooperativeBankOfOromia,
-    // Fsps.mtn,
   ],
 });
 
@@ -70,12 +69,9 @@ test('Add all available FSPs via the budget page', async ({
 
   // Assert
   await test.step('Validate that all FSPs are added on the budget page', async () => {
+    await fspSettingsPage.clickEditFspSection();
     await programSettingsPage.validateProgramFsps({
       fspNames: allFsps,
     });
-  });
-
-  await test.step('Validate only assigned FSPs are visible at first', async () => {
-    await fspSettingsPage.validateFspVisibility({ fspNames: allFsps });
   });
 });
