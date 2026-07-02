@@ -64,10 +64,11 @@ export class FspMultiselectComponent implements ControlValueAccessor {
     enabled: !!this.programId(),
   }));
 
-  readonly availableFsps = injectQuery(this.fspApiService.getAllFsps());
+  readonly enabledFsps = injectQuery(this.fspApiService.getAllEnabledFsps());
+
   readonly fspMultiselectOptions = computed(() => {
-    const availableFsps = this.availableFsps.data() ?? [];
-    return availableFsps.map((fsp) => ({
+    const fsps = this.enabledFsps.data() ?? [];
+    return fsps.map((fsp) => ({
       fspName: fsp.name,
       name: fsp.defaultLabel.en,
     }));

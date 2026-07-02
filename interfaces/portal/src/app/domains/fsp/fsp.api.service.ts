@@ -8,7 +8,7 @@ import { DomainApiService } from '~/domains/domain-api.service';
   providedIn: 'root',
 })
 export class FspApiService extends DomainApiService {
-  getAllFsps() {
+  getAllEnabledFsps() {
     return this.generateQueryOptions<FspSettingsDto[]>({
       path: ['fsps'],
     });
