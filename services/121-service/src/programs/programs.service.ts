@@ -18,11 +18,13 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
+import { propertiesToDuplicate } from '@121-service/src/programs/program-duplication.const';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
+import { duplicateEntity } from '@121-service/src/utils/entity-duplication/duplicate-entity.helper';
 
 @Injectable()
 export class ProgramService {
@@ -237,6 +239,51 @@ export class ProgramService {
     await this.programAttachmentsService.deleteAllProgramAttachments(programId);
     await this.programRepository.remove(program as ProgramEntity);
   }
+
+  public async duplicateProgram({
+    copyFromProgramId,
+    overrides,
+    userId,
+  }: {
+    copyFromProgramId: number;
+    overrides: Partial<CreateProgramDto>;
+    userId: number;
+  }): Promise<ProgramEntity> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    let newProgram: ProgramEntity;
+    try {
+      newProgram = await duplicateEntity({
+        manager: queryRunner.manager,
+        entity: ProgramEntity,
+        id: copyFromProgramId,
+        propertiesToDuplicate,
+        overrides,
+      });
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      throw new HttpException(
+        `Error duplicating program: ${err instanceof Error ? err.message : String(err)}`,
+        HttpStatus.BAD_GATEWAY,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+
+    await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
+      roles: [DefaultUserRole.Admin],
+      scope: undefined,
+    });
+
+    return newProgram;
+  }
+
 
   public async updateProgram(
     programId: number,
