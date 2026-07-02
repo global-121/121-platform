@@ -12,7 +12,7 @@ import {
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { createReadStream } from 'node:fs';
-import { join } from 'node:path';
+import { resolve } from 'node:path';
 
 import {
   KoboAssetDeployment,
@@ -149,7 +149,7 @@ export class KoboMockController {
     @Param('attachmentId') _attachmentId: string,
     @Res() res: Response,
   ): void {
-    const imagePath = join(__dirname, 'assets', 'test-image.jpg');
+    const imagePath = resolve('src/kobo/assets/test-image.jpg');
     res.setHeader('Content-Type', 'image/jpeg');
     createReadStream(imagePath).pipe(res);
   }
