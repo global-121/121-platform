@@ -302,6 +302,11 @@ describe('Create program', () => {
     for (const user of users) {
       await logoutUser(accessToken);
       accessToken = await getAccessToken(user.email, user.password);
+      if (!user.email || !user.password) {
+        throw new Error(
+          'Missing USERCONFIG_121_SERVICE_* user credentials in env; required for create-program permission test.',
+        );
+      }
 
       for (const seedProgram of seedPrograms) {
         // Act
