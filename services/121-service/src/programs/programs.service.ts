@@ -214,13 +214,6 @@ export class ProgramService {
 
       newProgram = await programRepository.save(savedProgram);
 
-      if (programData.fsps && programData.fsps.length > 0) {
-        await this.assignFspConfigurationsToProgram({
-          programId: newProgram.id,
-          fspNames: programData.fsps,
-        });
-      }
-
       await queryRunner.commitTransaction();
     } catch (err) {
       console.log('Error creating new program ', err);
@@ -237,10 +230,28 @@ export class ProgramService {
       await queryRunner.release();
     }
 
-    await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
-      roles: [DefaultUserRole.Admin],
-      scope: undefined,
-    });
+    try {
+      await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
+        roles: [DefaultUserRole.Admin],
+        scope: undefined,
+      });
+
+      if (programData.fsps && programData.fsps.length > 0) {
+        await this.assignFspConfigurationsToProgram({
+          programId: newProgram.id,
+          fspNames: programData.fsps,
+        });
+      }
+    } catch (err) {
+      await this.programRepository.delete(newProgram.id);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      throw new HttpException(
+        'Error creating program associations',
+        HttpStatus.BAD_GATEWAY,
+      );
+    }
 
     return newProgram;
   }
