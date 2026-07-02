@@ -2,7 +2,7 @@
 
 exports[`Manage FSP-configurations should not delete existing program FSP-configuration because of active registrations with that config 1`] = `
 {
-  "message": "Cannot delete program FSP-configuration Intersolve-voucher-whatsapp because it is still in use by registrations with referenceIds: 54e62864557597e034",
+  "message": "Cannot delete program FSP-configuration Commercial-bank-ethiopia because it is still in use by registrations with referenceIds: cbe-active-registrations",
   "statusCode": 409,
 }
 `;
