@@ -35,39 +35,9 @@ export class RegistrationDataService {
     }
   }
 
-  /**
-   * Fetches the values for multiple registration attribute names in a single
-   * query to avoid an N+1 query pattern. Returns a Map keyed by attribute name;
-   * names without a stored value are omitted.
-   */
-  public async getRegistrationDataValuesByNames(
-    registration: RegistrationEntity,
-    names: string[],
-  ): Promise<Map<string, string>> {
-    const valuesByName = new Map<string, string>();
-    if (names.length === 0) {
-      return valuesByName;
-    }
-
-    const results = await this.getRegistrationDataQuery(registration, names)
-      .select([
-        'programRegistrationAttribute.name as name',
-        'registrationData.value as value',
-      ])
-      .getRawMany<{ name: string; value: string | null }>();
-
-    for (const { name, value } of results) {
-      if (value) {
-        valuesByName.set(name, value);
-      }
-    }
-
-    return valuesByName;
-  }
-
   private getRegistrationDataQuery(
     registration: RegistrationEntity,
-    names: string[],
+    name: string,
   ): SelectQueryBuilder<RegistrationAttributeDataEntity> {
     return this.registrationDataScopedRepository
       .createQueryBuilder('registrationData')
@@ -77,14 +47,14 @@ export class RegistrationDataService {
         'programRegistrationAttribute',
       )
       .andWhere('registration.id = :id', { id: registration.id })
-      .andWhere('programRegistrationAttribute.name IN (:...names)', { names });
+      .andWhere(`programRegistrationAttribute.name = :name`, { name });
   }
 
   public async getRegistrationDataByName(
     registration: RegistrationEntity,
     name: string,
   ): Promise<RegistrationDataByNameDto | null> {
-    const query = this.getRegistrationDataQuery(registration, [name]);
+    const query = this.getRegistrationDataQuery(registration, name);
     const queryWithSelect = query.select([
       'programRegistrationAttribute.name as name',
       'registrationData.value as value',
@@ -98,7 +68,7 @@ export class RegistrationDataService {
     registration: RegistrationEntity,
     name: string,
   ): Promise<RegistrationAttributeDataEntity | null> {
-    const query = this.getRegistrationDataQuery(registration, [name]);
+    const query = this.getRegistrationDataQuery(registration, name);
     return query.getOne();
   }
 
