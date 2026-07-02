@@ -228,30 +228,10 @@ export class ProgramService {
       await queryRunner.release();
     }
 
-    try {
-      await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
-        roles: [DefaultUserRole.Admin],
-        scope: undefined,
-      });
-
-      if (programData.fsps && programData.fsps.length > 0) {
-        await this.programFspConfigurationsService.createFspConfigurationsForProgram(
-          {
-            programId: newProgram.id,
-            fspNames: programData.fsps,
-          },
-        );
-      }
-    } catch (err) {
-      await this.programRepository.delete(newProgram.id);
-      if (err instanceof HttpException) {
-        throw err;
-      }
-      throw new HttpException(
-        'Error creating program associations',
-        HttpStatus.BAD_GATEWAY,
-      );
-    }
+    await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
+      roles: [DefaultUserRole.Admin],
+      scope: undefined,
+    });
 
     if (programData.fsps && programData.fsps.length > 0) {
       await this.programFspConfigurationsService.createFspConfigurationsForProgram(
