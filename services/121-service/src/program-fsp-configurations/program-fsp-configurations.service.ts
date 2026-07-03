@@ -28,7 +28,6 @@ import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-
 import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
-import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
@@ -543,21 +542,26 @@ export class ProgramFspConfigurationsService {
   }
 
   public async updateFspConfigurationsForProgram({
-    program,
+    programId,
     fsps,
   }: {
-    program: FoundProgramDto;
+    programId: number;
     fsps: Fsps[];
   }): Promise<void> {
-    const existingFspNames = program.programFspConfigurations.map(
+    const programFspConfigurations =
+      await this.programFspConfigurationRepository.find({
+        where: { programId: Equal(programId) },
+      });
+
+    const existingFspNames = programFspConfigurations.map(
       (config) => config.fspName,
     );
 
-    const configsToDelete = program.programFspConfigurations.filter(
+    const configsToDelete = programFspConfigurations.filter(
       (config) => !fsps.includes(config.fspName),
     );
     for (const config of configsToDelete) {
-      await this.delete(program.id, config.name);
+      await this.delete(programId, config.name);
     }
 
     const fspNamesToAdd = fsps.filter(
@@ -565,7 +569,7 @@ export class ProgramFspConfigurationsService {
     );
     if (fspNamesToAdd.length > 0) {
       await this.createFspConfigurationsForProgram({
-        programId: program.id,
+        programId,
         fspNames: fspNamesToAdd,
       });
     }

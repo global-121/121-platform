@@ -9,7 +9,6 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
@@ -38,7 +37,6 @@ export class ProgramService {
     private readonly programAttachmentsService: ProgramAttachmentsService,
     private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
-    private readonly programFspConfigurationsService: ProgramFspConfigurationsService,
     private readonly intersolveVisaService: IntersolveVisaService,
   ) {}
 
@@ -231,7 +229,6 @@ export class ProgramService {
       roles: [DefaultUserRole.Admin],
       scope: undefined,
     });
-
     return newProgram;
   }
 

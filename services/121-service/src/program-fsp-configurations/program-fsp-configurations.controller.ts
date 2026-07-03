@@ -28,7 +28,6 @@ import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
 import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
-import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
@@ -151,17 +150,9 @@ export class ProgramFspConfigurationsController {
     @Body('fsps', new ParseArrayPipe({ items: String }))
     fsps: Fsps[],
   ): Promise<void> {
-    const programFspConfigurations =
-      await this.programFspConfigurationsService.getByProgramId(programId);
-
-    const program: FoundProgramDto = {
-      id: programId,
-      programFspConfigurations,
-    } as FoundProgramDto;
-
     await this.programFspConfigurationsService.updateFspConfigurationsForProgram(
       {
-        program,
+        programId,
         fsps,
       },
     );
