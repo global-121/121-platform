@@ -12,13 +12,16 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 
 import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
+import { VisaCardOrderStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-order-status.enum';
 
+import { getChipDataByVisaCardOrderStatus } from '~/components/colored-chip/colored-chip.helper';
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import {
   QueryTableColumn,
   QueryTableColumnType,
 } from '~/components/query-table/query-table.types';
+import { VISA_CARD_ORDER_STATUS_LABELS } from '~/domains/fsp-account-management/intersolve-visa.helper';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { OrderDebitCardsDialogComponent } from '~/pages/program-monitoring-debit-cards/components/order-debit-cards-dialog.component';
 import { Dto } from '~/utils/dto-type';
@@ -50,6 +53,18 @@ export class ProgramMonitoringDebitCardsPageComponent {
   readonly columns = computed<
     QueryTableColumn<Dto<VisaCardOrderResponseDto>>[]
   >(() => [
+    {
+      field: 'status',
+      header: $localize`Status`,
+      type: QueryTableColumnType.MULTISELECT,
+      options: Object.values(VisaCardOrderStatus).map((status) => ({
+        label: VISA_CARD_ORDER_STATUS_LABELS[status],
+        value: status,
+      })),
+      displayAsChip: true,
+      getCellChipData: (order) =>
+        getChipDataByVisaCardOrderStatus(order.status),
+    },
     {
       field: 'noOfCardsOrdered',
       header: $localize`No of Cards Ordered`,

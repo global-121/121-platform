@@ -1,5 +1,6 @@
 import { VisaCardOrderMapper } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/mappers/visa-card-order.mapper';
 import { VisaCardOrderEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-card-order.entity';
+import { VisaCardOrderStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-order-status.enum';
 
 describe('VisaCardOrderMapper', () => {
   function createVisaCardOrderEntity(
@@ -9,6 +10,7 @@ describe('VisaCardOrderMapper', () => {
       id: 1,
       programId: 1,
       userId: 1,
+      status: VisaCardOrderStatus.Completed,
       noOfCards: 1,
       noOfCardsOrdered: 1,
       addressee: 'Default User',
@@ -27,6 +29,8 @@ describe('VisaCardOrderMapper', () => {
   it('maps an entity to a response dto', () => {
     const entity = createVisaCardOrderEntity({
       id: 42,
+      status: VisaCardOrderStatus.Completed,
+      noOfCards: 5,
       noOfCardsOrdered: 5,
       addressee: 'John Doe',
       addressStreet: 'Damrak',
@@ -45,6 +49,8 @@ describe('VisaCardOrderMapper', () => {
 
     expect(result).toEqual({
       id: 42,
+      status: VisaCardOrderStatus.Completed,
+      noOfCards: 5,
       noOfCardsOrdered: 5,
       address: 'John Doe, Damrak 1 A, 1011AB, Amsterdam',
       orderedByUsername: 'manager@example.org',

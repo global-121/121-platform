@@ -401,6 +401,7 @@ class ProgramMonitoring extends BasePage {
     const headers = await visaCardOrdersTable.getTextArrayFromHeader();
 
     expect(headers).toEqual([
+      'Status',
       'No of Cards Ordered',
       'Address',
       'Ordered By',
@@ -411,6 +412,7 @@ class ProgramMonitoring extends BasePage {
     const rowValues = await visaCardOrdersTable.getTextArrayFromRow(1);
 
     expect(rowValues).toEqual([
+      'Completed',
       noOfCards,
       addressColumn,
       'admin@example.org',

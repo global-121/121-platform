@@ -1103,6 +1103,9 @@
       <trans-unit id="5595826100350402634" datatype="html">
         <source>Use the arrow keys or W A S D to play the game</source>
       </trans-unit>
+      <trans-unit id="5611592591303869712" datatype="html">
+        <source>Status</source>
+      </trans-unit>
       <trans-unit id="561353031255604069" datatype="html">
         <source>There are <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registration(s) that don&apos;t support this action</source>
       </trans-unit>
@@ -2036,6 +2039,12 @@
       </trans-unit>
       <trans-unit id="debit-card-number" datatype="html">
         <source>Serial number</source>
+      </trans-unit>
+      <trans-unit id="debit-card-order-status-completed" datatype="html">
+        <source>Completed</source>
+      </trans-unit>
+      <trans-unit id="debit-card-order-status-processing" datatype="html">
+        <source>Processing</source>
       </trans-unit>
       <trans-unit id="debit-card-spent-this-month" datatype="html">
         <source>Spent this month (max. EUR <x equiv-text="this.convertCentsToMainUnits(this.walletWithCards.data()?.maxToSpendPerMonth)" id="PH"/>)</source>

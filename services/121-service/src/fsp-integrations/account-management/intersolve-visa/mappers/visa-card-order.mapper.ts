@@ -17,6 +17,8 @@ export class VisaCardOrderMapper {
   }): VisaCardOrderResponseDto {
     return {
       id: entity.id,
+      status: entity.status,
+      noOfCards: entity.noOfCards,
       noOfCardsOrdered: entity.noOfCardsOrdered,
       address: this.formatAddressForDisplay({ entity }),
       orderedByUsername: entity.user?.username ?? `${entity.userId}`,
