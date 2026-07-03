@@ -71,12 +71,14 @@ test('Export Payments', async ({ paymentsPage, exportDataComponent }) => {
   });
 });
 
-test('View available actions for admin', async ({ paymentsPage }) => {
+test('View available actions for admin', async ({ page, paymentsPage }) => {
   await test.step('Go to payments page', async () => {
     await paymentsPage.navigateToProgramPage(`Payments`);
   });
 
   await test.step('Validate export options', async () => {
+    await paymentsPage.navigateToProgramPage('Payments');
+    await paymentsPage.exportButton.waitFor({ state: 'visible' });
     await paymentsPage.exportButton.click();
 
     const expectedMenuItems = [
@@ -86,16 +88,8 @@ test('View available actions for admin', async ({ paymentsPage }) => {
       'Refunded debit cards',
     ];
 
-    // This part is to wait for the menu items to be visible before asserting
-    const menuItems = paymentsPage.page.getByRole('menuitem');
+    const menuItems = page.getByRole('menuitem');
     await expect(menuItems).toHaveText(expectedMenuItems);
-
-    // This part is to assert the actual text content of the menu items, also ensures there are no extra items
-    const exportOptions = await menuItems.all();
-    const exportOptionsText = await Promise.all(
-      exportOptions.map((option) => option.textContent()),
-    );
-    expect(exportOptionsText).toEqual(expectedMenuItems);
   });
 });
 
