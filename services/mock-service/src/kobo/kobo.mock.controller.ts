@@ -155,7 +155,8 @@ export class KoboMockController {
     const stream = createReadStream(imagePath);
     stream.on('error', () => res.status(HttpStatus.NOT_FOUND).end());
     stream.pipe(res);
-
+  }
+  
   private getRequestOrigin(request: Request): string {
     const protocol = request.protocol;
     const host = request.get('host') ?? 'localhost';
