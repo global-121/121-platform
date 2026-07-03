@@ -427,4 +427,15 @@ svg-icon svg {
     transform: translateZ(0);
     will-change: transform;
   }
+
+  /**
+   * Workaround to disable minimizing app-crate-program-dialog.
+   * While minimized, the dialog changes size on step change.
+   * See AB#43199 for details.
+   */
+  app-create-program-dialog {
+    .p-dialog-maximize-button {
+      display: none;
+    }
+  }
 }
