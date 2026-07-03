@@ -149,10 +149,12 @@ export class KoboMockController {
     @Param('attachmentId') _attachmentId: string,
     @Res() res: Response,
   ): void {
-    const imagePath = resolve('src/kobo/assets/test-image.jpg');
+    const imagePath = resolve(__dirname, 'assets', 'test-image.jpg');
     res.setHeader('Content-Type', 'image/jpeg');
-    createReadStream(imagePath).pipe(res);
-  }
+
+    const stream = createReadStream(imagePath);
+    stream.on('error', () => res.status(HttpStatus.NOT_FOUND).end());
+    stream.pipe(res);
 
   private getRequestOrigin(request: Request): string {
     const protocol = request.protocol;
