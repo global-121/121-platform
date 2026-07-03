@@ -1,6 +1,14 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, Relation } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  Relation,
+} from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
+import { VisaCardOrderStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-order-status.enum';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @Entity('intersolve_visa_card_order')
@@ -21,6 +29,9 @@ export class VisaCardOrderEntity extends Base121Entity {
 
   @Column({ type: 'int' })
   public noOfCardsOrdered: number;
+
+  @Column({ type: 'character varying' })
+  public status: VisaCardOrderStatus;
 
   @Column({ type: 'character varying' })
   public addressStreet: string;

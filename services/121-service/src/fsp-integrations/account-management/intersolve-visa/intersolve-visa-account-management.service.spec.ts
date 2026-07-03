@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/intersolve-visa-account-management.service';
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
+import { VisaCardOrderStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-order-status.enum';
 import { IntersolveVisaCardStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaCardOrderRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-card-order.repository';
@@ -551,6 +552,8 @@ describe('IntersolveVisaAccountManagementService', () => {
       cardOrderRepository.getForProgram.mockResolvedValue([
         {
           id: 42,
+          status: VisaCardOrderStatus.Completed,
+          noOfCards: 5,
           noOfCardsOrdered: 5,
           addressee: 'John Doe',
           addressStreet: 'Damrak',
@@ -571,6 +574,8 @@ describe('IntersolveVisaAccountManagementService', () => {
       expect(result).toEqual([
         {
           id: 42,
+          status: VisaCardOrderStatus.Completed,
+          noOfCards: 5,
           noOfCardsOrdered: 5,
           address: 'John Doe, Damrak 1 A, 1011AB, Amsterdam',
           orderedByUsername: 'manager@example.org',

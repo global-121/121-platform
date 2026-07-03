@@ -1,3 +1,4 @@
+import { VisaCardOrderStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-order-status.enum';
 import { VisaCard121Status } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/wallet-status-121.enum';
 
 export const VISA_CARD_STATUS_LABELS: Record<VisaCard121Status, string> = {
@@ -10,4 +11,12 @@ export const VISA_CARD_STATUS_LABELS: Record<VisaCard121Status, string> = {
   [VisaCard121Status.Unknown]: $localize`:@@debit-card-status-unknown:Unknown`,
   [VisaCard121Status.Substituted]: $localize`:@@debit-card-status-substituted:Substituted`,
   [VisaCard121Status.CardDataMissing]: $localize`:@@debit-card-status-card-data-missing:Debit card data missing`,
+};
+
+export const VISA_CARD_ORDER_STATUS_LABELS: Record<
+  VisaCardOrderStatus,
+  string
+> = {
+  [VisaCardOrderStatus.Processing]: $localize`:@@debit-card-order-status-processing:Processing`,
+  [VisaCardOrderStatus.Completed]: $localize`:@@debit-card-order-status-completed:Completed`,
 };

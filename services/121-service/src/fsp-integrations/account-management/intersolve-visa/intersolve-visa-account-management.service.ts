@@ -9,6 +9,7 @@ import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integ
 import { VisaCardOrderEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-card-order.entity';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
+import { VisaCardOrderStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-order-status.enum';
 import { IntersolveVisaCardStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { ExportVisaWalletClosure } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-wallet-closure.interface';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
@@ -594,6 +595,7 @@ export class IntersolveVisaAccountManagementService {
     order.userId = userId;
     order.noOfCards = noOfCards;
     order.noOfCardsOrdered = cardsSentByIntersolve;
+    order.status = VisaCardOrderStatus.Completed;
     order.addressee = addressee;
     order.addressStreet = addressStreet;
     order.addressHouseNumber = addressHouseNumber;

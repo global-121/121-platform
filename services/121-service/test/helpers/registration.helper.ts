@@ -689,6 +689,54 @@ export function getVisaWalletClosuresExport({
     .send();
 }
 
+export function createVisaCardOrder({
+  programId,
+  accessToken,
+  noOfCards,
+  addressStreet,
+  addressHouseNumber,
+  addressHouseNumberAddition,
+  addressPostalCode,
+  addressCity,
+  addressee,
+}: {
+  programId: number;
+  accessToken: string;
+  noOfCards: number;
+  addressStreet: string;
+  addressHouseNumber: string;
+  addressHouseNumberAddition?: string;
+  addressPostalCode: string;
+  addressCity: string;
+  addressee: string;
+}): Promise<request.Response> {
+  return getServer()
+    .post(`/programs/${programId}/fsps/intersolve-visa/wallet/cards/orders`)
+    .set('Cookie', [accessToken])
+    .send({
+      noOfCards,
+      addressStreet,
+      addressHouseNumber,
+      addressHouseNumberAddition,
+      addressPostalCode,
+      addressCity,
+      addressee,
+    });
+}
+
+export function getVisaCardOrders({
+  programId,
+  accessToken,
+}: {
+  programId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return getServer()
+    .get(`/programs/${programId}/fsps/intersolve-visa/wallet/cards/orders`)
+    .set('Cookie', [accessToken])
+    .send();
+}
+
 export async function getMessageHistory(
   programId: number,
   referenceId: string,
