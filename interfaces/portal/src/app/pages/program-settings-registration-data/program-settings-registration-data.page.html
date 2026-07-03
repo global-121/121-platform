@@ -1,12 +1,12 @@
 <app-page-layout-program-settings [programId]="programId()">
-  <p-card class="[&_.p-card]:border-grey-300 mb-4 [&_.p-card]:border">
+  <p-card class="[&_.p-card]:border-grey-300 mbe-4 [&_.p-card]:border">
     <h2
       i18n
-      class="mb-1"
+      class="mbe-1"
     >
       Registration integration
     </h2>
-    <div class="mb-6">
+    <div class="mbe-6">
       <p i18n>
         Select a registration tool you want to integrate to the program.
       </p>
@@ -18,7 +18,7 @@
 
     <app-kobo-integration-card
       [programId]="programId()"
-      class="w-1/2"
+      class="inline-1/2"
     ></app-kobo-integration-card>
 
     @if (!isKoboIntegrated()) {

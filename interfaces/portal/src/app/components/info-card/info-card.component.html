@@ -2,19 +2,19 @@
   <div class="py-4 text-center">
     @if (customIcon(); as icon) {
       <img
-        class="mb-6 inline-block {{ sizeClassMap[icon.size] || 'h-16' }}"
+        class="mb-6 inline-block {{ sizeClassMap[icon.size] || 'block-16' }}"
         src="assets/{{ icon.icon }}.svg"
         alt=""
       />
     } @else if (!omitIcon()) {
       <img
-        class="mb-6 inline-block h-16"
+        class="mbe-6 inline-block block-16"
         src="assets/no-results.svg"
         alt=""
       />
     }
 
-    <h2 class="mb-4 text-base">
+    <h2 class="mbe-4 text-base">
       {{ title() }}
     </h2>
 

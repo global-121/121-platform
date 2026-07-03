@@ -18,7 +18,9 @@
   <p-card
     styleClass="[&_.p-card-content]:flex-end group relative h-full [&_.p-card-title]:flex-grow"
   >
-    <div class="border-grey-300 flex w-full items-center gap-x-4 border-b pb-4">
+    <div
+      class="border-grey-300 flex items-center gap-x-4 border-be pbe-4 inline-full"
+    >
       <h1 data-testid="registration-title">
         {{ registrationTitle() }}
       </h1>
@@ -49,7 +51,7 @@
       data-testid="registration-summary-list"
     />
 
-    <div class="mt-4 text-end">
+    <div class="mbs-4 text-end">
       <span class="text-grey-700 txt-system-s">
         @if (registration.isPending()) {
           <app-skeleton-inline width="8rem" />

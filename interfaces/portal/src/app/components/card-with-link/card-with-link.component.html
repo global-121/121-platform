@@ -1,7 +1,7 @@
 <div
   data-testid="card-with-link"
   [ngClass]="[
-    'group shadow-clickable-cards relative h-full bg-white focus-within:border-purple-500 focus-within:transition-colors hover:border-purple-500 hover:transition-colors',
+    'group shadow-clickable-cards relative bg-white block-full focus-within:border-purple-500 focus-within:transition-colors hover:border-purple-500 hover:transition-colors',
     variant() === 'overview'
       ? 'rounded-2xl border border-transparent'
       : 'border-grey-300 rounded-lg border',
@@ -40,7 +40,7 @@
       </div>
 
       <!-- SUBTITLE -->
-      <div class="mt-0.5 text-sm empty:hidden">
+      <div class="mbs-0.5 text-sm empty:hidden">
         <ng-content select="[card-subtitle]"></ng-content>
       </div>
     </div>
@@ -56,10 +56,10 @@
     }
   </div>
 
-  <div class="p-4 pt-0 empty:hidden">
+  <div class="p-4 pbs-0 empty:hidden">
     <ng-content select="[card-content]"></ng-content>
   </div>
-  <div class="p-4 pt-0 empty:hidden">
+  <div class="p-4 pbs-0 empty:hidden">
     <ng-content select="[card-footer]"></ng-content>
   </div>
 </ng-template>

@@ -1,5 +1,5 @@
 <ng-container [formGroup]="formGroup">
-  <div class="flex w-full flex-row gap-4 *:w-1/2">
+  <div class="flex flex-row gap-4 inline-full *:inline-1/2">
     <app-form-field-wrapper
       label="Funds available"
       i18n-label
@@ -24,7 +24,7 @@
         [options]="currencies"
         formControlName="currency"
         [showClear]="false"
-        class="w-full"
+        class="inline-full"
         [filter]="true"
       />
     </app-form-field-wrapper>

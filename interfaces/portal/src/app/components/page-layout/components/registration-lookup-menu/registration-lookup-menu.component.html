@@ -1,4 +1,4 @@
-<div class="txt-system-s w-full bg-purple-300 px-6 py-5 lg:px-24">
+<div class="txt-system-s bg-purple-300 px-6 py-5 inline-full lg:px-24">
   @if (registrations.isPending() || assignedPrograms.isPending()) {
     <ng-container i18n>Loading...</ng-container>
   } @else if (registrations.data()?.length) {
@@ -16,7 +16,7 @@
   }
 </div>
 @if (registrationMenuItems().length > 0) {
-  <div class="w-full bg-white px-6 lg:px-24">
+  <div class="bg-white px-6 inline-full lg:px-24">
     <app-tabs-menu [menuItems]="registrationMenuItems()" />
   </div>
 }

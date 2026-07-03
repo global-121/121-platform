@@ -1,4 +1,4 @@
-<div class="mt-4 mb-6 space-y-2">
+<div class="mbs-4 mbe-6 space-y-2">
   <p i18n>
     Custom messages are <b>not automatically translated</b> to the
     registration's preferred language.
@@ -27,13 +27,13 @@
       [disabled]="customMessageDisabled()"
       [mentionConfig]="mentionConfig()"
       autocomplete="off"
-      class="w-full"
+      class="inline-full"
       [ngClass]="{
         'ng-invalid ng-dirty': !!error(),
       }"
     ></textarea>
 
-    <p class="txt-body-s w-full text-end">
+    <p class="txt-body-s text-end inline-full">
       @if (customMessageInternalModel().length > 20) {
         {{ customMessageInternalModel().length }}
       } @else {

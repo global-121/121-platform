@@ -15,7 +15,7 @@
 >
   @defer {
     @if (voucher.isSuccess()) {
-      <p-scrollPanel class="border-grey-300 h-96 w-full border">
+      <p-scrollPanel class="border-grey-300 border block-96 inline-full">
         <iframe
           #voucherIframe
           [src]="sanitizedVoucherUrl()"
@@ -24,7 +24,7 @@
           i18n-title
         ></iframe>
       </p-scrollPanel>
-      <div class="mt-4 flex justify-end gap-3">
+      <div class="mbs-4 flex justify-end gap-3">
         <a
           [href]="sanitizedVoucherUrl()"
           class="p-button p-button-rounded p-button-outlined"

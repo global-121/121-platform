@@ -1,8 +1,8 @@
-<div class="flex min-h-screen flex-col">
+<div class="flex flex-col min-block-screen">
   <app-header [programId]="programId()" />
   <div class="flex flex-1 flex-col">
     @if (pageLoadError()) {
-      <div class="w-full px-6 lg:px-24">
+      <div class="px-6 inline-full lg:px-24">
         <p-message
           severity="warn"
           styleClass="my-6 w-full"
@@ -22,7 +22,7 @@
         @let parentTitle = parentPageTitle();
         @let parentLink = parentPageLink();
 
-        <div class="flex items-center justify-between pt-1 pb-6">
+        <div class="flex items-center justify-between pbs-1 pbe-6">
           @if (parentTitle) {
             @if (isPending()) {
               <p-skeleton
@@ -50,7 +50,7 @@
               </span>
             }
           } @else {
-            <h1 class="min-w-48">
+            <h1 class="min-inline-48">
               {{ pageTitle() }}
             </h1>
           }

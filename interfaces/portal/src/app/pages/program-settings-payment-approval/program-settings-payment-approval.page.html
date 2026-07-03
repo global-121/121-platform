@@ -19,7 +19,7 @@
     </p>
     <p
       i18n
-      class="mb-4"
+      class="mbe-4"
     >
       For more information about how to set up payment approval see
       <app-manual-link />
@@ -31,24 +31,24 @@
         class="p-datatable-sm"
       >
         <ng-template #header>
-          <tr class="border-grey-300 bg-grey-100 border-b">
+          <tr class="border-grey-300 bg-grey-100 border-be">
             <th
               scope="col"
               i18n
-              class="txt-body-s text-grey-700 w-[11%] px-4 py-2 text-center font-semibold"
+              class="txt-body-s text-grey-700 px-4 py-2 text-center font-semibold inline-[11%]"
             >
               Step
             </th>
             <th
               scope="col"
               i18n
-              class="txt-body-s text-grey-700 w-[46%] px-4 py-2 font-semibold"
+              class="txt-body-s text-grey-700 px-4 py-2 font-semibold inline-[46%]"
             >
               Users
             </th>
             <th
               scope="col"
-              class="txt-body-s text-grey-700 w-[43%] px-4 py-2 font-semibold"
+              class="txt-body-s text-grey-700 px-4 py-2 font-semibold inline-[43%]"
             >
               <span class="inline-flex items-center gap-1 whitespace-nowrap">
                 <ng-container i18n>If payment total exceeds</ng-container>
@@ -64,7 +64,7 @@
           #body
           let-row
         >
-          <tr class="border-grey-300 border-b">
+          <tr class="border-grey-300 border-be">
             <td class="px-4 py-3 text-center">{{ row.step }}</td>
             <td class="px-4 py-3">{{ row.users }}</td>
             <td class="px-4 py-3">{{ row.thresholdAmount }}</td>
@@ -108,7 +108,7 @@
             <ng-container slot="details">
               <p
                 i18n
-                class="txt-system-s mt-2 text-red-500"
+                class="txt-system-s mbs-2 text-red-500"
               >
                 Select at least one user.
               </p>
@@ -121,7 +121,7 @@
             @for (step of additionalSteps.controls; track step) {
               <div
                 [formGroupName]="$index"
-                class="mt-4 grid grid-cols-1 items-start gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,14rem)_auto]"
+                class="mbs-4 grid grid-cols-1 items-start gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,14rem)_auto]"
               >
                 <app-form-field-wrapper
                   label="Select users for this approval step"
@@ -152,7 +152,7 @@
                     <ng-container slot="details">
                       <p
                         i18n
-                        class="txt-system-s mt-2 text-red-500"
+                        class="txt-system-s mbs-2 text-red-500"
                       >
                         Select at least one user.
                       </p>
@@ -179,7 +179,7 @@
                     [minFractionDigits]="0"
                     [maxFractionDigits]="0"
                     [locale]="inputLocale()"
-                    [class]="'w-full'"
+                    [class]="'inline-full'"
                     [inputStyleClass]="'w-full'"
                     formControlName="thresholdAmount"
                   ></p-inputNumber>
@@ -192,7 +192,7 @@
                       ) {
                         <p
                           i18n
-                          class="txt-system-s mt-2 text-red-500"
+                          class="txt-system-s mbs-2 text-red-500"
                         >
                           Must be larger than 0
                         </p>
@@ -201,7 +201,7 @@
                       ) {
                         <p
                           i18n
-                          class="txt-system-s mt-2 text-red-500"
+                          class="txt-system-s mbs-2 text-red-500"
                         >
                           Threshold amount is required.
                         </p>
@@ -211,7 +211,7 @@
                     <ng-container slot="details">
                       <p
                         i18n
-                        class="txt-system-s mt-2 text-red-500"
+                        class="txt-system-s mbs-2 text-red-500"
                       >
                         Threshold amounts must be unique.
                       </p>

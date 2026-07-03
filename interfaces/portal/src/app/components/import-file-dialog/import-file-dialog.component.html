@@ -20,7 +20,7 @@
     [formGroup]="formGroup"
     (ngSubmit)="onFormSubmit()"
   >
-    <div class="mt-5">
+    <div class="mbs-5">
       <app-file-upload-control
         formControlName="file"
         [accept]="accept()"
@@ -29,7 +29,7 @@
       <app-form-error [error]="formFieldErrors()('file')" />
     </div>
     @if (mutation().isError()) {
-      <div class="mt-4">
+      <div class="mbs-4">
         @if (errorResponse()?.singleErrorMessage) {
           <app-form-error [error]="errorResponse()?.singleErrorMessage" />
         }
@@ -54,7 +54,7 @@
       </div>
     }
     <ng-content select="[post-file-input]"></ng-content>
-    <div class="flex justify-end gap-3 pt-2">
+    <div class="flex justify-end gap-3 pbs-2">
       <p-button
         label="Cancel"
         i18n-label="@@generic-cancel"

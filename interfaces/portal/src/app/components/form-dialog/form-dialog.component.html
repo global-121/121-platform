@@ -4,13 +4,13 @@
   [focusTrap]="true"
 >
   <ng-template #headless>
-    <div class="w-[632px] space-y-6 p-6">
+    <div class="space-y-6 p-6 inline-[632px]">
       <form
         (ngSubmit)="onProceed()"
         (keydown.control.enter)="onProceed()"
         (keydown.meta.enter)="onProceed()"
       >
-        <div class="flex w-full items-center">
+        <div class="flex items-center inline-full">
           <h3 [class]="headerClass()">
             <i class="me-2 {{ headerIcon() }}"></i>
             {{ header() }}
@@ -28,7 +28,7 @@
             (click)="confirmDialog.onReject()"
           />
         </div>
-        <div class="flex w-full grow flex-col gap-2 py-4">
+        <div class="flex grow flex-col gap-2 py-4 inline-full">
           <ng-content></ng-content>
           @if (mutation().isError()) {
             <app-form-error
@@ -38,7 +38,7 @@
             />
           }
         </div>
-        <div class="mt-4 flex justify-end gap-4">
+        <div class="mbs-4 flex justify-end gap-4">
           <p-button
             label="Cancel"
             i18n-label="@@generic-cancel"
