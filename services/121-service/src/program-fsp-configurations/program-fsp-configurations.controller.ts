@@ -18,6 +18,7 @@ import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
@@ -27,6 +28,7 @@ import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
 import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
+import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
@@ -97,6 +99,71 @@ export class ProgramFspConfigurationsController {
     return await this.programFspConfigurationsService.create(
       programId,
       programFspConfigurationData,
+    );
+  }
+
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramFspConfigCREATE],
+  })
+  @ApiOperation({
+    summary:
+      'Create program FSP-configurations from a list of FSP names for the given Program.',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description:
+      'Program FSP-configurations have been successfully created for the given Program.',
+  })
+  @Post(':programId/fsp-configurations/fsps')
+  @HttpCode(HttpStatus.CREATED)
+  public async createFspConfigurationsForProgram(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Body('fspNames', new ParseArrayPipe({ items: String }))
+    fspNames: Fsps[],
+  ): Promise<void> {
+    await this.programFspConfigurationsService.createFspConfigurationsForProgram(
+      {
+        programId,
+        fspNames,
+      },
+    );
+  }
+
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramFspConfigUPDATE],
+  })
+  @ApiOperation({
+    summary:
+      'Update program FSP-configurations for the given Program based on a list of FSP names.',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'Program FSP-configurations have been successfully synchronized for the given Program.',
+  })
+  @Patch(':programId/fsp-configurations/fsps')
+  public async updateFspConfigurationsForProgram(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Body('fsps', new ParseArrayPipe({ items: String }))
+    fsps: Fsps[],
+  ): Promise<void> {
+    const programFspConfigurations =
+      await this.programFspConfigurationsService.getByProgramId(programId);
+
+    const program: FoundProgramDto = {
+      id: programId,
+      programFspConfigurations,
+    } as FoundProgramDto;
+
+    await this.programFspConfigurationsService.updateFspConfigurationsForProgram(
+      {
+        program,
+        fsps,
+      },
     );
   }
 

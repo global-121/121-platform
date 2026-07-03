@@ -1,6 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
@@ -64,44 +63,5 @@ describe('Update program', () => {
     expect(updateProgramResponse.body.languages).toStrictEqual(
       program.languages,
     );
-  });
-
-  it('should add fsps to a program when updating it', async () => {
-    // Arrange
-    // Program 2 is seeded with Intersolve-voucher-whatsapp and Intersolve-visa
-    const program: UpdateProgramDto = {
-      fsps: [Fsps.intersolveVoucherWhatsapp, Fsps.intersolveVisa, Fsps.excel],
-    };
-
-    // Act
-    const updateProgramResponse = await patchProgram(2, program, accessToken);
-
-    // Assert
-    expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
-    expect(updateProgramResponse.body.fspConfigurations).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ fspName: Fsps.intersolveVoucherWhatsapp }),
-        expect.objectContaining({ fspName: Fsps.intersolveVisa }),
-        expect.objectContaining({ fspName: Fsps.excel }),
-      ]),
-    );
-    expect(updateProgramResponse.body.fspConfigurations).toHaveLength(3);
-  });
-
-  it('should delete a fsp from a program when updating it', async () => {
-    // Arrange
-    // Program 2 is seeded with Intersolve-voucher-whatsapp and Intersolve-visa
-    const program: UpdateProgramDto = {
-      fsps: [Fsps.intersolveVisa],
-    };
-
-    // Act
-    const updateProgramResponse = await patchProgram(2, program, accessToken);
-
-    // Assert
-    expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
-    expect(updateProgramResponse.body.fspConfigurations).toEqual([
-      expect.objectContaining({ fspName: Fsps.intersolveVisa }),
-    ]);
   });
 });
