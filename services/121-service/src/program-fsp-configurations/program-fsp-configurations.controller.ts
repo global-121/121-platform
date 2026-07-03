@@ -115,7 +115,6 @@ export class ProgramFspConfigurationsController {
       'Program FSP-configurations have been successfully created for the given Program.',
   })
   @Post(':programId/fsp-configurations/fsps')
-  @HttpCode(HttpStatus.CREATED)
   public async createFspConfigurationsForProgram(
     @Param('programId', ParseIntPipe)
     programId: number,
@@ -141,7 +140,7 @@ export class ProgramFspConfigurationsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Program FSP-configurations have been successfully synchronized for the given Program.',
+      'Program FSP-configurations have been successfully updated for the given Program.',
   })
   @Patch(':programId/fsp-configurations/fsps')
   public async updateFspConfigurationsForProgram(
