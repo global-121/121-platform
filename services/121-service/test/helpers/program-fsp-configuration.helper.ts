@@ -47,6 +47,36 @@ export async function patchProgramFspConfiguration({
     .send(body);
 }
 
+export async function postProgramFspConfigurationsByFspNames({
+  programId,
+  fspNames,
+  accessToken,
+}: {
+  programId: number;
+  fspNames: Fsps[];
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .post(`/programs/${programId}/fsp-configurations/fsps`)
+    .set('Cookie', [accessToken])
+    .send({ fspNames });
+}
+
+export async function patchProgramFspConfigurationsByFsps({
+  programId,
+  fsps,
+  accessToken,
+}: {
+  programId: number;
+  fsps: Fsps[];
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .patch(`/programs/${programId}/fsp-configurations/fsps`)
+    .set('Cookie', [accessToken])
+    .send({ fsps });
+}
+
 export async function getProgramFspConfigurations({
   programId,
   accessToken,

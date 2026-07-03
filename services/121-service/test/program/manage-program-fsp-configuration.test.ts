@@ -32,8 +32,10 @@ import {
   getPublicProgramFspConfigurationProperties,
   patchProgramFspConfiguration,
   patchProgramFspConfigurationProperty,
+  patchProgramFspConfigurationsByFsps,
   postProgramFspConfiguration,
   postProgramFspConfigurationProperties,
+  postProgramFspConfigurationsByFspNames,
 } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   awaitChangeRegistrationStatus,
@@ -224,7 +226,115 @@ describe('Manage FSP-configurations', () => {
       expect(property.value).toBe(hiddenString); // All values from intersolve voucher are hidden
     });
     // Ensure that the update data is reflected in the get response so actually updated in the db
-    expect(getResultConfig).toEqual(result.body);
+    expect(getResultConfig).toBeDefined();
+    expect(
+      getResultConfig!.properties.map((property) => property.name).sort(),
+    ).toEqual(result.body.properties.map((property) => property.name).sort());
+    expect({ ...getResultConfig!, properties: undefined }).toEqual({
+      ...result.body,
+      properties: undefined,
+    });
+  });
+
+  it('should create multiple program FSP-configurations from fsp names', async () => {
+    // Arrange
+    const fspNamesToCreate = [Fsps.airtel, Fsps.nedbank];
+
+    // Act
+    const result = await postProgramFspConfigurationsByFspNames({
+      programId: programIdVisa,
+      fspNames: fspNamesToCreate,
+      accessToken,
+    });
+
+    const getResult = await getProgramFspConfigurations({
+      programId: programIdVisa,
+      accessToken,
+    });
+
+    // Assert
+    expect(result.statusCode).toBe(HttpStatus.CREATED);
+    expect(getResult.body.map((configuration) => configuration.fspName)).toEqual(
+      expect.arrayContaining(fspNamesToCreate),
+    );
+  });
+
+  it('should add an FSP to existing FSPs', async () => {
+    const beforeResult = await getProgramFspConfigurations({
+      programId: programIdVisa,
+      accessToken,
+    });
+
+    // Act
+    const result = await patchProgramFspConfigurationsByFsps({
+      programId: programIdVisa,
+      fsps: [Fsps.intersolveVisa, Fsps.airtel],
+      accessToken,
+    });
+
+    const getResult = await getProgramFspConfigurations({
+      programId: programIdVisa,
+      accessToken,
+    });
+
+    // Assert
+    expect(result.statusCode).toBe(HttpStatus.OK);
+    const beforeFspNames = beforeResult.body
+      .map((configuration) => configuration.fspName)
+      .sort();
+    const afterFspNames = getResult.body
+      .map((configuration) => configuration.fspName)
+      .sort();
+
+    expect(beforeFspNames).toEqual(
+      [Fsps.intersolveVisa, Fsps.intersolveVoucherWhatsapp].sort(),
+    );
+    expect(afterFspNames).toEqual([Fsps.intersolveVisa, Fsps.airtel].sort());
+  });
+
+  it('should remove an FSP from existing FSPs', async () => {
+    // Arrange
+    await postProgramFspConfiguration({
+      programId: programIdVisa,
+      body: {
+        name: Fsps.airtel,
+        label: { en: 'Airtel' },
+        fspName: Fsps.airtel,
+        properties: [],
+      },
+      accessToken,
+    });
+
+    const beforeResult = await getProgramFspConfigurations({
+      programId: programIdVisa,
+      accessToken,
+    });
+
+    // Act
+    const result = await patchProgramFspConfigurationsByFsps({
+      programId: programIdVisa,
+      fsps: [Fsps.intersolveVisa],
+      accessToken,
+    });
+
+    const getResult = await getProgramFspConfigurations({
+      programId: programIdVisa,
+      accessToken,
+    });
+
+    // Assert
+    expect(result.statusCode).toBe(HttpStatus.OK);
+    const beforeFspNames = beforeResult.body
+      .map((configuration) => configuration.fspName)
+      .sort();
+    const afterFspNames = getResult.body
+      .map((configuration) => configuration.fspName)
+      .sort();
+
+    expect(beforeFspNames).toEqual(
+      [Fsps.intersolveVisa, Fsps.intersolveVoucherWhatsapp, Fsps.airtel].sort(),
+    );
+    expect(afterFspNames).toEqual([Fsps.intersolveVisa].sort());
   });
 
   it('should save a program FSP-configuration without properties with state "configurationPending"', async () => {
