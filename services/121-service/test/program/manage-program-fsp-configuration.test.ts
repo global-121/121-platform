@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import {
   FspConfigurationPropertyVisibility,
   FspConfigurationPropertyVisibilityMap,
@@ -12,16 +13,16 @@ import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-c
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
 import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
+import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { programIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
-import { paymentIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
-import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   getProgram,
   getTransactionsByPaymentIdPaginated,
+  postProgram,
 } from '@121-service/test/helpers/program.helper';
 import {
   deleteProgramFspConfiguration,
@@ -37,6 +38,7 @@ import {
 import {
   awaitChangeRegistrationStatus,
   deleteRegistrations,
+  seedIncludedRegistrations,
   seedPaidRegistrations,
   waitForStatusChangeToComplete,
 } from '@121-service/test/helpers/registration.helper';
@@ -45,23 +47,75 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { registrationOCW5 } from '@121-service/test/registrations/pagination/pagination-data';
 
 // Only tests most of the happy paths, edge cases are mostly covered in the unit tests
 
 const hiddenString = '[********]';
 
-const seededFspConfigVoucher = programOCW.programFspConfigurations.find(
-  (fspConfig) => fspConfig.fsp === Fsps.intersolveVoucherWhatsapp,
-)!;
+// A minimal program the tests build on.
+const baseProgram: CreateProgramDto = {
+  titlePortal: { en: 'FSP-configuration test program' },
+  currency: CurrencyCode.EUR,
+  languages: [RegistrationPreferredLanguage.en],
+};
+
+// Intersolve Voucher WhatsApp is the simplest FSP with hidden (secret) properties: just a username and password
+const seededFspConfigVoucher = {
+  fsp: Fsps.intersolveVoucherWhatsapp,
+  properties: [
+    { name: FspConfigurationProperties.username, value: 'mock-username' },
+    { name: FspConfigurationProperties.password, value: 'mock-password' },
+  ],
+};
+
+// Intersolve Visa is needed because it is the only FSP with both "visible" (default) and "public" configuration properties
+const seededFspConfigVisa = {
+  fsp: Fsps.intersolveVisa,
+  properties: [
+    { name: FspConfigurationProperties.brandCode, value: 'mock-brand-code' },
+    {
+      name: FspConfigurationProperties.coverLetterCode,
+      value: 'mock-cover-letter-code',
+    },
+    {
+      name: FspConfigurationProperties.fundingTokenCode,
+      value: 'mock-funding-token-code',
+    },
+    { name: FspConfigurationProperties.cardDistributionByMail, value: true },
+    { name: FspConfigurationProperties.maxBalanceInCents, value: 15000 },
+  ],
+};
+
+// Commercial Bank of Ethiopia is a simple API FSP whose payments succeed in mock mode without any message templates, so the payment-related tests use it
+const seededFspConfigCbe = {
+  fsp: Fsps.commercialBankEthiopia,
+  properties: [
+    { name: FspConfigurationProperties.username, value: 'mock-username' },
+    { name: FspConfigurationProperties.password, value: 'mock-password' },
+  ],
+};
+
+const seededFspConfigs = [
+  seededFspConfigVoucher,
+  seededFspConfigVisa,
+  seededFspConfigCbe,
+];
+
+// A minimal Commercial Bank of Ethiopia registration; each test spreads this with a unique referenceId because referenceIds are globally unique and the database is not reset between tests
+const baseRegistrationCbe = {
+  phoneNumber: '14155238886',
+  preferredLanguage: RegistrationPreferredLanguage.en,
+  paymentAmountMultiplier: 1,
+  programFspConfigurationName: Fsps.commercialBankEthiopia,
+  fullName: 'Test CBE registration',
+  bankAccountNumber: '407951684723597',
+};
 
 const createProgramFspConfigurationDtoIntersolveVoucher: CreateProgramFspConfigurationDto =
   {
     name: 'Intersolve Voucher WhatsApp name',
     label: {
       en: 'Intersolve Voucher WhatsApp label',
-      nl: 'Intersolve Voucher WhatsApp label Dutch translation',
-      es: 'Intersolve Voucher WhatsApp label Spanish translation',
     },
     fspName: Fsps.intersolveVoucherWhatsapp,
     properties: [
@@ -86,23 +140,58 @@ const createProgramFspConfigurationDtoSafaricom: CreateProgramFspConfigurationDt
     properties: [],
   };
 
+// Posts a bare-bones program and creates the FSP-configurations the tests rely on, returning the new program's id
+async function createProgramWithFspConfigurations({
+  accessToken,
+}: {
+  accessToken: string;
+}): Promise<number> {
+  const createProgramResponse = await postProgram(baseProgram, accessToken);
+  const programId = createProgramResponse.body.id;
+
+  // Posting a program does not create its FSP-configurations, so create the ones the tests rely on
+  for (const fspConfig of seededFspConfigs) {
+    const response = await postProgramFspConfiguration({
+      programId,
+      body: {
+        name: fspConfig.fsp,
+        label: { en: fspConfig.fsp },
+        fspName: fspConfig.fsp,
+        properties: fspConfig.properties,
+      },
+      accessToken,
+    });
+    // Fail fast so a misconfigured setup does not surface as confusing errors in individual tests
+    if (response.statusCode !== HttpStatus.CREATED) {
+      throw new Error(
+        `Failed to create FSP-configuration ${fspConfig.fsp}: ${response.text}`,
+      );
+    }
+  }
+
+  return programId;
+}
+
 describe('Manage FSP-configurations', () => {
   let accessToken: string;
+  let programId: number;
 
-  beforeEach(async () => {
-    await resetDB({ seedScript: SeedScript.nlrcMultiple });
+  beforeAll(async () => {
+    await resetDB({ seedScript: SeedScript.productionInitialState });
     accessToken = await getAccessToken();
   });
 
   it('should add program FSP-configuration to an existing program', async () => {
+    // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
     // Act
     const result = await postProgramFspConfiguration({
-      programId: programIdVisa,
+      programId,
       body: createProgramFspConfigurationDtoIntersolveVoucher,
       accessToken,
     });
     const getResult = await getProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       accessToken,
     });
     const getResultConfig = getResult.body.find(
@@ -140,6 +229,7 @@ describe('Manage FSP-configurations', () => {
 
   it('should save a program FSP-configuration without properties with state "configurationPending"', async () => {
     // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
     const createProgramFspConfigurationDtoIncomplete: CreateProgramFspConfigurationDto =
       {
         name: 'Intersolve Visa incomplete config',
@@ -151,7 +241,7 @@ describe('Manage FSP-configurations', () => {
 
     // Act
     const result = await postProgramFspConfiguration({
-      programId: programIdVisa,
+      programId,
       body: createProgramFspConfigurationDtoIncomplete,
       accessToken,
     });
@@ -163,6 +253,7 @@ describe('Manage FSP-configurations', () => {
 
   it('should set program FSP-configuration state to "configured" after updating with all required properties', async () => {
     // Arrange - create a config that is missing a required property
+    programId = await createProgramWithFspConfigurations({ accessToken });
     const createProgramFspConfigurationDtoIncomplete: CreateProgramFspConfigurationDto =
       {
         name: 'Intersolve Voucher incomplete config',
@@ -178,7 +269,7 @@ describe('Manage FSP-configurations', () => {
         ],
       };
     const createResult = await postProgramFspConfiguration({
-      programId: programIdVisa,
+      programId,
       body: createProgramFspConfigurationDtoIncomplete,
       accessToken,
     });
@@ -198,7 +289,7 @@ describe('Manage FSP-configurations', () => {
       ],
     };
     const updateResult = await patchProgramFspConfiguration({
-      programId: programIdVisa,
+      programId,
       name: createProgramFspConfigurationDtoIncomplete.name,
       body: updateProgramFspConfigurationDto,
       accessToken,
@@ -213,16 +304,18 @@ describe('Manage FSP-configurations', () => {
   });
 
   it('should set program FSP-configuration state to "configurationPending" after removing a required property', async () => {
+    // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
     // Act - remove a required property from a fully configured config
     await deleteProgramFspConfigurationProperty({
-      programId: programIdVisa,
+      programId,
       configName: seededFspConfigVoucher.fsp,
       propertyName: FspConfigurationProperties.username,
       accessToken,
     });
 
     const getResult = await getProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       accessToken,
     });
     const config = getResult.body.find(
@@ -235,7 +328,8 @@ describe('Manage FSP-configurations', () => {
 
   it('should add missing required program registration attributes when adding a program FSP-configuration', async () => {
     // Arrange
-    const program = await getProgram(programIdVisa, accessToken);
+    programId = await createProgramWithFspConfigurations({ accessToken });
+    const program = await getProgram(programId, accessToken);
     const programRegistrationAttributes =
       program.body.programRegistrationAttributes;
 
@@ -248,7 +342,7 @@ describe('Manage FSP-configurations', () => {
 
     // Act
     const result = await postProgramFspConfiguration({
-      programId: programIdVisa,
+      programId,
       body: createProgramFspConfigurationDtoSafaricom,
       accessToken,
     });
@@ -256,11 +350,11 @@ describe('Manage FSP-configurations', () => {
     // Assert
     expect(result.statusCode).toBe(HttpStatus.CREATED);
 
-    const updatedProgram = await getProgram(programIdVisa, accessToken);
+    const updatedProgram = await getProgram(programId, accessToken);
     const updatedProgramRegistrationAttributes: ProgramRegistrationAttributeDto[] =
       updatedProgram.body.programRegistrationAttributes;
 
-    // The seed data for programIdVisa does not include nationalId, but it is a required attribute of the Safaricom FSP
+    // The posted program does not include nationalId, but it is a required attribute of the Safaricom FSP
     expect(
       updatedProgramRegistrationAttributes.map(
         (attr: ProgramRegistrationAttributeDto) => attr.name,
@@ -276,6 +370,8 @@ describe('Manage FSP-configurations', () => {
   });
 
   it('should patch existing program FSP-configuration', async () => {
+    // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
     // Act
     const updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto = {
       label: {
@@ -292,13 +388,13 @@ describe('Manage FSP-configurations', () => {
     };
     const name = seededFspConfigVoucher.fsp;
     const result = await patchProgramFspConfiguration({
-      programId: programIdVisa,
+      programId,
       name,
       body: updateProgramFspConfigurationDto,
       accessToken,
     });
     const getResult = await getProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       accessToken,
     });
     const getResultConfig = getResult.body.find(
@@ -335,15 +431,17 @@ describe('Manage FSP-configurations', () => {
   });
 
   it('should delete existing program FSP-configuration', async () => {
+    // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
     // Act
     const name = seededFspConfigVoucher.fsp;
     const result = await deleteProgramFspConfiguration({
-      programId: programIdVisa,
+      programId,
       name,
       accessToken,
     });
     const getResult = await getProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       accessToken,
     });
     const getResultConfig = getResult.body.find(
@@ -355,21 +453,23 @@ describe('Manage FSP-configurations', () => {
   });
 
   it('should not delete existing program FSP-configuration because of active registrations with that config', async () => {
-    // Prepare
-    await seedPaidRegistrations({
-      registrations: [registrationOCW5],
-      programId: programIdVisa,
-    });
+    // Arrange: the config cannot be deleted as long as non-deleted registrations use it, so an included registration is enough (no payment needed)
+    programId = await createProgramWithFspConfigurations({ accessToken });
+    await seedIncludedRegistrations(
+      [{ ...baseRegistrationCbe, referenceId: 'cbe-active-registrations' }],
+      programId,
+      accessToken,
+    );
 
     // Act
-    const name = seededFspConfigVoucher.fsp;
+    const name = seededFspConfigCbe.fsp;
     const result = await deleteProgramFspConfiguration({
-      programId: programIdVisa,
+      programId,
       name,
       accessToken,
     });
     const getResult = await getProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       accessToken,
     });
     const getResultConfig = getResult.body.find(
@@ -382,84 +482,29 @@ describe('Manage FSP-configurations', () => {
     expect(getResultConfig).toBeDefined();
   });
 
-  // Checking this exception in api test because it's hard to unit test the more complex transaction querybuilder part
-  it('deleting program FSP-configuration with existing transactions should set programFspConfigurationId of transactions to null', async () => {
-    // Prepare
-    await seedPaidRegistrations({
-      registrations: [registrationOCW5],
-      programId: programIdVisa,
-    });
-
-    await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
-      referenceIds: [registrationOCW5.referenceId],
-      status: RegistrationStatusEnum.declined,
-      accessToken,
-    });
-    await deleteRegistrations({
-      programId: programIdVisa,
-      referenceIds: [registrationOCW5.referenceId],
-      accessToken,
-    });
-    await waitForStatusChangeToComplete({
-      programId: programIdVisa,
-      amountOfRegistrations: 1,
-      status: RegistrationStatusEnum.deleted,
-      maxWaitTimeMs: 8_000,
-      accessToken,
-    });
-
-    // Act
-    const name = seededFspConfigVoucher.fsp;
-    const result = await deleteProgramFspConfiguration({
-      programId: programIdVisa,
-      name,
-      accessToken,
-    });
-    const getResult = await getProgramFspConfigurations({
-      programId: programIdVisa,
-      accessToken,
-    });
-    const getResultConfig = getResult.body.find(
-      (config) => config.name === name,
-    );
-
-    const getTranactions = await getTransactionsByPaymentIdPaginated({
-      programId: programIdVisa,
-      paymentId: paymentIdVisa,
-      registrationReferenceId: registrationOCW5.referenceId,
-      accessToken,
-    });
-    const transactions = getTranactions.body.data;
-
-    // Assert
-    expect(result.statusCode).toBe(HttpStatus.NO_CONTENT);
-    expect(getResultConfig).not.toBeDefined();
-    expect(transactions[0].programFspConfigurationName).toBe(null);
-  });
-
   it('should add program FSP-configuration properties to an existing program FSP-configuration', async () => {
-    // Prepare
+    // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
     const createProgramFspConfigurationDtoNoProperties = {
       ...createProgramFspConfigurationDtoIntersolveVoucher,
       properties: undefined,
     };
     await postProgramFspConfiguration({
-      programId: programIdVisa,
+      programId,
       body: createProgramFspConfigurationDtoNoProperties,
       accessToken,
     });
 
     // Act
     const result = await postProgramFspConfigurationProperties({
-      programId: programIdVisa,
+      programId,
       properties: createProgramFspConfigurationDtoIntersolveVoucher.properties!,
       accessToken,
       name: createProgramFspConfigurationDtoIntersolveVoucher.name,
     });
 
     const getResult = await getProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       accessToken,
     });
     const getResultConfig = getResult.body.find(
@@ -487,14 +532,13 @@ describe('Manage FSP-configurations', () => {
   });
 
   it('should patch a property of an existing program FSP-configuration', async () => {
-    // Prepare
+    // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
     const updatedPropertyDto: UpdateProgramFspConfigurationPropertyDto = {
       value: 'user1234',
     };
-
-    // Act
     const getResultBefore = await getProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       accessToken,
     });
     const usernamePropertyBefore = getResultBefore.body
@@ -503,8 +547,9 @@ describe('Manage FSP-configurations', () => {
         (property) => property.name === FspConfigurationProperties.username,
       );
 
+    // Act
     const patchResult = await patchProgramFspConfigurationProperty({
-      programId: programIdVisa,
+      programId,
       configName: seededFspConfigVoucher.fsp,
       propertyName: FspConfigurationProperties.username,
       body: updatedPropertyDto,
@@ -512,7 +557,7 @@ describe('Manage FSP-configurations', () => {
     });
 
     const getResultAfter = await getProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       accessToken,
     });
     const usernamePropertyAfter = getResultAfter.body
@@ -534,16 +579,18 @@ describe('Manage FSP-configurations', () => {
   });
 
   it('should delete a property of an existing program FSP-configuration', async () => {
+    // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
     // Act
     const deleteResult = await deleteProgramFspConfigurationProperty({
-      programId: programIdVisa,
+      programId,
       configName: seededFspConfigVoucher.fsp,
       propertyName: FspConfigurationProperties.username,
       accessToken,
     });
 
     const getResultAfter = await getProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       accessToken,
     });
     const config = getResultAfter.body.find(
@@ -564,10 +611,11 @@ describe('Manage FSP-configurations', () => {
 
   it('Should return all visible properties of a program FSP-configuration', async () => {
     // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
     const enumValues = Object.values(FspConfigurationProperties);
     // Act
     const getVisibleProperties = await getProgramFspConfigurationProperties({
-      programId: programIdVisa,
+      programId,
       configName: Fsps.intersolveVisa, //This configuration has visible properties
       accessToken,
     });
@@ -587,9 +635,11 @@ describe('Manage FSP-configurations', () => {
   });
 
   it('Returns masked values for hidden properties of a program FSP-configuration', async () => {
+    // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
     // Act
     const getHiddenProperties = await getProgramFspConfigurationProperties({
-      programId: programIdVisa,
+      programId,
       configName: Fsps.intersolveVoucherWhatsapp, // This configuration has hidden properties
       accessToken,
     });
@@ -611,15 +661,16 @@ describe('Manage FSP-configurations', () => {
 
   it('Should return allowlisted public properties of a program FSP-configuration for users with program.read permission', async () => {
     // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
     const programReadAccessToken = await createAccessTokenWithPermissions({
       permissions: [PermissionEnum.ProgramREAD],
       adminAccessToken: accessToken,
-      programId: programIdVisa,
+      programId,
     });
 
     // Act
     const result = await getPublicProgramFspConfigurationProperties({
-      programId: programIdVisa,
+      programId,
       configName: Fsps.intersolveVisa,
       accessToken: programReadAccessToken,
     });
@@ -640,5 +691,79 @@ describe('Manage FSP-configurations', () => {
     expect(returnedPropertyNames.sort()).toEqual(
       allowlistedPropertyNames?.sort(),
     );
+  });
+});
+
+// This test is isolated in its own describe block because it needs a full DB reset to the cbeProgram seed
+// (the admin must be approved to run a payment, which is not possible on a posted bare-bones program)
+describe('Manage FSP-configurations - deleting config with existing transactions', () => {
+  let accessToken: string;
+  let programId: number;
+
+  beforeAll(async () => {
+    await resetDB({ seedScript: SeedScript.cbeProgram });
+    accessToken = await getAccessToken();
+    programId = 1;
+  });
+
+  // Checking this exception in api test because it's hard to unit test the more complex transaction querybuilder part
+  it('should set programFspConfigurationId of transactions to null', async () => {
+    // Arrange
+    // TODO: In the future use the new duplicate program endpoint to create a program with an admin as approved instead of resetting the DB
+    const registrationCbe = {
+      ...baseRegistrationCbe,
+      referenceId: 'cbe-existing-transactions',
+    };
+    const paymentId = await seedPaidRegistrations({
+      registrations: [registrationCbe],
+      programId,
+    });
+
+    await awaitChangeRegistrationStatus({
+      programId,
+      referenceIds: [registrationCbe.referenceId],
+      status: RegistrationStatusEnum.declined,
+      accessToken,
+    });
+    await deleteRegistrations({
+      programId,
+      referenceIds: [registrationCbe.referenceId],
+      accessToken,
+    });
+    await waitForStatusChangeToComplete({
+      programId,
+      amountOfRegistrations: 1,
+      status: RegistrationStatusEnum.deleted,
+      maxWaitTimeMs: 8_000,
+      accessToken,
+    });
+
+    // Act
+    const name = seededFspConfigCbe.fsp;
+    const result = await deleteProgramFspConfiguration({
+      programId,
+      name,
+      accessToken,
+    });
+    const getResult = await getProgramFspConfigurations({
+      programId,
+      accessToken,
+    });
+    const getResultConfig = getResult.body.find(
+      (config) => config.name === name,
+    );
+
+    const getTransactions = await getTransactionsByPaymentIdPaginated({
+      programId,
+      paymentId,
+      registrationReferenceId: registrationCbe.referenceId,
+      accessToken,
+    });
+    const transactions = getTransactions.body.data;
+
+    // Assert
+    expect(result.statusCode).toBe(HttpStatus.NO_CONTENT);
+    expect(getResultConfig).not.toBeDefined();
+    expect(transactions[0].programFspConfigurationName).toBe(null);
   });
 });
