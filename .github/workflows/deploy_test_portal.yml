@@ -98,6 +98,20 @@ jobs:
           skip_app_build: true
           skip_api_build: true
 
+      - name: Deployment failed guidance
+        if: ${{ failure() && steps.deploy_to_aswa.outcome == 'failure' }}
+        run: |
+          MESSAGE='Try to delete some preview-deployments. See: <https://portal.azure.com/#@rodekruis.onmicrosoft.com/resource/subscriptions/a9fac20b-7963-401a-84e8-3cf91aea89ef/resourceGroups/121-Platform/providers/Microsoft.Web/staticSites/121-portal-test/environments>'
+          echo "$MESSAGE"
+          echo "::warning::$MESSAGE"
+          {
+            echo "### ⚠️ Deployment failed"
+            echo ""
+            echo "> $MESSAGE"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "$MESSAGE" >&2
+          exit 1
+
       - name: Verify Deployment
         if: steps.deploy_to_aswa.outputs.static_web_app_url != ''
         working-directory: ${{ env.workingDirectory }}
