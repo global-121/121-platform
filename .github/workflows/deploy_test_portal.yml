@@ -98,6 +98,18 @@ jobs:
           skip_app_build: true
           skip_api_build: true
 
+      - name: Deployment failed guidance
+        if: ${{ failure() && steps.deploy_to_aswa.outcome == 'failure' }}
+        run: |
+          MESSAGE='Try to delete some preview-deployments. See: <${{ vars.AZURE_STATIC_WEB_APPS_PREVIEW_BUILDS_URL }}>'
+          echo "$MESSAGE"
+          echo "::warning::$MESSAGE"
+          {
+            echo "### ⚠️ Deployment failed"
+            echo ""
+            echo "> $MESSAGE"
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Verify Deployment
         if: steps.deploy_to_aswa.outputs.static_web_app_url != ''
         working-directory: ${{ env.workingDirectory }}
