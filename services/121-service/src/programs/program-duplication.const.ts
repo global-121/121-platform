@@ -1,4 +1,4 @@
-import { ProgramEntity } from "@121-service/src/programs/entities/program.entity";
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 
 export const propertiesToDuplicate: Record<keyof ProgramEntity, boolean> = {
   // Primary and audit columns

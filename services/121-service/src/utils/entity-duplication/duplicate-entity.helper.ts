@@ -149,7 +149,7 @@ function cloneColumns({
     result[propertyName] = source[propertyName];
   }
 
-  const columnPropertyNames = metadata.columns.map((column) => column.propertyName)
+  const columnPropertyNames = metadata.columns.map((column) => column.propertyName);
 
   for (const [key, value] of Object.entries(overrides)) {
     if (columnPropertyNames.includes(key)) {

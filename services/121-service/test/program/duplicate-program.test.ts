@@ -1,10 +1,12 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   duplicateProgram,
-  getProgram
+  getProgram,
 } from '@121-service/test/helpers/program.helper';
+import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   getAccessToken,
   resetDB,
@@ -19,7 +21,7 @@ describe('Duplicate program', () => {
     accessToken = await getAccessToken();
   });
 
-  it('should copy a program and persist it', async () => {
+  it('should duplicate a program and persist it', async () => {
     // Arrange
     const sourceProgramResponse = await getProgram(
       copyFromProgramId,
@@ -29,27 +31,67 @@ describe('Duplicate program', () => {
 
     // Act
     const duplicateResponse = await duplicateProgram(
-      copyFromProgramId,
+      { copyFromProgramId, accessToken },
+    );
+    const newProgramId = duplicateResponse.body.id;
+    const persistedProgramResponse = await getProgram(
+      newProgramId,
       accessToken,
     );
 
     // Assert
     expect(duplicateResponse.statusCode).toBe(HttpStatus.CREATED);
-
-    const newProgramId = duplicateResponse.body.id;
     expect(newProgramId).toBeDefined();
     expect(newProgramId).not.toBe(copyFromProgramId);
-
-    // The copy should be retrievable, proving it was persisted.
-    const persistedProgramResponse = await getProgram(
-      newProgramId,
-      accessToken,
-    );
-    expect(persistedProgramResponse.statusCode).toBe(HttpStatus.OK);
-    expect(persistedProgramResponse.body.id).toBe(newProgramId);
     expect(persistedProgramResponse.body.titlePortal).toStrictEqual(
       sourceProgram.titlePortal,
     );
     expect(persistedProgramResponse.body.currency).toBe(sourceProgram.currency);
+  });
+
+  it('should duplicate fsp configurations relation', async () => {
+    // Arrange
+    const fspConfigurationName = `duplicate-test-${Date.now()}`;
+    await postProgramFspConfiguration({
+      programId: copyFromProgramId,
+      body: {
+        name: fspConfigurationName,
+        label: { en: 'Duplicate test FSP' },
+        fspName: Fsps.intersolveVisa,
+      },
+      accessToken,
+    });
+    
+    const sourceProgramResponse = await getProgram(
+      copyFromProgramId,
+      accessToken,
+    );
+    const sourceProgram = sourceProgramResponse.body;
+    const sourceFspConfigurations = sourceProgram.fspConfigurations ?? [];
+    
+    // Act
+    const duplicateResponse = await duplicateProgram(
+      { copyFromProgramId, accessToken },
+    );
+    const newProgramId = duplicateResponse.body.id;
+    const persistedProgramResponse = await getProgram(
+      newProgramId,
+      accessToken,
+    );
+    const duplicatedFspConfigurations =
+      persistedProgramResponse.body.fspConfigurations ?? [];
+    
+    // Assert
+    expect(sourceFspConfigurations.length).toBeGreaterThan(0);
+    expect(duplicatedFspConfigurations.length).toBe(
+      sourceFspConfigurations.length,
+    );
+    expect(
+      duplicatedFspConfigurations.some(
+        (configuration) =>
+          configuration.name === fspConfigurationName &&
+          configuration.fspName === Fsps.intersolveVisa,
+      ),
+    ).toBe(true);
   });
 });
