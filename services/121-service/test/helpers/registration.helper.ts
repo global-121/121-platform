@@ -4,6 +4,7 @@ import * as request from 'supertest';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
+import { VisaCardOrderStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-order-status.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
@@ -735,6 +736,37 @@ export function getVisaCardOrders({
     .get(`/programs/${programId}/fsps/intersolve-visa/wallet/cards/orders`)
     .set('Cookie', [accessToken])
     .send();
+}
+
+export async function waitForVisaCardOrdersToComplete({
+  programId,
+  accessToken,
+}: {
+  programId: number;
+  accessToken: string;
+}): Promise<void> {
+  const maxWaitTimeMs = 10_000;
+  const pollIntervalMs = 500;
+  const startTime = Date.now();
+  while (true) {
+    const response = await getVisaCardOrders({ programId, accessToken });
+    const orders: { id: number; status: string }[] = response.body;
+    if (
+      orders.length > 0 &&
+      orders.every((order) => order.status === VisaCardOrderStatus.Completed)
+    ) {
+      return;
+    }
+    if (Date.now() - startTime > maxWaitTimeMs) {
+      const pendingOrders = orders.filter(
+        (order) => order.status !== VisaCardOrderStatus.Completed,
+      );
+      throw new Error(
+        `Timeout: Visa card orders still not completed after ${maxWaitTimeMs}ms (pending: ${pendingOrders.length ? JSON.stringify(pendingOrders) : 'no orders found'})`,
+      );
+    }
+    await waitFor(pollIntervalMs);
+  }
 }
 
 export async function getMessageHistory(

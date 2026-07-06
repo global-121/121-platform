@@ -23,23 +23,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import {
-  CreateVisaCardOrderDto,
-} from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/create-visa-card-order.dto';
-import {
-  CreateVisaCardOrderResponseDto,
-} from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/create-visa-card-order-response.dto';
+import { CreateVisaCardOrderDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/create-visa-card-order.dto';
+import { CreateVisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/create-visa-card-order-response.dto';
 import { TokenCodeDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/token-code.dto';
 import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
-import {
-  IntersolveVisaAccountManagementService,
-} from '@121-service/src/fsp-integrations/account-management/intersolve-visa/intersolve-visa-account-management.service';
-import {
-  IntersolveVisaWalletDto,
-} from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
-import {
-  ExportVisaWalletClosure,
-} from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-wallet-closure.interface';
+import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/intersolve-visa-account-management.service';
+import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
+import { ExportVisaWalletClosure } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-wallet-closure.interface';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -317,13 +307,15 @@ export class IntersolveVisaAccountManagementController {
 
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardOrderCREATE] })
   @ApiOperation({
-    summary: 'Order physical visa debit cards in batch for a branch delivery address',
+    summary:
+      'Order physical visa debit cards in batch for a branch delivery address',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiBody({ type: CreateVisaCardOrderDto })
+  @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Batch Physical Debit Cards ordered.',
+    status: HttpStatus.ACCEPTED,
+    description: 'Batch Physical Debit Card order accepted for processing.',
     type: CreateVisaCardOrderResponseDto,
   })
   @Post('programs/:programId/fsps/intersolve-visa/wallet/cards/orders')

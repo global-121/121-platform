@@ -1234,8 +1234,7 @@
     "path": "/api/programs/{programId}/fsps/intersolve-visa/wallet/cards/orders",
     "params": [
       "programId"
-    ],
-    "returnType": "CreateVisaCardOrderResponseDto"
+    ]
   },
   {
     "method": "get",

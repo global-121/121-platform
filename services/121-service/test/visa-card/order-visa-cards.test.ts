@@ -7,6 +7,7 @@ import { updateProgramCardDistributionByMail } from '@121-service/test/helpers/p
 import {
   createVisaCardOrder,
   getVisaCardOrders,
+  waitForVisaCardOrdersToComplete,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -26,7 +27,7 @@ describe('Order visa debit cards in batch', () => {
     });
   });
 
-  it('should successfully order a batch of visa debit cards', async () => {
+  it('should accept a card order and process it in the background', async () => {
     // Arrange
     const noOfCards = 3;
 
@@ -43,11 +44,34 @@ describe('Order visa debit cards in batch', () => {
       addressee: 'John Doe',
     });
 
-    // Assert
-    expect(orderResponse.status).toBe(HttpStatus.CREATED);
+    // Assert - endpoint returns 202 Accepted with order id
+    expect(orderResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(orderResponse.body).toEqual({
-      noOfCardsSent: noOfCards,
-      noOfCardsOrdered: noOfCards,
+      id: expect.any(Number),
+      noOfCards,
+    });
+
+    const immediateOrdersResponse = await getVisaCardOrders({
+      programId: programIdVisa,
+      accessToken,
+    });
+    expect(immediateOrdersResponse.status).toBe(HttpStatus.OK);
+    const immediateOrder = immediateOrdersResponse.body.find(
+      (order: { id: number }) => order.id === orderResponse.body.id,
+    );
+    expect(immediateOrder).toEqual(
+      expect.objectContaining({
+        id: orderResponse.body.id,
+        status: VisaCardOrderStatus.Processing,
+        noOfCards,
+      }),
+    );
+    expect(immediateOrder.noOfCardsOrdered).toBeLessThan(noOfCards);
+
+    // Poll until background processing completes
+    await waitForVisaCardOrdersToComplete({
+      programId: programIdVisa,
+      accessToken,
     });
 
     const ordersResponse = await getVisaCardOrders({
