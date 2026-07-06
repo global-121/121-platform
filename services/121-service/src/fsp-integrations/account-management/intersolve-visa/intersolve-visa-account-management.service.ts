@@ -26,6 +26,7 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
 export class IntersolveVisaAccountManagementService {
@@ -37,6 +38,8 @@ export class IntersolveVisaAccountManagementService {
     private readonly intersolveVisaChildWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
     private readonly walletClosureScopedRepository: IntersolveVisaWalletClosureScopedRepository,
     private readonly cardOrderRepository: IntersolveVisaCardOrderRepository,
+    private readonly cardOrderProcessorService: IntersolveVisaCardOrderProcessorService,
+    private readonly azureLogService: AzureLogService,
   ) {}
 
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
@@ -611,6 +614,18 @@ export class IntersolveVisaAccountManagementService {
         { cause: error },
       );
     }
+    const savedOrder = await this.cardOrderRepository.save(order);
+
+    // Fire-and-forget: process card order in the background
+    void this.cardOrderProcessorService
+      .processCardOrder({
+        order: savedOrder,
+        brandCode: String(brandCode),
+        coverLetterCode: String(coverLetterCode),
+      })
+      .catch((error: Error) => {
+        this.azureLogService.logError(error, true);
+      });
 
     return {
       noOfCardsSent: cardsSentByIntersolve,

@@ -17,6 +17,7 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 describe('IntersolveVisaAccountManagementService', () => {
   let service: IntersolveVisaAccountManagementService;
@@ -112,6 +113,18 @@ describe('IntersolveVisaAccountManagementService', () => {
           useValue: {
             save: jest.fn(),
             getForProgram: jest.fn(),
+          },
+        },
+        {
+          provide: IntersolveVisaCardOrderProcessorService,
+          useValue: {
+            processCardOrder: jest.fn(),
+          },
+        },
+        {
+          provide: AzureLogService,
+          useValue: {
+            logError: jest.fn(),
           },
         },
       ],
