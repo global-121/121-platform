@@ -113,8 +113,7 @@ test.describe('Attachments on Program Level', () => {
 
     await test.step('Validate file size error message', async () => {
       await programMonitoringPage.validateFormError({
-        errorText:
-          'Something went wrong: "Validation failed (current file size is 110100480, expected size is less than 100000000)"',
+        errorText: 'Something went wrong: "File too large"',
       });
     });
   });

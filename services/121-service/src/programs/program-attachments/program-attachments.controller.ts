@@ -6,15 +6,12 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  MaxFileSizeValidator,
   Param,
-  ParseFilePipe,
   ParseIntPipe,
   Patch,
   Post,
   Req,
   Res,
-  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -67,13 +64,6 @@ export class ProgramAttachmentsController {
     FileInterceptor('file', { limits: ATTACHMENT_FILE_UPLOAD_LIMITS }),
   )
   public async createProgramAttachment(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 100000000 }), // 100MB
-        ],
-      }),
-    )
     file: Express.Multer.File,
     @Body() body: CreateProgramAttachmentDto,
     @Param('programId', ParseIntPipe) programId: number,
