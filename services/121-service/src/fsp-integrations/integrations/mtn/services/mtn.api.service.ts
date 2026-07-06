@@ -1,6 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
-import { TokenSet } from 'openid-client';
 
 import { MtnApiCreateTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-transfer-request-body.dto';
 import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-error-types.enum';
@@ -10,6 +9,11 @@ import { MtnRequestIdentity } from '@121-service/src/fsp-integrations/integratio
 import { MtnTransferStatusResponse } from '@121-service/src/fsp-integrations/integrations/mtn/interfaces/mtn-transfer-status-response.interface';
 import { MtnApiHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import {
+  createTokenSet,
+  isTokenValid,
+} from '@121-service/src/utils/token/token.helpers';
+import { TokenSet } from '@121-service/src/utils/token/token-set';
 
 @Injectable()
 export class MtnApiService {
@@ -42,10 +46,10 @@ export class MtnApiService {
     requestIdentity: MtnRequestIdentity;
   }): Headers {
     const tokenSet = this.tokenCache.get(requestIdentity.referenceId);
-    if (!tokenSet || !tokenSet.access_token) {
+    if (!tokenSet) {
       throw new Error('No access token available for MTN API requests');
     }
-    headers.set('Authorization', `Bearer ${tokenSet.access_token}`);
+    headers.set('Authorization', `Bearer ${tokenSet.accessToken}`);
     return headers;
   }
 
@@ -172,7 +176,7 @@ export class MtnApiService {
   }): Promise<void> {
     // Check for existing valid token
     const existingToken = this.tokenCache.get(requestIdentity.referenceId);
-    if (existingToken && !existingToken.expired()) {
+    if (isTokenValid(existingToken)) {
       return;
     }
 
@@ -217,12 +221,12 @@ export class MtnApiService {
       });
     }
 
-    // We subtract 5 seconds to ensure we don't use an expired token.
+    // isTokenValid() applies a safety buffer before expiry, so we store the actual expiry here.
     this.tokenCache.set(
       requestIdentity.referenceId,
-      new TokenSet({
-        access_token: accessToken,
-        expires_in: expiresInSeconds - 5,
+      createTokenSet({
+        accessToken,
+        expiresIn: expiresInSeconds,
       }),
     );
   }

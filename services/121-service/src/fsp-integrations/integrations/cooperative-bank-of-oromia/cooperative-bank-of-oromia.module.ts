@@ -5,7 +5,6 @@ import { CooperativeBankOfOromiaApiHelperService } from '@121-service/src/fsp-in
 import { CooperativeBankOfOromiaApiService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.api.service';
 import { CooperativeBankOfOromiaService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 @Module({
   imports: [HttpModule],
@@ -14,7 +13,6 @@ import { TokenValidationService } from '@121-service/src/utils/token/token-valid
     CooperativeBankOfOromiaApiService,
     CooperativeBankOfOromiaApiHelperService,
     CustomHttpService,
-    TokenValidationService,
   ],
   exports: [CooperativeBankOfOromiaService],
 })

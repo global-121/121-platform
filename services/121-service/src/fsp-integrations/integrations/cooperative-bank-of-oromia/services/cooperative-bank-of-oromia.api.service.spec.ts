@@ -6,7 +6,6 @@ import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/fsp-
 import { CooperativeBankOfOromiaApiHelperService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.api.helper.service';
 import { CooperativeBankOfOromiaApiService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.api.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 const transferInput = {
   cooperativeBankOfOromiaMessageId: 'msg-123',
@@ -22,13 +21,6 @@ describe('CooperativeBankOfOromiaApiService', () => {
   let post: jest.Mock;
 
   beforeEach(async () => {
-    const isTokenValidMock = jest
-      .fn()
-      // First call: token is invalid (force authentication)
-      .mockReturnValueOnce(false)
-      // Subsequent calls: token is valid (use cached token)
-      .mockReturnValue(true);
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CooperativeBankOfOromiaApiService,
@@ -37,12 +29,6 @@ describe('CooperativeBankOfOromiaApiService', () => {
           useValue: {
             get: jest.fn(),
             post: jest.fn(),
-          },
-        },
-        {
-          provide: TokenValidationService,
-          useValue: {
-            isTokenValid: isTokenValidMock,
           },
         },
         {

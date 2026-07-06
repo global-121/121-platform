@@ -10,7 +10,6 @@ import { SafaricomApiService } from '@121-service/src/fsp-integrations/integrati
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 @Module({
   imports: [
@@ -23,7 +22,6 @@ import { TokenValidationService } from '@121-service/src/utils/token/token-valid
     SafaricomService,
     SafaricomApiService,
     SafaricomApiHelperService,
-    TokenValidationService,
     CustomHttpService,
     SafaricomTransferScopedRepository,
   ],

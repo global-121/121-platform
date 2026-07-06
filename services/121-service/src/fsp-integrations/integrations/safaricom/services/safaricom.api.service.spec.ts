@@ -5,7 +5,6 @@ import { TransferResponseSafaricomApiDto } from '@121-service/src/fsp-integratio
 import { SafaricomApiHelperService } from '@121-service/src/fsp-integrations/integrations/safaricom/services/safaricom.api.helper.service';
 import { SafaricomApiService } from '@121-service/src/fsp-integrations/integrations/safaricom/services/safaricom.api.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 const transferInput = {
   transferValue: 10,
@@ -39,7 +38,6 @@ describe('SafaricomApiService', () => {
       providers: [
         SafaricomApiService,
         SafaricomApiHelperService,
-        TokenValidationService,
         {
           provide: CustomHttpService,
           useValue: {

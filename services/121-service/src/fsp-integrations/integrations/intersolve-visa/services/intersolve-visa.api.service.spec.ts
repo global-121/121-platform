@@ -4,19 +4,13 @@ import { IntersolveVisaApiService } from '@121-service/src/fsp-integrations/inte
 const mockHttpService = {
   request: jest.fn(),
 };
-const mockTokenValidationService = {
-  isTokenValid: jest.fn(),
-};
 
 describe('IntersolveVisaApiService - intersolveApiRequest retry logic', () => {
   let service: IntersolveVisaApiService;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new IntersolveVisaApiService(
-      mockHttpService as any,
-      mockTokenValidationService as any,
-    );
+    service = new IntersolveVisaApiService(mockHttpService as any);
     service.getAuthenticationToken = jest.fn().mockResolvedValue('token');
   });
 

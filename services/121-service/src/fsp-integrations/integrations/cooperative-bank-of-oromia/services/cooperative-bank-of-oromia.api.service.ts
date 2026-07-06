@@ -1,6 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
-import { TokenSet } from 'openid-client';
 
 import { env } from '@121-service/src/env';
 import { CooperativeBankOfOromiaApiAccountValidationResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-account-validation-response-body.dto';
@@ -13,15 +12,18 @@ import { CooperativeBankOfOromiaApiError } from '@121-service/src/fsp-integratio
 import { CooperativeBankOfOromiaApiHelperService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.api.helper.service';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
+import {
+  createTokenSet,
+  isTokenValid,
+} from '@121-service/src/utils/token/token.helpers';
+import { TokenSet } from '@121-service/src/utils/token/token-set';
 
 @Injectable()
 export class CooperativeBankOfOromiaApiService {
-  private tokenSet: TokenSet;
+  private tokenSet: TokenSet | undefined;
 
   public constructor(
     private readonly httpService: CustomHttpService,
-    private readonly tokenValidationService: TokenValidationService,
     private readonly cooperativeBankOfOromiaApiHelperService: CooperativeBankOfOromiaApiHelperService,
   ) {}
 
@@ -87,7 +89,7 @@ export class CooperativeBankOfOromiaApiService {
       }
     }
 
-    const headers = this.createHeaderWithBearerToken(tokenSet.access_token);
+    const headers = this.createHeaderWithBearerToken(tokenSet.accessToken);
 
     const payload: CooperativeBankOfOromiaApiTransferRequestBodyDto =
       this.cooperativeBankOfOromiaApiHelperService.buildTransferPayload({
@@ -146,7 +148,7 @@ export class CooperativeBankOfOromiaApiService {
         throw error;
       }
     }
-    const headers = this.createHeaderWithBearerToken(tokenSet.access_token);
+    const headers = this.createHeaderWithBearerToken(tokenSet.accessToken);
 
     const payload = { accountNumber };
 
@@ -169,7 +171,7 @@ export class CooperativeBankOfOromiaApiService {
 
   private async authenticate(): Promise<TokenSet> {
     // Return cached token if still valid
-    if (this.tokenValidationService.isTokenValid(this.tokenSet)) {
+    if (isTokenValid(this.tokenSet)) {
       return this.tokenSet;
     }
 
@@ -216,9 +218,9 @@ export class CooperativeBankOfOromiaApiService {
     }
     const expiresAtUnixTimestamp = expiresInSeconds * 1000 + Date.now();
 
-    this.tokenSet = new TokenSet({
-      access_token: accessToken,
-      expires_at: expiresAtUnixTimestamp,
+    this.tokenSet = createTokenSet({
+      accessToken,
+      expiresAt: expiresAtUnixTimestamp,
     });
 
     return this.tokenSet;
@@ -231,9 +233,8 @@ export class CooperativeBankOfOromiaApiService {
     });
   }
 
-  // Token is possibly undefined because TokenSet type has optional access_token
-  // but in our case it will always be defined after authenticate() but TypeScript can't infer that.
-  private createHeaderWithBearerToken(token?: string): Headers {
+  // Token is guaranteed by the caller after successful authentication.
+  private createHeaderWithBearerToken(token: string): Headers {
     const headers = this.createDefaultHeaders();
     headers.append('Authorization', `Bearer ${token}`);
     return headers;

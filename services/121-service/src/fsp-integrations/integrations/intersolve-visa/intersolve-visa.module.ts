@@ -18,7 +18,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { UserModule } from '@121-service/src/user/user.module';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 @Module({
   imports: [
@@ -37,7 +36,6 @@ import { TokenValidationService } from '@121-service/src/utils/token/token-valid
     IntersolveVisaApiService,
     CustomHttpService,
     AzureLogService,
-    TokenValidationService,
     IntersolveVisaCustomerScopedRepository,
     IntersolveVisaParentWalletScopedRepository,
     IntersolveVisaChildWalletScopedRepository,
