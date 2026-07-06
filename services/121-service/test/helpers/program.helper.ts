@@ -37,11 +37,15 @@ export async function postProgram(
     .send(program);
 }
 
-export async function duplicateProgram(
-  copyFromProgramId: number,
-  accessToken: string,
-  overrides: Partial<CreateProgramDto> = {},
-): Promise<request.Response> {
+export async function duplicateProgram({
+  copyFromProgramId,
+  accessToken,
+  overrides = {},
+}: {
+  copyFromProgramId: number;
+  accessToken: string;
+  overrides?: Partial<CreateProgramDto>;
+}): Promise<request.Response> {
   return await getServer()
     .post(`/programs`)
     .query({ copyFromProgramId })

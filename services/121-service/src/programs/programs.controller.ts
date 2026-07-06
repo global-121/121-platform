@@ -172,6 +172,15 @@ body overwrite the copied values. You can also leave the body empty.`,
     const userId = RequestHelper.getUserId(req);
 
     if (copyFromProgramId) {
+      const duplicationErrors = await validate(
+        plainToClass(CreateProgramDto, programData),
+        { skipMissingProperties: true },
+      );
+
+      if (duplicationErrors.length > 0) {
+        throw new HttpException(duplicationErrors, HttpStatus.BAD_REQUEST);
+      }
+
       return this.programService.duplicateProgram({
         copyFromProgramId,
         overrides: programData,
