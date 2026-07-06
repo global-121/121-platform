@@ -84,6 +84,11 @@ test('Should be able to order debit cards when card distribution by mail is disa
   });
 
   await test.step('Verify that the order is listed in the table', async () => {
+    // Reload so the table reflects the completed background processing
+    await programMonitoringPage.goto(
+      `/program/${programIdOCW}/monitoring/dashboard`,
+    );
+    await programMonitoringPage.selectTab({ tabName: 'Debit Cards' });
     await programMonitoringPage.expectCardOrdersTableToContainOrder(
       orderDebitCardOrder,
     );

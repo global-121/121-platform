@@ -29,7 +29,8 @@ describe('Order visa debit cards in batch', () => {
 
   it('should accept a card order and process it in the background', async () => {
     // Arrange
-    const noOfCards = 3;
+    // Do a few cards so the background processing takes a few seconds to complete
+    const noOfCards = 6;
 
     // Act
     const orderResponse = await createVisaCardOrder({
