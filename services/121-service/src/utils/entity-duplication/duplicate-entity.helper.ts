@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import {
+  DataSource,
   DeepPartial,
   EntityManager,
   EntityMetadata,
@@ -16,61 +17,74 @@ import {
 } from '@121-service/src/utils/entity-duplication/interfaces/relation-with-inverse.interface';
 
 export async function duplicateEntity<T extends ObjectLiteral>({
-  manager,
+  dataSource,
   entity,
   id,
   propertiesToDuplicate,
   overrides = {},
 }: {
-  manager: EntityManager;
+  dataSource: DataSource;
   entity: EntityTarget<T>;
   id: number;
   propertiesToDuplicate: Record<string, boolean>;
   overrides?: Record<string, unknown>;
 }): Promise<T> {
-  const repository = manager.getRepository(entity);
-  const metadata = repository.metadata;
+  const queryRunner = dataSource.createQueryRunner();
+  await queryRunner.startTransaction();
 
-  const relationNamesToDuplicate = getRelationNamesToDuplicate({
-    metadata,
-    propertiesToDuplicate,
-  });
+  try {
+    const repository = queryRunner.manager.getRepository(entity);
+    const metadata = repository.metadata;
 
-  const primaryColumn = metadata.primaryColumns[0].propertyName;
-  const source = await repository.findOne({
-    where: { [primaryColumn]: Equal(id) } as FindOptionsWhere<T>,
-    relations: buildRelationLoadTree<T>({ metadata, relationNamesToDuplicate }),
-  });
-  if (!source) {
-    throw new HttpException(
-      { errors: `No ${metadata.name} found with id ${id}` },
-      HttpStatus.NOT_FOUND,
-    );
-  }
-
-  const newRoot = await repository.save(
-    repository.create(
-      cloneColumns({
-        metadata,
-        source,
-        overrides,
-        propertiesToDuplicate,
-      }) as DeepPartial<T>,
-    ),
-  );
-  const newRootId = newRoot[primaryColumn];
-
-  for (const relationName of relationNamesToDuplicate) {
-    await copyRelation({
-      manager,
+    const relationNamesToDuplicate = getRelationNamesToDuplicate({
       metadata,
-      relationName,
-      source,
-      newParentId: newRootId,
+      propertiesToDuplicate,
     });
-  }
 
-  return newRoot;
+    const primaryColumn = metadata.primaryColumns[0].propertyName;
+    const source = await repository.findOne({
+      where: { [primaryColumn]: Equal(id) } as FindOptionsWhere<T>,
+      relations: buildRelationLoadTree<T>({ metadata, relationNamesToDuplicate }),
+    });
+    if (!source) {
+      throw new HttpException(
+        { errors: `No ${metadata.name} found with id ${id}` },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const newRoot = await repository.save(
+      repository.create(
+        cloneColumns({
+          metadata,
+          source,
+          overrides,
+          propertiesToDuplicate,
+        }) as DeepPartial<T>,
+      ),
+    );
+    const newRootId = newRoot[primaryColumn];
+
+    for (const relationName of relationNamesToDuplicate) {
+      await copyRelation({
+        manager: queryRunner.manager,
+        metadata,
+        relationName,
+        source,
+        newParentId: newRootId,
+      });
+    }
+
+    await queryRunner.commitTransaction();
+    return newRoot;
+  } catch (error) {
+    if (queryRunner.isTransactionActive) {
+      await queryRunner.rollbackTransaction();
+    }
+    throw error;
+  } finally {
+    await queryRunner.release();
+  }
 }
 
 function getRelationNamesToDuplicate({

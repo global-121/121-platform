@@ -249,32 +249,13 @@ export class ProgramService {
     overrides: Partial<CreateProgramDto>;
     userId: number;
   }): Promise<ProgramEntity> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
-    let newProgram: ProgramEntity;
-    try {
-      newProgram = await duplicateEntity({
-        manager: queryRunner.manager,
-        entity: ProgramEntity,
-        id: copyFromProgramId,
-        propertiesToDuplicate,
-        overrides,
-      });
-
-      await queryRunner.commitTransaction();
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-      if (err instanceof HttpException) {
-        throw err;
-      }
-      throw new HttpException(
-        `Error duplicating program: ${err instanceof Error ? err.message : String(err)}`,
-        HttpStatus.BAD_GATEWAY,
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    const newProgram = await duplicateEntity({
+      dataSource: this.dataSource,
+      entity: ProgramEntity,
+      id: copyFromProgramId,
+      propertiesToDuplicate,
+      overrides,
+    });
 
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.Admin],
