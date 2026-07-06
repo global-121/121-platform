@@ -69,9 +69,11 @@ export class ProgramFspConfigurationMapper {
     if (!properties) {
       return [];
     }
-    return properties.map((property) =>
-      ProgramFspConfigurationMapper.mapPropertyEntityToDto(property),
-    );
+    return properties
+      .map((property) =>
+        ProgramFspConfigurationMapper.mapPropertyEntityToDto(property),
+      )
+      .sort((a, b) => a.name.localeCompare(b.name));
   }
 
   public static mapPropertyEntityToDto(

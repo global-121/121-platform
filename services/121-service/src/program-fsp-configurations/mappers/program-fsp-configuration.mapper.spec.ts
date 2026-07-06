@@ -57,6 +57,41 @@ describe('ProgramFspConfigurationMapper', () => {
       });
     });
 
+    it('should sort properties by name', () => {
+      // Arrange
+      const testEntity = new ProgramFspConfigurationEntity();
+      testEntity.programId = 1;
+      testEntity.fspName = Fsps.intersolveVisa;
+      testEntity.name = 'Intersolve Visa';
+      testEntity.label = { en: 'Visa Debit Card' };
+      testEntity.state = FspConfigurationStates.configured;
+      testEntity.properties = [
+        {
+          name: FspConfigurationProperties.coverLetterCode,
+          updated: new Date('2023-02-01'),
+        },
+        {
+          name: FspConfigurationProperties.brandCode,
+          updated: new Date('2023-01-01'),
+        },
+        {
+          name: FspConfigurationProperties.fundingTokenCode,
+          updated: new Date('2023-03-01'),
+        },
+      ] as ProgramFspConfigurationPropertyEntity[];
+
+      // Act
+      const result = ProgramFspConfigurationMapper.mapEntityToDto(testEntity);
+
+      // Assert
+      const resultNames = result.properties.map((property) => property.name);
+      expect(resultNames).toEqual([
+        FspConfigurationProperties.brandCode,
+        FspConfigurationProperties.coverLetterCode,
+        FspConfigurationProperties.fundingTokenCode,
+      ]);
+    });
+
     it('should handle an entity with no properties', () => {
       // Arrange
       const testEntity = new ProgramFspConfigurationEntity();
@@ -99,9 +134,11 @@ describe('ProgramFspConfigurationMapper', () => {
       };
 
       // Act
-      const entity = ProgramFspConfigurationMapper.mapDtoToEntity(
-        { dto, programId, configState: FspConfigurationStates.configured },
-      );
+      const entity = ProgramFspConfigurationMapper.mapDtoToEntity({
+        dto,
+        programId,
+        configState: FspConfigurationStates.configured,
+      });
 
       // Assert
       expect(entity.programId).toBe(programId);

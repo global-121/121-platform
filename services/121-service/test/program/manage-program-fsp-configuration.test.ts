@@ -528,7 +528,7 @@ describe('Manage FSP-configurations', () => {
       expect(!isNaN(date.getTime())).toBeTruthy();
     });
     // Ensure that the update data is reflected in the get response so actually updated in the db
-    expect(getResultConfig?.properties.sort()).toEqual(result.body.sort());
+    expect(getResultConfig?.properties).toEqual(result.body);
   });
 
   it('should patch a property of an existing program FSP-configuration', async () => {
