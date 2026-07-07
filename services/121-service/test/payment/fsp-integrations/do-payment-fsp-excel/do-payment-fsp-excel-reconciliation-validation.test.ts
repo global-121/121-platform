@@ -5,6 +5,7 @@ import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/sh
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { EXCEL_FILE_UPLOAD_LIMITS } from '@121-service/src/shared/file-upload-limits';
 import {
   getTransactionsByPaymentIdPaginated,
   importFspReconciliationData,
@@ -13,6 +14,7 @@ import { postProgramFspConfiguration } from '@121-service/test/helpers/program-f
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
+  getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
@@ -167,6 +169,28 @@ describe('Reconciliate excel FSP data', () => {
     expect(importResult.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(importResult.body).toMatchSnapshot();
     // Expect that all transactions are still waiting after failed reconciliation attempts - no changes should be made
+    expect(transactionStatuses).toEqual(waitingTransactionStatuses);
+  });
+
+  it('Should give a friendly error when the reconciliation file exceeds the upload size limit', async () => {
+    const fileSizeLimit = EXCEL_FILE_UPLOAD_LIMITS.fileSize!;
+
+    const response = await getServer()
+      .post(
+        `/programs/${programIdWesteros}/payments/${paymentId}/excel-reconciliation`,
+      )
+      .set('Cookie', [accessToken])
+      .attach(
+        'file',
+        Buffer.alloc(fileSizeLimit + 1, 'a'),
+        'too-large-reconciliation.csv',
+      );
+    const transactionStatuses = await getTransactionStatuses();
+
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toBe(
+      'Upload rejected: the file exceeds the maximum allowed size for this endpoint.',
+    );
     expect(transactionStatuses).toEqual(waitingTransactionStatuses);
   });
 

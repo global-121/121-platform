@@ -11,6 +11,7 @@ import {
   getAttachments,
   renameAttachment,
   uploadAttachment,
+  uploadAttachments,
 } from '@121-service/test/helpers/program-attachments.helper';
 import { getAllUsers } from '@121-service/test/helpers/user.helper';
 import {
@@ -90,6 +91,22 @@ describe('Program Attachments', () => {
     // Assert
     expect(response.status).toBe(HttpStatus.CREATED);
     expect(response.body).toHaveProperty('id');
+  });
+
+  it('should return a friendly error when too many files are uploaded', async () => {
+    const programId = await setup();
+
+    const response = await uploadAttachments({
+      programId,
+      filePaths: [testImagePath, testImagePath],
+      filename: testImageFilename,
+      accessToken,
+    });
+
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toBe(
+      'Upload rejected: too many files. Only 1 file is allowed per upload request.',
+    );
   });
 
   it('should rename an attachment in a program', async () => {

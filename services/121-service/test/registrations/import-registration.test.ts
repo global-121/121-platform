@@ -7,6 +7,7 @@ import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
+import { REGISTRATION_IMPORT_CSV_FILE_UPLOAD_LIMITS } from '@121-service/src/shared/file-upload-limits';
 import {
   registrationScopedKisumuEastPv,
   registrationScopedTurkanaNorthPv,
@@ -25,6 +26,7 @@ import {
 import {
   getAccessToken,
   getAccessTokenScoped,
+  getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
@@ -37,6 +39,25 @@ import {
 
 describe('Import a registration', () => {
   let accessToken: string;
+
+  it('should return a friendly error when the import file exceeds the upload size limit', async () => {
+    // Arrange
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
+    accessToken = await getAccessToken();
+    const fileSizeLimit = REGISTRATION_IMPORT_CSV_FILE_UPLOAD_LIMITS.fileSize!;
+
+    // Act
+    const response = await getServer()
+      .post(`/programs/${programIdOCW}/registrations/import`)
+      .set('Cookie', [accessToken])
+      .attach('file', Buffer.alloc(fileSizeLimit + 1, 'a'), 'too-large.csv');
+
+    // Assert
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toBe(
+      'Upload rejected: the file exceeds the maximum allowed size for this endpoint.',
+    );
+  });
 
   it('should import registrations', async () => {
     // Arrange

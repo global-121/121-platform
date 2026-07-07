@@ -18,6 +18,7 @@ import {
 } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { INTERFACE_NAME_HEADER } from '@121-service/src/shared/enum/interface-names.enum';
+import { MulterExceptionFilter } from '@121-service/src/shared/filters/multer-exception.filter';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { ValidationPipeOptions } from '@121-service/src/validation-options/validation-pipe-options.const';
 
@@ -179,6 +180,7 @@ async function bootstrap(): Promise<void> {
   });
 
   app.useGlobalPipes(new ValidationPipe(ValidationPipeOptions));
+  app.useGlobalFilters(new MulterExceptionFilter());
   app.use(bodyParser.json({ limit: '25mb' }));
   app.use(
     bodyParser.urlencoded({
