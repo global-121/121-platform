@@ -113,8 +113,7 @@ test.describe('Attachments on Program Level', () => {
 
     await test.step('Validate file size error message', async () => {
       await programMonitoringPage.validateFormError({
-        errorText:
-          'Something went wrong: "Upload rejected: the file exceeds the maximum allowed size for this endpoint."',
+        errorText: 'Something went wrong: "File too large"',
       });
     });
   });

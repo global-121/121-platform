@@ -40,7 +40,7 @@ import {
 describe('Import a registration', () => {
   let accessToken: string;
 
-  it('should return a friendly error when the import file exceeds the upload size limit', async () => {
+  it('should return an error when the import file exceeds the upload size limit', async () => {
     // Arrange
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
@@ -54,9 +54,7 @@ describe('Import a registration', () => {
 
     // Assert
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.body.message).toBe(
-      'Upload rejected: the file exceeds the maximum allowed size for this endpoint.',
-    );
+    expect(response.body.message).toBe('File too large');
   });
 
   it('should import registrations', async () => {

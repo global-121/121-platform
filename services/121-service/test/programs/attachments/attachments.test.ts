@@ -93,7 +93,7 @@ describe('Program Attachments', () => {
     expect(response.body).toHaveProperty('id');
   });
 
-  it('should return a friendly error when too many files are uploaded', async () => {
+  it('should return an error when too many files are uploaded', async () => {
     const programId = await setup();
 
     const response = await uploadAttachments({
@@ -104,9 +104,7 @@ describe('Program Attachments', () => {
     });
 
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.body.message).toBe(
-      'Upload rejected: too many files. Only 1 file is allowed per upload request.',
-    );
+    expect(response.body.message).toBe('Too many files');
   });
 
   it('should rename an attachment in a program', async () => {

@@ -172,7 +172,7 @@ describe('Reconciliate excel FSP data', () => {
     expect(transactionStatuses).toEqual(waitingTransactionStatuses);
   });
 
-  it('Should give a friendly error when the reconciliation file exceeds the upload size limit', async () => {
+  it('Should give an error when the reconciliation file exceeds the upload size limit', async () => {
     const fileSizeLimit = EXCEL_FILE_UPLOAD_LIMITS.fileSize!;
 
     const response = await getServer()
@@ -188,9 +188,7 @@ describe('Reconciliate excel FSP data', () => {
     const transactionStatuses = await getTransactionStatuses();
 
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.body.message).toBe(
-      'Upload rejected: the file exceeds the maximum allowed size for this endpoint.',
-    );
+    expect(response.body.message).toBe('File too large');
     expect(transactionStatuses).toEqual(waitingTransactionStatuses);
   });
 

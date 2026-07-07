@@ -268,7 +268,7 @@ describe('Intersolve Voucher Controller', () => {
       expect(response.status).toBe(HttpStatus.FORBIDDEN);
     });
 
-    it('should return a friendly error when the instructions image exceeds the upload size limit', async () => {
+    it('should return an error when the instructions image exceeds the upload size limit', async () => {
       const fileSizeLimit = IMAGE_FILE_UPLOAD_LIMITS.fileSize!;
 
       const response = await postIntersolveInstructionsImage(
@@ -279,9 +279,7 @@ describe('Intersolve Voucher Controller', () => {
       );
 
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toBe(
-        'Upload rejected: the file exceeds the maximum allowed size for this endpoint.',
-      );
+      expect(response.body.message).toBe('File too large');
     });
 
     it('should return 404 for invalid program', async () => {

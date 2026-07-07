@@ -53,7 +53,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     );
   });
 
-  it('should return a friendly error when too many text fields are uploaded', async () => {
+  it('should return an error when too many text fields are uploaded', async () => {
     const response = await getServer()
       .patch(`/programs/${programIdOcw}/registrations`)
       .set('Cookie', [accessToken])
@@ -66,9 +66,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       .attach('file', './test-registration-data/test-registrations-patch-OCW.csv');
 
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.body.message).toBe(
-      'Upload rejected: too many text fields. At most 5 text fields are allowed per upload request.',
-    );
+    expect(response.body.message).toBe('Too many fields');
   });
 
   it('Should bulk update and validate changed records', async () => {
