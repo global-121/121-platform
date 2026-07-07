@@ -2424,6 +2424,9 @@
       <trans-unit id="page-title-users" datatype="html">
         <source>Users</source>
       </trans-unit>
+      <trans-unit id="payment-approval-remove-step" datatype="html">
+        <source>Remove approval step</source>
+      </trans-unit>
       <trans-unit id="payment-count" datatype="html">
         <source>Number of payments</source>
       </trans-unit>

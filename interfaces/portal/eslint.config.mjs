@@ -169,6 +169,8 @@ export default defineConfig(
             'p-fileUpload[mode]',
             'p-fileUpload[removeStyleClass]',
             'p-iconField[iconPosition]',
+            'p-inputNumber[currencyDisplay]',
+            'p-inputNumber[mode]',
             'p-inputSwitch[inputId]',
             'p-select[optionValue]',
             'p-splitButton[icon]',
