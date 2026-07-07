@@ -3,8 +3,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AxiosResponse } from 'axios';
 import { Readable } from 'node:stream';
 import { Equal, Repository } from 'typeorm';
 
@@ -17,7 +17,6 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
 const ALLOWED_IMAGE_MIMETYPES = new Set([
   'image/jpeg',
   'image/png',
-  'image/svg',
 ]);
 
 @Injectable()
