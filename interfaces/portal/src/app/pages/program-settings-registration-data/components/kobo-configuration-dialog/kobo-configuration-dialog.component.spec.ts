@@ -1,8 +1,10 @@
+import { Signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {
   provideTanStackQuery,
   QueryClient,
+  queryOptions,
 } from '@tanstack/angular-query-experimental';
 import { MessageService } from 'primeng/api';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -28,11 +30,11 @@ describe('KoboConfigurationDialogComponent', () => {
         {
           provide: KoboApiService,
           useValue: {
-            getKoboIntegration: () => () => ({
-              data: () => null,
-              isLoading: false,
-              error: null,
-            }),
+            getKoboIntegration: (programId: Signal<number | string>) => () =>
+              queryOptions({
+                queryKey: ['mock-api', 'koboIntegration', programId()],
+                queryFn: () => Promise.resolve(null),
+              }),
           },
         },
         ToastService,
