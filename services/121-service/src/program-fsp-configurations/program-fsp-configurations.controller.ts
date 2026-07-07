@@ -119,6 +119,24 @@ export class ProgramFspConfigurationsController {
     description:
       'Program FSP configurations have been successfully updated.',
   })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['fsps'],
+      properties: {
+        fsps: {
+          type: 'array',
+          items: {
+            type: 'string',
+            enum: Object.values(Fsps),
+          },
+        },
+      },
+      example: {
+        fsps: [Fsps.intersolveVisa, Fsps.airtel],
+      },
+    },
+  })
   @Put(':programId/fsp-configurations')
   public async updateProgramFspConfigurations(
     @Param('programId', ParseIntPipe)
