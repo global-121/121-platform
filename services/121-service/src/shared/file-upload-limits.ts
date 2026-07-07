@@ -13,8 +13,8 @@ type FileUploadLimits = NonNullable<MulterModuleOptions['limits']>;
 // See: https://github.com/expressjs/multer#security
 
 const BYTES_PER_MEGABYTE = 1024 * 1024;
-export const MAX_FILES_PER_UPLOAD = 1;
-export const MAX_TEXT_FIELDS_PER_UPLOAD = 5;
+const MAX_FILES_PER_UPLOAD = 1;
+const MAX_TEXT_FIELDS_PER_UPLOAD = 5;
 const BYTES_PER_ALLOWED_ROW = 1024;
 
 export const REGISTRATION_IMPORT_CSV_FILE_UPLOAD_LIMITS: FileUploadLimits = {
