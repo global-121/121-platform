@@ -60,7 +60,7 @@ export default defineConfig(
   eslintConfig121Platform.configs.typescript,
   {
     name: 'TypeScript files',
-    files: ['**/*.ts'],
+    files: ['**/*.ts', '**/*.mts'],
     extends: [
       eslintConfig121Platform.configs.browser,
       customRulesConfig,

@@ -209,9 +209,11 @@
               "*.js",
               "*.mjs",
               "*.ts",
+              "*.mts",
               "src/**/*.js",
               "src/**/*.mjs",
               "src/**/*.ts",
+              "src/**/*.mts",
               "src/**/*.html"
             ]
           }

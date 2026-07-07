@@ -9,7 +9,7 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ChartData } from 'chart.js';
 import { ChartModule } from 'primeng/chart';
-import tailwindConfig from 'tailwind.config';
+import tailwindConfig from 'tailwind.config.mjs';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 

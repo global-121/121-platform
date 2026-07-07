@@ -11,7 +11,7 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ChartData, ChartDataset } from 'chart.js';
 import { ChartModule } from 'primeng/chart';
-import tailwindConfig from 'tailwind.config';
+import tailwindConfig from 'tailwind.config.mjs';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 

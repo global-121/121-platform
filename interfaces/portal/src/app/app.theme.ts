@@ -1,7 +1,6 @@
-//mypreset.ts
 import { definePreset } from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
-import tailwindConfig from 'tailwind.config';
+import tailwindConfig from 'tailwind.config.mjs';
 
 const colors = tailwindConfig.theme.colors;
 
