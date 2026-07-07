@@ -34,7 +34,7 @@ import {
   patchProgramFspConfigurationProperty,
   postProgramFspConfiguration,
   postProgramFspConfigurationProperties,
-  putProgramFspConfigurationsByFsps,
+  putProgramFspConfigurations,
 } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   awaitChangeRegistrationStatus,
@@ -240,7 +240,7 @@ describe('Manage FSP-configurations', () => {
     const fspNamesToCreate = [Fsps.airtel, Fsps.nedbank];
 
     // Act
-    const result = await putProgramFspConfigurationsByFsps({
+    const result = await putProgramFspConfigurations({
       programId: programIdVisa,
       fsps: fspNamesToCreate,
       accessToken,
@@ -265,7 +265,7 @@ describe('Manage FSP-configurations', () => {
     });
 
     // Act
-    const result = await putProgramFspConfigurationsByFsps({
+    const result = await putProgramFspConfigurations({
       programId: programIdVisa,
       fsps: [Fsps.intersolveVisa, Fsps.airtel],
       accessToken,
@@ -310,7 +310,7 @@ describe('Manage FSP-configurations', () => {
     });
 
     // Act
-    const result = await putProgramFspConfigurationsByFsps({
+    const result = await putProgramFspConfigurations({
       programId: programIdVisa,
       fsps: [Fsps.intersolveVisa],
       accessToken,

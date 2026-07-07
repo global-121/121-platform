@@ -119,7 +119,7 @@ export class ProgramFspConfigurationsController {
     description:
       'Program FSP configurations have been successfully updated.',
   })
-  @Put(':programId/fsp-configurations/fsps')
+  @Put(':programId/fsp-configurations')
   public async updateProgramFspConfigurations(
     @Param('programId', ParseIntPipe)
     programId: number,

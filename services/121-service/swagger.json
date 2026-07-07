@@ -638,7 +638,7 @@
   },
   {
     "method": "put",
-    "path": "/api/programs/{programId}/fsp-configurations/fsps",
+    "path": "/api/programs/{programId}/fsp-configurations",
     "params": [
       "programId"
     ]
