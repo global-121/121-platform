@@ -225,14 +225,7 @@ describe('Manage FSP-configurations', () => {
       expect(property.value).toBe(hiddenString); // All values from intersolve voucher are hidden
     });
     // Ensure that the update data is reflected in the get response so actually updated in the db
-    expect(getResultConfig).toBeDefined();
-    expect(
-      getResultConfig!.properties.map((property) => property.name).sort(),
-    ).toEqual(result.body.properties.map((property) => property.name).sort());
-    expect({ ...getResultConfig!, properties: undefined }).toEqual({
-      ...result.body,
-      properties: undefined,
-    });
+    expect(getResultConfig).toEqual(result.body);
   });
 
   it('should create multiple FSP-configurations from a list of fsp names', async () => {
@@ -259,6 +252,9 @@ describe('Manage FSP-configurations', () => {
   });
 
   it('should add a FSP configuration to program FSP configurations', async () => {
+    // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
+
     const beforeResult = await getProgramFspConfigurations({
       programId,
       accessToken,
@@ -286,13 +282,19 @@ describe('Manage FSP-configurations', () => {
       .sort();
 
     expect(beforeFspNames).toEqual(
-      [Fsps.intersolveVisa, Fsps.intersolveVoucherWhatsapp].sort(),
+      [
+        Fsps.intersolveVisa,
+        Fsps.intersolveVoucherWhatsapp,
+        Fsps.commercialBankEthiopia,
+      ].sort(),
     );
     expect(afterFspNames).toEqual([Fsps.intersolveVisa, Fsps.airtel].sort());
   });
 
   it('should delete a FSP configuration from program FSP configurations', async () => {
     // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
+
     await postProgramFspConfiguration({
       programId,
       body: {
@@ -331,7 +333,12 @@ describe('Manage FSP-configurations', () => {
       .sort();
 
     expect(beforeFspNames).toEqual(
-      [Fsps.intersolveVisa, Fsps.intersolveVoucherWhatsapp, Fsps.airtel].sort(),
+      [
+        Fsps.intersolveVisa,
+        Fsps.intersolveVoucherWhatsapp,
+        Fsps.commercialBankEthiopia,
+        Fsps.airtel,
+      ].sort(),
     );
     expect(afterFspNames).toEqual([Fsps.intersolveVisa].sort());
   });
