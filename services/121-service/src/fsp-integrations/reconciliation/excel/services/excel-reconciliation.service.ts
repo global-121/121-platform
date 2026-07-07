@@ -17,6 +17,7 @@ import { TransactionsService } from '@121-service/src/payments/transactions/tran
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
+import { MAX_EXCEL_RECONCILIATION_ROWS_PER_UPLOAD } from '@121-service/src/shared/file-upload-row-limits';
 import {
   CsvContents,
   FileImportService,
@@ -127,10 +128,9 @@ export class ExcelReconciliationService {
         program.programFspConfigurations,
       );
 
-    const maxRecords = 10_000;
     const csvContents: CsvContents = await this.fileImportService.validateCsv(
       file,
-      maxRecords,
+      MAX_EXCEL_RECONCILIATION_ROWS_PER_UPLOAD,
     );
 
     this.excelReconciliationValidationService.validateStatusColumn(csvContents);
