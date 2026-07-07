@@ -59,7 +59,7 @@ describe('KoboConfigurationDialogComponent', () => {
   });
 
   describe('onFormUrlUpdate', () => {
-    it('should update Kobo integration when a valid URL is provided', () => {
+    it('should update Kobo-integration-form when a valid URL is provided', () => {
       // Arrange
       const testInput = 'https://kobo.example.org/#/forms/asset-id-123/summary';
 
@@ -84,7 +84,7 @@ describe('KoboConfigurationDialogComponent', () => {
       );
     });
 
-    it('should NOT update Kobo integration when an invalid URL is provided', () => {
+    it('should NOT update Kobo-integration-form when an invalid URL is provided', () => {
       // Arrange
       const testInput = 'not-a-valid-url';
 
