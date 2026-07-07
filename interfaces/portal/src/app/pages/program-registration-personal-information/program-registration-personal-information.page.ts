@@ -113,6 +113,7 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
             };
           case RegistrationAttributeTypes.tel:
           case RegistrationAttributeTypes.text:
+          default:
             return {
               ...attribute,
               type: 'text',
