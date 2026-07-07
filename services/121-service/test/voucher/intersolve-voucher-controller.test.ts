@@ -278,7 +278,7 @@ describe('Intersolve Voucher Controller', () => {
         'too-large.png',
       );
 
-      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.status).toBe(HttpStatus.PAYLOAD_TOO_LARGE);
       expect(response.body.message).toBe('File too large');
     });
 

@@ -53,7 +53,7 @@ describe('Import a registration', () => {
       .attach('file', Buffer.alloc(fileSizeLimit + 1, 'a'), 'too-large.csv');
 
     // Assert
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.status).toBe(HttpStatus.PAYLOAD_TOO_LARGE);
     expect(response.body.message).toBe('File too large');
   });
 

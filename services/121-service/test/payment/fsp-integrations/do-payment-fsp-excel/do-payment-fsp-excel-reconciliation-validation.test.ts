@@ -187,7 +187,7 @@ describe('Reconciliate excel FSP data', () => {
       );
     const transactionStatuses = await getTransactionStatuses();
 
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.status).toBe(HttpStatus.PAYLOAD_TOO_LARGE);
     expect(response.body.message).toBe('File too large');
     expect(transactionStatuses).toEqual(waitingTransactionStatuses);
   });
