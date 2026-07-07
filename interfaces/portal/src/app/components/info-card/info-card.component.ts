@@ -10,17 +10,13 @@ import { CardModule } from 'primeng/card';
 })
 export class AppInfoCardComponent {
   readonly title = input.required<string>();
+
   readonly subtitle = input.required<string>();
+
   readonly omitIcon = input<boolean>();
 
-  sizeClassMap: Record<string, string> = {
-    small: 'h-8',
-    medium: 'h-16',
-    large: 'h-24',
-  };
-
   readonly customIcon = input<{
-    size: 'large' | 'medium' | 'small';
+    size?: 'large' | 'medium' | 'small';
     icon: string;
   }>();
 }

@@ -2,15 +2,22 @@
   <div class="py-4 text-center">
     @if (customIcon(); as icon) {
       <img
-        class="mb-6 inline-block {{ sizeClassMap[icon.size] || 'block-16' }}"
-        src="assets/{{ icon.icon }}.svg"
+        class="mbe-6 inline-block block-16"
+        [class]="{
+          'block-8': icon.size === 'small',
+          'block-16': icon.size === 'medium',
+          'block-24': icon.size === 'large',
+        }"
+        [src]="'assets/' + icon.icon + '.svg'"
         alt=""
+        role="presentation"
       />
     } @else if (!omitIcon()) {
       <img
         class="mbe-6 inline-block block-16"
         src="assets/no-results.svg"
         alt=""
+        role="presentation"
       />
     }
 
