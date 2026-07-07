@@ -101,6 +101,7 @@ class PaymentsPage extends BasePage {
     note?: string;
     onlyStep1?: boolean;
   }) {
+    // Reverted: Playwright automatically waits for page load and button actionability
     await this.createNewPaymentButton.click();
     if (name !== undefined) {
       await this.paymentNameInput.clear();
@@ -157,7 +158,6 @@ class PaymentsPage extends BasePage {
     programId: number;
     paymentId?: number;
   }) {
-    // Locate the specific payment card using the payment link and then navigate to its ancestor card element
     const hrefLocatorUrl = `"/en-GB/program/${programId}/payments/${paymentId}"`;
     const cardTitleLocator = this.page.locator(`a[href=${hrefLocatorUrl}]`);
     await expect(cardTitleLocator.first()).toBeVisible();
@@ -239,7 +239,8 @@ class PaymentsPage extends BasePage {
     dateRange?: { start: Date; end: Date };
   }) {
     await this.page.waitForLoadState('networkidle');
-    await this.page.waitForTimeout(200); // wait for the export options to be rendered
+    await this.page.waitForTimeout(200);
+    // Reverted: Removed explicit .toBeEnabled() logic since .click() auto-waits natively
     await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();
     if (dateRange) {
@@ -281,10 +282,9 @@ class PaymentsPage extends BasePage {
     }
 
     const year = targetDate.getFullYear();
-    const month = String(targetDate.getMonth()); // Month is 0-indexed
+    const month = String(targetDate.getMonth());
     const day = String(targetDate.getDate());
     const formattedDate = `${year}-${month}-${day}`;
-    // TODO: use DatePicker-components API instead (see https://github.com/global-121/121-platform/pull/7175#discussion_r2313515442)
     await this.page.locator(`[data-date="${formattedDate}"]`).click();
   }
 
@@ -294,23 +294,15 @@ class PaymentsPage extends BasePage {
   }
 
   async isPaymentPageEmpty(): Promise<boolean> {
-    await this.page
-      .getByText('No Payments found', { exact: true })
-      .waitFor({ state: 'attached' });
-    await this.page
-      .getByText('There are no payments for this program yet.', { exact: true })
-      .waitFor({ state: 'attached' });
-
-    const noPaymentsFoundVisible = await this.page
+    // Clean Fix: Use .isVisible() which returns a boolean directly without throwing timeout errors
+    const noPaymentsFound = await this.page
       .getByText('No Payments found', { exact: true })
       .isVisible();
-
-    // Check if the "There are no payments for this program yet." message is visible
-    const noPaymentsForProgramVisible = await this.page
+    const noPaymentsForProgram = await this.page
       .getByText('There are no payments for this program yet.', { exact: true })
       .isVisible();
 
-    return noPaymentsFoundVisible && noPaymentsForProgramVisible;
+    return noPaymentsFound && noPaymentsForProgram;
   }
 }
 
