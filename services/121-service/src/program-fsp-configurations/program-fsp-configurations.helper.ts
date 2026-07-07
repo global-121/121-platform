@@ -1,6 +1,4 @@
-import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator';
-import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
-import { HttpException } from '@nestjs/common/exceptions/http.exception';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { FSP_MODES } from '@121-service/src/fsp-integrations/settings/fsp-env-variable-settings.const';
 import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-types.const';
@@ -94,7 +92,7 @@ export class ProgramFspConfigurationsHelperService {
   }
 
   public validateLabelHasEnglishTranslation({ label }: { label: any }): void {
-    if (!label.en) {
+    if (!label?.en) {
       throw new HttpException(
         `Label must have an English translation`,
         HttpStatus.BAD_REQUEST,
@@ -115,7 +113,11 @@ export class ProgramFspConfigurationsHelperService {
     }
   }
 
-  public getAllowlistedPropertyNamesForFsp({ fspName }: { fspName: Fsps }): string[] {
+  public getAllowlistedPropertyNamesForFsp({
+    fspName,
+  }: {
+    fspName: Fsps;
+  }): string[] {
     const fspConfigurationProperties = getFspConfigurationProperties(fspName);
     if (
       !fspConfigurationProperties ||
