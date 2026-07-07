@@ -134,9 +134,11 @@ describe('ProgramFspConfigurationMapper', () => {
       };
 
       // Act
-      const entity = ProgramFspConfigurationMapper.mapDtoToEntity(
-        { dto, programId, configState: FspConfigurationStates.configured },
-      );
+      const entity = ProgramFspConfigurationMapper.mapDtoToEntity({
+        dto,
+        programId,
+        configState: FspConfigurationStates.configured,
+      });
 
       // Assert
       expect(entity.programId).toBe(programId);

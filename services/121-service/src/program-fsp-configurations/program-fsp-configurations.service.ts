@@ -580,16 +580,19 @@ export class ProgramFspConfigurationsService {
     const fspNamesToAdd = fsps.filter(
       (fspName) => !existingFspNames.includes(fspName),
     );
-    if (fspNamesToAdd.length > 0) {
-      for (const fspName of fspNamesToAdd) {
-        const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
-          {
-            name: fspName,
-            label: { ...FSP_SETTINGS[fspName].defaultLabel },
-            fspName,
-          };
-        await this.create(programId, createProgramFspConfigurationDto);
-      }
+
+    if (fspNamesToAdd.length === 0) {
+      return;
+    }
+
+    for (const fspName of fspNamesToAdd) {
+      const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
+        {
+          name: fspName,
+          label: { ...FSP_SETTINGS[fspName].defaultLabel },
+          fspName,
+        };
+      await this.create(programId, createProgramFspConfigurationDto);
     }
   }
 

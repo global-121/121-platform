@@ -52,7 +52,6 @@ import {
 // Only tests most of the happy paths, edge cases are mostly covered in the unit tests
 
 const hiddenString = '[********]';
-const programId = programIdVisa;
 
 // A minimal program the tests build on.
 const baseProgram: CreateProgramDto = {
