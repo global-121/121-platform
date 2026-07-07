@@ -637,14 +637,7 @@
     ]
   },
   {
-    "method": "post",
-    "path": "/api/programs/{programId}/fsp-configurations/fsps",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "patch",
+    "method": "put",
     "path": "/api/programs/{programId}/fsp-configurations/fsps",
     "params": [
       "programId"

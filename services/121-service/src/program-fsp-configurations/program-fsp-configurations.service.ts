@@ -523,25 +523,7 @@ export class ProgramFspConfigurationsService {
     );
   }
 
-  public async createFspConfigurationsForProgram({
-    programId,
-    fspNames,
-  }: {
-    programId: number;
-    fspNames: Fsps[];
-  }): Promise<void> {
-    for (const fspName of fspNames) {
-      const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
-        {
-          name: fspName,
-          label: { ...FSP_SETTINGS[fspName].defaultLabel },
-          fspName,
-        };
-      await this.create(programId, createProgramFspConfigurationDto);
-    }
-  }
-
-  public async updateFspConfigurationsForProgram({
+  public async updateAvailableFspsForProgram({
     programId,
     fsps,
   }: {
@@ -553,25 +535,61 @@ export class ProgramFspConfigurationsService {
         where: { programId: Equal(programId) },
       });
 
-    const existingFspNames = programFspConfigurations.map(
-      (config) => config.fspName,
-    );
+    await this.deleteObsoleteFsps({
+      programFspConfigurations,
+      programId,
+      fsps,
+    });
 
+    await this.createMissingFsps({
+      programFspConfigurations,
+      programId,
+      fsps,
+    });
+  }
+
+  private async deleteObsoleteFsps({
+    programFspConfigurations,
+    programId,
+    fsps,
+  }: {
+    programFspConfigurations: ProgramFspConfigurationEntity[];
+    programId: number;
+    fsps: Fsps[];
+  }): Promise<void>  {
     const configsToDelete = programFspConfigurations.filter(
       (config) => !fsps.includes(config.fspName),
     );
     for (const config of configsToDelete) {
       await this.delete(programId, config.name);
     }
+  }
 
+  private async createMissingFsps({
+    programFspConfigurations,
+    programId,
+    fsps,
+  }: {
+    programFspConfigurations: ProgramFspConfigurationEntity[];
+    programId: number;
+    fsps: Fsps[];
+  }): Promise<void> {
+    const existingFspNames = programFspConfigurations.map(
+      (config) => config.fspName,
+    );
     const fspNamesToAdd = fsps.filter(
       (fspName) => !existingFspNames.includes(fspName),
     );
     if (fspNamesToAdd.length > 0) {
-      await this.createFspConfigurationsForProgram({
-        programId,
-        fspNames: fspNamesToAdd,
-      });
+      for (const fspName of fspNamesToAdd) {
+        const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
+          {
+            name: fspName,
+            label: { ...FSP_SETTINGS[fspName].defaultLabel },
+            fspName,
+          };
+        await this.create(programId, createProgramFspConfigurationDto);
+      }
     }
   }
 

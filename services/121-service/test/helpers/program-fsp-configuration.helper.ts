@@ -47,22 +47,7 @@ export async function patchProgramFspConfiguration({
     .send(body);
 }
 
-export async function postProgramFspConfigurationsByFspNames({
-  programId,
-  fspNames,
-  accessToken,
-}: {
-  programId: number;
-  fspNames: Fsps[];
-  accessToken: string;
-}): Promise<request.Response> {
-  return await getServer()
-    .post(`/programs/${programId}/fsp-configurations/fsps`)
-    .set('Cookie', [accessToken])
-    .send({ fspNames });
-}
-
-export async function patchProgramFspConfigurationsByFsps({
+export async function putProgramFspConfigurationsByFsps({
   programId,
   fsps,
   accessToken,
@@ -72,7 +57,7 @@ export async function patchProgramFspConfigurationsByFsps({
   accessToken: string;
 }): Promise<request.Response> {
   return await getServer()
-    .patch(`/programs/${programId}/fsp-configurations/fsps`)
+    .put(`/programs/${programId}/fsp-configurations/fsps`)
     .set('Cookie', [accessToken])
     .send({ fsps });
 }
