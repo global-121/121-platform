@@ -9,6 +9,14 @@
       <p-accordion-header
         class="px-2 py-[0.927rem] text-black"
         [class]="!isAvailable ? 'pointer-events-none [&_.p-icon]:hidden!' : ''"
+        (click)="
+          onImagePanelClick({
+            index,
+            programId: image.programId,
+            referenceId: image.referenceId,
+            attributeName: image.attributeName,
+          })
+        "
       >
         <span class="flex items-center gap-2">
           <i class="pi pi-image"></i>
@@ -25,12 +33,11 @@
       </p-accordion-header>
       <p-accordion-content class="px-2 pbs-0">
         @if (isAvailable) {
-          <a
-            [href]="image.imageUrl"
-            target="_blank"
-            class="text-purple break-all"
-            >{{ image.imageUrl }}</a
-          >
+          <img
+            [src]="objectUrlForImageIndex({ index }) ?? image.imageUrl"
+            alt=""
+            class="object-cover inline-full"
+          />
         }
       </p-accordion-content>
     </p-accordion-panel>
