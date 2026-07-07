@@ -235,7 +235,7 @@ describe('Manage FSP-configurations', () => {
     });
   });
 
-  it('should create multiple program FSP-configurations from fsp names', async () => {
+  it('should create multiple FSP-configurations from a list of fsp names', async () => {
     // Arrange
     const fspNamesToCreate = [Fsps.airtel, Fsps.nedbank];
 
@@ -258,7 +258,7 @@ describe('Manage FSP-configurations', () => {
     );
   });
 
-  it('should add an FSP to existing FSPs', async () => {
+  it('should add a FSP configuration to program FSP configurations', async () => {
     const beforeResult = await getProgramFspConfigurations({
       programId: programIdVisa,
       accessToken,
@@ -291,7 +291,7 @@ describe('Manage FSP-configurations', () => {
     expect(afterFspNames).toEqual([Fsps.intersolveVisa, Fsps.airtel].sort());
   });
 
-  it('should remove an FSP from existing FSPs', async () => {
+  it('should delete a FSP configuration from program FSP configurations', async () => {
     // Arrange
     await postProgramFspConfiguration({
       programId: programIdVisa,

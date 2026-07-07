@@ -111,22 +111,22 @@ export class ProgramFspConfigurationsController {
   })
   @ApiOperation({
     summary:
-      'Update available program FSPs based on a list of FSP names.',
+      'Update Program FSP configurations based on a list of FSP names.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Available program FSPs have been successfully updated.',
+      'Program FSP configurations have been successfully updated.',
   })
   @Put(':programId/fsp-configurations/fsps')
-  public async updateAvailableFspsForProgram(
+  public async updateProgramFspConfigurations(
     @Param('programId', ParseIntPipe)
     programId: number,
     @Body('fsps', new ParseArrayPipe({ items: String }))
     fsps: Fsps[],
   ): Promise<void> {
-    await this.programFspConfigurationsService.updateAvailableFspsForProgram(
+    await this.programFspConfigurationsService.updateProgramFspConfigurations(
       {
         programId,
         fsps,

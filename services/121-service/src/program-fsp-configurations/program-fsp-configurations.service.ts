@@ -523,7 +523,7 @@ export class ProgramFspConfigurationsService {
     );
   }
 
-  public async updateAvailableFspsForProgram({
+  public async updateProgramFspConfigurations({
     programId,
     fsps,
   }: {
@@ -535,20 +535,20 @@ export class ProgramFspConfigurationsService {
         where: { programId: Equal(programId) },
       });
 
-    await this.deleteObsoleteFsps({
+    await this.deleteObsoleteFspConfigurations({
       programFspConfigurations,
       programId,
       fsps,
     });
 
-    await this.createMissingFsps({
+    await this.createMissingFspConfigurations({
       programFspConfigurations,
       programId,
       fsps,
     });
   }
 
-  private async deleteObsoleteFsps({
+  private async deleteObsoleteFspConfigurations({
     programFspConfigurations,
     programId,
     fsps,
@@ -565,7 +565,7 @@ export class ProgramFspConfigurationsService {
     }
   }
 
-  private async createMissingFsps({
+  private async createMissingFspConfigurations({
     programFspConfigurations,
     programId,
     fsps,
