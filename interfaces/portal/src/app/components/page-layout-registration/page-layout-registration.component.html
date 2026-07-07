@@ -16,7 +16,7 @@
     />
   }
   <p-card
-    styleClass="[&_.p-card-content]:flex-end group relative h-full [&_.p-card-title]:flex-grow"
+    class="[&_.p-card-content]:flex-end group relative block-full [&_.p-card-title]:grow"
   >
     <div
       class="border-grey-300 flex items-center gap-x-4 border-be pbe-4 inline-full"
@@ -67,7 +67,7 @@
     </div>
   </p-card>
 
-  <p-card styleClass="mt-6 [&_.p-card-body]:pt-3">
+  <p-card class="mbs-6 [&_.p-card-body]:pbs-3">
     <app-registration-menu
       data-testid="registration-menu"
       [programId]="programId()"

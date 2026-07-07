@@ -5,10 +5,11 @@
       <div class="px-6 inline-full lg:px-24">
         <p-message
           severity="warn"
-          styleClass="my-6 w-full"
-          [text]="pageLoadError()"
+          class="my-6 inline-full"
           [closable]="true"
-        />
+        >
+          {{ pageLoadError() }}
+        </p-message>
       </div>
     }
     @let lookupPhonenumber = registrationLookupService.phonenumber();
