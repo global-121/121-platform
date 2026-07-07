@@ -52,6 +52,7 @@ import {
 // Only tests most of the happy paths, edge cases are mostly covered in the unit tests
 
 const hiddenString = '[********]';
+const programId = programIdVisa;
 
 // A minimal program the tests build on.
 const baseProgram: CreateProgramDto = {
@@ -241,13 +242,13 @@ describe('Manage FSP-configurations', () => {
 
     // Act
     const result = await putProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       fsps: fspNamesToCreate,
       accessToken,
     });
 
     const getResult = await getProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       accessToken,
     });
 
@@ -260,19 +261,19 @@ describe('Manage FSP-configurations', () => {
 
   it('should add a FSP configuration to program FSP configurations', async () => {
     const beforeResult = await getProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       accessToken,
     });
 
     // Act
     const result = await putProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       fsps: [Fsps.intersolveVisa, Fsps.airtel],
       accessToken,
     });
 
     const getResult = await getProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       accessToken,
     });
 
@@ -294,7 +295,7 @@ describe('Manage FSP-configurations', () => {
   it('should delete a FSP configuration from program FSP configurations', async () => {
     // Arrange
     await postProgramFspConfiguration({
-      programId: programIdVisa,
+      programId,
       body: {
         name: Fsps.airtel,
         label: { en: 'Airtel' },
@@ -305,19 +306,19 @@ describe('Manage FSP-configurations', () => {
     });
 
     const beforeResult = await getProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       accessToken,
     });
 
     // Act
     const result = await putProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       fsps: [Fsps.intersolveVisa],
       accessToken,
     });
 
     const getResult = await getProgramFspConfigurations({
-      programId: programIdVisa,
+      programId,
       accessToken,
     });
 
