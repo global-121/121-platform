@@ -116,3 +116,21 @@ export async function setupProgramWithKoboIntegration({
 
   return { programId, assetUid };
 }
+
+export async function getKoboImageForRegistration({
+  programId,
+  submissionUuid,
+  attributeName,
+  accessToken,
+}: {
+  programId: number;
+  submissionUuid: string;
+  attributeName: string;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .get(
+      `/programs/${programId}/registrations/${submissionUuid}/kobo-images/${attributeName}`,
+    )
+    .set('Cookie', [accessToken]);
+}

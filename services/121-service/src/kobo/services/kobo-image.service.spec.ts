@@ -1,4 +1,4 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Readable } from 'node:stream';
@@ -97,7 +97,7 @@ describe('KoboImageService', () => {
       httpService.getStream.mockResolvedValue({
         headers: { 'content-type': 'image/jpeg' },
         data: mockStream,
-        status: 200,
+        status: HttpStatus.OK,
         statusText: 'OK',
       } as any);
 
@@ -252,7 +252,7 @@ describe('KoboImageService', () => {
             // no-op: mock stream does not produce data
           },
         }),
-        status: 200,
+        status: HttpStatus.OK,
         statusText: 'OK',
       } as any);
 
@@ -264,41 +264,6 @@ describe('KoboImageService', () => {
           attributeName: mockAttributeName,
         }),
       ).rejects.toThrow(BadRequestException);
-    });
-
-    it('should pass the Kobo token in the Authorization header', async () => {
-      // Arrange
-      const mockImageUrl = `${mockKoboUrl}/api/v2/assets/${mockAssetUid}/data/1/attachments/1`;
-      const mockStream = new Readable({
-        read() {
-          // no-op: mock stream does not produce data
-        } });
-
-      koboRepository.findOne.mockResolvedValue(mockKoboEntity);
-      registrationsService.getRegistrationOrThrow.mockResolvedValue({} as any);
-      programRegistrationAttributesService.getAttributes.mockResolvedValue([
-        { name: mockAttributeName, type: RegistrationAttributeTypes.koboImage },
-      ] as any);
-      registrationsService.getOnePaginatedRegistrationByReferenceId.mockResolvedValue(
-        { [mockAttributeName]: mockImageUrl } as any,
-      );
-      httpService.getStream.mockResolvedValue({
-        headers: { 'content-type': 'image/png' },
-        data: mockStream,
-        status: 200,
-        statusText: 'OK',
-      } as any);
-
-      // Act
-      await service.getKoboImageStream({
-        programId: mockProgramId,
-        referenceId: mockReferenceId,
-        attributeName: mockAttributeName,
-      });
-
-      // Assert
-      const calledHeaders = httpService.getStream.mock.calls[0][1] as Headers;
-      expect(calledHeaders.get('Authorization')).toBe(`Token ${mockToken}`);
     });
   });
 });

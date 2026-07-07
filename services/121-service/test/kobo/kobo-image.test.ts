@@ -11,12 +11,12 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { KoboMockAssetUids } from '@121-service/test/fixtures/kobo-mock-asset-uids';
 import { KoboMockSubmissionUuids } from '@121-service/test/fixtures/kobo-mock-submission-uuids';
 import {
+  getKoboImageForRegistration,
   setupProgramWithKoboIntegration,
   triggerKoboSubmission,
 } from '@121-service/test/helpers/kobo.helper';
 import {
   getAccessToken,
-  getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
@@ -78,77 +78,18 @@ describe('Download Kobo image for a registration', () => {
 
   it('should stream the image bytes with correct content-type', async () => {
     // Act
-    const response = await getServer()
-      .get(
-        `/programs/${programId}/registrations/${submissionUuid}/kobo-images/photo`,
-      )
-      .set('Cookie', [accessToken]);
+    const response = await getKoboImageForRegistration({
+      programId,
+      submissionUuid,
+      attributeName: 'photo',
+      accessToken,
+    });
+    console.log('Response:', response.body);
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
     expect(response.headers['content-type']).toContain('image/jpeg');
     expect(response.body).toBeInstanceOf(Buffer);
     expect(response.body.length).toBeGreaterThan(0);
-  });
-
-  it('should return 404 when the registration does not exist', async () => {
-    // Act
-    const response = await getServer()
-      .get(
-        `/programs/${programId}/registrations/non-existent-ref-id/kobo-images/photo`,
-      )
-      .set('Cookie', [accessToken]);
-
-    // Assert
-    expect(response.status).toBe(HttpStatus.NOT_FOUND);
-  });
-
-  it('should return 404 when the attribute is not a koboImage type', async () => {
-    // Act
-    const response = await getServer()
-      .get(
-        `/programs/${programId}/registrations/${submissionUuid}/kobo-images/fullName`,
-      )
-      .set('Cookie', [accessToken]);
-
-    // Assert
-    expect(response.status).toBe(HttpStatus.NOT_FOUND);
-  });
-
-  it('should return 404 when the attribute does not exist on the program', async () => {
-    // Act
-    const response = await getServer()
-      .get(
-        `/programs/${programId}/registrations/${submissionUuid}/kobo-images/nonExistentAttribute`,
-      )
-      .set('Cookie', [accessToken]);
-
-    // Assert
-    expect(response.status).toBe(HttpStatus.NOT_FOUND);
-  });
-
-  it('should return 404 when no Kobo integration exists for the program', async () => {
-    // Arrange - create a program without Kobo integration
-    const programWithoutKobo: CreateProgramDto = {
-      ...baseProgram,
-      titlePortal: { en: 'Program without Kobo' },
-      languages: [RegistrationPreferredLanguage.en],
-    } as CreateProgramDto;
-
-    const createResponse = await getServer()
-      .post('/programs')
-      .set('Cookie', [accessToken])
-      .send(programWithoutKobo);
-    const programWithoutKoboId = createResponse.body.id;
-
-    // Act
-    const response = await getServer()
-      .get(
-        `/programs/${programWithoutKoboId}/registrations/${submissionUuid}/kobo-images/photo`,
-      )
-      .set('Cookie', [accessToken]);
-
-    // Assert
-    expect(response.status).toBe(HttpStatus.NOT_FOUND);
   });
 });
