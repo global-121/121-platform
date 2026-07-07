@@ -77,12 +77,14 @@ export class ProgramFspConfigurationsHelperService {
     }
   }
 
-  public validatePropertyValueTypesOrThrow(
-    properties: readonly {
+  public validatePropertyValueTypesOrThrow({
+    properties,
+  }: {
+    readonly properties: readonly {
       readonly name: FspConfigurationProperties;
       readonly value: FspConfigurationPropertyType;
-    }[],
-  ): void {
+    }[];
+  }): void {
     for (const property of properties) {
       this.validatePropertyValueTypeOrThrow({
         propertyName: property.name,
@@ -91,7 +93,7 @@ export class ProgramFspConfigurationsHelperService {
     }
   }
 
-  public validateLabelHasEnglishTranslation(label: any): void {
+  public validateLabelHasEnglishTranslation({ label }: { label: any }): void {
     if (!label.en) {
       throw new HttpException(
         `Label must have an English translation`,
@@ -113,7 +115,7 @@ export class ProgramFspConfigurationsHelperService {
     }
   }
 
-  public getAllowlistedPropertyNamesForFsp(fspName: Fsps): string[] {
+  public getAllowlistedPropertyNamesForFsp({ fspName }: { fspName: Fsps }): string[] {
     const fspConfigurationProperties = getFspConfigurationProperties(fspName);
     if (
       !fspConfigurationProperties ||

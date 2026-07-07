@@ -71,9 +71,9 @@ export class ProgramFspConfigurationsService {
       fspName: programFspConfigurationDto.fspName,
     });
 
-    this.programFspConfigurationsHelperService.validateLabelHasEnglishTranslation(
-      programFspConfigurationDto.label,
-    );
+    this.programFspConfigurationsHelperService.validateLabelHasEnglishTranslation({
+      label: programFspConfigurationDto.label,
+    });
 
     const existingConfig = await this.programFspConfigurationRepository.findOne(
       {
@@ -97,9 +97,9 @@ export class ProgramFspConfigurationsService {
         fspName: programFspConfigurationDto.fspName,
       });
 
-      this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow(
-        programFspConfigurationDto.properties,
-      );
+      this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow({
+        properties: programFspConfigurationDto.properties,
+      });
     }
   }
 
@@ -197,9 +197,9 @@ export class ProgramFspConfigurationsService {
 
     // Only update the label an properties in this API call. I cannot imagine a use case where we would want to update the name or fsp name
     // Updating the FSP name would also be more complex as you would need to check if the new properties are valid for the new FSP
-    this.programFspConfigurationsHelperService.validateLabelHasEnglishTranslation(
-      updateProgramFspConfigurationDto.label,
-    );
+    this.programFspConfigurationsHelperService.validateLabelHasEnglishTranslation({
+      label: updateProgramFspConfigurationDto.label,
+    });
     config.label = updateProgramFspConfigurationDto.label;
 
     if (updateProgramFspConfigurationDto.properties) {
@@ -210,9 +210,9 @@ export class ProgramFspConfigurationsService {
         fspName: config.fspName,
       });
 
-      this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow(
-        updateProgramFspConfigurationDto.properties,
-      );
+      this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow({
+        properties: updateProgramFspConfigurationDto.properties,
+      });
 
       config.state =
         this.programFspConfigurationsHelperService.computeFspConfigurationState(
@@ -294,9 +294,9 @@ export class ProgramFspConfigurationsService {
       fspName: config.fspName,
     });
 
-    this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow(
-      inputProperties,
-    );
+    this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow({
+      properties: inputProperties,
+    });
 
     await this.validateNoDuplicateExistingProperties({
       propertyNames: inputProperties.map((p) => p.name),
@@ -570,9 +570,9 @@ export class ProgramFspConfigurationsService {
     );
 
     const allowlistedPropertyNames =
-      this.programFspConfigurationsHelperService.getAllowlistedPropertyNamesForFsp(
-        config.fspName,
-      );
+      this.programFspConfigurationsHelperService.getAllowlistedPropertyNamesForFsp({
+        fspName: config.fspName,
+      });
     if (!allowlistedPropertyNames || allowlistedPropertyNames.length === 0) {
       return [];
     }

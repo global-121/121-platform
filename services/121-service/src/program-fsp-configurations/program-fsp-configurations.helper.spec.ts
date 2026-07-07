@@ -26,7 +26,7 @@ describe('ProgramFspConfigurationsHelperService', () => {
 
   describe('computeFspConfigurationState', () => {
     it('should return configured when FSP has no required properties', () => {
-      // Intersolve Visa has no required configuration properties
+      // Safaricom has no required configuration properties
       const result = helper.computeFspConfigurationState({
         fspName: Fsps.safaricom,
         fspConfigurationProperties: [],
@@ -157,7 +157,7 @@ describe('ProgramFspConfigurationsHelperService', () => {
   describe('validatePropertyValueTypesOrThrow', () => {
     it('should not throw when all properties have valid types', () => {
       expect(() =>
-        helper.validatePropertyValueTypesOrThrow([
+        helper.validatePropertyValueTypesOrThrow({ properties: [
           {
             name: FspConfigurationProperties.columnToMatch,
             value: 'phoneNumber',
@@ -166,13 +166,13 @@ describe('ProgramFspConfigurationsHelperService', () => {
             name: FspConfigurationProperties.columnsToExport,
             value: ['col1'],
           },
-        ]),
+        ] }),
       ).not.toThrow();
     });
 
     it('should throw when any property has an invalid type', () => {
       expect(() =>
-        helper.validatePropertyValueTypesOrThrow([
+        helper.validatePropertyValueTypesOrThrow({ properties: [
           {
             name: FspConfigurationProperties.columnToMatch,
             value: 'valid',
@@ -181,37 +181,37 @@ describe('ProgramFspConfigurationsHelperService', () => {
             name: FspConfigurationProperties.maxBalanceInCents,
             value: 'not-a-number' as any,
           },
-        ]),
+        ] }),
       ).toThrow(HttpException);
     });
 
     it('should not throw for empty array', () => {
-      expect(() => helper.validatePropertyValueTypesOrThrow([])).not.toThrow();
+      expect(() => helper.validatePropertyValueTypesOrThrow({ properties: [] })).not.toThrow();
     });
   });
 
   describe('validateLabelHasEnglishTranslation', () => {
     it('should not throw when label has en property', () => {
       expect(() =>
-        helper.validateLabelHasEnglishTranslation({ en: 'English label' }),
+        helper.validateLabelHasEnglishTranslation({ label: { en: 'English label' } }),
       ).not.toThrow();
     });
 
     it('should throw when label is missing en property', () => {
       expect(() =>
-        helper.validateLabelHasEnglishTranslation({ nl: 'Dutch label' }),
+        helper.validateLabelHasEnglishTranslation({ label: { nl: 'Dutch label' } }),
       ).toThrow(HttpException);
     });
 
     it('should throw when en is empty string', () => {
       expect(() =>
-        helper.validateLabelHasEnglishTranslation({ en: '' }),
+        helper.validateLabelHasEnglishTranslation({ label: { en: '' } }),
       ).toThrow(HttpException);
     });
 
     it('should throw with BAD_REQUEST status', () => {
       expect(() =>
-        helper.validateLabelHasEnglishTranslation({ nl: 'Dutch' }),
+        helper.validateLabelHasEnglishTranslation({ label: { nl: 'Dutch' } }),
       ).toThrow(
         expect.objectContaining({
           status: HttpStatus.BAD_REQUEST,
@@ -251,15 +251,15 @@ describe('ProgramFspConfigurationsHelperService', () => {
 
   describe('getAllowlistedPropertyNamesForFsp', () => {
     it('should return empty array for FSP with no configuration properties', () => {
-      const result = helper.getAllowlistedPropertyNamesForFsp(Fsps.safaricom);
+      const result = helper.getAllowlistedPropertyNamesForFsp({ fspName: Fsps.safaricom });
 
       expect(result).toEqual([]);
     });
 
     it('should only return properties marked as public', () => {
-      const result = helper.getAllowlistedPropertyNamesForFsp(
-        Fsps.intersolveVisa,
-      );
+      const result = helper.getAllowlistedPropertyNamesForFsp({
+        fspName: Fsps.intersolveVisa,
+      });
 
       // cardDistributionByMail is the only public property for Intersolve Visa
       expect(result).toContain(
@@ -272,7 +272,7 @@ describe('ProgramFspConfigurationsHelperService', () => {
     });
 
     it('should return an array (not undefined or null)', () => {
-      const result = helper.getAllowlistedPropertyNamesForFsp(Fsps.excel);
+      const result = helper.getAllowlistedPropertyNamesForFsp({ fspName: Fsps.excel });
 
       expect(Array.isArray(result)).toBe(true);
     });
