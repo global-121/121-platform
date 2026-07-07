@@ -84,7 +84,7 @@ export class ImportFileDialogComponent {
     {
       field: 'error',
       header: $localize`:@@generic-error:Error`,
-      class: 'max-w-md',
+      class: 'max-inline-md',
     },
   ]);
 
