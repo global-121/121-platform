@@ -8,7 +8,7 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { injectQuery } from '@tanstack/angular-query-experimental';
+import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
 
@@ -52,6 +52,7 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
 
   readonly authService = inject(AuthService);
   readonly registrationApiService = inject(RegistrationApiService);
+  readonly queryClient = inject(QueryClient);
   readonly metricApiService = inject(MetricApiService);
   readonly registrationAttributeService = inject(RegistrationAttributeService);
 
@@ -63,6 +64,18 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
       }),
     ),
   );
+
+  readonly registrationReferenceId = computed(() => {
+    const registrationQueryOptions =
+      this.registrationApiService.getRegistrationById(
+        this.programId,
+        this.registrationId,
+      )();
+
+    return this.queryClient.getQueryData<{ referenceId?: string }>(
+      registrationQueryOptions.queryKey,
+    )?.referenceId;
+  });
 
   readonly isEditing = signal(false);
   readonly editPersonalInformationComponent =
@@ -154,6 +167,10 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
     this.imageDataList().map((item) => ({
       label: item.label,
       imageUrl: item.value,
+      programId: this.programId(),
+      referenceId: this.registrationReferenceId(),
+      attributeName:
+        'name' in item && typeof item.name === 'string' ? item.name : undefined,
       dataTestId: item.dataTestId,
     })),
   );
