@@ -1,10 +1,14 @@
+import { VisaCardOrderStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-order-status.enum';
 import { VisaCard121Status } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/wallet-status-121.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
-import { VISA_CARD_STATUS_LABELS } from '~/domains/fsp-account-management/intersolve-visa.helper';
+import {
+  VISA_CARD_ORDER_STATUS_LABELS,
+  VISA_CARD_STATUS_LABELS,
+} from '~/domains/fsp-account-management/intersolve-visa.helper';
 import {
   ImportExistingSubmissionsResultKey,
   SUBMISSION_RESULT_LABELS,
@@ -133,5 +137,17 @@ export const getChipDataBySubmissionsKey = (
       [ImportExistingSubmissionsResultKey.numberOfSubmissionsFailed]: 'red',
       [ImportExistingSubmissionsResultKey.numberOfSubmissionsImported]: 'green',
       [ImportExistingSubmissionsResultKey.numberOfSubmissionsSkipped]: 'orange',
+    },
+  });
+
+export const getChipDataByVisaCardOrderStatus = (
+  status: VisaCardOrderStatus,
+): ChipData =>
+  mapValueToChipData({
+    value: status,
+    labels: VISA_CARD_ORDER_STATUS_LABELS,
+    chipVariants: {
+      [VisaCardOrderStatus.Processing]: 'yellow',
+      [VisaCardOrderStatus.Completed]: 'green',
     },
   });

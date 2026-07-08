@@ -402,6 +402,7 @@ class ProgramMonitoring extends BasePage {
 
     expect(headers).toEqual([
       'No of Cards Ordered',
+      'Order Status',
       'Address',
       'Ordered By',
       'Ordered On',
@@ -412,6 +413,7 @@ class ProgramMonitoring extends BasePage {
 
     expect(rowValues).toEqual([
       noOfCards,
+      'Completed',
       addressColumn,
       'admin@example.org',
       expect.any(String), // Ordered On can be variable, so we just check that it's a string

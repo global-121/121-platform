@@ -1205,6 +1205,9 @@
       <trans-unit id="6057281094654962766" datatype="html">
         <source>Validate</source>
       </trans-unit>
+      <trans-unit id="606178495678960598" datatype="html">
+        <source>Order Status</source>
+      </trans-unit>
       <trans-unit id="6102855402615761891" datatype="html">
         <source>The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
       </trans-unit>
@@ -2036,6 +2039,12 @@
       </trans-unit>
       <trans-unit id="debit-card-number" datatype="html">
         <source>Serial number</source>
+      </trans-unit>
+      <trans-unit id="debit-card-order-status-completed" datatype="html">
+        <source>Completed</source>
+      </trans-unit>
+      <trans-unit id="debit-card-order-status-processing" datatype="html">
+        <source>Processing</source>
       </trans-unit>
       <trans-unit id="debit-card-spent-this-month" datatype="html">
         <source>Spent this month (max. EUR <x equiv-text="this.convertCentsToMainUnits(this.walletWithCards.data()?.maxToSpendPerMonth)" id="PH"/>)</source>
