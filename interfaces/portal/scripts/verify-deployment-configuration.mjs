@@ -41,7 +41,7 @@ test('Content-Security-Policy contains defaults', () => {
   const defaults = [
     `default-src 'self'`,
     `connect-src 'self'`,
-    `img-src data: 'self'`,
+    `img-src blob: 'self'`,
     `object-src 'none'`,
     `style-src 'self' 'unsafe-inline'`,
   ];

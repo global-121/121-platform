@@ -31,7 +31,7 @@ test('Deployment-configuration contains the defaults of the Content-Security-Pol
   const defaults = [
     `default-src 'self'`,
     `connect-src 'self'`,
-    `img-src data: 'self'`,
+    `img-src blob: 'self'`,
     `object-src 'none'`,
     `style-src 'self' 'unsafe-inline'`,
   ];

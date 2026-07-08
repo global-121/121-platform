@@ -33,7 +33,7 @@ let contentSecurityPolicy = new Map([
   ['default-src', [`'self'`]],
   ['frame-ancestors', [`'self'`]],
   ['frame-src', [`blob:`, `'self'`]],
-  ['img-src', [`data:`, `'self'`]],
+  ['img-src', [`blob:`, `'self'`]],
   ['object-src', [`'none'`]],
   ['script-src', [`'self'`]],
   ['style-src', [`'self'`, `'unsafe-inline'`]],
