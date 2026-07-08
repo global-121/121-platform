@@ -7,6 +7,7 @@ import {
   duplicateProgram,
   getProgram,
 } from '@121-service/test/helpers/program.helper';
+import { getProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
 import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import { getAllUsersByProgramId } from '@121-service/test/helpers/user.helper';
 import {
@@ -45,6 +46,13 @@ describe('Duplicate program', () => {
       })
     ).body;
     expect(sourceUsers.length).toBeGreaterThan(0);
+    const sourceThresholds = (
+      await getProgramApprovalThresholds({
+        programId: copyFromProgramId,
+        accessToken,
+      })
+    ).body;
+    expect(sourceThresholds.length).toBeGreaterThan(0);
 
     // Act
     const duplicateResponse = await duplicateProgram({
@@ -108,5 +116,29 @@ describe('Duplicate program', () => {
     const sourceUserIds = sourceUsers.map((user) => user.id);
     const duplicatedUserIds = duplicatedUsers.map((user) => user.id);
     expect(duplicatedUserIds).toEqual(expect.arrayContaining(sourceUserIds));
+
+    // Approval thresholds are duplicated and their approver links re-pointed
+    // to the copied thresholds.
+    const duplicatedThresholds = (
+      await getProgramApprovalThresholds({
+        programId: newProgramId,
+        accessToken,
+      })
+    ).body;
+    expect(duplicatedThresholds.map((t) => t.thresholdAmount).sort()).toEqual(
+      sourceThresholds.map((t) => t.thresholdAmount).sort(),
+    );
+    const sourceApproverUserIds = sourceThresholds
+      .flatMap((threshold) =>
+        threshold.approvers.map((approver) => approver.userId),
+      )
+      .sort();
+    const duplicatedApproverUserIds = duplicatedThresholds
+      .flatMap((threshold) =>
+        threshold.approvers.map((approver) => approver.userId),
+      )
+      .sort();
+    expect(sourceApproverUserIds.length).toBeGreaterThan(0);
+    expect(duplicatedApproverUserIds).toEqual(sourceApproverUserIds);
   });
 });
