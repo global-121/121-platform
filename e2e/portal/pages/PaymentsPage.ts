@@ -239,9 +239,22 @@ class PaymentsPage extends BasePage {
     dateRange?: { start: Date; end: Date };
   }) {
     await this.page.waitForLoadState('networkidle');
-    await this.page.waitForTimeout(200); // wait for the export options to be rendered
-    await this.exportButton.click();
-    await this.page.getByRole('menuitem', { name: option }).click();
+    const menuItem = this.page.getByRole('menuitem', { name: option });
+
+    for (let attempt = 0; attempt < 2; attempt++) {
+      await this.exportButton.click();
+
+      try {
+        await expect(menuItem).toBeVisible({ timeout: 5_000 });
+        break;
+      } catch {
+        if (attempt === 1) {
+          throw new Error(`Export menu item "${option}" did not appear`);
+        }
+      }
+    }
+
+    await menuItem.click();
     if (dateRange) {
       await this.dateRangeStartInput.selectDate({
         targetDate: dateRange.start,
