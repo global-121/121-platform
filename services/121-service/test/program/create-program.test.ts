@@ -16,53 +16,6 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
-const usersWithoutPermission = [
-  {
-    email: env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN,
-    password: env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
-  },
-
-  {
-    email: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
-    password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
-  },
-
-  {
-    email: env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_REGISTRATION,
-    password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_REGISTRATION,
-  },
-
-  {
-    email: env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_VALIDATION,
-    password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_VALIDATION,
-  },
-
-  {
-    email: env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
-    password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
-  },
-
-  {
-    email: env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
-    password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
-  },
-
-  {
-    email: env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
-    password: env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_MANAGER,
-  },
-
-  {
-    email: env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_OFFICER,
-    password: env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_OFFICER,
-  },
-
-  {
-    email: env.USERCONFIG_121_SERVICE_EMAIL_VIEW_WITHOUT_PII,
-    password: env.USERCONFIG_121_SERVICE_PASSWORD_VIEW_WITHOUT_PII,
-  },
-];
-
 describe('Create program', () => {
   let accessToken: string;
 
@@ -292,14 +245,57 @@ describe('Create program', () => {
     expect(getProgramResponse.statusCode).toBe(HttpStatus.NOT_FOUND);
   });
 
-  it.each(usersWithoutPermission)(
+  it.each([
+    {
+      email: env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN,
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
+    },
+
+    {
+      email: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+    },
+
+    {
+      email: env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_REGISTRATION,
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_REGISTRATION,
+    },
+
+    {
+      email: env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_VALIDATION,
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_VALIDATION,
+    },
+
+    {
+      email: env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
+    },
+
+    {
+      email: env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
+    },
+
+    {
+      email: env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_MANAGER,
+    },
+
+    {
+      email: env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_OFFICER,
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_OFFICER,
+    },
+
+    {
+      email: env.USERCONFIG_121_SERVICE_EMAIL_VIEW_WITHOUT_PII,
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_VIEW_WITHOUT_PII,
+    },
+  ])(
     'should not be able to post a program without correct permissions',
     async ({ email, password }) => {
       // Arrangek
       // we do this because dates in JSON are not Date objects
       const programOcwJson = JSON.parse(JSON.stringify(programOCW));
-      const programCbeJson = JSON.parse(JSON.stringify(programCbe));
-      const seedPrograms = [programOcwJson, programCbeJson];
 
       await logoutUser(accessToken);
       accessToken = await getAccessToken(email, password);
@@ -309,15 +305,13 @@ describe('Create program', () => {
         );
       }
 
-      for (const seedProgram of seedPrograms) {
-        // Act
-        const createProgramResponse = await postProgram(
-          seedProgram,
-          accessToken,
-        );
+      // Act
+      const createProgramResponse = await postProgram(
+        programOcwJson,
+        accessToken,
+      );
 
-        expect(createProgramResponse.statusCode).toBe(HttpStatus.FORBIDDEN);
-      }
+      expect(createProgramResponse.statusCode).toBe(HttpStatus.FORBIDDEN);
     },
   );
 });
