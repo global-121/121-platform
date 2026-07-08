@@ -245,7 +245,7 @@ class PaymentsPage extends BasePage {
       await this.exportButton.click();
 
       try {
-        await expect(menuItem).toBeVisible({ timeout: 5_000 });
+        await expect(menuItem).toBeVisible({ timeout: 1_000 });
         break;
       } catch {
         if (attempt === 1) {
