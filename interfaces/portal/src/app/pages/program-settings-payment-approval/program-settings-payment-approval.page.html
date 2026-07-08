@@ -19,7 +19,7 @@
     </p>
     <p
       i18n
-      class="mb-4"
+      class="mbe-4"
     >
       For more information about how to set up payment approval see
       <app-manual-link />
@@ -31,24 +31,24 @@
         class="p-datatable-sm"
       >
         <ng-template #header>
-          <tr class="border-grey-300 bg-grey-100 border-b">
+          <tr class="border-grey-300 bg-grey-100 border-be">
             <th
               scope="col"
               i18n
-              class="txt-body-s text-grey-700 w-[11%] px-4 py-2 text-center font-semibold"
+              class="txt-body-s text-grey-700 px-4 py-2 text-center font-semibold inline-[11%]"
             >
               Step
             </th>
             <th
               scope="col"
               i18n
-              class="txt-body-s text-grey-700 w-[46%] px-4 py-2 font-semibold"
+              class="txt-body-s text-grey-700 px-4 py-2 font-semibold inline-[46%]"
             >
               Users
             </th>
             <th
               scope="col"
-              class="txt-body-s text-grey-700 w-[43%] px-4 py-2 font-semibold"
+              class="txt-body-s text-grey-700 px-4 py-2 font-semibold inline-[43%]"
             >
               <span class="inline-flex items-center gap-1 whitespace-nowrap">
                 <ng-container i18n>If payment total exceeds</ng-container>
@@ -64,7 +64,7 @@
           #body
           let-row
         >
-          <tr class="border-grey-300 border-b">
+          <tr class="border-grey-300 border-be">
             <td class="px-4 py-3 text-center">{{ row.step }}</td>
             <td class="px-4 py-3">{{ row.users }}</td>
             <td class="px-4 py-3">{{ row.thresholdAmount }}</td>
@@ -108,7 +108,7 @@
             <ng-container slot="details">
               <p
                 i18n
-                class="txt-system-s mt-2 text-red-500"
+                class="txt-system-s mbs-2 text-red-500"
               >
                 Select at least one user.
               </p>
@@ -121,22 +121,25 @@
             @for (step of additionalSteps.controls; track step) {
               <div
                 [formGroupName]="$index"
-                class="mt-4 grid grid-cols-1 items-start gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,14rem)_auto]"
+                class="my-8 grid grid-cols-1 items-start gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,14rem)_auto]"
               >
                 <app-form-field-wrapper
                   label="Select users for this approval step"
                   i18n-label
                 >
+                  @let availableApprovers =
+                    availableApproversForAdditionalStep($index);
+
                   <p-multiSelect
                     [inputId]="'additional-step-users-' + $index"
-                    [options]="availableApproversForAdditionalStep($index)"
+                    [options]="availableApprovers"
                     [optionLabel]="'label'"
                     [optionValue]="'value'"
                     formControlName="userIds"
                     placeholder="Select 1 or more users from your program team"
                     i18n-placeholder
-                    [filter]="true"
-                    [showToggleAll]="true"
+                    [filter]="availableApprovers.length > 1"
+                    [showToggleAll]="availableApprovers.length > 1"
                     [maxSelectedLabels]="3"
                     [overlayOptions]="{ target: '@parent' }"
                     (onChange)="onApproverSelectionChanged()"
@@ -152,7 +155,7 @@
                     <ng-container slot="details">
                       <p
                         i18n
-                        class="txt-system-s mt-2 text-red-500"
+                        class="txt-system-s mbs-2 text-red-500"
                       >
                         Select at least one user.
                       </p>
@@ -172,15 +175,15 @@
                   </ng-container>
                   <p-inputNumber
                     [min]="1"
-                    [mode]="'currency'"
+                    mode="currency"
                     [currency]="currencyCode() ?? 'EUR'"
-                    [currencyDisplay]="'symbol'"
+                    currencyDisplay="symbol"
                     [useGrouping]="true"
                     [minFractionDigits]="0"
                     [maxFractionDigits]="0"
                     [locale]="inputLocale()"
-                    [class]="'w-full'"
-                    [inputStyleClass]="'w-full'"
+                    class="inline-full"
+                    inputStyleClass="inline-full"
                     formControlName="thresholdAmount"
                   ></p-inputNumber>
                   @if (isAdditionalStepThresholdInvalid($index)) {
@@ -192,7 +195,7 @@
                       ) {
                         <p
                           i18n
-                          class="txt-system-s mt-2 text-red-500"
+                          class="txt-system-s mbs-2 text-red-500"
                         >
                           Must be larger than 0
                         </p>
@@ -201,7 +204,7 @@
                       ) {
                         <p
                           i18n
-                          class="txt-system-s mt-2 text-red-500"
+                          class="txt-system-s mbs-2 text-red-500"
                         >
                           Threshold amount is required.
                         </p>
@@ -211,7 +214,7 @@
                     <ng-container slot="details">
                       <p
                         i18n
-                        class="txt-system-s mt-2 text-red-500"
+                        class="txt-system-s mbs-2 text-red-500"
                       >
                         Threshold amounts must be unique.
                       </p>
@@ -219,14 +222,29 @@
                   }
                 </app-form-field-wrapper>
 
+                <!-- Big button, for small screens -->
+                <p-button
+                  outlined
+                  rounded
+                  severity="secondary"
+                  icon="pi pi-trash"
+                  class="lg:hidden"
+                  (onClick)="removeApprovalStep($index)"
+                  label="Remove approval step"
+                  i18n-label="@@payment-approval-remove-step"
+                />
+                <!-- Tiny button, for large screens -->
                 <p-button
                   text
-                  plain
+                  rounded
+                  severity="secondary"
                   icon="pi pi-trash"
-                  [styleClass]="'mt-8'"
+                  class="mbs-8 hidden lg:inline-block"
                   (onClick)="removeApprovalStep($index)"
-                  [ariaLabel]="'Remove approval step'"
-                  i18n-ariaLabel
+                  aria-label="Remove approval step"
+                  i18n-aria-label="@@payment-approval-remove-step"
+                  title="Remove approval step"
+                  i18n-title="@@payment-approval-remove-step"
                 />
               </div>
             }

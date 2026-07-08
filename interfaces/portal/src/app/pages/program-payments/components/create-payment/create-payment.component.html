@@ -27,14 +27,14 @@
   <ng-template #step>
     <p
       i18n
-      class="mb-5"
+      class="mbe-5"
     >
       Set up the payment's name.
     </p>
     <p-card>
       <h3
         i18n
-        class="mb-3 text-base font-medium!"
+        class="mbe-3 text-base font-medium!"
       >
         General information
       </h3>
@@ -46,14 +46,14 @@
           [errorMessage]="formFieldErrors()('name')"
         >
           <input
-            class="w-full"
+            class="inline-full"
             formControlName="name"
             pInputText
           />
           <ng-container slot="details">
             <p
               i18n
-              class="txt-system-s mt-1 text-end"
+              class="txt-system-s mbs-1 text-end"
             >
               Max. {{ MAX_PAYMENT_NAME_LENGTH }} characters
             </p>
@@ -65,7 +65,7 @@
   <ng-template #step>
     <p
       i18n
-      class="mb-5"
+      class="mbe-5"
     >
       Below is a table of all
       <app-colored-chip
@@ -88,7 +88,7 @@
     <div data-testid="create-payment-fsp-instructions">
       @if (paymentHasExcelFsp()) {
         <p i18n>Review payment summary and follow the next steps:</p>
-        <ol class="mt-2 list-decimal ps-6">
+        <ol class="mbs-2 list-decimal ps-6">
           <li i18n>
             Click create payment, this will direct you to the payment page.
           </li>
@@ -107,16 +107,16 @@
       } @else {
         <p i18n>Review summary and click create payment.</p>
       }
-      <p-card class="relative mt-5 block [&_.p-card-body]:py-2">
+      <p-card class="relative mbs-5 block [&_.p-card-body]:py-2">
         <app-data-list [data]="paymentSummaryData()" />
-        <div class="pt-4">
+        <div class="pbs-4">
           <form [formGroup]="paymentFormGroup">
             <app-form-field-wrapper
               label="Add note"
               i18n-label
             >
               <input
-                class="w-full"
+                class="inline-full"
                 formControlName="note"
                 placeholder="Optional"
                 i18n-placeholder
@@ -126,7 +126,7 @@
           </form>
         </div>
         @if (paymentHasIntegratedFsp()) {
-          <div class="absolute inset-e-4 top-4">
+          <div class="absolute inset-e-4 inset-bs-4">
             <app-ellipsis-menu
               [menuItems]="paymentSummaryMenuItems()"
               [orientation]="'vertical'"

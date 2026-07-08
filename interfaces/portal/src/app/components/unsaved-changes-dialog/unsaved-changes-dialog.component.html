@@ -5,7 +5,7 @@
   [closable]="false"
   [closeOnEscape]="false"
   [showHeader]="false"
-  styleClass="max-w-[calc(100vw-2rem)] md:min-w-184 [&_.p-dialog-content]:rounded-lg [&_.p-dialog-content]:p-6 [&_.p-dialog-content]:shadow-xl"
+  styleClass="max-inline-[calc(100vw-2rem)] md:min-inline-184 [&_.p-dialog-content]:rounded-lg [&_.p-dialog-content]:p-6 [&_.p-dialog-content]:shadow-xl"
   maskStyleClass="bg-black/40"
   aria-label="Unsaved changes warning"
   i18n-aria-label="@@unsaved-changes-warning-label"
@@ -27,7 +27,7 @@
 
       <button
         type="button"
-        class="hover:bg-grey-100 flex size-8 items-center justify-center rounded-full text-black transition"
+        class="hover:bg-grey-100 flex items-center justify-center rounded-full text-black transition block-8 inline-8"
         (click)="cancelDialog.emit()"
         aria-label="Stay on page"
         i18n-aria-label="@@unsaved-changes-stay-page"
@@ -52,7 +52,7 @@
         i18n-label="@@unsaved-changes-leave-page"
         [rounded]="true"
         severity="secondary"
-        styleClass="border-grey-300 min-w-36 border bg-white px-5 py-2 text-sm font-semibold text-black shadow-none"
+        styleClass="border-grey-300 border bg-white px-5 py-2 text-sm font-semibold text-black shadow-none min-inline-36"
         (click)="confirmDialog.emit()"
       />
       <p-button
@@ -60,7 +60,7 @@
         i18n-label="@@unsaved-changes-stay-page"
         [rounded]="true"
         severity="primary"
-        styleClass="min-w-36 border border-violet-700 bg-violet-700 px-5 py-2 text-sm font-semibold text-white shadow-none"
+        styleClass="border px-5 py-2 text-sm font-semibold text-white shadow-none min-inline-36"
         (click)="cancelDialog.emit()"
       />
     </div>

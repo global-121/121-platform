@@ -31,7 +31,7 @@
         </p>
         <p
           i18n
-          class="mt-2"
+          class="mbs-2"
         >
           There is a maximum of 1000 records per import. If you have more
           registrations to import, please split them into multiple files. The
@@ -41,7 +41,7 @@
 
       <app-form-error [error]="singleErrorMessage()" />
 
-      <div class="mt-5 flex justify-end gap-4">
+      <div class="mbs-5 flex justify-end gap-4">
         <p-button
           (click)="dialogVisible.set(false)"
           severity="secondary"
@@ -62,7 +62,7 @@
     @if (importState() === DialogState.ImportedWithoutSubmissions) {
       <p>{{ noExistingSubmissionsTranslation() }}</p>
 
-      <div class="mt-5 flex justify-end gap-4">
+      <div class="mbs-5 flex justify-end gap-4">
         <p-button
           (click)="closeDialog()"
           [rounded]="true"
@@ -83,7 +83,7 @@
           <span>”{{ koboIntegration.data()?.name }}”</span>
         </p>
 
-        <div class="mt-4 space-y-2">
+        <div class="mbs-4 space-y-2">
           <p class="font-bold">
             {{ totalSubmissionsTranslation() }}
           </p>
@@ -133,7 +133,7 @@
     }
 
     @if (importState() === DialogState.ImportedWithoutErrors) {
-      <div class="mt-5 flex justify-end gap-4">
+      <div class="mbs-5 flex justify-end gap-4">
         <p-button
           label="Close"
           i18n-label="@@generic-close"
@@ -145,7 +145,7 @@
 
     @if (importState() === DialogState.ImportedWithErrors) {
       <div>
-        <div class="mt-4 space-y-2">
+        <div class="mbs-4 space-y-2">
           <app-colored-chip
             [label]="`${getChipLabelBySubmissionKey(importExistingSubmissionsResultKey.numberOfSubmissionsFailed)}: ${importExistingSubmissions.data()?.numberOfSubmissionsFailed ?? 0}`"
             [variant]="
@@ -174,7 +174,7 @@
         >
         </app-query-table>
 
-        <div class="mt-5 flex justify-end gap-4">
+        <div class="mbs-5 flex justify-end gap-4">
           <p-button
             (click)="resetDialogState()"
             label="Try again"

@@ -32,7 +32,7 @@
         >
           <p
             menu-start
-            class="border-b-grey-300 mb-2 border-b px-3 py-2"
+            class="border-be-grey-300 mbe-2 border-be px-3 py-2"
           >
             <ng-container i18n>
               Logged in as:<br />{{ userName() }}
@@ -53,7 +53,7 @@
   <ng-template pTemplate="headless">
     <div
       id="menu"
-      class="flex size-full flex-col"
+      class="flex flex-col block-full inline-full"
       data-testid="sidebar"
       pFocusTrap
       [pFocusTrapDisabled]="!sidebarVisible()"
@@ -73,7 +73,7 @@
           [pAutoFocus]="sidebarVisible()"
         />
       </div>
-      <div class="mb-auto">
+      <div class="mbe-auto">
         @for (sidebarLink of sidebarLinks(); track $index) {
           <a
             [routerLink]="sidebarLink.routerLink"
@@ -83,7 +83,7 @@
               'focus:text-black',
             ]"
             [ariaCurrentWhenActive]="'page'"
-            class="border-grey-300 font-display hover:text-purple focus:bg-grey-300 focus:text-purple block w-full rounded-none border-t px-6 py-4 transition-colors"
+            class="border-grey-300 font-display hover:text-purple focus:bg-grey-300 focus:text-purple block rounded-none border-bs px-6 py-4 transition-colors inline-full"
           >
             {{ sidebarLink.label }}
           </a>
@@ -91,7 +91,7 @@
         <a
           href="https://manual.121.global/"
           [attr.rel]="'help'"
-          class="border-grey-300 font-display hover:text-purple focus:bg-grey-300 focus:text-purple inline-flex w-full items-center border-t px-6 py-4 transition-colors"
+          class="border-grey-300 font-display hover:text-purple focus:bg-grey-300 focus:text-purple inline-flex items-center border-bs px-6 py-4 transition-colors inline-full"
           target="_blank"
           title="Opens in a new window"
           i18n-title="@@generic-opens-in-new-window"
@@ -101,7 +101,7 @@
         </a>
         <a
           href="mailto:support@121.global"
-          class="border-grey-300 font-display hover:text-purple focus:bg-grey-300 focus:text-purple inline-flex w-full items-center border-t px-6 py-4 transition-colors"
+          class="border-grey-300 font-display hover:text-purple focus:bg-grey-300 focus:text-purple inline-flex items-center border-bs px-6 py-4 transition-colors inline-full"
           target="_blank"
           title="Opens in a new window"
           i18n-title="@@generic-opens-in-new-window"
@@ -112,7 +112,7 @@
       </div>
       <div class="px-6">
         <app-locale-switcher />
-        <small class="text-grey-500 block pb-2 text-center">
+        <small class="text-grey-500 block pbe-2 text-center">
           <app-health-widget />
         </small>
       </div>

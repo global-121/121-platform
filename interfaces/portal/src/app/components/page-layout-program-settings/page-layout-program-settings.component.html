@@ -1,9 +1,9 @@
 <app-page-layout [programId]="programId()">
-  <div class="grid w-full gap-4 md:grid-cols-10">
+  <div class="grid gap-4 inline-full md:grid-cols-10">
     <aside class="md:col-span-2">
       <h1
         i18n="@@page-heading-program-settings"
-        class="pb-6"
+        class="pbe-6"
       >
         Program settings
       </h1>
@@ -13,14 +13,14 @@
             <li>
               <a
                 [routerLink]="item.routerLink"
-                class="txt-body-m hover:text-purple focus:text-purple flex cursor-pointer items-center gap-2 border-l border-l-transparent ps-1 font-semibold text-black"
+                class="txt-body-m hover:text-purple focus:text-purple flex cursor-pointer items-center gap-2 border-s border-s-transparent ps-1 font-semibold text-black"
                 [class.text-purple]="isParentActive(item.routerLink)"
-                [class.border-l-purple!]="isParentActive(item.routerLink)"
+                [class.border-s-purple!]="isParentActive(item.routerLink)"
               >
                 <i [class]="item.icon"></i>
                 {{ item.label }}
               </a>
-              <ul class="mt-2 space-y-2 ps-8">
+              <ul class="mbs-2 space-y-2 ps-8">
                 @for (subItem of item.items; track $index) {
                   @if (subItem.visible ?? true) {
                     <li>

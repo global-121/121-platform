@@ -2,7 +2,7 @@
   [modal]="true"
   [closeOnEscape]="false"
   [(visible)]="dialogVisible"
-  styleClass="max-w-[70rem] sm:min-w-[60rem]"
+  styleClass="max-inline-280 sm:min-inline-240"
   [attr.data-testid]="'kobo-error-dialog'"
 >
   <ng-template #header>
@@ -17,8 +17,8 @@
   </p>
 
   @if (missingFieldErrors().length > 0) {
-    <section class="mt-4 mb-2">
-      <div class="mb-2">
+    <section class="mbs-4 mbe-2">
+      <div class="mbe-2">
         <h4 class="text-base! font-semibold">
           <span i18n>Required fields not found</span>
           <app-info-tooltip
@@ -50,8 +50,8 @@
   }
 
   @if (formSettingErrors().length > 0) {
-    <section class="mt-4 mb-2">
-      <div class="mb-2">
+    <section class="mbs-4 mbe-2">
+      <div class="mbe-2">
         <h4 class="text-base! font-semibold">
           <span i18n>Form setting errors</span>
           <app-info-tooltip
@@ -82,8 +82,8 @@
   }
 
   @if (errorTable().length > 0) {
-    <section class="mt-4 mb-2">
-      <div class="mb-4">
+    <section class="mbs-4 mbe-2">
+      <div class="mbe-4">
         <h4
           i18n
           class="text-base! font-semibold"
@@ -147,7 +147,7 @@
     </section>
   }
 
-  <div class="mt-5 flex justify-end gap-4">
+  <div class="mbs-5 flex justify-end gap-4">
     @if (!isKoboIntegrated()) {
       <p-button
         label="Cancel"

@@ -2,11 +2,11 @@
   [options]="locales"
   [(ngModel)]="selectedLocale"
   [showClear]="false"
-  class="w-full"
+  class="inline-full"
   data-testid="locale-dropdown"
 >
   <ng-template pTemplate="selectedItem">
-    <div class="flex w-full items-center gap-2">
+    <div class="flex items-center gap-2 inline-full">
       <i class="pi pi-globe text-xl"></i>
       <div i18n="@@language-switcher-selected">
         Language: {{ selectedLocaleLabel() }}

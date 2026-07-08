@@ -169,6 +169,8 @@ export default defineConfig(
             'p-fileUpload[mode]',
             'p-fileUpload[removeStyleClass]',
             'p-iconField[iconPosition]',
+            'p-inputNumber[currencyDisplay]',
+            'p-inputNumber[mode]',
             'p-inputSwitch[inputId]',
             'p-select[optionValue]',
             'p-splitButton[icon]',
@@ -228,6 +230,7 @@ export default defineConfig(
       'better-tailwindcss/enforce-consistent-class-order': 'off', // handled by Prettier
       'better-tailwindcss/enforce-consistent-important-position': 'error',
       'better-tailwindcss/enforce-consistent-line-wrapping': 'off', // handled by Prettier
+      'better-tailwindcss/enforce-logical-properties': 'error',
       'better-tailwindcss/no-conflicting-classes': 'error',
       'better-tailwindcss/no-deprecated-classes': 'error',
       'better-tailwindcss/no-restricted-classes': 'error',

@@ -12,7 +12,7 @@
 >
   <p
     i18n
-    class="mb-2"
+    class="mbe-2"
   >
     Order cards to your branch by filling in this form and clicking on order. If
     the order is sent successfully it will be logged in the table on the 'Debit
@@ -26,7 +26,7 @@
       [errorMessage]="formFieldErrors()('noOfCards')"
       [isRequired]="true"
     >
-      <div class="max-w-[100px]">
+      <div class="max-inline-[100px]">
         <input
           pInputText
           type="number"
@@ -52,7 +52,7 @@
       />
     </app-form-field-wrapper>
 
-    <div class="w-full grid-cols-2 gap-4 sm:grid">
+    <div class="grid-cols-2 gap-4 inline-full sm:grid">
       <app-form-field-wrapper
         label="City"
         i18n-label
@@ -84,7 +84,7 @@
       </app-form-field-wrapper>
     </div>
 
-    <div class="w-full grid-cols-2 gap-4 sm:grid">
+    <div class="grid-cols-2 gap-4 inline-full sm:grid">
       <app-form-field-wrapper
         label="Street"
         i18n-label

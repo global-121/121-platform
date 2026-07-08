@@ -12,7 +12,7 @@
 >
   <p
     i18n
-    class="mb-4"
+    class="mbe-4"
   >
     Below are the {{ programAttributes().length }} questions that will be
     displayed in the data table and on the profile page.<br />
@@ -42,7 +42,7 @@
         <p-tabpanel [value]="language">
           @if (!isSupportedUILanguage(selectedTabLanguage())) {
             <div
-              class="mt-2 mb-5 flex w-full items-center rounded-xl border border-orange-500 bg-orange-100 px-5 py-3"
+              class="mbs-2 mbe-5 flex items-center rounded-xl border border-orange-500 bg-orange-100 px-5 py-3 inline-full"
             >
               <i
                 class="pi pi-exclamation-circle me-2 text-xl text-orange-700"
@@ -65,7 +65,7 @@
             <ng-template #header>
               <tr>
                 <th
-                  class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
+                  class="txt-body-s text-grey-700 font-semibold uppercase inline-1/2"
                 >
                   <span
                     class="me-1"
@@ -79,7 +79,7 @@
                   ></app-info-tooltip>
                 </th>
                 <th
-                  class="txt-body-s text-grey-700 w-1/2 font-semibold uppercase"
+                  class="txt-body-s text-grey-700 font-semibold uppercase inline-1/2"
                 >
                   <span
                     class="me-1"
@@ -106,7 +106,7 @@
                       pInputText
                       [formControlName]="language"
                       [attr.data-testid]="`attribute-label-input-${language}-${attribute.name}`"
-                      class="w-full"
+                      class="inline-full"
                     />
                   } @else {
                     {{

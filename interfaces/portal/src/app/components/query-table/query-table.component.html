@@ -114,7 +114,7 @@
             @if (columnSortField) {
               <p-sortIcon
                 [field]="columnSortField"
-                class="ms-2 me-0 mt-1"
+                class="ms-2 me-0 mbs-1"
               />
             }
 
@@ -273,7 +273,7 @@
                   @let icon = getMultiSelectCellIcon(column, item);
                   @if (icon) {
                     <span class="me-2 inline leading-0">
-                      <i [ngClass]="[icon, 'mt-0.25 text-xl']"></i>
+                      <i [ngClass]="[icon, 'mbs-0.25 text-xl']"></i>
                     </span>
                   }
                   <span>{{ cellText }}</span>
@@ -296,7 +296,7 @@
         </td>
       }
       @if (contextMenuItems()) {
-        <td class="w-0 py-0 pe-2 text-end">
+        <td class="py-0 pe-2 text-end inline-0">
           <p-button
             text
             plain
@@ -344,7 +344,7 @@
       class="hover:bg-white"
     >
       <td [attr.colspan]="totalColumnCount()">
-        <div class="w-full py-6 text-start">
+        <div class="py-6 text-start inline-full">
           @if (isFiltered()) {
             <div class="flex items-center">
               <i class="pi pi-filter me-2 inline text-xl"></i>
@@ -381,7 +381,7 @@
 
               <p
                 i18n="@@query-table--no-results-text"
-                class="mt-4"
+                class="mbs-4"
               >
                 There are no records to display.
               </p>

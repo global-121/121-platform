@@ -1,7 +1,7 @@
 <p-dialog
   #dialog
   [closeOnEscape]="false"
-  styleClass="md:min-w-[46rem]"
+  styleClass="md:min-inline-184"
   [(visible)]="dialogVisible"
   [modal]="true"
 >
@@ -16,7 +16,7 @@
   </ng-template>
 
   <form
-    class="block w-full"
+    class="block inline-full"
     (ngSubmit)="onFormSubmit()"
     (keydown.control.enter)="onKeyboardSubmit()"
     (keydown.meta.enter)="onKeyboardSubmit()"
@@ -79,7 +79,7 @@
             height="2rem"
           ></p-skeleton>
         } @else {
-          <div class="mt-1.5 flex justify-items-center">
+          <div class="mbs-1.5 flex justify-items-center">
             <p-toggleSwitch
               inputId="enableSendMessage"
               [(ngModel)]="enableSendMessage"
@@ -134,11 +134,11 @@
     {{ changeStatusMutation.data()?.nonApplicableCount }}
     registration(s) that don't support this action</b
   >
-  <p class="pt-2">
+  <p class="pbs-2">
     {{ changeStatusWarningMessage() }}
   </p>
   <p
-    class="pt-2"
+    class="pbs-2"
     i18n
   >
     Registrations that do not support this action will remain in their current
@@ -146,7 +146,7 @@
   </p>
   <p
     i18n
-    class="pt-2"
+    class="pbs-2"
   >
     Would you like to proceed with
     {{ changeStatusMutation.data()?.applicableCount }}
@@ -166,16 +166,16 @@
     </h3>
   </ng-template>
   <b i18n>0 selected registrations support this action. </b>
-  <p class="pt-2">
+  <p class="pbs-2">
     {{ changeStatusWarningMessage() }}
   </p>
   <p
     i18n
-    class="pt-2"
+    class="pbs-2"
   >
     Select registrations that support this action, and try again.
   </p>
-  <div class="mt-6 flex justify-end gap-x-2">
+  <div class="mbs-6 flex justify-end gap-x-2">
     <p-button
       label="Cancel"
       i18n-label="@@generic-cancel"

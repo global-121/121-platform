@@ -1,12 +1,12 @@
 <div
   [attr.data-testid]="dataTestId()"
-  class="mb-2.5"
+  class="mbe-2.5"
 >
   <label
-    class="block [&_.p-datepicker]:w-full [&_input]:w-full [&_textarea]:w-full"
+    class="block [&_.p-datepicker]:inline-full [&_input]:inline-full [&_textarea]:inline-full"
   >
-    <strong class="mb-2 block">
-      <span class="inline-flex max-w-full items-center gap-1 align-middle">
+    <strong class="mbe-2 block">
+      <span class="inline-flex items-center gap-1 align-middle max-inline-full">
         @if (isRequired()) {
           <span class="me-0">*</span>
         }

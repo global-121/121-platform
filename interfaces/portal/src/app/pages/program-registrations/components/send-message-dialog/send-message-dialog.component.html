@@ -1,6 +1,6 @@
 <p-dialog
   #dialog
-  styleClass="md:min-w-[46rem]"
+  styleClass="md:min-inline-184"
   [(visible)]="dialogVisible"
   [modal]="true"
   [closeOnEscape]="false"
@@ -13,7 +13,7 @@
   </ng-template>
 
   <form
-    class="block w-full"
+    class="block inline-full"
     [formGroup]="formGroup"
     (ngSubmit)="onFormSubmit()"
     (keydown.control.enter)="onFormSubmit()"
@@ -100,7 +100,7 @@
           />
         </div>
       } @else {
-        <p class="mb-7">
+        <p class="mbe-7">
           <ng-container i18n="@@send-message-dialog-preview"
             >You're about to <strong>send a message</strong> to
             {{ actionData()?.count }} registration(s).</ng-container
@@ -113,7 +113,7 @@
         ></app-custom-message-preview>
         <p
           i18n
-          class="mt-7"
+          class="mbs-7"
         >
           Are you sure you want to send this message?
         </p>

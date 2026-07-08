@@ -13,7 +13,7 @@
       <ng-container [ngTemplateOutlet]="header()"></ng-container>
     </h3>
   </ng-template>
-  <div class="flex size-full items-start gap-5 px-6 lg:px-24">
+  <div class="flex items-start gap-5 px-6 block-full inline-full lg:px-24">
     @defer (when dialogVisible()) {
       <!-- This ngClass is a trick where we are hiding the table instead of not rendering it -->
       <!-- because this makes the selection in the table persist without saving it to local storage. -->
@@ -23,8 +23,8 @@
         <div
           [ngClass]="{
             hidden: currentStep() !== $index + 1,
-            'w-1/2 self-center': !!illustration(),
-            'w-full': !illustration(),
+            'self-center inline-1/2': !!illustration(),
+            'inline-full': !illustration(),
           }"
         >
           <ng-container [ngTemplateOutlet]="step"></ng-container>
@@ -32,7 +32,7 @@
       }
 
       @if (illustration()) {
-        <div class="w-1/2 self-center">
+        <div class="self-center inline-1/2">
           <ng-container [ngTemplateOutlet]="illustration()"></ng-container>
         </div>
       }
@@ -40,9 +40,9 @@
   </div>
   <app-fullscreen-spinner [loading]="isPending()" />
   <ng-template pTemplate="footer">
-    <div class="relative w-full">
+    <div class="relative inline-full">
       <div
-        class="border-t-2 border-t-purple-300 transition-all"
+        class="border-bs-2 border-bs-purple-300 transition-all"
         [style]="{
           width: (currentStep() / totalSteps()) * 100 + '%',
         }"

@@ -1,5 +1,5 @@
 <ng-container [formGroup]="formGroup">
-  <div class="flex w-full flex-row gap-4 *:w-1/2">
+  <div class="flex flex-row gap-4 inline-full *:inline-1/2">
     <app-form-field-wrapper
       label="Start Date"
       i18n-label
@@ -54,7 +54,7 @@
       i18n-placeholder
     />
   </app-form-field-wrapper>
-  <div class="mt-4 flex justify-items-center">
+  <div class="mbs-4 flex justify-items-center">
     <p-toggleSwitch
       inputId="validation"
       formControlName="validation"
@@ -67,7 +67,7 @@
     >
     <app-info-tooltip [message]="PROGRAM_FORM_TOOLTIPS.validationProcess" />
   </div>
-  <div class="mt-4 flex justify-items-center">
+  <div class="mbs-4 flex justify-items-center">
     <p-toggleSwitch
       inputId="enableScope"
       formControlName="enableScope"

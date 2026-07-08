@@ -6,7 +6,7 @@
   [pageTitle]="paymentTitle()"
   [isPending]="payments.isPending()"
 >
-  <p-card class="mb-5">
+  <p-card class="mbe-5">
     <div class="flex items-center gap-x-4">
       <h1 class="me-auto">
         {{ paymentTitle() }}
@@ -79,11 +79,11 @@
       0
     ) {
       <p-card
-        class="[grid-area:chart] [&_.p-card]:h-full [&_.p-card-body]:h-full"
+        class="[grid-area:chart] [&_.p-card]:block-full [&_.p-card-body]:block-full"
       >
         <p
           i18n
-          class="txt-h-2 mb-6 font-medium"
+          class="txt-h-2 mbe-6 font-medium"
         >
           Transactions data
         </p>
@@ -94,11 +94,11 @@
       </p-card>
     } @else {
       <p-card
-        class="[grid-area:chart] [&_.p-card]:h-full [&_.p-card-body]:h-full"
+        class="[grid-area:chart] [&_.p-card]:block-full [&_.p-card-body]:block-full"
       >
         <p
           i18n
-          class="txt-h-2 mb-6 font-medium"
+          class="txt-h-2 mbe-6 font-medium"
         >
           Approval flow
         </p>
@@ -108,11 +108,11 @@
             track $index
           ) {
             <div
-              class="mb-6 flex flex-row"
+              class="mbe-6 flex flex-row"
               data-testid="approval-flow-row"
             >
               <span
-                class="me-3 flex size-6.5 items-center justify-center rounded-full"
+                class="me-3 flex items-center justify-center rounded-full block-6.5 inline-6.5"
                 [ngClass]="{
                   'bg-purple-700 text-white':
                     approvalStep.rank === firstPendingApprovalRank(),
@@ -184,10 +184,7 @@
       i18n-metricTooltip
     />
 
-    <p-card
-      class="overflow-x-auto [grid-area:table]"
-      styleClass="[&_.p-card-body]:pt-3"
-    >
+    <p-card class="overflow-x-auto [grid-area:table] [&_.p-card-body]:pbs-3">
       <app-payment-menu
         [programId]="programId()"
         [paymentId]="paymentId()"
