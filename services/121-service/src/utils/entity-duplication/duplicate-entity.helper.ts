@@ -1,4 +1,3 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
 import {
   DataSource,
   DeepPartial,
@@ -9,12 +8,10 @@ import {
   FindOptionsRelations,
   FindOptionsWhere,
   ObjectLiteral,
+  Repository,
 } from 'typeorm';
+import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
 
-import { InverseRelationWithJoinColumnsInterface } from '@121-service/src/utils/entity-duplication/interfaces/inverse-relation-with-join-columns.interface';
-import {
-  RelationWithInverseInterface,
-} from '@121-service/src/utils/entity-duplication/interfaces/relation-with-inverse.interface';
 
 export async function duplicateEntity<T extends ObjectLiteral>({
   dataSource,
@@ -42,16 +39,10 @@ export async function duplicateEntity<T extends ObjectLiteral>({
     });
 
     const primaryColumn = metadata.primaryColumns[0].propertyName;
-    const source = await repository.findOne({
+    const source = await repository.findOneOrFail({
       where: { [primaryColumn]: Equal(id) } as FindOptionsWhere<T>,
       relations: buildRelationLoadTree<T>({ metadata, relationNamesToDuplicate }),
     });
-    if (!source) {
-      throw new HttpException(
-        { errors: `No ${metadata.name} found with id ${id}` },
-        HttpStatus.NOT_FOUND,
-      );
-    }
 
     const newRoot = await repository.save(
       repository.create(
@@ -113,12 +104,7 @@ function buildRelationLoadTree<T extends ObjectLiteral>({
       continue;
     }
     // Also load the children's many-to-many relations so they can be re-linked.
-    const manyToManySubRelations: Record<string, boolean> = {};
-    for (const childRelation of relation.inverseEntityMetadata.relations) {
-      if (childRelation.isManyToMany) {
-        manyToManySubRelations[childRelation.propertyName] = true;
-      }
-    }
+    const manyToManySubRelations = getManyToManySubRelations({ relation });
     tree[relationName] =
       Object.keys(manyToManySubRelations).length > 0
         ? manyToManySubRelations
@@ -127,7 +113,21 @@ function buildRelationLoadTree<T extends ObjectLiteral>({
   return tree as FindOptionsRelations<T>;
 }
 
-function cloneColumns({
+function getManyToManySubRelations({
+  relation,
+}: {
+  relation: RelationMetadata;
+}): Record<string, boolean> {
+  const manyToManySubRelations: Record<string, boolean> = {};
+  for (const childRelation of relation.inverseEntityMetadata.relations) {
+    if (childRelation.isManyToMany) {
+      manyToManySubRelations[childRelation.propertyName] = true;
+    }
+  }
+  return manyToManySubRelations;
+}
+
+export function cloneColumns({
   metadata,
   source,
   overrides,
@@ -187,13 +187,13 @@ function isPrimaryOrAuditColumn(column: {
   );
 }
 
-function validateRelationTypeOrThrow({
+export function validateRelationTypeOrThrow({
   relation,
   relationName,
 }: {
-  relation: RelationWithInverseInterface;
+  relation: RelationMetadata;
   relationName: string;
-}): InverseRelationWithJoinColumnsInterface {
+}): RelationMetadata {
   if (
     (!relation.isOneToMany && !relation.isOneToOne) ||
     !relation.inverseRelation
@@ -205,11 +205,11 @@ function validateRelationTypeOrThrow({
   return relation.inverseRelation;
 }
 
-function getRelationChildren({
+export function getRelationChildren({
   relation,
   related,
 }: {
-  relation: RelationWithInverseInterface;
+  relation: RelationMetadata;
   related: unknown;
 }): ObjectLiteral[] {
   if (relation.isOneToMany) {
@@ -254,24 +254,46 @@ async function copyRelation({
   const childRepository = manager.getRepository(childMetadata.target);
   const parentForeignKeyProperty = inverseRelation.joinColumns[0].propertyName;
 
-  const copies = children.map((child) => {
-    const childColumns = cloneColumns({
-      metadata: childMetadata,
-      source: child,
-      overrides: {},
-      excludeForeignKeyColumns: true,
-    });
-    childColumns[parentForeignKeyProperty] = newParentId;
-
-    // Re-link many-to-many relations (e.g. roles) instead of cloning targets.
-    for (const childRelation of childMetadata.relations) {
-      if (childRelation.isManyToMany && child[childRelation.propertyName]) {
-        childColumns[childRelation.propertyName] =
-          child[childRelation.propertyName];
-      }
-    }
-    return childRepository.create(childColumns as DeepPartial<ObjectLiteral>);
-  });
+  const copies = children.map((child) =>
+    createChildCopy({
+      child,
+      childMetadata,
+      childRepository,
+      parentForeignKeyProperty,
+      newParentId,
+    }),
+  );
 
   await childRepository.save(copies);
+}
+
+function createChildCopy({
+  child,
+  childMetadata,
+  childRepository,
+  parentForeignKeyProperty,
+  newParentId,
+}: {
+  child: ObjectLiteral;
+  childMetadata: EntityMetadata;
+  childRepository: Repository<ObjectLiteral>;
+  parentForeignKeyProperty: string;
+  newParentId: unknown;
+}): ObjectLiteral {
+  const childColumns = cloneColumns({
+    metadata: childMetadata,
+    source: child,
+    overrides: {},
+    excludeForeignKeyColumns: true,
+  });
+  childColumns[parentForeignKeyProperty] = newParentId;
+
+  // Re-link many-to-many relations (e.g. roles) instead of cloning targets.
+  for (const childRelation of childMetadata.relations) {
+    if (childRelation.isManyToMany && child[childRelation.propertyName]) {
+      childColumns[childRelation.propertyName] =
+        child[childRelation.propertyName];
+    }
+  }
+  return childRepository.create(childColumns as DeepPartial<ObjectLiteral>);
 }

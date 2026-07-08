@@ -249,6 +249,16 @@ export class ProgramService {
     overrides: Partial<CreateProgramDto>;
     userId: number;
   }): Promise<ProgramEntity> {
+    const programExists = await this.programRepository.exists({
+      where: { id: Equal(copyFromProgramId) },
+    });
+    if (!programExists) {
+      throw new HttpException(
+        { errors: `No program found with id ${copyFromProgramId}` },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     const newProgram = await duplicateEntity({
       dataSource: this.dataSource,
       entity: ProgramEntity,
