@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
-import { TokenSet } from 'openid-client';
 
 import { env } from '@121-service/src/env';
 import { AirtelApiAuthenticationRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/airtel/dtos/airtel-api-authentication-request-body.dto';
@@ -13,11 +12,13 @@ import { AirtelApiHelperService } from '@121-service/src/fsp-integrations/integr
 import { AirtelEncryptionService } from '@121-service/src/fsp-integrations/integrations/airtel/services/airtel.encryption.service';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { createTokenSet } from '@121-service/src/utils/token/token.helpers';
+import { TokenSet } from '@121-service/src/utils/token/token-set';
 
 @Injectable()
 export class AirtelApiService {
   private readonly encryptedPin: string;
-  private tokenSet: TokenSet;
+  private tokenSet: TokenSet | undefined;
   private readonly airtelClientId: string | undefined;
   private readonly airtelClientSecret: string | undefined;
   private readonly countryCode: string;
@@ -154,11 +155,10 @@ export class AirtelApiService {
   }
 
   private addAuthHeaders(headers: Headers): Headers {
-    if (!this.tokenSet || !this.tokenSet.access_token) {
+    if (!this.tokenSet) {
       throw new Error('No access token available for Airtel API requests');
     }
-    // Refactor: make token validation service use ms as param.
-    headers.append('Authorization', `Bearer ${this.tokenSet.access_token}`);
+    headers.append('Authorization', `Bearer ${this.tokenSet.accessToken}`);
     return headers;
   }
 
@@ -205,9 +205,9 @@ export class AirtelApiService {
     // We subtract 5 seconds to ensure we don't use an expired token.
     const expiresAtUnixTimestamp = (expiresInSeconds - 5) * 1000 + Date.now();
 
-    this.tokenSet = new TokenSet({
-      access_token: accessToken,
-      expires_at: expiresAtUnixTimestamp,
+    this.tokenSet = createTokenSet({
+      accessToken,
+      expiresAt: expiresAtUnixTimestamp,
     });
   }
 

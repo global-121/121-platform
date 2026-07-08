@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Issuer, TokenSet } from 'openid-client';
+import * as openidClient from 'openid-client';
 import { v4 as uuid } from 'uuid';
 
 import { env } from '@121-service/src/env';
@@ -32,7 +32,11 @@ import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 import { repeatAttempt } from '@121-service/src/utils/repeat-attempt';
-import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
+import {
+  createTokenSet,
+  isTokenValid,
+} from '@121-service/src/utils/token/token.helpers';
+import { TokenSet } from '@121-service/src/utils/token/token-set';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 const intersolveVisaApiUrl =
@@ -56,37 +60,40 @@ const estimatedAnnualPaymentVolumeMajorUnit =
 */
 @Injectable()
 export class IntersolveVisaApiService {
-  public tokenSet: TokenSet;
-  public constructor(
-    private readonly httpService: CustomHttpService,
-    private readonly tokenValidationService: TokenValidationService,
-  ) {}
+  public tokenSet: TokenSet | undefined;
+  public constructor(private readonly httpService: CustomHttpService) {}
 
   public async getAuthenticationToken() {
     if (env.INTERSOLVE_MODE === FspMode.mock) {
       return 'mocked-token';
     }
-    if (this.tokenValidationService.isTokenValid(this.tokenSet)) {
+    if (isTokenValid(this.tokenSet)) {
       // Return cached token
-      return this.tokenSet.access_token;
+      return this.tokenSet.accessToken;
     }
     // If not valid, request new token
-    const trustIssuer = await Issuer.discover(
-      `${env.INTERSOLVE_VISA_OIDC_ISSUER}/.well-known/openid-configuration`,
+    const config = await openidClient.discovery(
+      new URL(env.INTERSOLVE_VISA_OIDC_ISSUER!), // It's checked on startup in the FspEnvVariableValidationService that this is set, so we can safely use the non-null assertion operator here.
+      env.INTERSOLVE_VISA_CLIENT_ID,
+      env.INTERSOLVE_VISA_CLIENT_SECRET,
+      openidClient.ClientSecretBasic(env.INTERSOLVE_VISA_CLIENT_SECRET),
     );
-    const client = new trustIssuer.Client({
-      client_id: env.INTERSOLVE_VISA_CLIENT_ID,
-      client_secret: env.INTERSOLVE_VISA_CLIENT_SECRET,
-    });
-    const tokenSet = await client.grant({
-      grant_type: 'client_credentials',
-    });
-    if (tokenSet.expires_at) {
-      tokenSet.expires_at *= 1000; // Convert to milliseconds to align with standards in tokenValidationService.isTokenValid()
+    const tokenEndpointResponse =
+      await openidClient.clientCredentialsGrant(config);
+
+    const accessToken = tokenEndpointResponse.access_token;
+    const expiresInSeconds = tokenEndpointResponse.expires_in;
+    if (!accessToken || !expiresInSeconds || expiresInSeconds <= 0) {
+      throw new IntersolveVisaApiError(
+        'authentication failed: invalid token response from Intersolve',
+      );
     }
-    // Cache tokenSet
-    this.tokenSet = tokenSet;
-    return tokenSet.access_token;
+
+    this.tokenSet = createTokenSet({
+      accessToken,
+      expiresIn: expiresInSeconds,
+    });
+    return this.tokenSet.accessToken;
   }
 
   public async createCustomer({

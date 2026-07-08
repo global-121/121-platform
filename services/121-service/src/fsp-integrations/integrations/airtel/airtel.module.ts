@@ -8,7 +8,6 @@ import { AirtelService } from '@121-service/src/fsp-integrations/integrations/ai
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 @Module({
   imports: [HttpModule, RedisModule, QueuesRegistryModule],
@@ -17,7 +16,6 @@ import { TokenValidationService } from '@121-service/src/utils/token/token-valid
     AirtelEncryptionService,
     AirtelApiHelperService,
     AirtelApiService,
-    TokenValidationService,
     CustomHttpService,
   ],
   exports: [AirtelService],

@@ -8,7 +8,6 @@ import { MtnApiService } from '@121-service/src/fsp-integrations/integrations/mt
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 @Module({
   imports: [
@@ -20,7 +19,6 @@ import { TokenValidationService } from '@121-service/src/utils/token/token-valid
     MtnApiService,
     MtnApiHelperService,
     CustomHttpService,
-    TokenValidationService,
     ProgramFspConfigurationRepository,
   ],
   exports: [MtnService],

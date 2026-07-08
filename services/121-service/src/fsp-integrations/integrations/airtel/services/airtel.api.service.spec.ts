@@ -7,7 +7,6 @@ import { AirtelApiService } from '@121-service/src/fsp-integrations/integrations
 import { AirtelEncryptionService } from '@121-service/src/fsp-integrations/integrations/airtel/services/airtel.encryption.service';
 import { AirtelApiDisbursementStatusResponseCodeEnum } from '@121-service/src/fsp-integrations/integrations/airtel/services/enums/airtel-api-disbursement-result-status.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 const responseWrapper = (obj) => ({
   data: obj,
@@ -89,7 +88,6 @@ describe('AirtelApiService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AirtelApiService,
-        TokenValidationService,
         {
           provide: CustomHttpService,
           useValue: {

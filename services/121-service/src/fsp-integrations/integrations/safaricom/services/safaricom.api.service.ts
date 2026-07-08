@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { TokenSet } from 'openid-client';
 
 import { env } from '@121-service/src/env';
 import { AuthResponseSafaricomApiDto } from '@121-service/src/fsp-integrations/integrations/safaricom/dtos/safaricom-api/auth-response-safaricom-api.dto';
@@ -10,7 +9,11 @@ import { TransferResult } from '@121-service/src/fsp-integrations/integrations/s
 import { SafaricomApiHelperService } from '@121-service/src/fsp-integrations/integrations/safaricom/services/safaricom.api.helper.service';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
+import {
+  createTokenSet,
+  isTokenValid,
+} from '@121-service/src/utils/token/token.helpers';
+import { TokenSet } from '@121-service/src/utils/token/token-set';
 
 @Injectable()
 export class SafaricomApiService {
@@ -18,7 +21,6 @@ export class SafaricomApiService {
 
   public constructor(
     private readonly httpService: CustomHttpService,
-    private readonly tokenValidationService: TokenValidationService,
     private readonly safaricomApiHelperService: SafaricomApiHelperService,
   ) {}
 
@@ -57,7 +59,7 @@ export class SafaricomApiService {
   }
 
   private async authenticate(): Promise<void> {
-    if (this.tokenValidationService.isTokenValid(this.tokenSet)) {
+    if (isTokenValid(this.tokenSet)) {
       return;
     }
 
@@ -80,10 +82,11 @@ export class SafaricomApiService {
         headers,
       );
 
-      // Cache tokenSet and expires_at
-      const tokenSet = new TokenSet({
-        access_token: data.access_token,
-        expires_at: (data.expires_in - 5 * 60) * 1000 + Date.now(), //expires_in is typically 3599, so in seconds and 1 hour from now. We subtract 5 minutes to be safe.
+      // Cache tokenSet. expires_in is in seconds, typically 3599 (1 hour from now).
+      // isTokenValid() applies a safety buffer before expiry, so we store the actual expiry here.
+      const tokenSet = createTokenSet({
+        accessToken: data.access_token,
+        expiresIn: data.expires_in,
       });
       this.tokenSet = tokenSet;
     } catch (error) {
@@ -107,7 +110,7 @@ export class SafaricomApiService {
           : `${env.SAFARICOM_API_URL}/${env.SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT}`;
 
       const headers = new Headers();
-      headers.append('Authorization', `Bearer ${this.tokenSet.access_token}`);
+      headers.append('Authorization', `Bearer ${this.tokenSet.accessToken}`);
 
       const res = await this.httpService.post<TransferResponseSafaricomApiDto>(
         `${paymentUrl}`,
