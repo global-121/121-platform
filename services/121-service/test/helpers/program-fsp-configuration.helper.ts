@@ -47,6 +47,21 @@ export async function patchProgramFspConfiguration({
     .send(body);
 }
 
+export async function putProgramFspConfigurations({
+  programId,
+  fsps,
+  accessToken,
+}: {
+  programId: number;
+  fsps: Fsps[];
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .put(`/programs/${programId}/fsp-configurations`)
+    .set('Cookie', [accessToken])
+    .send({ fsps });
+}
+
 export async function getProgramFspConfigurations({
   programId,
   accessToken,

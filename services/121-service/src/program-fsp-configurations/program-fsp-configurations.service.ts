@@ -15,9 +15,7 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/fsp-management/fsp-attribute-type-mapping';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
-import {
-  getFspConfigurationRequiredProperties
-} from '@121-service/src/fsp-management/fsp-settings.helpers';
+import { getFspConfigurationRequiredProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -523,6 +521,79 @@ export class ProgramFspConfigurationsService {
       programFspConfigurationId,
       properties,
     );
+  }
+
+  public async updateProgramFspConfigurations({
+    programId,
+    fsps,
+  }: {
+    programId: number;
+    fsps: Fsps[];
+  }): Promise<void> {
+    const programFspConfigurations =
+      await this.programFspConfigurationRepository.find({
+        where: { programId: Equal(programId) },
+      });
+
+    await this.deleteObsoleteFspConfigurations({
+      programFspConfigurations,
+      programId,
+      fsps,
+    });
+
+    await this.createMissingFspConfigurations({
+      programFspConfigurations,
+      programId,
+      fsps,
+    });
+  }
+
+  private async deleteObsoleteFspConfigurations({
+    programFspConfigurations,
+    programId,
+    fsps,
+  }: {
+    programFspConfigurations: ProgramFspConfigurationEntity[];
+    programId: number;
+    fsps: Fsps[];
+  }): Promise<void>  {
+    const configsToDelete = programFspConfigurations.filter(
+      (config) => !fsps.includes(config.fspName),
+    );
+    for (const config of configsToDelete) {
+      await this.delete(programId, config.name);
+    }
+  }
+
+  private async createMissingFspConfigurations({
+    programFspConfigurations,
+    programId,
+    fsps,
+  }: {
+    programFspConfigurations: ProgramFspConfigurationEntity[];
+    programId: number;
+    fsps: Fsps[];
+  }): Promise<void> {
+    const existingFspNames = programFspConfigurations.map(
+      (config) => config.fspName,
+    );
+    const fspNamesToAdd = fsps.filter(
+      (fspName) => !existingFspNames.includes(fspName),
+    );
+
+    if (fspNamesToAdd.length === 0) {
+      return;
+    }
+
+    for (const fspName of fspNamesToAdd) {
+      const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
+        {
+          name: fspName,
+          label: { ...FSP_SETTINGS[fspName].defaultLabel },
+          fspName,
+        };
+      await this.create(programId, createProgramFspConfigurationDto);
+    }
   }
 
   private validateFspIsEnabledOrThrow({

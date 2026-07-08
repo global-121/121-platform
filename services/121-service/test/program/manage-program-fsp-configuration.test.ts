@@ -34,6 +34,7 @@ import {
   patchProgramFspConfigurationProperty,
   postProgramFspConfiguration,
   postProgramFspConfigurationProperties,
+  putProgramFspConfigurations,
 } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   awaitChangeRegistrationStatus,
@@ -225,6 +226,121 @@ describe('Manage FSP-configurations', () => {
     });
     // Ensure that the update data is reflected in the get response so actually updated in the db
     expect(getResultConfig).toEqual(result.body);
+  });
+
+  it('should create multiple FSP-configurations from a list of fsp names', async () => {
+    // Arrange
+    const fspNamesToCreate = [Fsps.airtel, Fsps.nedbank];
+
+    // Act
+    const result = await putProgramFspConfigurations({
+      programId,
+      fsps: fspNamesToCreate,
+      accessToken,
+    });
+
+    const getResult = await getProgramFspConfigurations({
+      programId,
+      accessToken,
+    });
+
+    // Assert
+    expect(result.statusCode).toBe(HttpStatus.OK);
+    expect(getResult.body.map((configuration) => configuration.fspName)).toEqual(
+      expect.arrayContaining(fspNamesToCreate),
+    );
+  });
+
+  it('should add a FSP configuration to program FSP configurations', async () => {
+    // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
+
+    const beforeResult = await getProgramFspConfigurations({
+      programId,
+      accessToken,
+    });
+
+    // Act
+    const result = await putProgramFspConfigurations({
+      programId,
+      fsps: [Fsps.intersolveVisa, Fsps.airtel],
+      accessToken,
+    });
+
+    const getResult = await getProgramFspConfigurations({
+      programId,
+      accessToken,
+    });
+
+    // Assert
+    expect(result.statusCode).toBe(HttpStatus.OK);
+    const beforeFspNames = beforeResult.body
+      .map((configuration) => configuration.fspName)
+      .sort();
+    const afterFspNames = getResult.body
+      .map((configuration) => configuration.fspName)
+      .sort();
+
+    expect(beforeFspNames).toEqual(
+      [
+        Fsps.intersolveVisa,
+        Fsps.intersolveVoucherWhatsapp,
+        Fsps.commercialBankEthiopia,
+      ].sort(),
+    );
+    expect(afterFspNames).toEqual([Fsps.intersolveVisa, Fsps.airtel].sort());
+  });
+
+  it('should delete a FSP configuration from program FSP configurations', async () => {
+    // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
+
+    await postProgramFspConfiguration({
+      programId,
+      body: {
+        name: Fsps.airtel,
+        label: { en: 'Airtel' },
+        fspName: Fsps.airtel,
+        properties: [],
+      },
+      accessToken,
+    });
+
+    const beforeResult = await getProgramFspConfigurations({
+      programId,
+      accessToken,
+    });
+
+    // Act
+    const result = await putProgramFspConfigurations({
+      programId,
+      fsps: [Fsps.intersolveVisa],
+      accessToken,
+    });
+
+    const getResult = await getProgramFspConfigurations({
+      programId,
+      accessToken,
+    });
+
+    // Assert
+    expect(result.statusCode).toBe(HttpStatus.OK);
+    const beforeFspNames = beforeResult.body
+      .map((configuration) => configuration.fspName)
+      .sort();
+    const afterFspNames = getResult.body
+      .map((configuration) => configuration.fspName)
+      .sort();
+
+    expect(beforeFspNames).toEqual(
+      [
+        Fsps.intersolveVisa,
+        Fsps.intersolveVoucherWhatsapp,
+        Fsps.commercialBankEthiopia,
+        Fsps.airtel,
+      ].sort(),
+    );
+    expect(afterFspNames).toEqual([Fsps.intersolveVisa].sort());
   });
 
   it('should save a program FSP-configuration without properties with state "configurationPending"', async () => {

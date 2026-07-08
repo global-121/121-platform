@@ -2,6 +2,7 @@ import {
   Controller,
   HttpCode,
   ParseArrayPipe,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -18,6 +19,7 @@ import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
@@ -97,6 +99,56 @@ export class ProgramFspConfigurationsController {
     return await this.programFspConfigurationsService.create(
       programId,
       programFspConfigurationData,
+    );
+  }
+
+  @AuthenticatedUser({
+    permissions: [
+      PermissionEnum.ProgramFspConfigCREATE, 
+      PermissionEnum.ProgramFspConfigUPDATE,
+      PermissionEnum.ProgramFspConfigDELETE
+    ],
+  })
+  @ApiOperation({
+    summary:
+      'Update Program FSP configurations based on a list of FSP names.',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'Program FSP configurations have been successfully updated.',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['fsps'],
+      properties: {
+        fsps: {
+          type: 'array',
+          items: {
+            type: 'string',
+            enum: Object.values(Fsps),
+          },
+        },
+      },
+      example: {
+        fsps: [Fsps.intersolveVisa, Fsps.airtel],
+      },
+    },
+  })
+  @Put(':programId/fsp-configurations')
+  public async updateProgramFspConfigurations(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Body('fsps', new ParseArrayPipe({ items: String }))
+    fsps: Fsps[],
+  ): Promise<void> {
+    await this.programFspConfigurationsService.updateProgramFspConfigurations(
+      {
+        programId,
+        fsps,
+      },
     );
   }
 
