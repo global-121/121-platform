@@ -131,7 +131,7 @@ svg-icon svg {
 
   li {
     .mention-item {
-      @apply txt-body-m !py-2 text-start font-semibold !text-black;
+      @apply txt-body-m py-2! text-start font-semibold text-black!;
     }
 
     &.mention-active {
@@ -368,7 +368,7 @@ svg-icon svg {
   .p-inputtext {
     &.ng-touched.ng-invalid,
     [formcontrolname].ng-touched.ng-invalid & {
-      @apply !border-red-500;
+      @apply border-red-500!;
     }
   }
 
