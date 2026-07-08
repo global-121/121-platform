@@ -39,8 +39,7 @@ export type ActitivitiesResponse = {
 } & Dto<Omit<ActivitiesDto, 'data'>>;
 
 export type SendMessageData =
-  | { customMessage: string }
-  | { messageTemplateKey: string };
+  { customMessage: string } | { messageTemplateKey: string };
 
 export type RegistrationStatusChangeTarget = Exclude<
   RegistrationStatusEnum,

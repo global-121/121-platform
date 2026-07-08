@@ -141,7 +141,8 @@ export class ExportService {
       filename?: string;
     } &
       // this is where we define which export types support which parameters
-      (| {
+      (
+        | {
             type: 'payments';
             fromDate?: Date;
             toDate?: Date;
