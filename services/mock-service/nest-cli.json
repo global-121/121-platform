@@ -9,6 +9,10 @@
       {
         "include": "**/*.csv",
         "outDir": "dist"
+      },
+      {
+        "include": "**/*.jpg",
+        "outDir": "dist"
       }
     ],
     "watchAssets": true,

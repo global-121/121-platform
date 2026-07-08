@@ -111,6 +111,7 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
               type: 'options',
               value: value as string | string[],
             };
+          case RegistrationAttributeTypes.koboImage:
           case RegistrationAttributeTypes.tel:
           case RegistrationAttributeTypes.text:
           default:
