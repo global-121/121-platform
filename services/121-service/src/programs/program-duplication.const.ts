@@ -20,7 +20,7 @@ export const propertiesToDuplicate: Record<keyof ProgramEntity, boolean> = {
   targetNrRegistrations: true,
   description: true,
   validation: true,
-  fullnameNamingConvention: true,
+  fullnameNamingConvention: false,
   languages: true,
   enableMaxPayments: true,
   enableScope: true,
@@ -38,7 +38,7 @@ export const propertiesToDuplicate: Record<keyof ProgramEntity, boolean> = {
   registrations: false,
   payments: false,
   programFspConfigurations: true,
-  messageTemplates: true,
+  messageTemplates: false,
   attachments: false,
 
   // One-to-one relations
