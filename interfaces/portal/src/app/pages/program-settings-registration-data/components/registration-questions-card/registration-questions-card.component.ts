@@ -121,8 +121,7 @@ export class RegistrationQuestionsCardComponent {
           const attributeLabel = formData[attributeName];
           for (const language of Object.keys(attributeLabel)) {
             const translatedLabel = attributeLabel[language] as
-              | string
-              | undefined;
+              string | undefined;
             if (translatedLabel) {
               label[language] = translatedLabel;
             }

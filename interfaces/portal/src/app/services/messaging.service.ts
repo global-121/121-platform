@@ -114,9 +114,7 @@ export class MessagingService {
     return placeholders.reduce((output, attribute) => {
       const translatedAttribute = this.translatableStringService.translate(
         previewRegistration[attribute.name] as
-          | number
-          | string
-          | UILanguageTranslation,
+          number | string | UILanguageTranslation,
       );
 
       if (translatedAttribute === undefined) {

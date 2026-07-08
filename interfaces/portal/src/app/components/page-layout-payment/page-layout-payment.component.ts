@@ -334,8 +334,7 @@ export class PageLayoutPaymentComponent {
 
   readonly paymentTransactionCountByStatus = (
     transactionStatus:
-      | TransactionStatusEnum.approved
-      | TransactionStatusEnum.pendingApproval,
+      TransactionStatusEnum.approved | TransactionStatusEnum.pendingApproval,
   ) =>
     computed<string>(() => {
       if (!this.paymentAggregate.isSuccess()) {
@@ -349,8 +348,7 @@ export class PageLayoutPaymentComponent {
 
   readonly paymentTotalTransferValueByStatus = (
     status:
-      | TransactionStatusEnum.approved
-      | TransactionStatusEnum.pendingApproval,
+      TransactionStatusEnum.approved | TransactionStatusEnum.pendingApproval,
   ) =>
     computed<string>(() => {
       if (!this.paymentAggregate.isSuccess()) {
