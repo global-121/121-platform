@@ -243,7 +243,9 @@ class PaymentsPage extends BasePage {
 
     for (let attempt = 0; attempt < 2; attempt++) {
       await this.exportButton.click();
-
+      console.log(
+        `Attempt ${attempt + 1}: Waiting for export menu item "${option}" to be visible...`,
+      );
       try {
         await expect(menuItem).toBeVisible({ timeout: 5_000 });
         break;
