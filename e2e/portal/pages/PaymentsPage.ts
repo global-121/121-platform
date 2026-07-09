@@ -9,6 +9,7 @@ import { PrimeNGDatePicker } from '../components/PrimeNGDatePicker';
 class PaymentsPage extends BasePage {
   readonly page: Page;
   readonly table: TableComponent;
+  readonly pageTitle: Locator;
   readonly createNewPaymentButton: Locator;
   readonly addToPaymentButton: Locator;
   readonly fspSummary: Locator;
@@ -27,6 +28,10 @@ class PaymentsPage extends BasePage {
     super(page);
     this.page = page;
     this.table = new TableComponent(page);
+    this.pageTitle = this.page.getByRole('heading', {
+      level: 1,
+      name: 'Payments',
+    });
     this.createNewPaymentButton = this.page.getByRole('button', {
       name: 'Create new payment',
     });
@@ -238,10 +243,11 @@ class PaymentsPage extends BasePage {
     option: string;
     dateRange?: { start: Date; end: Date };
   }) {
-    await this.page.waitForLoadState('networkidle');
-    await this.page.waitForTimeout(200); // wait for the export options to be rendered
     await this.exportButton.click();
-    await this.page.getByRole('menuitem', { name: option }).click();
+
+    const menuItem = this.page.getByRole('menuitem', { name: option });
+    await menuItem.click();
+
     if (dateRange) {
       await this.dateRangeStartInput.selectDate({
         targetDate: dateRange.start,

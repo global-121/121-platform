@@ -17,12 +17,13 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     seedPaidRegistrations: true,
     registrations: registrationsOCW,
     programId: programIdOCW,
-    navigateToPage: `/program/${programIdOCW}/registrations`,
+    navigateToPage: `/program/${programIdOCW}/payments`,
   });
 });
 
-test('ExportPayments', async ({ paymentsPage, exportDataComponent }) => {
+test('Export Payments', async ({ paymentsPage, exportDataComponent }) => {
   const accessToken = await getAccessToken();
+
   await test.step('Do payments', async () => {
     for (let i = 0; i < 4; i++) {
       await doPaymentAndWaitForCompletion({
@@ -32,11 +33,6 @@ test('ExportPayments', async ({ paymentsPage, exportDataComponent }) => {
         accessToken,
       });
     }
-    await paymentsPage.navigateToProgramPage('Payments');
-  });
-
-  await test.step('Validate export payment button', async () => {
-    await paymentsPage.exportButton.waitFor({ state: 'visible' });
   });
 
   await test.step('Export and validate file', async () => {
@@ -59,7 +55,7 @@ test('ExportPayments', async ({ paymentsPage, exportDataComponent }) => {
         const bId = b[registrationProgramIdIndex];
 
         if (aId !== bId) {
-          return parseInt(aId, 10) - parseInt(bId, 10);
+          return Number.parseInt(aId, 10) - Number.parseInt(bId, 10);
         }
 
         const paymentIdIndex = headerCells.indexOf('paymentId');
@@ -67,16 +63,20 @@ test('ExportPayments', async ({ paymentsPage, exportDataComponent }) => {
         const aPaymentId = a[paymentIdIndex];
         const bPaymentId = b[paymentIdIndex];
 
-        return parseInt(aPaymentId, 10) - parseInt(bPaymentId, 10);
+        return (
+          Number.parseInt(aPaymentId, 10) - Number.parseInt(bPaymentId, 10)
+        );
       },
     });
   });
 });
 
-test('View available actions for admin', async ({ page, paymentsPage }) => {
+test('View available actions for admin', async ({ paymentsPage }) => {
+  await test.step('Go to payments page', async () => {
+    await paymentsPage.navigateToProgramPage(`Payments`);
+  });
+
   await test.step('Validate export options', async () => {
-    await paymentsPage.navigateToProgramPage('Payments');
-    await page.waitForTimeout(200); // wait for the export options to be rendered
     await paymentsPage.exportButton.click();
 
     const expectedMenuItems = [
@@ -87,7 +87,7 @@ test('View available actions for admin', async ({ page, paymentsPage }) => {
     ];
 
     // This part is to wait for the menu items to be visible before asserting
-    const menuItems = page.getByRole('menuitem');
+    const menuItems = paymentsPage.page.getByRole('menuitem');
     await expect(menuItems).toHaveText(expectedMenuItems);
 
     // This part is to assert the actual text content of the menu items, also ensures there are no extra items
@@ -101,17 +101,26 @@ test('View available actions for admin', async ({ page, paymentsPage }) => {
 
 test('View available actions for a "view only" user', async ({
   paymentsPage,
-  homePage,
   loginPage,
 }) => {
-  await homePage.selectAccountOption('Logout');
-  await loginPage.login({
-    username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
-    password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+  await test.step('Log in as view-only user', async () => {
+    await paymentsPage.selectAccountOption('Logout');
+
+    await loginPage.login({
+      skipNavigateToLogin: true,
+      skipUrlCheck: true,
+      username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+    });
+  });
+
+  await test.step('Go to payments page', async () => {
+    await paymentsPage.goto(`/program/${programIdOCW}/payments`);
+    await expect(paymentsPage.pageTitle).toBeVisible();
   });
 
   await test.step('Validate hidden buttons', async () => {
-    await paymentsPage.exportButton.waitFor({ state: 'hidden' });
-    await paymentsPage.createNewPaymentButton.waitFor({ state: 'hidden' });
+    await expect(paymentsPage.exportButton).not.toBeVisible();
+    await expect(paymentsPage.createNewPaymentButton).not.toBeVisible();
   });
 });
