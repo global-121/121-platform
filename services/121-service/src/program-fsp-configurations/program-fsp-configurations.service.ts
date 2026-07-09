@@ -71,9 +71,11 @@ export class ProgramFspConfigurationsService {
       fspName: programFspConfigurationDto.fspName,
     });
 
-    this.programFspConfigurationsHelperService.validateLabelHasEnglishTranslation({
-      label: programFspConfigurationDto.label,
-    });
+    this.programFspConfigurationsHelperService.validateLabelHasEnglishTranslation(
+      {
+        label: programFspConfigurationDto.label,
+      },
+    );
 
     const existingConfig = await this.programFspConfigurationRepository.findOne(
       {
@@ -97,9 +99,11 @@ export class ProgramFspConfigurationsService {
         fspName: programFspConfigurationDto.fspName,
       });
 
-      this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow({
-        properties: programFspConfigurationDto.properties,
-      });
+      this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow(
+        {
+          properties: programFspConfigurationDto.properties,
+        },
+      );
     }
   }
 
@@ -197,9 +201,11 @@ export class ProgramFspConfigurationsService {
 
     // Only update the label an properties in this API call. I cannot imagine a use case where we would want to update the name or fsp name
     // Updating the FSP name would also be more complex as you would need to check if the new properties are valid for the new FSP
-    this.programFspConfigurationsHelperService.validateLabelHasEnglishTranslation({
-      label: updateProgramFspConfigurationDto.label,
-    });
+    this.programFspConfigurationsHelperService.validateLabelHasEnglishTranslation(
+      {
+        label: updateProgramFspConfigurationDto.label,
+      },
+    );
     config.label = updateProgramFspConfigurationDto.label;
 
     if (updateProgramFspConfigurationDto.properties) {
@@ -210,9 +216,11 @@ export class ProgramFspConfigurationsService {
         fspName: config.fspName,
       });
 
-      this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow({
-        properties: updateProgramFspConfigurationDto.properties,
-      });
+      this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow(
+        {
+          properties: updateProgramFspConfigurationDto.properties,
+        },
+      );
 
       config.state =
         this.programFspConfigurationsHelperService.computeFspConfigurationState(
@@ -294,9 +302,11 @@ export class ProgramFspConfigurationsService {
       fspName: config.fspName,
     });
 
-    this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow({
-      properties: inputProperties,
-    });
+    this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow(
+      {
+        properties: inputProperties,
+      },
+    );
 
     await this.validateNoDuplicateExistingProperties({
       propertyNames: inputProperties.map((p) => p.name),
@@ -570,9 +580,11 @@ export class ProgramFspConfigurationsService {
     );
 
     const allowlistedPropertyNames =
-      this.programFspConfigurationsHelperService.getAllowlistedPropertyNamesForFsp({
-        fspName: config.fspName,
-      });
+      this.programFspConfigurationsHelperService.getAllowlistedPropertyNamesForFsp(
+        {
+          fspName: config.fspName,
+        },
+      );
     if (!allowlistedPropertyNames || allowlistedPropertyNames.length === 0) {
       return [];
     }
@@ -588,5 +600,78 @@ export class ProgramFspConfigurationsService {
     return ProgramFspConfigurationMapper.mapPropertyEntitiesToDtos(
       publicProperties,
     );
+  }
+
+  public async updateProgramFspConfigurations({
+    programId,
+    fsps,
+  }: {
+    programId: number;
+    fsps: Fsps[];
+  }): Promise<void> {
+    const programFspConfigurations =
+      await this.programFspConfigurationRepository.find({
+        where: { programId: Equal(programId) },
+      });
+
+    await this.deleteObsoleteFspConfigurations({
+      programFspConfigurations,
+      programId,
+      fsps,
+    });
+
+    await this.createMissingFspConfigurations({
+      programFspConfigurations,
+      programId,
+      fsps,
+    });
+  }
+
+  private async deleteObsoleteFspConfigurations({
+    programFspConfigurations,
+    programId,
+    fsps,
+  }: {
+    programFspConfigurations: ProgramFspConfigurationEntity[];
+    programId: number;
+    fsps: Fsps[];
+  }): Promise<void> {
+    const configsToDelete = programFspConfigurations.filter(
+      (config) => !fsps.includes(config.fspName),
+    );
+    for (const config of configsToDelete) {
+      await this.delete(programId, config.name);
+    }
+  }
+
+  private async createMissingFspConfigurations({
+    programFspConfigurations,
+    programId,
+    fsps,
+  }: {
+    programFspConfigurations: ProgramFspConfigurationEntity[];
+    programId: number;
+    fsps: Fsps[];
+  }): Promise<void> {
+    const existingFspNames = new Set(
+      programFspConfigurations.map((config) => config.fspName),
+    );
+    const fspNamesToAdd = fsps.filter(
+      (fspName) => !existingFspNames.has(fspName),
+    );
+
+    if (fspNamesToAdd.length === 0) {
+      return;
+    }
+
+    for (const fspName of fspNamesToAdd) {
+      const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
+        {
+          name: fspName,
+          label: { ...FSP_SETTINGS[fspName].defaultLabel },
+          fspName,
+        };
+      await this.create(programId, createProgramFspConfigurationDto);
+    }
   }
 }
