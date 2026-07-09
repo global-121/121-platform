@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
 import { propertiesToDuplicate } from '@121-service/src/programs/program-duplication.const';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -12,7 +13,6 @@ import { getProgramApprovalThresholds } from '@121-service/test/helpers/program-
 import {
   getProgramFspConfigurations,
   postProgramFspConfiguration,
-  postProgramFspConfigurationProperties,
 } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import { getAllUsersByProgramId } from '@121-service/test/helpers/user.helper';
 import {
@@ -31,146 +31,125 @@ describe('Duplicate program', () => {
 
   it('should duplicate a program and its relations and persist it', async () => {
     // Arrange
-    const fspConfigurationName =
-      await createIntersolveVisaConfiguration('duplicate-test');
-    const source = await getProgramById(copyFromProgramId);
-    const sourceUsers: { id: number }[] =
-      await getUsersOfProgram(copyFromProgramId);
-    const sourceThresholds = await getThresholdsOfProgram(copyFromProgramId);
+    const fspConfigurationName = `${'duplicate-test'}-${Date.now()}`;
+    await postProgramFspConfiguration({
+      programId: copyFromProgramId,
+      body: {
+        name: fspConfigurationName,
+        label: { en: 'Duplicate test FSP' },
+        fspName: Fsps.intersolveVisa,
+        properties: [
+          {
+            name: FspConfigurationProperties.brandCode,
+            value: 'some-brand-code',
+          },
+          {
+            name: FspConfigurationProperties.maxBalanceInCents,
+            value: 15000,
+          },
+        ],
+      },
+      accessToken,
+    });
+
+    const sourceProgram = (await getProgram(copyFromProgramId, accessToken)).body;
+    const sourceUsers: { id: number }[] = (
+      await getAllUsersByProgramId({
+        programId: copyFromProgramId,
+        accessToken,
+      })
+    ).body;
+    const sourceThresholds = (
+      await getProgramApprovalThresholds({
+        programId: copyFromProgramId,
+        accessToken,
+      })
+    ).body;
+    const sourceFspConfigurations = (
+      await getProgramFspConfigurations({
+        programId: copyFromProgramId,
+        accessToken,
+      })
+    ).body;
+    // The source program has data worth duplicating.
     expect(sourceUsers.length).toBeGreaterThan(0);
     expect(sourceThresholds.length).toBeGreaterThan(0);
-    expect((source.fspConfigurations ?? []).length).toBeGreaterThan(0);
+    expect(sourceProgram.fspConfigurations.length).toBeGreaterThan(0);
+    
 
     // Act
-    const newProgramId = await duplicateProgramExpectingSuccess();
+    const duplicateResponse = await duplicateProgram({
+      copyFromProgramId,
+      accessToken,
+    });
+    const duplicatedProgramId = duplicateResponse.body.id;
+    const duplicatedProgram = (
+      await getProgram(duplicatedProgramId, accessToken)
+    ).body;
+    const duplicatedUsers: { id: number }[] = (
+      await getAllUsersByProgramId({
+        programId: duplicatedProgramId,
+        accessToken,
+      })
+    ).body;
+    const duplicatedFspConfigurations = (
+      await getProgramFspConfigurations({
+        programId: duplicatedProgramId,
+        accessToken,
+      })
+    ).body;
+    const duplicatedThresholds = (
+      await getProgramApprovalThresholds({
+        programId: duplicatedProgramId,
+        accessToken,
+      })
+    ).body;
 
     // Assert
-    const duplicated = await getProgramById(newProgramId);
-    expect(duplicated.id).not.toBe(source.id);
-    expectDuplicatedColumnsMatchSource({ source, duplicated });
-    expectExcludedRelationsAreEmpty({ source, duplicated });
+    expect(duplicateResponse.statusCode).toBe(HttpStatus.CREATED);
+    expectDuplicatedColumnsMatchSource({ source: sourceProgram, duplicatedProgram });
+    expectExcludedRelationsAreEmpty({ source: sourceProgram, duplicatedProgram });
 
-    // Fsp configurations relation is duplicated.
-    expect((duplicated.fspConfigurations ?? []).length).toBe(
-      (source.fspConfigurations ?? []).length,
-    );
+    // Fsp configurations and their property values are duplicated.
     expect(
-      (duplicated.fspConfigurations ?? []).some(
-        (configuration) =>
-          configuration.name === fspConfigurationName &&
-          configuration.fspName === Fsps.intersolveVisa,
+      duplicatedFspConfigurations.map((configuration) => configuration.name),
+    ).toEqual(
+      expect.arrayContaining(
+        sourceFspConfigurations.map((configuration) => configuration.name),
       ),
-    ).toBe(true);
+    );
+    const sourceConfiguration = sourceFspConfigurations.find(
+      (configuration) => configuration.name === fspConfigurationName,
+    );
+    const duplicatedConfiguration = duplicatedFspConfigurations.find(
+      (configuration) => configuration.name === fspConfigurationName,
+    );
+    for (const propertyName of [
+      FspConfigurationProperties.brandCode,
+      FspConfigurationProperties.maxBalanceInCents,
+    ]) {
+      const sourceValue = getPropertyValue(sourceConfiguration, propertyName);
+      const duplicatedValue = getPropertyValue(duplicatedConfiguration, propertyName);
+      expect(duplicatedValue).toBe(sourceValue);
+    }
 
     // Aidworker assignments relation is duplicated.
-    const duplicatedUsers: { id: number }[] =
-      await getUsersOfProgram(newProgramId);
     expect(duplicatedUsers.map((user) => user.id)).toEqual(
       expect.arrayContaining(sourceUsers.map((user) => user.id)),
     );
 
     // Approval thresholds are duplicated and their approver links re-pointed
     // to the copied thresholds.
-    const duplicatedThresholds = await getThresholdsOfProgram(newProgramId);
     expect(
       duplicatedThresholds.map((threshold) => threshold.thresholdAmount).sort(),
     ).toEqual(
       sourceThresholds.map((threshold) => threshold.thresholdAmount).sort(),
     );
     const sourceApproverUserIds = collectApproverUserIds(sourceThresholds);
-    const duplicatedApproverUserIds =
-      collectApproverUserIds(duplicatedThresholds);
+    const duplicatedApproverUserIds = collectApproverUserIds(duplicatedThresholds);
     expect(sourceApproverUserIds.length).toBeGreaterThan(0);
     expect(duplicatedApproverUserIds).toEqual(sourceApproverUserIds);
   });
-
-  it('should duplicate the FSP configuration properties', async () => {
-    // Arrange
-    const fspConfigurationName = await createIntersolveVisaConfiguration(
-      'duplicate-properties-test',
-    );
-    await postProgramFspConfigurationProperties({
-      programId: copyFromProgramId,
-      name: fspConfigurationName,
-      properties: [
-        {
-          name: FspConfigurationProperties.brandCode,
-          value: 'some-brand-code',
-        },
-        {
-          name: FspConfigurationProperties.maxBalanceInCents,
-          value: 15000,
-        },
-      ],
-      accessToken,
-    });
-
-    // Act
-    const newProgramId = await duplicateProgramExpectingSuccess();
-
-    // Assert
-    const duplicatedConfigurations =
-      await getFspConfigurationsOfProgram(newProgramId);
-    const duplicatedConfiguration = duplicatedConfigurations.find(
-      (configuration) => configuration.name === fspConfigurationName,
-    );
-    expect(duplicatedConfiguration).toBeDefined();
-    const duplicatedPropertyNames = (
-      duplicatedConfiguration?.properties ?? []
-    ).map((property) => property.name);
-    expect(duplicatedPropertyNames).toEqual(
-      expect.arrayContaining([
-        FspConfigurationProperties.brandCode,
-        FspConfigurationProperties.maxBalanceInCents,
-      ]),
-    );
-  });
-
-  // ---------------------------------------------------------------------------
-  // Arrange helpers
-  // ---------------------------------------------------------------------------
-
-  async function createIntersolveVisaConfiguration(
-    namePrefix: string,
-  ): Promise<string> {
-    const name = `${namePrefix}-${Date.now()}`;
-    await postProgramFspConfiguration({
-      programId: copyFromProgramId,
-      body: {
-        name,
-        label: { en: 'Duplicate test FSP' },
-        fspName: Fsps.intersolveVisa,
-      },
-      accessToken,
-    });
-    return name;
-  }
-
-  async function duplicateProgramExpectingSuccess(): Promise<number> {
-    const response = await duplicateProgram({ copyFromProgramId, accessToken });
-    expect(response.statusCode).toBe(HttpStatus.CREATED);
-    return response.body.id;
-  }
-
-  // ---------------------------------------------------------------------------
-  // Read helpers
-  // ---------------------------------------------------------------------------
-
-  async function getProgramById(programId: number) {
-    return (await getProgram(programId, accessToken)).body;
-  }
-
-  async function getUsersOfProgram(programId: number) {
-    return (await getAllUsersByProgramId({ programId, accessToken })).body;
-  }
-
-  async function getThresholdsOfProgram(programId: number) {
-    return (await getProgramApprovalThresholds({ programId, accessToken })).body;
-  }
-
-  async function getFspConfigurationsOfProgram(programId: number) {
-    return (await getProgramFspConfigurations({ programId, accessToken })).body;
-  }
 
   // ---------------------------------------------------------------------------
   // Assertion helpers
@@ -178,10 +157,10 @@ describe('Duplicate program', () => {
 
   function expectDuplicatedColumnsMatchSource({
     source,
-    duplicated,
+    duplicatedProgram,
   }: {
     source: Record<string, unknown>;
-    duplicated: Record<string, unknown>;
+    duplicatedProgram: Record<string, unknown>;
   }): void {
     for (const [key, shouldCopy] of Object.entries(propertiesToDuplicate)) {
       // Only scalar columns flagged for duplication; relation arrays are
@@ -190,16 +169,16 @@ describe('Duplicate program', () => {
       if (!(key in source)) continue;
       if (isArrayOfObjects(source[key])) continue;
 
-      expect(duplicated[key]).toStrictEqual(source[key]);
+      expect(duplicatedProgram[key]).toStrictEqual(source[key]);
     }
   }
 
   function expectExcludedRelationsAreEmpty({
     source,
-    duplicated,
+    duplicatedProgram,
   }: {
     source: Record<string, unknown>;
-    duplicated: Record<string, unknown>;
+    duplicatedProgram: Record<string, unknown>;
   }): void {
     for (const [key, shouldCopy] of Object.entries(propertiesToDuplicate)) {
       if (shouldCopy !== false) continue;
@@ -207,7 +186,7 @@ describe('Duplicate program', () => {
       const sourceValue = source[key];
       if (!Array.isArray(sourceValue) || sourceValue.length === 0) continue;
 
-      expect(duplicated[key] ?? []).toHaveLength(0);
+      expect(duplicatedProgram[key] ?? []).toHaveLength(0);
     }
   }
 
@@ -225,5 +204,14 @@ describe('Duplicate program', () => {
     return (
       Array.isArray(value) && value.length > 0 && typeof value[0] === 'object'
     );
+  }
+
+  function getPropertyValue(
+    configuration: ProgramFspConfigurationResponseDto | undefined,
+    propertyName: FspConfigurationProperties,
+  ) {
+    return configuration?.properties.find(
+      (property) => property.name === propertyName,
+    )?.value;
   }
 });
