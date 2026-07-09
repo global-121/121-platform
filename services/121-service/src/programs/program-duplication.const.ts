@@ -1,6 +1,10 @@
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { EntityDuplicationTree } from '@121-service/src/utils/entity-duplication/duplicate-entity.helper';
 
-export const propertiesToDuplicate: Record<keyof ProgramEntity, boolean> = {
+export const propertiesToDuplicate: Record<
+  keyof ProgramEntity,
+  boolean | EntityDuplicationTree
+> = {
   // Primary and audit columns
   id: false,
   created: false,
@@ -37,7 +41,11 @@ export const propertiesToDuplicate: Record<keyof ProgramEntity, boolean> = {
   programRegistrationAttributes: false,
   registrations: false,
   payments: false,
-  programFspConfigurations: true,
+  programFspConfigurations: {
+    // Also duplicate the configuration's properties (e.g. credentials,
+    // columnToMatch) so the copied program's FSP configurations stay functional.
+    properties: true,
+  },
   messageTemplates: false,
   attachments: false,
 

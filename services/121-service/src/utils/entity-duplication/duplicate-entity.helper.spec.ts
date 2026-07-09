@@ -1,9 +1,13 @@
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
 
 import {
-  cloneColumns,
-  getRelationChildren,
-  validateRelationTypeOrThrow,
+    buildRelationLoadTree,
+    cloneColumns,
+    getNestedRelationTree,
+    getRelationChildren,
+    getRelationNamesToDuplicate,
+    isSelectedForDuplication,
+    validateRelationTypeOrThrow,
 } from '@121-service/src/utils/entity-duplication/duplicate-entity.helper';
 
 // Helpers to build minimal column/relation mocks without implementing
@@ -206,5 +210,148 @@ describe('getRelationChildren', () => {
     const relation = makeRelation({ isOneToOne: true });
     const result = getRelationChildren({ relation, related: null });
     expect(result).toHaveLength(0);
+  });
+});
+
+// Builds a minimal EntityMetadata-like stub exposing only the members the
+// tree-interpretation helpers use: the relation list and lookup by name.
+function makeEntityMetadata(relations: any[]): any {
+  return {
+    relations,
+    findRelationWithPropertyPath: (name: string) =>
+      relations.find((relation) => relation.propertyName === name) ?? null,
+  };
+}
+
+function makeRelationWithChildren({
+  propertyName,
+  isManyToMany = false,
+  childRelations = [],
+}: {
+  propertyName: string;
+  isManyToMany?: boolean;
+  childRelations?: any[];
+}): { propertyName: string; isManyToMany: boolean; inverseEntityMetadata: any } {
+  return {
+    propertyName,
+    isManyToMany,
+    inverseEntityMetadata: makeEntityMetadata(childRelations),
+  };
+}
+
+describe('isSelectedForDuplication', () => {
+  it('should select when value is true', () => {
+    expect(isSelectedForDuplication(true)).toBe(true);
+  });
+
+  it('should select when value is a nested tree', () => {
+    expect(isSelectedForDuplication({ properties: true })).toBe(true);
+  });
+
+  it('should not select when value is false', () => {
+    expect(isSelectedForDuplication(false)).toBe(false);
+  });
+
+  it('should not select when value is undefined', () => {
+    expect(isSelectedForDuplication(undefined)).toBe(false);
+  });
+});
+
+describe('getNestedRelationTree', () => {
+  it('should return the tree when value is a nested object', () => {
+    const nested = { properties: true };
+    expect(getNestedRelationTree(nested)).toBe(nested);
+  });
+
+  it('should return undefined when value is true', () => {
+    expect(getNestedRelationTree(true)).toBeUndefined();
+  });
+
+  it('should return undefined when value is false', () => {
+    expect(getNestedRelationTree(false)).toBeUndefined();
+  });
+});
+
+describe('getRelationNamesToDuplicate', () => {
+  it('should select relations flagged true or with a nested tree', () => {
+    const metadata = makeEntityMetadata([
+      { propertyName: 'aidworkerAssignments' },
+      { propertyName: 'registrations' },
+      { propertyName: 'programFspConfigurations' },
+    ]);
+
+    const result = getRelationNamesToDuplicate({
+      metadata,
+      relationTree: {
+        aidworkerAssignments: true,
+        registrations: false,
+        programFspConfigurations: { properties: true },
+      },
+    });
+
+    expect(result).toEqual([
+      'aidworkerAssignments',
+      'programFspConfigurations',
+    ]);
+  });
+
+  it('should ignore column flags that do not match a relation', () => {
+    const metadata = makeEntityMetadata([{ propertyName: 'attachments' }]);
+
+    const result = getRelationNamesToDuplicate({
+      metadata,
+      relationTree: { location: true, attachments: true },
+    });
+
+    expect(result).toEqual(['attachments']);
+  });
+});
+
+describe('buildRelationLoadTree', () => {
+  it('should load a relation flagged true as a leaf', () => {
+    const metadata = makeEntityMetadata([
+      makeRelationWithChildren({ propertyName: 'attachments' }),
+    ]);
+
+    const result = buildRelationLoadTree({
+      metadata,
+      relationTree: { attachments: true },
+    });
+
+    expect(result).toEqual({ attachments: true });
+  });
+
+  it('should also load a child many-to-many relation for re-linking', () => {
+    const metadata = makeEntityMetadata([
+      makeRelationWithChildren({
+        propertyName: 'aidworkerAssignments',
+        childRelations: [{ propertyName: 'roles', isManyToMany: true }],
+      }),
+    ]);
+
+    const result = buildRelationLoadTree({
+      metadata,
+      relationTree: { aidworkerAssignments: true },
+    });
+
+    expect(result).toEqual({ aidworkerAssignments: { roles: true } });
+  });
+
+  it('should recurse into nested relations flagged for duplication', () => {
+    const metadata = makeEntityMetadata([
+      makeRelationWithChildren({
+        propertyName: 'programFspConfigurations',
+        childRelations: [makeRelationWithChildren({ propertyName: 'properties' })],
+      }),
+    ]);
+
+    const result = buildRelationLoadTree({
+      metadata,
+      relationTree: { programFspConfigurations: { properties: true } },
+    });
+
+    expect(result).toEqual({
+      programFspConfigurations: { properties: true },
+    });
   });
 });

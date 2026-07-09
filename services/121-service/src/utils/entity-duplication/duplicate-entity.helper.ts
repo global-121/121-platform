@@ -12,6 +12,18 @@ import {
 } from 'typeorm';
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
 
+/**
+ * Describes which columns and relations of an entity should be duplicated,
+ * mirroring the shape of TypeORM's `FindOptionsRelations`.
+ *
+ * - `true` duplicates the column, or the relation's direct children.
+ * - `false` skips it.
+ * - A nested tree duplicates the relation AND recurses into the listed
+ *   sub-relations (e.g. `{ properties: true }`).
+ */
+export interface EntityDuplicationTree {
+  [propertyName: string]: boolean | EntityDuplicationTree;
+}
 
 export async function duplicateEntity<T extends ObjectLiteral>({
   dataSource,
@@ -23,7 +35,7 @@ export async function duplicateEntity<T extends ObjectLiteral>({
   dataSource: DataSource;
   entity: EntityTarget<T>;
   id: number;
-  propertiesToDuplicate: Record<string, boolean>;
+  propertiesToDuplicate: EntityDuplicationTree;
   overrides?: Record<string, unknown>;
 }): Promise<T> {
   const queryRunner = dataSource.createQueryRunner();
@@ -33,15 +45,13 @@ export async function duplicateEntity<T extends ObjectLiteral>({
     const repository = queryRunner.manager.getRepository(entity);
     const metadata = repository.metadata;
 
-    const relationNamesToDuplicate = getRelationNamesToDuplicate({
-      metadata,
-      propertiesToDuplicate,
-    });
-
-    const primaryColumn = metadata.primaryColumns[0].propertyName;
+    const primaryColumn = getPrimaryKeyProperty(metadata);
     const source = await repository.findOneOrFail({
       where: { [primaryColumn]: Equal(id) } as FindOptionsWhere<T>,
-      relations: buildRelationLoadTree<T>({ metadata, relationNamesToDuplicate }),
+      relations: buildRelationLoadTree<T>({
+        metadata,
+        relationTree: propertiesToDuplicate,
+      }),
     });
 
     const newRoot = await repository.save(
@@ -56,15 +66,13 @@ export async function duplicateEntity<T extends ObjectLiteral>({
     );
     const newRootId = newRoot[primaryColumn];
 
-    for (const relationName of relationNamesToDuplicate) {
-      await copyRelation({
-        manager: queryRunner.manager,
-        metadata,
-        relationName,
-        source,
-        newParentId: newRootId,
-      });
-    }
+    await duplicateRelations({
+      manager: queryRunner.manager,
+      metadata,
+      source,
+      newParentId: newRootId,
+      relationTree: propertiesToDuplicate,
+    });
 
     await queryRunner.commitTransaction();
     return newRoot;
@@ -78,26 +86,22 @@ export async function duplicateEntity<T extends ObjectLiteral>({
   }
 }
 
-function getRelationNamesToDuplicate({
-  metadata,
-  propertiesToDuplicate,
-}: {
-  metadata: EntityMetadata;
-  propertiesToDuplicate: Record<string, boolean>;
-}): string[] {
-  return metadata.relations
-    .map((relation) => relation.propertyName)
-    .filter((propertyName) => propertiesToDuplicate[propertyName] === true);
-}
+// ---------------------------------------------------------------------------
+// Load phase: decide which relations to eager-load from the source entity.
+// ---------------------------------------------------------------------------
 
-function buildRelationLoadTree<T extends ObjectLiteral>({
+export function buildRelationLoadTree<T extends ObjectLiteral>({
   metadata,
-  relationNamesToDuplicate,
+  relationTree,
 }: {
   metadata: EntityMetadata;
-  relationNamesToDuplicate: string[];
+  relationTree: EntityDuplicationTree;
 }): FindOptionsRelations<T> {
-  const tree: Record<string, boolean | Record<string, boolean>> = {};
+  const tree: Record<string, boolean | Record<string, unknown>> = {};
+  const relationNamesToDuplicate = getRelationNamesToDuplicate({
+    metadata,
+    relationTree,
+  });
   for (const relationName of relationNamesToDuplicate) {
     const relation = metadata.findRelationWithPropertyPath(relationName);
     if (!relation) {
@@ -105,10 +109,17 @@ function buildRelationLoadTree<T extends ObjectLiteral>({
     }
     // Also load the children's many-to-many relations so they can be re-linked.
     const manyToManySubRelations = getManyToManySubRelations({ relation });
+    // Load the nested relations that themselves need to be duplicated.
+    const nestedTree = getNestedRelationTree(relationTree[relationName]);
+    const nestedLoad = nestedTree
+      ? buildRelationLoadTree({
+          metadata: relation.inverseEntityMetadata,
+          relationTree: nestedTree,
+        })
+      : {};
+    const mergedSubRelations = { ...manyToManySubRelations, ...nestedLoad };
     tree[relationName] =
-      Object.keys(manyToManySubRelations).length > 0
-        ? manyToManySubRelations
-        : true;
+      Object.keys(mergedSubRelations).length > 0 ? mergedSubRelations : true;
   }
   return tree as FindOptionsRelations<T>;
 }
@@ -127,6 +138,10 @@ function getManyToManySubRelations({
   return manyToManySubRelations;
 }
 
+// ---------------------------------------------------------------------------
+// Clone-root phase: copy the entity's own columns.
+// ---------------------------------------------------------------------------
+
 export function cloneColumns({
   metadata,
   source,
@@ -137,7 +152,7 @@ export function cloneColumns({
   metadata: EntityMetadata;
   source: ObjectLiteral;
   overrides: Record<string, unknown>;
-  propertiesToDuplicate?: Record<string, boolean>;
+  propertiesToDuplicate?: EntityDuplicationTree;
   excludeForeignKeyColumns?: boolean;
 }): Record<string, unknown> {
   const result: Record<string, unknown> = {};
@@ -148,7 +163,11 @@ export function cloneColumns({
 
     const propertyName = column.propertyName;
 
-    if (excludeForeignKeyColumns && column.relationMetadata && column.isNullable) {
+    if (
+      excludeForeignKeyColumns &&
+      column.relationMetadata &&
+      column.isNullable
+    ) {
       continue;
     }
 
@@ -163,14 +182,27 @@ export function cloneColumns({
     result[propertyName] = source[propertyName];
   }
 
-  const columnPropertyNames = metadata.columns.map((column) => column.propertyName);
+  applyColumnOverrides({ result, overrides, metadata });
+  return result;
+}
 
+function applyColumnOverrides({
+  result,
+  overrides,
+  metadata,
+}: {
+  result: Record<string, unknown>;
+  overrides: Record<string, unknown>;
+  metadata: EntityMetadata;
+}): void {
+  const columnPropertyNames = metadata.columns.map(
+    (column) => column.propertyName,
+  );
   for (const [key, value] of Object.entries(overrides)) {
     if (columnPropertyNames.includes(key)) {
       result[key] = value;
     }
   }
-  return result;
 }
 
 function isPrimaryOrAuditColumn(column: {
@@ -185,6 +217,191 @@ function isPrimaryOrAuditColumn(column: {
     column.isUpdateDate ||
     column.isVersion
   );
+}
+
+// ---------------------------------------------------------------------------
+// Copy-relations phase: duplicate each selected relation's children,
+// recursing into nested relation trees.
+// ---------------------------------------------------------------------------
+
+async function duplicateRelations({
+  manager,
+  metadata,
+  source,
+  newParentId,
+  relationTree,
+}: {
+  manager: EntityManager;
+  metadata: EntityMetadata;
+  source: ObjectLiteral;
+  newParentId: unknown;
+  relationTree: EntityDuplicationTree;
+}): Promise<void> {
+  const relationNamesToDuplicate = getRelationNamesToDuplicate({
+    metadata,
+    relationTree,
+  });
+  for (const relationName of relationNamesToDuplicate) {
+    await copyRelation({
+      manager,
+      metadata,
+      relationName,
+      source,
+      newParentId,
+      nestedTree: getNestedRelationTree(relationTree[relationName]),
+    });
+  }
+}
+
+async function copyRelation({
+  manager,
+  metadata,
+  relationName,
+  source,
+  newParentId,
+  nestedTree,
+}: {
+  manager: EntityManager;
+  metadata: EntityMetadata;
+  relationName: string;
+  source: ObjectLiteral;
+  newParentId: unknown;
+  nestedTree?: EntityDuplicationTree;
+}): Promise<void> {
+  const relation = metadata.findRelationWithPropertyPath(relationName);
+  if (!relation) {
+    throw new Error(`Relation "${relationName}" not found on ${metadata.name}`);
+  }
+
+  const inverseRelation = validateRelationTypeOrThrow({
+    relation,
+    relationName,
+  });
+
+  const related = source[relationName];
+  const children = getRelationChildren({ relation, related });
+  if (children.length === 0) {
+    return;
+  }
+
+  const childMetadata = relation.inverseEntityMetadata;
+  const childRepository = manager.getRepository(childMetadata.target);
+  const parentForeignKeyProperty = getForeignKeyProperty(inverseRelation);
+
+  const copies = children.map((child) =>
+    createChildCopy({
+      child,
+      childMetadata,
+      childRepository,
+      parentForeignKeyProperty,
+      newParentId,
+    }),
+  );
+
+  const savedCopies = await childRepository.save(copies);
+
+  if (nestedTree) {
+    await duplicateNestedRelationTrees({
+      manager,
+      children,
+      savedCopies,
+      childMetadata,
+      nestedTree,
+    });
+  }
+}
+
+async function duplicateNestedRelationTrees({
+  manager,
+  children,
+  savedCopies,
+  childMetadata,
+  nestedTree,
+}: {
+  manager: EntityManager;
+  children: ObjectLiteral[];
+  savedCopies: ObjectLiteral[];
+  childMetadata: EntityMetadata;
+  nestedTree: EntityDuplicationTree;
+}): Promise<void> {
+  // Re-point each grandchild to its freshly-created parent copy.
+  const childPrimaryKey = getPrimaryKeyProperty(childMetadata);
+  for (const [index, child] of children.entries()) {
+    await duplicateRelations({
+      manager,
+      metadata: childMetadata,
+      source: child,
+      newParentId: savedCopies[index][childPrimaryKey],
+      relationTree: nestedTree,
+    });
+  }
+}
+
+function createChildCopy({
+  child,
+  childMetadata,
+  childRepository,
+  parentForeignKeyProperty,
+  newParentId,
+}: {
+  child: ObjectLiteral;
+  childMetadata: EntityMetadata;
+  childRepository: Repository<ObjectLiteral>;
+  parentForeignKeyProperty: string;
+  newParentId: unknown;
+}): ObjectLiteral {
+  const childColumns = cloneColumns({
+    metadata: childMetadata,
+    source: child,
+    overrides: {},
+    excludeForeignKeyColumns: true,
+  });
+  childColumns[parentForeignKeyProperty] = newParentId;
+
+  // Re-link many-to-many relations (e.g. roles) instead of cloning targets.
+  for (const childRelation of childMetadata.relations) {
+    if (childRelation.isManyToMany && child[childRelation.propertyName]) {
+      childColumns[childRelation.propertyName] =
+        child[childRelation.propertyName];
+    }
+  }
+  return childRepository.create(childColumns as DeepPartial<ObjectLiteral>);
+}
+
+// ---------------------------------------------------------------------------
+// Leaf predicates and metadata readers.
+// ---------------------------------------------------------------------------
+
+export function getRelationNamesToDuplicate({
+  metadata,
+  relationTree,
+}: {
+  metadata: EntityMetadata;
+  relationTree: EntityDuplicationTree;
+}): string[] {
+  return metadata.relations
+    .map((relation) => relation.propertyName)
+    .filter((propertyName) =>
+      isSelectedForDuplication(relationTree[propertyName]),
+    );
+}
+
+export function isSelectedForDuplication(
+  value: boolean | EntityDuplicationTree | undefined,
+): boolean {
+  return value === true || isRelationTree(value);
+}
+
+export function getNestedRelationTree(
+  value: boolean | EntityDuplicationTree | undefined,
+): EntityDuplicationTree | undefined {
+  return isRelationTree(value) ? value : undefined;
+}
+
+function isRelationTree(
+  value: boolean | EntityDuplicationTree | undefined,
+): value is EntityDuplicationTree {
+  return typeof value === 'object' && value !== null;
 }
 
 export function validateRelationTypeOrThrow({
@@ -221,79 +438,10 @@ export function getRelationChildren({
   return [related as ObjectLiteral];
 }
 
-async function copyRelation({
-  manager,
-  metadata,
-  relationName,
-  source,
-  newParentId,
-}: {
-  manager: EntityManager;
-  metadata: EntityMetadata;
-  relationName: string;
-  source: ObjectLiteral;
-  newParentId: unknown;
-}): Promise<void> {
-  const relation = metadata.findRelationWithPropertyPath(relationName);
-  if (!relation) {
-    throw new Error(`Relation "${relationName}" not found on ${metadata.name}`);
-  }
-
-  const inverseRelation = validateRelationTypeOrThrow({
-    relation,
-    relationName,
-  });
-
-  const related = source[relationName];
-  const children = getRelationChildren({ relation, related });
-  if (children.length === 0) {
-    return;
-  }
-
-  const childMetadata = relation.inverseEntityMetadata;
-  const childRepository = manager.getRepository(childMetadata.target);
-  const parentForeignKeyProperty = inverseRelation.joinColumns[0].propertyName;
-
-  const copies = children.map((child) =>
-    createChildCopy({
-      child,
-      childMetadata,
-      childRepository,
-      parentForeignKeyProperty,
-      newParentId,
-    }),
-  );
-
-  await childRepository.save(copies);
+function getPrimaryKeyProperty(metadata: EntityMetadata): string {
+  return metadata.primaryColumns[0].propertyName;
 }
 
-function createChildCopy({
-  child,
-  childMetadata,
-  childRepository,
-  parentForeignKeyProperty,
-  newParentId,
-}: {
-  child: ObjectLiteral;
-  childMetadata: EntityMetadata;
-  childRepository: Repository<ObjectLiteral>;
-  parentForeignKeyProperty: string;
-  newParentId: unknown;
-}): ObjectLiteral {
-  const childColumns = cloneColumns({
-    metadata: childMetadata,
-    source: child,
-    overrides: {},
-    excludeForeignKeyColumns: true,
-  });
-  childColumns[parentForeignKeyProperty] = newParentId;
-
-  // Re-link many-to-many relations (e.g. roles) instead of cloning targets.
-  for (const childRelation of childMetadata.relations) {
-    if (childRelation.isManyToMany && child[childRelation.propertyName]) {
-      childColumns[childRelation.propertyName] =
-        child[childRelation.propertyName];
-    }
-  }
-  return childRepository.create(childColumns as DeepPartial<ObjectLiteral>);
+function getForeignKeyProperty(inverseRelation: RelationMetadata): string {
+  return inverseRelation.joinColumns[0].propertyName;
 }
