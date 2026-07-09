@@ -21,59 +21,66 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Export Payments', async ({ paymentsPage, exportDataComponent }) => {
-  const accessToken = await getAccessToken();
-  await test.step('Do payments', async () => {
-    for (let i = 0; i < 4; i++) {
-      await doPaymentAndWaitForCompletion({
-        programId: programIdOCW,
-        referenceIds: registrationsOCW.map((reg) => reg.referenceId),
-        transferValue: 25,
-        accessToken,
+for (let j = 0; j < 20; j++) {
+  test(`Export Payments - Try ${j}`, async ({
+    paymentsPage,
+    exportDataComponent,
+  }) => {
+    const accessToken = await getAccessToken();
+
+    await test.step('Do payments', async () => {
+      for (let i = 0; i < 4; i++) {
+        await doPaymentAndWaitForCompletion({
+          programId: programIdOCW,
+          referenceIds: registrationsOCW.map((reg) => reg.referenceId),
+          transferValue: 25,
+          accessToken,
+        });
+      }
+    });
+
+    await test.step('Go to payments page', async () => {
+      await paymentsPage.navigateToProgramPage('Payments');
+      // Check if we're really on the "Payments"-page
+      await expect(paymentsPage.createNewPaymentButton).toBeVisible();
+    });
+
+    await test.step('Export and validate file', async () => {
+      await paymentsPage.selectPaymentExportOption({
+        option: 'Payments',
       });
-    }
-    await paymentsPage.navigateToProgramPage('Payments');
-  });
 
-  await test.step('Validate export payment button', async () => {
-    await paymentsPage.exportButton.waitFor({ state: 'visible' });
-  });
+      await exportDataComponent.exportAndAssertData({
+        exactRowCount: 25, // defaults to export all payments, so 5 payments * 5 registrations
+        excludedColumns: ['id', 'created', 'updated', 'paymentDate'],
+        // Given that the payments are not consistently sorted,
+        // we need to sort them by registrationProgramId and payment
+        // to ensure the snapshot is stable.
+        sortFunction: (a: string[], b: string[], headerCells: string[]) => {
+          const registrationProgramIdIndex = headerCells.indexOf(
+            'registrationProgramId',
+          );
+          expect(registrationProgramIdIndex).toBeGreaterThan(-1);
+          const aId = a[registrationProgramIdIndex];
+          const bId = b[registrationProgramIdIndex];
 
-  await test.step('Export and validate file', async () => {
-    await paymentsPage.selectPaymentExportOption({
-      option: 'Payments',
-    });
+          if (aId !== bId) {
+            return Number.parseInt(aId, 10) - Number.parseInt(bId, 10);
+          }
 
-    await exportDataComponent.exportAndAssertData({
-      exactRowCount: 25, // defaults to export all payments, so 5 payments * 5 registrations
-      excludedColumns: ['id', 'created', 'updated', 'paymentDate'],
-      // Given that the payments are not consistently sorted,
-      // we need to sort them by registrationProgramId and payment
-      // to ensure the snapshot is stable.
-      sortFunction: (a: string[], b: string[], headerCells: string[]) => {
-        const registrationProgramIdIndex = headerCells.indexOf(
-          'registrationProgramId',
-        );
-        expect(registrationProgramIdIndex).toBeGreaterThan(-1);
-        const aId = a[registrationProgramIdIndex];
-        const bId = b[registrationProgramIdIndex];
+          const paymentIdIndex = headerCells.indexOf('paymentId');
+          expect(paymentIdIndex).toBeGreaterThan(-1);
+          const aPaymentId = a[paymentIdIndex];
+          const bPaymentId = b[paymentIdIndex];
 
-        if (aId !== bId) {
-          return Number.parseInt(aId, 10) - Number.parseInt(bId, 10);
-        }
-
-        const paymentIdIndex = headerCells.indexOf('paymentId');
-        expect(paymentIdIndex).toBeGreaterThan(-1);
-        const aPaymentId = a[paymentIdIndex];
-        const bPaymentId = b[paymentIdIndex];
-
-        return (
-          Number.parseInt(aPaymentId, 10) - Number.parseInt(bPaymentId, 10)
-        );
-      },
+          return (
+            Number.parseInt(aPaymentId, 10) - Number.parseInt(bPaymentId, 10)
+          );
+        },
+      });
     });
   });
-});
+}
 
 test('View available actions for admin', async ({ page, paymentsPage }) => {
   await test.step('Validate export options', async () => {
