@@ -59,10 +59,14 @@ class BasePage {
     pageName: 'Registrations' | 'Payments' | 'Monitoring' | 'Settings',
   ) {
     const tab = this.programHeader.getByRole('tab', { name: pageName });
+
     await expect(async () => {
       await expect(tab).toBeVisible();
       await tab.click();
-    }).toPass({ timeout: 5000 });
+
+      // Wait for the page to load after clicking the tab
+      await this.waitForPageLoad();
+    }).toPass({ timeout: 5_000 });
   }
 
   async navigateToProgramSettingsPage(

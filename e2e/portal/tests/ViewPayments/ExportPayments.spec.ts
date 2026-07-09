@@ -23,6 +23,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
 
 test('Export Payments', async ({ paymentsPage, exportDataComponent }) => {
   const accessToken = await getAccessToken();
+
   await test.step('Do payments', async () => {
     for (let i = 0; i < 4; i++) {
       await doPaymentAndWaitForCompletion({
@@ -32,11 +33,11 @@ test('Export Payments', async ({ paymentsPage, exportDataComponent }) => {
         accessToken,
       });
     }
-    await paymentsPage.navigateToProgramPage('Payments');
   });
 
-  await test.step('Validate export payment button', async () => {
-    await paymentsPage.exportButton.waitFor({ state: 'visible' });
+  await test.step('Go to payments page', async () => {
+    await paymentsPage.navigateToProgramPage('Payments');
+    await expect(paymentsPage.pageTitle).toBeVisible();
   });
 
   await test.step('Export and validate file', async () => {
@@ -76,9 +77,12 @@ test('Export Payments', async ({ paymentsPage, exportDataComponent }) => {
 });
 
 test('View available actions for admin', async ({ page, paymentsPage }) => {
-  await test.step('Validate export options', async () => {
+  await test.step('Go to payments page', async () => {
     await paymentsPage.navigateToProgramPage('Payments');
-    await page.waitForTimeout(200); // wait for the export options to be rendered
+    await expect(paymentsPage.pageTitle).toBeVisible();
+  });
+
+  await test.step('Validate export options', async () => {
     await paymentsPage.exportButton.click();
 
     const expectedMenuItems = [
@@ -106,14 +110,22 @@ test('View available actions for a "view only" user', async ({
   homePage,
   loginPage,
 }) => {
-  await homePage.selectAccountOption('Logout');
-  await loginPage.login({
-    username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
-    password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+  await test.step('Log in as view only user', async () => {
+    await homePage.selectAccountOption('Logout');
+
+    await loginPage.login({
+      username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+    });
+  });
+
+  await test.step('Go to payments page', async () => {
+    await paymentsPage.navigateToProgramPage('Payments');
+    await expect(paymentsPage.pageTitle).toBeVisible();
   });
 
   await test.step('Validate hidden buttons', async () => {
-    await paymentsPage.exportButton.waitFor({ state: 'hidden' });
-    await paymentsPage.createNewPaymentButton.waitFor({ state: 'hidden' });
+    await expect(paymentsPage.exportButton).not.toBeVisible();
+    await expect(paymentsPage.createNewPaymentButton).not.toBeVisible();
   });
 });
