@@ -42,10 +42,9 @@ export const propertiesToDuplicate: Record<
   registrations: false,
   payments: false,
   programFspConfigurations: {
-    // Also duplicate the configuration's properties (e.g. credentials,
-    // columnToMatch) so the copied program's FSP configurations stay functional.
     properties: true,
   },
+  programApprovalThresholds: true,
   messageTemplates: false,
   attachments: false,
 

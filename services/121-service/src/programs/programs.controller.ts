@@ -184,7 +184,6 @@ body overwrite the copied values. You can also leave the body empty.`,
       return this.programService.duplicateProgram({
         copyFromProgramId,
         overrides: programData,
-        userId,
       });
     }
 

@@ -3,6 +3,7 @@ import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
 import {
   buildRelationLoadTree,
   cloneColumns,
+  collectLateralForeignKeyRemaps,
   getNestedRelationTree,
   getRelationChildren,
   getRelationNamesToDuplicate,
@@ -345,5 +346,167 @@ describe('buildRelationLoadTree', () => {
     expect(result).toEqual({
       programFspConfigurations: { properties: true },
     });
+  });
+});
+
+// Builds a minimal owning foreign key relation (many-to-one) referencing
+// another entity by name.
+function makeForeignKeyRelation({
+  foreignKeyProperty,
+  targetEntityName,
+}: {
+  foreignKeyProperty: string;
+  targetEntityName: string;
+}): any {
+  return {
+    isManyToOne: true,
+    isOneToOne: false,
+    joinColumns: [{ propertyName: foreignKeyProperty }],
+    inverseEntityMetadata: { name: targetEntityName },
+  };
+}
+
+describe('collectLateralForeignKeyRemaps', () => {
+  it('should remap a foreign key that points at a duplicated sibling', () => {
+    const row = {
+      metadata: {
+        relations: [
+          makeForeignKeyRelation({
+            foreignKeyProperty: 'programApprovalThresholdId',
+            targetEntityName: 'ProgramApprovalThresholdEntity',
+          }),
+        ],
+      },
+      source: { programApprovalThresholdId: 10 },
+      copy: {},
+      parentForeignKeyProperty: 'programId',
+    } as any;
+    const context = {
+      idMapByEntityName: new Map([
+        ['ProgramApprovalThresholdEntity', new Map([[10, 100]])],
+      ]),
+      duplicatedRows: [],
+    } as any;
+
+    const result = collectLateralForeignKeyRemaps({ row, context });
+
+    expect(Object.fromEntries(result)).toEqual({
+      programApprovalThresholdId: 100,
+    });
+  });
+
+  it('should skip the parent foreign key', () => {
+    const row = {
+      metadata: {
+        relations: [
+          makeForeignKeyRelation({
+            foreignKeyProperty: 'programId',
+            targetEntityName: 'ProgramEntity',
+          }),
+        ],
+      },
+      source: { programId: 1 },
+      copy: {},
+      parentForeignKeyProperty: 'programId',
+    } as any;
+    const context = {
+      idMapByEntityName: new Map([['ProgramEntity', new Map([[1, 2]])]]),
+      duplicatedRows: [],
+    } as any;
+
+    const result = collectLateralForeignKeyRemaps({ row, context });
+
+    expect(result.size).toBe(0);
+  });
+
+  it('should keep a foreign key that points at a non-duplicated entity', () => {
+    const row = {
+      metadata: {
+        relations: [
+          makeForeignKeyRelation({
+            foreignKeyProperty: 'userId',
+            targetEntityName: 'UserEntity',
+          }),
+        ],
+      },
+      source: { userId: 7 },
+      copy: {},
+    } as any;
+    const context = {
+      idMapByEntityName: new Map(),
+      duplicatedRows: [],
+    } as any;
+
+    const result = collectLateralForeignKeyRemaps({ row, context });
+
+    expect(result.size).toBe(0);
+  });
+
+  it('should skip a null foreign key', () => {
+    const row = {
+      metadata: {
+        relations: [
+          makeForeignKeyRelation({
+            foreignKeyProperty: 'programApprovalThresholdId',
+            targetEntityName: 'ProgramApprovalThresholdEntity',
+          }),
+        ],
+      },
+      source: { programApprovalThresholdId: null },
+      copy: {},
+    } as any;
+    const context = {
+      idMapByEntityName: new Map([
+        ['ProgramApprovalThresholdEntity', new Map([[10, 100]])],
+      ]),
+      duplicatedRows: [],
+    } as any;
+
+    const result = collectLateralForeignKeyRemaps({ row, context });
+
+    expect(result.size).toBe(0);
+  });
+
+  it('should skip when the referenced row itself was not duplicated', () => {
+    const row = {
+      metadata: {
+        relations: [
+          makeForeignKeyRelation({
+            foreignKeyProperty: 'programApprovalThresholdId',
+            targetEntityName: 'ProgramApprovalThresholdEntity',
+          }),
+        ],
+      },
+      source: { programApprovalThresholdId: 999 },
+      copy: {},
+    } as any;
+    const context = {
+      idMapByEntityName: new Map([
+        ['ProgramApprovalThresholdEntity', new Map([[10, 100]])],
+      ]),
+      duplicatedRows: [],
+    } as any;
+
+    const result = collectLateralForeignKeyRemaps({ row, context });
+
+    expect(result.size).toBe(0);
+  });
+
+  it('should ignore relations that are not the owning side of a single-value relation', () => {
+    const row = {
+      metadata: {
+        relations: [{ isManyToOne: false, isOneToOne: false, joinColumns: [] }],
+      },
+      source: {},
+      copy: {},
+    } as any;
+    const context = {
+      idMapByEntityName: new Map(),
+      duplicatedRows: [],
+    } as any;
+
+    const result = collectLateralForeignKeyRemaps({ row, context });
+
+    expect(result.size).toBe(0);
   });
 });
