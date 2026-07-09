@@ -44,42 +44,22 @@ for (let j = 0; j < 20; j++) {
       await expect(paymentsPage.createNewPaymentButton).toBeVisible();
     });
 
-    await test.step('Export and validate file', async () => {
-      await paymentsPage.selectPaymentExportOption({
-        option: 'Payments',
-      });
+        if (aId !== bId) {
+          return Number.parseInt(aId, 10) - Number.parseInt(bId, 10);
+        }
 
-      await exportDataComponent.exportAndAssertData({
-        exactRowCount: 25, // defaults to export all payments, so 5 payments * 5 registrations
-        excludedColumns: ['id', 'created', 'updated', 'paymentDate'],
-        // Given that the payments are not consistently sorted,
-        // we need to sort them by registrationProgramId and payment
-        // to ensure the snapshot is stable.
-        sortFunction: (a: string[], b: string[], headerCells: string[]) => {
-          const registrationProgramIdIndex = headerCells.indexOf(
-            'registrationProgramId',
-          );
-          expect(registrationProgramIdIndex).toBeGreaterThan(-1);
-          const aId = a[registrationProgramIdIndex];
-          const bId = b[registrationProgramIdIndex];
+        const paymentIdIndex = headerCells.indexOf('paymentId');
+        expect(paymentIdIndex).toBeGreaterThan(-1);
+        const aPaymentId = a[paymentIdIndex];
+        const bPaymentId = b[paymentIdIndex];
 
-          if (aId !== bId) {
-            return Number.parseInt(aId, 10) - Number.parseInt(bId, 10);
-          }
-
-          const paymentIdIndex = headerCells.indexOf('paymentId');
-          expect(paymentIdIndex).toBeGreaterThan(-1);
-          const aPaymentId = a[paymentIdIndex];
-          const bPaymentId = b[paymentIdIndex];
-
-          return (
-            Number.parseInt(aPaymentId, 10) - Number.parseInt(bPaymentId, 10)
-          );
-        },
-      });
+        return (
+          Number.parseInt(aPaymentId, 10) - Number.parseInt(bPaymentId, 10)
+        );
+      },
     });
   });
-}
+});
 
 test('View available actions for admin', async ({ page, paymentsPage }) => {
   await test.step('Validate export options', async () => {
