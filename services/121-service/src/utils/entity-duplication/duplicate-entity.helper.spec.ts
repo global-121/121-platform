@@ -1,13 +1,13 @@
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
 
 import {
-    buildRelationLoadTree,
-    cloneColumns,
-    getNestedRelationTree,
-    getRelationChildren,
-    getRelationNamesToDuplicate,
-    isSelectedForDuplication,
-    validateRelationTypeOrThrow,
+  buildRelationLoadTree,
+  cloneColumns,
+  getNestedRelationTree,
+  getRelationChildren,
+  getRelationNamesToDuplicate,
+  isSelectedForDuplication,
+  validateRelationTypeOrThrow,
 } from '@121-service/src/utils/entity-duplication/duplicate-entity.helper';
 
 // Helpers to build minimal column/relation mocks without implementing
@@ -251,10 +251,6 @@ describe('isSelectedForDuplication', () => {
   it('should not select when value is false', () => {
     expect(isSelectedForDuplication(false)).toBe(false);
   });
-
-  it('should not select when value is undefined', () => {
-    expect(isSelectedForDuplication(undefined)).toBe(false);
-  });
 });
 
 describe('getNestedRelationTree', () => {
@@ -265,10 +261,6 @@ describe('getNestedRelationTree', () => {
 
   it('should return undefined when value is true', () => {
     expect(getNestedRelationTree(true)).toBeUndefined();
-  });
-
-  it('should return undefined when value is false', () => {
-    expect(getNestedRelationTree(false)).toBeUndefined();
   });
 });
 

@@ -586,6 +586,20 @@
     "returnType": "FspSettingsDto"
   },
   {
+    "method": "put",
+    "path": "/api/programs/{programId}/approval-thresholds",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/approval-thresholds",
+    "params": [
+      "programId"
+    ]
+  },
+  {
     "method": "post",
     "path": "/api/programs/{programId}/attachments",
     "params": [
@@ -820,20 +834,6 @@
       "mockPowerNumberRegistrations",
       "mockNumberPayments",
       "includeRegistrationEvents"
-    ]
-  },
-  {
-    "method": "put",
-    "path": "/api/programs/{programId}/approval-thresholds",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/approval-thresholds",
-    "params": [
-      "programId"
     ]
   },
   {
