@@ -105,7 +105,7 @@ test('View available actions for a "view only" user', async ({
   paymentsPage,
   loginPage,
 }) => {
-  await test.step('Log in as view only user', async () => {
+  await test.step('Log in as view-only user', async () => {
     await paymentsPage.selectAccountOption('Logout');
 
     await loginPage.login({

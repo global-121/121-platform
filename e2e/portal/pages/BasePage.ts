@@ -60,13 +60,16 @@ class BasePage {
   ) {
     const tab = this.programHeader.getByRole('tab', { name: pageName });
 
-    await expect(async () => {
-      await expect(tab).toBeVisible();
-      await tab.click();
+    await expect(tab).toBeVisible();
+    await tab.click();
 
-      // Wait for the page to load after clicking the tab
-      await this.waitForPageLoad();
-    }).toPass({ timeout: 5_000 });
+    // Wait for the page to load after clicking the tab
+    await this.waitForPageLoad();
+
+    const pageTitle = pageName === 'Settings' ? 'Program settings' : pageName;
+    await expect(
+      this.page.getByRole('heading', { level: 1, name: pageTitle }),
+    ).toBeVisible();
   }
 
   async navigateToProgramSettingsPage(
