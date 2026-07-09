@@ -25,7 +25,17 @@ export interface EntityDuplicationTree {
   [propertyName: string]: boolean | EntityDuplicationTree;
 }
 
+interface DuplicatedRow {
+  metadata: EntityMetadata;
+  source: ObjectLiteral;
+  copy: ObjectLiteral;
+  parentForeignKeyProperty?: string;
+}
 
+interface DuplicationContext {
+  readonly idMapByEntityName: Map<string, Map<unknown, unknown>>;
+  readonly duplicatedRows: DuplicatedRow[];
+}
 export async function duplicateEntity<T extends ObjectLiteral>({
   dataSource,
   entity,
@@ -46,6 +56,11 @@ export async function duplicateEntity<T extends ObjectLiteral>({
     const repository = queryRunner.manager.getRepository(entity);
     const metadata = repository.metadata;
 
+    const context: DuplicationContext = {
+      idMapByEntityName: new Map(),
+      duplicatedRows: [],
+    };
+
     const primaryColumn = getPrimaryKeyProperty(metadata);
     const source = await repository.findOneOrFail({
       where: { [primaryColumn]: Equal(id) } as FindOptionsWhere<T>,
@@ -65,15 +80,18 @@ export async function duplicateEntity<T extends ObjectLiteral>({
         }) as DeepPartial<T>,
       ),
     );
-    const newRootId = newRoot[primaryColumn];
+    recordDuplicatedRow({ context, metadata, source, copy: newRoot });
 
     await duplicateRelations({
       manager: queryRunner.manager,
       metadata,
       source,
-      newParentId: newRootId,
+      newParentId: newRoot[primaryColumn],
       relationTree: propertiesToDuplicate,
+      context,
     });
+
+    await remapLateralForeignKeys({ manager: queryRunner.manager, context });
 
     await queryRunner.commitTransaction();
     return newRoot;
@@ -163,24 +181,17 @@ export function cloneColumns({
   const result: Record<string, unknown> = {};
 
   for (const column of metadata.columns) {
+    const propertyName = column.propertyName;
+
     if (isPrimaryOrAuditColumn(column)) {
       continue;
     }
-
-    const propertyName = column.propertyName;
-
-    if (
-      excludeForeignKeyColumns &&
-      column.relationMetadata &&
-      column.isNullable
-    ) {
+    if (excludeForeignKeyColumns && isNullableForeignKeyColumn(column)) {
       continue;
     }
-
-    if (propertiesToDuplicate && propertiesToDuplicate[propertyName] !== true) {
+    if (isColumnDeselected({ propertyName, propertiesToDuplicate })) {
       continue;
     }
-
     if (!(propertyName in source)) {
       continue;
     }
@@ -225,6 +236,26 @@ function isPrimaryOrAuditColumn(column: {
   );
 }
 
+function isNullableForeignKeyColumn(column: {
+  relationMetadata?: unknown;
+  isNullable: boolean;
+}): boolean {
+  return Boolean(column.relationMetadata) && column.isNullable;
+}
+
+function isColumnDeselected({
+  propertyName,
+  propertiesToDuplicate,
+}: {
+  propertyName: string;
+  propertiesToDuplicate?: EntityDuplicationTree;
+}): boolean {
+  return (
+    propertiesToDuplicate !== undefined &&
+    propertiesToDuplicate[propertyName] !== true
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Copy-relations phase: duplicate each selected relation's children,
 // recursing into nested relation trees.
@@ -236,12 +267,14 @@ async function duplicateRelations({
   source,
   newParentId,
   relationTree,
+  context,
 }: {
   manager: EntityManager;
   metadata: EntityMetadata;
   source: ObjectLiteral;
-  newParentId: unknown;
+  newParentId: number;
   relationTree: EntityDuplicationTree;
+  context: DuplicationContext;
 }): Promise<void> {
   const relationNamesToDuplicate = getRelationNamesToDuplicate({
     metadata,
@@ -255,6 +288,7 @@ async function duplicateRelations({
       source,
       newParentId,
       nestedTree: getNestedRelationTree(relationTree[relationName]),
+      context,
     });
   }
 }
@@ -266,13 +300,15 @@ async function copyRelation({
   source,
   newParentId,
   nestedTree,
+  context,
 }: {
   manager: EntityManager;
   metadata: EntityMetadata;
   relationName: string;
   source: ObjectLiteral;
-  newParentId: unknown;
+  newParentId: number;
   nestedTree?: EntityDuplicationTree;
+  context: DuplicationContext;
 }): Promise<void> {
   const relation = metadata.findRelationWithPropertyPath(relationName);
 
@@ -308,6 +344,16 @@ async function copyRelation({
 
   const savedCopies = await childRepository.save(copies);
 
+  for (const [index, child] of children.entries()) {
+    recordDuplicatedRow({
+      context,
+      metadata: childMetadata,
+      source: child,
+      copy: savedCopies[index],
+      parentForeignKeyProperty,
+    });
+  }
+
   if (nestedTree) {
     await duplicateNestedRelationTrees({
       manager,
@@ -315,6 +361,7 @@ async function copyRelation({
       savedCopies,
       childMetadata,
       nestedTree,
+      context,
     });
   }
 }
@@ -325,12 +372,14 @@ async function duplicateNestedRelationTrees({
   savedCopies,
   childMetadata,
   nestedTree,
+  context,
 }: {
   manager: EntityManager;
   children: ObjectLiteral[];
   savedCopies: ObjectLiteral[];
   childMetadata: EntityMetadata;
   nestedTree: EntityDuplicationTree;
+  context: DuplicationContext;
 }): Promise<void> {
   const childPrimaryKey = getPrimaryKeyProperty(childMetadata);
 
@@ -341,6 +390,7 @@ async function duplicateNestedRelationTrees({
       source: child,
       newParentId: savedCopies[index][childPrimaryKey],
       relationTree: nestedTree,
+      context,
     });
   }
 }
@@ -374,6 +424,129 @@ function createChildCopy({
   }
 
   return childRepository.create(childColumns as DeepPartial<ObjectLiteral>);
+}
+
+// ---------------------------------------------------------------------------
+// Remap phase: re-point foreign keys that reference another duplicated entity.
+// ---------------------------------------------------------------------------
+
+function recordDuplicatedRow({
+  context,
+  metadata,
+  source,
+  copy,
+  parentForeignKeyProperty,
+}: {
+  context: DuplicationContext;
+  metadata: EntityMetadata;
+  source: ObjectLiteral;
+  copy: ObjectLiteral;
+  parentForeignKeyProperty?: string;
+}): void {
+  context.duplicatedRows.push({
+    metadata,
+    source,
+    copy,
+    parentForeignKeyProperty,
+  });
+
+  const primaryKey = getPrimaryKeyProperty(metadata);
+
+  getOrCreateIdMap(context, metadata.name).set(
+    source[primaryKey],
+    copy[primaryKey],
+  );
+}
+
+function getOrCreateIdMap(
+  context: DuplicationContext,
+  entityName: string,
+): Map<unknown, unknown> {
+  let idMap = context.idMapByEntityName.get(entityName);
+
+  if (!idMap) {
+    idMap = new Map();
+    context.idMapByEntityName.set(entityName, idMap);
+  }
+
+  return idMap;
+}
+
+async function remapLateralForeignKeys({
+  manager,
+  context,
+}: {
+  manager: EntityManager;
+  context: DuplicationContext;
+}): Promise<void> {
+  for (const row of context.duplicatedRows) {
+    const remappedForeignKeys = collectLateralForeignKeyRemaps({
+      row,
+      context,
+    });
+    if (remappedForeignKeys.size === 0) {
+      continue;
+    }
+
+    const repository = manager.getRepository(row.metadata.target);
+    const primaryKey = getPrimaryKeyProperty(row.metadata);
+    await repository.update(
+      row.copy[primaryKey],
+      Object.fromEntries(remappedForeignKeys),
+    );
+  }
+}
+
+export function collectLateralForeignKeyRemaps({
+  row,
+  context,
+}: {
+  row: DuplicatedRow;
+  context: DuplicationContext;
+}): Map<string, unknown> {
+  const remappedForeignKeys = new Map<string, unknown>();
+
+  for (const relation of row.metadata.relations) {
+    const foreignKeyProperty = getOwnedForeignKeyProperty(relation);
+
+    if (
+      !foreignKeyProperty ||
+      isParentForeignKey({ foreignKeyProperty, row })
+    ) {
+      continue;
+    }
+
+    const idMapForTarget = context.idMapByEntityName.get(
+      relation.inverseEntityMetadata.name,
+    );
+    const oldForeignKey = row.source[foreignKeyProperty];
+    const newForeignKey = idMapForTarget?.get(oldForeignKey);
+
+    if (newForeignKey !== undefined) {
+      remappedForeignKeys.set(foreignKeyProperty, newForeignKey);
+    }
+  }
+
+  return remappedForeignKeys;
+}
+
+function isParentForeignKey({
+  foreignKeyProperty,
+  row,
+}: {
+  foreignKeyProperty: string;
+  row: DuplicatedRow;
+}): boolean {
+  return foreignKeyProperty === row.parentForeignKeyProperty;
+}
+
+function getOwnedForeignKeyProperty(
+  relation: RelationMetadata,
+): string | undefined {
+  if (!relation.isManyToOne && !relation.isOneToOne) {
+    return undefined;
+  }
+  return relation.joinColumns[0]?.propertyName;
 }
 
 // ---------------------------------------------------------------------------

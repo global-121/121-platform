@@ -55,50 +55,6 @@ export class ProgramApprovalThresholdsService {
     return await this.getProgramApprovalThresholds(programId);
   }
 
-  public async duplicateProgramApprovalThresholds({
-    fromProgramId,
-    toProgramId,
-  }: {
-    fromProgramId: number;
-    toProgramId: number;
-  }): Promise<void> {
-    const sourceThresholds = await this.programApprovalThresholdRepository.find({
-      where: { programId: Equal(fromProgramId) },
-    });
-
-    if (sourceThresholds.length === 0) {
-      return;
-    }
-
-    const newThresholdIdByOldId = new Map<number, number>();
-    for (const sourceThreshold of sourceThresholds) {
-      const newThreshold = await this.programApprovalThresholdRepository.save(
-        this.programApprovalThresholdRepository.create({
-          programId: toProgramId,
-          thresholdAmount: sourceThreshold.thresholdAmount,
-        }),
-      );
-      newThresholdIdByOldId.set(sourceThreshold.id, newThreshold.id);
-    }
-
-    const sourceApproverAssignments =
-      await this.programAidworkerAssignmentRepository.find({
-        where: {
-          programId: Equal(fromProgramId),
-          programApprovalThresholdId: Not(IsNull()),
-        },
-      });
-
-    for (const sourceAssignment of sourceApproverAssignments) {
-      const oldThresholdId = sourceAssignment.programApprovalThresholdId!;
-      const newThresholdId = newThresholdIdByOldId.get(oldThresholdId)!;
-      await this.programAidworkerAssignmentRepository.update(
-        { programId: toProgramId, userId: sourceAssignment.userId },
-        { programApprovalThresholdId: newThresholdId },
-      );
-    }
-  }
-
   private async validateThresholds({
     thresholds,
     aidworkerAssignments,

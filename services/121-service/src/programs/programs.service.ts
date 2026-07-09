@@ -17,7 +17,6 @@ import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.d
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
-import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 import { propertiesToDuplicate } from '@121-service/src/programs/program-duplication.const';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
@@ -41,7 +40,6 @@ export class ProgramService {
     private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly intersolveVisaService: IntersolveVisaService,
-    private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
   ) {}
 
   public async findProgramOrThrow(
@@ -245,11 +243,9 @@ export class ProgramService {
   public async duplicateProgram({
     copyFromProgramId,
     overrides,
-    userId,
   }: {
     copyFromProgramId: number;
     overrides: Partial<CreateProgramDto>;
-    userId: number;
   }): Promise<ProgramEntity> {
     const programExists = await this.programRepository.exists({
       where: { id: Equal(copyFromProgramId) },
@@ -267,18 +263,6 @@ export class ProgramService {
       id: copyFromProgramId,
       propertiesToDuplicate,
       overrides,
-    });
-
-    await this.programApprovalThresholdsService.duplicateProgramApprovalThresholds(
-      {
-        fromProgramId: copyFromProgramId,
-        toProgramId: newProgram.id,
-      },
-    );
-
-    await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
-      roles: [DefaultUserRole.Admin],
-      scope: undefined,
     });
 
     return newProgram;
