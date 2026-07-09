@@ -6,7 +6,6 @@ import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-set
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/fsp-management/fsp-attribute-type-mapping';
-import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -94,10 +93,14 @@ export class ProgramFspConfigurationsService {
     }
 
     if (programFspConfigurationDto.properties) {
-      await this.validateAllowedPropertyNames({
-        propertyNames: programFspConfigurationDto.properties.map((p) => p.name),
-        fspName: programFspConfigurationDto.fspName,
-      });
+      this.programFspConfigurationsHelperService.validateAllowedPropertyNames(
+        {
+          propertyNames: programFspConfigurationDto.properties.map(
+            (p) => p.name,
+          ),
+          fspName: programFspConfigurationDto.fspName,
+        },
+      );
 
       this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow(
         {
@@ -117,8 +120,8 @@ export class ProgramFspConfigurationsService {
         select: { name: true },
       });
 
-    const currentProgramAttributesNames = currentProgramAttributes.map(
-      (attributes) => attributes.name,
+    const currentProgramAttributesNames = new Set(
+      currentProgramAttributes.map((attributes) => attributes.name),
     );
 
     const requiredAttributeNames = FSP_SETTINGS[
@@ -132,7 +135,7 @@ export class ProgramFspConfigurationsService {
     // https://github.com/global-121/121-platform/pull/8229/ once merged
 
     for (const requiredAttributeName of requiredAttributeNames) {
-      if (!currentProgramAttributesNames.includes(requiredAttributeName)) {
+      if (!currentProgramAttributesNames.has(requiredAttributeName)) {
         await this.programRegistrationAttributesService.createProgramRegistrationAttribute(
           {
             programId,
@@ -209,7 +212,7 @@ export class ProgramFspConfigurationsService {
     config.label = updateProgramFspConfigurationDto.label;
 
     if (updateProgramFspConfigurationDto.properties) {
-      await this.validateAllowedPropertyNames({
+      this.programFspConfigurationsHelperService.validateAllowedPropertyNames({
         propertyNames: updateProgramFspConfigurationDto.properties.map(
           (p) => p.name,
         ),
@@ -297,7 +300,7 @@ export class ProgramFspConfigurationsService {
       programId,
       name,
     );
-    await this.validateAllowedPropertyNames({
+    this.programFspConfigurationsHelperService.validateAllowedPropertyNames({
       propertyNames: inputProperties.map((p) => p.name),
       fspName: config.fspName,
     });
@@ -321,43 +324,6 @@ export class ProgramFspConfigurationsService {
       fspName: config.fspName,
     });
     return ProgramFspConfigurationMapper.mapPropertyEntitiesToDtos(properties);
-  }
-
-  private async validateAllowedPropertyNames({
-    propertyNames,
-    fspName,
-  }: {
-    propertyNames: FspConfigurationProperties[];
-    fspName: Fsps;
-  }): Promise<void> {
-    const configPropertiesOfFsp = getFspConfigurationProperties(fspName);
-
-    const errors: string[] = [];
-    for (const propertyName of propertyNames) {
-      if (
-        configPropertiesOfFsp &&
-        !configPropertiesOfFsp.includes(propertyName)
-      ) {
-        errors.push(
-          `For fsp ${fspName}, only the following values are allowed: ${configPropertiesOfFsp.join(' ')}. You tried to add ${propertyName}.`,
-        );
-      }
-    }
-
-    // Check if there are duplicate property names in this array
-    if (propertyNames.length !== new Set(propertyNames).size) {
-      const duplicateNames = propertyNames.filter(
-        (name, index) => propertyNames.indexOf(name) !== index,
-      );
-      errors.push(
-        `Duplicate property names are not allowed. Found the following duplicates: ${duplicateNames.join(', ')}`,
-      );
-    }
-
-    if (errors.length > 0) {
-      const errorsString = errors.join(' ');
-      throw new HttpException(errorsString, HttpStatus.BAD_REQUEST);
-    }
   }
 
   private async validateNoDuplicateExistingProperties({
@@ -391,7 +357,7 @@ export class ProgramFspConfigurationsService {
 
   public async updateProperty({
     programId,
-    name: name,
+    name,
     propertyName,
     property,
   }: {
@@ -432,7 +398,7 @@ export class ProgramFspConfigurationsService {
 
   public async deleteProperty({
     programId,
-    name: name,
+    name,
     propertyName,
   }: {
     programId: number;

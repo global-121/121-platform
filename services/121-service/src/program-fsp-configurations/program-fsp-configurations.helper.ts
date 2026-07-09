@@ -132,4 +132,41 @@ export class ProgramFspConfigurationsHelperService {
         FspConfigurationPropertyVisibility.public,
     );
   }
+
+  public validateAllowedPropertyNames({
+    propertyNames,
+    fspName,
+  }: {
+    propertyNames: FspConfigurationProperties[];
+    fspName: Fsps;
+  }): void {
+    const configPropertiesOfFsp = getFspConfigurationProperties(fspName);
+
+    const errors: string[] = [];
+    for (const propertyName of propertyNames) {
+      if (
+        configPropertiesOfFsp &&
+        !configPropertiesOfFsp.includes(propertyName)
+      ) {
+        errors.push(
+          `For fsp ${fspName}, only the following values are allowed: ${configPropertiesOfFsp.join(' ')}. You tried to add ${propertyName}.`,
+        );
+      }
+    }
+
+    // Check if there are duplicate property names in this array
+    if (propertyNames.length !== new Set(propertyNames).size) {
+      const duplicateNames = propertyNames.filter(
+        (name, index) => propertyNames.indexOf(name) !== index,
+      );
+      errors.push(
+        `Duplicate property names are not allowed. Found the following duplicates: ${duplicateNames.join(', ')}`,
+      );
+    }
+
+    if (errors.length > 0) {
+      const errorsString = errors.join(' ');
+      throw new HttpException(errorsString, HttpStatus.BAD_REQUEST);
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
@@ -119,7 +119,12 @@ describe('ProgramFspConfigurationsHelperService', () => {
           propertyName: FspConfigurationProperties.maxBalanceInCents,
           propertyValue: 'not-a-number' as any,
         }),
-      ).toThrow(HttpException);
+      ).toThrow(
+        expect.objectContaining({
+          status: HttpStatus.BAD_REQUEST,
+          message: expect.stringContaining('Expected number, got string'),
+        }),
+      );
     });
 
     it('should throw when value is NaN', () => {
@@ -128,7 +133,12 @@ describe('ProgramFspConfigurationsHelperService', () => {
           propertyName: FspConfigurationProperties.maxBalanceInCents,
           propertyValue: NaN,
         }),
-      ).toThrow(HttpException);
+      ).toThrow(
+        expect.objectContaining({
+          status: HttpStatus.BAD_REQUEST,
+          message: expect.stringContaining('Expected number, got NaN'),
+        }),
+      );
     });
 
     it('should throw when array contains non-string items', () => {
@@ -137,18 +147,12 @@ describe('ProgramFspConfigurationsHelperService', () => {
           propertyName: FspConfigurationProperties.columnsToExport,
           propertyValue: [123, 456] as any,
         }),
-      ).toThrow(HttpException);
-    });
-
-    it('should throw with BAD_REQUEST status', () => {
-      expect(() =>
-        helper.validatePropertyValueTypeOrThrow({
-          propertyName: FspConfigurationProperties.maxBalanceInCents,
-          propertyValue: 'wrong' as any,
-        }),
       ).toThrow(
         expect.objectContaining({
           status: HttpStatus.BAD_REQUEST,
+          message: expect.stringContaining(
+            'Expected array, got non-string-array',
+          ),
         }),
       );
     });
@@ -157,124 +161,222 @@ describe('ProgramFspConfigurationsHelperService', () => {
   describe('validatePropertyValueTypesOrThrow', () => {
     it('should not throw when all properties have valid types', () => {
       expect(() =>
-        helper.validatePropertyValueTypesOrThrow({ properties: [
-          {
-            name: FspConfigurationProperties.columnToMatch,
-            value: 'phoneNumber',
-          },
-          {
-            name: FspConfigurationProperties.columnsToExport,
-            value: ['col1'],
-          },
-        ] }),
+        helper.validatePropertyValueTypesOrThrow({
+          properties: [
+            {
+              name: FspConfigurationProperties.columnToMatch,
+              value: 'phoneNumber',
+            },
+            {
+              name: FspConfigurationProperties.columnsToExport,
+              value: ['col1'],
+            },
+          ],
+        }),
       ).not.toThrow();
     });
 
     it('should throw when any property has an invalid type', () => {
       expect(() =>
-        helper.validatePropertyValueTypesOrThrow({ properties: [
-          {
-            name: FspConfigurationProperties.columnToMatch,
-            value: 'valid',
-          },
-          {
-            name: FspConfigurationProperties.maxBalanceInCents,
-            value: 'not-a-number' as any,
-          },
-        ] }),
-      ).toThrow(HttpException);
+        helper.validatePropertyValueTypesOrThrow({
+          properties: [
+            {
+              name: FspConfigurationProperties.columnToMatch,
+              value: 'valid',
+            },
+            {
+              name: FspConfigurationProperties.maxBalanceInCents,
+              value: 'not-a-number' as any,
+            },
+          ],
+        }),
+      ).toThrow(
+        expect.objectContaining({
+          status: HttpStatus.BAD_REQUEST,
+          message: expect.stringContaining('Expected number, got string'),
+        }),
+      );
     });
 
     it('should not throw for empty array', () => {
-      expect(() => helper.validatePropertyValueTypesOrThrow({ properties: [] })).not.toThrow();
+      expect(() =>
+        helper.validatePropertyValueTypesOrThrow({ properties: [] }),
+      ).not.toThrow();
     });
   });
 
   describe('validateLabelHasEnglishTranslation', () => {
     it('should not throw when label has en property', () => {
       expect(() =>
-        helper.validateLabelHasEnglishTranslation({ label: { en: 'English label' } }),
+        helper.validateLabelHasEnglishTranslation({
+          label: { en: 'English label' },
+        }),
       ).not.toThrow();
     });
 
     it('should throw when label is missing en property', () => {
       expect(() =>
-        helper.validateLabelHasEnglishTranslation({ label: { nl: 'Dutch label' } }),
-      ).toThrow(HttpException);
+        helper.validateLabelHasEnglishTranslation({
+          label: { nl: 'Dutch label' },
+        }),
+      ).toThrow(
+        expect.objectContaining({
+          status: HttpStatus.BAD_REQUEST,
+          message: expect.stringContaining(
+            'Label must have an English translation',
+          ),
+        }),
+      );
     });
 
     it('should throw when en is empty string', () => {
       expect(() =>
         helper.validateLabelHasEnglishTranslation({ label: { en: '' } }),
-      ).toThrow(HttpException);
-    });
-
-    it('should throw with BAD_REQUEST status', () => {
-      expect(() =>
-        helper.validateLabelHasEnglishTranslation({ label: { nl: 'Dutch' } }),
       ).toThrow(
         expect.objectContaining({
           status: HttpStatus.BAD_REQUEST,
+          message: expect.stringContaining(
+            'Label must have an English translation',
+          ),
         }),
       );
     });
-  });
 
-  describe('validateFspIsEnabledOrThrow', () => {
-    beforeEach(() => {
-      for (const key of Object.keys(mockFspModes)) {
-        delete mockFspModes[key];
-      }
-    });
-
-    it('should not throw when FSP is not disabled', () => {
-      mockFspModes[Fsps.excel] = FspMode.mock;
-
-      expect(() =>
-        helper.validateFspIsEnabledOrThrow({ fspName: Fsps.excel }),
-      ).not.toThrow();
-    });
-
-    it('should throw with BAD_REQUEST when FSP is disabled', () => {
-      mockFspModes[Fsps.excel] = FspMode.disabled;
-
-      expect(() =>
-        helper.validateFspIsEnabledOrThrow({ fspName: Fsps.excel }),
-      ).toThrow(
-        expect.objectContaining({
-          status: HttpStatus.BAD_REQUEST,
-          message: expect.stringContaining(Fsps.excel),
-        }),
-      );
-    });
-  });
-
-  describe('getAllowlistedPropertyNamesForFsp', () => {
-    it('should return empty array for FSP with no configuration properties', () => {
-      const result = helper.getAllowlistedPropertyNamesForFsp({ fspName: Fsps.safaricom });
-
-      expect(result).toEqual([]);
-    });
-
-    it('should only return properties marked as public', () => {
-      const result = helper.getAllowlistedPropertyNamesForFsp({
-        fspName: Fsps.intersolveVisa,
+    describe('validateFspIsEnabledOrThrow', () => {
+      beforeEach(() => {
+        for (const key of Object.keys(mockFspModes)) {
+          delete mockFspModes[key];
+        }
       });
 
-      // cardDistributionByMail is the only public property for Intersolve Visa
-      expect(result).toContain(
-        FspConfigurationProperties.cardDistributionByMail,
-      );
+      it('should not throw when FSP is not disabled', () => {
+        mockFspModes[Fsps.excel] = FspMode.mock;
 
-      // Secret properties should not be included
-      expect(result).not.toContain(FspConfigurationProperties.password);
-      expect(result).not.toContain(FspConfigurationProperties.username);
+        expect(() =>
+          helper.validateFspIsEnabledOrThrow({ fspName: Fsps.excel }),
+        ).not.toThrow();
+      });
+
+      it('should throw with BAD_REQUEST when FSP is disabled', () => {
+        mockFspModes[Fsps.excel] = FspMode.disabled;
+
+        expect(() =>
+          helper.validateFspIsEnabledOrThrow({ fspName: Fsps.excel }),
+        ).toThrow(
+          expect.objectContaining({
+            status: HttpStatus.BAD_REQUEST,
+            message: expect.stringContaining(Fsps.excel),
+          }),
+        );
+      });
     });
 
-    it('should return an array (not undefined or null)', () => {
-      const result = helper.getAllowlistedPropertyNamesForFsp({ fspName: Fsps.excel });
+    describe('validateAllowedPropertyNames', () => {
+      it('should not throw when all property names are valid for the FSP', () => {
+        expect(() =>
+          helper.validateAllowedPropertyNames({
+            fspName: Fsps.excel,
+            propertyNames: [FspConfigurationProperties.columnToMatch],
+          }),
+        ).not.toThrow();
+      });
 
-      expect(Array.isArray(result)).toBe(true);
+      it('should not throw for an empty array of property names', () => {
+        expect(() =>
+          helper.validateAllowedPropertyNames({
+            fspName: Fsps.excel,
+            propertyNames: [],
+          }),
+        ).not.toThrow();
+      });
+
+      it('should throw when a property name is not allowed for the FSP', () => {
+        expect(() =>
+          helper.validateAllowedPropertyNames({
+            fspName: Fsps.excel,
+            propertyNames: [FspConfigurationProperties.password],
+          }),
+        ).toThrow(
+          expect.objectContaining({
+            status: HttpStatus.BAD_REQUEST,
+            message: expect.stringContaining(
+              FspConfigurationProperties.password,
+            ),
+          }),
+        );
+      });
+
+      it('should throw when duplicate property names are provided', () => {
+        expect(() =>
+          helper.validateAllowedPropertyNames({
+            fspName: Fsps.excel,
+            propertyNames: [
+              FspConfigurationProperties.columnToMatch,
+              FspConfigurationProperties.columnToMatch,
+            ],
+          }),
+        ).toThrow(
+          expect.objectContaining({
+            status: HttpStatus.BAD_REQUEST,
+            message: expect.stringContaining(
+              'Duplicate property names are not allowed',
+            ),
+          }),
+        );
+      });
+
+      it('should throw combining both invalid name and duplicate errors', () => {
+        expect(() =>
+          helper.validateAllowedPropertyNames({
+            fspName: Fsps.excel,
+            propertyNames: [
+              FspConfigurationProperties.columnToMatch,
+              FspConfigurationProperties.columnToMatch,
+              FspConfigurationProperties.password,
+            ],
+          }),
+        ).toThrow(
+          expect.objectContaining({
+            status: HttpStatus.BAD_REQUEST,
+            message: expect.stringContaining(
+              'Duplicate property names are not allowed',
+            ),
+          }),
+        );
+      });
+    });
+
+    describe('getAllowlistedPropertyNamesForFsp', () => {
+      it('should return empty array for FSP with no configuration properties', () => {
+        const result = helper.getAllowlistedPropertyNamesForFsp({
+          fspName: Fsps.safaricom,
+        });
+
+        expect(result).toEqual([]);
+      });
+
+      it('should only return properties marked as public', () => {
+        const result = helper.getAllowlistedPropertyNamesForFsp({
+          fspName: Fsps.intersolveVisa,
+        });
+
+        // cardDistributionByMail is the only public property for Intersolve Visa
+        expect(result).toContain(
+          FspConfigurationProperties.cardDistributionByMail,
+        );
+
+        // Secret properties should not be included
+        expect(result).not.toContain(FspConfigurationProperties.password);
+        expect(result).not.toContain(FspConfigurationProperties.username);
+      });
+
+      it('should return empty array for Excel as it has no public properties', () => {
+        const result = helper.getAllowlistedPropertyNamesForFsp({
+          fspName: Fsps.excel,
+        });
+
+        expect(result).toEqual([]);
+      });
     });
   });
 });
