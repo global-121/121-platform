@@ -17,7 +17,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     seedPaidRegistrations: true,
     registrations: registrationsOCW,
     programId: programIdOCW,
-    navigateToPage: `/program/${programIdOCW}/registrations`,
+    navigateToPage: `/program/${programIdOCW}/payments`,
   });
 });
 
@@ -33,11 +33,6 @@ test('Export Payments', async ({ paymentsPage, exportDataComponent }) => {
         accessToken,
       });
     }
-  });
-
-  await test.step('Go to payments page', async () => {
-    await paymentsPage.navigateToProgramPage('Payments');
-    await expect(paymentsPage.pageTitle).toBeVisible();
   });
 
   await test.step('Export and validate file', async () => {
@@ -78,7 +73,7 @@ test('Export Payments', async ({ paymentsPage, exportDataComponent }) => {
 
 test('View available actions for admin', async ({ page, paymentsPage }) => {
   await test.step('Go to payments page', async () => {
-    await paymentsPage.navigateToProgramPage('Payments');
+    await page.goto(`/program/${programIdOCW}/payments`);
     await expect(paymentsPage.pageTitle).toBeVisible();
   });
 
@@ -106,21 +101,23 @@ test('View available actions for admin', async ({ page, paymentsPage }) => {
 });
 
 test('View available actions for a "view only" user', async ({
+  page,
   paymentsPage,
-  homePage,
   loginPage,
 }) => {
   await test.step('Log in as view only user', async () => {
-    await homePage.selectAccountOption('Logout');
+    await paymentsPage.selectAccountOption('Logout');
 
     await loginPage.login({
+      skipNavigateToLogin: true,
+      skipUrlCheck: true,
       username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
       password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
     });
   });
 
   await test.step('Go to payments page', async () => {
-    await paymentsPage.navigateToProgramPage('Payments');
+    await page.goto(`/program/${programIdOCW}/payments`);
     await expect(paymentsPage.pageTitle).toBeVisible();
   });
 
