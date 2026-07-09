@@ -27,7 +27,6 @@ for (let j = 0; j < 20; j++) {
     exportDataComponent,
   }) => {
     const accessToken = await getAccessToken();
-
     await test.step('Do payments', async () => {
       for (let i = 0; i < 4; i++) {
         await doPaymentAndWaitForCompletion({
