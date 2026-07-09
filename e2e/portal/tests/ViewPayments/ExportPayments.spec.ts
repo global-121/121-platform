@@ -71,10 +71,9 @@ test('Export Payments', async ({ paymentsPage, exportDataComponent }) => {
   });
 });
 
-test('View available actions for admin', async ({ page, paymentsPage }) => {
+test('View available actions for admin', async ({ paymentsPage }) => {
   await test.step('Go to payments page', async () => {
-    await page.goto(`/program/${programIdOCW}/payments`);
-    await expect(paymentsPage.pageTitle).toBeVisible();
+    await paymentsPage.navigateToProgramPage(`Payments`);
   });
 
   await test.step('Validate export options', async () => {
@@ -88,7 +87,7 @@ test('View available actions for admin', async ({ page, paymentsPage }) => {
     ];
 
     // This part is to wait for the menu items to be visible before asserting
-    const menuItems = page.getByRole('menuitem');
+    const menuItems = paymentsPage.page.getByRole('menuitem');
     await expect(menuItems).toHaveText(expectedMenuItems);
 
     // This part is to assert the actual text content of the menu items, also ensures there are no extra items
