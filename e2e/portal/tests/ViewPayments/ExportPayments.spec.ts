@@ -101,7 +101,6 @@ test('View available actions for admin', async ({ page, paymentsPage }) => {
 });
 
 test('View available actions for a "view only" user', async ({
-  page,
   paymentsPage,
   loginPage,
 }) => {
@@ -117,7 +116,7 @@ test('View available actions for a "view only" user', async ({
   });
 
   await test.step('Go to payments page', async () => {
-    await page.goto(`/program/${programIdOCW}/payments`);
+    await paymentsPage.goto(`/program/${programIdOCW}/payments`);
     await expect(paymentsPage.pageTitle).toBeVisible();
   });
 
