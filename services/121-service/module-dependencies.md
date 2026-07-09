@@ -139,6 +139,7 @@ graph LR
   ProgramModule-->KoboConnectModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAidworkerAssignmentsModule
+  ProgramModule-->ProgramApprovalThresholdsModule
   ProgramModule-->ProgramAttachmentsModule
   ProgramModule-->ProgramFspConfigurationsModule
   ProgramModule-->ProgramRegistrationAttributesModule

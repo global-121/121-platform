@@ -11,9 +11,8 @@ import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-con
 import { ProgramRegistrationAttributesModule } from '@121-service/src/program-registration-attributes/program-registration-attributes.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { ProgramAidworkerAssignmentsModule } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignments.module';
-import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
+import { ProgramApprovalThresholdsModule } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.module';
 import { ProgramAttachmentsModule } from '@121-service/src/programs/program-attachments/program-attachments.module';
 import { ProgramController } from '@121-service/src/programs/programs.controller';
 import { ProgramService } from '@121-service/src/programs/programs.service';
@@ -28,8 +27,6 @@ import { UserModule } from '@121-service/src/user/user.module';
       ProgramEntity,
       ProgramRegistrationAttributeEntity,
       ProgramFspConfigurationEntity,
-      ProgramApprovalThresholdEntity,
-      ProgramAidworkerAssignmentEntity,
     ]),
     UserModule,
     FspsModule,
@@ -37,6 +34,7 @@ import { UserModule } from '@121-service/src/user/user.module';
     LookupModule,
     UserModule,
     ProgramAidworkerAssignmentsModule,
+    ProgramApprovalThresholdsModule,
     ProgramAttachmentsModule,
     ProgramRegistrationAttributesModule,
     KoboConnectModule,

@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Equal, IsNull, Not, Repository } from 'typeorm';
+import { DataSource, Equal, Repository } from 'typeorm';
 
 import { GetTokenResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/get-token-result.interface';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
@@ -17,8 +17,7 @@ import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.d
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
-import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
+import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 import { propertiesToDuplicate } from '@121-service/src/programs/program-duplication.const';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
@@ -34,10 +33,6 @@ export class ProgramService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramRegistrationAttributeEntity)
   private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
-  @InjectRepository(ProgramApprovalThresholdEntity)
-  private readonly programApprovalThresholdRepository: Repository<ProgramApprovalThresholdEntity>;
-  @InjectRepository(ProgramAidworkerAssignmentEntity)
-  private readonly programAidworkerAssignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
 
   public constructor(
     private readonly dataSource: DataSource,
@@ -46,6 +41,7 @@ export class ProgramService {
     private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly intersolveVisaService: IntersolveVisaService,
+    private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
   ) {}
 
   public async findProgramOrThrow(
@@ -273,10 +269,12 @@ export class ProgramService {
       overrides,
     });
 
-    await this.duplicateApprovalThresholds({
-      fromProgramId: copyFromProgramId,
-      toProgramId: newProgram.id,
-    });
+    await this.programApprovalThresholdsService.duplicateProgramApprovalThresholds(
+      {
+        fromProgramId: copyFromProgramId,
+        toProgramId: newProgram.id,
+      },
+    );
 
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.Admin],
@@ -285,67 +283,6 @@ export class ProgramService {
 
     return newProgram;
   }
-
-  /**
-   * Duplicates the approval thresholds of a program and re-points the copied
-   * approver links to the copied thresholds.
-   *
-   * Approver links are stored on the aidworker assignment row
-   * (programApprovalThresholdId), which is unique per (userId, programId).
-   * They are therefore a cross-reference between two duplicated siblings
-   * (thresholds and assignments) that the generic duplication helper cannot
-   * resolve on its own. Copying both here keeps an exact old-to-new id
-   * mapping so each copied approver points at the copied threshold.
-   */
-  private async duplicateApprovalThresholds({
-    fromProgramId,
-    toProgramId,
-  }: {
-    fromProgramId: number;
-    toProgramId: number;
-  }): Promise<void> {
-    const sourceThresholds = await this.programApprovalThresholdRepository.find({
-      where: { programId: Equal(fromProgramId) },
-    });
-    if (sourceThresholds.length === 0) {
-      return;
-    }
-
-    const newThresholdIdByOldId = new Map<number, number>();
-    for (const sourceThreshold of sourceThresholds) {
-      const newThreshold = await this.programApprovalThresholdRepository.save(
-        this.programApprovalThresholdRepository.create({
-          programId: toProgramId,
-          thresholdAmount: sourceThreshold.thresholdAmount,
-        }),
-      );
-      newThresholdIdByOldId.set(sourceThreshold.id, newThreshold.id);
-    }
-
-    // Match source and copied approver assignments by userId (unique per
-    // program) and re-point them to the copied threshold.
-    const sourceApproverAssignments =
-      await this.programAidworkerAssignmentRepository.find({
-        where: {
-          programId: Equal(fromProgramId),
-          programApprovalThresholdId: Not(IsNull()),
-        },
-      });
-
-    for (const sourceAssignment of sourceApproverAssignments) {
-      const newThresholdId = newThresholdIdByOldId.get(
-        sourceAssignment.programApprovalThresholdId!,
-      );
-      if (newThresholdId === undefined) {
-        continue;
-      }
-      await this.programAidworkerAssignmentRepository.update(
-        { programId: toProgramId, userId: sourceAssignment.userId },
-        { programApprovalThresholdId: newThresholdId },
-      );
-    }
-  }
-
 
   public async updateProgram(
     programId: number,
