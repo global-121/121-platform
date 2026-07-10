@@ -1,13 +1,13 @@
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
 
 import {
-  buildRelationLoadTree,
-  cloneColumns,
+  buildRelationsToEagerLoad,
   collectLateralForeignKeyRemaps,
+  copyColumnValues,
   getNestedRelationTree,
-  getRelationChildren,
   getRelationNamesToDuplicate,
   isSelectedForDuplication,
+  normalizeRelationChildren,
   validateRelationTypeOrThrow,
 } from '@121-service/src/utils/entity-duplication/duplicate-entity.helper';
 
@@ -45,10 +45,10 @@ function makeRelation(
   } as any;
 }
 
-describe('cloneColumns', () => {
+describe('copyColumnValues', () => {
   it('should skip primary columns', () => {
     const metadata = makeMetadata([makeColumn('id', { isPrimary: true })]);
-    const result = cloneColumns({ metadata, source: { id: 1 }, overrides: {} });
+    const result = copyColumnValues({ metadata, source: { id: 1 }, overrides: {} });
     expect(result).not.toHaveProperty('id');
   });
 
@@ -58,7 +58,7 @@ describe('cloneColumns', () => {
       makeColumn('updated', { isUpdateDate: true }),
       makeColumn('version', { isVersion: true }),
     ]);
-    const result = cloneColumns({
+    const result = copyColumnValues({
       metadata,
       source: { created: new Date(), updated: new Date(), version: 1 },
       overrides: {},
@@ -72,7 +72,7 @@ describe('cloneColumns', () => {
     const metadata = makeMetadata([
       makeColumn('programId', { relationMetadata: {}, isNullable: true }),
     ]);
-    const result = cloneColumns({
+    const result = copyColumnValues({
       metadata,
       source: { programId: 42 },
       overrides: {},
@@ -85,7 +85,7 @@ describe('cloneColumns', () => {
     const metadata = makeMetadata([
       makeColumn('userId', { relationMetadata: {}, isNullable: false }),
     ]);
-    const result = cloneColumns({
+    const result = copyColumnValues({
       metadata,
       source: { userId: 7 },
       overrides: {},
@@ -96,7 +96,7 @@ describe('cloneColumns', () => {
 
   it('should skip columns set to false in propertiesToDuplicate', () => {
     const metadata = makeMetadata([makeColumn('title')]);
-    const result = cloneColumns({
+    const result = copyColumnValues({
       metadata,
       source: { title: 'Test' },
       overrides: {},
@@ -107,7 +107,7 @@ describe('cloneColumns', () => {
 
   it('should copy columns set to true in propertiesToDuplicate', () => {
     const metadata = makeMetadata([makeColumn('title')]);
-    const result = cloneColumns({
+    const result = copyColumnValues({
       metadata,
       source: { title: 'Test' },
       overrides: {},
@@ -118,7 +118,7 @@ describe('cloneColumns', () => {
 
   it('should apply overrides for known column names', () => {
     const metadata = makeMetadata([makeColumn('currency')]);
-    const result = cloneColumns({
+    const result = copyColumnValues({
       metadata,
       source: { currency: 'EUR' },
       overrides: { currency: 'USD' },
@@ -128,7 +128,7 @@ describe('cloneColumns', () => {
 
   it('should ignore overrides for keys that are not column property names', () => {
     const metadata = makeMetadata([makeColumn('title')]);
-    const result = cloneColumns({
+    const result = copyColumnValues({
       metadata,
       source: { title: 'Test' },
       overrides: { nonExistentKey: 'value' },
@@ -138,7 +138,7 @@ describe('cloneColumns', () => {
 
   it('should skip columns absent from source', () => {
     const metadata = makeMetadata([makeColumn('description')]);
-    const result = cloneColumns({
+    const result = copyColumnValues({
       metadata,
       source: {},
       overrides: {},
@@ -186,12 +186,12 @@ describe('validateRelationTypeOrThrow', () => {
   });
 });
 
-describe('getRelationChildren', () => {
+describe('normalizeRelationChildren', () => {
   it('should return the related array for one-to-many relation', () => {
     const relation = makeRelation({ isOneToMany: true });
     const children = [{ id: 1 }, { id: 2 }];
-    const result = getRelationChildren({
-      relationMetadata: relation,
+    const result = normalizeRelationChildren({
+      relation,
       relationData: children,
     });
     expect(result).toBe(children);
@@ -199,8 +199,8 @@ describe('getRelationChildren', () => {
 
   it('should return empty array for one-to-many when related is null', () => {
     const relation = makeRelation({ isOneToMany: true });
-    const result = getRelationChildren({
-      relationMetadata: relation,
+    const result = normalizeRelationChildren({
+      relation,
       relationData: null,
     });
     expect(result).toHaveLength(0);
@@ -209,8 +209,8 @@ describe('getRelationChildren', () => {
   it('should wrap a single object in an array for one-to-one relation', () => {
     const relation = makeRelation({ isOneToOne: true });
     const child = { id: 5 };
-    const result = getRelationChildren({
-      relationMetadata: relation,
+    const result = normalizeRelationChildren({
+      relation,
       relationData: child,
     });
     expect(result).toEqual([child]);
@@ -218,8 +218,8 @@ describe('getRelationChildren', () => {
 
   it('should return empty array for one-to-one when related is null', () => {
     const relation = makeRelation({ isOneToOne: true });
-    const result = getRelationChildren({
-      relationMetadata: relation,
+    const result = normalizeRelationChildren({
+      relation,
       relationData: null,
     });
     expect(result).toHaveLength(0);
@@ -312,14 +312,14 @@ describe('getRelationNamesToDuplicate', () => {
   });
 });
 
-describe('buildRelationLoadTree', () => {
+describe('buildRelationsToEagerLoad', () => {
   it('should keep only selected relations and drop unselected ones and column flags', () => {
     const metadata = makeEntityMetadata([
       makeRelationWithChildren({ propertyName: 'attachments' }),
       makeRelationWithChildren({ propertyName: 'registrations' }),
     ]);
 
-    const result = buildRelationLoadTree({
+    const result = buildRelationsToEagerLoad({
       metadata,
       relationTree: {
         attachments: true, // selected relation -> loaded as a leaf
@@ -339,7 +339,7 @@ describe('buildRelationLoadTree', () => {
       }),
     ]);
 
-    const result = buildRelationLoadTree({
+    const result = buildRelationsToEagerLoad({
       metadata,
       relationTree: { aidworkerAssignments: true },
     });
@@ -359,7 +359,7 @@ describe('buildRelationLoadTree', () => {
       }),
     ]);
 
-    const result = buildRelationLoadTree({
+    const result = buildRelationsToEagerLoad({
       metadata,
       relationTree: {
         programFspConfigurations: {

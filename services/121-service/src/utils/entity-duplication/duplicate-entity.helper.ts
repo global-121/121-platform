@@ -64,7 +64,7 @@ export async function duplicateEntity<T extends ObjectLiteral>({
     const primaryColumn = getPrimaryKeyProperty(metadata);
     const source = await repository.findOneOrFail({
       where: { [primaryColumn]: Equal(id) } as FindOptionsWhere<T>,
-      relations: buildRelationLoadTree<T>({
+      relations: buildRelationsToEagerLoad<T>({
         metadata,
         relationTree: propertiesToDuplicate,
       }),
@@ -72,7 +72,7 @@ export async function duplicateEntity<T extends ObjectLiteral>({
 
     const newRoot = await repository.save(
       repository.create(
-        cloneColumns({
+        copyColumnValues({
           metadata,
           source,
           overrides,
@@ -109,7 +109,7 @@ export async function duplicateEntity<T extends ObjectLiteral>({
 // Load phase: decide which relations to eager-load from the source entity.
 // ---------------------------------------------------------------------------
 
-export function buildRelationLoadTree<T extends ObjectLiteral>({
+export function buildRelationsToEagerLoad<T extends ObjectLiteral>({
   metadata,
   relationTree,
 }: {
@@ -132,7 +132,7 @@ export function buildRelationLoadTree<T extends ObjectLiteral>({
     const manyToManySubRelations = getManyToManySubRelations({ relation });
     const nestedTree = getNestedRelationTree(relationTree[relationName]);
     const nestedLoad = nestedTree
-      ? buildRelationLoadTree({
+      ? buildRelationsToEagerLoad({
           metadata: relation.inverseEntityMetadata,
           relationTree: nestedTree,
         })
@@ -162,10 +162,10 @@ function getManyToManySubRelations({
 }
 
 // ---------------------------------------------------------------------------
-// Clone-root phase: copy the entity's own columns.
+// Copy-columns phase: copy the entity's own column values.
 // ---------------------------------------------------------------------------
 
-export function cloneColumns({
+export function copyColumnValues({
   metadata,
   source,
   overrides,
@@ -281,7 +281,7 @@ async function duplicateRelations({
     relationTree,
   });
   for (const relationName of relationNamesToDuplicate) {
-    await copyRelation({
+    await duplicateRelationChildren({
       manager,
       metadata,
       relationName,
@@ -293,7 +293,7 @@ async function duplicateRelations({
   }
 }
 
-async function copyRelation({
+async function duplicateRelationChildren({
   manager,
   metadata,
   relationName,
@@ -322,10 +322,7 @@ async function copyRelation({
   });
 
   const relationData = source[relationName];
-  const children = getRelationChildren({
-    relationMetadata: relation,
-    relationData,
-  });
+  const children = normalizeRelationChildren({ relation, relationData });
 
   if (children.length === 0) {
     return;
@@ -333,10 +330,10 @@ async function copyRelation({
 
   const childMetadata = relation.inverseEntityMetadata;
   const childRepository = manager.getRepository(childMetadata.target);
-  const parentForeignKeyProperty = getForeignKeyProperty(inverseRelation);
+  const parentForeignKeyProperty = getParentForeignKeyProperty(inverseRelation);
 
   const copies = children.map((child) =>
-    createChildCopy({
+    buildChildCopy({
       child,
       childMetadata,
       childRepository,
@@ -398,7 +395,7 @@ async function duplicateNestedRelationTrees({
   }
 }
 
-function createChildCopy({
+function buildChildCopy({
   child,
   childMetadata,
   childRepository,
@@ -411,7 +408,7 @@ function createChildCopy({
   parentForeignKeyProperty: string;
   newParentId: unknown;
 }): ObjectLiteral {
-  const childColumns = cloneColumns({
+  const childColumns = copyColumnValues({
     metadata: childMetadata,
     source: child,
     overrides: {},
@@ -487,6 +484,7 @@ async function remapLateralForeignKeys({
       row,
       context,
     });
+
     if (remappedForeignKeys.size === 0) {
       continue;
     }
@@ -606,17 +604,17 @@ export function validateRelationTypeOrThrow({
   return relation.inverseRelation;
 }
 
-export function getRelationChildren({
-  relationMetadata,
+export function normalizeRelationChildren({
+  relation,
   relationData,
 }: {
-  relationMetadata: RelationMetadata;
+  relation: RelationMetadata;
   relationData: unknown;
 }): ObjectLiteral[] {
   if (!relationData) {
     return [];
   }
-  if (relationMetadata.isOneToMany) {
+  if (relation.isOneToMany) {
     return relationData as ObjectLiteral[];
   }
   return [relationData as ObjectLiteral];
@@ -626,6 +624,6 @@ function getPrimaryKeyProperty(metadata: EntityMetadata): string {
   return metadata.primaryColumns[0].propertyName;
 }
 
-function getForeignKeyProperty(inverseRelation: RelationMetadata): string {
+function getParentForeignKeyProperty(inverseRelation: RelationMetadata): string {
   return inverseRelation.joinColumns[0].propertyName;
 }
