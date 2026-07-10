@@ -139,16 +139,11 @@ describe('Duplicate program', () => {
     );
 
     // Approval thresholds are duplicated and their approver links re-pointed
-    // to the copied thresholds.
-    expect(
-      duplicatedThresholds.map((threshold) => threshold.thresholdAmount).sort(),
-    ).toEqual(
-      sourceThresholds.map((threshold) => threshold.thresholdAmount).sort(),
-    );
-    const sourceApproverUserIds = collectApproverUserIds(sourceThresholds);
-    const duplicatedApproverUserIds = collectApproverUserIds(duplicatedThresholds);
-    expect(sourceApproverUserIds.length).toBeGreaterThan(0);
-    expect(duplicatedApproverUserIds).toEqual(sourceApproverUserIds);
+    // to the copied thresholds
+    const sourceApproversByAmount = approversByThresholdAmount(sourceThresholds);
+    const duplicatedApproversByAmount =
+      approversByThresholdAmount(duplicatedThresholds);
+    expect(duplicatedApproversByAmount).toEqual(sourceApproversByAmount);
   });
 
   // ---------------------------------------------------------------------------
@@ -190,14 +185,15 @@ describe('Duplicate program', () => {
     }
   }
 
-  function collectApproverUserIds(
-    thresholds: { approvers: { userId: number }[] }[],
-  ): number[] {
-    return thresholds
-      .flatMap((threshold) =>
-        threshold.approvers.map((approver) => approver.userId),
-      )
-      .sort();
+  function approversByThresholdAmount(
+    thresholds: { thresholdAmount: number; approvers: { userId: number }[] }[],
+  ): Map<number, number[]> {
+    return new Map(
+      thresholds.map((threshold) => [
+        threshold.thresholdAmount,
+        threshold.approvers.map((approver) => approver.userId).sort(),
+      ]),
+    );
   }
 
   function isArrayOfObjects(value: unknown): boolean {
