@@ -2,20 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
-import { FSP_MODES } from '@121-service/src/fsp-integrations/settings/fsp-env-variable-settings.const';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
-import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-types.const';
-import {
-  FspConfigurationPropertyVisibility,
-  FspConfigurationPropertyVisibilityMap,
-} from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-visibility.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
-import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
-import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/fsp-management/fsp-attribute-type-mapping';
-import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
-import { getFspConfigurationRequiredProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -25,8 +15,8 @@ import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-c
 import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
-import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
+import { ProgramFspConfigurationsHelperService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.helper';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -42,6 +32,7 @@ export class ProgramFspConfigurationsService {
     private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
     private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
     private readonly paymentsProgressService: PaymentsProgressService,
+    private readonly programFspConfigurationsHelperService: ProgramFspConfigurationsHelperService,
   ) {}
 
   public async getByProgramId(
@@ -75,11 +66,15 @@ export class ProgramFspConfigurationsService {
     programId: number,
     programFspConfigurationDto: CreateProgramFspConfigurationDto,
   ): Promise<void> {
-    this.validateFspIsEnabledOrThrow({
+    this.programFspConfigurationsHelperService.validateFspIsEnabledOrThrow({
       fspName: programFspConfigurationDto.fspName,
     });
 
-    this.validateLabelHasEnglishTranslation(programFspConfigurationDto.label);
+    this.programFspConfigurationsHelperService.validateLabelHasEnglishTranslation(
+      {
+        label: programFspConfigurationDto.label,
+      },
+    );
 
     const existingConfig = await this.programFspConfigurationRepository.findOne(
       {
@@ -98,13 +93,19 @@ export class ProgramFspConfigurationsService {
     }
 
     if (programFspConfigurationDto.properties) {
-      await this.validateAllowedPropertyNames({
-        propertyNames: programFspConfigurationDto.properties.map((p) => p.name),
-        fspName: programFspConfigurationDto.fspName,
-      });
+      this.programFspConfigurationsHelperService.validateAllowedPropertyNames(
+        {
+          propertyNames: programFspConfigurationDto.properties.map(
+            (p) => p.name,
+          ),
+          fspName: programFspConfigurationDto.fspName,
+        },
+      );
 
-      this.validatePropertyValueTypesOrThrow(
-        programFspConfigurationDto.properties,
+      this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow(
+        {
+          properties: programFspConfigurationDto.properties,
+        },
       );
     }
   }
@@ -119,8 +120,8 @@ export class ProgramFspConfigurationsService {
         select: { name: true },
       });
 
-    const currentProgramAttributesNames = currentProgramAttributes.map(
-      (attributes) => attributes.name,
+    const currentProgramAttributesNames = new Set(
+      currentProgramAttributes.map((attributes) => attributes.name),
     );
 
     const requiredAttributeNames = FSP_SETTINGS[
@@ -134,7 +135,7 @@ export class ProgramFspConfigurationsService {
     // https://github.com/global-121/121-platform/pull/8229/ once merged
 
     for (const requiredAttributeName of requiredAttributeNames) {
-      if (!currentProgramAttributesNames.includes(requiredAttributeName)) {
+      if (!currentProgramAttributesNames.has(requiredAttributeName)) {
         await this.programRegistrationAttributesService.createProgramRegistrationAttribute(
           {
             programId,
@@ -157,10 +158,11 @@ export class ProgramFspConfigurationsService {
     programId: number,
     programFspConfigurationDto: CreateProgramFspConfigurationDto,
   ): Promise<ProgramFspConfigurationResponseDto> {
-    const configState = this.computeFspConfigurationState({
-      fspName: programFspConfigurationDto.fspName,
-      fspConfigurationProperties: programFspConfigurationDto.properties ?? [],
-    });
+    const configState =
+      this.programFspConfigurationsHelperService.computeFspConfigurationState({
+        fspName: programFspConfigurationDto.fspName,
+        fspConfigurationProperties: programFspConfigurationDto.properties ?? [],
+      });
 
     const newConfigEntity = ProgramFspConfigurationMapper.mapDtoToEntity({
       dto: programFspConfigurationDto,
@@ -202,27 +204,35 @@ export class ProgramFspConfigurationsService {
 
     // Only update the label an properties in this API call. I cannot imagine a use case where we would want to update the name or fsp name
     // Updating the FSP name would also be more complex as you would need to check if the new properties are valid for the new FSP
-    this.validateLabelHasEnglishTranslation(
-      updateProgramFspConfigurationDto.label,
+    this.programFspConfigurationsHelperService.validateLabelHasEnglishTranslation(
+      {
+        label: updateProgramFspConfigurationDto.label,
+      },
     );
     config.label = updateProgramFspConfigurationDto.label;
 
     if (updateProgramFspConfigurationDto.properties) {
-      await this.validateAllowedPropertyNames({
+      this.programFspConfigurationsHelperService.validateAllowedPropertyNames({
         propertyNames: updateProgramFspConfigurationDto.properties.map(
           (p) => p.name,
         ),
         fspName: config.fspName,
       });
 
-      this.validatePropertyValueTypesOrThrow(
-        updateProgramFspConfigurationDto.properties,
+      this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow(
+        {
+          properties: updateProgramFspConfigurationDto.properties,
+        },
       );
 
-      config.state = this.computeFspConfigurationState({
-        fspName: config.fspName,
-        fspConfigurationProperties: updateProgramFspConfigurationDto.properties,
-      });
+      config.state =
+        this.programFspConfigurationsHelperService.computeFspConfigurationState(
+          {
+            fspName: config.fspName,
+            fspConfigurationProperties:
+              updateProgramFspConfigurationDto.properties,
+          },
+        );
     }
 
     const savedEntity =
@@ -290,12 +300,16 @@ export class ProgramFspConfigurationsService {
       programId,
       name,
     );
-    await this.validateAllowedPropertyNames({
+    this.programFspConfigurationsHelperService.validateAllowedPropertyNames({
       propertyNames: inputProperties.map((p) => p.name),
       fspName: config.fspName,
     });
 
-    this.validatePropertyValueTypesOrThrow(inputProperties);
+    this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow(
+      {
+        properties: inputProperties,
+      },
+    );
 
     await this.validateNoDuplicateExistingProperties({
       propertyNames: inputProperties.map((p) => p.name),
@@ -310,43 +324,6 @@ export class ProgramFspConfigurationsService {
       fspName: config.fspName,
     });
     return ProgramFspConfigurationMapper.mapPropertyEntitiesToDtos(properties);
-  }
-
-  private async validateAllowedPropertyNames({
-    propertyNames,
-    fspName,
-  }: {
-    propertyNames: FspConfigurationProperties[];
-    fspName: Fsps;
-  }): Promise<void> {
-    const configPropertiesOfFsp = getFspConfigurationProperties(fspName);
-
-    const errors: string[] = [];
-    for (const propertyName of propertyNames) {
-      if (
-        configPropertiesOfFsp &&
-        !configPropertiesOfFsp.includes(propertyName)
-      ) {
-        errors.push(
-          `For fsp ${fspName}, only the following values are allowed: ${configPropertiesOfFsp.join(' ')}. You tried to add ${propertyName}.`,
-        );
-      }
-    }
-
-    // Check if there are duplicate property names in this array
-    if (propertyNames.length !== new Set(propertyNames).size) {
-      const duplicateNames = propertyNames.filter(
-        (name, index) => propertyNames.indexOf(name) !== index,
-      );
-      errors.push(
-        `Duplicate property names are not allowed. Found the following duplicates: ${duplicateNames.join(', ')}`,
-      );
-    }
-
-    if (errors.length > 0) {
-      const errorsString = errors.join(' ');
-      throw new HttpException(errorsString, HttpStatus.BAD_REQUEST);
-    }
   }
 
   private async validateNoDuplicateExistingProperties({
@@ -380,7 +357,7 @@ export class ProgramFspConfigurationsService {
 
   public async updateProperty({
     programId,
-    name: name,
+    name,
     propertyName,
     property,
   }: {
@@ -402,10 +379,12 @@ export class ProgramFspConfigurationsService {
         propertyName,
       );
 
-    this.validatePropertyValueTypeOrThrow({
-      propertyName,
-      propertyValue: property.value,
-    });
+    this.programFspConfigurationsHelperService.validatePropertyValueTypeOrThrow(
+      {
+        propertyName,
+        propertyValue: property.value,
+      },
+    );
 
     existingProperty.value = property.value;
 
@@ -419,7 +398,7 @@ export class ProgramFspConfigurationsService {
 
   public async deleteProperty({
     programId,
-    name: name,
+    name,
     propertyName,
   }: {
     programId: number;
@@ -447,29 +426,6 @@ export class ProgramFspConfigurationsService {
     });
   }
 
-  private computeFspConfigurationState({
-    fspName,
-    fspConfigurationProperties,
-  }: {
-    fspName: Fsps;
-    fspConfigurationProperties: CreateProgramFspConfigurationPropertyDto[];
-  }): FspConfigurationStates {
-    const requiredProperties = getFspConfigurationRequiredProperties(fspName);
-
-    if (requiredProperties.length === 0) {
-      return FspConfigurationStates.configured;
-    }
-
-    const propertyNames = fspConfigurationProperties.map((p) => p.name) ?? [];
-    const hasAllRequiredProperties = requiredProperties.every((required) =>
-      propertyNames.includes(required),
-    );
-
-    return hasAllRequiredProperties
-      ? FspConfigurationStates.configured
-      : FspConfigurationStates.configurationPending;
-  }
-
   private async syncFspConfigurationState({
     programFspConfigurationId,
     fspName,
@@ -483,10 +439,11 @@ export class ProgramFspConfigurationsService {
           programFspConfigurationId: Equal(programFspConfigurationId),
         },
       });
-    const state = this.computeFspConfigurationState({
-      fspName,
-      fspConfigurationProperties: properties,
-    });
+    const state =
+      this.programFspConfigurationsHelperService.computeFspConfigurationState({
+        fspName,
+        fspConfigurationProperties: properties,
+      });
 
     await this.programFspConfigurationRepository.update(
       programFspConfigurationId,
@@ -521,148 +478,6 @@ export class ProgramFspConfigurationsService {
       programFspConfigurationId,
       properties,
     );
-  }
-
-  public async updateProgramFspConfigurations({
-    programId,
-    fsps,
-  }: {
-    programId: number;
-    fsps: Fsps[];
-  }): Promise<void> {
-    const programFspConfigurations =
-      await this.programFspConfigurationRepository.find({
-        where: { programId: Equal(programId) },
-      });
-
-    await this.deleteObsoleteFspConfigurations({
-      programFspConfigurations,
-      programId,
-      fsps,
-    });
-
-    await this.createMissingFspConfigurations({
-      programFspConfigurations,
-      programId,
-      fsps,
-    });
-  }
-
-  private async deleteObsoleteFspConfigurations({
-    programFspConfigurations,
-    programId,
-    fsps,
-  }: {
-    programFspConfigurations: ProgramFspConfigurationEntity[];
-    programId: number;
-    fsps: Fsps[];
-  }): Promise<void>  {
-    const configsToDelete = programFspConfigurations.filter(
-      (config) => !fsps.includes(config.fspName),
-    );
-    for (const config of configsToDelete) {
-      await this.delete(programId, config.name);
-    }
-  }
-
-  private async createMissingFspConfigurations({
-    programFspConfigurations,
-    programId,
-    fsps,
-  }: {
-    programFspConfigurations: ProgramFspConfigurationEntity[];
-    programId: number;
-    fsps: Fsps[];
-  }): Promise<void> {
-    const existingFspNames = programFspConfigurations.map(
-      (config) => config.fspName,
-    );
-    const fspNamesToAdd = fsps.filter(
-      (fspName) => !existingFspNames.includes(fspName),
-    );
-
-    if (fspNamesToAdd.length === 0) {
-      return;
-    }
-
-    for (const fspName of fspNamesToAdd) {
-      const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
-        {
-          name: fspName,
-          label: { ...FSP_SETTINGS[fspName].defaultLabel },
-          fspName,
-        };
-      await this.create(programId, createProgramFspConfigurationDto);
-    }
-  }
-
-  private validateFspIsEnabledOrThrow({
-    fspName,
-  }: {
-    readonly fspName: Fsps;
-  }): void {
-    if (FSP_MODES[fspName] === FspMode.disabled) {
-      throw new HttpException(
-        `FSP "${fspName}" is not enabled on this instance.`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-  }
-
-  private validateLabelHasEnglishTranslation(label: any): void {
-    if (!label.en) {
-      throw new HttpException(
-        `Label must have an English translation`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-  }
-
-  private validatePropertyValueTypesOrThrow(
-    properties: readonly {
-      readonly name: FspConfigurationProperties;
-      readonly value: FspConfigurationPropertyType;
-    }[],
-  ): void {
-    for (const property of properties) {
-      this.validatePropertyValueTypeOrThrow({
-        propertyName: property.name,
-        propertyValue: property.value,
-      });
-    }
-  }
-
-  private validatePropertyValueTypeOrThrow({
-    propertyName,
-    propertyValue,
-  }: {
-    propertyName: FspConfigurationProperties;
-    propertyValue: FspConfigurationPropertyType;
-  }) {
-    const expectedType = fspConfigurationPropertyTypes[propertyName];
-    let actualType: string = typeof propertyValue;
-
-    // we have a special case for arrays, because typeof [] is 'object'
-    if (Array.isArray(propertyValue)) {
-      actualType = 'array';
-
-      // Check if all items in the array are strings
-      if (!propertyValue.every((item) => typeof item === 'string')) {
-        actualType = 'non-string-array';
-      }
-    }
-
-    // typeof NaN is 'number' but we want to catch it as an invalid value
-    if (actualType === 'number' && Number.isNaN(propertyValue as number)) {
-      actualType = 'NaN';
-    }
-
-    if (expectedType !== actualType) {
-      throw new HttpException(
-        `Invalid value type for property "${propertyName}". Expected ${expectedType}, got ${actualType}.`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
   }
 
   private async getProgramFspConfigurationOrThrow(
@@ -730,9 +545,12 @@ export class ProgramFspConfigurationsService {
       name,
     );
 
-    const allowlistedPropertyNames = this.getAllowlistedPropertyNamesForFsp(
-      config.fspName,
-    );
+    const allowlistedPropertyNames =
+      this.programFspConfigurationsHelperService.getAllowlistedPropertyNamesForFsp(
+        {
+          fspName: config.fspName,
+        },
+      );
     if (!allowlistedPropertyNames || allowlistedPropertyNames.length === 0) {
       return [];
     }
@@ -750,19 +568,76 @@ export class ProgramFspConfigurationsService {
     );
   }
 
-  private getAllowlistedPropertyNamesForFsp(fspName: Fsps): string[] {
-    const fspConfigurationProperties = getFspConfigurationProperties(fspName);
-    if (
-      !fspConfigurationProperties ||
-      fspConfigurationProperties.length === 0
-    ) {
-      return [];
+  public async updateProgramFspConfigurations({
+    programId,
+    fsps,
+  }: {
+    programId: number;
+    fsps: Fsps[];
+  }): Promise<void> {
+    const programFspConfigurations =
+      await this.programFspConfigurationRepository.find({
+        where: { programId: Equal(programId) },
+      });
+
+    await this.deleteObsoleteFspConfigurations({
+      programFspConfigurations,
+      programId,
+      fsps,
+    });
+
+    await this.createMissingFspConfigurations({
+      programFspConfigurations,
+      programId,
+      fsps,
+    });
+  }
+
+  private async deleteObsoleteFspConfigurations({
+    programFspConfigurations,
+    programId,
+    fsps,
+  }: {
+    programFspConfigurations: ProgramFspConfigurationEntity[];
+    programId: number;
+    fsps: Fsps[];
+  }): Promise<void> {
+    const configsToDelete = programFspConfigurations.filter(
+      (config) => !fsps.includes(config.fspName),
+    );
+    for (const config of configsToDelete) {
+      await this.delete(programId, config.name);
+    }
+  }
+
+  private async createMissingFspConfigurations({
+    programFspConfigurations,
+    programId,
+    fsps,
+  }: {
+    programFspConfigurations: ProgramFspConfigurationEntity[];
+    programId: number;
+    fsps: Fsps[];
+  }): Promise<void> {
+    const existingFspNames = new Set(
+      programFspConfigurations.map((config) => config.fspName),
+    );
+    const fspNamesToAdd = fsps.filter(
+      (fspName) => !existingFspNames.has(fspName),
+    );
+
+    if (fspNamesToAdd.length === 0) {
+      return;
     }
 
-    return fspConfigurationProperties.filter(
-      (propertyName) =>
-        FspConfigurationPropertyVisibilityMap[propertyName] ===
-        FspConfigurationPropertyVisibility.public,
-    );
+    for (const fspName of fspNamesToAdd) {
+      const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto =
+        {
+          name: fspName,
+          label: { ...FSP_SETTINGS[fspName].defaultLabel },
+          fspName,
+        };
+      await this.create(programId, createProgramFspConfigurationDto);
+    }
   }
 }
