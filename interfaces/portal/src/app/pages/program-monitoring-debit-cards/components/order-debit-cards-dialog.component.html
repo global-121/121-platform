@@ -52,6 +52,22 @@
       />
     </app-form-field-wrapper>
 
+    <app-form-field-wrapper
+      label="Addressee phone number"
+      i18n-label
+      [errorMessage]="formFieldErrors()('addresseePhoneNumber')"
+      [isRequired]="true"
+    >
+      <input
+        pInputText
+        [pSize]="'large'"
+        inputmode="tel"
+        type="text"
+        formControlName="addresseePhoneNumber"
+        autocomplete="off"
+      />
+    </app-form-field-wrapper>
+
     <div class="grid-cols-2 gap-4 inline-full sm:grid">
       <app-form-field-wrapper
         label="City"

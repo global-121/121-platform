@@ -1272,6 +1272,9 @@
       <trans-unit id="641865702986102945" datatype="html">
         <source>Are you sure you want to delete this payment? This action cannot be undone.</source>
       </trans-unit>
+      <trans-unit id="6421318567345904044" datatype="html">
+        <source>Addressee phone number</source>
+      </trans-unit>
       <trans-unit id="6430223777327451722" datatype="html">
         <source>Total payment amount</source>
       </trans-unit>

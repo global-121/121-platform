@@ -44,4 +44,9 @@ export class CreateVisaCardOrderDto {
   @IsNotEmpty()
   @IsString()
   public readonly addressee: string;
+
+  @ApiProperty({ example: '+31612345678' })
+  @IsNotEmpty()
+  @IsString()
+  public readonly addresseePhoneNumber: string;
 }
