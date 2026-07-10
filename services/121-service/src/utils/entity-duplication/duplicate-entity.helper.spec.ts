@@ -179,7 +179,7 @@ describe('validateRelationTypeOrThrow', () => {
   it('should throw for unsupported relation types (e.g. many-to-many)', () => {
     const relation = makeRelation({
       inverseRelation: {} as RelationMetadata,
-    }); // not one-to-many or one-to-one
+    });
     expect(() =>
       validateRelationTypeOrThrow({ relation, relationName: 'roles' }),
     ).toThrow('only one-to-many and one-to-one relations');
@@ -190,26 +190,38 @@ describe('getRelationChildren', () => {
   it('should return the related array for one-to-many relation', () => {
     const relation = makeRelation({ isOneToMany: true });
     const children = [{ id: 1 }, { id: 2 }];
-    const result = getRelationChildren({ relation, related: children });
+    const result = getRelationChildren({
+      relationMetadata: relation,
+      relationData: children,
+    });
     expect(result).toBe(children);
   });
 
   it('should return empty array for one-to-many when related is null', () => {
     const relation = makeRelation({ isOneToMany: true });
-    const result = getRelationChildren({ relation, related: null });
+    const result = getRelationChildren({
+      relationMetadata: relation,
+      relationData: null,
+    });
     expect(result).toHaveLength(0);
   });
 
   it('should wrap a single object in an array for one-to-one relation', () => {
     const relation = makeRelation({ isOneToOne: true });
     const child = { id: 5 };
-    const result = getRelationChildren({ relation, related: child });
+    const result = getRelationChildren({
+      relationMetadata: relation,
+      relationData: child,
+    });
     expect(result).toEqual([child]);
   });
 
   it('should return empty array for one-to-one when related is null', () => {
     const relation = makeRelation({ isOneToOne: true });
-    const result = getRelationChildren({ relation, related: null });
+    const result = getRelationChildren({
+      relationMetadata: relation,
+      relationData: null,
+    });
     expect(result).toHaveLength(0);
   });
 });
@@ -301,20 +313,25 @@ describe('getRelationNamesToDuplicate', () => {
 });
 
 describe('buildRelationLoadTree', () => {
-  it('should load a relation flagged true as a leaf', () => {
+  it('should keep only selected relations and drop unselected ones and column flags', () => {
     const metadata = makeEntityMetadata([
       makeRelationWithChildren({ propertyName: 'attachments' }),
+      makeRelationWithChildren({ propertyName: 'registrations' }),
     ]);
 
     const result = buildRelationLoadTree({
       metadata,
-      relationTree: { attachments: true },
+      relationTree: {
+        attachments: true, // selected relation -> loaded as a leaf
+        registrations: false, // unselected relation -> dropped
+        location: true, // a column, not a relation -> ignored
+      },
     });
 
     expect(result).toEqual({ attachments: true });
   });
 
-  it('should also load a child many-to-many relation for re-linking', () => {
+  it("should auto-load a child's many-to-many relation that is not in the config", () => {
     const metadata = makeEntityMetadata([
       makeRelationWithChildren({
         propertyName: 'aidworkerAssignments',
@@ -327,20 +344,29 @@ describe('buildRelationLoadTree', () => {
       relationTree: { aidworkerAssignments: true },
     });
 
+    // `roles` is never in the config; it is added so it can be re-linked.
     expect(result).toEqual({ aidworkerAssignments: { roles: true } });
   });
 
-  it('should recurse into nested relations flagged for duplication', () => {
+  it('should recurse into a nested relation and drop unselected sub-relations', () => {
     const metadata = makeEntityMetadata([
       makeRelationWithChildren({
         propertyName: 'programFspConfigurations',
-        childRelations: [makeRelationWithChildren({ propertyName: 'properties' })],
+        childRelations: [
+          makeRelationWithChildren({ propertyName: 'properties' }),
+          makeRelationWithChildren({ propertyName: 'transactionEvents' }),
+        ],
       }),
     ]);
 
     const result = buildRelationLoadTree({
       metadata,
-      relationTree: { programFspConfigurations: { properties: true } },
+      relationTree: {
+        programFspConfigurations: {
+          properties: true, // selected -> kept
+          transactionEvents: false, // unselected -> dropped inside the nested tree
+        },
+      },
     });
 
     expect(result).toEqual({
@@ -366,27 +392,49 @@ function makeForeignKeyRelation({
   };
 }
 
+// Builds a minimal duplicated-row stub for the remap pass.
+function makeRow({
+  relations,
+  source,
+  parentForeignKeyProperty,
+}: {
+  relations: any[];
+  source: Record<string, unknown>;
+  parentForeignKeyProperty?: string;
+}): any {
+  return {
+    metadata: { relations },
+    source,
+    copy: {},
+    parentForeignKeyProperty,
+  };
+}
+
+// Builds a duplication context from a map of entity name -> (old id -> new id).
+function makeContext(
+  idMapsByEntityName: Record<string, Map<unknown, unknown>>,
+): any {
+  return {
+    idMapByEntityName: new Map(Object.entries(idMapsByEntityName)),
+    duplicatedRows: [],
+  };
+}
+
 describe('collectLateralForeignKeyRemaps', () => {
   it('should remap a foreign key that points at a duplicated sibling', () => {
-    const row = {
-      metadata: {
-        relations: [
-          makeForeignKeyRelation({
-            foreignKeyProperty: 'programApprovalThresholdId',
-            targetEntityName: 'ProgramApprovalThresholdEntity',
-          }),
-        ],
-      },
+    const row = makeRow({
+      relations: [
+        makeForeignKeyRelation({
+          foreignKeyProperty: 'programApprovalThresholdId',
+          targetEntityName: 'ProgramApprovalThresholdEntity',
+        }),
+      ],
       source: { programApprovalThresholdId: 10 },
-      copy: {},
       parentForeignKeyProperty: 'programId',
-    } as any;
-    const context = {
-      idMapByEntityName: new Map([
-        ['ProgramApprovalThresholdEntity', new Map([[10, 100]])],
-      ]),
-      duplicatedRows: [],
-    } as any;
+    });
+    const context = makeContext({
+      ProgramApprovalThresholdEntity: new Map([[10, 100]]),
+    });
 
     const result = collectLateralForeignKeyRemaps({ row, context });
 
@@ -396,23 +444,17 @@ describe('collectLateralForeignKeyRemaps', () => {
   });
 
   it('should skip the parent foreign key', () => {
-    const row = {
-      metadata: {
-        relations: [
-          makeForeignKeyRelation({
-            foreignKeyProperty: 'programId',
-            targetEntityName: 'ProgramEntity',
-          }),
-        ],
-      },
+    const row = makeRow({
+      relations: [
+        makeForeignKeyRelation({
+          foreignKeyProperty: 'programId',
+          targetEntityName: 'ProgramEntity',
+        }),
+      ],
       source: { programId: 1 },
-      copy: {},
       parentForeignKeyProperty: 'programId',
-    } as any;
-    const context = {
-      idMapByEntityName: new Map([['ProgramEntity', new Map([[1, 2]])]]),
-      duplicatedRows: [],
-    } as any;
+    });
+    const context = makeContext({ ProgramEntity: new Map([[1, 2]]) });
 
     const result = collectLateralForeignKeyRemaps({ row, context });
 
@@ -420,22 +462,16 @@ describe('collectLateralForeignKeyRemaps', () => {
   });
 
   it('should keep a foreign key that points at a non-duplicated entity', () => {
-    const row = {
-      metadata: {
-        relations: [
-          makeForeignKeyRelation({
-            foreignKeyProperty: 'userId',
-            targetEntityName: 'UserEntity',
-          }),
-        ],
-      },
+    const row = makeRow({
+      relations: [
+        makeForeignKeyRelation({
+          foreignKeyProperty: 'userId',
+          targetEntityName: 'UserEntity',
+        }),
+      ],
       source: { userId: 7 },
-      copy: {},
-    } as any;
-    const context = {
-      idMapByEntityName: new Map(),
-      duplicatedRows: [],
-    } as any;
+    });
+    const context = makeContext({}); // UserEntity was not duplicated
 
     const result = collectLateralForeignKeyRemaps({ row, context });
 
@@ -443,24 +479,18 @@ describe('collectLateralForeignKeyRemaps', () => {
   });
 
   it('should skip a null foreign key', () => {
-    const row = {
-      metadata: {
-        relations: [
-          makeForeignKeyRelation({
-            foreignKeyProperty: 'programApprovalThresholdId',
-            targetEntityName: 'ProgramApprovalThresholdEntity',
-          }),
-        ],
-      },
+    const row = makeRow({
+      relations: [
+        makeForeignKeyRelation({
+          foreignKeyProperty: 'programApprovalThresholdId',
+          targetEntityName: 'ProgramApprovalThresholdEntity',
+        }),
+      ],
       source: { programApprovalThresholdId: null },
-      copy: {},
-    } as any;
-    const context = {
-      idMapByEntityName: new Map([
-        ['ProgramApprovalThresholdEntity', new Map([[10, 100]])],
-      ]),
-      duplicatedRows: [],
-    } as any;
+    });
+    const context = makeContext({
+      ProgramApprovalThresholdEntity: new Map([[10, 100]]),
+    });
 
     const result = collectLateralForeignKeyRemaps({ row, context });
 
@@ -468,24 +498,18 @@ describe('collectLateralForeignKeyRemaps', () => {
   });
 
   it('should skip when the referenced row itself was not duplicated', () => {
-    const row = {
-      metadata: {
-        relations: [
-          makeForeignKeyRelation({
-            foreignKeyProperty: 'programApprovalThresholdId',
-            targetEntityName: 'ProgramApprovalThresholdEntity',
-          }),
-        ],
-      },
+    const row = makeRow({
+      relations: [
+        makeForeignKeyRelation({
+          foreignKeyProperty: 'programApprovalThresholdId',
+          targetEntityName: 'ProgramApprovalThresholdEntity',
+        }),
+      ],
       source: { programApprovalThresholdId: 999 },
-      copy: {},
-    } as any;
-    const context = {
-      idMapByEntityName: new Map([
-        ['ProgramApprovalThresholdEntity', new Map([[10, 100]])],
-      ]),
-      duplicatedRows: [],
-    } as any;
+    });
+    const context = makeContext({
+      ProgramApprovalThresholdEntity: new Map([[10, 100]]),
+    });
 
     const result = collectLateralForeignKeyRemaps({ row, context });
 
@@ -493,17 +517,11 @@ describe('collectLateralForeignKeyRemaps', () => {
   });
 
   it('should ignore relations that are not the owning side of a single-value relation', () => {
-    const row = {
-      metadata: {
-        relations: [{ isManyToOne: false, isOneToOne: false, joinColumns: [] }],
-      },
+    const row = makeRow({
+      relations: [{ isManyToOne: false, isOneToOne: false, joinColumns: [] }],
       source: {},
-      copy: {},
-    } as any;
-    const context = {
-      idMapByEntityName: new Map(),
-      duplicatedRows: [],
-    } as any;
+    });
+    const context = makeContext({});
 
     const result = collectLateralForeignKeyRemaps({ row, context });
 

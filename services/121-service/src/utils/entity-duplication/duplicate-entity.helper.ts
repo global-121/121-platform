@@ -321,8 +321,11 @@ async function copyRelation({
     relationName,
   });
 
-  const related = source[relationName];
-  const children = getRelationChildren({ relation, related });
+  const relationData = source[relationName];
+  const children = getRelationChildren({
+    relationMetadata: relation,
+    relationData,
+  });
 
   if (children.length === 0) {
     return;
@@ -604,19 +607,19 @@ export function validateRelationTypeOrThrow({
 }
 
 export function getRelationChildren({
-  relation,
-  related,
+  relationMetadata,
+  relationData,
 }: {
-  relation: RelationMetadata;
-  related: unknown;
+  relationMetadata: RelationMetadata;
+  relationData: unknown;
 }): ObjectLiteral[] {
-  if (relation.isOneToMany) {
-    return (related ?? []) as ObjectLiteral[];
-  }
-  if (!related) {
+  if (!relationData) {
     return [];
   }
-  return [related as ObjectLiteral];
+  if (relationMetadata.isOneToMany) {
+    return relationData as ObjectLiteral[];
+  }
+  return [relationData as ObjectLiteral];
 }
 
 function getPrimaryKeyProperty(metadata: EntityMetadata): string {
