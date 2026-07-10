@@ -1,8 +1,10 @@
+import { Signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {
   provideTanStackQuery,
   QueryClient,
+  queryOptions,
 } from '@tanstack/angular-query-experimental';
 import { MessageService } from 'primeng/api';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -28,11 +30,11 @@ describe('KoboConfigurationDialogComponent', () => {
         {
           provide: KoboApiService,
           useValue: {
-            getKoboIntegration: () => () => ({
-              data: () => null,
-              isLoading: false,
-              error: null,
-            }),
+            getKoboIntegration: (programId: Signal<number | string>) => () =>
+              queryOptions({
+                queryKey: ['mock-api', 'koboIntegration', programId()],
+                queryFn: () => Promise.resolve(null),
+              }),
           },
         },
         ToastService,
@@ -59,7 +61,7 @@ describe('KoboConfigurationDialogComponent', () => {
   });
 
   describe('onFormUrlUpdate', () => {
-    it('should update Kobo integration when a valid URL is provided', () => {
+    it('should update Kobo-integration-form when a valid URL is provided', () => {
       // Arrange
       const testInput = 'https://kobo.example.org/#/forms/asset-id-123/summary';
 
@@ -84,7 +86,7 @@ describe('KoboConfigurationDialogComponent', () => {
       );
     });
 
-    it('should NOT update Kobo integration when an invalid URL is provided', () => {
+    it('should NOT update Kobo-integration-form when an invalid URL is provided', () => {
       // Arrange
       const testInput = 'not-a-valid-url';
 

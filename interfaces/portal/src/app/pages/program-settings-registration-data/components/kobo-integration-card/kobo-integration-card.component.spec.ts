@@ -33,13 +33,7 @@ describe('KoboIntegrationCardComponent', () => {
             getKoboIntegration: (programId: Signal<number | string>) => () =>
               queryOptions({
                 queryKey: ['koboIntegration', programId()],
-                queryFn: () =>
-                  Promise.resolve({
-                    assetUid: '',
-                    versionId: '',
-                    dateDeployed: new Date(),
-                    url: '',
-                  }),
+                queryFn: () => Promise.resolve(null),
               }),
           },
         },

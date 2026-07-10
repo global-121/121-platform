@@ -13,7 +13,7 @@ import { ChartModule } from 'primeng/chart';
 
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 
-import tailwindConfig from '~/../../tailwind.config';
+import tailwindConfig from '~/../../tailwind.config.mjs';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { DUPLICATE_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { ChartTextAlternativeOptions } from '~/pages/program-monitoring-dashboard/program-monitoring-dashboard.page';

@@ -12,7 +12,7 @@ import { ChartModule } from 'primeng/chart';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 
-import tailwindConfig from '~/../../tailwind.config';
+import tailwindConfig from '~/../../tailwind.config.mjs';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
 import { ChartTextAlternativeOptions } from '~/pages/program-monitoring-dashboard/program-monitoring-dashboard.page';

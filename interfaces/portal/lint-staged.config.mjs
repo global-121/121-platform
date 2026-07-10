@@ -4,5 +4,5 @@ import baseConfig from '../../packages/lint-staged.config.base.mjs';
 export default {
   ...baseConfig,
   '*.html': 'eslint --fix --cache',
-  '*.{html,ts}': () => 'npm run extract-i18n:smart', // Needs to run the whole project, not just the staged/changed files
+  '*.{html,ts,mts}': () => 'npm run extract-i18n:smart', // Needs to run the whole project, not just the staged/changed files
 };

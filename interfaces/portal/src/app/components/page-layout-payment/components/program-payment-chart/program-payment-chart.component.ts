@@ -11,7 +11,7 @@ import { ChartModule } from 'primeng/chart';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 
-import tailwindConfig from '~/../../tailwind.config';
+import tailwindConfig from '~/../../tailwind.config.mjs';
 import { PaymentAggregationFull } from '~/domains/payment/payment.model';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
 import { TranslatableStringService } from '~/services/translatable-string.service';

@@ -8,7 +8,7 @@ import {
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 
-import tailwindConfig from '~/../../tailwind.config';
+import tailwindConfig from '~/../../tailwind.config.mjs';
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import { AmountSentPerMonthChartComponent } from '~/pages/program-monitoring-dashboard/components/amount-sent-per-month-chart/amount-sent-per-month-chart.component';
 import { PaymentsAggregateChartComponent } from '~/pages/program-monitoring-dashboard/components/payments-aggregate-chart/payments-aggregate-chart.component';

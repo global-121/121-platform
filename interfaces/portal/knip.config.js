@@ -16,7 +16,7 @@ module.exports = {
     'src/logout/logout.js', // Specific "manual override"/escape-hatch to log-out
   ],
   project: [
-    '**/*.{mjs,js,ts}', // All is in-scope to check
+    '**/*.{mjs,js,ts,mts}', // All is in-scope to check
   ],
   rules: {
     binaries: 'error',
