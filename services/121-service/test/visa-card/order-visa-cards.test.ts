@@ -46,7 +46,6 @@ describe('Order visa debit cards in batch', () => {
       addresseePhoneNumber,
     });
 
-    console.log('orderResponse: ', orderResponse.body);
     // Assert
     expect(orderResponse.status).toBe(HttpStatus.CREATED);
     expect(orderResponse.body).toEqual({
