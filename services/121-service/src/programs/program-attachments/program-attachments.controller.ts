@@ -1,29 +1,28 @@
 import {
-    BadRequestException,
-    Body,
-    Controller,
-    Delete,
-    Get,
-    HttpCode,
-    HttpStatus,
-    Param,
-    ParseIntPipe,
-    Patch,
-    Post,
-    Req,
-    Res,
-    UploadedFile,
-    UseGuards,
-    UseInterceptors,
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Req,
+  Res,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import {
-    ApiBody,
-    ApiConsumes,
-    ApiOperation,
-    ApiParam,
-    ApiResponse,
-    ApiTags,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
 
@@ -35,6 +34,7 @@ import { GetProgramAttachmentResponseDto } from '@121-service/src/programs/progr
 import { RenameProgramAttachmentDto } from '@121-service/src/programs/program-attachments/dtos/rename-program-attachment.dto';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 import { FILE_UPLOAD_WITH_FILENAME_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
+import { createFileUploadInterceptor } from '@121-service/src/shared/file-upload-interceptor';
 import { ATTACHMENT_FILE_UPLOAD_LIMITS } from '@121-service/src/shared/file-upload-limits';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -61,9 +61,10 @@ export class ProgramAttachmentsController {
     description: 'Post attachments to a program',
   })
   @Post('programs/:programId/attachments')
-  @UseInterceptors(
-    FileInterceptor('file', { limits: ATTACHMENT_FILE_UPLOAD_LIMITS }),
-  )
+  @UseInterceptors(createFileUploadInterceptor({
+    fieldName: 'file',
+    limits: ATTACHMENT_FILE_UPLOAD_LIMITS,
+  }))
   public async createProgramAttachment(
     @UploadedFile() file: Express.Multer.File,
     @Body() body: CreateProgramAttachmentDto,

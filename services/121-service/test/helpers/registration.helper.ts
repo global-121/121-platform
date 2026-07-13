@@ -91,6 +91,23 @@ export function importRegistrationsCSV(
     .attach('file', filePath);
 }
 
+export function importRegistrationsCsvFile({
+  programId,
+  accessToken,
+  fileBuffer,
+  fileName = 'import.csv',
+}: {
+  programId: number;
+  accessToken: string;
+  fileBuffer: Buffer;
+  fileName?: string;
+}): Promise<request.Response> {
+  return getServer()
+    .post(`/programs/${programId}/registrations/import`)
+    .set('Cookie', [accessToken])
+    .attach('file', fileBuffer, fileName);
+}
+
 export function duplicateRegistrationsAndPaymentData({
   powerNumberRegistration,
   includeRegistrationEvents = false,

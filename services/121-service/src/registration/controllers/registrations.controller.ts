@@ -17,7 +17,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBody,
   ApiConsumes,
@@ -62,6 +61,7 @@ import {
   FILE_UPLOAD_API_FORMAT,
   FILE_UPLOAD_WITH_REASON_API_FORMAT,
 } from '@121-service/src/shared/file-upload-api-format';
+import { createFileUploadInterceptor } from '@121-service/src/shared/file-upload-interceptor';
 import {
   REGISTRATION_BULK_PATCH_CSV_FILE_UPLOAD_LIMITS,
   REGISTRATION_IMPORT_CSV_FILE_UPLOAD_LIMITS,
@@ -90,7 +90,8 @@ export class RegistrationsController {
   @ApiConsumes('multipart/form-data')
   @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(
-    FileInterceptor('file', {
+    createFileUploadInterceptor({
+      fieldName: 'file',
       limits: REGISTRATION_IMPORT_CSV_FILE_UPLOAD_LIMITS,
     }),
   )
@@ -186,7 +187,8 @@ export class RegistrationsController {
   @ApiConsumes('multipart/form-data')
   @ApiBody(FILE_UPLOAD_WITH_REASON_API_FORMAT)
   @UseInterceptors(
-    FileInterceptor('file', {
+    createFileUploadInterceptor({
+      fieldName: 'file',
       limits: REGISTRATION_BULK_PATCH_CSV_FILE_UPLOAD_LIMITS,
     }),
   )

@@ -485,13 +485,51 @@ export async function importFspReconciliationData({
   accessToken: string;
   reconciliationData: object[];
 }): Promise<request.Response> {
-  const csvString = jsonArrayToCsv(reconciliationData);
-  const buffer = Buffer.from(csvString, 'utf-8');
+  const uploadCsvFile = createUploadCsvFileFromRows({
+    rows: reconciliationData,
+  });
+
+  return await importFspReconciliationCsvFile({
+    programId,
+    paymentId,
+    accessToken,
+    fileBuffer: uploadCsvFile.buffer,
+    fileName: uploadCsvFile.fileName,
+  });
+}
+
+export async function importFspReconciliationCsvFile({
+  programId,
+  paymentId,
+  accessToken,
+  fileBuffer,
+  fileName = 'reconciliation.csv',
+}: {
+  programId: number;
+  paymentId: number;
+  accessToken: string;
+  fileBuffer: Buffer;
+  fileName?: string;
+}): Promise<request.Response> {
   return await getServer()
     .post(`/programs/${programId}/payments/${paymentId}/excel-reconciliation`)
     .set('Cookie', [accessToken])
     .field('Content-Type', 'multipart/form-data')
-    .attach('file', buffer, 'reconciliation.csv');
+    .attach('file', fileBuffer, fileName);
+}
+
+function createUploadCsvFileFromRows({
+  rows,
+}: {
+  rows: object[];
+}): {
+  buffer: Buffer;
+  fileName: string;
+} {
+  return {
+    buffer: Buffer.from(jsonArrayToCsv(rows), 'utf-8'),
+    fileName: 'reconciliation.csv',
+  };
 }
 
 function jsonArrayToCsv(json: object[]): string {

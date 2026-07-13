@@ -21,12 +21,12 @@ import {
   getImportRegistrationsTemplate,
   getMessageHistory,
   importRegistrations,
+  importRegistrationsCsvFile,
   searchRegistrationByReferenceId,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   getAccessTokenScoped,
-  getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
@@ -47,10 +47,12 @@ describe('Import a registration', () => {
     const fileSizeLimit = REGISTRATION_IMPORT_CSV_FILE_UPLOAD_LIMITS.fileSize!;
 
     // Act
-    const response = await getServer()
-      .post(`/programs/${programIdOCW}/registrations/import`)
-      .set('Cookie', [accessToken])
-      .attach('file', Buffer.alloc(fileSizeLimit + 1, 'a'), 'too-large.csv');
+    const response = await importRegistrationsCsvFile({
+      programId: programIdOCW,
+      accessToken,
+      fileBuffer: Buffer.alloc(fileSizeLimit + 1, 'a'),
+      fileName: 'too-large.csv',
+    });
 
     // Assert
     expect(response.status).toBe(HttpStatus.PAYLOAD_TOO_LARGE);

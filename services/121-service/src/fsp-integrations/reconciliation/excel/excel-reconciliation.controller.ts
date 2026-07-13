@@ -10,7 +10,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBody,
   ApiConsumes,
@@ -28,6 +27,7 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { FILE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
+import { createFileUploadInterceptor } from '@121-service/src/shared/file-upload-interceptor';
 import { EXCEL_FILE_UPLOAD_LIMITS } from '@121-service/src/shared/file-upload-limits';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -82,9 +82,10 @@ export class ExcelReconciliationController {
   @Post('programs/:programId/payments/:paymentId/excel-reconciliation')
   @ApiConsumes('multipart/form-data')
   @ApiBody(FILE_UPLOAD_API_FORMAT)
-  @UseInterceptors(
-    FileInterceptor('file', { limits: EXCEL_FILE_UPLOAD_LIMITS }),
-  )
+  @UseInterceptors(createFileUploadInterceptor({
+    fieldName: 'file',
+    limits: EXCEL_FILE_UPLOAD_LIMITS,
+  }))
   public async upsertExcelReconciliationData(
     @UploadedFile() file: Express.Multer.File,
     @Param('programId', ParseIntPipe)

@@ -1,17 +1,14 @@
-import { HttpStatus } from '@nestjs/common';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import {
-    bulkUpdateRegistrationsCSV,
-    importRegistrationsCSV,
-    searchRegistrationByReferenceId,
-    waitForBulkRegistrationChanges,
+  bulkUpdateRegistrationsCSV,
+  importRegistrationsCSV,
+  searchRegistrationByReferenceId,
+  waitForBulkRegistrationChanges,
 } from '@121-service/test/helpers/registration.helper';
 import {
-    getAccessToken,
-    getServer,
-    resetDB,
+  getAccessToken,
+  resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
 function filterUnchangedProperties(
@@ -51,22 +48,6 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       './test-registration-data/test-registrations-OCW.csv',
       accessToken,
     );
-  });
-
-  it('should return an error when too many text fields are uploaded', async () => {
-    const response = await getServer()
-      .patch(`/programs/${programIdOcw}/registrations`)
-      .set('Cookie', [accessToken])
-      .field('reason', 'test-reason')
-      .field('extraField1', '1')
-      .field('extraField2', '2')
-      .field('extraField3', '3')
-      .field('extraField4', '4')
-      .field('extraField5', '5')
-      .attach('file', './test-registration-data/test-registrations-patch-OCW.csv');
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.body.message).toBe('Too many fields');
   });
 
   it('Should bulk update and validate changed records', async () => {

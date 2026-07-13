@@ -8,13 +8,13 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { EXCEL_FILE_UPLOAD_LIMITS } from '@121-service/src/shared/file-upload-limits';
 import {
   getTransactionsByPaymentIdPaginated,
+  importFspReconciliationCsvFile,
   importFspReconciliationData,
 } from '@121-service/test/helpers/program.helper';
 import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
-  getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
@@ -175,19 +175,16 @@ describe('Reconciliate excel FSP data', () => {
   it('Should give an error when the reconciliation file exceeds the upload size limit', async () => {
     const fileSizeLimit = EXCEL_FILE_UPLOAD_LIMITS.fileSize!;
 
-    const response = await getServer()
-      .post(
-        `/programs/${programIdWesteros}/payments/${paymentId}/excel-reconciliation`,
-      )
-      .set('Cookie', [accessToken])
-      .attach(
-        'file',
-        Buffer.alloc(fileSizeLimit + 1, 'a'),
-        'too-large-reconciliation.csv',
-      );
+    const response = await importFspReconciliationCsvFile({
+      programId: programIdWesteros,
+      paymentId,
+      accessToken,
+      fileBuffer: Buffer.alloc(fileSizeLimit + 1, 'a'),
+      fileName: 'too-large-reconciliation.csv',
+    });
     const transactionStatuses = await getTransactionStatuses();
 
-    expect(response.status).toBe(HttpStatus.PAYLOAD_TOO_LARGE);
+    expect(response.statusCode).toBe(HttpStatus.PAYLOAD_TOO_LARGE);
     expect(response.body.message).toBe('File too large');
     expect(transactionStatuses).toEqual(waitingTransactionStatuses);
   });
