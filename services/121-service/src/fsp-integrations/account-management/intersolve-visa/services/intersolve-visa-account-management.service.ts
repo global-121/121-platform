@@ -494,6 +494,7 @@ export class IntersolveVisaAccountManagementService {
     addressPostalCode,
     addressCity,
     addressee,
+    addresseePhoneNumber,
     userId,
   }: {
     programId: number;
@@ -504,6 +505,7 @@ export class IntersolveVisaAccountManagementService {
     addressPostalCode: string;
     addressCity: string;
     addressee: string;
+    addresseePhoneNumber: string;
     userId: number;
   }): Promise<{
     id: number;
@@ -555,6 +557,44 @@ export class IntersolveVisaAccountManagementService {
         },
       );
 
+    const contactInformation: ContactInformation = {
+      name: addressee,
+      addressStreet,
+      addressHouseNumber,
+      addressHouseNumberAddition,
+      addressPostalCode,
+      addressCity,
+      phoneNumber: addresseePhoneNumber,
+    };
+
+    let cardsSentByIntersolve = 0;
+    let lastIntersolveErrorMessage: null | string = null;
+
+    for (let index = 0; index < noOfCards; index++) {
+      try {
+        await this.intersolveVisaService.issueTokenAndCreatePhysicalCard({
+          brandCode,
+          coverLetterCode,
+          contactInformation,
+        });
+        cardsSentByIntersolve += 1;
+      } catch (error) {
+        if (error instanceof IntersolveVisaApiError) {
+          lastIntersolveErrorMessage = error.message;
+          continue;
+        }
+
+        throw error;
+      }
+    }
+
+    if (cardsSentByIntersolve === 0) {
+      throw new HttpException(
+        `Unable to order cards. ${lastIntersolveErrorMessage ?? 'Intersolve did not return a successful response.'}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const order = new VisaCardOrderEntity();
     order.programId = programId;
     order.userId = userId;
@@ -562,6 +602,7 @@ export class IntersolveVisaAccountManagementService {
     order.noOfCardsOrdered = 0;
     order.status = VisaCardOrderStatus.Processing;
     order.addressee = addressee;
+    order.addresseePhoneNumber = addresseePhoneNumber;
     order.addressStreet = addressStreet;
     order.addressHouseNumber = addressHouseNumber;
     order.addressHouseNumberAddition = addressHouseNumberAddition ?? null;

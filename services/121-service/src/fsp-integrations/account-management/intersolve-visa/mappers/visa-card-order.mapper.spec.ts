@@ -14,6 +14,7 @@ describe('VisaCardOrderMapper', () => {
       noOfCards: 1,
       noOfCardsOrdered: 1,
       addressee: 'Default User',
+      addresseePhoneNumber: '+31600000000',
       addressStreet: 'Default',
       addressHouseNumber: '1',
       addressHouseNumberAddition: null,
@@ -33,6 +34,7 @@ describe('VisaCardOrderMapper', () => {
       noOfCards: 5,
       noOfCardsOrdered: 5,
       addressee: 'John Doe',
+      addresseePhoneNumber: '+31612345678',
       addressStreet: 'Damrak',
       addressHouseNumber: '1',
       addressHouseNumberAddition: 'A',
@@ -53,6 +55,7 @@ describe('VisaCardOrderMapper', () => {
       noOfCards: 5,
       noOfCardsOrdered: 5,
       address: 'John Doe, Damrak 1 A, 1011AB, Amsterdam',
+      addresseePhoneNumber: '+31612345678',
       orderedByUsername: 'manager@example.org',
       created: new Date('2026-05-26T08:30:00.000Z'),
     });
