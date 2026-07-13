@@ -6,7 +6,10 @@ export class VisaCardOrderResponseDto {
   @ApiProperty({ example: 1 })
   public readonly id: number;
 
-  @ApiProperty({ enum: VisaCardOrderStatus, example: VisaCardOrderStatus.Completed })
+  @ApiProperty({
+    enum: VisaCardOrderStatus,
+    example: VisaCardOrderStatus.Completed,
+  })
   public readonly status: VisaCardOrderStatus;
 
   @ApiProperty({ example: 100 })
