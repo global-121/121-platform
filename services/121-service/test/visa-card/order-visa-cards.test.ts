@@ -48,8 +48,8 @@ describe('Order visa debit cards in batch', () => {
       addresseePhoneNumber,
     });
 
-    // Assert - endpoint returns 202 Accepted with order id
-    expect(orderResponse.status).toBe(HttpStatus.ACCEPTED);
+    // Assert
+    expect(orderResponse.status).toBe(HttpStatus.CREATED);
     expect(orderResponse.body).toEqual({
       id: expect.any(Number),
       noOfCards,
