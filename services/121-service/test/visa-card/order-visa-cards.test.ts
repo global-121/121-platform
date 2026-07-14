@@ -83,7 +83,6 @@ describe('Order visa debit cards in batch', () => {
       accessToken,
     });
     expect(ordersResponse.status).toBe(HttpStatus.OK);
-    // TODO: add phone number validation here once BE is ready
     expect(ordersResponse.body).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
