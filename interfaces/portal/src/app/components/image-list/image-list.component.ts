@@ -156,4 +156,65 @@ export class ImageListComponent {
       return updatedUrls;
     });
   }
+
+  async onAccordionOpen({ index }: { index: number }): Promise<void> {
+    const imageIndex = index;
+    const images = this.images();
+
+    if (imageIndex < 0 || imageIndex >= images.length) {
+      return;
+    }
+
+    const image = images[imageIndex];
+
+    await this.onImagePanelOpen({
+      index: imageIndex,
+      programId: image.programId,
+      referenceId: image.referenceId,
+      attributeName: image.attributeName,
+    });
+  }
+
+  async onImagePanelOpen({
+    index,
+    programId,
+    referenceId,
+    attributeName,
+  }: {
+    index: number;
+    programId?: number | string;
+    referenceId?: string;
+    attributeName?: string;
+  }): Promise<void> {
+    if (
+      programId === undefined ||
+      !referenceId?.trim() ||
+      !attributeName?.trim()
+    ) {
+      return;
+    }
+
+    if (this.downloadedImageObjectUrls()[index]) {
+      return;
+    }
+
+    const downloadedImage: Blob =
+      await this.registrationApiService.downloadKoboImage({
+        programId,
+        referenceId,
+        attributeName,
+      });
+
+    const previousObjectUrl = this.downloadedImageObjectUrls()[index];
+    if (previousObjectUrl) {
+      URL.revokeObjectURL(previousObjectUrl);
+    }
+
+    const objectUrl = URL.createObjectURL(downloadedImage);
+    this.downloadedImageObjectUrls.update((previousUrls) => {
+      const updatedUrls = [...previousUrls];
+      updatedUrls[index] = objectUrl;
+      return updatedUrls;
+    });
+  }
 }
