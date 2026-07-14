@@ -369,7 +369,7 @@ class ProgramMonitoring extends BasePage {
     await this.page
       .getByLabel('Addressee (name of the recipient of the package)')
       .fill(addressee);
-    await this.page.getByLabel('Addressee Phone number').fill(phoneNumber);
+    await this.page.getByLabel('Addressee phone number').fill(phoneNumber);
     await this.page.getByLabel('Street').fill(addressStreet);
     await this.page.getByLabel('House number').fill(addressHouseNumber);
     await this.page.getByLabel('Addition').fill(addressHouseNumberAddition);

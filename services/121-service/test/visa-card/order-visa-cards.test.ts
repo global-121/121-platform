@@ -13,7 +13,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
-const addresseePhoneNumber = '123456789';
+const addresseePhoneNumber = '+31612345678';
 
 describe('Order visa debit cards in batch', () => {
   let accessToken: string;
