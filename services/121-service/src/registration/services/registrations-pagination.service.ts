@@ -100,7 +100,7 @@ export class RegistrationsPaginationService {
       }
     }
 
-    if (query.search) {
+    if (query.search && hasPersonalReadPermission) {
       queryBuilder =
         this.registrationViewScopedRepository.addSearchToQueryBuilder(
           queryBuilder,
