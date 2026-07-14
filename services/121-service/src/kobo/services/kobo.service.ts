@@ -167,6 +167,8 @@ export class KoboService {
       url: koboIntegration.url,
     });
 
+    console.log('form definition: ', formDefinition);
+
     if (formDefinition.versionId === koboIntegration.versionId) {
       return { name: formDefinition.name, updated: false };
     }

@@ -91,6 +91,7 @@ export class KoboSubmissionMapper {
   private static isSupportedValue(
     value: unknown,
   ): value is string | boolean | number {
+    console.log('value', value, typeof value);
     return (
       typeof value === 'string' ||
       typeof value === 'number' ||
