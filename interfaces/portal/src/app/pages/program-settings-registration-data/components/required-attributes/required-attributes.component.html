@@ -1,84 +1,92 @@
-@if (programFsps().length > 0) {
-  <div class="mbs-4">
-    <h2
-      i18n
-      class="text-base!"
+@if (!koboIntegration.isPending()) {
+  <p-accordion [value]="accordionValue()">
+    <p-accordion-panel
+      value="integrated-fsps-accordion-panel"
+      class="border-0"
     >
-      Integrated FSPs
-    </h2>
+      <p-accordion-header>
+        <div>
+          <h2
+            i18n
+            class="text-base!"
+          >
+            Integrated FSPs
+          </h2>
+          @if (programFsps().length > 0) {
+            <ol
+              class="mbs-2 flex flex-wrap gap-2"
+              data-testid="integrated-fsp-list"
+            >
+              @for (fsp of programFsps(); track $index) {
+                <li>
+                  <p-tag
+                    severity="info"
+                    [value]="fsp.defaultLabel | translatableString"
+                    [rounded]="true"
+                  />
+                </li>
+              }
+            </ol>
+          }
+        </div>
+      </p-accordion-header>
+      <p-accordion-content>
+        <p i18n>
+          Your form must include the following required fields, using these
+          <strong class="font-display">exact data column names</strong> (these
+          would be the column headers in Excel).
+        </p>
 
-    <ol
-      class="mbs-2 flex flex-wrap gap-2"
-      data-testid="integrated-fsp-list"
-    >
-      @for (fsp of programFsps(); track $index) {
-        <li>
-          <p-tag
-            severity="info"
-            [value]="fsp.defaultLabel | translatableString"
-            [rounded]="true"
-          />
-        </li>
-      }
-    </ol>
-  </div>
+        <p-table
+          [value]="requiredAttributes()"
+          data-testid="required-attributes-table"
+        >
+          <ng-template #header>
+            <tr>
+              <th
+                i18n
+                class="txt-body-s text-grey-700 px-2 py-1.5 font-semibold uppercase"
+              >
+                Field
+              </th>
+              <th
+                i18n
+                class="txt-body-s text-grey-700 px-2 py-1.5 font-semibold uppercase"
+              >
+                Data column name
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template
+            #body
+            let-attribute
+          >
+            <tr>
+              <td class="px-2">
+                {{ attribute.label }}
+                @if (attribute.infoTooltip) {
+                  <app-info-tooltip [message]="attribute.infoTooltip()" />
+                }
+              </td>
+              <td class="px-2">
+                {{ attribute.name }}
+
+                <p-button
+                  (click)="copyToClipboard(attribute.name)"
+                  i18n-ariaLabel="@@generic-copy-to-clipboard"
+                  ariaLabel="Copy to clipboard"
+                  title="Copy to clipboard"
+                  i18n-title="@@generic-copy-to-clipboard"
+                  icon="pi pi-copy"
+                  class="hover:text-purple hover:cursor-pointer"
+                  [unstyled]="true"
+                  size="small"
+                />
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-accordion-content>
+    </p-accordion-panel>
+  </p-accordion>
 }
-
-<p
-  i18n
-  class="my-4"
->
-  Your form must include the following required fields, using these
-  <strong class="font-display">exact data column names</strong> (these would be
-  the column headers in Excel).
-</p>
-
-<p-table
-  [value]="requiredAttributes()"
-  data-testid="required-attributes-table"
->
-  <ng-template #header>
-    <tr>
-      <th
-        i18n
-        class="txt-body-s text-grey-700 px-2 py-1.5 font-semibold uppercase"
-      >
-        Field
-      </th>
-      <th
-        i18n
-        class="txt-body-s text-grey-700 px-2 py-1.5 font-semibold uppercase"
-      >
-        Data column name
-      </th>
-    </tr>
-  </ng-template>
-  <ng-template
-    #body
-    let-attribute
-  >
-    <tr>
-      <td class="px-2">
-        {{ attribute.label }}
-        @if (attribute.infoTooltip) {
-          <app-info-tooltip [message]="attribute.infoTooltip()" />
-        }
-      </td>
-      <td class="px-2">
-        {{ attribute.name }}
-
-        <p-button
-          (click)="copyToClipboard(attribute.name)"
-          i18n-ariaLabel="@@generic-copy-to-clipboard"
-          ariaLabel="Copy to clipboard"
-          title="Copy to clipboard"
-          i18n-title="@@generic-copy-to-clipboard"
-          icon="pi pi-copy"
-          class="hover:text-purple hover:cursor-pointer"
-          [unstyled]="true"
-          size="small"
-        />
-      </td>
-    </tr>
-  </ng-template>
-</p-table>

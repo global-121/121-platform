@@ -21,12 +21,11 @@
       class="inline-1/2"
     ></app-kobo-integration-card>
 
-    @if (!isKoboIntegrated()) {
-      <app-required-attributes
-        [programId]="programId()"
-      ></app-required-attributes>
-    }
+    <app-required-attributes
+      [programId]="programId()"
+    ></app-required-attributes>
   </p-card>
+
   @if (isKoboIntegrated()) {
     <app-registration-questions-card
       [programId]="programId()"
