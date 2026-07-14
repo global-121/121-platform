@@ -1,4 +1,7 @@
-<p-accordion [multiple]="true">
+<p-accordion
+  [multiple]="true"
+  (onOpen)="onAccordionOpen({ imageIndex: $event.index })"
+>
   @for (image of images(); track index; let index = $index) {
     @let isAvailable = isImageAvailable({ imageUrl: image.imageUrl });
     <p-accordion-panel
@@ -25,12 +28,12 @@
       </p-accordion-header>
       <p-accordion-content class="px-2 pbs-0">
         @if (isAvailable) {
-          <a
-            [href]="image.imageUrl"
-            target="_blank"
-            class="text-purple break-all"
-            >{{ image.imageUrl }}</a
-          >
+          <p-image
+            [src]="objectUrlForImageIndex({ index }) ?? image.imageUrl"
+            alt=""
+            [preview]="false"
+            [imageClass]="'object-cover inline-full'"
+          />
         }
       </p-accordion-content>
     </p-accordion-panel>

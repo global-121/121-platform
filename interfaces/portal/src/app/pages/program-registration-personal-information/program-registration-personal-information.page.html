@@ -13,7 +13,6 @@
               label="Edit information"
               i18n-label
               (click)="isEditing.set(true)"
-              (keydown.enter)="isEditing.set(true)"
               icon="pi pi-pencil"
               [iconPos]="rtlHelper.createPosition('start')()"
               outlined
@@ -33,54 +32,19 @@
           <app-data-list [data]="dataList()" />
         }
       } @else {
-        @if (hasKoboImages()) {
-          <div class="grid gap-4 lg:grid-cols-2">
-            <app-edit-personal-information
-              #editPersonalInformation
-              [programId]="programId()"
-              [registrationId]="registrationId()"
-              [attributeList]="editableAttributeList()"
-              [forceOneColumn]="true"
-              [showActionButtons]="false"
-              (cancelEditing)="cancelEditPersonalInformation()"
-              (registrationUpdated)="onRegistrationUpdated()"
-            />
-            <div>
-              <div class="mbe-2 flex items-center justify-end gap-4">
-                <p-button
-                  label="Cancel"
-                  i18n-label="@@generic-cancel"
-                  (click)="cancelEditPersonalInformation()"
-                  (keydown.enter)="cancelEditPersonalInformation()"
-                  icon="pi pi-times"
-                  [iconPos]="rtlHelper.createPosition('start')()"
-                  outlined
-                  rounded
-                  severity="contrast"
-                />
-                <p-button
-                  label="Save"
-                  i18n-label="@@generic-save"
-                  (click)="submitEditPersonalInformation()"
-                  (keydown.enter)="submitEditPersonalInformation()"
-                  icon="pi pi-check"
-                  [iconPos]="rtlHelper.createPosition('start')()"
-                  rounded
-                />
-              </div>
-              <app-image-list [images]="koboImages()" />
-            </div>
-          </div>
-        } @else {
-          <app-edit-personal-information
-            #editPersonalInformation
-            [programId]="programId()"
-            [registrationId]="registrationId()"
-            [attributeList]="registrationAttributes.data()"
-            (cancelEditing)="cancelEditPersonalInformation()"
-            (registrationUpdated)="onRegistrationUpdated()"
-          />
-        }
+        <app-edit-personal-information
+          #editPersonalInformation
+          [programId]="programId()"
+          [registrationId]="registrationId()"
+          [attributeList]="editableAttributeList()"
+          [forceOneColumn]="hasKoboImages()"
+          (cancelEditing)="isEditing.set(false)"
+          (registrationUpdated)="onRegistrationUpdated()"
+        >
+          @if (hasKoboImages()) {
+            <app-image-list [images]="koboImages()" />
+          }
+        </app-edit-personal-information>
       }
     }
   </div>

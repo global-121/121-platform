@@ -8,7 +8,7 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { injectQuery } from '@tanstack/angular-query-experimental';
+import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
 
@@ -29,6 +29,11 @@ import { EditPersonalInformationComponent } from '~/pages/program-registration-p
 import { AuthService } from '~/services/auth.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
+
+const normalizeKoboImageValue = (value: unknown): string =>
+  typeof value === 'string' && value.trim().toLowerCase() !== 'null'
+    ? value
+    : '';
 
 @Component({
   selector: 'app-program-registration-personal-information',
@@ -52,6 +57,7 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
 
   readonly authService = inject(AuthService);
   readonly registrationApiService = inject(RegistrationApiService);
+  readonly queryClient = inject(QueryClient);
   readonly metricApiService = inject(MetricApiService);
   readonly registrationAttributeService = inject(RegistrationAttributeService);
 
@@ -63,6 +69,18 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
       }),
     ),
   );
+
+  readonly registrationReferenceId = computed(() => {
+    const registrationQueryOptions =
+      this.registrationApiService.getRegistrationById(
+        this.programId,
+        this.registrationId,
+      )();
+
+    return this.queryClient.getQueryData<{ referenceId?: string }>(
+      registrationQueryOptions.queryKey,
+    )?.referenceId;
+  });
 
   readonly isEditing = signal(false);
   readonly editPersonalInformationComponent =
@@ -117,11 +135,7 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
             return {
               ...attribute,
               type: 'koboImage',
-              value:
-                typeof value === 'string' &&
-                value.trim().toLowerCase() !== 'null'
-                  ? value
-                  : '',
+              value: normalizeKoboImageValue(value),
             };
           case RegistrationAttributeTypes.tel:
           case RegistrationAttributeTypes.text:
@@ -154,6 +168,10 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
     this.imageDataList().map((item) => ({
       label: item.label,
       imageUrl: item.value,
+      programId: this.programId(),
+      referenceId: this.registrationReferenceId(),
+      attributeName:
+        'name' in item && typeof item.name === 'string' ? item.name : undefined,
       dataTestId: item.dataTestId,
     })),
   );
@@ -165,14 +183,6 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
   );
 
   readonly hasKoboImages = computed(() => this.imageDataList().length > 0);
-
-  submitEditPersonalInformation(): void {
-    this.editPersonalInformationComponent().onSubmit();
-  }
-
-  cancelEditPersonalInformation(): void {
-    this.isEditing.set(false);
-  }
 
   onRegistrationUpdated() {
     this.isEditing.set(false);

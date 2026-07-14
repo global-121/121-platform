@@ -72,7 +72,6 @@ export class EditPersonalInformationComponent
   readonly registrationId = input.required<string>();
   readonly attributeList = input.required<NormalizedRegistrationAttribute[]>();
   readonly forceOneColumn = input(false);
-  readonly showActionButtons = input(true);
   readonly cancelEditing = output();
   readonly registrationUpdated = output<Registration>();
 
