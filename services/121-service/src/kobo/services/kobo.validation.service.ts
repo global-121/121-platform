@@ -102,6 +102,11 @@ export class KoboValidationService {
 
     errors = this.collectErrors({
       accumulatedErrors: errors,
+      error: this.validateNoRepeatType(formDefinition.survey),
+    });
+
+    errors = this.collectErrors({
+      accumulatedErrors: errors,
       error: this.validateKoboLanguageCodes({
         koboSurveyLanguages: formDefinition.languages,
       }),
@@ -372,6 +377,22 @@ export class KoboValidationService {
         attributeName: matrixItem.name,
         error: `Form contains a matrix question, which isn't supported`,
         solution: 'Remove the matrix item from the Kobo form',
+      };
+    }
+  }
+
+  private validateNoRepeatType(
+    koboSurveyItems: KoboSurveyItemCleaned[],
+  ): KoboValidationError | undefined {
+    const repeatItem = koboSurveyItems.find(
+      (item) => item.type === 'begin_repeat' || item.type === 'end_repeat',
+    );
+    if (repeatItem) {
+      return {
+        type: KoboValidationErrorType.repeatTypeFound,
+        attributeName: repeatItem.name,
+        error: `Form contains a repeating question group, which isn't supported`,
+        solution: 'Remove the repeating question group from the Kobo form',
       };
     }
   }

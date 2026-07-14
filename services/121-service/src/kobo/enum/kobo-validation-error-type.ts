@@ -7,6 +7,7 @@ export enum KoboValidationErrorType {
   forbiddenAttribute = 'forbiddenAttribute',
   missingEnglishLanguage = 'missingEnglishLanguage',
   matrixTypeFound = 'matrixTypeFound',
+  repeatTypeFound = 'repeatTypeFound',
   invalidLanguageCode = 'invalidLanguageCode',
   selectOneNoChoices = 'selectOneNoChoices',
   missingFullnameAttributes = 'missingFullnameAttributes',

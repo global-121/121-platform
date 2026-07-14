@@ -37,6 +37,7 @@ const koboErrorDisplayTypeMap: Record<
   [KoboValidationErrorType.formConfiguration]: KoboErrorDisplayType.table,
   [KoboValidationErrorType.forbiddenAttribute]: KoboErrorDisplayType.table,
   [KoboValidationErrorType.matrixTypeFound]: KoboErrorDisplayType.table,
+  [KoboValidationErrorType.repeatTypeFound]: KoboErrorDisplayType.table,
   [KoboValidationErrorType.selectOneNoChoices]: KoboErrorDisplayType.table,
   [KoboValidationErrorType.missingFullnameAttributes]:
     KoboErrorDisplayType.table,

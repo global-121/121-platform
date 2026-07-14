@@ -752,6 +752,59 @@ describe('KoboValidationService', () => {
     });
   });
 
+  describe('repeat type validation', () => {
+    it('should throw HttpException when form contains repeat type', async () => {
+      // Arrange
+      const mockFspConfigs = [];
+
+      const formDefinitionWithRepeatType: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [
+          ...baseSurveyItems,
+          {
+            name: 'household_members',
+            type: 'begin_repeat',
+            label: ['Household members'],
+            choices: [],
+          },
+        ],
+      };
+
+      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+        fullnameNamingConvention: [],
+        allowEmptyPhoneNumber: true,
+        enableScope: false,
+      });
+      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
+        mockFspConfigs,
+      );
+
+      // Act
+      let error: HttpException | any;
+      try {
+        await service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithRepeatType,
+          programId,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+      expect(error.response.errors).toMatchInlineSnapshot(`
+         [
+           {
+             "attributeName": "household_members",
+             "error": "Form contains a repeating question group, which isn't supported",
+             "solution": "Remove the repeating question group from the Kobo form",
+             "type": "repeatTypeFound",
+           },
+         ]
+        `);
+    });
+  });
+
   describe('kobo language codes validation', () => {
     it('should pass validation when all languages have valid ISO codes', async () => {
       // Arrange
