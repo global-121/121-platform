@@ -7,6 +7,7 @@ import BasePage from './BasePage';
 
 interface OrderDebitCardOrder {
   noOfCards: string;
+  noOfCardsOrdered: string;
   addressPostalCode: string;
   addressCity: string;
   addressStreet: string;
@@ -386,6 +387,7 @@ class ProgramMonitoring extends BasePage {
 
   async expectCardOrdersTableToContainOrder({
     noOfCards,
+    noOfCardsOrdered,
     addressee,
     addressPostalCode,
     addressCity,
@@ -414,7 +416,7 @@ class ProgramMonitoring extends BasePage {
 
     expect(rowValues).toEqual([
       noOfCards,
-      noOfCards,
+      noOfCardsOrdered,
       'Completed',
       addressColumn,
       'admin@example.org',
