@@ -94,5 +94,23 @@ describe('Load PA table', () => {
       expect(data[0]).toStrictEqual(expectedValueObject);
       expect(meta.totalItems).toBe(1);
     });
+
+    it('should ignore search parameter when user lacks personal read permission', async () => {
+      // Arrange
+      // Search for a personal data value that does not exist on the registration
+      const searchValue = 'non-existent-value';
+
+      // Act
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        accessToken: accessTokenPersonalReadOnly,
+        filter: { search: searchValue },
+      });
+      const meta = getRegistrationsResponse.body.meta;
+
+      // Assert
+      // Without personal read permission, search should be ignored and all registrations returned
+      expect(meta.totalItems).toBe(1);
+    });
   });
 });
