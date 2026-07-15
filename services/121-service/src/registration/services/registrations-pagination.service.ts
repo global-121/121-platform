@@ -113,6 +113,12 @@ export class RegistrationsPaginationService {
     // At the moment we only support sorting on one field
     if (hasPersonalReadPermission && query.sortBy) {
       const [sortByKey, sortByValue] = query.sortBy[0];
+      if (Array.isArray(sortByKey)) {
+        throw new HttpException(
+          'Multi-column sort is not supported',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
       if (sortByValue !== 'ASC' && sortByValue !== 'DESC') {
         throw new HttpException(
           'sortByValue value is not ASC or DESC',
