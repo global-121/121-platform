@@ -49,7 +49,7 @@ describe('Order visa debit cards in batch', () => {
     });
 
     // Assert
-    expect(orderResponse.status).toBe(HttpStatus.CREATED);
+    expect(orderResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(orderResponse.body).toEqual({
       id: expect.any(Number),
       noOfCards,
