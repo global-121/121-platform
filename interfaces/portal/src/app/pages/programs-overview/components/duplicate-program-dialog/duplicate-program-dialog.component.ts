@@ -11,7 +11,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
@@ -19,12 +18,11 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
-import { AppRoutes } from '~/app.routes';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { AuthService } from '~/services/auth.service';
+import { ProgramNavigationService } from '~/domains/program/program-navigation.service';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
@@ -44,9 +42,8 @@ import { generateFieldErrors } from '~/utils/form-validation';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DuplicateProgramDialogComponent {
-  readonly router = inject(Router);
-  readonly authService = inject(AuthService);
   readonly programApiService = inject(ProgramApiService);
+  readonly programNavigationService = inject(ProgramNavigationService);
   readonly toastService = inject(ToastService);
 
   // 0 = dialog closed, 1 = program name step
@@ -79,17 +76,11 @@ export class DuplicateProgramDialogComponent {
       });
     },
     onSuccess: async (result) => {
-      // The keys of the user permissions determine which programs a user can see
-      await this.authService.refreshUserPermissions();
-
       this.currentStep.set(0);
 
-      await this.router.navigate([
-        '/',
-        AppRoutes.program,
-        result?.id,
-        AppRoutes.programSettings,
-      ]);
+      await this.programNavigationService.navigateToNewProgram({
+        programId: result?.id,
+      });
 
       this.toastService.showToast({
         detail: $localize`Program successfully duplicated.`,
