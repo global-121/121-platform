@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
 import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
-import { IntersolveVisaCardOrderProcessorService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/mappers/intersolve-visa-card-order-processor.service';
 import { VisaCardOrderMapper } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/mappers/visa-card-order.mapper';
+import { IntersolveVisaCardOrderProcessorService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/services/intersolve-visa-card-order-processor.service';
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { VisaCardOrderEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-card-order.entity';

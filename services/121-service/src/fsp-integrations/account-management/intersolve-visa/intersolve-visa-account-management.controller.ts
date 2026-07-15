@@ -27,7 +27,7 @@ import { CreateVisaCardOrderDto } from '@121-service/src/fsp-integrations/accoun
 import { CreateVisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/create-visa-card-order-response.dto';
 import { TokenCodeDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/token-code.dto';
 import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
-import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/intersolve-visa-account-management.service';
+import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/services/intersolve-visa-account-management.service';
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { ExportVisaWalletClosure } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-wallet-closure.interface';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
