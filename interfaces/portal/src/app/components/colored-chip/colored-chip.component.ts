@@ -43,7 +43,7 @@ export class ColoredChipComponent {
       baseClass.push('whitespace-nowrap');
     }
 
-    const classString = baseClass.join(' ');
+    const classString = baseClass.length ? baseClass.join(' ') : '';
 
     // Do not replace with something like `bg-${this.variant()}-100` as it would not work with tailwind's JIT compiler
     // https://tailwindcss.com/docs/just-in-time-mode
