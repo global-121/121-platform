@@ -209,7 +209,6 @@ export class ProgramService {
       }
 
       newProgram = await programRepository.save(savedProgram);
-
       await queryRunner.commitTransaction();
     } catch (err) {
       console.log('Error creating new program ', err);
@@ -230,7 +229,6 @@ export class ProgramService {
       roles: [DefaultUserRole.Admin],
       scope: undefined,
     });
-
     return newProgram;
   }
 
