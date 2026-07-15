@@ -27,7 +27,7 @@ export type NotificationBannerColor =
   | 'yellow';
 
 export type NotificationBannerIcon =
-  | 'alert'
+  'alert'
   | 'check'
   | 'info'
   | 'spinner'
