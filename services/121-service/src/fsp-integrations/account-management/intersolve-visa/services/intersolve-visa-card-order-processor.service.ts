@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { env } from '@121-service/src/env';
 import { VisaCardOrderEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-card-order.entity';
 import { VisaCardOrderStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-order-status.enum';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
@@ -41,6 +40,12 @@ export class IntersolveVisaCardOrderProcessorService {
     brandCode: string;
     coverLetterCode: string;
   }): Promise<void> {
+    if (!order.addresseePhoneNumber) {
+      throw new Error(
+        `Card order ${order.id} is missing addresseePhoneNumber`,
+      );
+    }
+
     const contactInformation: ContactInformation = {
       name: order.addressee,
       addressStreet: order.addressStreet,
@@ -48,7 +53,7 @@ export class IntersolveVisaCardOrderProcessorService {
       addressHouseNumberAddition: order.addressHouseNumberAddition ?? undefined,
       addressPostalCode: order.addressPostalCode,
       addressCity: order.addressCity,
-      phoneNumber: env.INTERSOLVE_VISA_CARD_ORDER_PHONE_NUMBER,
+      phoneNumber: order.addresseePhoneNumber,
     };
 
     let cardsSentByIntersolve = 0;
