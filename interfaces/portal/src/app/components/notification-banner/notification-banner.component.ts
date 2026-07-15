@@ -27,11 +27,7 @@ export type NotificationBannerColor =
   | 'yellow';
 
 export type NotificationBannerIcon =
-  'alert'
-  | 'check'
-  | 'info'
-  | 'spinner'
-  | 'warning';
+  'alert' | 'check' | 'info' | 'spinner' | 'warning';
 
 @Component({
   selector: 'app-notification-banner',
