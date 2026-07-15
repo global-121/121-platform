@@ -13,6 +13,7 @@ import {
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
@@ -25,6 +26,7 @@ import {
   ProgramBudgetFormGroup,
   ProgramFormBudgetComponent,
 } from '~/components/program-form-budget/program-form-budget.component';
+import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
 import { AuthService } from '~/services/auth.service';
@@ -44,11 +46,11 @@ import { ToastService } from '~/services/toast.service';
 })
 export class ProgramSettingsBudgetComponent {
   readonly programId = input.required<string>();
-
   readonly isEditing = signal(false);
 
   authService = inject(AuthService);
   programApiService = inject(ProgramApiService);
+  fspConfigurationApiService = inject(FspConfigurationApiService);
   toastService = inject(ToastService);
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
@@ -71,22 +73,45 @@ export class ProgramSettingsBudgetComponent {
       distributionDuration,
       fixedTransferValue,
       fsps,
-    }: ReturnType<ProgramBudgetFormGroup['getRawValue']>) =>
-      this.programApiService.updateProgram({
+    }: ReturnType<ProgramBudgetFormGroup['getRawValue']>) => {
+      const fspsMultiselectChanged = this.formGroup()?.controls.fsps.dirty;
+
+      await this.programApiService.updateProgram({
         programId: this.programId,
         programPatch: {
           budget,
           currency,
           distributionDuration,
           fixedTransferValue,
-          fsps,
         },
-      }),
+      });
+
+      if (fspsMultiselectChanged) {
+        try {
+          await this.createProgramFspsMutation.mutateAsync({
+            fsps,
+          });
+        } catch (error) {
+          this.toastService.showToast({
+            severity: 'error',
+            detail: $localize`Failed to update financial service providers.`,
+          });
+        }
+      }
+    },
     onSuccess: () => {
       this.toastService.showToast({
         detail: $localize`Budget details saved successfully.`,
       });
     },
+  }));
+
+  createProgramFspsMutation = injectMutation(() => ({
+    mutationFn: async ({ fsps }: { fsps: Fsps[] }) =>
+      await this.fspConfigurationApiService.updateFspConfigurations({
+        programId: this.programId,
+        fsps,
+      }),
   }));
 
   readonly dataListData = computed(() => {

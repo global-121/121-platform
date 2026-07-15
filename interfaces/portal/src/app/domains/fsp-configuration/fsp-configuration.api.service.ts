@@ -1,6 +1,7 @@
 import { Injectable, Signal } from '@angular/core';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspConfigurationProperty } from '@121-service/src/fsp-integrations/shared/interfaces/fsp-configuration-property.interface';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
@@ -66,6 +67,20 @@ export class FspConfigurationApiService extends DomainApiService {
         configurationName,
       ]).join('/'),
       body: configuration,
+    });
+  }
+
+  updateFspConfigurations({
+    programId,
+    fsps,
+  }: {
+    programId: Signal<number | string>;
+    fsps: Fsps[];
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<FspConfiguration>({
+      method: 'PUT',
+      endpoint: this.pathToQueryKey([...BASE_ENDPOINT(programId)]).join('/'),
+      body: { fsps },
     });
   }
 
