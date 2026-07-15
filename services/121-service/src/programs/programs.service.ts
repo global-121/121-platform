@@ -233,15 +233,6 @@ export class ProgramService {
       scope: undefined,
     });
 
-    if (programData.fsps && programData.fsps.length > 0) {
-      await this.programFspConfigurationsService.createFspConfigurationsForProgram(
-        {
-          programId: newProgram.id,
-          fspNames: programData.fsps,
-        },
-      );
-    }
-  
     return newProgram;
   }
 
@@ -265,23 +256,15 @@ export class ProgramService {
       );
     }
 
-    const { fsps, ...programAttributes } = updateProgramDto;
-
-    for (const key in programAttributes) {
-      program[key] = programAttributes[key];
+    for (const key in updateProgramDto) {
+      program[key] = updateProgramDto[key];
     }
 
     const savedProgram = await this.programRepository.save(program);
 
-    if (!fsps) {
-      return this.fillProgramReturnDto(savedProgram);
-    }
-
-    await this.programFspConfigurationsService.updateFspConfigurationsForProgram(
-      { program, fsps },
-    );
-    const updatedProgram = await this.findProgramOrThrow(programId);
-    return this.fillProgramReturnDto(updatedProgram);
+    const programDto: ProgramReturnDto =
+      this.fillProgramReturnDto(savedProgram);
+    return programDto;
   }
 
   // This function takes a filled ProgramEntity and returns a filled ProgramReturnDto
