@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { AppRoutes } from '~/app.routes';
@@ -29,6 +30,7 @@ import {
   ProgramFormNameComponent,
   ProgramNameFormGroup,
 } from '~/components/program-form-name/program-form-name.component';
+import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
@@ -53,6 +55,7 @@ export class CreateProgramDialogComponent {
   readonly authService = inject(AuthService);
   readonly programApiService = inject(ProgramApiService);
   readonly toastService = inject(ToastService);
+  readonly fspConfigurationApiService = inject(FspConfigurationApiService);
 
   readonly createProgramDialog =
     viewChild.required<FullscreenStepperDialogComponent>('createProgramDialog');
@@ -106,7 +109,6 @@ export class CreateProgramDialogComponent {
         currency,
         distributionDuration,
         fixedTransferValue,
-        fsps,
       },
     }: ReturnType<
       FormGroup<{
@@ -132,9 +134,23 @@ export class CreateProgramDialogComponent {
         location,
         targetNrRegistrations,
         validation,
-        fsps,
       }),
-    onSuccess: async (result) => {
+    onSuccess: async (result, variables) => {
+      // If the program was created successfully and the user has selected fsps, we create the FSP configurations for the program
+      if (result?.id && variables.budgetGroup.fsps.length > 0) {
+        try {
+          await this.createProgramFspsMutation.mutateAsync({
+            programId: result.id,
+            fsps: variables.budgetGroup.fsps,
+          });
+        } catch {
+          this.toastService.showToast({
+            severity: 'warn',
+            detail: $localize`FSP setup failed and must be completed in Program Settings.`,
+          });
+        }
+      }
+
       // The keys of the user permissions determine which programs a user can see
       await this.authService.refreshUserPermissions();
 
@@ -155,6 +171,20 @@ export class CreateProgramDialogComponent {
         detail: error.message,
       });
     },
+  }));
+
+  createProgramFspsMutation = injectMutation(() => ({
+    mutationFn: async ({
+      programId,
+      fsps,
+    }: {
+      programId: number;
+      fsps: Fsps[];
+    }) =>
+      await this.fspConfigurationApiService.updateFspConfigurations({
+        programId: signal(programId),
+        fsps,
+      }),
   }));
 
   goBack() {

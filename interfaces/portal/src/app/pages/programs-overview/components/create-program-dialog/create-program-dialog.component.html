@@ -4,7 +4,9 @@
   (dialogVisibleChange)="currentStep.set($event ? 1 : 0)"
   [currentStep]="currentStep()"
   [proceedLabel]="proceedLabel()"
-  [cannotProceed]="createProgramMutation.isPending()"
+  [cannotProceed]="
+    createProgramMutation.isPending() || createProgramFspsMutation.isPending()
+  "
   [queryParamStep]="'create-program-step'"
   (goBack)="goBack()"
   (proceed)="goToNextStep()"
