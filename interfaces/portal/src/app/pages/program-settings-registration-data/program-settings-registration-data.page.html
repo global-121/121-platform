@@ -21,9 +21,12 @@
       class="inline-1/2"
     ></app-kobo-integration-card>
 
-    <app-required-attributes
-      [programId]="programId()"
-    ></app-required-attributes>
+    @if (!koboIntegration.isPending()) {
+      <app-required-attributes
+        [programId]="programId()"
+        [isKoboIntegrated]="isKoboIntegrated()"
+      ></app-required-attributes>
+    }
   </p-card>
 
   @if (isKoboIntegrated()) {

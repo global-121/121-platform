@@ -17,8 +17,6 @@ import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp
 
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
-import { isKoboIntegrated } from '~/domains/kobo/kobo.helpers';
-import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
@@ -40,6 +38,7 @@ import { ToastService } from '~/services/toast.service';
 })
 export class RequiredAttributesComponent {
   readonly programId = input.required<number | string>();
+  readonly isKoboIntegrated = input.required<boolean>();
 
   private readonly toastService = inject(ToastService);
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
@@ -124,17 +123,6 @@ export class RequiredAttributesComponent {
       ...attributes.filter((attr) => requiredAttributeNames.has(attr.name)),
     ];
   });
-
-  private readonly koboApiService = inject(KoboApiService);
-
-  readonly koboIntegration = injectQuery(() => ({
-    ...this.koboApiService.getKoboIntegration(this.programId)(),
-    enabled: !!this.programId(),
-  }));
-
-  readonly isKoboIntegrated = computed<boolean>(() =>
-    isKoboIntegrated(this.koboIntegration),
-  );
 
   readonly accordionValue = computed(() =>
     this.isKoboIntegrated() ? undefined : 'integrated-fsps-accordion-panel',
