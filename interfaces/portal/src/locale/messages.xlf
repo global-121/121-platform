@@ -74,6 +74,9 @@
       <trans-unit id="1336542143746897548" datatype="html">
         <source>Email Support</source>
       </trans-unit>
+      <trans-unit id="13418093194122890" datatype="html">
+        <source>Duplicate program</source>
+      </trans-unit>
       <trans-unit id="13613170635045985" datatype="html">
         <source>Drag and drop file here<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>or</source>
       </trans-unit>
@@ -308,6 +311,12 @@
       </trans-unit>
       <trans-unit id="2317261224640464417" datatype="html">
         <source>Write a reason for the update</source>
+      </trans-unit>
+      <trans-unit id="2321510782142253906" datatype="html">
+        <source>Program successfully duplicated.</source>
+      </trans-unit>
+      <trans-unit id="2330756841114483977" datatype="html">
+        <source>Choose another FSP:</source>
       </trans-unit>
       <trans-unit id="2336550011721758066" datatype="html">
         <source>Log in</source>
@@ -1093,6 +1102,12 @@
       </trans-unit>
       <trans-unit id="5558547280081275233" datatype="html">
         <source>Approvals</source>
+      </trans-unit>
+      <trans-unit id="5565339126415904508" datatype="html">
+        <source>Duplicate &quot;<x equiv-text="{{ sourceProgramName() }}" id="INTERPOLATION"/>&quot; with all its details except the registration form. Update the relevant details and link a registration form to complete setup.</source>
+      </trans-unit>
+      <trans-unit id="5567795196823052308" datatype="html">
+        <source>please wait before creating a new payment.</source>
       </trans-unit>
       <trans-unit id="5568900620756681669" datatype="html">
         <source>Your form must include the following required fields in this <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>exact format<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> for this FSP integration in the data column name:</source>
@@ -2504,6 +2519,15 @@
       </trans-unit>
       <trans-unit id="program-attachment-file-type-pdf" datatype="html">
         <source>PDF</source>
+      </trans-unit>
+      <trans-unit id="program-card-menu-duplicate" datatype="html">
+        <source>Duplicate</source>
+      </trans-unit>
+      <trans-unit id="program-card-menu-edit" datatype="html">
+        <source>Edit</source>
+      </trans-unit>
+      <trans-unit id="program-card-menu-open" datatype="html">
+        <source>Open</source>
       </trans-unit>
       <trans-unit id="query-table--actions-column" datatype="html">
         <source>Actions</source>
