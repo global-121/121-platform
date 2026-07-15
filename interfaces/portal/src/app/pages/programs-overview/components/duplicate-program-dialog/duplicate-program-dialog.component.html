@@ -1,0 +1,69 @@
+<app-fullscreen-stepper-dialog
+  #duplicateProgramDialog
+  [dialogVisible]="currentStep() > 0"
+  (dialogVisibleChange)="currentStep.set($event ? 1 : 0)"
+  [currentStep]="currentStep()"
+  [proceedLabel]="createProgramLabel"
+  [cannotProceed]="duplicateProgramMutation.isPending()"
+  [queryParamStep]="'duplicate-program-step'"
+  (goBack)="currentStep.set(0)"
+  (proceed)="proceed()"
+>
+  <ng-template #header>
+    <i class="pi pi-clone me-2"></i>
+    <ng-container i18n>Duplicate program</ng-container>
+  </ng-template>
+  <ng-template #step>
+    <p-card>
+      <h2
+        i18n
+        class="mbe-2"
+      >
+        Program information
+      </h2>
+      <p class="mbe-4">
+        <ng-container i18n>
+          Duplicate "{{ sourceProgramName() }}" with all its details except the
+          registration form. Update the relevant details and link a registration
+          form to complete setup.
+        </ng-container>
+        <ng-container i18n>Learn more in the <app-manual-link />.</ng-container>
+      </p>
+      <form [formGroup]="formGroup">
+        <app-form-field-wrapper
+          label="Program name"
+          i18n-label
+          [errorMessage]="formFieldErrors()('name')"
+          [isRequired]="true"
+        >
+          <input
+            pInputText
+            type="text"
+            formControlName="name"
+            placeholder="Program name"
+            i18n-placeholder
+          />
+          <ng-container slot="details">
+            <p
+              i18n
+              class="text-grey-500 txt-system-s mbs-1"
+            >
+              Max. 60 characters
+            </p>
+          </ng-container>
+        </app-form-field-wrapper>
+      </form>
+    </p-card>
+  </ng-template>
+  <ng-template #illustration>
+    <img
+      ngSrc="assets/create-program.svg"
+      height="439"
+      width="524"
+      alt=""
+      aria-hidden="true"
+      role="presentation"
+      class="mx-auto"
+    />
+  </ng-template>
+</app-fullscreen-stepper-dialog>

@@ -70,6 +70,22 @@ export class ProgramApiService extends DomainApiService {
     });
   }
 
+  duplicateProgram({
+    copyFromProgramId,
+    titlePortal,
+  }: {
+    copyFromProgramId: number;
+    titlePortal: Dto<CreateProgramDto>['titlePortal'];
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<
+      Program | undefined
+    >({
+      method: 'POST',
+      endpoint: BASE_ENDPOINT,
+      body: { copyFromProgramId, titlePortal },
+    });
+  }
+
   getProgram(programId: Signal<number | string | undefined>) {
     return this.generateQueryOptions<Program>({
       path: [BASE_ENDPOINT, programId],

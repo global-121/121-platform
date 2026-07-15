@@ -3,6 +3,7 @@
   [title]="program.data()?.titlePortal | translatableString"
   [loading]="program.isPending()"
   [variant]="'overview'"
+  [menuItems]="menuItems()"
 >
   <ng-container card-content>
     <app-card-summary-metrics-container
@@ -26,3 +27,5 @@
     </div>
   </ng-container>
 </app-card-with-link>
+
+<app-duplicate-program-dialog #duplicateProgramDialog />

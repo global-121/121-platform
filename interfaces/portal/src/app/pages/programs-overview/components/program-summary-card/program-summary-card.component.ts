@@ -5,9 +5,12 @@ import {
   computed,
   inject,
   input,
+  viewChild,
 } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { MenuItem } from 'primeng/api';
 
 import { AppRoutes } from '~/app.routes';
 import { CardSummaryMetricsContainerComponent } from '~/components/card-summary-metrics-container/card-summary-metrics-container.component';
@@ -16,7 +19,10 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
+import { DuplicateProgramDialogComponent } from '~/pages/programs-overview/components/duplicate-program-dialog/duplicate-program-dialog.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import { AuthService } from '~/services/auth.service';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
   selector: 'app-program-summary-card',
@@ -26,6 +32,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
     SkeletonInlineComponent,
     CardWithLinkComponent,
     CardSummaryMetricsContainerComponent,
+    DuplicateProgramDialogComponent,
   ],
   providers: [CurrencyPipe, DecimalPipe],
   templateUrl: './program-summary-card.component.html',
@@ -38,8 +45,16 @@ export class ProgramSummaryCardComponent {
   private paymentApiService = inject(PaymentApiService);
   private currencyPipe = inject(CurrencyPipe);
   private decimalPipe = inject(DecimalPipe);
+  private router = inject(Router);
+  private authService = inject(AuthService);
+  private translatableStringService = inject(TranslatableStringService);
 
   public readonly id = input.required<number>();
+
+  readonly duplicateProgramDialog =
+    viewChild.required<DuplicateProgramDialogComponent>(
+      'duplicateProgramDialog',
+    );
 
   public program = injectQuery(this.programApiService.getProgram(this.id));
   public metrics = injectQuery(() => ({
@@ -51,6 +66,48 @@ export class ProgramSummaryCardComponent {
     enabled: !!this.program.data()?.id,
   }));
   programLink = (programId: number) => ['/', AppRoutes.program, programId];
+
+  public readonly menuItems = computed<MenuItem[]>(() => {
+    const items: MenuItem[] = [
+      {
+        label: $localize`:@@program-card-menu-open:Open`,
+        icon: 'pi pi-arrow-right',
+        command: () => {
+          void this.router.navigate(this.programLink(this.id()));
+        },
+      },
+      {
+        label: $localize`:@@program-card-menu-edit:Edit`,
+        icon: 'pi pi-pencil',
+        command: () => {
+          void this.router.navigate([
+            '/',
+            AppRoutes.program,
+            this.id(),
+            AppRoutes.programSettings,
+          ]);
+        },
+      },
+    ];
+
+    if (this.authService.isOrganizationAdmin) {
+      items.push({
+        label: $localize`:@@program-card-menu-duplicate:Duplicate`,
+        icon: 'pi pi-clone',
+        command: () => {
+          this.duplicateProgramDialog().show({
+            programId: this.id(),
+            programName:
+              this.translatableStringService.translate(
+                this.program.data()?.titlePortal,
+              ) ?? '',
+          });
+        },
+      });
+    }
+
+    return items;
+  });
 
   public readonly getLastPayment = computed(() => {
     const data = this.payments.data();
