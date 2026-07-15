@@ -7,6 +7,7 @@ import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
+import { REGISTRATION_IMPORT_CSV_FILE_UPLOAD_LIMITS } from '@121-service/src/shared/file-upload-limits';
 import {
   registrationScopedKisumuEastPv,
   registrationScopedTurkanaNorthPv,
@@ -20,6 +21,7 @@ import {
   getImportRegistrationsTemplate,
   getMessageHistory,
   importRegistrations,
+  importRegistrationsCsvFile,
   searchRegistrationByReferenceId,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -37,6 +39,25 @@ import {
 
 describe('Import a registration', () => {
   let accessToken: string;
+
+  it('should return an error when the import file exceeds the upload size limit', async () => {
+    // Arrange
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
+    accessToken = await getAccessToken();
+    const fileSizeLimit = REGISTRATION_IMPORT_CSV_FILE_UPLOAD_LIMITS.fileSize!;
+
+    // Act
+    const response = await importRegistrationsCsvFile({
+      programId: programIdOCW,
+      accessToken,
+      fileBuffer: Buffer.alloc(fileSizeLimit + 1, 'a'),
+      fileName: 'too-large.csv',
+    });
+
+    // Assert
+    expect(response.status).toBe(HttpStatus.PAYLOAD_TOO_LARGE);
+    expect(response.body.message).toBe('File too large');
+  });
 
   it('should import registrations', async () => {
     // Arrange

@@ -38,7 +38,7 @@ import { KoboWebhookBasicAuthGuard } from '@121-service/src/kobo/guards/kobo-web
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboImageService } from '@121-service/src/kobo/services/kobo-image.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
-import { MAX_IMPORT_RECORDS } from '@121-service/src/registration/services/registrations-creation.service';
+import { MAX_REGISTRATION_IMPORT_ROWS_PER_UPLOAD } from '@121-service/src/shared/file-upload-row-limits';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
@@ -217,7 +217,7 @@ export class KoboController {
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramKoboUPDATE] })
   @ApiOperation({
     summary: 'Import existing Kobo submissions as registrations',
-    description: `Fetches all submissions from the linked Kobo form, filters out submissions that have already been imported (by matching Kobo submission UUID against registration referenceId), and imports the remaining existing submissions as registrations. Returns an error if the total number of submissions on the form exceeds the maximum fetch limit (${MAX_IMPORT_RECORDS}).`,
+    description: `Fetches all submissions from the linked Kobo form, filters out submissions that have already been imported (by matching Kobo submission UUID against registration referenceId), and imports the remaining existing submissions as registrations. Returns an error if the total number of submissions on the form exceeds the maximum fetch limit (${MAX_REGISTRATION_IMPORT_ROWS_PER_UPLOAD}).`,
   })
   @ApiParam({
     name: 'programId',

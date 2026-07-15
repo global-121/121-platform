@@ -8,10 +8,8 @@ import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboSubmissionMapper } from '@121-service/src/kobo/mappers/kobo-submission.mapper';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
 import { KoboSubmissionHelperService } from '@121-service/src/kobo/services/kobo-submission.helper.service';
-import {
-  MAX_IMPORT_RECORDS,
-  RegistrationsCreationService,
-} from '@121-service/src/registration/services/registrations-creation.service';
+import { RegistrationsCreationService } from '@121-service/src/registration/services/registrations-creation.service';
+import { MAX_REGISTRATION_IMPORT_ROWS_PER_UPLOAD } from '@121-service/src/shared/file-upload-row-limits';
 
 @Injectable()
 export class KoboSubmissionService {
@@ -100,12 +98,12 @@ export class KoboSubmissionService {
         token: koboIntegration.token,
         assetUid: koboIntegration.assetUid,
         baseUrl: koboIntegration.url,
-        limit: MAX_IMPORT_RECORDS,
+        limit: MAX_REGISTRATION_IMPORT_ROWS_PER_UPLOAD,
       });
 
-    if (count > MAX_IMPORT_RECORDS) {
+    if (count > MAX_REGISTRATION_IMPORT_ROWS_PER_UPLOAD) {
       throw new HttpException(
-        `The Kobo form has ${count} total submissions, which exceeds the maximum of ${MAX_IMPORT_RECORDS} that can be fetched at once. Not all submissions could be retrieved, so some new ones may be missing. Please use the CSV import instead and split the data into smaller batches.`,
+        `The Kobo form has ${count} total submissions, which exceeds the maximum of ${MAX_REGISTRATION_IMPORT_ROWS_PER_UPLOAD} that can be fetched at once. Not all submissions could be retrieved, so some new ones may be missing. Please use the CSV import instead and split the data into smaller batches.`,
         HttpStatus.BAD_REQUEST,
       );
     }

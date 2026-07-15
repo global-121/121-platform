@@ -6,9 +6,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  MaxFileSizeValidator,
   Param,
-  ParseFilePipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -18,7 +16,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBody,
   ApiConsumes,
@@ -37,6 +34,8 @@ import { GetProgramAttachmentResponseDto } from '@121-service/src/programs/progr
 import { RenameProgramAttachmentDto } from '@121-service/src/programs/program-attachments/dtos/rename-program-attachment.dto';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 import { FILE_UPLOAD_WITH_FILENAME_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
+import { createFileUploadInterceptor } from '@121-service/src/shared/file-upload-interceptor';
+import { ATTACHMENT_FILE_UPLOAD_LIMITS } from '@121-service/src/shared/file-upload-limits';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
@@ -62,16 +61,12 @@ export class ProgramAttachmentsController {
     description: 'Post attachments to a program',
   })
   @Post('programs/:programId/attachments')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(createFileUploadInterceptor({
+    fieldName: 'file',
+    limits: ATTACHMENT_FILE_UPLOAD_LIMITS,
+  }))
   public async createProgramAttachment(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 100000000 }), // 100MB
-        ],
-      }),
-    )
-    file: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File,
     @Body() body: CreateProgramAttachmentDto,
     @Param('programId', ParseIntPipe) programId: number,
     @Req() req: ScopedUserRequest,

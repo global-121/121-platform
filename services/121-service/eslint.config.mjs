@@ -115,12 +115,29 @@ export default defineConfig(
   {
     name: 'Source files - no 500 HttpException',
     files: ['src/**/*.ts'],
-    ignores: ['**/*.spec.ts', '**/*.test.ts'],
+    ignores: [
+      '**/*.spec.ts',
+      '**/*.test.ts',
+      'src/shared/file-upload-interceptor.ts',
+    ],
     plugins: {
       'custom-rules': customRulesPlugin,
     },
     rules: {
       'custom-rules/no-internal-server-error-http-exception': 'error',
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@nestjs/platform-express',
+              importNames: ['FileInterceptor'],
+              message:
+                'Use createFileUploadInterceptor from src/shared/file-upload-interceptor.ts so upload limits stay centralized.',
+            },
+          ],
+        },
+      ],
     },
   },
   {

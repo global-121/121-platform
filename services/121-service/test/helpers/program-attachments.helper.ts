@@ -18,6 +18,29 @@ export async function uploadAttachment({
     .field('filename', filename);
 }
 
+export async function uploadAttachments({
+  programId,
+  filePaths,
+  filename,
+  accessToken,
+}: {
+  programId: number;
+  filePaths: string[];
+  filename: string;
+  accessToken: string;
+}) {
+  const request = getServer()
+    .post(`/programs/${programId}/attachments`)
+    .set('Cookie', [accessToken])
+    .field('filename', filename);
+
+  for (const filePath of filePaths) {
+    request.attach('file', filePath);
+  }
+
+  return await request;
+}
+
 export async function renameAttachment({
   programId,
   attachmentId,

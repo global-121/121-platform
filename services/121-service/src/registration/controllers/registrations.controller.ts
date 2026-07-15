@@ -17,7 +17,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBody,
   ApiConsumes,
@@ -62,6 +61,11 @@ import {
   FILE_UPLOAD_API_FORMAT,
   FILE_UPLOAD_WITH_REASON_API_FORMAT,
 } from '@121-service/src/shared/file-upload-api-format';
+import { createFileUploadInterceptor } from '@121-service/src/shared/file-upload-interceptor';
+import {
+  REGISTRATION_BULK_PATCH_CSV_FILE_UPLOAD_LIMITS,
+  REGISTRATION_IMPORT_CSV_FILE_UPLOAD_LIMITS,
+} from '@121-service/src/shared/file-upload-limits';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';
@@ -85,7 +89,12 @@ export class RegistrationsController {
   @Post('programs/:programId/registrations/import')
   @ApiConsumes('multipart/form-data')
   @ApiBody(FILE_UPLOAD_API_FORMAT)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    createFileUploadInterceptor({
+      fieldName: 'file',
+      limits: REGISTRATION_IMPORT_CSV_FILE_UPLOAD_LIMITS,
+    }),
+  )
   public async importRegistrationsFromCsv(
     @UploadedFile() csvFile: Express.Multer.File,
     @Param('programId', ParseIntPipe)
@@ -177,7 +186,12 @@ export class RegistrationsController {
   @Patch('programs/:programId/registrations')
   @ApiConsumes('multipart/form-data')
   @ApiBody(FILE_UPLOAD_WITH_REASON_API_FORMAT)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    createFileUploadInterceptor({
+      fieldName: 'file',
+      limits: REGISTRATION_BULK_PATCH_CSV_FILE_UPLOAD_LIMITS,
+    }),
+  )
   public async patchRegistrations(
     @UploadedFile() csvFile: Express.Multer.File,
     @AnyValidBody('reason') reason: string, // Registration can have dynamic attributes, so we cannot use whitelist

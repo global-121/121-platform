@@ -33,11 +33,13 @@ import { RegistrationsBulkService } from '@121-service/src/registration/services
 import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registrations-update-jobs/dto/registrations-update-job.dto';
+import {
+  MAX_REGISTRATION_BULK_PATCH_ROWS_PER_UPLOAD,
+  MAX_REGISTRATION_IMPORT_ROWS_PER_UPLOAD,
+} from '@121-service/src/shared/file-upload-row-limits';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 const BATCH_SIZE = 500;
-const MASS_UPDATE_ROW_LIMIT = 50_000;
-export const MAX_IMPORT_RECORDS = 1000;
 
 @Injectable()
 export class RegistrationsCreationService {
@@ -67,7 +69,7 @@ export class RegistrationsCreationService {
   ): Promise<void> {
     const bulkUpdateRecords = await this.fileImportService.validateCsv(
       csvFile,
-      MASS_UPDATE_ROW_LIMIT,
+      MAX_REGISTRATION_BULK_PATCH_ROWS_PER_UPLOAD,
     );
 
     // Do initial validation of the input without the checks that are slow
@@ -164,7 +166,7 @@ export class RegistrationsCreationService {
   ): Promise<ImportResult> {
     const importRecords = await this.fileImportService.validateCsv(
       csvFile,
-      MAX_IMPORT_RECORDS,
+      MAX_REGISTRATION_IMPORT_ROWS_PER_UPLOAD,
     );
     // TODO: Improve the typing of what comes out validateCsv function to avoid this cast
     return this.importRegistrations({

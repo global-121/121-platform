@@ -3,6 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { IMAGE_FILE_UPLOAD_LIMITS } from '@121-service/src/shared/file-upload-limits';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   getIntersolveInstructionsImage,
@@ -265,6 +266,20 @@ describe('Intersolve Voucher Controller', () => {
 
       // Assert
       expect(response.status).toBe(HttpStatus.FORBIDDEN);
+    });
+
+    it('should return an error when the instructions image exceeds the upload size limit', async () => {
+      const fileSizeLimit = IMAGE_FILE_UPLOAD_LIMITS.fileSize!;
+
+      const response = await postIntersolveInstructionsImage(
+        programIdPV,
+        accessToken,
+        Buffer.alloc(fileSizeLimit + 1, 'a'),
+        'too-large.png',
+      );
+
+      expect(response.status).toBe(HttpStatus.PAYLOAD_TOO_LARGE);
+      expect(response.body.message).toBe('File too large');
     });
 
     it('should return 404 for invalid program', async () => {
