@@ -14,6 +14,8 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
+const addresseePhoneNumber = '+31612345678';
+
 describe('Order visa debit cards in batch', () => {
   let accessToken: string;
 
@@ -43,6 +45,7 @@ describe('Order visa debit cards in batch', () => {
       addressPostalCode: '1011AB',
       addressCity: 'Amsterdam',
       addressee: 'John Doe',
+      addresseePhoneNumber,
     });
 
     // Assert - endpoint returns 202 Accepted with order id
@@ -80,6 +83,7 @@ describe('Order visa debit cards in batch', () => {
       accessToken,
     });
     expect(ordersResponse.status).toBe(HttpStatus.OK);
+    // TODO: add phone number validation here once BE is ready
     expect(ordersResponse.body).toEqual(
       expect.arrayContaining([
         expect.objectContaining({

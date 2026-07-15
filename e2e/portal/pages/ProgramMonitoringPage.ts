@@ -14,6 +14,7 @@ interface OrderDebitCardOrder {
   addressHouseNumber: string;
   addressHouseNumberAddition: string;
   addressee: string;
+  phoneNumber: string;
 }
 class ProgramMonitoring extends BasePage {
   page: Page;
@@ -356,6 +357,7 @@ class ProgramMonitoring extends BasePage {
   async orderCards({
     noOfCards,
     addressee,
+    phoneNumber,
     addressPostalCode,
     addressCity,
     addressStreet,
@@ -365,7 +367,10 @@ class ProgramMonitoring extends BasePage {
     await this.page.getByRole('button', { name: 'Order cards' }).click();
 
     await this.page.getByLabel('Number of cards').fill(noOfCards);
-    await this.page.getByLabel('Addressee').fill(addressee);
+    await this.page
+      .getByLabel('Addressee (name of the recipient of the package)')
+      .fill(addressee);
+    await this.page.getByLabel('Addressee phone number').fill(phoneNumber);
     await this.page.getByLabel('Street').fill(addressStreet);
     await this.page.getByLabel('House number').fill(addressHouseNumber);
     await this.page.getByLabel('Addition').fill(addressHouseNumberAddition);

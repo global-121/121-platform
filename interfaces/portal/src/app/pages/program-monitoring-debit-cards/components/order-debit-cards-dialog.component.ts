@@ -121,6 +121,17 @@ export class OrderDebitCardsDialogComponent {
         nonNullable: true,
       },
     ),
+    addresseePhoneNumber: new FormControl<string>(
+      {
+        value: '',
+        disabled: false,
+      },
+      {
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+        validators: [Validators.required],
+        nonNullable: true,
+      },
+    ),
   });
 
   readonly formEvents = toSignal(this.formGroup.events);
@@ -139,6 +150,7 @@ export class OrderDebitCardsDialogComponent {
           addressHouseNumber: formValues.addressHouseNumber,
           addressHouseNumberAddition: formValues.addressHouseNumberAddition,
           addressee: formValues.addressee,
+          addresseePhoneNumber: formValues.addresseePhoneNumber,
         },
       });
     },

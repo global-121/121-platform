@@ -230,6 +230,7 @@ describe('Manage FSP-configurations', () => {
 
   it('should create multiple FSP-configurations from a list of fsp names', async () => {
     // Arrange
+    programId = await createProgramWithFspConfigurations({ accessToken });
     const fspNamesToCreate = [Fsps.airtel, Fsps.nedbank];
 
     // Act
@@ -246,9 +247,9 @@ describe('Manage FSP-configurations', () => {
 
     // Assert
     expect(result.statusCode).toBe(HttpStatus.OK);
-    expect(getResult.body.map((configuration) => configuration.fspName)).toEqual(
-      expect.arrayContaining(fspNamesToCreate),
-    );
+    expect(
+      getResult.body.map((configuration) => configuration.fspName),
+    ).toEqual(expect.arrayContaining(fspNamesToCreate));
   });
 
   it('should add a FSP configuration to program FSP configurations', async () => {
