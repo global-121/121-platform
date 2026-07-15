@@ -144,7 +144,7 @@ export class OrderDebitCardsDialogComponent {
     },
     onSuccess: () => {
       this.toastService.showToast({
-        detail: $localize`Debit cards ordered successfully`,
+        detail: $localize`Order started. Check the table for progress.`,
       });
     },
   }));

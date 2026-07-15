@@ -54,13 +54,18 @@ export class ProgramMonitoringDebitCardsPageComponent {
     QueryTableColumn<Dto<VisaCardOrderResponseDto>>[]
   >(() => [
     {
+      field: 'noOfCards',
+      header: $localize`Cards ordered`,
+      type: QueryTableColumnType.TEXT,
+    },
+    {
       field: 'noOfCardsOrdered',
-      header: $localize`No of Cards Ordered`,
+      header: $localize`Cards processed`,
       type: QueryTableColumnType.TEXT,
     },
     {
       field: 'status',
-      header: $localize`Order Status`,
+      header: $localize`Order status`,
       type: QueryTableColumnType.MULTISELECT,
       options: Object.values(VisaCardOrderStatus).map((status) => ({
         label: VISA_CARD_ORDER_STATUS_LABELS[status],

@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { env } from '@121-service/src/env';
 import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
+import { IntersolveVisaCardOrderProcessorService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/mappers/intersolve-visa-card-order-processor.service';
 import { VisaCardOrderMapper } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/mappers/visa-card-order.mapper';
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
@@ -26,6 +26,7 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
 export class IntersolveVisaAccountManagementService {
@@ -37,6 +38,8 @@ export class IntersolveVisaAccountManagementService {
     private readonly intersolveVisaChildWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
     private readonly walletClosureScopedRepository: IntersolveVisaWalletClosureScopedRepository,
     private readonly cardOrderRepository: IntersolveVisaCardOrderRepository,
+    private readonly cardOrderProcessorService: IntersolveVisaCardOrderProcessorService,
+    private readonly azureLogService: AzureLogService,
   ) {}
 
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
@@ -503,8 +506,8 @@ export class IntersolveVisaAccountManagementService {
     addressee: string;
     userId: number;
   }): Promise<{
-    noOfCardsSent: number;
-    noOfCardsOrdered: number;
+    id: number;
+    noOfCards: number;
   }> {
     const visaProgramFspConfigurations =
       await this.programFspConfigurationRepository.getByProgramIdAndFspName({
@@ -552,50 +555,12 @@ export class IntersolveVisaAccountManagementService {
         },
       );
 
-    const contactInformation: ContactInformation = {
-      name: addressee,
-      addressStreet,
-      addressHouseNumber,
-      addressHouseNumberAddition,
-      addressPostalCode,
-      addressCity,
-      phoneNumber: env.INTERSOLVE_VISA_CARD_ORDER_PHONE_NUMBER,
-    };
-
-    let cardsSentByIntersolve = 0;
-    let lastIntersolveErrorMessage: null | string = null;
-
-    for (let index = 0; index < noOfCards; index++) {
-      try {
-        await this.intersolveVisaService.issueTokenAndCreatePhysicalCard({
-          brandCode,
-          coverLetterCode,
-          contactInformation,
-        });
-        cardsSentByIntersolve += 1;
-      } catch (error) {
-        if (error instanceof IntersolveVisaApiError) {
-          lastIntersolveErrorMessage = error.message;
-          continue;
-        }
-
-        throw error;
-      }
-    }
-
-    if (cardsSentByIntersolve === 0) {
-      throw new HttpException(
-        `Unable to order cards. ${lastIntersolveErrorMessage ?? 'Intersolve did not return a successful response.'}`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     const order = new VisaCardOrderEntity();
     order.programId = programId;
     order.userId = userId;
     order.noOfCards = noOfCards;
-    order.noOfCardsOrdered = cardsSentByIntersolve;
-    order.status = VisaCardOrderStatus.Completed;
+    order.noOfCardsOrdered = 0;
+    order.status = VisaCardOrderStatus.Processing;
     order.addressee = addressee;
     order.addressStreet = addressStreet;
     order.addressHouseNumber = addressHouseNumber;
@@ -603,18 +568,22 @@ export class IntersolveVisaAccountManagementService {
     order.addressCity = addressCity;
     order.addressPostalCode = addressPostalCode;
 
-    try {
-      await this.cardOrderRepository.save(order);
-    } catch (error) {
-      throw new Error(
-        'Cards were ordered, but saving the batch record failed. Please contact support for reconciliation.',
-        { cause: error },
-      );
-    }
+    const savedOrder = await this.cardOrderRepository.save(order);
+
+    // Fire-and-forget: process card order in the background
+    void this.cardOrderProcessorService
+      .processCardOrder({
+        order: savedOrder,
+        brandCode: String(brandCode),
+        coverLetterCode: String(coverLetterCode),
+      })
+      .catch((error: Error) => {
+        this.azureLogService.logError(error, true);
+      });
 
     return {
-      noOfCardsSent: cardsSentByIntersolve,
-      noOfCardsOrdered: noOfCards,
+      id: savedOrder.id,
+      noOfCards: savedOrder.noOfCards,
     };
   }
 

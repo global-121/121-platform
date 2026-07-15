@@ -303,6 +303,9 @@
       <trans-unit id="2309376472788575612" datatype="html">
         <source>Registrations with the status “new”.</source>
       </trans-unit>
+      <trans-unit id="2309973394549994770" datatype="html">
+        <source>Cards ordered</source>
+      </trans-unit>
       <trans-unit id="2314075913167237221" datatype="html">
         <source>City</source>
       </trans-unit>
@@ -431,6 +434,9 @@
       </trans-unit>
       <trans-unit id="2840088863087373358" datatype="html">
         <source>Updating registration(s)</source>
+      </trans-unit>
+      <trans-unit id="28528933264848099" datatype="html">
+        <source>Cards processed</source>
       </trans-unit>
       <trans-unit id="2867000227530087117" datatype="html">
         <source>Date is</source>
@@ -902,9 +908,6 @@
       <trans-unit id="4821724891066824263" datatype="html">
         <source>You&apos;re about to remove the &quot;<x equiv-text="{{ fspConfigurationLabel() }}" id="INTERPOLATION"/>&quot; FSP configuration from your program. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
       </trans-unit>
-      <trans-unit id="4866288342540923037" datatype="html">
-        <source>No of Cards Ordered</source>
-      </trans-unit>
       <trans-unit id="4890152856739224001" datatype="html">
         <source>Optionally pass a start date and/or an end date to filter the payments. The export is limited to 100,000 records. Adapt your dates if needed.</source>
       </trans-unit>
@@ -1157,9 +1160,6 @@
       <trans-unit id="581189508098722225" datatype="html">
         <source>Reconciliation data imported successfully.</source>
       </trans-unit>
-      <trans-unit id="5817489058335953799" datatype="html">
-        <source>Debit cards ordered successfully</source>
-      </trans-unit>
       <trans-unit id="5833271673900301518" datatype="html">
         <source>Scope should be a &apos;hidden&apos; field in your form that has the &apos;default response&apos; set to the scope of the registration</source>
       </trans-unit>
@@ -1204,9 +1204,6 @@
       </trans-unit>
       <trans-unit id="6057281094654962766" datatype="html">
         <source>Validate</source>
-      </trans-unit>
-      <trans-unit id="606178495678960598" datatype="html">
-        <source>Order Status</source>
       </trans-unit>
       <trans-unit id="6102855402615761891" datatype="html">
         <source>The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
@@ -1322,6 +1319,9 @@
       </trans-unit>
       <trans-unit id="668066055906448779" datatype="html">
         <source>Cash disbursed</source>
+      </trans-unit>
+      <trans-unit id="6681738558442750823" datatype="html">
+        <source>Order status</source>
       </trans-unit>
       <trans-unit id="6693349469471580292" datatype="html">
         <source>Delete file</source>
@@ -1562,6 +1562,9 @@
       </trans-unit>
       <trans-unit id="7732309408488818531" datatype="html">
         <source>Greater than</source>
+      </trans-unit>
+      <trans-unit id="7734173975927521818" datatype="html">
+        <source>Order started. Check the table for progress.</source>
       </trans-unit>
       <trans-unit id="773471341435150258" datatype="html">
         <source>Enable validation</source>

@@ -2,6 +2,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/intersolve-visa-account-management.service';
+import { IntersolveVisaCardOrderProcessorService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/mappers/intersolve-visa-card-order-processor.service';
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
 import { VisaCardOrderStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-order-status.enum';
 import { IntersolveVisaCardStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-status.enum';
@@ -17,6 +18,7 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 describe('IntersolveVisaAccountManagementService', () => {
   let service: IntersolveVisaAccountManagementService;
@@ -25,6 +27,7 @@ describe('IntersolveVisaAccountManagementService', () => {
   let intersolveVisaChildWalletScopedRepository: jest.Mocked<IntersolveVisaChildWalletScopedRepository>;
   let walletClosureScopedRepository: jest.Mocked<IntersolveVisaWalletClosureScopedRepository>;
   let cardOrderRepository: jest.Mocked<IntersolveVisaCardOrderRepository>;
+  let cardOrderProcessorService: jest.Mocked<IntersolveVisaCardOrderProcessorService>;
   let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
 
   function mockGetRegistrationOrThrow(returnValue: any) {
@@ -114,6 +117,18 @@ describe('IntersolveVisaAccountManagementService', () => {
             getForProgram: jest.fn(),
           },
         },
+        {
+          provide: IntersolveVisaCardOrderProcessorService,
+          useValue: {
+            processCardOrder: jest.fn(),
+          },
+        },
+        {
+          provide: AzureLogService,
+          useValue: {
+            logError: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -131,6 +146,9 @@ describe('IntersolveVisaAccountManagementService', () => {
     cardOrderRepository = module.get(
       IntersolveVisaCardOrderRepository,
     ) as jest.Mocked<IntersolveVisaCardOrderRepository>;
+    cardOrderProcessorService = module.get(
+      IntersolveVisaCardOrderProcessorService,
+    ) as jest.Mocked<IntersolveVisaCardOrderProcessorService>;
     programFspConfigurationRepository = module.get(
       ProgramFspConfigurationRepository,
     ) as jest.Mocked<ProgramFspConfigurationRepository>;
@@ -444,7 +462,7 @@ describe('IntersolveVisaAccountManagementService', () => {
           return '';
         },
       );
-      intersolveVisaService.issueTokenAndCreatePhysicalCard.mockResolvedValue();
+      cardOrderProcessorService.processCardOrder.mockResolvedValue();
     });
 
     it('throws when the program has no visa configuration', async () => {
@@ -497,53 +515,43 @@ describe('IntersolveVisaAccountManagementService', () => {
       );
     });
 
-    it('throws when all card orders fail', async () => {
-      intersolveVisaService.issueTokenAndCreatePhysicalCard.mockRejectedValue(
-        new IntersolveVisaApiError('api error'),
-      );
-
-      await expect(
-        service.createVisaCardOrder(buildOrderInput({ noOfCards: 2 })),
-      ).rejects.toThrow(HttpException);
-    });
-
-    it('re-throws unexpected errors from issueTokenAndCreatePhysicalCard', async () => {
-      intersolveVisaService.issueTokenAndCreatePhysicalCard.mockRejectedValue(
-        new Error('unexpected'),
-      );
-
-      await expect(
-        service.createVisaCardOrder(buildOrderInput()),
-      ).rejects.toThrow('unexpected');
-    });
-
     it('throws when persisting the order record fails', async () => {
       const dbError = new Error('db down');
       cardOrderRepository.save.mockRejectedValue(dbError);
 
       await expect(
         service.createVisaCardOrder(buildOrderInput()),
-      ).rejects.toMatchObject({
-        message:
-          'Cards were ordered, but saving the batch record failed. Please contact support for reconciliation.',
-        cause: dbError,
-      });
+      ).rejects.toThrow('db down');
     });
 
-    it('returns the count of sent and ordered cards, counting only successes', async () => {
-      intersolveVisaService.issueTokenAndCreatePhysicalCard
-        .mockResolvedValueOnce()
-        .mockRejectedValueOnce(new IntersolveVisaApiError('temporary error'))
-        .mockResolvedValueOnce();
+    it('returns the accepted order and starts background processing', async () => {
+      cardOrderRepository.save.mockResolvedValue({
+        id: 42,
+        noOfCards: 3,
+      } as unknown as Awaited<
+        ReturnType<IntersolveVisaCardOrderRepository['save']>
+      >);
 
       const result = await service.createVisaCardOrder(
         buildOrderInput({ noOfCards: 3 }),
       );
 
+      expect(cardOrderRepository.save).toHaveBeenCalledTimes(1);
+      expect(cardOrderRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          programId: 1,
+          userId: 7,
+          noOfCards: 3,
+          noOfCardsOrdered: 0,
+          status: VisaCardOrderStatus.Processing,
+        }),
+      );
+
       expect(result).toEqual({
-        noOfCardsSent: 2,
-        noOfCardsOrdered: 3,
+        id: 42,
+        noOfCards: 3,
       });
+      expect(cardOrderProcessorService.processCardOrder).toHaveBeenCalled();
     });
   });
 

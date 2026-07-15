@@ -7,6 +7,7 @@ import BasePage from './BasePage';
 
 interface OrderDebitCardOrder {
   noOfCards: string;
+  noOfCardsOrdered: string;
   addressPostalCode: string;
   addressCity: string;
   addressStreet: string;
@@ -386,6 +387,7 @@ class ProgramMonitoring extends BasePage {
 
   async expectCardOrdersTableToContainOrder({
     noOfCards,
+    noOfCardsOrdered,
     addressee,
     addressPostalCode,
     addressCity,
@@ -401,8 +403,9 @@ class ProgramMonitoring extends BasePage {
     const headers = await visaCardOrdersTable.getTextArrayFromHeader();
 
     expect(headers).toEqual([
-      'No of Cards Ordered',
-      'Order Status',
+      'Cards ordered',
+      'Cards processed',
+      'Order status',
       'Address',
       'Ordered By',
       'Ordered On',
@@ -413,6 +416,7 @@ class ProgramMonitoring extends BasePage {
 
     expect(rowValues).toEqual([
       noOfCards,
+      noOfCardsOrdered,
       'Completed',
       addressColumn,
       'admin@example.org',

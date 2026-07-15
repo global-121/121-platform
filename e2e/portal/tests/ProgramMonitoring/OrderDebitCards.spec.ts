@@ -1,5 +1,7 @@
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { waitForVisaCardOrdersToComplete } from '@121-service/test/helpers/registration.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   programIdSafaricom,
@@ -10,6 +12,7 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const orderDebitCardOrder = {
   noOfCards: '100',
+  noOfCardsOrdered: '100', // Since the order is processed successfully, the number of cards processed should match the number of cards ordered
   addressPostalCode: '2593 HT',
   addressCity: 'Den Haag',
   addressStreet: 'Anna van Saksenlaan',
@@ -70,11 +73,23 @@ test('Should be able to order debit cards when card distribution by mail is disa
     await programMonitoringPage.selectTab({ tabName: 'Debit Cards' });
     await programMonitoringPage.orderCards(orderDebitCardOrder);
     await programMonitoringPage.validateToastMessage(
-      'Debit cards ordered successfully',
+      'Order started. Check the table for progress.',
     );
+
+    const accessToken = await getAccessToken();
+
+    await waitForVisaCardOrdersToComplete({
+      programId: programIdOCW,
+      accessToken,
+    });
   });
 
   await test.step('Verify that the order is listed in the table', async () => {
+    // Reload so the table reflects the completed background processing
+    await programMonitoringPage.goto(
+      `/program/${programIdOCW}/monitoring/dashboard`,
+    );
+    await programMonitoringPage.selectTab({ tabName: 'Debit Cards' });
     await programMonitoringPage.expectCardOrdersTableToContainOrder(
       orderDebitCardOrder,
     );
