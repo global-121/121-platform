@@ -74,8 +74,6 @@ export class ProgramSettingsBudgetComponent {
       fixedTransferValue,
       fsps,
     }: ReturnType<ProgramBudgetFormGroup['getRawValue']>) => {
-      const fspsMultiselectChanged = this.formGroup()?.controls.fsps.dirty;
-
       await this.programApiService.updateProgram({
         programId: this.programId,
         programPatch: {
@@ -86,7 +84,7 @@ export class ProgramSettingsBudgetComponent {
         },
       });
 
-      if (fspsMultiselectChanged) {
+      if (this.fspsChanged({ fsps })) {
         try {
           await this.createProgramFspsMutation.mutateAsync({
             fsps,
@@ -156,4 +154,19 @@ export class ProgramSettingsBudgetComponent {
       loading: this.program.isPending(),
     }));
   });
+
+  // Checking  if the fsps have changed by comparing the original fsps with the new fsps
+
+  readonly originalFsps = computed(() => {
+    return (
+      this.program.data()?.programFspConfigurations.map((fsp) => fsp.name) ?? []
+    );
+  });
+
+  fspsChanged({ fsps }: { fsps: Fsps[] }): boolean {
+    return (
+      this.originalFsps().length !== fsps.length ||
+      this.originalFsps().some((fsp) => !fsps.includes(fsp as Fsps))
+    );
+  }
 }
