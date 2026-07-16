@@ -282,9 +282,8 @@ class BasePage {
   async validateProgramFspsPills({ fspNames }: { fspNames: string[] }) {
     const list = this.page.getByTestId('integrated-fsp-list');
     const fsps = list.getByRole('listitem');
-    const fspsCount = await fsps.count();
 
-    expect(fspsCount).toBe(fspNames.length);
+    await expect(fsps).toHaveCount(fspNames.length);
 
     for (const fsp of fspNames) {
       await expect(list).toContainText(fsp);

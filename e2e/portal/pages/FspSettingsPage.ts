@@ -35,6 +35,7 @@ class FspSettingsPage extends BasePage {
     const fspCard = this.fspCard
       .filter({ hasText: fspName })
       .getByLabel('More actions');
+    await expect(fspCard).toBeVisible();
     await fspCard.click();
     await this.page.getByRole('menuitem', { name: 'Reconfigure' }).click();
   }
@@ -195,9 +196,8 @@ class FspSettingsPage extends BasePage {
   async validateProgramFspCards({ fspNames }: { fspNames: string[] }) {
     const list = this.page.getByTestId('integrated-fsp-list');
     const fsps = list.getByTestId('card-with-link');
-    const fspsCount = await fsps.count();
 
-    expect(fspsCount).toBe(fspNames.length);
+    await expect(fsps).toHaveCount(fspNames.length);
 
     for (const fsp of fspNames) {
       const cardTitle = fsps
