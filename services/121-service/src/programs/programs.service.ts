@@ -24,7 +24,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
-import { duplicateEntity } from '@121-service/src/utils/entity-duplication/duplicate-entity.helper';
+import { duplicateEntity } from '@121-service/src/utils/entity-duplication/duplicate-entity.service';
 
 @Injectable()
 export class ProgramService {

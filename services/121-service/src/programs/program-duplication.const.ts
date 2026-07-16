@@ -1,5 +1,5 @@
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { EntityDuplicationTree } from '@121-service/src/utils/entity-duplication/duplicate-entity.helper';
+import { EntityDuplicationTree } from '@121-service/src/utils/entity-duplication/duplicate-entity.service';
 
 export const propertiesToDuplicate: Record<
   keyof ProgramEntity,

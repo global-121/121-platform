@@ -6,7 +6,6 @@ import {
   copyColumnValues,
   getNestedRelationTree,
   getRelationNamesToDuplicate,
-  isSelectedForDuplication,
   normalizeRelationChildren,
   validateRelationTypeOrThrow,
 } from '@121-service/src/utils/entity-duplication/duplicate-entity.helper';
@@ -251,20 +250,6 @@ function makeRelationWithChildren({
     inverseEntityMetadata: makeEntityMetadata(childRelations),
   };
 }
-
-describe('isSelectedForDuplication', () => {
-  it('should select when value is true', () => {
-    expect(isSelectedForDuplication(true)).toBe(true);
-  });
-
-  it('should select when value is a nested tree', () => {
-    expect(isSelectedForDuplication({ properties: true })).toBe(true);
-  });
-
-  it('should not select when value is false', () => {
-    expect(isSelectedForDuplication(false)).toBe(false);
-  });
-});
 
 describe('getNestedRelationTree', () => {
   it('should return the tree when value is a nested object', () => {
