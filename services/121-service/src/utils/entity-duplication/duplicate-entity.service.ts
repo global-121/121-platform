@@ -26,15 +26,6 @@ import {
 
 export type { EntityDuplicationTree };
 
-/**
- * Copies the selected relations of an already-existing source row onto an
- * already-existing target row of the same entity type.
- *
- * The target root is expected to be created by the caller (e.g. via the normal
- * create flow). This helper only duplicates the configured relation children
- * (recursing into nested relation trees) and re-points foreign keys that
- * reference another duplicated sibling.
- */
 export async function duplicateRelations<T extends ObjectLiteral>({
   dataSource,
   entity,
@@ -69,8 +60,6 @@ export async function duplicateRelations<T extends ObjectLiteral>({
       }),
     });
 
-    // The target root already exists; record the source -> target id mapping so
-    // that any relation foreign key pointing at the root can be remapped.
     getOrCreateIdMap(context, metadata.name).set(sourceId, targetId);
 
     await duplicateEntityRelations({
