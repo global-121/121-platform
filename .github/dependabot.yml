@@ -87,6 +87,8 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: 'jimp'
         update-types: ['version-update:semver-major']
+      - dependency-name: 'nestjs-paginate'
+        update-types: ['version-update:semver-major'] # Version v14+ are dependent on TypeORM v1+
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
 
