@@ -250,8 +250,6 @@ function buildChildCopy({
   const childColumns = copyColumnValues({
     metadata: childMetadata,
     source: child,
-    overrides: {},
-    excludeForeignKeyColumns: true,
   });
   childColumns[parentForeignKeyProperty] = newParentId;
 

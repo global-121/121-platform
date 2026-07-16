@@ -86,18 +86,18 @@ function getManyToManySubRelations({
 // Copy-columns phase: copy the entity's own column values.
 // ---------------------------------------------------------------------------
 
+/**
+ * Copies a source row's own persistable column values so the row can be cloned.
+ *
+ * Skips identity/audit columns and nullable foreign keys: the parent foreign
+ * key is set by the caller and lateral foreign keys are re-pointed afterwards.
+ */
 export function copyColumnValues({
   metadata,
   source,
-  overrides,
-  propertiesToDuplicate,
-  excludeForeignKeyColumns = false,
 }: {
   metadata: EntityMetadata;
   source: ObjectLiteral;
-  overrides: Record<string, unknown>;
-  propertiesToDuplicate?: EntityDuplicationTree;
-  excludeForeignKeyColumns?: boolean;
 }): Record<string, unknown> {
   const result: Record<string, unknown> = {};
 
@@ -107,10 +107,7 @@ export function copyColumnValues({
     if (isPrimaryOrAuditColumn(column)) {
       continue;
     }
-    if (excludeForeignKeyColumns && isNullableForeignKeyColumn(column)) {
-      continue;
-    }
-    if (isColumnDeselected({ propertyName, propertiesToDuplicate })) {
+    if (isNullableForeignKeyColumn(column)) {
       continue;
     }
     if (!(propertyName in source)) {
@@ -120,27 +117,7 @@ export function copyColumnValues({
     result[propertyName] = source[propertyName];
   }
 
-  applyColumnOverrides({ result, overrides, metadata });
   return result;
-}
-
-function applyColumnOverrides({
-  result,
-  overrides,
-  metadata,
-}: {
-  result: Record<string, unknown>;
-  overrides: Record<string, unknown>;
-  metadata: EntityMetadata;
-}): void {
-  const columnPropertyNames = metadata.columns.map(
-    (column) => column.propertyName,
-  );
-  for (const [key, value] of Object.entries(overrides)) {
-    if (columnPropertyNames.includes(key)) {
-      result[key] = value;
-    }
-  }
 }
 
 function isPrimaryOrAuditColumn(column: {
@@ -162,19 +139,6 @@ function isNullableForeignKeyColumn(column: {
   isNullable: boolean;
 }): boolean {
   return Boolean(column.relationMetadata) && column.isNullable;
-}
-
-function isColumnDeselected({
-  propertyName,
-  propertiesToDuplicate,
-}: {
-  propertyName: string;
-  propertiesToDuplicate?: EntityDuplicationTree;
-}): boolean {
-  return (
-    propertiesToDuplicate !== undefined &&
-    propertiesToDuplicate[propertyName] !== true
-  );
 }
 
 // ---------------------------------------------------------------------------
