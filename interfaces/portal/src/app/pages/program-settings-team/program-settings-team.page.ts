@@ -14,11 +14,11 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-program-settings/page-layout-program-settings.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
@@ -39,7 +39,7 @@ import { ToastService } from '~/services/toast.service';
     ConfirmDialogModule,
     FormDialogComponent,
     PageLayoutProgramSettingsComponent,
-    CardEditableComponent,
+    CardModule,
   ],
   providers: [ToastService],
   templateUrl: './program-settings-team.page.html',
@@ -143,7 +143,7 @@ export class ProgramSettingsTeamPageComponent {
     },
     {
       label: $localize`:@@remove-user-button:Remove user`,
-      icon: 'pi pi-times text-red-500',
+      icon: 'pi pi-trash text-red-500',
       visible: this.canManageAidworkers(),
       command: () => {
         this.removeUserConfirmationDialog().show();

@@ -1,29 +1,28 @@
 <app-page-layout-program-settings [programId]="programId()">
-  <app-card-editable
-    header="Program team"
-    i18n-header="@@page-title-program-settings-team"
-    editPencilTitle="Edit team"
-    i18n-editPencilTitle
-    [canEdit]="canManageAidworkers()"
-    [(isEditing)]="isEditing"
-  >
-    <p
-      i18n
-      class="mbe-4"
+  <p-card>
+    <h2
+      i18n="@@page-title-program-settings-team"
+      class="mbe-1"
     >
-      Add users to your program team and assign roles to them.
-    </p>
+      Program team
+    </h2>
+    <div class="mbe-6">
+      <p i18n>Add users to your program team and assign roles to them.</p>
+    </div>
+
     <app-query-table
       [items]="programUsers.data() ?? []"
       [isPending]="programUsers.isPending()"
       [columns]="columns()"
       localStorageKey="program-team-table"
-      [contextMenuItems]="isEditing() ? contextMenuItems() : undefined"
+      [contextMenuItems]="
+        canManageAidworkers() ? contextMenuItems() : undefined
+      "
       (updateContextMenuItem)="selectedUser.set($event)"
       [globalFilterFields]="['username', 'allRolesLabel', 'scope']"
       [initialSortField]="'username'"
     >
-      @if (isEditing()) {
+      @if (canManageAidworkers()) {
         <div table-actions>
           <p-button
             label="Add user to team"
@@ -43,7 +42,7 @@
       [enableScope]="enableScope()"
       [userToEdit]="formMode() === 'edit' ? selectedUser() : undefined"
     />
-  </app-card-editable>
+  </p-card>
 </app-page-layout-program-settings>
 <app-form-dialog
   #removeUserConfirmationDialog

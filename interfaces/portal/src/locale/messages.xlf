@@ -1112,9 +1112,6 @@
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
       </trans-unit>
-      <trans-unit id="5649335820714201159" datatype="html">
-        <source>Edit team</source>
-      </trans-unit>
       <trans-unit id="5656654201977017111" datatype="html">
         <source>Refresh link</source>
       </trans-unit>
@@ -1171,6 +1168,9 @@
       </trans-unit>
       <trans-unit id="5918723526444903137" datatype="html">
         <source>Add user</source>
+      </trans-unit>
+      <trans-unit id="5923534039191412132" datatype="html">
+        <source>Add users to your program team and assign roles to them.</source>
       </trans-unit>
       <trans-unit id="5951235042771324221" datatype="html">
         <source>&quot;<x equiv-text="text" id="PH"/>&quot; copied to clipboard</source>
@@ -1733,9 +1733,6 @@
       </trans-unit>
       <trans-unit id="8390249546875631537" datatype="html">
         <source>Important Notice: The card balances available for download are not in real-time. The report includes the date and time of each card&apos;s last external update.</source>
-      </trans-unit>
-      <trans-unit id="8404737252518090392" datatype="html">
-        <source>Add users to your program team and assign roles to them.</source>
       </trans-unit>
       <trans-unit id="8409002705238592127" datatype="html">
         <source>Review summary and approve payment. The payment can only be started once all needed users approve the payment.</source>
