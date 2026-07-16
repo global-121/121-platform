@@ -40,17 +40,17 @@ export async function postProgram(
 export async function duplicateProgram({
   copyFromProgramId,
   accessToken,
-  overrides = {},
+  body,
 }: {
   copyFromProgramId: number;
   accessToken: string;
-  overrides?: Partial<CreateProgramDto>;
+  body: CreateProgramDto;
 }): Promise<request.Response> {
   return await getServer()
     .post(`/programs`)
     .query({ copyFromProgramId })
     .set('Cookie', [accessToken])
-    .send(overrides);
+    .send(body);
 }
 
 export async function patchProgram(
@@ -534,11 +534,7 @@ export async function importFspReconciliationCsvFile({
     .attach('file', fileBuffer, fileName);
 }
 
-function createUploadCsvFileFromRows({
-  rows,
-}: {
-  rows: object[];
-}): {
+function createUploadCsvFileFromRows({ rows }: { rows: object[] }): {
   buffer: Buffer;
   fileName: string;
 } {

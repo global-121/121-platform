@@ -3,7 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
-import { propertiesToDuplicate } from '@121-service/src/programs/program-duplication.const';
+import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   duplicateProgram,
@@ -52,7 +52,8 @@ describe('Duplicate program', () => {
       accessToken,
     });
 
-    const sourceProgram = (await getProgram(copyFromProgramId, accessToken)).body;
+    const sourceProgram = (await getProgram(copyFromProgramId, accessToken))
+      .body;
     const sourceUsers: { id: number }[] = (
       await getAllUsersByProgramId({
         programId: copyFromProgramId,
@@ -75,12 +76,37 @@ describe('Duplicate program', () => {
     expect(sourceUsers.length).toBeGreaterThan(0);
     expect(sourceThresholds.length).toBeGreaterThan(0);
     expect(sourceProgram.fspConfigurations.length).toBeGreaterThan(0);
-    
+
+    // The frontend prefills the create form with the source program's data and
+    // lets the user adjust it before submitting; here we change the title and
+    // keep the rest.
+    const duplicateBody: CreateProgramDto = {
+      titlePortal: { en: 'Duplicated program' },
+      currency: sourceProgram.currency,
+      location: sourceProgram.location ?? undefined,
+      ngo: sourceProgram.ngo ?? undefined,
+      startDate: sourceProgram.startDate ?? undefined,
+      endDate: sourceProgram.endDate ?? undefined,
+      distributionFrequency: sourceProgram.distributionFrequency ?? undefined,
+      distributionDuration: sourceProgram.distributionDuration ?? undefined,
+      fixedTransferValue: sourceProgram.fixedTransferValue ?? undefined,
+      paymentAmountMultiplierFormula:
+        sourceProgram.paymentAmountMultiplierFormula ?? undefined,
+      targetNrRegistrations: sourceProgram.targetNrRegistrations ?? undefined,
+      description: sourceProgram.description ?? undefined,
+      validation: sourceProgram.validation,
+      languages: sourceProgram.languages,
+      enableMaxPayments: sourceProgram.enableMaxPayments,
+      enableScope: sourceProgram.enableScope,
+      budget: sourceProgram.budget ?? undefined,
+      allowEmptyPhoneNumber: sourceProgram.allowEmptyPhoneNumber,
+    };
 
     // Act
     const duplicateResponse = await duplicateProgram({
       copyFromProgramId,
       accessToken,
+      body: duplicateBody,
     });
     const duplicatedProgramId = duplicateResponse.body.id;
     const duplicatedProgram = (
@@ -107,8 +133,22 @@ describe('Duplicate program', () => {
 
     // Assert
     expect(duplicateResponse.statusCode).toBe(HttpStatus.CREATED);
-    expectDuplicatedColumnsMatchSource({ source: sourceProgram, duplicatedProgram });
-    expectExcludedRelationsAreEmpty({ source: sourceProgram, duplicatedProgram });
+
+    // The new program is created from the submitted data, not blindly copied
+    // from the source.
+    expect(duplicatedProgram.id).not.toBe(sourceProgram.id);
+    expect(duplicatedProgram.titlePortal).toStrictEqual(
+      duplicateBody.titlePortal,
+    );
+    expect(duplicatedProgram.titlePortal).not.toStrictEqual(
+      sourceProgram.titlePortal,
+    );
+    expect(duplicatedProgram.currency).toBe(duplicateBody.currency);
+    expect(duplicatedProgram.targetNrRegistrations).toBe(
+      duplicateBody.targetNrRegistrations,
+    );
+    expect(duplicatedProgram.validation).toBe(duplicateBody.validation);
+    expect(duplicatedProgram.enableScope).toBe(duplicateBody.enableScope);
 
     // Fsp configurations and their property values are duplicated.
     expect(
@@ -129,7 +169,10 @@ describe('Duplicate program', () => {
       FspConfigurationProperties.maxBalanceInCents,
     ]) {
       const sourceValue = getPropertyValue(sourceConfiguration, propertyName);
-      const duplicatedValue = getPropertyValue(duplicatedConfiguration, propertyName);
+      const duplicatedValue = getPropertyValue(
+        duplicatedConfiguration,
+        propertyName,
+      );
       expect(duplicatedValue).toBe(sourceValue);
     }
 
@@ -140,7 +183,8 @@ describe('Duplicate program', () => {
 
     // Approval thresholds are duplicated and their approver links re-pointed
     // to the copied thresholds
-    const sourceApproversByAmount = approversByThresholdAmount(sourceThresholds);
+    const sourceApproversByAmount =
+      approversByThresholdAmount(sourceThresholds);
     const duplicatedApproversByAmount =
       approversByThresholdAmount(duplicatedThresholds);
     expect(duplicatedApproversByAmount).toEqual(sourceApproversByAmount);
@@ -150,41 +194,6 @@ describe('Duplicate program', () => {
   // Assertion helpers
   // ---------------------------------------------------------------------------
 
-  function expectDuplicatedColumnsMatchSource({
-    source,
-    duplicatedProgram,
-  }: {
-    source: Record<string, unknown>;
-    duplicatedProgram: Record<string, unknown>;
-  }): void {
-    for (const [key, shouldCopy] of Object.entries(propertiesToDuplicate)) {
-      // Only scalar columns flagged for duplication; relation arrays are
-      // asserted separately.
-      if (shouldCopy !== true) continue;
-      if (!(key in source)) continue;
-      if (isArrayOfObjects(source[key])) continue;
-
-      expect(duplicatedProgram[key]).toStrictEqual(source[key]);
-    }
-  }
-
-  function expectExcludedRelationsAreEmpty({
-    source,
-    duplicatedProgram,
-  }: {
-    source: Record<string, unknown>;
-    duplicatedProgram: Record<string, unknown>;
-  }): void {
-    for (const [key, shouldCopy] of Object.entries(propertiesToDuplicate)) {
-      if (shouldCopy !== false) continue;
-      if (!(key in source)) continue;
-      const sourceValue = source[key];
-      if (!Array.isArray(sourceValue) || sourceValue.length === 0) continue;
-
-      expect(duplicatedProgram[key] ?? []).toHaveLength(0);
-    }
-  }
-
   function approversByThresholdAmount(
     thresholds: { thresholdAmount: number; approvers: { userId: number }[] }[],
   ): Map<number, number[]> {
@@ -193,12 +202,6 @@ describe('Duplicate program', () => {
         threshold.thresholdAmount,
         threshold.approvers.map((approver) => approver.userId).sort(),
       ]),
-    );
-  }
-
-  function isArrayOfObjects(value: unknown): boolean {
-    return (
-      Array.isArray(value) && value.length > 0 && typeof value[0] === 'object'
     );
   }
 

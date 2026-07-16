@@ -137,9 +137,11 @@ You can also leave the body empty.`,
     description: `
 Create a program as a copy of an existing program.  \n
 
-When set, the new program is seeded from the program with this id and its
-configuration relations are copied. Any specified program-properties in the
-body overwrite the copied values. You can also leave the body empty.`,
+When set, a new program is created from the (full) request body, and the
+configuration relations (team, FSP configurations and approval thresholds) of
+the program with this id are copied onto it. The request body is required and
+must be a valid program definition — prefill it with the source program's data
+and adjust as needed.`,
   })
   @ApiBody({
     type: CreateProgramDto,
@@ -174,7 +176,6 @@ body overwrite the copied values. You can also leave the body empty.`,
     if (copyFromProgramId) {
       const duplicationErrors = await validate(
         plainToClass(CreateProgramDto, programData),
-        { skipMissingProperties: true },
       );
 
       if (duplicationErrors.length > 0) {
@@ -183,7 +184,8 @@ body overwrite the copied values. You can also leave the body empty.`,
 
       return this.programService.duplicateProgram({
         copyFromProgramId,
-        overrides: programData,
+        programData: programData as CreateProgramDto,
+        userId,
       });
     }
 

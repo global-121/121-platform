@@ -12,8 +12,13 @@
   (proceed)="goToNextStep()"
 >
   <ng-template #header>
-    <i class="pi pi-plus me-2"></i>
-    <ng-container i18n>Create new program</ng-container>
+    @if (isDuplicate()) {
+      <i class="pi pi-clone me-2"></i>
+      <ng-container i18n>Duplicate program</ng-container>
+    } @else {
+      <i class="pi pi-plus me-2"></i>
+      <ng-container i18n>Create new program</ng-container>
+    }
   </ng-template>
   <ng-template #step>
     <p-card>
@@ -29,7 +34,10 @@
       >
         Add a name and description to your program to help your users find it.
       </p>
-      <app-program-form-name #formName />
+      <app-program-form-name
+        #formName
+        [program]="duplicateSource()"
+      />
     </p-card>
   </ng-template>
   <ng-template #step>
@@ -47,7 +55,10 @@
       >
         Add general information to define your program details.
       </p>
-      <app-program-form-information #formInformation />
+      <app-program-form-information
+        #formInformation
+        [program]="duplicateSource()"
+      />
     </p-card>
   </ng-template>
   <ng-template #step>
@@ -58,7 +69,10 @@
       >
         Finance
       </h2>
-      <app-program-form-budget #formBudget />
+      <app-program-form-budget
+        #formBudget
+        [program]="duplicateSource()"
+      />
     </p-card>
   </ng-template>
   <ng-template #illustration>

@@ -30,6 +30,7 @@ import {
 } from '~/components/program-form-name/program-form-name.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
+import { Program } from '~/domains/program/program.model';
 import { ProgramNavigationService } from '~/domains/program/program-navigation.service';
 import { ToastService } from '~/services/toast.service';
 
@@ -67,6 +68,11 @@ export class CreateProgramDialogComponent {
   // 2 = step 2: information
   // 3 = step 3: budget
   readonly currentStep = signal<0 | 1 | 2 | 3>(0);
+
+  // When set, the dialog runs in "duplicate" mode: the forms are prefilled with
+  // this program and submitting copies its relations onto the new program.
+  readonly duplicateSource = signal<Program | undefined>(undefined);
+  readonly isDuplicate = computed(() => this.duplicateSource() !== undefined);
 
   readonly formGroup = computed(() => {
     const nameGroup = this.formName()?.formGroup;
@@ -114,24 +120,27 @@ export class CreateProgramDialogComponent {
         budgetGroup: ProgramBudgetFormGroup;
       }>['getRawValue']
     >) =>
-      this.programApiService.createProgram({
-        titlePortal: {
-          [UILanguage.en]: name,
-        },
-        description: {
-          [UILanguage.en]: description,
-        },
-        budget,
-        currency,
-        distributionDuration,
-        fixedTransferValue,
-        startDate: startDate ? startDate.toISOString() : undefined,
-        endDate: endDate ? endDate.toISOString() : undefined,
-        enableScope,
-        location,
-        targetNrRegistrations,
-        validation,
-      }),
+      this.programApiService.createProgram(
+        {
+          titlePortal: {
+            [UILanguage.en]: name,
+          },
+          description: {
+            [UILanguage.en]: description,
+          },
+          budget,
+          currency,
+          distributionDuration,
+          fixedTransferValue,
+          startDate: startDate ? startDate.toISOString() : undefined,
+          endDate: endDate ? endDate.toISOString() : undefined,
+          enableScope,
+          location,
+          targetNrRegistrations,
+          validation,
+        }
+        this.duplicateSource()?.id
+      ),
     onSuccess: async (result, variables) => {
       // If the program was created successfully and the user has selected fsps, we create the FSP configurations for the program
       if (result?.id && variables.budgetGroup.fsps.length > 0) {
@@ -156,7 +165,9 @@ export class CreateProgramDialogComponent {
       });
 
       this.toastService.showToast({
-        detail: $localize`Program successfully created.`,
+        detail: this.isDuplicate()
+          ? $localize`Program successfully duplicated.`
+          : $localize`Program successfully created.`,
       });
     },
     onError: (error) => {
@@ -250,7 +261,13 @@ export class CreateProgramDialogComponent {
   }
 
   show() {
+    this.duplicateSource.set(undefined);
     this.formGroup()?.reset();
+    this.goToNextStep();
+  }
+
+  showForDuplicate(program: Program) {
+    this.duplicateSource.set({ ...program });
     this.goToNextStep();
   }
 }
