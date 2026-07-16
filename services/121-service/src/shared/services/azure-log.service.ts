@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { defaultClient, TelemetryClient } from 'applicationinsights';
 import { SeverityLevel } from 'applicationinsights/out/Declarations/Contracts';
 
+import { IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 
 @Injectable()
@@ -43,8 +44,10 @@ export class AzureLogService {
     }
   }
 
-  public consoleLogAndTraceAzure(message: string): void {
-    console.log(message);
+  public traceAzure(message: string): void {
+    if (!IS_PRODUCTION) {
+      console.log(message);
+    }
     if (!this.defaultClient) {
       return;
     }
