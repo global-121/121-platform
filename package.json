@@ -43,11 +43,13 @@
     "test:121-service": "cd services/ && docker compose exec 121-service npm test",
     "test:mock-service": "cd services/ && docker compose exec mock-service npm test",
     "test:portal": "npm run test:ci --prefix=interfaces/portal/",
+    "fix": "printf 'Did you mean to run `npm run fix:all` (for EVERYTHING)? Or `npm run fix:prettier`?\\n\\n' >&2; exit 1",
     "fix:prettier": "npm run test:prettier -- --write",
     "fix:121-service": "npm run fix --prefix=services/121-service/",
     "fix:mock-service": "npm run fix --prefix=services/mock-service/",
     "fix:portal": "npm run fix --prefix=interfaces/portal/",
-    "fix:all": "npx npm-run-all --npm-path npm --parallel fix:prettier fix:121-service fix:mock-service fix:portal",
+    "fix:e2e": "npm run fix --prefix=e2e/",
+    "fix:all": "npx npm-run-all --npm-path npm --parallel fix:prettier fix:121-service fix:mock-service fix:portal fix:e2e",
     "tool:download-logs": "npm run download-logs --prefix=tools/",
     "tool:check-versions": "npm run check-versions --prefix=tools/",
     "prepare": "husky"
@@ -57,7 +59,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.0.8",
     "npm-run-all": "^4.1.5",
-    "prettier": "^3.8.4",
+    "prettier": "^3.9.4",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "typescript": "^5.9.3"

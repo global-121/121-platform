@@ -353,7 +353,7 @@ This is how we create and publish a new release of the 121-platform.
 (See [the glossary](#glossary) for definitions of some terms.)
 
 - Define _what_ code needs to be released.  
-   (Is the current state of the `main`-branch what we want? Or a specific commit/point-in-the-past?)
+  (Is the current state of the `main`-branch what we want? Or a specific commit/point-in-the-past?)
 - Check the changes since the last release, by replacing `vX.X-X` with the latest release in this URL: `https://github.com/global-121/121-platform/compare/vX.X-X...main`  
   Check any changes to make sure we highlight new user-features, or any required changes to the deployment-process or newly required environment-variables, etc.  
   So we can include these in the release-notes.
