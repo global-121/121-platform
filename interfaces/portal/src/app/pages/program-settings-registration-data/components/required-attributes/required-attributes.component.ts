@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { AccordionModule } from 'primeng/accordion';
 import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -28,6 +29,7 @@ import { ToastService } from '~/services/toast.service';
     TagModule,
     TranslatableStringPipe,
     InfoTooltipComponent,
+    AccordionModule,
   ],
   providers: [ToastService],
   templateUrl: './required-attributes.component.html',
@@ -36,8 +38,9 @@ import { ToastService } from '~/services/toast.service';
 })
 export class RequiredAttributesComponent {
   readonly programId = input.required<number | string>();
-  private readonly toastService = inject(ToastService);
+  readonly isKoboIntegrated = input.required<boolean>();
 
+  private readonly toastService = inject(ToastService);
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
   readonly fspConfigurationService = inject(FspConfigurationService);
   readonly programApiService = inject(ProgramApiService);
@@ -120,6 +123,10 @@ export class RequiredAttributesComponent {
       ...attributes.filter((attr) => requiredAttributeNames.has(attr.name)),
     ];
   });
+
+  readonly accordionValue = computed(() =>
+    this.isKoboIntegrated() ? undefined : 'integrated-fsps-accordion-panel',
+  );
 
   copyToClipboard(text: string) {
     void navigator.clipboard.writeText(text);

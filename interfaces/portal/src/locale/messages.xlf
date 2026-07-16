@@ -1193,9 +1193,6 @@
       <trans-unit id="6001336690636833920" datatype="html">
         <source>Basic information details saved successfully.</source>
       </trans-unit>
-      <trans-unit id="6009734842721420603" datatype="html">
-        <source>Your form must include the following required fields, using these <x ctype="x-strong" equiv-text="&lt;strong class=&quot;font-display&quot;&gt;" id="START_TAG_STRONG"/>exact data column names<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> (these would be the column headers in Excel).</source>
-      </trans-unit>
       <trans-unit id="6011590435574005771" datatype="html">
         <source>Question label</source>
       </trans-unit>
@@ -1403,6 +1400,9 @@
       </trans-unit>
       <trans-unit id="7014051207286040747" datatype="html">
         <source>Data column name</source>
+      </trans-unit>
+      <trans-unit id="7017298442896734249" datatype="html">
+        <source>Your form must include the following required fields, using these <x ctype="x-strong" equiv-text="&lt;strong class=&quot;font-display&quot;&gt;" id="START_TAG_STRONG"/>exact data column names<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> (these would be the column headers in Excel).</source>
       </trans-unit>
       <trans-unit id="7017859949445533273" datatype="html">
         <source>Date is before</source>
