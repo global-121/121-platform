@@ -335,6 +335,7 @@ export class KoboController {
 
     res.writeHead(HttpStatus.OK, {
       'Content-Type': mimetype,
+      'X-Content-Type-Options': 'nosniff',
     });
 
     stream.pipe(res);
