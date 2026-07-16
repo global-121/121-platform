@@ -60,29 +60,15 @@ export class ProgramApiService extends DomainApiService {
     TranslatableStringService,
   );
 
-  createProgram(newProgram: Dto<CreateProgramDto>) {
+  createProgram(newProgram: Dto<CreateProgramDto>, copyFromProgramId?: number) {
     return this.httpWrapperService.perform121ServiceRequest<
       Program | undefined
     >({
       method: 'POST',
       endpoint: BASE_ENDPOINT,
       body: newProgram,
-    });
-  }
-
-  duplicateProgram({
-    copyFromProgramId,
-    titlePortal,
-  }: {
-    copyFromProgramId: number;
-    titlePortal: Dto<CreateProgramDto>['titlePortal'];
-  }) {
-    return this.httpWrapperService.perform121ServiceRequest<
-      Program | undefined
-    >({
-      method: 'POST',
-      endpoint: BASE_ENDPOINT,
-      body: { copyFromProgramId, titlePortal },
+      httpParams:
+        copyFromProgramId !== undefined ? { copyFromProgramId } : undefined,
     });
   }
 

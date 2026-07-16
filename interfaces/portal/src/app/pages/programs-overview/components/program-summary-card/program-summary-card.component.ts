@@ -5,7 +5,7 @@ import {
   computed,
   inject,
   input,
-  viewChild,
+  output,
 } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -19,10 +19,9 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { DuplicateProgramDialogComponent } from '~/pages/programs-overview/components/duplicate-program-dialog/duplicate-program-dialog.component';
+import { Program } from '~/domains/program/program.model';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { AuthService } from '~/services/auth.service';
-import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
   selector: 'app-program-summary-card',
@@ -32,7 +31,6 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     SkeletonInlineComponent,
     CardWithLinkComponent,
     CardSummaryMetricsContainerComponent,
-    DuplicateProgramDialogComponent,
   ],
   providers: [CurrencyPipe, DecimalPipe],
   templateUrl: './program-summary-card.component.html',
@@ -47,14 +45,10 @@ export class ProgramSummaryCardComponent {
   private decimalPipe = inject(DecimalPipe);
   private router = inject(Router);
   private authService = inject(AuthService);
-  private translatableStringService = inject(TranslatableStringService);
 
   public readonly id = input.required<number>();
 
-  readonly duplicateProgramDialog =
-    viewChild.required<DuplicateProgramDialogComponent>(
-      'duplicateProgramDialog',
-    );
+  public readonly duplicate = output<Program>();
 
   public program = injectQuery(this.programApiService.getProgram(this.id));
   public metrics = injectQuery(() => ({
@@ -95,13 +89,10 @@ export class ProgramSummaryCardComponent {
         label: $localize`:@@program-card-menu-duplicate:Duplicate`,
         icon: 'pi pi-clone',
         command: () => {
-          this.duplicateProgramDialog().show({
-            programId: this.id(),
-            programName:
-              this.translatableStringService.translate(
-                this.program.data()?.titlePortal,
-              ) ?? '',
-          });
+          const program = this.program.data();
+          if (program) {
+            this.duplicate.emit(program);
+          }
         },
       });
     }

@@ -1,44 +1,53 @@
 import {
-    DataSource,
-    DeepPartial,
-    EntityManager,
-    EntityMetadata,
-    EntityTarget,
-    Equal,
-    FindOptionsWhere,
-    ObjectLiteral,
-    Repository,
+  DataSource,
+  DeepPartial,
+  EntityManager,
+  EntityMetadata,
+  EntityTarget,
+  Equal,
+  FindOptionsWhere,
+  ObjectLiteral,
+  Repository,
 } from 'typeorm';
 
 import {
-    buildRelationsToEagerLoad,
-    collectLateralForeignKeyRemaps,
-    copyColumnValues,
-    DuplicationContext,
-    EntityDuplicationTree,
-    getNestedRelationTree,
-    getParentForeignKeyProperty,
-    getPrimaryKeyProperty,
-    getRelationNamesToDuplicate,
-    normalizeRelationChildren,
-    validateRelationTypeOrThrow,
+  buildRelationsToEagerLoad,
+  collectLateralForeignKeyRemaps,
+  copyColumnValues,
+  DuplicationContext,
+  EntityDuplicationTree,
+  getNestedRelationTree,
+  getParentForeignKeyProperty,
+  getPrimaryKeyProperty,
+  getRelationNamesToDuplicate,
+  normalizeRelationChildren,
+  validateRelationTypeOrThrow,
 } from '@121-service/src/utils/entity-duplication/duplicate-entity.helper';
 
 export type { EntityDuplicationTree };
 
-export async function duplicateEntity<T extends ObjectLiteral>({
+/**
+ * Copies the selected relations of an already-existing source row onto an
+ * already-existing target row of the same entity type.
+ *
+ * The target root is expected to be created by the caller (e.g. via the normal
+ * create flow). This helper only duplicates the configured relation children
+ * (recursing into nested relation trees) and re-points foreign keys that
+ * reference another duplicated sibling.
+ */
+export async function duplicateRelations<T extends ObjectLiteral>({
   dataSource,
   entity,
-  id,
-  propertiesToDuplicate,
-  overrides = {},
+  sourceId,
+  targetId,
+  relationsToDuplicate,
 }: {
   dataSource: DataSource;
   entity: EntityTarget<T>;
-  id: number;
-  propertiesToDuplicate: EntityDuplicationTree;
-  overrides?: Record<string, unknown>;
-}): Promise<T> {
+  sourceId: number;
+  targetId: number;
+  relationsToDuplicate: EntityDuplicationTree;
+}): Promise<void> {
   const queryRunner = dataSource.createQueryRunner();
   await queryRunner.startTransaction();
 
@@ -53,38 +62,29 @@ export async function duplicateEntity<T extends ObjectLiteral>({
 
     const primaryColumn = getPrimaryKeyProperty(metadata);
     const source = await repository.findOneOrFail({
-      where: { [primaryColumn]: Equal(id) } as FindOptionsWhere<T>,
+      where: { [primaryColumn]: Equal(sourceId) } as FindOptionsWhere<T>,
       relations: buildRelationsToEagerLoad<T>({
         metadata,
-        relationTree: propertiesToDuplicate,
+        relationTree: relationsToDuplicate,
       }),
     });
 
-    const newRoot = await repository.save(
-      repository.create(
-        copyColumnValues({
-          metadata,
-          source,
-          overrides,
-          propertiesToDuplicate,
-        }) as DeepPartial<T>,
-      ),
-    );
-    recordDuplicatedRow({ context, metadata, source, copy: newRoot });
+    // The target root already exists; record the source -> target id mapping so
+    // that any relation foreign key pointing at the root can be remapped.
+    getOrCreateIdMap(context, metadata.name).set(sourceId, targetId);
 
-    await duplicateRelations({
+    await duplicateEntityRelations({
       manager: queryRunner.manager,
       metadata,
       source,
-      newParentId: newRoot[primaryColumn],
-      relationTree: propertiesToDuplicate,
+      newParentId: targetId,
+      relationTree: relationsToDuplicate,
       context,
     });
 
     await remapLateralForeignKeys({ manager: queryRunner.manager, context });
 
     await queryRunner.commitTransaction();
-    return newRoot;
   } catch (error) {
     if (queryRunner.isTransactionActive) {
       await queryRunner.rollbackTransaction();
@@ -100,7 +100,7 @@ export async function duplicateEntity<T extends ObjectLiteral>({
 // recursing into nested relation trees.
 // ---------------------------------------------------------------------------
 
-async function duplicateRelations({
+async function duplicateEntityRelations({
   manager,
   metadata,
   source,
@@ -223,7 +223,7 @@ async function duplicateNestedRelationTrees({
   const childPrimaryKey = getPrimaryKeyProperty(childMetadata);
 
   for (const [index, child] of children.entries()) {
-    await duplicateRelations({
+    await duplicateEntityRelations({
       manager,
       metadata: childMetadata,
       source: child,
@@ -336,4 +336,3 @@ async function remapLateralForeignKeys({
     );
   }
 }
-

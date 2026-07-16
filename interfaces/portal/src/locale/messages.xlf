@@ -1091,9 +1091,6 @@
       <trans-unit id="5558547280081275233" datatype="html">
         <source>Approvals</source>
       </trans-unit>
-      <trans-unit id="5565339126415904508" datatype="html">
-        <source>Duplicate &quot;<x equiv-text="{{ sourceProgramName() }}" id="INTERPOLATION"/>&quot; with all its details except the registration form. Update the relevant details and link a registration form to complete setup.</source>
-      </trans-unit>
       <trans-unit id="5567795196823052308" datatype="html">
         <source>please wait before creating a new payment.</source>
       </trans-unit>

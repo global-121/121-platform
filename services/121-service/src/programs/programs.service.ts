@@ -18,13 +18,13 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
-import { propertiesToDuplicate } from '@121-service/src/programs/program-duplication.const';
+import { relationsToDuplicate } from '@121-service/src/programs/program-duplication.const';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
-import { duplicateEntity } from '@121-service/src/utils/entity-duplication/duplicate-entity.service';
+import { duplicateRelations } from '@121-service/src/utils/entity-duplication/duplicate-entity.service';
 
 @Injectable()
 export class ProgramService {
@@ -139,6 +139,7 @@ export class ProgramService {
   public async create(
     programData: CreateProgramDto,
     userId: number,
+    { assignCurrentUser = true }: { assignCurrentUser?: boolean } = {},
   ): Promise<ProgramEntity> {
     let newProgram;
 
@@ -227,10 +228,12 @@ export class ProgramService {
       await queryRunner.release();
     }
 
-    await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
-      roles: [DefaultUserRole.Admin],
-      scope: undefined,
-    });
+    if (assignCurrentUser) {
+      await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
+        roles: [DefaultUserRole.Admin],
+        scope: undefined,
+      });
+    }
     return newProgram;
   }
 
@@ -242,27 +245,47 @@ export class ProgramService {
 
   public async duplicateProgram({
     copyFromProgramId,
-    overrides,
+    programData,
+    userId,
   }: {
     copyFromProgramId: number;
-    overrides: Partial<CreateProgramDto>;
+    programData: CreateProgramDto;
+    userId: number;
   }): Promise<ProgramEntity> {
-    const programExists = await this.programRepository.exists({
+    const sourceExists = await this.programRepository.exists({
       where: { id: Equal(copyFromProgramId) },
     });
-    if (!programExists) {
+    if (!sourceExists) {
       throw new HttpException(
         { errors: `No program found with id ${copyFromProgramId}` },
         HttpStatus.NOT_FOUND,
       );
     }
 
-    const newProgram = await duplicateEntity({
+    // Create the new program from the (prefilled) request data. Skip assigning
+    // the current user here: the source team is copied below, which may already
+    // include them (a duplicate (userId, programId) would violate the unique
+    // constraint).
+    const newProgram = await this.create(programData, userId, {
+      assignCurrentUser: false,
+    });
+
+    // Copy the configuration relations (team, FSP configurations, approval
+    // thresholds) from the source onto the newly created program.
+    await duplicateRelations({
       dataSource: this.dataSource,
       entity: ProgramEntity,
-      id: copyFromProgramId,
-      propertiesToDuplicate,
-      overrides,
+      sourceId: copyFromProgramId,
+      targetId: newProgram.id,
+      relationsToDuplicate,
+    });
+
+    // Ensure the user duplicating the program has admin access, even if they
+    // were not part of the copied source team. Idempotent: updates the roles if
+    // they were already assigned via the copied team.
+    await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
+      roles: [DefaultUserRole.Admin],
+      scope: undefined,
     });
 
     return newProgram;
