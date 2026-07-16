@@ -30,12 +30,8 @@ export class FspTagsComponent {
 
   readonly programFsps = computed(() => {
     const fspConfigs = this.fspConfigurations.data() ?? [];
-<<<<<<< HEAD
     return [
       ...new Set(fspConfigs.map((config) => FSP_SETTINGS[config.fspName])), // Removing possible duplicates (Excel)
     ];
-=======
-    return fspConfigs.map((config) => FSP_SETTINGS[config.fspName]);
->>>>>>> bd1b0749b (feat: Use new multiselect to add/remove FSP's inside the program-settings)
   });
 }
