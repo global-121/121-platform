@@ -8,12 +8,14 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
+import { AppRoutes } from '~/app.routes';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import {
   ProgramBudgetFormGroup,
@@ -29,7 +31,7 @@ import {
 } from '~/components/program-form-name/program-form-name.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Program } from '~/domains/program/program.model';
-import { ProgramNavigationService } from '~/domains/program/program-navigation.service';
+import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -48,8 +50,9 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateProgramDialogComponent {
+  readonly router = inject(Router);
+  readonly authService = inject(AuthService);
   readonly programApiService = inject(ProgramApiService);
-  readonly programNavigationService = inject(ProgramNavigationService);
   readonly toastService = inject(ToastService);
 
   readonly createProgramDialog =
@@ -139,9 +142,15 @@ export class CreateProgramDialogComponent {
         this.duplicateSource()?.id,
       ),
     onSuccess: async (result) => {
-      await this.programNavigationService.navigateToNewProgram({
-        programId: result?.id,
-      });
+      // The keys of the user permissions determine which programs a user can see
+      await this.authService.refreshUserPermissions();
+
+      await this.router.navigate([
+        '/',
+        AppRoutes.program,
+        result?.id,
+        AppRoutes.programSettings,
+      ]);
 
       this.toastService.showToast({
         detail: this.isDuplicate()
