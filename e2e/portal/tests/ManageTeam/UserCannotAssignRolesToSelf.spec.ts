@@ -37,7 +37,6 @@ test('User cannot assign role to self', async ({ page, programTeamPage }) => {
 
   // Act
   await test.step('Check if warning appears that user cannot edit their own roles', async () => {
-    await programTeamPage.enableEditMode();
     await programTeamPage.editUser({
       userEmail: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
     });

@@ -44,7 +44,6 @@ test('Users should be removable from "program team"', async ({
   });
 
   await test.step('Validate available system users are visible', async () => {
-    await programTeamPage.enableEditMode();
     await programTeamPage.removeUserFromTeam({
       userEmail: userToRemove,
     });

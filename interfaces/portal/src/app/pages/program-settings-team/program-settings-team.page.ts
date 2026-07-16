@@ -63,7 +63,6 @@ export class ProgramSettingsTeamPageComponent {
     undefined,
   );
   readonly formMode = signal<'add' | 'edit'>('add');
-  readonly isEditing = signal(false);
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
   programUsers = injectQuery(

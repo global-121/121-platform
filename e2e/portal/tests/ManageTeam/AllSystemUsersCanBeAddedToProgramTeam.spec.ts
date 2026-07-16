@@ -46,7 +46,6 @@ test('All system-users are available to be added to a "program team"', async ({
     await programTeamPage.validateAssignedTeamMembers(expectedAssignedUsers);
   });
   await test.step('Validate available system users are visible', async () => {
-    await programTeamPage.enableEditMode();
     await programTeamPage.openAddUserForm();
     await programTeamPage.validateAvailableSystemUsers(
       expectedAvailablesystemUsers,
