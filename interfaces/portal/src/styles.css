@@ -438,4 +438,13 @@ svg-icon svg {
       display: none;
     }
   }
+
+  /* Fixies some alignment issues for accordions in cards */
+  .p-accordion-padding-reset {
+    --p-content-border-radius: 0;
+    --p-accordion-panel-border-width: 0;
+    --p-accordion-header-first-top-border-radius: 0;
+    --p-accordion-header-padding: 0;
+    --p-accordion-content-padding: 0;
+  }
 }

@@ -10,16 +10,7 @@
 
   <ng-container card-content>
     @if (requiredRegistrationAttributes().length > 0) {
-      <p-accordion
-        style="
-          --p-content-border-radius: 0;
-          --p-accordion-panel-border-width: 0;
-          --p-accordion-header-first-top-border-radius: 0;
-          --p-accordion-header-padding: 0;
-          --p-accordion-content-padding: 0;
-        "
-        class="relative z-10"
-      >
+      <p-accordion class="p-accordion-padding-reset relative z-10">
         <p-accordion-panel value="0">
           <p-accordion-header class="border-bs pbs-4">
             <div>

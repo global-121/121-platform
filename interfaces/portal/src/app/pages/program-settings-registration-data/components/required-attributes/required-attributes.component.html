@@ -1,7 +1,10 @@
-<p-accordion [value]="accordionValue()">
+<p-accordion
+  [value]="accordionValue()"
+  class="p-accordion-padding-reset"
+>
   <p-accordion-panel
     value="integrated-fsps-accordion-panel"
-    class="border-0"
+    class="pbs-4"
   >
     <p-accordion-header>
       <div>
@@ -29,7 +32,7 @@
         }
       </div>
     </p-accordion-header>
-    <p-accordion-content>
+    <p-accordion-content class="mbs-4">
       <p i18n>
         Your form must include the following required fields, using these
         <strong class="font-display">exact data column names</strong> (these
@@ -39,6 +42,7 @@
       <p-table
         [value]="requiredAttributes()"
         data-testid="required-attributes-table"
+        class="mbs-4"
       >
         <ng-template #header>
           <tr>
