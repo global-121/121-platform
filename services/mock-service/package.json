@@ -53,7 +53,7 @@
     "eslint": "^9.39.4",
     "eslint-config-121-platform": "file:../../packages/eslint-config-121-platform/",
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
-    "eslint-plugin-regexp": "^3.1.0",
+    "eslint-plugin-regexp": "^3.1.1",
     "prettier": "^3.9.4",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.58.0"
