@@ -236,7 +236,7 @@ describe('AzureLogService', () => {
     });
 
     it('should log to console and track trace in Azure', () => {
-      service.consoleLogAndTraceAzure(testMessage);
+      service.traceAzure(testMessage);
 
       expect(consoleLogSpy).toHaveBeenCalledWith(testMessage);
       expect(mockTelemetryClient.trackTrace).toHaveBeenCalledWith({
@@ -250,9 +250,9 @@ describe('AzureLogService', () => {
       const longMessage = 'A'.repeat(1000);
       const specialCharMessage = 'Message with special chars: !@#$%^&*()';
 
-      service.consoleLogAndTraceAzure(emptyMessage);
-      service.consoleLogAndTraceAzure(longMessage);
-      service.consoleLogAndTraceAzure(specialCharMessage);
+      service.traceAzure(emptyMessage);
+      service.traceAzure(longMessage);
+      service.traceAzure(specialCharMessage);
 
       expect(mockTelemetryClient.trackTrace).toHaveBeenCalledTimes(3);
       expect(mockTelemetryClient.trackTrace).toHaveBeenNthCalledWith(1, {
@@ -273,7 +273,7 @@ describe('AzureLogService', () => {
       };
       mockTelemetryClient.flush.mockImplementation(throwingImplementation);
 
-      const consoleLogCall = () => service.consoleLogAndTraceAzure(testMessage);
+      const consoleLogCall = () => service.traceAzure(testMessage);
       expect(consoleLogCall).not.toThrow();
 
       expect(consoleLogSpy).toHaveBeenCalledWith(testMessage);
@@ -295,7 +295,7 @@ describe('AzureLogService', () => {
     });
 
     it('should only log to console when defaultClient is not available', () => {
-      service.consoleLogAndTraceAzure(testMessage);
+      service.traceAzure(testMessage);
 
       expect(consoleLogSpy).toHaveBeenCalledWith(testMessage);
       expect(mockTelemetryClient.trackTrace).not.toHaveBeenCalled();
@@ -306,7 +306,7 @@ describe('AzureLogService', () => {
       const messages = ['Message 1', 'Message 2', 'Message 3'];
 
       messages.forEach((message) => {
-        service.consoleLogAndTraceAzure(message);
+        service.traceAzure(message);
       });
 
       expect(consoleLogSpy).toHaveBeenCalledTimes(3);
@@ -330,7 +330,7 @@ describe('AzureLogService', () => {
 
         service.logError(error1, false);
         service.logError(error2, true);
-        service.consoleLogAndTraceAzure(message);
+        service.traceAzure(message);
 
         expect(mockTelemetryClient.trackException).toHaveBeenCalledTimes(2);
         expect(mockTelemetryClient.trackTrace).toHaveBeenCalledTimes(1);
@@ -341,9 +341,9 @@ describe('AzureLogService', () => {
         const error = createTestError('Interleaved error');
         const message = 'Interleaved message';
 
-        service.consoleLogAndTraceAzure(message);
+        service.traceAzure(message);
         service.logError(error, true);
-        service.consoleLogAndTraceAzure(message);
+        service.traceAzure(message);
         service.logError(error, false);
 
         expect(mockTelemetryClient.trackTrace).toHaveBeenCalledTimes(2);
@@ -408,8 +408,7 @@ describe('AzureLogService', () => {
 
     it('should handle empty string messages', () => {
       const emptyMessage = '';
-      const logEmptyMessage = () =>
-        service.consoleLogAndTraceAzure(emptyMessage);
+      const logEmptyMessage = () => service.traceAzure(emptyMessage);
 
       expect(logEmptyMessage).not.toThrow();
       expect(consoleLogSpy).toHaveBeenCalledWith(emptyMessage);
