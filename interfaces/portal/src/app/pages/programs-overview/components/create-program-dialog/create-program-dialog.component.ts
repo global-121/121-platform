@@ -109,7 +109,6 @@ export class CreateProgramDialogComponent {
         currency,
         distributionDuration,
         fixedTransferValue,
-        fsps,
       },
     }: ReturnType<
       FormGroup<{
@@ -135,7 +134,6 @@ export class CreateProgramDialogComponent {
         location,
         targetNrRegistrations,
         validation,
-        fsps,
       }),
     onSuccess: async (result, variables) => {
       // If the program was created successfully and the user has selected fsps, we create the FSP configurations for the program
