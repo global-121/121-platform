@@ -2,11 +2,11 @@ import { EntityMetadata, FindOptionsRelations, ObjectLiteral } from 'typeorm';
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
 
 /**
- * Describes which columns and relations of an entity should be duplicated,
- * mirroring the shape of TypeORM's `FindOptionsRelations`.
+ * Describes which relations of an entity should be duplicated, mirroring the
+ * shape of TypeORM's `FindOptionsRelations`.
  *
- * - `true` duplicates the column, or the relation's direct children.
- * - `false` skips it.
+ * - `true` duplicates the relation's direct children.
+ * - `false` (or leaving the relation out) skips it.
  * - A nested tree duplicates the relation AND recurses into the listed
  *   sub-relations (e.g. `{ properties: true }`).
  */
@@ -87,10 +87,11 @@ function getManyToManySubRelations({
 // ---------------------------------------------------------------------------
 
 /**
- * Copies a source row's own persistable column values so the row can be cloned.
+ * Copies a source row's own column values into a plain object from which a
+ * clone can be created.
  *
- * Skips identity/audit columns and nullable foreign keys: the parent foreign
- * key is set by the caller and lateral foreign keys are re-pointed afterwards.
+ * Skips the primary key and audit columns (a clone gets fresh ones) and
+ * nullable foreign keys (relation links are set/re-pointed separately).
  */
 export function copyColumnValues({
   metadata,

@@ -262,16 +262,10 @@ export class ProgramService {
       );
     }
 
-    // Create the new program from the (prefilled) request data. Skip assigning
-    // the current user here: the source team is copied below, which may already
-    // include them (a duplicate (userId, programId) would violate the unique
-    // constraint).
     const newProgram = await this.create(programData, userId, {
       assignCurrentUser: false,
     });
 
-    // Copy the configuration relations (team, FSP configurations, approval
-    // thresholds) from the source onto the newly created program.
     await duplicateRelations({
       dataSource: this.dataSource,
       entity: ProgramEntity,
@@ -280,9 +274,6 @@ export class ProgramService {
       relationsToDuplicate,
     });
 
-    // Ensure the user duplicating the program has admin access, even if they
-    // were not part of the copied source team. Idempotent: updates the roles if
-    // they were already assigned via the copied team.
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.Admin],
       scope: undefined,
