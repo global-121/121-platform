@@ -267,14 +267,11 @@ export class ProgramService {
       assignCurrentUser: false,
     });
 
-    // Copy each relation explicitly, using the relevant entity's repository.
     await this.copyFspConfigurations({
       sourceProgramId: copyFromProgramId,
       targetProgramId: newProgram.id,
     });
 
-    // Thresholds are copied before the aidworker assignments so the copied
-    // assignments can point at the copied threshold instead of the source one.
     const newThresholdIdByOldId = await this.copyApprovalThresholds({
       sourceProgramId: copyFromProgramId,
       targetProgramId: newProgram.id,
@@ -324,8 +321,6 @@ export class ProgramService {
         }),
       );
 
-      // The property values are read straight from the database, so even
-      // sensitive values are copied (unlike a client-side copy).
       await propertyRepository.save(
         sourceConfiguration.properties.map((property) =>
           propertyRepository.create({
@@ -391,7 +386,7 @@ export class ProgramService {
           programId: targetProgramId,
           userId: sourceAssignment.userId,
           scope: sourceAssignment.scope,
-          roles: sourceAssignment.roles, // re-link the existing roles (many-to-many)
+          roles: sourceAssignment.roles,
           programApprovalThresholdId:
             sourceAssignment.programApprovalThresholdId == null
               ? null
@@ -409,7 +404,6 @@ export class ProgramService {
   ): Promise<ProgramReturnDto> {
     const program = await this.findProgramOrThrow(programId);
 
-    // If nothing to update, raise a 400 Bad Request.
     if (Object.keys(updateProgramDto).length === 0) {
       throw new HttpException(
         'Update program error: no attributes supplied to update',
