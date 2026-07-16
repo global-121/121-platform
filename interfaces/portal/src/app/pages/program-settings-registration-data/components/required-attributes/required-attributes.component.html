@@ -8,28 +8,16 @@
   >
     <p-accordion-header>
       <div>
-        <h2
-          i18n
-          class="text-base!"
-        >
-          Integrated FSPs
-        </h2>
-        @if (programFsps().length > 0) {
-          <ol
-            class="mbs-2 flex flex-wrap gap-2"
-            data-testid="integrated-fsp-list"
+        <div class="mbs-4">
+          <h2
+            i18n
+            class="mbe-2 text-base!"
           >
-            @for (fsp of programFsps(); track $index) {
-              <li>
-                <p-tag
-                  severity="info"
-                  [value]="fsp.defaultLabel | translatableString"
-                  [rounded]="true"
-                />
-              </li>
-            }
-          </ol>
-        }
+            Integrated FSPs
+          </h2>
+
+          <app-fsp-tags [programId]="programId()" />
+        </div>
       </div>
     </p-accordion-header>
     <p-accordion-content class="mbs-4">

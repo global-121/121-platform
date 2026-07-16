@@ -14,6 +14,7 @@ import { TableModule } from 'primeng/table';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 
+import { FspTagsComponent } from '~/components/fsp-tags/fsp-tags.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
@@ -24,10 +25,9 @@ import { ToastService } from '~/services/toast.service';
   imports: [
     TableModule,
     Button,
-    TagModule,
-    TranslatableStringPipe,
     InfoTooltipComponent,
     AccordionModule,
+    FspTagsComponent,
   ],
   providers: [ToastService],
   templateUrl: './required-attributes.component.html',
