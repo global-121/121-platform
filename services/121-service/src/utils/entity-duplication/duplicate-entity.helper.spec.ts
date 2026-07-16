@@ -1,13 +1,13 @@
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
 
 import {
-  buildRelationsToEagerLoad,
-  collectLateralForeignKeyRemaps,
-  copyColumnValues,
-  getNestedRelationTree,
-  getRelationNamesToDuplicate,
-  normalizeRelationChildren,
-  validateRelationTypeOrThrow,
+    buildRelationsToEagerLoad,
+    collectLateralForeignKeyRemaps,
+    copyColumnValues,
+    getNestedRelationTree,
+    getRelationNamesToDuplicate,
+    normalizeRelationChildren,
+    validateRelationTypeOrThrow,
 } from '@121-service/src/utils/entity-duplication/duplicate-entity.helper';
 
 // Helpers to build minimal column/relation mocks without implementing
@@ -47,7 +47,7 @@ function makeRelation(
 describe('copyColumnValues', () => {
   it('should skip primary columns', () => {
     const metadata = makeMetadata([makeColumn('id', { isPrimary: true })]);
-    const result = copyColumnValues({ metadata, source: { id: 1 }, overrides: {} });
+    const result = copyColumnValues({ metadata, source: { id: 1 } });
     expect(result).not.toHaveProperty('id');
   });
 
@@ -60,88 +60,37 @@ describe('copyColumnValues', () => {
     const result = copyColumnValues({
       metadata,
       source: { created: new Date(), updated: new Date(), version: 1 },
-      overrides: {},
     });
     expect(result).not.toHaveProperty('created');
     expect(result).not.toHaveProperty('updated');
     expect(result).not.toHaveProperty('version');
   });
 
-  it('should skip nullable FK columns when excludeForeignKeyColumns is true', () => {
+  it('should skip nullable foreign key columns', () => {
     const metadata = makeMetadata([
       makeColumn('programId', { relationMetadata: {}, isNullable: true }),
     ]);
-    const result = copyColumnValues({
-      metadata,
-      source: { programId: 42 },
-      overrides: {},
-      excludeForeignKeyColumns: true,
-    });
+    const result = copyColumnValues({ metadata, source: { programId: 42 } });
     expect(result).not.toHaveProperty('programId');
   });
 
-  it('should keep non-nullable FK columns even when excludeForeignKeyColumns is true', () => {
+  it('should keep non-nullable foreign key columns', () => {
     const metadata = makeMetadata([
       makeColumn('userId', { relationMetadata: {}, isNullable: false }),
     ]);
-    const result = copyColumnValues({
-      metadata,
-      source: { userId: 7 },
-      overrides: {},
-      excludeForeignKeyColumns: true,
-    });
+    const result = copyColumnValues({ metadata, source: { userId: 7 } });
     expect(result).toHaveProperty('userId', 7);
   });
 
-  it('should skip columns set to false in propertiesToDuplicate', () => {
+  it('should copy a normal column', () => {
     const metadata = makeMetadata([makeColumn('title')]);
-    const result = copyColumnValues({
-      metadata,
-      source: { title: 'Test' },
-      overrides: {},
-      propertiesToDuplicate: { title: false },
-    });
-    expect(result).not.toHaveProperty('title');
-  });
-
-  it('should copy columns set to true in propertiesToDuplicate', () => {
-    const metadata = makeMetadata([makeColumn('title')]);
-    const result = copyColumnValues({
-      metadata,
-      source: { title: 'Test' },
-      overrides: {},
-      propertiesToDuplicate: { title: true },
-    });
+    const result = copyColumnValues({ metadata, source: { title: 'Test' } });
     expect(result).toHaveProperty('title', 'Test');
-  });
-
-  it('should apply overrides for known column names', () => {
-    const metadata = makeMetadata([makeColumn('currency')]);
-    const result = copyColumnValues({
-      metadata,
-      source: { currency: 'EUR' },
-      overrides: { currency: 'USD' },
-    });
-    expect(result).toHaveProperty('currency', 'USD');
-  });
-
-  it('should ignore overrides for keys that are not column property names', () => {
-    const metadata = makeMetadata([makeColumn('title')]);
-    const result = copyColumnValues({
-      metadata,
-      source: { title: 'Test' },
-      overrides: { nonExistentKey: 'value' },
-    });
-    expect(result).not.toHaveProperty('nonExistentKey');
   });
 
   it('should skip columns absent from source', () => {
     const metadata = makeMetadata([makeColumn('description')]);
-    const result = copyColumnValues({
-      metadata,
-      source: {},
-      overrides: {},
-    });
+    const result = copyColumnValues({ metadata, source: {} });
     expect(result).not.toHaveProperty('description');
   });
 });

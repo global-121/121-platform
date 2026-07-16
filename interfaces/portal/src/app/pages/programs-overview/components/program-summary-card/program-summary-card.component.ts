@@ -65,7 +65,7 @@ export class ProgramSummaryCardComponent {
     const items: MenuItem[] = [
       {
         label: $localize`:@@program-card-menu-open:Open`,
-        icon: 'pi pi-arrow-right',
+        icon: 'pi pi-external-link',
         command: () => {
           void this.router.navigate(this.programLink(this.id()));
         },
