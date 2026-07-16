@@ -8,6 +8,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
@@ -15,6 +16,7 @@ import { CardModule } from 'primeng/card';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
+import { AppRoutes } from '~/app.routes';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import {
   ProgramBudgetFormGroup,
@@ -31,7 +33,7 @@ import {
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Program } from '~/domains/program/program.model';
-import { ProgramNavigationService } from '~/domains/program/program-navigation.service';
+import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -50,8 +52,9 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateProgramDialogComponent {
+  readonly router = inject(Router);
+  readonly authService = inject(AuthService);
   readonly programApiService = inject(ProgramApiService);
-  readonly programNavigationService = inject(ProgramNavigationService);
   readonly toastService = inject(ToastService);
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
 
@@ -163,7 +166,7 @@ export class CreateProgramDialogComponent {
       await this.programNavigationService.navigateToNewProgram({
         programId: result?.id,
       });
-
+  
       this.toastService.showToast({
         detail: this.isDuplicate()
           ? $localize`Program successfully duplicated.`
