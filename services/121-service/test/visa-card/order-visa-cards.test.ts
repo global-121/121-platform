@@ -48,7 +48,7 @@ describe('Order visa debit cards in batch', () => {
       addresseePhoneNumber,
     });
 
-    // Assert - endpoint returns 202 Accepted with order id
+    // Assert
     expect(orderResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(orderResponse.body).toEqual({
       id: expect.any(Number),
@@ -83,7 +83,6 @@ describe('Order visa debit cards in batch', () => {
       accessToken,
     });
     expect(ordersResponse.status).toBe(HttpStatus.OK);
-    // TODO: add phone number validation here once BE is ready
     expect(ordersResponse.body).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -91,6 +90,7 @@ describe('Order visa debit cards in batch', () => {
           noOfCards,
           noOfCardsOrdered: noOfCards,
           address: 'John Doe, Damrak 1 A, 1011AB, Amsterdam',
+          addresseePhoneNumber,
         }),
       ]),
     );

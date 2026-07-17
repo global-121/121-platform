@@ -50,4 +50,7 @@ export class VisaCardOrderEntity extends Base121Entity {
 
   @Column({ type: 'character varying' })
   public addressee: string;
+
+  @Column({ type: 'character varying' })
+  public addresseePhoneNumber: string;
 }

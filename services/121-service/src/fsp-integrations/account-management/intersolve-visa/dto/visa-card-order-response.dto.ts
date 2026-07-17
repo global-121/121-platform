@@ -6,7 +6,10 @@ export class VisaCardOrderResponseDto {
   @ApiProperty({ example: 1 })
   public readonly id: number;
 
-  @ApiProperty({ enum: VisaCardOrderStatus, example: VisaCardOrderStatus.Completed })
+  @ApiProperty({
+    enum: VisaCardOrderStatus,
+    example: VisaCardOrderStatus.Completed,
+  })
   public readonly status: VisaCardOrderStatus;
 
   @ApiProperty({ example: 100 })
@@ -17,6 +20,9 @@ export class VisaCardOrderResponseDto {
 
   @ApiProperty({ example: 'Damrak 1 A, 1011AB Amsterdam' })
   public readonly address: string;
+
+  @ApiProperty({ example: '+31612345678' })
+  public readonly addresseePhoneNumber: string;
 
   @ApiProperty({ example: 'manager@example.org' })
   public readonly orderedByUsername: string;

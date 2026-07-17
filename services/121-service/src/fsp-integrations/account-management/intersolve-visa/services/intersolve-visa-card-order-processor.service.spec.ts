@@ -26,6 +26,7 @@ describe('IntersolveVisaCardOrderProcessorService', () => {
       addressHouseNumberAddition: 'A',
       addressPostalCode: '1011AB',
       addressCity: 'Amsterdam',
+      addresseePhoneNumber: '+31600000000',
       ...overrides,
     });
   }
