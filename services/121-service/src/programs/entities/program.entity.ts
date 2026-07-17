@@ -8,7 +8,6 @@ import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
-import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -120,12 +119,6 @@ export class ProgramEntity extends Base121Entity {
     (attachments) => attachments.program,
   )
   public attachments: Relation<ProgramAttachmentEntity[]>;
-
-  @OneToMany(
-    () => ProgramApprovalThresholdEntity,
-    (programApprovalThreshold) => programApprovalThreshold.program,
-  )
-  public programApprovalThresholds: Relation<ProgramApprovalThresholdEntity[]>;
 
   @Column({ default: false, select: false })
   public paymentsAreLocked: boolean;

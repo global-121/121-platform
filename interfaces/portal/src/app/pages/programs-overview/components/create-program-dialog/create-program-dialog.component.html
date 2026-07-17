@@ -12,7 +12,7 @@
   (proceed)="goToNextStep()"
 >
   <ng-template #header>
-    @if (isDuplicate()) {
+    @if (duplicationMode()) {
       <i class="pi pi-clone me-2"></i>
       <ng-container i18n>Duplicate program</ng-container>
     } @else {
@@ -36,7 +36,7 @@
       </p>
       <app-program-form-name
         #formName
-        [program]="duplicateSource()"
+        [program]="programToDuplicate()"
       />
     </p-card>
   </ng-template>
@@ -57,7 +57,7 @@
       </p>
       <app-program-form-information
         #formInformation
-        [program]="duplicateSource()"
+        [program]="programToDuplicate()"
       />
     </p-card>
   </ng-template>
@@ -71,7 +71,7 @@
       </h2>
       <app-program-form-budget
         #formBudget
-        [program]="duplicateSource()"
+        [program]="programToDuplicate()"
       />
     </p-card>
   </ng-template>

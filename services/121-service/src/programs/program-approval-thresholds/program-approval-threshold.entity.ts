@@ -13,11 +13,7 @@ import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/prog
 
 @Entity('program_approval_threshold')
 export class ProgramApprovalThresholdEntity extends Base121Entity {
-  @ManyToOne(
-    () => ProgramEntity,
-    (program) => program.programApprovalThresholds,
-    { onDelete: 'CASCADE' },
-  )
+  @ManyToOne(() => ProgramEntity, { onDelete: 'CASCADE' })
   @JoinColumn({
     name: 'programId',
     foreignKeyConstraintName: 'FK_program_approval_threshold_program',

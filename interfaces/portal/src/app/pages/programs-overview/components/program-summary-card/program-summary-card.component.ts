@@ -12,6 +12,8 @@ import { Router } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+
 import { AppRoutes } from '~/app.routes';
 import { CardSummaryMetricsContainerComponent } from '~/components/card-summary-metrics-container/card-summary-metrics-container.component';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
@@ -70,7 +72,15 @@ export class ProgramSummaryCardComponent {
           void this.router.navigate(this.programLink(this.id()));
         },
       },
-      {
+    ];
+
+    if (
+      this.authService.hasPermission({
+        programId: this.id(),
+        requiredPermission: PermissionEnum.ProgramUPDATE,
+      })
+    ) {
+      items.push({
         label: $localize`:@@program-card-menu-edit:Edit`,
         icon: 'pi pi-pencil',
         command: () => {
@@ -81,8 +91,8 @@ export class ProgramSummaryCardComponent {
             AppRoutes.programSettings,
           ]);
         },
-      },
-    ];
+      });
+    }
 
     if (this.authService.isOrganizationAdmin) {
       items.push({

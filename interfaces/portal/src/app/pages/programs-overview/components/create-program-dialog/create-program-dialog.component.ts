@@ -72,10 +72,10 @@ export class CreateProgramDialogComponent {
   // 3 = step 3: budget
   readonly currentStep = signal<0 | 1 | 2 | 3>(0);
 
-  // When set, the dialog runs in "duplicate" mode: the forms are prefilled with
-  // this program and submitting copies its relations onto the new program.
-  readonly duplicateSource = signal<Program | undefined>(undefined);
-  readonly isDuplicate = computed(() => this.duplicateSource() !== undefined);
+  readonly programToDuplicate = signal<Program | undefined>(undefined);
+  readonly duplicationMode = computed(
+    () => this.programToDuplicate() !== undefined,
+  );
 
   readonly formGroup = computed(() => {
     const nameGroup = this.formName()?.formGroup;
@@ -141,8 +141,8 @@ export class CreateProgramDialogComponent {
           location,
           targetNrRegistrations,
           validation,
-        }
-        this.duplicateSource()?.id
+        },
+        this.programToDuplicate()?.id,
       ),
     onSuccess: async (result, variables) => {
       // If the program was created successfully and the user has selected fsps, we create the FSP configurations for the program
@@ -168,7 +168,7 @@ export class CreateProgramDialogComponent {
       });
   
       this.toastService.showToast({
-        detail: this.isDuplicate()
+        detail: this.duplicationMode()
           ? $localize`Program successfully duplicated.`
           : $localize`Program successfully created.`,
       });
@@ -264,13 +264,13 @@ export class CreateProgramDialogComponent {
   }
 
   show() {
-    this.duplicateSource.set(undefined);
+    this.programToDuplicate.set(undefined);
     this.formGroup()?.reset();
     this.goToNextStep();
   }
 
-  showForDuplicate(program: Program) {
-    this.duplicateSource.set({ ...program });
+  showForDuplicationFlow(program: Program) {
+    this.programToDuplicate.set({ ...program });
     this.goToNextStep();
   }
 }

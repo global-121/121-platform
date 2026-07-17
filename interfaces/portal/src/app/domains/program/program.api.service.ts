@@ -61,14 +61,16 @@ export class ProgramApiService extends DomainApiService {
   );
 
   createProgram(newProgram: Dto<CreateProgramDto>, copyFromProgramId?: number) {
+    const httpParams: Record<string, number> | undefined =
+      copyFromProgramId !== undefined ? { copyFromProgramId } : undefined;
+
     return this.httpWrapperService.perform121ServiceRequest<
       Program | undefined
     >({
       method: 'POST',
       endpoint: BASE_ENDPOINT,
       body: newProgram,
-      httpParams:
-        copyFromProgramId !== undefined ? { copyFromProgramId } : undefined,
+      httpParams,
     });
   }
 

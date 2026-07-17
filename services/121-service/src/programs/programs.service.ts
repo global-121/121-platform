@@ -27,6 +27,8 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
 
+type ThresholdIdByOldId = Map<number | null, number | null>;
+
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
@@ -140,7 +142,6 @@ export class ProgramService {
   public async create(
     programData: CreateProgramDto,
     userId: number,
-    { assignCurrentUser = true }: { assignCurrentUser?: boolean } = {},
   ): Promise<ProgramEntity> {
     let newProgram;
 
@@ -229,12 +230,11 @@ export class ProgramService {
       await queryRunner.release();
     }
 
-    if (assignCurrentUser) {
-      await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
-        roles: [DefaultUserRole.Admin],
-        scope: undefined,
-      });
-    }
+    await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
+      roles: [DefaultUserRole.Admin],
+      scope: undefined,
+    }); 
+
     return newProgram;
   }
 
@@ -263,9 +263,7 @@ export class ProgramService {
       );
     }
 
-    const newProgram = await this.create(programData, userId, {
-      assignCurrentUser: false,
-    });
+    const newProgram = await this.create(programData, userId);
 
     await this.copyFspConfigurations({
       sourceProgramId: copyFromProgramId,
@@ -281,11 +279,6 @@ export class ProgramService {
       sourceProgramId: copyFromProgramId,
       targetProgramId: newProgram.id,
       newThresholdIdByOldId,
-    });
-
-    await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
-      roles: [DefaultUserRole.Admin],
-      scope: undefined,
     });
 
     return newProgram;
@@ -339,7 +332,7 @@ export class ProgramService {
   }: {
     sourceProgramId: number;
     targetProgramId: number;
-  }): Promise<Map<number, number>> {
+  }): Promise<ThresholdIdByOldId> {
     const thresholdRepository = this.dataSource.getRepository(
       ProgramApprovalThresholdEntity,
     );
@@ -348,7 +341,8 @@ export class ProgramService {
       where: { programId: Equal(sourceProgramId) },
     });
 
-    const newThresholdIdByOldId = new Map<number, number>();
+    // Seed with null -> null so assignments without a threshold map cleanly.
+    const newThresholdIdByOldId: ThresholdIdByOldId = new Map([[null, null]]);
     for (const sourceThreshold of sourceThresholds) {
       const newThreshold = await thresholdRepository.save(
         thresholdRepository.create({
@@ -369,7 +363,7 @@ export class ProgramService {
   }: {
     sourceProgramId: number;
     targetProgramId: number;
-    newThresholdIdByOldId: Map<number, number>;
+    newThresholdIdByOldId: ThresholdIdByOldId;
   }): Promise<void> {
     const assignmentRepository = this.dataSource.getRepository(
       ProgramAidworkerAssignmentEntity,
@@ -387,12 +381,9 @@ export class ProgramService {
           userId: sourceAssignment.userId,
           scope: sourceAssignment.scope,
           roles: sourceAssignment.roles,
-          programApprovalThresholdId:
-            sourceAssignment.programApprovalThresholdId == null
-              ? null
-              : (newThresholdIdByOldId.get(
-                  sourceAssignment.programApprovalThresholdId,
-                ) ?? null),
+          programApprovalThresholdId: newThresholdIdByOldId.get(
+            sourceAssignment.programApprovalThresholdId,
+          ),
         }),
       );
     }
