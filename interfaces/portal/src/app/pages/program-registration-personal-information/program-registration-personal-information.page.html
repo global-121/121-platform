@@ -20,16 +20,31 @@
             />
           </div>
         }
-        <app-data-list [data]="dataList()"> </app-data-list>
+        @if (hasKoboImages()) {
+          <div class="grid gap-4 lg:grid-cols-2">
+            <app-data-list
+              [data]="textDataList()"
+              [forceOneColumn]="true"
+            />
+            <app-image-list [images]="koboImages()" />
+          </div>
+        } @else {
+          <app-data-list [data]="dataList()" />
+        }
       } @else {
         <app-edit-personal-information
           #editPersonalInformation
           [programId]="programId()"
           [registrationId]="registrationId()"
-          [attributeList]="registrationAttributes.data()"
+          [attributeList]="editableAttributeList()"
+          [forceOneColumn]="hasKoboImages()"
           (cancelEditing)="isEditing.set(false)"
           (registrationUpdated)="onRegistrationUpdated()"
-        />
+        >
+          @if (hasKoboImages()) {
+            <app-image-list [images]="koboImages()" />
+          }
+        </app-edit-personal-information>
       }
     }
   </div>

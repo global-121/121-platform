@@ -1,4 +1,4 @@
-import { Injectable, Signal } from '@angular/core';
+import { Injectable, Signal, signal } from '@angular/core';
 
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
@@ -273,6 +273,27 @@ export class RegistrationApiService extends DomainApiService {
       params: {
         phonenumber,
       },
+    });
+  }
+
+  downloadKoboImage({
+    programId,
+    referenceId,
+    attributeName,
+  }: {
+    programId: number | string;
+    referenceId: string;
+    attributeName: string;
+  }): Promise<Blob> {
+    return this.httpWrapperService.perform121ServiceRequest<Blob>({
+      method: 'GET',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(signal(programId)),
+        referenceId,
+        'kobo-images',
+        attributeName,
+      ]).join('/'),
+      responseAsBlob: true,
     });
   }
 }

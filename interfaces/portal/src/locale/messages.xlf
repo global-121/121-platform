@@ -2266,6 +2266,12 @@
       <trans-unit id="ignore-duplication" datatype="html">
         <source>Ignore duplication</source>
       </trans-unit>
+      <trans-unit id="image-available" datatype="html">
+        <source>Available</source>
+      </trans-unit>
+      <trans-unit id="image-not-available" datatype="html">
+        <source>Not available</source>
+      </trans-unit>
       <trans-unit id="import-registrations-error" datatype="html">
         <source>Failed to import registrations. Please try again.</source>
       </trans-unit>

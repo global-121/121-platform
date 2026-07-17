@@ -8,7 +8,7 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { injectQuery } from '@tanstack/angular-query-experimental';
+import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
 
@@ -20,6 +20,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { ImageListComponent } from '~/components/image-list/image-list.component';
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -29,6 +30,11 @@ import { AuthService } from '~/services/auth.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 
+const normalizeKoboImageValue = (value: unknown): string =>
+  typeof value === 'string' && value.trim().toLowerCase() !== 'null'
+    ? value
+    : '';
+
 @Component({
   selector: 'app-program-registration-personal-information',
   imports: [
@@ -36,6 +42,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
     SkeletonModule,
     ButtonModule,
     DataListComponent,
+    ImageListComponent,
     EditPersonalInformationComponent,
   ],
   templateUrl: './program-registration-personal-information.page.html',
@@ -50,6 +57,7 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
 
   readonly authService = inject(AuthService);
   readonly registrationApiService = inject(RegistrationApiService);
+  readonly queryClient = inject(QueryClient);
   readonly metricApiService = inject(MetricApiService);
   readonly registrationAttributeService = inject(RegistrationAttributeService);
 
@@ -61,6 +69,18 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
       }),
     ),
   );
+
+  readonly registrationReferenceId = computed(() => {
+    const registrationQueryOptions =
+      this.registrationApiService.getRegistrationById(
+        this.programId,
+        this.registrationId,
+      )();
+
+    return this.queryClient.getQueryData<{ referenceId?: string }>(
+      registrationQueryOptions.queryKey,
+    )?.referenceId;
+  });
 
   readonly isEditing = signal(false);
   readonly editPersonalInformationComponent =
@@ -112,6 +132,11 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
               value: value as string | string[],
             };
           case RegistrationAttributeTypes.koboImage:
+            return {
+              ...attribute,
+              type: 'koboImage',
+              value: normalizeKoboImageValue(value),
+            };
           case RegistrationAttributeTypes.tel:
           case RegistrationAttributeTypes.text:
           default:
@@ -124,6 +149,40 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
       },
     ),
   );
+
+  readonly textDataList = computed(() =>
+    this.dataList().filter(
+      (item): item is Exclude<DataListItem, { type: 'koboImage' }> =>
+        item.type !== 'koboImage',
+    ),
+  );
+
+  readonly imageDataList = computed(() =>
+    this.dataList().filter(
+      (item): item is Extract<DataListItem, { type: 'koboImage' }> =>
+        item.type === 'koboImage',
+    ),
+  );
+
+  readonly koboImages = computed(() =>
+    this.imageDataList().map((item) => ({
+      label: item.label,
+      imageUrl: item.value,
+      programId: this.programId(),
+      referenceId: this.registrationReferenceId(),
+      attributeName:
+        'name' in item && typeof item.name === 'string' ? item.name : undefined,
+      dataTestId: item.dataTestId,
+    })),
+  );
+
+  readonly editableAttributeList = computed(() =>
+    (this.registrationAttributes.data() ?? []).filter(
+      (attribute) => attribute.type !== RegistrationAttributeTypes.koboImage,
+    ),
+  );
+
+  readonly hasKoboImages = computed(() => this.imageDataList().length > 0);
 
   onRegistrationUpdated() {
     this.isEditing.set(false);
