@@ -21,8 +21,8 @@ export class VisaCardOrderResponseDto {
   @ApiProperty({ example: 'Damrak 1 A, 1011AB Amsterdam' })
   public readonly address: string;
 
-  @ApiProperty({ example: '+31612345678', nullable: true })
-  public readonly addresseePhoneNumber: string | null;
+  @ApiProperty({ example: '+31612345678' })
+  public readonly addresseePhoneNumber: string;
 
   @ApiProperty({ example: 'manager@example.org' })
   public readonly orderedByUsername: string;
