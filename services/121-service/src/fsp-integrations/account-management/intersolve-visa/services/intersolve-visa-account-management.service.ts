@@ -557,44 +557,6 @@ export class IntersolveVisaAccountManagementService {
         },
       );
 
-    const contactInformation: ContactInformation = {
-      name: addressee,
-      addressStreet,
-      addressHouseNumber,
-      addressHouseNumberAddition,
-      addressPostalCode,
-      addressCity,
-      phoneNumber: addresseePhoneNumber,
-    };
-
-    let cardsSentByIntersolve = 0;
-    let lastIntersolveErrorMessage: null | string = null;
-
-    for (let index = 0; index < noOfCards; index++) {
-      try {
-        await this.intersolveVisaService.issueTokenAndCreatePhysicalCard({
-          brandCode,
-          coverLetterCode,
-          contactInformation,
-        });
-        cardsSentByIntersolve += 1;
-      } catch (error) {
-        if (error instanceof IntersolveVisaApiError) {
-          lastIntersolveErrorMessage = error.message;
-          continue;
-        }
-
-        throw error;
-      }
-    }
-
-    if (cardsSentByIntersolve === 0) {
-      throw new HttpException(
-        `Unable to order cards. ${lastIntersolveErrorMessage ?? 'Intersolve did not return a successful response.'}`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     const order = new VisaCardOrderEntity();
     order.programId = programId;
     order.userId = userId;
