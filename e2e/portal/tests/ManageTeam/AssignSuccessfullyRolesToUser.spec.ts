@@ -35,7 +35,6 @@ test('Assign successfully roles to a user ', async ({ programTeamPage }) => {
   });
 
   await test.step('Validate available system users are visible', async () => {
-    await programTeamPage.enableEditMode();
     await programTeamPage.openAddUserForm();
     await programTeamPage.addUserToTeam({
       userSearchPhrase,
