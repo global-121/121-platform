@@ -265,17 +265,17 @@ export class ProgramService {
 
     const newProgram = await this.create(programData, userId);
 
-    await this.copyFspConfigurations({
+    await this.duplicateFspConfigurations({
       sourceProgramId: copyFromProgramId,
       targetProgramId: newProgram.id,
     });
 
-    const newThresholdIdByOldId = await this.copyApprovalThresholds({
+    const newThresholdIdByOldId = await this.duplicateApprovalThresholds({
       sourceProgramId: copyFromProgramId,
       targetProgramId: newProgram.id,
     });
 
-    await this.copyAidworkerAssignments({
+    await this.duplicateAidworkerAssignments({
       sourceProgramId: copyFromProgramId,
       targetProgramId: newProgram.id,
       newThresholdIdByOldId,
@@ -284,7 +284,7 @@ export class ProgramService {
     return newProgram;
   }
 
-  private async copyFspConfigurations({
+  private async duplicateFspConfigurations({
     sourceProgramId,
     targetProgramId,
   }: {
@@ -294,6 +294,7 @@ export class ProgramService {
     const fspConfigurationRepository = this.dataSource.getRepository(
       ProgramFspConfigurationEntity,
     );
+
     const propertyRepository = this.dataSource.getRepository(
       ProgramFspConfigurationPropertyEntity,
     );
@@ -326,7 +327,7 @@ export class ProgramService {
     }
   }
 
-  private async copyApprovalThresholds({
+  private async duplicateApprovalThresholds({
     sourceProgramId,
     targetProgramId,
   }: {
@@ -336,12 +337,10 @@ export class ProgramService {
     const thresholdRepository = this.dataSource.getRepository(
       ProgramApprovalThresholdEntity,
     );
-
     const sourceThresholds = await thresholdRepository.find({
       where: { programId: Equal(sourceProgramId) },
     });
 
-    // Seed with null -> null so assignments without a threshold map cleanly.
     const newThresholdIdByOldId: ThresholdIdByOldId = new Map([[null, null]]);
 
     for (const sourceThreshold of sourceThresholds) {
@@ -357,7 +356,7 @@ export class ProgramService {
     return newThresholdIdByOldId;
   }
 
-  private async copyAidworkerAssignments({
+  private async duplicateAidworkerAssignments({
     sourceProgramId,
     targetProgramId,
     newThresholdIdByOldId,
@@ -369,15 +368,10 @@ export class ProgramService {
     const assignmentRepository = this.dataSource.getRepository(
       ProgramAidworkerAssignmentEntity,
     );
-
     const sourceAssignments = await assignmentRepository.find({
       where: { programId: Equal(sourceProgramId) },
       relations: ['roles'],
     });
-
-    // Creating the target program already assigned its creator, so skip users
-    // that are assigned to it to avoid violating the unique (userId, programId)
-    // constraint.
     const targetAssignments = await assignmentRepository.find({
       where: { programId: Equal(targetProgramId) },
     });
