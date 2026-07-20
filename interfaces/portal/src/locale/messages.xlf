@@ -947,6 +947,9 @@
       <trans-unit id="4964612859944755976" datatype="html">
         <source>Import complete with errors</source>
       </trans-unit>
+      <trans-unit id="4968022490428591399" datatype="html">
+        <source>Duplicate &quot;<x equiv-text="{{ programToDuplicateName() }}" id="INTERPOLATION"/>&quot;. Update the relevant details in the next steps. After duplication is done, link a registration form to complete the setup.</source>
+      </trans-unit>
       <trans-unit id="4970172669399649769" datatype="html">
         <source>Make sure to match the required format of the template CSV-file.</source>
       </trans-unit>
@@ -1584,6 +1587,9 @@
       <trans-unit id="7703736032933423612" datatype="html">
         <source>Error while importing existing Kobo registrations</source>
       </trans-unit>
+      <trans-unit id="7720922626568764421" datatype="html">
+        <source>Learn more in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/></source>
+      </trans-unit>
       <trans-unit id="7724483709075923163" datatype="html">
         <source>Downloading file</source>
       </trans-unit>
@@ -2117,6 +2123,9 @@
       </trans-unit>
       <trans-unit id="download-template" datatype="html">
         <source>Download the template</source>
+      </trans-unit>
+      <trans-unit id="duplicate-program" datatype="html">
+        <source>Duplicate program</source>
       </trans-unit>
       <trans-unit id="duplicate-status" datatype="html">
         <source>Duplicates</source>

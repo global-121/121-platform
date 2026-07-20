@@ -18,6 +18,7 @@ import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
+import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import {
   ProgramBudgetFormGroup,
   ProgramFormBudgetComponent,
@@ -35,6 +36,7 @@ import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Program } from '~/domains/program/program.model';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
   selector: 'app-create-program-dialog',
@@ -45,6 +47,7 @@ import { ToastService } from '~/services/toast.service';
     ProgramFormNameComponent,
     ProgramFormInformationComponent,
     ProgramFormBudgetComponent,
+    ManualLinkComponent,
   ],
   providers: [ToastService],
   templateUrl: './create-program-dialog.component.html',
@@ -57,6 +60,7 @@ export class CreateProgramDialogComponent {
   readonly programApiService = inject(ProgramApiService);
   readonly toastService = inject(ToastService);
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
+  readonly translatableStringService = inject(TranslatableStringService);
 
   readonly createProgramDialog =
     viewChild.required<FullscreenStepperDialogComponent>('createProgramDialog');
@@ -76,6 +80,11 @@ export class CreateProgramDialogComponent {
   readonly duplicationMode = computed(
     () => this.programToDuplicate() !== undefined,
   );
+  readonly programToDuplicateName = computed(() =>
+    this.translatableStringService.translate(
+      this.programToDuplicate()?.titlePortal,
+    ),
+  );
 
   readonly formGroup = computed(() => {
     const nameGroup = this.formName()?.formGroup;
@@ -93,11 +102,15 @@ export class CreateProgramDialogComponent {
     });
   });
 
-  readonly proceedLabel = computed(() =>
-    this.currentStep() !== 3
-      ? $localize`Continue`
-      : $localize`:@@create-program:Create program`,
-  );
+  readonly proceedLabel = computed(() => {
+    if (this.currentStep() !== 3) {
+      return $localize`Continue`;
+    }
+
+    return this.duplicationMode()
+      ? $localize`:@@duplicate-program:Duplicate program`
+      : $localize`:@@create-program:Create program`;
+  });
 
   createProgramMutation = injectMutation(() => ({
     mutationFn: async ({

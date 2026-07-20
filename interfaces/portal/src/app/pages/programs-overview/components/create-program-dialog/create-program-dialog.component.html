@@ -28,12 +28,28 @@
       >
         Program name
       </h2>
-      <p
-        i18n
-        class="mbe-4"
-      >
-        Add a name and description to your program to help your users find it.
-      </p>
+      @if (duplicationMode()) {
+        <p
+          i18n
+          class="mbe-4"
+        >
+          Duplicate "{{ programToDuplicateName() }}". Update the relevant
+          details in the next steps. After duplication is done, link a
+          registration form to complete the setup.
+        </p>
+        <p class="mbe-4">
+          <ng-container i18n>
+            Learn more in the <app-manual-link />
+          </ng-container>
+        </p>
+      } @else {
+        <p
+          i18n
+          class="mbe-4"
+        >
+          Add a name and description to your program to help your users find it.
+        </p>
+      }
       <app-program-form-name
         #formName
         [program]="programToDuplicate()"
