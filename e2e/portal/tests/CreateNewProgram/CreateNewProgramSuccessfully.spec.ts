@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
@@ -7,9 +7,8 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
 import CreateProgramDialog from '@121-e2e/portal/components/CreateProgramDialog';
-import HomePage from '@121-e2e/portal/pages/HomePage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProgramSettingsPage from '@121-e2e/portal/pages/ProgramSettingsPage';
 
 import { getProgramInfo } from './program-info.helper';
 
@@ -31,11 +30,12 @@ const programInfo = getProgramInfo({
   ] as string[],
 });
 
-test('Create program successfully', async ({ page }) => {
-  const homePage = new HomePage(page);
+test('Create program successfully', async ({
+  programSettingsPage,
+  homePage,
+  page,
+}) => {
   const createProgramDialog = new CreateProgramDialog(page);
-  const programSettingsPage = new ProgramSettingsPage(page);
-
   // Act
   await test.step('Should navigate to main page and select "Create new program" button and fill in the form', async () => {
     await homePage.openCreateNewProgram();
@@ -81,9 +81,11 @@ test('Create program successfully', async ({ page }) => {
   });
 });
 
-test('Create program validation checks on each step', async ({ page }) => {
+test('Create program validation checks on each step', async ({
+  page,
+  homePage,
+}) => {
   const createProgramDialog = new CreateProgramDialog(page);
-  const homePage = new HomePage(page);
 
   // Act
   await test.step('Should navigate to main page and select "Create new program" button', async () => {
