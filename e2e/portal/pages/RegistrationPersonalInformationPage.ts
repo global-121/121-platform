@@ -119,7 +119,7 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     fieldValue: string;
   }) {
     const personalInformation = await this.personalInformationDataList();
-    await expect(personalInformation[fieldName]).toBe(fieldValue);
+    expect(personalInformation[fieldName]).toBe(fieldValue);
   }
 
   async validateMultipleFieldsAtOnce({
@@ -148,6 +148,33 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
         useInnerText: true,
       });
     }
+  }
+
+  koboImageAccordionHeader({ label }: { label: string }): Locator {
+    return this.page
+      .locator('app-image-list p-accordion-header')
+      .filter({ hasText: label });
+  }
+
+  async clickKoboImageAccordionHeader({
+    label,
+  }: {
+    label: string;
+  }): Promise<void> {
+    const header = this.koboImageAccordionHeader({ label });
+    await expect(header).toBeVisible();
+    await header.click();
+  }
+
+  async validateKoboImageStatus({
+    label,
+    status,
+  }: {
+    label: string;
+    status: 'Available' | 'Not available';
+  }): Promise<void> {
+    const header = this.koboImageAccordionHeader({ label });
+    await expect(header).toContainText(status);
   }
 }
 
