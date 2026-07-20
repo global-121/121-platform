@@ -53,17 +53,27 @@ export class ImageListComponent {
   readonly downloadedImageObjectUrls = signal<(null | string)[]>([]);
 
   constructor() {
+    // Downloaded images are kept as blob object URLs, which must be revoked
+    // explicitly once they're no longer used, or else they will leak memory.
+    const revokeBlobObjectUrls = (blobObjectUrls: (null | string)[]): void => {
+      for (const blobObjectUrl of blobObjectUrls) {
+        if (blobObjectUrl) {
+          URL.revokeObjectURL(blobObjectUrl);
+        }
+      }
+    };
+
     effect(() => {
       const imageCount = this.images().length;
 
       this.downloadedImageObjectUrls.update((previousUrls) => {
-        const removedUrls = previousUrls.slice(imageCount);
-        for (const objectUrl of removedUrls) {
-          if (objectUrl) {
-            URL.revokeObjectURL(objectUrl);
-          }
-        }
+        // Images beyond the new count were removed from the list, so their
+        // blob URLs are no longer needed and can be revoked.
+        const discardedBlobObjectUrls = previousUrls.slice(imageCount);
+        revokeBlobObjectUrls(discardedBlobObjectUrls);
 
+        // Keep the blob URL for images that are still present and pad with
+        // null for images that haven't been downloaded yet.
         return Array.from(
           { length: imageCount },
           (_, index) => previousUrls[index] ?? null,
@@ -71,12 +81,9 @@ export class ImageListComponent {
       });
     });
 
+    // Revoke everything that's left once the component itself is destroyed.
     this.destroyRef.onDestroy(() => {
-      for (const objectUrl of this.downloadedImageObjectUrls()) {
-        if (objectUrl) {
-          URL.revokeObjectURL(objectUrl);
-        }
-      }
+      revokeBlobObjectUrls(this.downloadedImageObjectUrls());
     });
   }
 
