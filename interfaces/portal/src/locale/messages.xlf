@@ -222,9 +222,6 @@
       <trans-unit id="2012659005494284050" datatype="html">
         <source>Forgot your password?</source>
       </trans-unit>
-      <trans-unit id="2049182205133748691" datatype="html">
-        <source>Financial Service Providers</source>
-      </trans-unit>
       <trans-unit id="2077280297780026969" datatype="html">
         <source>Review payment summary and follow the next steps:</source>
       </trans-unit>
@@ -1374,9 +1371,6 @@
       <trans-unit id="6909842392958829581" datatype="html">
         <source><x equiv-text="{{ statusVerb() }}" id="INTERPOLATION"/> registration(s)</source>
       </trans-unit>
-      <trans-unit id="6927943623949177165" datatype="html">
-        <source>Registration integration</source>
-      </trans-unit>
       <trans-unit id="6954699489555837710" datatype="html">
         <source>Read our Privacy notice</source>
       </trans-unit>
@@ -1595,6 +1589,9 @@
       </trans-unit>
       <trans-unit id="7781301631011863993" datatype="html">
         <source>(<x equiv-text="selectedItemsCount.toString()" id="PH"/> selected)</source>
+      </trans-unit>
+      <trans-unit id="7781535031854190943" datatype="html">
+        <source>Registration integration</source>
       </trans-unit>
       <trans-unit id="7799902377740606724" datatype="html">
         <source>Select 1</source>
@@ -1817,6 +1814,9 @@
       </trans-unit>
       <trans-unit id="8809702678611776373" datatype="html">
         <source>Link with KoboToolbox</source>
+      </trans-unit>
+      <trans-unit id="8816083895650555315" datatype="html">
+        <source>Financial Service Providers</source>
       </trans-unit>
       <trans-unit id="8819989029832903215" datatype="html">
         <source>Export payments</source>

@@ -9,7 +9,7 @@
     <div class="mbe-2 flex items-center gap-x-2 min-block-7.5">
       <h2>{{ header() }}</h2>
       @if (canEdit()) {
-        <div class="ms-auto space-x-2">
+        <div class="relative -inset-e-1 -inset-bs-1 ms-auto space-x-2">
           @if (!isEditing()) {
             <p-button
               outlined
@@ -29,7 +29,7 @@
               label="Cancel"
               i18n-label="@@generic-cancel"
               (click)="isEditing.set(false)"
-              icon="pi pi-times text-sm"
+              icon="pi pi-times text-xs"
               [size]="'small'"
               [iconPos]="rtlHelper.createPosition('start')()"
               outlined
@@ -42,7 +42,7 @@
                 type="submit"
                 label="Save"
                 i18n-label="@@generic-save"
-                icon="pi pi-check"
+                icon="pi pi-check text-xs"
                 [size]="'small'"
                 [iconPos]="rtlHelper.createPosition('start')()"
                 rounded
