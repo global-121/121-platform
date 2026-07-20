@@ -1,8 +1,6 @@
 import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
 
-import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
-
 import BasePage from './BasePage';
 
 class FspSettingsPage extends BasePage {
@@ -29,14 +27,15 @@ class FspSettingsPage extends BasePage {
     this.cancelButton = this.page.getByRole('button', { name: 'Cancel' });
   }
 
-  async clickEditFspSection() {
-    await this.page.getByRole('link', { name: 'FSP' }).click();
+  async clickFspIntegration() {
+    await this.page.getByRole('link', { name: 'FSP integration' }).click();
   }
 
   async openEditFspConfigurationByName(fspName: string) {
     const fspCard = this.fspCard
       .filter({ hasText: fspName })
       .getByLabel('More actions');
+    await expect(fspCard).toBeVisible();
     await fspCard.click();
     await this.page.getByRole('menuitem', { name: 'Reconfigure' }).click();
   }
@@ -101,23 +100,6 @@ class FspSettingsPage extends BasePage {
     }
   }
 
-  async validateVisibilityOfOnlyConfiguredFsps({
-    fspNames,
-  }: {
-    fspNames: string[];
-  }) {
-    for (const fspName of fspNames) {
-      const fspLocator = this.fspCard
-        .filter({ hasText: fspName })
-        .getByText('Click to reconfigure');
-      await expect(fspLocator).toBeVisible();
-    }
-  }
-
-  async clickAddAnotherFspButton() {
-    await this.addFspButton.click();
-  }
-
   async addFsp({ fspNames }: { fspNames: string[] }) {
     for (const name of fspNames) {
       // Check if we need to click "Add another FSP" first
@@ -174,51 +156,6 @@ class FspSettingsPage extends BasePage {
     }
   }
 
-  async addFspsWithRequiredAttributes({
-    fspConfiguration,
-  }: {
-    fspConfiguration: FspSettingsDto[];
-  }): Promise<string[]> {
-    let allRequiredAttributes: string[] = [];
-
-    for (const fsp of fspConfiguration) {
-      const { defaultLabel, attributes, name: fspName } = fsp;
-
-      const requiredAttributes = attributes
-        .filter((attr) => attr.isRequired)
-        .map((attr) => attr.name);
-
-      allRequiredAttributes = [...allRequiredAttributes, ...requiredAttributes];
-
-      if (!defaultLabel.en) {
-        throw new Error(
-          `FSP ${fspName} does not have a default label in English`,
-        );
-      }
-
-      // Check if we need to click "Add another FSP" first
-      await this.page.waitForTimeout(200); // Small wait to ensure button is loaded
-      if (await this.addFspButton.isVisible()) {
-        await this.addFspButton.click();
-      }
-
-      // Now proceed with selecting and configuring the FSP
-      await this.fspCard.filter({ hasText: defaultLabel.en }).click();
-      await this.page.waitForTimeout(200); // Wait for inputs to load
-      const inputs = this.page.locator('input');
-      const inputCount = await inputs.count();
-
-      for (let i = 1; i < inputCount; i++) {
-        const input = inputs.nth(i);
-        await input.fill(defaultLabel.en);
-      }
-
-      await this.integrateFspButton.click();
-    }
-
-    return allRequiredAttributes;
-  }
-
   async reconfigureFsp(configuration: string[]) {
     const inputs = this.page.locator('input');
     const inputCount = await inputs.count();
@@ -244,12 +181,31 @@ class FspSettingsPage extends BasePage {
         .getByLabel('More actions');
 
       await fspCardActions.click();
-      await this.page.getByRole('menuitem', { name: 'Delete' }).click();
+      await this.page
+        .getByRole('menuitem', { name: 'Remove integration' })
+        .click();
 
       // Confirm deletion
       await this.page.getByText('Remove FSP').click();
       // Validate and confirm toast message
       await this.validateToastMessageAndClose('FSP deleted.');
+    }
+  }
+
+  // On the FSP integration page we show the FSPs in a card format, so we need to validate that the cards are shown correctly
+  async validateProgramFspCards({ fspNames }: { fspNames: string[] }) {
+    const list = this.page.getByTestId('integrated-fsp-list');
+    const fsps = list.getByTestId('card-with-link');
+
+    await expect(fsps).toHaveCount(fspNames.length);
+
+    for (const fsp of fspNames) {
+      const cardTitle = fsps
+        .filter({ hasText: fsp })
+        .first()
+        .getByTestId('card-with-link-title');
+      await expect(cardTitle).toBeVisible();
+      await expect(cardTitle).toContainText(fsp);
     }
   }
 }

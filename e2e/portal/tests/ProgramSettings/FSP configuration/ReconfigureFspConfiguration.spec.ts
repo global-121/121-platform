@@ -4,10 +4,11 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-const configuredFsps = [
-  FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
-  FSP_SETTINGS[Fsps.intersolveVoucherWhatsapp].defaultLabel.en,
-].filter((label): label is string => label !== undefined);
+import { getFspLabels } from './get-fsp-labels.helper';
+
+const configuredFsps = getFspLabels({
+  fsps: [Fsps.intersolveVisa, Fsps.intersolveVoucherWhatsapp],
+});
 
 const visaConfiguration = [
   FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
@@ -48,7 +49,7 @@ test('Reconfigure FSP', async ({
 
   await test.step('Navigate to FSP configuration', async () => {
     await registrationsPage.navigateToProgramPage('Settings');
-    await fspSettingsPage.clickEditFspSection();
+    await fspSettingsPage.clickFspIntegration();
   });
 
   await test.step('Validate that configured FSPs are visible', async () => {

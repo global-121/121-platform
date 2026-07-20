@@ -14,6 +14,7 @@ export class AppInfoCardComponent {
   readonly subtitle = input.required<string>();
 
   readonly omitIcon = input<boolean>();
+  readonly dataTestId = input<string>();
 
   readonly customIcon = input<{
     size?: 'large' | 'medium' | 'small';

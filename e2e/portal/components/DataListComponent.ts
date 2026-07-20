@@ -8,11 +8,15 @@ class DataListComponent {
     this.datalist = locator;
   }
 
-  async getData() {
+  async getData({
+    omitListItemWithLabel,
+  }: { omitListItemWithLabel?: string } = {}) {
     await this.datalist.waitFor({ state: 'visible' });
-    const unParsed = await this.datalist
-      .locator('div[data-testid-category=data-list-item]')
-      .allTextContents();
+    const listItems = this.datalist.locator(
+      'div[data-testid-category=data-list-item]',
+    );
+
+    const unParsed = await listItems.allTextContents();
     const parsed: Record<string, string> = {};
     unParsed.forEach((element) => {
       if ((element.match(/:/g) ?? []).length > 1) {
@@ -25,6 +29,11 @@ class DataListComponent {
       value = value.trim();
       parsed[key] = value;
     });
+
+    if (omitListItemWithLabel) {
+      delete parsed[omitListItemWithLabel];
+    }
+
     return parsed;
   }
 }

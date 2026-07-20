@@ -10,6 +10,7 @@ import {
 import { MessageService } from 'primeng/api';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { ProgramSettingsPaymentApprovalPageComponent } from '~/pages/program-settings-payment-approval/program-settings-payment-approval.page';
 import { AuthService } from '~/services/auth.service';
@@ -40,6 +41,9 @@ class ResizeObserverMock {
 }
 
 describe('ProgramSettingsPaymentApprovalPageComponent', () => {
+  let mockFspConfigurationApiService: {
+    getFspConfigurations: ReturnType<typeof vi.fn>;
+  };
   let mockProgramApiService: {
     getApprovalThresholds: ReturnType<typeof vi.fn>;
     getProgram: ReturnType<typeof vi.fn>;
@@ -59,6 +63,12 @@ describe('ProgramSettingsPaymentApprovalPageComponent', () => {
       value: ResizeObserverMock,
     });
 
+    mockFspConfigurationApiService = {
+      getFspConfigurations: vi
+        .fn()
+        .mockName('FspConfigurationApiService.getFspConfigurations')
+        .mockReturnValue(mockQueryFactory([])),
+    };
     mockProgramApiService = {
       getApprovalThresholds: vi
         .fn()
@@ -97,6 +107,10 @@ describe('ProgramSettingsPaymentApprovalPageComponent', () => {
       providers: [
         provideTanStackQuery(new QueryClient()),
         provideRouter([]),
+        {
+          provide: FspConfigurationApiService,
+          useValue: mockFspConfigurationApiService,
+        },
         { provide: ProgramApiService, useValue: mockProgramApiService },
         { provide: AuthService, useValue: mockAuthService },
         MessageService,

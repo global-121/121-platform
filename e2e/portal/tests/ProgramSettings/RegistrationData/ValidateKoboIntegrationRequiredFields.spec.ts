@@ -5,10 +5,6 @@ import { programIdPV } from '@121-service/test/registrations/pagination/paginati
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-const fspsToDelete = [FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en].filter(
-  (label): label is string => label !== undefined,
-);
-
 const fspsToAdd = [FSP_SETTINGS[Fsps.safaricom].defaultLabel.en].filter(
   (label): label is string => label !== undefined,
 );
@@ -44,38 +40,13 @@ test('Check if all required fields are shown prior to integration', async ({
   });
 });
 
-test('Check if all required fields are updated when deleting a FSP', async ({
-  registrationDataPage,
-  fspSettingsPage,
-}) => {
-  await test.step('delete FSP', async () => {
-    await fspSettingsPage.clickEditFspSection();
-    await fspSettingsPage.deleteFsp({
-      fspNames: fspsToDelete,
-    });
-  });
-
-  await test.step('Validate required fields', async () => {
-    await registrationDataPage.clickRegistrationDataSection();
-    await registrationDataPage.validateKoboRequiredFieldsTable({
-      requiredDataColumnNames: [
-        'fsp',
-        'scope',
-        'fullName',
-        'phoneNumber',
-        'whatsappPhoneNumber',
-      ],
-    });
-  });
-});
-
 test('Check if all required fields are updated when adding a FSP', async ({
   registrationDataPage,
-  fspSettingsPage,
+  programSettingsPage,
 }) => {
   await test.step('add FSP', async () => {
-    await fspSettingsPage.clickEditFspSection();
-    await fspSettingsPage.addFsp({
+    await programSettingsPage.clickProgramInformation();
+    await programSettingsPage.changeFspSelectionForProgram({
       fspNames: fspsToAdd,
     });
   });
