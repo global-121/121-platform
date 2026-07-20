@@ -6,8 +6,8 @@
     @for (fsp of programFsps(); track $index) {
       <li>
         <p-tag
-          severity="info"
           [value]="fsp.defaultLabel | translatableString"
+          class="bg-blue-100 text-blue-700"
           [rounded]="true"
         />
       </li>
