@@ -9,17 +9,9 @@ const fspsToAdd = getFspLabels({
   fsps: [Fsps.safaricom],
 });
 
-const requiredFieldsFromSeed = [
-  'fsp',
-  'scope',
-  'fullName',
-  'phoneNumber',
-  'whatsappPhoneNumber',
-  'addressStreet',
-  'addressHouseNumber',
-  'addressPostalCode',
-  'addressCity',
-];
+const fspsToDelete = getFspLabels({
+  fsps: [Fsps.intersolveVisa],
+});
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
@@ -35,7 +27,17 @@ test('Check if all required fields are shown prior to integration', async ({
   await test.step('Validate required fields', async () => {
     await registrationDataPage.clickRegistrationDataSection();
     await registrationDataPage.validateKoboRequiredFieldsTable({
-      requiredDataColumnNames: requiredFieldsFromSeed,
+      requiredDataColumnNames: [
+        'fsp',
+        'scope',
+        'fullName',
+        'phoneNumber',
+        'whatsappPhoneNumber',
+        'addressStreet',
+        'addressHouseNumber',
+        'addressPostalCode',
+        'addressCity',
+      ],
     });
   });
 });
@@ -54,7 +56,18 @@ test('Check if all required fields are updated when adding a FSP', async ({
   await test.step('Validate required fields', async () => {
     await registrationDataPage.clickRegistrationDataSection();
     await registrationDataPage.validateKoboRequiredFieldsTable({
-      requiredDataColumnNames: [...requiredFieldsFromSeed, 'nationalId'],
+      requiredDataColumnNames: [
+        'fsp',
+        'scope',
+        'fullName',
+        'phoneNumber',
+        'whatsappPhoneNumber',
+        'addressStreet',
+        'addressHouseNumber',
+        'addressPostalCode',
+        'addressCity',
+        'nationalId',
+      ],
     });
   });
 });
@@ -90,9 +103,41 @@ test('Check if scope is not shown when scope is disabled', async ({
   await test.step('Validate scope not shown as required field', async () => {
     await registrationDataPage.clickRegistrationDataSection();
     await registrationDataPage.validateKoboRequiredFieldsTable({
-      requiredDataColumnNames: [...requiredFieldsFromSeed].filter(
-        (field) => field !== 'scope',
-      ),
+      requiredDataColumnNames: [
+        'fsp',
+        'fullName',
+        'phoneNumber',
+        'whatsappPhoneNumber',
+        'addressStreet',
+        'addressHouseNumber',
+        'addressPostalCode',
+        'addressCity',
+      ],
+    });
+  });
+});
+
+test('Check if all required fields are updated when deleting a FSP', async ({
+  registrationDataPage,
+  programSettingsPage,
+}) => {
+  await test.step('delete FSP', async () => {
+    await programSettingsPage.clickProgramInformation();
+    await programSettingsPage.changeFspSelectionForProgram({
+      fspNames: fspsToDelete,
+    });
+  });
+
+  await test.step('Validate required fields', async () => {
+    await registrationDataPage.clickRegistrationDataSection();
+    await registrationDataPage.validateKoboRequiredFieldsTable({
+      requiredDataColumnNames: [
+        'fsp',
+        'scope',
+        'fullName',
+        'phoneNumber',
+        'whatsappPhoneNumber',
+      ],
     });
   });
 });
