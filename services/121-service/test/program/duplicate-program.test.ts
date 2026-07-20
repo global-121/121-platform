@@ -217,10 +217,12 @@ describe('Duplicate program', () => {
     users: { id: number; roles: { role: string }[] }[],
   ): Map<number, string[]> {
     return new Map(
-      users.map((user) => [
-        user.id,
-        user.roles.map((role) => role.role).sort(),
-      ]),
+      [...users]
+        .sort((a, b) => a.id - b.id)
+        .map((user) => [
+          user.id,
+          user.roles.map((role) => role.role).sort(),
+        ]),
     );
   }
 

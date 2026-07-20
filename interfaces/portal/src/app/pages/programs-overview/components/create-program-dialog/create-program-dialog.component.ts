@@ -276,14 +276,10 @@ export class CreateProgramDialogComponent {
     this.currentStep.set((currentStep + 1) as 2 | 3);
   }
 
-  show() {
-    this.programToDuplicate.set(undefined);
+  show(program?: Program) {
+    this.currentStep.set(0);
     this.formGroup()?.reset();
-    this.goToNextStep();
-  }
-
-  showForDuplicationFlow(program: Program) {
-    this.programToDuplicate.set({ ...program });
+    this.programToDuplicate.set(program);
     this.goToNextStep();
   }
 }

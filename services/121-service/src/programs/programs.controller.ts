@@ -173,7 +173,7 @@ and adjust as needed.`,
   ): Promise<ProgramEntity> {
     const userId = RequestHelper.getUserId(req);
 
-    if (copyFromProgramId) {
+    if (copyFromProgramId !== undefined) {
       const duplicationErrors = await validate(
         plainToClass(CreateProgramDto, programData),
       );
