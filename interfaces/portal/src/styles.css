@@ -331,12 +331,14 @@ svg-icon svg {
   }
 
   .p-chip {
+    --p-chip-padding-x: 1rem;
+
     .p-chip-icon {
       color: inherit;
     }
 
     .p-chip-label {
-      @apply txt-body-m font-semibold;
+      @apply font-semibold;
     }
   }
 
