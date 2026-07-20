@@ -89,16 +89,19 @@ export class ProgramSettingsTeamPageComponent {
       const scopeColumn: QueryTableColumn<ProgramUserWithRolesLabel> = {
         field: 'scope',
         header: $localize`:@@attribute-label-scope:Scope`,
+        class: 'w-1/3',
       };
 
       return [
         {
           field: 'username',
           header: $localize`User name`,
+          class: 'w-1/3 valign-top',
         },
         {
           field: 'allRolesLabel',
           header: $localize`Roles`,
+          class: 'w-1/3',
         },
         ...(this.enableScope() ? [scopeColumn] : []),
       ];
