@@ -1,16 +1,35 @@
 import { expect } from '@playwright/test';
 import { format } from 'date-fns';
 
-import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
 import CreateProgramDialog from '@121-e2e/portal/components/CreateProgramDialog';
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
+import { getFspLabels } from '@121-e2e/portal/helpers/get-fsp-labels';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 
-import { getProgramInfo } from './program-info.helper';
+const todaysDate = new Date();
+const futureDate = new Date();
+futureDate.setDate(futureDate.getDate() + 1);
+
+const programInfo = {
+  name: 'TUiR Warta',
+  description: 'TUiR Warta description',
+  dateRange: { start: todaysDate, end: futureDate },
+  location: 'Polen',
+  targetRegistrations: '200',
+  fundsAvailable: '200',
+  currency: CurrencyCode.CAD,
+  paymentFrequency: '2-months',
+  defaultNrOfTransactions: '5',
+  fixedTransferValue: '100',
+  fsps: getFspLabels({
+    fsps: [Fsps.intersolveVisa, Fsps.safaricom, Fsps.intersolveVoucherPaper],
+  }),
+};
 
 test.beforeEach(async ({ page }) => {
   await resetDB({
@@ -22,14 +41,6 @@ test.beforeEach(async ({ page }) => {
   await loginPage.loginAsAdmin();
 });
 
-const programInfo = getProgramInfo({
-  fsps: [
-    FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
-    FSP_SETTINGS[Fsps.safaricom].defaultLabel.en,
-    FSP_SETTINGS[Fsps.intersolveVoucherPaper].defaultLabel.en,
-  ] as string[],
-});
-
 test('Create program successfully', async ({
   programSettingsPage,
   homePage,
@@ -39,10 +50,16 @@ test('Create program successfully', async ({
   // Act
   await test.step('Should navigate to main page and select "Create new program" button and fill in the form', async () => {
     await homePage.openCreateNewProgram();
-    await createProgramDialog.createProgram({
-      programInfo,
-      navigateToSettingsPageWithId: 3,
-    });
+    await expect(page.getByText('Step 1 of 3')).toBeVisible();
+    await createProgramDialog.fillInStep1(programInfo);
+    await expect(page.getByText('Step 2 of 3')).toBeVisible();
+    await createProgramDialog.fillInStep2(programInfo);
+    await expect(page.getByText('Step 3 of 3')).toBeVisible();
+    await createProgramDialog.fillInStep3(programInfo);
+    const newProgramId = 3; // Id of newly created program based on SeedScript.testMultiple
+    await page.waitForURL((url) =>
+      url.pathname.startsWith(`/en-GB/program/${newProgramId}/settings`),
+    );
     await homePage.validateToastMessage('Program successfully created.');
   });
 
@@ -60,9 +77,7 @@ test('Create program successfully', async ({
       'Enable scope': 'No',
     });
 
-    const budgetData = await programSettingsPage.budgetDataList.getData({
-      omitListItemWithLabel: '*Financial service providers',
-    });
+    const budgetData = await programSettingsPage.budgetDataList.getData();
 
     expect(budgetData).toEqual({
       'Funds available': programInfo.fundsAvailable,
@@ -70,14 +85,8 @@ test('Create program successfully', async ({
       'Default transactions per registration':
         programInfo.defaultNrOfTransactions,
       '*Fixed transfer value': programInfo.fixedTransferValue,
+      '*Financial service providers': programInfo.fsps?.join(''),
     });
-
-    // Validating the FSPs in the multiselect component separately, as the dataListData returns a concatenated string of the FSPs
-    if (programInfo.fsps) {
-      await programSettingsPage.validateProgramFspsPills({
-        fspNames: programInfo.fsps,
-      });
-    }
   });
 });
 

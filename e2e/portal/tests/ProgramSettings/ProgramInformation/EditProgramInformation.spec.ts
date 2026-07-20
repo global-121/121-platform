@@ -143,9 +143,7 @@ test('Edit Program Information', async ({ programSettingsPage }) => {
 
     // expect with a timeout because we might need to wait for the cache to invalidate
     await expect(async () => {
-      const budgetData = await programSettingsPage.budgetDataList.getData({
-        omitListItemWithLabel: '*Financial service providers',
-      });
+      const budgetData = await programSettingsPage.budgetDataList.getData();
 
       expect(budgetData).toEqual({
         'Funds available': budgetInfo.fundsAvailable,
@@ -153,13 +151,8 @@ test('Edit Program Information', async ({ programSettingsPage }) => {
         'Default transactions per registration':
           budgetInfo.defaultTransferValue,
         '*Fixed transfer value': budgetInfo.fixedTransferValue,
+        '*Financial service providers': budgetInfo.fsps?.join(''),
       });
     }).toPass({ timeout: 2000 });
-
-    if (budgetInfo.fsps) {
-      await programSettingsPage.validateProgramFspsPills({
-        fspNames: budgetInfo.fsps,
-      });
-    }
   });
 });

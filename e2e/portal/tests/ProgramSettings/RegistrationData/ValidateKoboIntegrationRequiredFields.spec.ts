@@ -59,6 +59,9 @@ test('Check if all required fields are updated when adding a FSP', async ({
   });
 });
 
+// await test.step('Add FSPs that have missing required attributes and validate their automatic configuration', async () => {}
+// await test.step('Add all available FSPs that match Kobo form configuration', async () => {}
+
 test('Check if scope is not shown when scope is disabled', async ({
   programSettingsPage,
   registrationDataPage,

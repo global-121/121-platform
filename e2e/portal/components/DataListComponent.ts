@@ -8,9 +8,7 @@ class DataListComponent {
     this.datalist = locator;
   }
 
-  async getData({
-    omitListItemWithLabel,
-  }: { omitListItemWithLabel?: string } = {}) {
+  async getData() {
     await this.datalist.waitFor({ state: 'visible' });
     const listItems = this.datalist.locator(
       'div[data-testid-category=data-list-item]',
@@ -29,10 +27,6 @@ class DataListComponent {
       value = value.trim();
       parsed[key] = value;
     });
-
-    if (omitListItemWithLabel) {
-      delete parsed[omitListItemWithLabel];
-    }
 
     return parsed;
   }
