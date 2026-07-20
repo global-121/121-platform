@@ -44,6 +44,7 @@
       >
         @for (fspConfiguration of fspConfigs; track fspConfiguration.name) {
           <app-fsp-configuration-card
+            [programFsps]="fspConfigs.map((programFsp) => programFsp.fspName)"
             [programId]="programId()"
             [configuration]="fspConfiguration"
             (reconfigureFsp)="reconfigureFspConfiguration.emit($event)"
