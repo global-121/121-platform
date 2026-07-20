@@ -2,7 +2,6 @@ import { expect } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -13,6 +12,7 @@ import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
+import { getFspLabels } from '@121-e2e/portal/helpers/get-fsp-labels';
 
 const todaysDate = new Date();
 const futureDate = new Date();
@@ -53,10 +53,9 @@ test('Edit Program Information', async ({ programSettingsPage }) => {
     paymentFrequency: '2-months',
     defaultTransferValue: '200',
     fixedTransferValue: '100',
-    fsps: [
-      FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
-      FSP_SETTINGS[Fsps.intersolveVoucherWhatsapp].defaultLabel.en,
-    ] as string[],
+    fsps: getFspLabels({
+      fsps: [Fsps.intersolveVisa, Fsps.intersolveVoucherWhatsapp],
+    }),
   };
 
   // Act

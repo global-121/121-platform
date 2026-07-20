@@ -1,11 +1,9 @@
-import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { programIdSafaricom } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
-
-import { getFspLabels } from './get-fsp-labels.helper';
+import { getFspLabels } from '@121-e2e/portal/helpers/get-fsp-labels';
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
@@ -37,7 +35,7 @@ test('Add all available FSPs via the budget page', async ({
 }) => {
   await test.step('Remove Safaricom FSP', async () => {
     await programSettingsPage.changeFspSelectionForProgram({
-      fspNames: [FSP_SETTINGS[Fsps.safaricom].defaultLabel.en!],
+      fspNames: getFspLabels({ fsps: [Fsps.safaricom] }),
     });
     await fspSettingsPage.clickFspIntegration();
     await fspSettingsPage.validateInfoCardMessage({

@@ -1,13 +1,13 @@
-import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
+import { getFspLabels } from '@121-e2e/portal/helpers/get-fsp-labels';
 
-const fspsToAdd = [FSP_SETTINGS[Fsps.safaricom].defaultLabel.en].filter(
-  (label): label is string => label !== undefined,
-);
+const fspsToAdd = getFspLabels({
+  fsps: [Fsps.safaricom],
+});
 
 const requiredFieldsFromSeed = [
   'fsp',

@@ -1,16 +1,18 @@
-import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
+import { getFspLabels } from '@121-e2e/portal/helpers/get-fsp-labels';
 
-const availableFsps = [
-  FSP_SETTINGS[Fsps.excel].defaultLabel.en,
-  FSP_SETTINGS[Fsps.intersolveVoucherWhatsapp].defaultLabel.en,
-  FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
-  FSP_SETTINGS[Fsps.intersolveVoucherPaper].defaultLabel.en,
-].filter((label): label is string => label !== undefined);
+const availableFsps = getFspLabels({
+  fsps: [
+    Fsps.excel,
+    Fsps.intersolveVoucherWhatsapp,
+    Fsps.intersolveVisa,
+    Fsps.intersolveVoucherPaper,
+  ],
+});
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({

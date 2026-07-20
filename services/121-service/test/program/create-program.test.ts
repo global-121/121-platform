@@ -9,6 +9,7 @@ import {
   getProgram,
   postProgram,
 } from '@121-service/test/helpers/program.helper';
+import { putProgramFspConfigurations } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   cleanProgramForAssertions,
   getAccessToken,
@@ -243,23 +244,29 @@ describe('Create program', () => {
     expect(getProgramResponse.statusCode).toBe(HttpStatus.NOT_FOUND);
   });
 
-  it('should add fsps to a program when creating it', async () => {
-    // Arrange
-    const programWithFsps = {
-      ...minimalProgram,
-      fsps: [Fsps.intersolveVisa, Fsps.excel],
-    };
-
+  it('should add fsps to a program via fsp-configurations endpoint after creating it', async () => {
     // Act
     const createProgramResponse = await postProgram(
-      programWithFsps,
+      minimalProgram,
       accessToken,
     );
+
     const programId = createProgramResponse.body.id;
+
+    const updateProgramFspConfigurationsResponse =
+      await putProgramFspConfigurations({
+        programId,
+        fsps: [Fsps.intersolveVisa, Fsps.excel],
+        accessToken,
+      });
+
     const getProgramResponse = await getProgram(programId, accessToken);
 
     // Assert
     expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
+    expect(updateProgramFspConfigurationsResponse.statusCode).toBe(
+      HttpStatus.NO_CONTENT,
+    );
     expect(getProgramResponse.body).toEqual(
       expect.objectContaining({
         fspConfigurations: expect.arrayContaining([

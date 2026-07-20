@@ -2,8 +2,7 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
-
-import { getFspLabels } from './get-fsp-labels.helper';
+import { getFspLabels } from '@121-e2e/portal/helpers/get-fsp-labels';
 
 const configuredFsps = getFspLabels({
   fsps: [Fsps.intersolveVisa, Fsps.intersolveVoucherWhatsapp],
