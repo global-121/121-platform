@@ -96,7 +96,7 @@ export class ProgramSettingsTeamPageComponent {
         {
           field: 'username',
           header: $localize`User name`,
-          class: 'w-1/3 valign-top',
+          class: 'w-1/3 align-top',
         },
         {
           field: 'allRolesLabel',
