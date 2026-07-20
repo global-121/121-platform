@@ -19,13 +19,6 @@ import {
 describe('Create program', () => {
   let accessToken: string;
 
-  const minimalProgram = {
-    titlePortal: {
-      en: 'Test Title',
-    },
-    currency: CurrencyCode.EUR,
-  };
-
   beforeEach(async () => {
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
@@ -61,6 +54,14 @@ describe('Create program', () => {
   });
 
   it('should post a program with the minimum amount of attributes', async () => {
+    // Arrange
+    const minimalProgram = {
+      titlePortal: {
+        en: 'Test Title',
+      },
+      currency: CurrencyCode.EUR,
+    };
+
     // Act
     const createProgramResponse = await postProgram(
       minimalProgram,
