@@ -6,15 +6,18 @@
     pFocusTrap
     [pFocusTrapDisabled]="!isEditing()"
   >
-    <div class="flex items-center gap-x-2 min-block-12">
+    <div class="mbe-2 flex items-center gap-x-2 min-block-7.5">
       <h2>{{ header() }}</h2>
       @if (canEdit()) {
         <div class="ms-auto space-x-2">
           @if (!isEditing()) {
             <p-button
-              text
-              plain
-              icon="pi pi-pencil"
+              outlined
+              rounded
+              [size]="'small'"
+              icon="pi pi-pencil text-xs"
+              label="Edit"
+              i18n-label="@@generic-edit"
               [iconPos]="rtlHelper.createPosition('start')()"
               (click)="isEditing.set(true)"
               [title]="editPencilTitle()"
@@ -26,7 +29,8 @@
               label="Cancel"
               i18n-label="@@generic-cancel"
               (click)="isEditing.set(false)"
-              icon="pi pi-times"
+              icon="pi pi-times text-sm"
+              [size]="'small'"
               [iconPos]="rtlHelper.createPosition('start')()"
               outlined
               rounded
@@ -39,6 +43,7 @@
                 label="Save"
                 i18n-label="@@generic-save"
                 icon="pi pi-check"
+                [size]="'small'"
                 [iconPos]="rtlHelper.createPosition('start')()"
                 rounded
                 [loading]="mutation()?.isPending()"
