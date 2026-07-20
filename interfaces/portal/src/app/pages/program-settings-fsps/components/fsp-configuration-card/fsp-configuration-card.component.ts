@@ -56,6 +56,9 @@ export class FspConfigurationCardComponent {
   readonly reconfigureFsp = output<FspConfiguration>();
   readonly addFspConfiguration = output<Fsps>();
 
+  // To figure out if we need to hide the Excel Delete button
+  readonly programFsps = input.required<Fsps[]>();
+
   readonly fspConfigurationService = inject(FspConfigurationService);
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
   readonly programApiService = inject(ProgramApiService);
@@ -109,14 +112,19 @@ export class FspConfigurationCardComponent {
   );
 
   readonly menuItems = computed<MenuItem[]>(() => {
-    const excelMenuItems: MenuItem[] = [
+    const createExcelFspMenuItem: MenuItem[] = [
       {
+        icon: 'pi pi-plus',
         label: 'Create another Excel FSP',
         command: () => {
           this.addFspConfiguration.emit(this.configuration().fspName);
         },
       },
+    ];
+
+    const deleteFspMenuItem: MenuItem[] = [
       {
+        icon: 'pi pi-trash text-red-500',
         label: 'Remove integration',
         command: () => {
           this.deleteConfirmationDialog().show();
@@ -124,8 +132,9 @@ export class FspConfigurationCardComponent {
       },
     ];
 
-    const menuItems: MenuItem[] = [
+    const reconfigureFspMenuItem: MenuItem[] = [
       {
+        icon: 'pi pi-pencil',
         label: 'Reconfigure',
         command: () => {
           this.reconfigureFsp.emit(this.configuration());
@@ -134,10 +143,22 @@ export class FspConfigurationCardComponent {
     ];
 
     if (this.configuration().fspName === Fsps.excel) {
-      menuItems.push(...excelMenuItems);
+      const baseOptionsForExcelFsp: MenuItem[] = [
+        ...createExcelFspMenuItem,
+        ...reconfigureFspMenuItem,
+      ];
+
+      const hasMoreThenOneExcelFsp =
+        this.programFsps().filter((fsp) => fsp === Fsps.excel).length > 1;
+
+      if (hasMoreThenOneExcelFsp) {
+        return [...baseOptionsForExcelFsp, ...deleteFspMenuItem];
+      }
+
+      return baseOptionsForExcelFsp;
     }
 
-    return !this.configurationPending() ? menuItems : [];
+    return !this.configurationPending() ? reconfigureFspMenuItem : [];
   });
 
   readonly requiredRegistrationAttributes = computed(() => {
