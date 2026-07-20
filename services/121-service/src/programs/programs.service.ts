@@ -343,6 +343,7 @@ export class ProgramService {
 
     // Seed with null -> null so assignments without a threshold map cleanly.
     const newThresholdIdByOldId: ThresholdIdByOldId = new Map([[null, null]]);
+
     for (const sourceThreshold of sourceThresholds) {
       const newThreshold = await thresholdRepository.save(
         thresholdRepository.create({
@@ -374,7 +375,21 @@ export class ProgramService {
       relations: ['roles'],
     });
 
+    // Creating the target program already assigned its creator, so skip users
+    // that are assigned to it to avoid violating the unique (userId, programId)
+    // constraint.
+    const targetAssignments = await assignmentRepository.find({
+      where: { programId: Equal(targetProgramId) },
+    });
+    const alreadyAssignedUserIds = new Set(
+      targetAssignments.map((assignment) => assignment.userId),
+    );
+
     for (const sourceAssignment of sourceAssignments) {
+      if (alreadyAssignedUserIds.has(sourceAssignment.userId)) {
+        continue;
+      }
+
       await assignmentRepository.save(
         assignmentRepository.create({
           programId: targetProgramId,
@@ -395,6 +410,7 @@ export class ProgramService {
   ): Promise<ProgramReturnDto> {
     const program = await this.findProgramOrThrow(programId);
 
+    // If nothing to update, raise a 400 Bad Request.
     if (Object.keys(updateProgramDto).length === 0) {
       throw new HttpException(
         'Update program error: no attributes supplied to update',
