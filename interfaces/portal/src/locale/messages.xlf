@@ -564,6 +564,9 @@
       <trans-unit id="3443268590750127257" datatype="html">
         <source>Unique key</source>
       </trans-unit>
+      <trans-unit id="3450194029516333840" datatype="html">
+        <source>(Optional)</source>
+      </trans-unit>
       <trans-unit id="3453831056127531396" datatype="html">
         <source>First approval step must be set for all payments regardless of the total payment amount.</source>
       </trans-unit>
@@ -663,9 +666,6 @@
       </trans-unit>
       <trans-unit id="3851949706407638075" datatype="html">
         <source>The system will create registrations with the status <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;&apos;blue&apos;&quot; label=&quot;&apos;New&apos;&quot; i18n-label /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;&apos;blue&apos;&quot; label=&quot;&apos;New&apos;&quot; i18n-label /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/></source>
-      </trans-unit>
-      <trans-unit id="3853257098450356103" datatype="html">
-        <source>Inform the relevant user to add FSPs to your program in the Program Information page.</source>
       </trans-unit>
       <trans-unit id="3854227369866764893" datatype="html">
         <source>Registrations per duplicate status</source>
@@ -826,6 +826,9 @@
       </trans-unit>
       <trans-unit id="4404975094271849688" datatype="html">
         <source>No changes detected.</source>
+      </trans-unit>
+      <trans-unit id="4421372889454289213" datatype="html">
+        <source>Inform the relevant user to add FSPs to your program on the Program Information page.</source>
       </trans-unit>
       <trans-unit id="4421433274861560863" datatype="html">
         <source>Add a user to the 121 platform. Fill in the fields below to create a new user account.</source>

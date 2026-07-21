@@ -147,16 +147,16 @@ export class FspConfigurationCardComponent {
       this.programFsps().filter((fsp) => fsp === Fsps.excel).length > 1;
 
     if (isExcelFsp) {
-      const baseOptionsForExcelFsp: MenuItem[] = [
+      const optionsForExcelFsp: MenuItem[] = [
         ...createExcelFspMenuItem,
         ...reconfigureFspMenuItem,
       ];
 
       if (hasMoreThanOneExcelFsp) {
-        return [...baseOptionsForExcelFsp, ...deleteFspMenuItem];
+        optionsForExcelFsp.push(...deleteFspMenuItem);
       }
 
-      return baseOptionsForExcelFsp;
+      return !this.configurationPending() ? optionsForExcelFsp : [];
     }
 
     return !this.configurationPending() ? reconfigureFspMenuItem : [];
