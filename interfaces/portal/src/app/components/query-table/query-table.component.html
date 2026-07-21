@@ -42,8 +42,9 @@
       class="flex items-center justify-between overflow-x-auto min-block-11 empty:hidden"
     >
       <ng-content select="[table-actions]"></ng-content>
-      <div class="ms-auto flex items-center">
-        @if (isFiltered()) {
+
+      @if (isFiltered()) {
+        <div class="ms-auto">
           <p-button
             label="Clear filters"
             i18n-label="@@query-table--clear-filters"
@@ -55,23 +56,27 @@
             (click)="clearAllFilters()"
             class="me-2"
           />
-        }
-        @if (showGlobalSearch()) {
+        </div>
+      }
+      @if (showGlobalSearch()) {
+        <div class="ms-auto">
           <app-query-table-global-search
             [globalFilterValue]="globalFilterValue()"
             [(globalFilterVisible)]="globalFilterVisible"
             (filterChange)="table.filterGlobal($event, 'contains')"
           />
-        }
-        @if (enableColumnManagement()) {
+        </div>
+      }
+      @if (enableColumnManagement()) {
+        <div>
           <app-query-table-column-management
             [columns]="columns()"
             [(visibleColumns)]="visibleColumns"
             (resetColumnVisibility)="updateColumnVisibility(true)"
             [selectedColumnsStateKey]="selectedColumnsStateKey()"
           />
-        }
-      </div>
+        </div>
+      }
     </div>
   </ng-template>
 
