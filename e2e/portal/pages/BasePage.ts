@@ -283,11 +283,10 @@ class BasePage {
     const list = this.page.getByTestId('integrated-fsp-list');
     const fsps = list.getByRole('listitem');
 
-    await expect(fsps).toHaveCount(fspNames.length);
+    const sortedFspsInnerTexts = (await fsps.allInnerTexts()).sort();
+    const sortedFspNames = fspNames.sort();
 
-    for (const fsp of fspNames) {
-      await expect(list).toContainText(fsp);
-    }
+    await expect(sortedFspsInnerTexts).toEqual(sortedFspNames);
   }
 
   async validateExportedFile({
