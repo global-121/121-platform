@@ -2448,6 +2448,9 @@
       <trans-unit id="page-title-program-settings-fsps" datatype="html">
         <source>FSPs</source>
       </trans-unit>
+      <trans-unit id="page-title-program-settings-fsps-full" datatype="html">
+        <source>Financial Service Providers</source>
+      </trans-unit>
       <trans-unit id="page-title-program-settings-payment-approval" datatype="html">
         <source>Payment approval</source>
       </trans-unit>
