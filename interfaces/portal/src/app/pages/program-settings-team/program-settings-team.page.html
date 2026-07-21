@@ -1,12 +1,7 @@
 <app-page-layout-program-settings [programId]="programId()">
   <p-card>
-    <div class="mbe-2 flex items-center gap-x-2 min-block-7.5">
-      <h2
-        i18n="@@page-title-program-settings-team"
-        class="mbe-1"
-      >
-        Program team
-      </h2>
+    <div class="mbe-1 flex items-center gap-x-2 min-block-9">
+      <h2 i18n="@@page-title-program-settings-team">Program team</h2>
       <div class="relative -inset-e-1 -inset-bs-1 ms-auto">
         @if (canManageAidworkers()) {
           <p-button
