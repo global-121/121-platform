@@ -1,6 +1,8 @@
 import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
 
+import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
+
 import BasePage from './BasePage';
 
 class FspSettingsPage extends BasePage {
@@ -38,6 +40,32 @@ class FspSettingsPage extends BasePage {
     await expect(fspCard).toBeVisible();
     await fspCard.click();
     await this.page.getByRole('menuitem', { name: 'Reconfigure' }).click();
+  }
+
+  async getAllRequiredAttributes({
+    fspConfiguration,
+  }: {
+    fspConfiguration: FspSettingsDto[];
+  }): Promise<string[]> {
+    let allRequiredAttributes: string[] = [];
+
+    for (const fsp of fspConfiguration) {
+      const { defaultLabel, attributes, name: fspName } = fsp;
+
+      const requiredAttributes = attributes
+        .filter((attr) => attr.isRequired)
+        .map((attr) => attr.name);
+
+      allRequiredAttributes = [...allRequiredAttributes, ...requiredAttributes];
+
+      if (!defaultLabel.en) {
+        throw new Error(
+          `FSP ${fspName} does not have a default label in English`,
+        );
+      }
+    }
+
+    return allRequiredAttributes;
   }
 
   async validateFspConfiguration(fspConfiguration: string[]) {

@@ -1,6 +1,9 @@
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
+import {
+  programIdPV,
+  registrationPV5,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 import { getFspLabels } from '@121-e2e/portal/helpers/get-fsp-labels';
@@ -17,9 +20,22 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     programId: programIdPV,
+    registrations: [registrationPV5],
     navigateToPage: `/program/${programIdPV}/settings/registration-data`,
   });
 });
+
+const allRequiredAttributesFromSeed = [
+  'fsp',
+  'scope',
+  'fullName',
+  'phoneNumber',
+  'whatsappPhoneNumber',
+  'addressStreet',
+  'addressHouseNumber',
+  'addressPostalCode',
+  'addressCity',
+];
 
 test('Check if all required fields are shown prior to integration', async ({
   registrationDataPage,
@@ -27,17 +43,7 @@ test('Check if all required fields are shown prior to integration', async ({
   await test.step('Validate required fields', async () => {
     await registrationDataPage.clickRegistrationDataSection();
     await registrationDataPage.validateKoboRequiredFieldsTable({
-      requiredDataColumnNames: [
-        'fsp',
-        'scope',
-        'fullName',
-        'phoneNumber',
-        'whatsappPhoneNumber',
-        'addressStreet',
-        'addressHouseNumber',
-        'addressPostalCode',
-        'addressCity',
-      ],
+      requiredDataColumnNames: allRequiredAttributesFromSeed,
     });
   });
 });
@@ -56,24 +62,10 @@ test('Check if all required fields are updated when adding a FSP', async ({
   await test.step('Validate required fields', async () => {
     await registrationDataPage.clickRegistrationDataSection();
     await registrationDataPage.validateKoboRequiredFieldsTable({
-      requiredDataColumnNames: [
-        'fsp',
-        'scope',
-        'fullName',
-        'phoneNumber',
-        'whatsappPhoneNumber',
-        'addressStreet',
-        'addressHouseNumber',
-        'addressPostalCode',
-        'addressCity',
-        'nationalId',
-      ],
+      requiredDataColumnNames: [...allRequiredAttributesFromSeed, 'nationalId'],
     });
   });
 });
-
-// await test.step('Add FSPs that have missing required attributes and validate their automatic configuration', async () => {}
-// await test.step('Add all available FSPs that match Kobo form configuration', async () => {}
 
 test('Check if scope is not shown when scope is disabled', async ({
   programSettingsPage,
@@ -104,14 +96,9 @@ test('Check if scope is not shown when scope is disabled', async ({
     await registrationDataPage.clickRegistrationDataSection();
     await registrationDataPage.validateKoboRequiredFieldsTable({
       requiredDataColumnNames: [
-        'fsp',
-        'fullName',
-        'phoneNumber',
-        'whatsappPhoneNumber',
-        'addressStreet',
-        'addressHouseNumber',
-        'addressPostalCode',
-        'addressCity',
+        ...allRequiredAttributesFromSeed.filter(
+          (attribute) => attribute !== 'scope',
+        ),
       ],
     });
   });
