@@ -148,10 +148,10 @@ export class FspConfigurationCardComponent {
         ...reconfigureFspMenuItem,
       ];
 
-      const hasMoreThenOneExcelFsp =
+      const hasMoreThanOneExcelFsp =
         this.programFsps().filter((fsp) => fsp === Fsps.excel).length > 1;
 
-      if (hasMoreThenOneExcelFsp) {
+      if (hasMoreThanOneExcelFsp) {
         return [...baseOptionsForExcelFsp, ...deleteFspMenuItem];
       }
 
