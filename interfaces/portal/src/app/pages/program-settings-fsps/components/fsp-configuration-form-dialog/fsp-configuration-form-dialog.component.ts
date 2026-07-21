@@ -17,7 +17,6 @@ import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-set
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
-import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
@@ -116,7 +115,6 @@ export class FspConfigurationFormDialogComponent {
           en: formGroupData.displayName,
         },
         fspName,
-        state: FspConfigurationStates.configured,
         properties: configurationProperties
           .map(({ name }) => ({
             name,

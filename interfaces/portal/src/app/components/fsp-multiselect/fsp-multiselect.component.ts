@@ -7,7 +7,6 @@ import {
   inject,
   input,
   model,
-  Signal,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -53,12 +52,9 @@ export class FspMultiselectComponent implements ControlValueAccessor {
   private onTouched: () => void = () => undefined;
 
   // Fetch FSP configurations for the given program ID. If no program ID is provided, the query will be skipped.
-  fspConfigurations = injectQuery(() => ({
-    ...this.fspConfigurationApiService.getFspConfigurations(
-      this.programId as Signal<string>,
-    )(),
-    enabled: !!this.programId(),
-  }));
+  fspConfigurations = injectQuery(
+    this.fspConfigurationApiService.getFspConfigurations(this.programId),
+  );
 
   readonly enabledFsps = injectQuery(this.fspApiService.getAllEnabledFsps());
 

@@ -10,7 +10,7 @@ import { DomainApiService } from '~/domains/domain-api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { Dto } from '~/utils/dto-type';
 
-const BASE_ENDPOINT = (programId: Signal<number | string>) => [
+const BASE_ENDPOINT = (programId: Signal<number | string | undefined>) => [
   'programs',
   programId,
   'fsp-configurations',
@@ -20,8 +20,9 @@ const BASE_ENDPOINT = (programId: Signal<number | string>) => [
   providedIn: 'root',
 })
 export class FspConfigurationApiService extends DomainApiService {
-  getFspConfigurations(programId: Signal<number | string>) {
+  getFspConfigurations(programId: Signal<number | string | undefined>) {
     return this.generateQueryOptions<FspConfiguration[]>({
+      enabled: () => !!programId(),
       path: BASE_ENDPOINT(programId),
       processResponse: (response) => {
         // This guarantees some consistency in the order of FSP configurations shown in the UI
