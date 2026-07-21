@@ -4,10 +4,12 @@
     [ngClass]="wrapperVariant()"
   >
     @if (content(); as content) {
-      <span
-        class="me-2 text-xl"
-        [ngClass]="iconVariant()"
-      ></span>
+      @if (iconVariant()) {
+        <span
+          class="me-2 text-xl"
+          [ngClass]="iconVariant()"
+        ></span>
+      }
       <div class="leading-tight">
         <strong>{{ content.title }}</strong>
         <span>&nbsp;-&nbsp;</span>

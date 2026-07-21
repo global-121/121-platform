@@ -1,11 +1,10 @@
 <app-form-field-wrapper
   label="Financial service providers:"
   [isRequired]="false"
-  [errorMessage]=""
   i18n-label
 >
   <p-multiselect
-    [className]="'wrapped-chip-multiselect'"
+    class="wrapped-chip-multiselect"
     [loading]="programId() ? fspConfigurations.isPending() : false"
     [disabled]="isDisabled"
     [maxSelectedLabels]="100"

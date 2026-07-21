@@ -178,10 +178,6 @@ svg-icon svg {
   */
 
   .wrapped-chip-multiselect {
-    p-overlay {
-      bottom: 100%;
-    }
-
     .p-multiselect-label-container {
       @apply overflow-visible;
 
