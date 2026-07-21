@@ -10,6 +10,7 @@ on:
   merge_group:
     types: [checks_requested]
   pull_request:
+    types: [opened, synchronize, reopened, labeled]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -54,7 +55,10 @@ jobs:
   lint-code:
     needs: path-filter
     runs-on: ubuntu-latest
-    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
+    if: >-
+      needs.path-filter.outputs.should_skip != 'true' &&
+      (github.event_name != 'pull_request' ||
+       contains(github.event.pull_request.labels.*.name, 'run-e2e'))
     steps:
       - name: Check out repository code
         uses: actions/checkout@v7
@@ -80,7 +84,10 @@ jobs:
     needs:
       - path-filter
       - lint-code
-    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
+    if: >-
+      needs.path-filter.outputs.should_skip != 'true' &&
+      (github.event_name != 'pull_request' ||
+       contains(github.event.pull_request.labels.*.name, 'run-e2e'))
     strategy:
       fail-fast: false
       matrix:
