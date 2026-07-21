@@ -42,35 +42,36 @@
       class="flex items-center justify-between overflow-x-auto min-block-11 empty:hidden"
     >
       <ng-content select="[table-actions]"></ng-content>
-
-      @if (isFiltered()) {
-        <p-button
-          label="Clear filters"
-          i18n-label="@@query-table--clear-filters"
-          [outlined]="true"
-          rounded
-          severity="contrast"
-          icon="pi pi-filter-slash"
-          [iconPos]="rtlHelper.createPosition('start')()"
-          (click)="clearAllFilters()"
-          class="me-2"
-        />
-      }
-      @if (showGlobalSearch()) {
-        <app-query-table-global-search
-          [globalFilterValue]="globalFilterValue()"
-          [(globalFilterVisible)]="globalFilterVisible"
-          (filterChange)="table.filterGlobal($event, 'contains')"
-        />
-      }
-      @if (enableColumnManagement()) {
-        <app-query-table-column-management
-          [columns]="columns()"
-          [(visibleColumns)]="visibleColumns"
-          (resetColumnVisibility)="updateColumnVisibility(true)"
-          [selectedColumnsStateKey]="selectedColumnsStateKey()"
-        />
-      }
+      <div class="flex items-center">
+        @if (isFiltered()) {
+          <p-button
+            label="Clear filters"
+            i18n-label="@@query-table--clear-filters"
+            [outlined]="true"
+            rounded
+            severity="contrast"
+            icon="pi pi-filter-slash"
+            [iconPos]="rtlHelper.createPosition('start')()"
+            (click)="clearAllFilters()"
+            class="me-2"
+          />
+        }
+        @if (showGlobalSearch()) {
+          <app-query-table-global-search
+            [globalFilterValue]="globalFilterValue()"
+            [(globalFilterVisible)]="globalFilterVisible"
+            (filterChange)="table.filterGlobal($event, 'contains')"
+          />
+        }
+        @if (enableColumnManagement()) {
+          <app-query-table-column-management
+            [columns]="columns()"
+            [(visibleColumns)]="visibleColumns"
+            (resetColumnVisibility)="updateColumnVisibility(true)"
+            [selectedColumnsStateKey]="selectedColumnsStateKey()"
+          />
+        }
+      </div>
     </div>
   </ng-template>
 
