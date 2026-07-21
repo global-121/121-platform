@@ -974,9 +974,6 @@
       <trans-unit id="508499092676439201" datatype="html">
         <source>Integration update unsuccessful. Please try again.</source>
       </trans-unit>
-      <trans-unit id="5106050439674974101" datatype="html">
-        <source>Choose an FSP from the FSPs integrated to this instance. You can add multiple FSPs to the same program. If you wish to integrate a new FSP, contact the 121 support team or talk to the account manager.</source>
-      </trans-unit>
       <trans-unit id="5124373210930196762" datatype="html">
         <source>For more information about how to set up payment approval see <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/></source>
       </trans-unit>
@@ -1302,6 +1299,9 @@
       <trans-unit id="6536020395223120161" datatype="html">
         <source>Error</source>
       </trans-unit>
+      <trans-unit id="6560467007880512302" datatype="html">
+        <source>Integrate the FSPs added to your program. To add or manage FSP types, go to the Program information page.</source>
+      </trans-unit>
       <trans-unit id="6562860910125244453" datatype="html">
         <source>Use the &apos;Last Message Status&apos; column to check the progress of messages. Closing this notification will not cancel message sending.</source>
       </trans-unit>
@@ -1596,9 +1596,6 @@
       <trans-unit id="7781301631011863993" datatype="html">
         <source>(<x equiv-text="selectedItemsCount.toString()" id="PH"/> selected)</source>
       </trans-unit>
-      <trans-unit id="7781535031854190943" datatype="html">
-        <source>Registration integration</source>
-      </trans-unit>
       <trans-unit id="7799902377740606724" datatype="html">
         <source>Select 1</source>
       </trans-unit>
@@ -1820,9 +1817,6 @@
       </trans-unit>
       <trans-unit id="8809702678611776373" datatype="html">
         <source>Link with KoboToolbox</source>
-      </trans-unit>
-      <trans-unit id="8816083895650555315" datatype="html">
-        <source>Financial Service Providers</source>
       </trans-unit>
       <trans-unit id="8819989029832903215" datatype="html">
         <source>Export payments</source>
@@ -2456,6 +2450,9 @@
       </trans-unit>
       <trans-unit id="page-title-program-settings-registration-data" datatype="html">
         <source>Registration data</source>
+      </trans-unit>
+      <trans-unit id="page-title-program-settings-registration-integration" datatype="html">
+        <source>Registration integration</source>
       </trans-unit>
       <trans-unit id="page-title-program-settings-team" datatype="html">
         <source>Program team</source>

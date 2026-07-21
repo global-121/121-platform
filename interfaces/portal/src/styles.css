@@ -240,10 +240,12 @@ svg-icon svg {
     }
   }
 
-  .p-button-sm {
-    --p-button-sm-padding-x: 0.75rem;
-    --p-button-sm-padding-y: 0.35rem;
-    --p-button-gap: 0.5rem;
+  .p-button {
+    &.p-button-sm {
+      --p-button-sm-padding-x: 0.75rem;
+      --p-button-sm-padding-y: 0.35rem;
+      --p-button-gap: 0.5rem;
+    }
   }
 
   .p-card {
