@@ -180,11 +180,12 @@ export class CreateProgramDialogComponent {
     }: {
       programId: number;
       fsps: Fsps[];
-    }) =>
+    }) => {
       await this.fspConfigurationApiService.updateFspConfigurations({
         programId: signal(programId),
         fsps,
-      }),
+      });
+    },
   }));
 
   goBack() {

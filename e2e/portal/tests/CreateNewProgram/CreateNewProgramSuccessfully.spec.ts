@@ -27,7 +27,7 @@ const programInfo = {
   defaultNrOfTransactions: '5',
   fixedTransferValue: '100',
   fsps: getFspLabels({
-    fsps: [Fsps.intersolveVisa, Fsps.safaricom, Fsps.intersolveVoucherPaper],
+    fsps: [Fsps.intersolveVisa, Fsps.intersolveVoucherPaper, Fsps.safaricom],
   }),
 };
 
