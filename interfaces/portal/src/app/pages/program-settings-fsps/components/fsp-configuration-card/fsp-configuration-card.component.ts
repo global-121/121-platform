@@ -142,14 +142,15 @@ export class FspConfigurationCardComponent {
       },
     ];
 
-    if (this.configuration().fspName === Fsps.excel) {
+    const isExcelFsp = this.configuration().fspName === Fsps.excel;
+    const hasMoreThanOneExcelFsp =
+      this.programFsps().filter((fsp) => fsp === Fsps.excel).length > 1;
+
+    if (isExcelFsp) {
       const baseOptionsForExcelFsp: MenuItem[] = [
         ...createExcelFspMenuItem,
         ...reconfigureFspMenuItem,
       ];
-
-      const hasMoreThanOneExcelFsp =
-        this.programFsps().filter((fsp) => fsp === Fsps.excel).length > 1;
 
       if (hasMoreThanOneExcelFsp) {
         return [...baseOptionsForExcelFsp, ...deleteFspMenuItem];
