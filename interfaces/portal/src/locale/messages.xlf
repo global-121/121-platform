@@ -234,6 +234,9 @@
       <trans-unit id="2099886964241384522" datatype="html">
         <source>Copy email</source>
       </trans-unit>
+      <trans-unit id="2106928839478351824" datatype="html">
+        <source>Remove integration</source>
+      </trans-unit>
       <trans-unit id="2114848494510177632" datatype="html">
         <source>Your e-mail address and/or your (full) name.</source>
       </trans-unit>
@@ -317,6 +320,9 @@
       </trans-unit>
       <trans-unit id="2358567597663804258" datatype="html">
         <source>You&apos;re about to replace debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentTokenCode() | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>.</source>
+      </trans-unit>
+      <trans-unit id="236706714969062748" datatype="html">
+        <source>Create another Excel FSP</source>
       </trans-unit>
       <trans-unit id="2378622458638065888" datatype="html">
         <source>How to contact us</source>

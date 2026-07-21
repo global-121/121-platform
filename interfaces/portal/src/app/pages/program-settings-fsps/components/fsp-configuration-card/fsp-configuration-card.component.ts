@@ -115,7 +115,7 @@ export class FspConfigurationCardComponent {
     const createExcelFspMenuItem: MenuItem[] = [
       {
         icon: 'pi pi-plus',
-        label: 'Create another Excel FSP',
+        label: $localize`Create another Excel FSP`,
         command: () => {
           this.addFspConfiguration.emit(this.configuration().fspName);
         },
@@ -125,7 +125,7 @@ export class FspConfigurationCardComponent {
     const deleteFspMenuItem: MenuItem[] = [
       {
         icon: 'pi pi-trash text-red-500',
-        label: 'Remove integration',
+        label: $localize`Remove integration`,
         command: () => {
           this.deleteConfirmationDialog().show();
         },
@@ -135,7 +135,7 @@ export class FspConfigurationCardComponent {
     const reconfigureFspMenuItem: MenuItem[] = [
       {
         icon: 'pi pi-pencil',
-        label: 'Reconfigure',
+        label: $localize`Reconfigure`,
         command: () => {
           this.reconfigureFsp.emit(this.configuration());
         },
