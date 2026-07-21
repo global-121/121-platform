@@ -51,11 +51,11 @@
 }
 
 html {
-  font-size: calc(14 / 16 * 1rem);
+  font-size: 0.875rem; /* 14px, respects browser font-size preferences */
 }
 
 body {
-  @apply bg-grey-100 font-body text-black;
+  @apply bg-grey-100 font-body text-base text-black;
 }
 
 :root {
