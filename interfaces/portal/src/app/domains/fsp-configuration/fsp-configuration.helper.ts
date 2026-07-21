@@ -1,5 +1,13 @@
+import { computed, inject, InputSignal } from '@angular/core';
+
+import { injectQuery } from '@tanstack/angular-query-experimental';
+
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
+
+import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
+import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 
 export const FSP_CONFIGURATION_PROPERTY_LABELS: Record<
   FspConfigurationProperties,
@@ -36,4 +44,40 @@ export const FSP_IMAGE_URLS: Record<Fsps, string> = {
   [Fsps.onafriq]: 'assets/fsps/onafriq.jpg',
   [Fsps.cooperativeBankOfOromia]: 'assets/fsps/cbo.png',
   [Fsps.mtn]: 'assets/fsps/mtn.png',
+};
+
+const hasPendingFspConfiguration = ({
+  fspConfigurations,
+}: {
+  fspConfigurations: FspConfiguration[] | undefined;
+}): boolean => {
+  return (
+    fspConfigurations?.some(
+      (fspConfiguration) =>
+        fspConfiguration.state === FspConfigurationStates.configurationPending,
+    ) ?? false
+  );
+};
+
+export const injectFspConfigurations = ({
+  programId,
+}: {
+  programId: InputSignal<string>;
+}) => {
+  const fspConfigurationApiService = inject(FspConfigurationApiService);
+
+  const fspConfigurations = injectQuery(
+    fspConfigurationApiService.getFspConfigurations(programId),
+  );
+
+  const notAllFspsIntegrated = computed(() =>
+    hasPendingFspConfiguration({
+      fspConfigurations: fspConfigurations.data(),
+    }),
+  );
+
+  return {
+    fspConfigurations,
+    notAllFspsIntegrated,
+  };
 };

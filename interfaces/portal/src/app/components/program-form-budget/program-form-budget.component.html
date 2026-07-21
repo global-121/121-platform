@@ -57,4 +57,9 @@
       i18n-placeholder
     />
   </app-form-field-wrapper>
+
+  <app-fsp-multiselect
+    formControlName="fsps"
+    [programId]="program() ? programId() : undefined"
+  ></app-fsp-multiselect>
 </ng-container>

@@ -93,14 +93,10 @@ export class ProgramFspConfigurationsService {
     }
 
     if (programFspConfigurationDto.properties) {
-      this.programFspConfigurationsHelperService.validateAllowedPropertyNames(
-        {
-          propertyNames: programFspConfigurationDto.properties.map(
-            (p) => p.name,
-          ),
-          fspName: programFspConfigurationDto.fspName,
-        },
-      );
+      this.programFspConfigurationsHelperService.validateAllowedPropertyNames({
+        propertyNames: programFspConfigurationDto.properties.map((p) => p.name),
+        fspName: programFspConfigurationDto.fspName,
+      });
 
       this.programFspConfigurationsHelperService.validatePropertyValueTypesOrThrow(
         {

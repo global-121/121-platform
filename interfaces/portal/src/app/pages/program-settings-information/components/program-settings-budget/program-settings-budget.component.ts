@@ -13,6 +13,7 @@ import {
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
@@ -20,10 +21,12 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { FspTagsComponent } from '~/components/fsp-tags/fsp-tags.component';
 import {
   ProgramBudgetFormGroup,
   ProgramFormBudgetComponent,
 } from '~/components/program-form-budget/program-form-budget.component';
+import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
 import { AuthService } from '~/services/auth.service';
@@ -43,11 +46,11 @@ import { ToastService } from '~/services/toast.service';
 })
 export class ProgramSettingsBudgetComponent {
   readonly programId = input.required<string>();
-
   readonly isEditing = signal(false);
 
   authService = inject(AuthService);
   programApiService = inject(ProgramApiService);
+  fspConfigurationApiService = inject(FspConfigurationApiService);
   toastService = inject(ToastService);
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
@@ -69,8 +72,9 @@ export class ProgramSettingsBudgetComponent {
       currency,
       distributionDuration,
       fixedTransferValue,
-    }: ReturnType<ProgramBudgetFormGroup['getRawValue']>) =>
-      this.programApiService.updateProgram({
+      fsps,
+    }: ReturnType<ProgramBudgetFormGroup['getRawValue']>) => {
+      await this.programApiService.updateProgram({
         programId: this.programId,
         programPatch: {
           budget,
@@ -78,10 +82,33 @@ export class ProgramSettingsBudgetComponent {
           distributionDuration,
           fixedTransferValue,
         },
-      }),
+      });
+
+      if (this.fspsChanged({ fsps })) {
+        try {
+          await this.createProgramFspsMutation.mutateAsync({
+            fsps,
+          });
+        } catch {
+          this.toastService.showToast({
+            severity: 'error',
+            detail: $localize`Failed to update financial service providers.`,
+          });
+        }
+      }
+    },
     onSuccess: () => {
       this.toastService.showToast({
         detail: $localize`Budget details saved successfully.`,
+      });
+    },
+  }));
+
+  createProgramFspsMutation = injectMutation(() => ({
+    mutationFn: async ({ fsps }: { fsps: Fsps[] }) => {
+      await this.fspConfigurationApiService.updateFspConfigurations({
+        programId: this.programId,
+        fsps,
       });
     },
   }));
@@ -114,6 +141,13 @@ export class ProgramSettingsBudgetComponent {
         type: 'number',
         fullWidth: true,
       },
+      {
+        label: '*' + $localize`Financial service providers`,
+        value: FspTagsComponent,
+        type: 'component',
+        inputs: { programId: this.programId() },
+        fullWidth: true,
+      },
     ];
 
     return [...listData].map((item) => ({
@@ -121,4 +155,18 @@ export class ProgramSettingsBudgetComponent {
       loading: this.program.isPending(),
     }));
   });
+
+  // Checking  if the fsps have changed by comparing the original fsps with the new fsps
+
+  readonly originalFsps = computed(() => {
+    const fspConfigs = this.program.data()?.programFspConfigurations ?? [];
+    return [...new Set(fspConfigs.map((fsp) => fsp.fspName))];
+  });
+
+  fspsChanged({ fsps }: { fsps: Fsps[] }): boolean {
+    return (
+      this.originalFsps().length !== fsps.length ||
+      this.originalFsps().some((fsp) => !fsps.includes(fsp))
+    );
+  }
 }

@@ -1,6 +1,7 @@
 import { Injectable, Signal } from '@angular/core';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspConfigurationProperty } from '@121-service/src/fsp-integrations/shared/interfaces/fsp-configuration-property.interface';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
@@ -9,7 +10,7 @@ import { DomainApiService } from '~/domains/domain-api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { Dto } from '~/utils/dto-type';
 
-const BASE_ENDPOINT = (programId: Signal<number | string>) => [
+const BASE_ENDPOINT = (programId: Signal<number | string | undefined>) => [
   'programs',
   programId,
   'fsp-configurations',
@@ -19,8 +20,9 @@ const BASE_ENDPOINT = (programId: Signal<number | string>) => [
   providedIn: 'root',
 })
 export class FspConfigurationApiService extends DomainApiService {
-  getFspConfigurations(programId: Signal<number | string>) {
+  getFspConfigurations(programId: Signal<number | string | undefined>) {
     return this.generateQueryOptions<FspConfiguration[]>({
+      enabled: () => !!programId(),
       path: BASE_ENDPOINT(programId),
       processResponse: (response) => {
         // This guarantees some consistency in the order of FSP configurations shown in the UI
@@ -66,6 +68,20 @@ export class FspConfigurationApiService extends DomainApiService {
         configurationName,
       ]).join('/'),
       body: configuration,
+    });
+  }
+
+  updateFspConfigurations({
+    programId,
+    fsps,
+  }: {
+    programId: Signal<number | string>;
+    fsps: Fsps[];
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<undefined>({
+      method: 'PUT',
+      endpoint: this.pathToQueryKey([...BASE_ENDPOINT(programId)]).join('/'),
+      body: { fsps },
     });
   }
 

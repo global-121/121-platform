@@ -51,6 +51,11 @@ export type DataListItem = {
       value?: null | string;
     }
   | {
+      type: 'component';
+      value: Type<unknown>;
+      inputs?: Record<string, unknown>;
+    }
+  | {
       type: 'currency';
       value?: null | number;
       currencyCode?: null | string;

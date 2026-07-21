@@ -1,14 +1,15 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
 import CreateProgramDialog from '@121-e2e/portal/components/CreateProgramDialog';
-import HomePage from '@121-e2e/portal/pages/HomePage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
+import { getFspLabels } from '@121-e2e/portal/helpers/get-fsp-labels';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProgramSettingsPage from '@121-e2e/portal/pages/ProgramSettingsPage';
 
 const todaysDate = new Date();
 const futureDate = new Date();
@@ -25,6 +26,9 @@ const programInfo = {
   paymentFrequency: '2-months',
   defaultNrOfTransactions: '5',
   fixedTransferValue: '100',
+  fsps: getFspLabels({
+    fsps: [Fsps.intersolveVisa, Fsps.intersolveVoucherPaper, Fsps.safaricom],
+  }),
 };
 
 test.beforeEach(async ({ page }) => {
@@ -37,11 +41,12 @@ test.beforeEach(async ({ page }) => {
   await loginPage.loginAsAdmin();
 });
 
-test('Create program successfully', async ({ page }) => {
-  const homePage = new HomePage(page);
+test('Create program successfully', async ({
+  programSettingsPage,
+  homePage,
+  page,
+}) => {
   const createProgramDialog = new CreateProgramDialog(page);
-  const programSettings = new ProgramSettingsPage(page);
-
   // Act
   await test.step('Should navigate to main page and select "Create new program" button and fill in the form', async () => {
     await homePage.openCreateNewProgram();
@@ -60,7 +65,7 @@ test('Create program successfully', async ({ page }) => {
 
   await test.step('Should display correct program details in settings page', async () => {
     const basicInformationData =
-      await programSettings.basicInformationDataList.getData();
+      await programSettingsPage.basicInformationDataList.getData();
     expect(basicInformationData).toEqual({
       '*Program name': programInfo.name,
       'Program description': programInfo.description,
@@ -72,19 +77,23 @@ test('Create program successfully', async ({ page }) => {
       'Enable scope': 'No',
     });
 
-    const budgetData = await programSettings.budgetDataList.getData();
+    const budgetData = await programSettingsPage.budgetDataList.getData();
+
     expect(budgetData).toEqual({
       'Funds available': programInfo.fundsAvailable,
       '*Currency': programInfo.currency,
       'Default transactions per registration':
         programInfo.defaultNrOfTransactions,
       '*Fixed transfer value': programInfo.fixedTransferValue,
+      '*Financial service providers': programInfo.fsps?.join(''),
     });
   });
 });
 
-test('Create program validation checks on each step', async ({ page }) => {
-  const homePage = new HomePage(page);
+test('Create program validation checks on each step', async ({
+  page,
+  homePage,
+}) => {
   const createProgramDialog = new CreateProgramDialog(page);
 
   // Act

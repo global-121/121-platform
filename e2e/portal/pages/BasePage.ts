@@ -186,6 +186,18 @@ class BasePage {
     await this.page.goto(path);
   }
 
+  async validateInfoCardMessage({
+    expectedMessage,
+    dataTestId,
+  }: {
+    expectedMessage: string;
+    dataTestId: string;
+  }) {
+    const infoCard = this.page.getByTestId(dataTestId);
+    await expect(infoCard).toBeVisible();
+    await expect(infoCard).toContainText(expectedMessage);
+  }
+
   async validateErrorMessage(errorMessage: string) {
     const errorElement = this.page
       .locator('app-form-error')
@@ -236,6 +248,21 @@ class BasePage {
     return filePath;
   }
 
+  // @TODO: Maybe we should make an input helper file that handles all of the input variants (checkbox, select, text, etc.)
+  async selectMultiselectOptions({
+    dropdownTestId,
+    optionsToClick,
+  }: {
+    dropdownTestId: string;
+    optionsToClick: string[];
+  }) {
+    await this.page.getByTestId(dropdownTestId).click();
+    for (const option of optionsToClick) {
+      await this.page.getByRole('option', { name: option }).click();
+    }
+    await this.closeOpenSelectOrMultiselectWithRetries();
+  }
+
   async closeOpenSelectOrMultiselectWithRetries(retries = 3) {
     for (let i = 0; i < retries; i++) {
       try {
@@ -249,6 +276,17 @@ class BasePage {
         console.log(`Click failed. Retrying... Attempt ${i + 1}/${retries}`);
       }
     }
+  }
+
+  // On the budget page and kobo requirement page we show the FSPs in a pill format, so we need to validate that the pills are shown correctly
+  async validateProgramFspsPills({ fspNames }: { fspNames: string[] }) {
+    const list = this.page.getByTestId('integrated-fsp-list');
+    const fsps = list.getByRole('listitem');
+
+    const sortedFspsInnerTexts = (await fsps.allInnerTexts()).sort();
+    const sortedFspNames = fspNames.sort();
+
+    await expect(sortedFspsInnerTexts).toEqual(sortedFspNames);
   }
 
   async validateExportedFile({

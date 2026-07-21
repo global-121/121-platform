@@ -1,0 +1,33 @@
+<app-form-field-wrapper
+  label="Financial service providers:"
+  [isRequired]="false"
+  i18n-label
+>
+  <p-multiselect
+    class="wrapped-chip-multiselect"
+    [loading]="programId() ? fspConfigurations.isPending() : false"
+    [disabled]="isDisabled"
+    [maxSelectedLabels]="100"
+    [attr.data-testid]="'fsp-multiselect'"
+    [ngModel]="selectedOptions()"
+    [options]="fspMultiselectOptions()"
+    (ngModelChange)="onSelectionChange($event)"
+    (onBlur)="markAsTouched()"
+    [display]="'chip'"
+    [filter]="false"
+    itemcheckboxicon="false"
+    [optionLabel]="'translatedLabel'"
+    [optionValue]="'fspName'"
+    placeholder="Select FSPs"
+    [showToggleAll]="false"
+    i18n-placeholder
+    [appendTo]="'body'"
+  >
+    <ng-template
+      let-fsp
+      #item
+    >
+      <div>{{ fsp.translatedLabel }}</div>
+    </ng-template>
+  </p-multiselect>
+</app-form-field-wrapper>

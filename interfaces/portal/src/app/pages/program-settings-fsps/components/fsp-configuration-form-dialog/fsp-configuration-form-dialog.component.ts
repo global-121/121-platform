@@ -10,10 +10,7 @@ import {
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import {
-  injectMutation,
-  injectQuery,
-} from '@tanstack/angular-query-experimental';
+import { injectMutation } from '@tanstack/angular-query-experimental';
 import { dash } from 'radashi';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
@@ -57,13 +54,6 @@ export class FspConfigurationFormDialogComponent {
 
   readonly programApiService = inject(ProgramApiService);
   readonly toastService = inject(ToastService);
-
-  programAttributes = injectQuery(
-    this.programApiService.getProgramAttributes({
-      programId: this.programId,
-      includeProgramRegistrationAttributes: true,
-    }),
-  );
 
   readonly configurationDialog = viewChild.required<FormDialogComponent>(
     'configurationDialog',

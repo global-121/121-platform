@@ -1,77 +1,54 @@
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
-
-const fspsToDelete = [
-  FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
-  FSP_SETTINGS[Fsps.intersolveVoucherWhatsapp].defaultLabel.en,
-].filter((label): label is string => label !== undefined);
-
-const availableFsps = [
-  ...fspsToDelete,
-  FSP_SETTINGS[Fsps.excel].defaultLabel.en,
-  FSP_SETTINGS[Fsps.intersolveVoucherPaper].defaultLabel.en,
-  FSP_SETTINGS[Fsps.safaricom].defaultLabel.en,
-  FSP_SETTINGS[Fsps.airtel].defaultLabel.en,
-  FSP_SETTINGS[Fsps.commercialBankEthiopia].defaultLabel.en,
-  FSP_SETTINGS[Fsps.nedbank].defaultLabel.en,
-  FSP_SETTINGS[Fsps.onafriq].defaultLabel.en,
-].filter((label): label is string => label !== undefined);
-
-const fspsWithRequiredAttributes = [
-  FSP_SETTINGS[Fsps.safaricom],
-  FSP_SETTINGS[Fsps.commercialBankEthiopia],
-  FSP_SETTINGS[Fsps.onafriq],
-];
-
-const fspsConfiguredInKobo = [
-  FSP_SETTINGS[Fsps.intersolveVoucherPaper].defaultLabel.en,
-  FSP_SETTINGS[Fsps.airtel].defaultLabel.en,
-  FSP_SETTINGS[Fsps.nedbank].defaultLabel.en,
-  FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
-  FSP_SETTINGS[Fsps.intersolveVoucherWhatsapp].defaultLabel.en,
-  FSP_SETTINGS[Fsps.excel].defaultLabel.en,
-].filter((label): label is string => label !== undefined);
+import { getFspLabels } from '@121-e2e/portal/helpers/get-fsp-labels';
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     skipSeedRegistrations: true,
+    navigateToPage: `/program/${programIdOCW}/settings`,
   });
 });
 
+const fspsToDelete = getFspLabels({
+  fsps: [Fsps.intersolveVisa, Fsps.intersolveVoucherWhatsapp],
+});
+
+const fspsToAdd = getFspLabels({
+  fsps: [Fsps.commercialBankEthiopia, Fsps.onafriq, Fsps.safaricom],
+});
+
 test('Add all available FSPs', async ({
-  homePage,
   registrationsPage,
   fspSettingsPage,
+  programSettingsPage,
 }) => {
-  await test.step('Navigate to program', async () => {
-    await homePage.selectProgram('NLRC OCW program');
-  });
-
-  await test.step('Navigate to FSP configuration', async () => {
-    await registrationsPage.navigateToProgramPage('Settings');
-    await fspSettingsPage.clickEditFspSection();
-  });
-
   await test.step('Delete All FSPs', async () => {
-    await fspSettingsPage.deleteFsp({
+    await programSettingsPage.changeFspSelectionForProgram({
       fspNames: fspsToDelete,
     });
   });
 
-  await test.step('Validate all FSPs are ready for configuration', async () => {
-    await fspSettingsPage.validateFspVisibility({
-      fspNames: availableFsps,
-    });
-  });
-
   await test.step('Add FSPs that have missing required attributes and validate their automatic configuration', async () => {
+    await programSettingsPage.clickProgramInformation();
+
+    // Add commercialBankEthiopia, Onafriq and Safaricom FSPs to the program,
+    // which have required attributes that are not yet configured
+    await programSettingsPage.changeFspSelectionForProgram({
+      fspNames: fspsToAdd,
+    });
+
     const allRequiredAttributes =
-      await fspSettingsPage.addFspsWithRequiredAttributes({
-        fspConfiguration: fspsWithRequiredAttributes,
+      await fspSettingsPage.getAllRequiredAttributes({
+        fspConfiguration: [
+          FSP_SETTINGS[Fsps.safaricom],
+          FSP_SETTINGS[Fsps.commercialBankEthiopia],
+          FSP_SETTINGS[Fsps.onafriq],
+        ],
       });
 
     await fspSettingsPage.navigateToProgramPage('Registrations');
@@ -90,17 +67,5 @@ test('Add all available FSPs', async ({
         shouldBeAvailable: true,
       });
     }
-  });
-
-  await test.step('Add all available FSPs that match Kobo form configuration', async () => {
-    await registrationsPage.navigateToProgramPage('Settings');
-    await fspSettingsPage.clickEditFspSection();
-    await fspSettingsPage.addFsp({ fspNames: fspsConfiguredInKobo });
-  });
-
-  await test.step('Validate that only selected FSPs were configured', async () => {
-    await fspSettingsPage.validateVisibilityOfOnlyConfiguredFsps({
-      fspNames: fspsConfiguredInKobo,
-    });
   });
 });

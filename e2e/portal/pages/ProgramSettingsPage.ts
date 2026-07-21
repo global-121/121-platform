@@ -54,6 +54,23 @@ class ProgramSettingsPage extends BasePage {
       .click();
   }
 
+  async changeFspSelectionForProgram({ fspNames }: { fspNames: string[] }) {
+    await this.clickEditProgramInformationSectionByTitle('Budget');
+    await this.selectMultiselectOptions({
+      dropdownTestId: 'fsp-multiselect',
+      optionsToClick: fspNames,
+    });
+
+    await this.saveChanges();
+    await this.validateToastMessageAndClose(
+      'Budget details saved successfully.',
+    );
+  }
+
+  async clickProgramInformation() {
+    await this.page.getByRole('link', { name: 'Program information' }).click();
+  }
+
   async clickEditProgramInformationSectionByTitle(
     title: 'Basic information' | 'Budget',
   ) {

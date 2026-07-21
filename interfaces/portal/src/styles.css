@@ -51,11 +51,11 @@
 }
 
 html {
-  font-size: calc(14 / 16 * 1rem);
+  font-size: 0.875rem; /* 14px, respects browser font-size preferences */
 }
 
 body {
-  @apply bg-grey-100 font-body text-black;
+  @apply bg-grey-100 font-body text-base text-black;
 }
 
 :root {
@@ -162,9 +162,29 @@ svg-icon svg {
 
    So there will only be ONE section/grouping per PrimeNG component.
 */
+
 @layer primeng-customisations {
   :root {
     --toolbar-height: calc(48 / 14 * 1rem);
+  }
+
+  /* 
+    OVERLAY POSITION AND OVERFLOW OVERRIDES:
+    When adding x amount of chips to the multiselect, the overlay will be
+    positioned over the select itself obfuscating the multiselect. Also the 
+    overflow will be hidden and the user won't be able to see the rest of the chips.
+    This is caused by PrimeNG being a very limited library and not having a
+    proper way to position the overlay, so we have to override it ourselves
+  */
+
+  .wrapped-chip-multiselect {
+    .p-multiselect-label-container {
+      @apply overflow-visible;
+
+      .p-multiselect-label {
+        @apply flex flex-wrap;
+      }
+    }
   }
 
   .p-button {

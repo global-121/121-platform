@@ -1,19 +1,31 @@
-import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
+import {
+  programIdPV,
+  registrationPV5,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
+import { getFspLabels } from '@121-e2e/portal/helpers/get-fsp-labels';
 
-const fspsToDelete = [FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en].filter(
-  (label): label is string => label !== undefined,
-);
+const fspsToAdd = getFspLabels({
+  fsps: [Fsps.safaricom],
+});
 
-const fspsToAdd = [FSP_SETTINGS[Fsps.safaricom].defaultLabel.en].filter(
-  (label): label is string => label !== undefined,
-);
+const fspsToDelete = getFspLabels({
+  fsps: [Fsps.intersolveVisa],
+});
 
-const requiredFieldsFromSeed = [
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    programId: programIdPV,
+    registrations: [registrationPV5],
+    navigateToPage: `/program/${programIdPV}/settings/registration-data`,
+  });
+});
+
+const allRequiredAttributesFromSeed = [
   'fsp',
   'scope',
   'fullName',
@@ -25,57 +37,24 @@ const requiredFieldsFromSeed = [
   'addressCity',
 ];
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  await resetDBAndSeedRegistrations({
-    seedScript: SeedScript.nlrcMultiple,
-    programId: programIdPV,
-    navigateToPage: `/program/${programIdPV}/settings/registration-data`,
-  });
-});
-
 test('Check if all required fields are shown prior to integration', async ({
   registrationDataPage,
 }) => {
   await test.step('Validate required fields', async () => {
     await registrationDataPage.clickRegistrationDataSection();
     await registrationDataPage.validateKoboRequiredFieldsTable({
-      requiredDataColumnNames: requiredFieldsFromSeed,
-    });
-  });
-});
-
-test('Check if all required fields are updated when deleting a FSP', async ({
-  registrationDataPage,
-  fspSettingsPage,
-}) => {
-  await test.step('delete FSP', async () => {
-    await fspSettingsPage.clickEditFspSection();
-    await fspSettingsPage.deleteFsp({
-      fspNames: fspsToDelete,
-    });
-  });
-
-  await test.step('Validate required fields', async () => {
-    await registrationDataPage.clickRegistrationDataSection();
-    await registrationDataPage.validateKoboRequiredFieldsTable({
-      requiredDataColumnNames: [
-        'fsp',
-        'scope',
-        'fullName',
-        'phoneNumber',
-        'whatsappPhoneNumber',
-      ],
+      requiredDataColumnNames: allRequiredAttributesFromSeed,
     });
   });
 });
 
 test('Check if all required fields are updated when adding a FSP', async ({
   registrationDataPage,
-  fspSettingsPage,
+  programSettingsPage,
 }) => {
   await test.step('add FSP', async () => {
-    await fspSettingsPage.clickEditFspSection();
-    await fspSettingsPage.addFsp({
+    await programSettingsPage.clickProgramInformation();
+    await programSettingsPage.changeFspSelectionForProgram({
       fspNames: fspsToAdd,
     });
   });
@@ -83,7 +62,7 @@ test('Check if all required fields are updated when adding a FSP', async ({
   await test.step('Validate required fields', async () => {
     await registrationDataPage.clickRegistrationDataSection();
     await registrationDataPage.validateKoboRequiredFieldsTable({
-      requiredDataColumnNames: [...requiredFieldsFromSeed, 'nationalId'],
+      requiredDataColumnNames: [...allRequiredAttributesFromSeed, 'nationalId'],
     });
   });
 });
@@ -116,9 +95,36 @@ test('Check if scope is not shown when scope is disabled', async ({
   await test.step('Validate scope not shown as required field', async () => {
     await registrationDataPage.clickRegistrationDataSection();
     await registrationDataPage.validateKoboRequiredFieldsTable({
-      requiredDataColumnNames: [...requiredFieldsFromSeed].filter(
-        (field) => field !== 'scope',
-      ),
+      requiredDataColumnNames: [
+        ...allRequiredAttributesFromSeed.filter(
+          (attribute) => attribute !== 'scope',
+        ),
+      ],
+    });
+  });
+});
+
+test('Check if all required fields are updated when deleting a FSP', async ({
+  registrationDataPage,
+  programSettingsPage,
+}) => {
+  await test.step('delete FSP', async () => {
+    await programSettingsPage.clickProgramInformation();
+    await programSettingsPage.changeFspSelectionForProgram({
+      fspNames: fspsToDelete,
+    });
+  });
+
+  await test.step('Validate required fields', async () => {
+    await registrationDataPage.clickRegistrationDataSection();
+    await registrationDataPage.validateKoboRequiredFieldsTable({
+      requiredDataColumnNames: [
+        'fsp',
+        'scope',
+        'fullName',
+        'phoneNumber',
+        'whatsappPhoneNumber',
+      ],
     });
   });
 });

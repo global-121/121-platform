@@ -293,7 +293,7 @@ describe('Create program', () => {
   ])(
     'should not be able to post a program without correct permissions',
     async ({ email, password }) => {
-      // Arrangek
+      // Arrange
       // we do this because dates in JSON are not Date objects
       const programOcwJson = JSON.parse(JSON.stringify(programOCW));
 
