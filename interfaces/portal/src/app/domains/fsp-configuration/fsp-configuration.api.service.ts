@@ -77,7 +77,7 @@ export class FspConfigurationApiService extends DomainApiService {
     programId: Signal<number | string>;
     fsps: Fsps[];
   }) {
-    return this.httpWrapperService.perform121ServiceRequest<FspConfiguration>({
+    return this.httpWrapperService.perform121ServiceRequest<undefined>({
       method: 'PUT',
       endpoint: this.pathToQueryKey([...BASE_ENDPOINT(programId)]).join('/'),
       body: { fsps },

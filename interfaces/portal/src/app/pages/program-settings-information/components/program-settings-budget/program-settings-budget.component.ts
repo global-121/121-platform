@@ -89,7 +89,7 @@ export class ProgramSettingsBudgetComponent {
           await this.createProgramFspsMutation.mutateAsync({
             fsps,
           });
-        } catch (error) {
+        } catch {
           this.toastService.showToast({
             severity: 'error',
             detail: $localize`Failed to update financial service providers.`,
@@ -105,11 +105,12 @@ export class ProgramSettingsBudgetComponent {
   }));
 
   createProgramFspsMutation = injectMutation(() => ({
-    mutationFn: async ({ fsps }: { fsps: Fsps[] }) =>
+    mutationFn: async ({ fsps }: { fsps: Fsps[] }) => {
       await this.fspConfigurationApiService.updateFspConfigurations({
         programId: this.programId,
         fsps,
-      }),
+      });
+    },
   }));
 
   readonly dataListData = computed(() => {
@@ -158,15 +159,14 @@ export class ProgramSettingsBudgetComponent {
   // Checking  if the fsps have changed by comparing the original fsps with the new fsps
 
   readonly originalFsps = computed(() => {
-    return (
-      this.program.data()?.programFspConfigurations.map((fsp) => fsp.name) ?? []
-    );
+    const fspConfigs = this.program.data()?.programFspConfigurations ?? [];
+    return [...new Set(fspConfigs.map((fsp) => fsp.fspName))];
   });
 
   fspsChanged({ fsps }: { fsps: Fsps[] }): boolean {
     return (
       this.originalFsps().length !== fsps.length ||
-      this.originalFsps().some((fsp) => !fsps.includes(fsp as Fsps))
+      this.originalFsps().some((fsp) => !fsps.includes(fsp))
     );
   }
 }
