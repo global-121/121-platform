@@ -176,10 +176,13 @@ export class CreateProgramDialogComponent {
       // The keys of the user permissions determine which programs a user can see
       await this.authService.refreshUserPermissions();
 
-      await this.programNavigationService.navigateToNewProgram({
-        programId: result?.id,
-      });
-  
+      await this.router.navigate([
+        '/',
+        AppRoutes.program,
+        result?.id,
+        AppRoutes.programSettings,
+      ]);
+
       this.toastService.showToast({
         detail: this.duplicationMode()
           ? $localize`Program successfully duplicated.`
