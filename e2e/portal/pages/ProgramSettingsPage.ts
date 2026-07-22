@@ -1,10 +1,9 @@
 import { expect } from '@playwright/test';
-import { format } from 'date-fns/format';
+import { format } from 'date-fns';
 import { Locator, Page } from 'playwright';
 
 import DataListComponent from '../components/DataListComponent';
 import { PrimeNGDatePicker } from '../components/PrimeNGDatePicker';
-import { ProgramInfo } from '../tests/CreateProgram/create-program-data';
 import BasePage from './BasePage';
 
 class ProgramSettingsPage extends BasePage {
@@ -93,7 +92,18 @@ class ProgramSettingsPage extends BasePage {
     programInfo,
     programName,
   }: {
-    programInfo: ProgramInfo;
+    programInfo: {
+      name: string;
+      description: string;
+      dateRange: { start: Date; end: Date };
+      location: string;
+      targetRegistrations: string;
+      fundsAvailable: string;
+      currency: string;
+      defaultNumberOfTransactions: string;
+      fixedTransferValue: string;
+      fsps?: string[];
+    };
     programName?: string;
   }) {
     const basicInformationData = await this.basicInformationDataList.getData();

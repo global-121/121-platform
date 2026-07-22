@@ -1,4 +1,4 @@
-import { Locator, Page } from 'playwright/types/test';
+import { Locator, Page } from 'playwright';
 
 import BasePage from '@121-e2e/portal/pages/BasePage';
 

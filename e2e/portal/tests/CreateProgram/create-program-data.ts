@@ -3,7 +3,7 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 
 import { getFspLabels } from '@121-e2e/portal/helpers/get-fsp-labels';
 
-export const createProgramInfo = (): ProgramInfo => {
+export const createProgramInfo = () => {
   const todayDate = new Date();
   const futureDate = new Date(todayDate);
   futureDate.setDate(futureDate.getDate() + 1);
@@ -24,20 +24,3 @@ export const createProgramInfo = (): ProgramInfo => {
     }),
   };
 };
-
-export interface ProgramInfo {
-  name: string;
-  description: string;
-  dateRange: {
-    start: Date;
-    end: Date;
-  };
-  location: string;
-  targetRegistrations: string;
-  fundsAvailable: string;
-  currency: CurrencyCode;
-  paymentFrequency: string;
-  defaultNumberOfTransactions: string;
-  fixedTransferValue: string;
-  fsps: string[];
-}
