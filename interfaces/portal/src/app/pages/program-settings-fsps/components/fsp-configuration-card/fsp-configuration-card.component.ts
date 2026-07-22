@@ -56,7 +56,6 @@ export class FspConfigurationCardComponent {
   readonly reconfigureFsp = output<FspConfiguration>();
   readonly addFspConfiguration = output<Fsps>();
 
-  // To figure out if we need to hide the Excel Delete button
   readonly programFsps = input.required<Fsps[]>();
 
   readonly fspConfigurationService = inject(FspConfigurationService);
@@ -143,17 +142,17 @@ export class FspConfigurationCardComponent {
     ];
 
     const isExcelFsp = this.configuration().fspName === Fsps.excel;
-    const hasMoreThanOneExcelFsp =
+    const programHasMultipleExcelFsps =
       this.programFsps().filter((fsp) => fsp === Fsps.excel).length > 1;
 
     if (isExcelFsp) {
       const optionsForExcelFsp: MenuItem[] = [
-        ...createExcelFspMenuItem,
-        ...reconfigureFspMenuItem,
+        createExcelFspMenuItem,
+        reconfigureFspMenuItem,
       ];
 
-      if (hasMoreThanOneExcelFsp) {
-        optionsForExcelFsp.push(...deleteFspMenuItem);
+      if (programHasMultipleExcelFsps) {
+        optionsForExcelFsp.push(deleteFspMenuItem);
       }
 
       return !this.configurationPending() ? optionsForExcelFsp : [];
