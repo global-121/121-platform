@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -16,8 +16,7 @@ import { registrationOCW1 } from '@121-service/test/registrations/pagination/pag
 
 import DataListComponent from '@121-e2e/portal/components/DataListComponent';
 import DialogComponent from '@121-e2e/portal/components/DialogComponent';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCardPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const programId = 3;
 let registrationId: number;
@@ -31,7 +30,8 @@ test.beforeEach(async () => {
 });
 
 test('User can view debit cards of a registration with a single active debit card', async ({
-  page,
+  loginPage,
+  registrationDebitCardPage,
 }) => {
   // Prepare data - seed a registration with a payment to ensure they have a card
   await seedPaidRegistrations({ registrations: [registrationOCW1], programId });
@@ -51,12 +51,10 @@ test('User can view debit cards of a registration with a single active debit car
   const spentThisMonthLabel = `Spent this month (max. EUR ${maxToSpendPerMonth})`;
 
   await test.step('Login', async () => {
-    const loginPage = new LoginPage(page);
     await loginPage.loginAsAdmin();
   });
 
-  const debitCardPage = new RegistrationDebitCardPage(page);
-  await debitCardPage.goto(
+  await registrationDebitCardPage.goto(
     `/program/${programId}/registrations/${registrationId}/debit-cards`,
   );
 
@@ -71,24 +69,28 @@ test('User can view debit cards of a registration with a single active debit car
       'Issued on': currentDateString,
       'Last used': currentDateString,
     };
-    const debitCardData = await debitCardPage.getCurrentDebitCardDataList();
+    const debitCardData =
+      await registrationDebitCardPage.getCurrentDebitCardDataList();
     expect(debitCardData).toMatchObject(expectedDebitCardData);
   });
 
   await test.step('User can view pause card button', async () => {
-    const pauseCardButton = await debitCardPage.getPauseCardButton();
+    const pauseCardButton =
+      await registrationDebitCardPage.getPauseCardButton();
     await expect(pauseCardButton).toBeVisible();
   });
 
   await test.step('User can view replace card button', async () => {
     const replaceCardButton =
-      await debitCardPage.getMainPageReplaceCardButton();
+      await registrationDebitCardPage.getMainPageReplaceCardButton();
     await expect(replaceCardButton).toBeVisible();
   });
 });
 
 test('User does not find debit card of a person without payments', async ({
   page,
+  loginPage,
+  registrationDebitCardPage,
 }) => {
   await seedIncludedRegistrations([registrationOCW1], programId, accessToken);
   registrationId = await getRegistrationIdByReferenceId({
@@ -98,37 +100,39 @@ test('User does not find debit card of a person without payments', async ({
   });
 
   await test.step('Login', async () => {
-    const loginPage = new LoginPage(page);
     await loginPage.loginAsAdmin();
   });
 
-  const debitCardPage = new RegistrationDebitCardPage(page);
-
   await test.step('User can view debit card menu', async () => {
-    await debitCardPage.goto(
+    await registrationDebitCardPage.goto(
       `/program/${programId}/registrations/${registrationId}/debit-cards`,
     );
     await expect(page.getByTestId('registration-menu')).toBeVisible();
   });
 
   await test.step('User can not view current debit card data', async () => {
-    const debitCardData = await debitCardPage.getCurrentDebitCardElement();
+    const debitCardData =
+      await registrationDebitCardPage.getCurrentDebitCardElement();
     await expect(debitCardData).not.toBeVisible();
   });
 
   await test.step('User can not view pause card button', async () => {
-    const pauseCardButton = await debitCardPage.getPauseCardButton();
+    const pauseCardButton =
+      await registrationDebitCardPage.getPauseCardButton();
     await expect(pauseCardButton).not.toBeVisible();
   });
 
   await test.step('User can not view replace card button', async () => {
-    const replaceCardButton = await debitCardPage.getReplaceCardButton();
+    const replaceCardButton =
+      await registrationDebitCardPage.getReplaceCardButton();
     await expect(replaceCardButton).not.toBeVisible();
   });
 });
 
 test('User can replace a debit card and view both new and old card', async ({
   page,
+  loginPage,
+  registrationDebitCardPage,
 }) => {
   // Prepare data - seed a registration with a payment to ensure they have a card
   await seedPaidRegistrations({ registrations: [registrationOCW1], programId });
@@ -148,23 +152,24 @@ test('User can replace a debit card and view both new and old card', async ({
   const spentThisMonthLabel = `Spent this month (max. EUR ${maxToSpendPerMonth})`;
 
   await test.step('Login', async () => {
-    const loginPage = new LoginPage(page);
     await loginPage.loginAsAdmin();
   });
 
-  const debitCardPage = new RegistrationDebitCardPage(page);
-  await debitCardPage.goto(
+  await registrationDebitCardPage.goto(
     `/program/${programId}/registrations/${registrationId}/debit-cards`,
   );
 
   let initialCardData: Record<string, string>;
   await test.step('Save initial card details before replacement', async () => {
     // Capture the original card number to verify it appears in old cards later
-    initialCardData = await debitCardPage.getCurrentDebitCardDataList();
+    initialCardData =
+      await registrationDebitCardPage.getCurrentDebitCardDataList();
   });
 
   await test.step('Replace the debit card', async () => {
-    await (await debitCardPage.getMainPageReplaceCardButton()).click();
+    await (
+      await registrationDebitCardPage.getMainPageReplaceCardButton()
+    ).click();
   });
 
   await test.step('Verify the confirmation dialog', async () => {
@@ -206,7 +211,8 @@ test('User can replace a debit card and view both new and old card', async ({
 
   await test.step('Verify new active card details after replacement', async () => {
     // Verify the new active card exists
-    const newCardData = await debitCardPage.getCurrentDebitCardDataList();
+    const newCardData =
+      await registrationDebitCardPage.getCurrentDebitCardDataList();
     expect(newCardData['Card number']).not.toBe(
       initialCardData['Serial number'],
     );
@@ -252,7 +258,11 @@ test('User can replace a debit card and view both new and old card', async ({
   });
 });
 
-test('User can pause and unpause a debit card', async ({ page }) => {
+test('User can pause and unpause a debit card', async ({
+  registrationDebitCardPage,
+  loginPage,
+  page,
+}) => {
   // Prepare data - seed a registration with a payment to ensure they have a card
   await seedPaidRegistrations({ registrations: [registrationOCW1], programId });
 
@@ -272,23 +282,22 @@ test('User can pause and unpause a debit card', async ({ page }) => {
   const spentThisMonthLabel = `Spent this month (max. EUR ${maxToSpendPerMonth})`;
 
   await test.step('Login', async () => {
-    const loginPage = new LoginPage(page);
     await loginPage.loginAsAdmin();
   });
 
-  const debitCardPage = new RegistrationDebitCardPage(page);
-  await debitCardPage.goto(
+  await registrationDebitCardPage.goto(
     `/program/${programId}/registrations/${registrationId}/debit-cards`,
   );
 
   let initialCardData: Record<string, string>;
   await test.step('Get initial card details before pausing', async () => {
     // Capture the original card data to verify it's active
-    initialCardData = await debitCardPage.getCurrentDebitCardDataList();
+    initialCardData =
+      await registrationDebitCardPage.getCurrentDebitCardDataList();
   });
 
   await test.step('Click the pause button', async () => {
-    await (await debitCardPage.getPauseCardButton()).click();
+    await (await registrationDebitCardPage.getPauseCardButton()).click();
   });
 
   await test.step('Verify the pause confirmation dialog', async () => {
@@ -326,7 +335,8 @@ test('User can pause and unpause a debit card', async ({ page }) => {
 
   await test.step('Verify card is paused', async () => {
     // Get updated card data
-    const pausedCardData = await debitCardPage.getCurrentDebitCardDataList();
+    const pausedCardData =
+      await registrationDebitCardPage.getCurrentDebitCardDataList();
 
     // Verify card status changed to Paused
     expect(pausedCardData['Card status']).toBe('Paused');
@@ -345,14 +355,15 @@ test('User can pause and unpause a debit card', async ({ page }) => {
     });
 
     // Verify the Pause button changed to Unpause
-    const unpauseButton = await debitCardPage.getUnpauseCardButton();
+    const unpauseButton =
+      await registrationDebitCardPage.getUnpauseCardButton();
     expect(unpauseButton).toBeTruthy();
     await expect(unpauseButton).toBeVisible();
   });
 
   // Step 2: Unpause the card
   await test.step('Unpause the debit card', async () => {
-    await (await debitCardPage.getUnpauseCardButton()).click();
+    await (await registrationDebitCardPage.getUnpauseCardButton()).click();
   });
 
   await test.step('Verify the unpause confirmation dialog', async () => {
@@ -390,7 +401,8 @@ test('User can pause and unpause a debit card', async ({ page }) => {
 
   await test.step('Verify card is active again', async () => {
     // Get updated card data
-    const unpausedCardData = await debitCardPage.getCurrentDebitCardDataList();
+    const unpausedCardData =
+      await registrationDebitCardPage.getCurrentDebitCardDataList();
 
     // Verify card status changed back to Active
     expect(unpausedCardData['Card status']).toBe('Active');
@@ -401,7 +413,7 @@ test('User can pause and unpause a debit card', async ({ page }) => {
     );
 
     // Verify the Pause button is back
-    const pauseButton = await debitCardPage.getPauseCardButton();
+    const pauseButton = await registrationDebitCardPage.getPauseCardButton();
     await expect(pauseButton).toBeVisible();
   });
 });

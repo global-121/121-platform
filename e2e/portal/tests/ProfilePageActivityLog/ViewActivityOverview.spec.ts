@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -23,9 +23,7 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import TableComponent from '@121-e2e/portal/components/TableComponent';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const referenceIdPV5 = registrationPV5.referenceId;
 let activitiesCount: number;
@@ -74,18 +72,22 @@ test.beforeEach(async () => {
 });
 
 test.describe('as admin user', () => {
-  test.beforeEach(async ({ page }) => {
-    const loginPage = new LoginPage(page);
+  test.beforeEach(async ({ loginPage }) => {
     await loginPage.loginAsAdmin();
   });
 
-  test('View activity overview', async ({ page }) => {
-    const activityLogPage = new RegistrationActivityLogPage(page);
+  test('View activity overview', async ({
+    registrationActivityLogPage,
+    registrationsPage,
+    page,
+  }) => {
     const tableComponent = new TableComponent(page);
-    const registrationsPage = new RegistrationsPage(page);
+
     // Act
     await test.step('Navigate to activity overview', async () => {
-      await activityLogPage.selectProgram(NLRCProgram.titlePortal.en);
+      await registrationActivityLogPage.selectProgram(
+        NLRCProgram.titlePortal.en,
+      );
       await registrationsPage.goToRegistrationByName({
         registrationName: registrationPV5.fullName,
       });
@@ -148,7 +150,7 @@ test.describe('as admin user', () => {
 
 test.describe('as user with only view paper voucher permissions', () => {
   test.describe('with 1 paper and 1 WhatsApp PA', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ loginPage }) => {
       // Update FSP to paper
       await updateRegistration(
         2,
@@ -184,7 +186,6 @@ test.describe('as user with only view paper voucher permissions', () => {
         adminAccessToken: await getAccessToken(),
       });
 
-      const loginPage = new LoginPage(page);
       await loginPage.login({
         username,
         password,
@@ -193,14 +194,14 @@ test.describe('as user with only view paper voucher permissions', () => {
 
     test('transaction rows both show current balance, but only "view voucher" button for paper PA', async ({
       page,
+      registrationActivityLogPage,
+      registrationsPage,
     }) => {
-      // Navigate to the personal info page and change FSP to Albert Heijn voucher paper
-      const activityLogPage = new RegistrationActivityLogPage(page);
-
       const tableComponent = new TableComponent(page);
-      const registrationsPage = new RegistrationsPage(page);
 
-      await activityLogPage.selectProgram(NLRCProgram.titlePortal.en);
+      await registrationActivityLogPage.selectProgram(
+        NLRCProgram.titlePortal.en,
+      );
       await registrationsPage.goToRegistrationByName({
         registrationName: registrationPV5.fullName,
       });

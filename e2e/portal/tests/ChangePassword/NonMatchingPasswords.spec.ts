@@ -1,20 +1,15 @@
-import { test } from '@playwright/test';
-
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
-import ChangePasswordPage from '@121-e2e/portal/pages/ChangePasswordPage';
-import HomePage from '@121-e2e/portal/pages/HomePage';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ loginPage }) => {
   await resetDB({
     seedScript: SeedScript.testMultiple,
   });
 
   // Login
-  const loginPage = new LoginPage(page);
   await loginPage.login({
     username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
     password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
@@ -22,16 +17,14 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('Change password unsuccessfully (Current password incorrect)', async ({
-  page,
+  changePasswordPage,
+  homePage,
 }) => {
-  const homePage = new HomePage(page);
-  const changePasswordPage = new ChangePasswordPage(page);
-
   await test.step('Should navigate to user account dropdown and select change password option', async () => {
     await homePage.selectAccountOption('Change password');
   });
 
-  await test.step('Should type wrong confirm password and recieve error', async () => {
+  await test.step('Should type wrong confirm password and receive error', async () => {
     await changePasswordPage.fillInChangePassword({
       currentPassword: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
       newPassword: 'newPassword',

@@ -17,6 +17,7 @@ import {
 
 import ExportData from '@121-e2e/portal/components/ExportData';
 import TableComponent from '@121-e2e/portal/components/TableComponent';
+import ChangePasswordPage from '@121-e2e/portal/pages/ChangePasswordPage';
 import FspSettingsPage from '@121-e2e/portal/pages/FspSettingsPage';
 import HomePage from '@121-e2e/portal/pages/HomePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
@@ -68,6 +69,7 @@ interface Fixtures {
   tableComponent: TableComponent;
   fspSettingsPage: FspSettingsPage;
   homePage: HomePage;
+  changePasswordPage: ChangePasswordPage;
   loginPage: LoginPage;
   paymentPage: PaymentPage;
   paymentsPage: PaymentsPage;
@@ -166,7 +168,11 @@ export const customSharedFixture = base.extend<Fixtures>({
   // 3. Logs in to the portal.
   // 4. Optionally navigates to a specific page after login.
   // 5. Returns the access token.
-  resetDBAndSeedRegistrations: async ({ page }, use, testInfo: TestInfo) => {
+  resetDBAndSeedRegistrations: async (
+    { loginPage },
+    use,
+    testInfo: TestInfo,
+  ) => {
     const fn = async (params: {
       // For resetting the database.
       approverMode?: ApproverSeedMode;
@@ -202,7 +208,6 @@ export const customSharedFixture = base.extend<Fixtures>({
       });
 
       // Login
-      const loginPage = new LoginPage(page);
       if (params?.userCredentials) {
         await loginPage.login({
           username: params.userCredentials.username,
@@ -223,12 +228,11 @@ export const customSharedFixture = base.extend<Fixtures>({
     await use(fn);
   },
 
-  login: async ({ page }, use) => {
+  login: async ({ loginPage }, use) => {
     const fn = async (userCredentials?: {
       username: string;
       password: string;
     }): Promise<void> => {
-      const loginPage = new LoginPage(page);
       if (userCredentials) {
         await loginPage.login({
           username: userCredentials.username,
