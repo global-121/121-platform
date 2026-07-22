@@ -181,7 +181,7 @@ export class FspConfigurationCardComponent {
       }),
     onSuccess: () => {
       this.toastService.showToast({
-        detail: `FSP deleted.`,
+        detail: $localize`FSP deleted.`,
       });
     },
   }));

@@ -1305,6 +1305,9 @@
       <trans-unit id="6536020395223120161" datatype="html">
         <source>Error</source>
       </trans-unit>
+      <trans-unit id="6552087717806177121" datatype="html">
+        <source>FSP deleted.</source>
+      </trans-unit>
       <trans-unit id="6562860910125244453" datatype="html">
         <source>Use the &apos;Last Message Status&apos; column to check the progress of messages. Closing this notification will not cancel message sending.</source>
       </trans-unit>
