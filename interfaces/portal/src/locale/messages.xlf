@@ -315,9 +315,6 @@
       <trans-unit id="2321510782142253906" datatype="html">
         <source>Program successfully duplicated.</source>
       </trans-unit>
-      <trans-unit id="2330756841114483977" datatype="html">
-        <source>Choose another FSP:</source>
-      </trans-unit>
       <trans-unit id="2336550011721758066" datatype="html">
         <source>Log in</source>
       </trans-unit>
@@ -1105,9 +1102,6 @@
       </trans-unit>
       <trans-unit id="5558547280081275233" datatype="html">
         <source>Approvals</source>
-      </trans-unit>
-      <trans-unit id="5567795196823052308" datatype="html">
-        <source>please wait before creating a new payment.</source>
       </trans-unit>
       <trans-unit id="5568900620756681669" datatype="html">
         <source>Your form must include the following required fields in this <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>exact format<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> for this FSP integration in the data column name:</source>
