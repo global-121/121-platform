@@ -1,23 +1,20 @@
-<p-card class="[&_.p-card]:not-hover:border-grey-300 [&_.p-card]:border">
-  <h2
-    i18n
-    class="mbe-1"
-  >
-    Financial Service Providers
-  </h2>
+<p-card>
+  <div class="mbe-1 flex items-center gap-x-2 min-block-9">
+    <h2 i18n="@@page-title-program-settings-fsps-full">
+      Financial Service Providers
+    </h2>
+  </div>
 
   <p
     i18n
     class="mbe-6"
   >
-    Choose an FSP from the FSPs integrated to this instance. You can add
-    multiple FSPs to the same program. If you wish to integrate a new FSP,
-    contact the 121 support team or talk to the account manager.
+    Integrate the FSPs added to your program.
   </p>
 
   @if (fspConfigurations.data()?.length === 0) {
     <app-info-card
-      subtitle="Add FSPs to your program in the Program information page."
+      subtitle="Inform the relevant user to add FSPs to your program on the Program Information page."
       i18n-subtitle
       title="No FSPs found"
       i18n-title
@@ -36,6 +33,8 @@
     <app-skeleton-inline />
   } @else if (fspConfigurations.isSuccess()) {
     @let fspConfigs = fspConfigurations.data();
+    @let fspConfigsFspNames =
+      fspConfigs.map((programFsp) => programFsp.fspName);
 
     @if (fspConfigs.length > 0) {
       <div
@@ -44,6 +43,7 @@
       >
         @for (fspConfiguration of fspConfigs; track fspConfiguration.name) {
           <app-fsp-configuration-card
+            [programFsps]="fspConfigsFspNames"
             [programId]="programId()"
             [configuration]="fspConfiguration"
             (reconfigureFsp)="reconfigureFspConfiguration.emit($event)"

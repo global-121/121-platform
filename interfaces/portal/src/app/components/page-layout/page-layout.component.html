@@ -23,7 +23,7 @@
         @let parentTitle = parentPageTitle();
         @let parentLink = parentPageLink();
 
-        <div class="flex items-center justify-between pbs-1 pbe-6">
+        <div class="mbe-6 flex items-center justify-between min-block-12">
           @if (parentTitle) {
             @if (isPending()) {
               <p-skeleton
@@ -43,7 +43,7 @@
                 }
                 <i
                   [class]="
-                    'mx-2 text-sm ' +
+                    'relative inset-bs-0.5 mx-2 text-sm ' +
                     rtlHelper.createRtlFriendlyChevronIcon('forward')()
                   "
                 ></i>
@@ -51,7 +51,7 @@
               </span>
             }
           } @else {
-            <h1 class="min-inline-48">
+            <h1>
               {{ pageTitle() }}
             </h1>
           }

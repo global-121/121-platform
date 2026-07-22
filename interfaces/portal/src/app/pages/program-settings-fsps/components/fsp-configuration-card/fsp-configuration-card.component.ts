@@ -56,6 +56,8 @@ export class FspConfigurationCardComponent {
   readonly reconfigureFsp = output<FspConfiguration>();
   readonly addFspConfiguration = output<Fsps>();
 
+  readonly programFsps = input.required<Fsps[]>();
+
   readonly fspConfigurationService = inject(FspConfigurationService);
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
   readonly programApiService = inject(ProgramApiService);
@@ -109,35 +111,54 @@ export class FspConfigurationCardComponent {
   );
 
   readonly menuItems = computed<MenuItem[]>(() => {
-    const excelMenuItems: MenuItem[] = [
+    const createExcelFspMenuItem: MenuItem[] = [
       {
-        label: 'Create another Excel FSP',
+        icon: 'pi pi-plus',
+        label: $localize`Create another Excel FSP`,
         command: () => {
           this.addFspConfiguration.emit(this.configuration().fspName);
         },
       },
+    ];
+
+    const deleteFspMenuItem: MenuItem[] = [
       {
-        label: 'Remove integration',
+        icon: 'pi pi-trash text-red-500',
+        label: $localize`Remove integration`,
         command: () => {
           this.deleteConfirmationDialog().show();
         },
       },
     ];
 
-    const menuItems: MenuItem[] = [
+    const reconfigureFspMenuItem: MenuItem[] = [
       {
-        label: 'Reconfigure',
+        icon: 'pi pi-pencil',
+        label: $localize`Reconfigure`,
         command: () => {
           this.reconfigureFsp.emit(this.configuration());
         },
       },
     ];
 
-    if (this.configuration().fspName === Fsps.excel) {
-      menuItems.push(...excelMenuItems);
+    const isExcelFsp = this.configuration().fspName === Fsps.excel;
+    const programHasMultipleExcelFsps =
+      this.programFsps().filter((fsp) => fsp === Fsps.excel).length > 1;
+
+    if (isExcelFsp) {
+      const optionsForExcelFsp: MenuItem[] = [
+        createExcelFspMenuItem,
+        reconfigureFspMenuItem,
+      ];
+
+      if (programHasMultipleExcelFsps) {
+        optionsForExcelFsp.push(deleteFspMenuItem);
+      }
+
+      return !this.configurationPending() ? optionsForExcelFsp : [];
     }
 
-    return !this.configurationPending() ? menuItems : [];
+    return !this.configurationPending() ? reconfigureFspMenuItem : [];
   });
 
   readonly requiredRegistrationAttributes = computed(() => {
@@ -160,7 +181,7 @@ export class FspConfigurationCardComponent {
       }),
     onSuccess: () => {
       this.toastService.showToast({
-        detail: `FSP deleted.`,
+        detail: $localize`FSP deleted.`,
       });
     },
   }));

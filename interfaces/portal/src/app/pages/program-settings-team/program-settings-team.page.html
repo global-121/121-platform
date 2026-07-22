@@ -1,11 +1,23 @@
 <app-page-layout-program-settings [programId]="programId()">
   <p-card>
-    <h2
-      i18n="@@page-title-program-settings-team"
-      class="mbe-1"
-    >
-      Program team
-    </h2>
+    <div class="mbe-1 flex items-center gap-x-2 min-block-9">
+      <h2 i18n="@@page-title-program-settings-team">Program team</h2>
+      <div class="relative -inset-e-1 -inset-bs-1 ms-auto">
+        @if (canManageAidworkers()) {
+          <p-button
+            label="Add user to team"
+            i18n-label
+            rounded
+            [size]="'small'"
+            outlined
+            icon="pi pi-plus text-xs"
+            [iconPos]="rtlHelper.createPosition('start')()"
+            (click)="openForm('add')"
+          />
+        }
+      </div>
+    </div>
+
     <div class="mbe-6">
       <p i18n>Add users to your program team and assign roles to them.</p>
     </div>
@@ -21,21 +33,8 @@
       (updateContextMenuItem)="selectedUser.set($event)"
       [globalFilterFields]="['username', 'allRolesLabel', 'scope']"
       [initialSortField]="'username'"
-    >
-      @if (canManageAidworkers()) {
-        <div table-actions>
-          <p-button
-            label="Add user to team"
-            i18n-label
-            rounded
-            outlined
-            icon="pi pi-plus"
-            [iconPos]="rtlHelper.createPosition('start')()"
-            (click)="openForm('add')"
-          />
-        </div>
-      }
-    </app-query-table>
+    ></app-query-table>
+
     <app-add-program-team-user-dialog
       #addUserDialog
       [programId]="programId()"

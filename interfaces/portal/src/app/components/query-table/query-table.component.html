@@ -38,9 +38,16 @@
   [attr.data-testid]="dataTestId()"
 >
   <ng-template pTemplate="caption">
-    <div class="flex items-center overflow-x-auto">
+    <div
+      class="flex items-center justify-between overflow-x-auto min-block-11 empty:hidden"
+    >
       <ng-content select="[table-actions]"></ng-content>
-      <span class="ms-auto"></span>
+
+      @if (isFiltered() || showGlobalSearch() || enableColumnManagement()) {
+        <!-- To push the controls to the right -->
+        <div class="ms-auto"></div>
+      }
+
       @if (isFiltered()) {
         <p-button
           label="Clear filters"
@@ -54,6 +61,7 @@
           class="me-2"
         />
       }
+
       @if (showGlobalSearch()) {
         <app-query-table-global-search
           [globalFilterValue]="globalFilterValue()"
@@ -61,6 +69,7 @@
           (filterChange)="table.filterGlobal($event, 'contains')"
         />
       }
+
       @if (enableColumnManagement()) {
         <app-query-table-column-management
           [columns]="columns()"

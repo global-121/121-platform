@@ -222,9 +222,6 @@
       <trans-unit id="2012659005494284050" datatype="html">
         <source>Forgot your password?</source>
       </trans-unit>
-      <trans-unit id="2049182205133748691" datatype="html">
-        <source>Financial Service Providers</source>
-      </trans-unit>
       <trans-unit id="2077280297780026969" datatype="html">
         <source>Review payment summary and follow the next steps:</source>
       </trans-unit>
@@ -236,6 +233,9 @@
       </trans-unit>
       <trans-unit id="2099886964241384522" datatype="html">
         <source>Copy email</source>
+      </trans-unit>
+      <trans-unit id="2106928839478351824" datatype="html">
+        <source>Remove integration</source>
       </trans-unit>
       <trans-unit id="2114848494510177632" datatype="html">
         <source>Your e-mail address and/or your (full) name.</source>
@@ -282,6 +282,9 @@
       <trans-unit id="2245261357469609295" datatype="html">
         <source>This field cannot be longer than <x equiv-text="maxlength" id="PH"/> characters.</source>
       </trans-unit>
+      <trans-unit id="2257456354948246975" datatype="html">
+        <source>Integrate the FSPs added to your program.</source>
+      </trans-unit>
       <trans-unit id="2274060600492062037" datatype="html">
         <source>Use &quot;validation&quot; in this program</source>
       </trans-unit>
@@ -320,6 +323,9 @@
       </trans-unit>
       <trans-unit id="2358567597663804258" datatype="html">
         <source>You&apos;re about to replace debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentTokenCode() | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>.</source>
+      </trans-unit>
+      <trans-unit id="236706714969062748" datatype="html">
+        <source>Create another Excel FSP</source>
       </trans-unit>
       <trans-unit id="2378622458638065888" datatype="html">
         <source>How to contact us</source>
@@ -558,6 +564,9 @@
       <trans-unit id="3443268590750127257" datatype="html">
         <source>Unique key</source>
       </trans-unit>
+      <trans-unit id="3450194029516333840" datatype="html">
+        <source>(Optional)</source>
+      </trans-unit>
       <trans-unit id="3453831056127531396" datatype="html">
         <source>First approval step must be set for all payments regardless of the total payment amount.</source>
       </trans-unit>
@@ -764,9 +773,6 @@
       <trans-unit id="4200238680914053517" datatype="html">
         <source>Max. <x equiv-text="{{ MAX_PAYMENT_NAME_LENGTH }}" id="INTERPOLATION"/> characters</source>
       </trans-unit>
-      <trans-unit id="420289963657563216" datatype="html">
-        <source>Add FSPs to your program in the Program information page.</source>
-      </trans-unit>
       <trans-unit id="4207014437413577720" datatype="html">
         <source>Start payment</source>
       </trans-unit>
@@ -820,6 +826,9 @@
       </trans-unit>
       <trans-unit id="4404975094271849688" datatype="html">
         <source>No changes detected.</source>
+      </trans-unit>
+      <trans-unit id="4421372889454289213" datatype="html">
+        <source>Inform the relevant user to add FSPs to your program on the Program Information page.</source>
       </trans-unit>
       <trans-unit id="4421433274861560863" datatype="html">
         <source>Add a user to the 121 platform. Fill in the fields below to create a new user account.</source>
@@ -970,9 +979,6 @@
       </trans-unit>
       <trans-unit id="508499092676439201" datatype="html">
         <source>Integration update unsuccessful. Please try again.</source>
-      </trans-unit>
-      <trans-unit id="5106050439674974101" datatype="html">
-        <source>Choose an FSP from the FSPs integrated to this instance. You can add multiple FSPs to the same program. If you wish to integrate a new FSP, contact the 121 support team or talk to the account manager.</source>
       </trans-unit>
       <trans-unit id="5124373210930196762" datatype="html">
         <source>For more information about how to set up payment approval see <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/></source>
@@ -1299,6 +1305,9 @@
       <trans-unit id="6536020395223120161" datatype="html">
         <source>Error</source>
       </trans-unit>
+      <trans-unit id="6552087717806177121" datatype="html">
+        <source>FSP deleted.</source>
+      </trans-unit>
       <trans-unit id="6562860910125244453" datatype="html">
         <source>Use the &apos;Last Message Status&apos; column to check the progress of messages. Closing this notification will not cancel message sending.</source>
       </trans-unit>
@@ -1373,9 +1382,6 @@
       </trans-unit>
       <trans-unit id="6909842392958829581" datatype="html">
         <source><x equiv-text="{{ statusVerb() }}" id="INTERPOLATION"/> registration(s)</source>
-      </trans-unit>
-      <trans-unit id="6927943623949177165" datatype="html">
-        <source>Registration integration</source>
       </trans-unit>
       <trans-unit id="6954699489555837710" datatype="html">
         <source>Read our Privacy notice</source>
@@ -2445,11 +2451,17 @@
       <trans-unit id="page-title-program-settings-fsps" datatype="html">
         <source>FSPs</source>
       </trans-unit>
+      <trans-unit id="page-title-program-settings-fsps-full" datatype="html">
+        <source>Financial Service Providers</source>
+      </trans-unit>
       <trans-unit id="page-title-program-settings-payment-approval" datatype="html">
         <source>Payment approval</source>
       </trans-unit>
       <trans-unit id="page-title-program-settings-registration-data" datatype="html">
         <source>Registration data</source>
+      </trans-unit>
+      <trans-unit id="page-title-program-settings-registration-integration" datatype="html">
+        <source>Registration integration</source>
       </trans-unit>
       <trans-unit id="page-title-program-settings-team" datatype="html">
         <source>Program team</source>

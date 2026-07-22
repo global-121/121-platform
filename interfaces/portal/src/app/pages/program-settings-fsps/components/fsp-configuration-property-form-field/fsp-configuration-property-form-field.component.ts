@@ -58,7 +58,7 @@ export class FspConfigurationPropertyFormFieldComponent {
     const propertyName = this.fspFormField().name;
 
     const propertyIsOptional = !this.fspFormField().isRequired
-      ? ' ' + $localize`Optional`
+      ? ' ' + $localize`(Optional)`
       : '';
 
     if (propertyName === 'displayName') {
