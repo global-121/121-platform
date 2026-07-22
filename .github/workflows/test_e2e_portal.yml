@@ -26,8 +26,8 @@ jobs:
   path-filter:
     runs-on: ubuntu-latest
     if: >-
-      github.event_name != 'pull_request' ||
-      contains(github.event.pull_request.labels.*.name, 'run-tests')
+      ${{ github.event_name != 'pull_request' ||
+      contains(github.event.pull_request.labels.*.name, 'run-tests') }}
     outputs:
       should_skip: ${{ steps.filter.outputs.should_skip }}
     steps:
@@ -59,9 +59,9 @@ jobs:
     needs: path-filter
     runs-on: ubuntu-latest
     if: >-
-      needs.path-filter.outputs.should_skip != 'true' &&
+      ${{ needs.path-filter.outputs.should_skip != 'true' &&
       (github.event_name != 'pull_request' ||
-       contains(github.event.pull_request.labels.*.name, 'run-tests'))
+       contains(github.event.pull_request.labels.*.name, 'run-tests')) }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v7
@@ -88,9 +88,9 @@ jobs:
       - path-filter
       - lint-code
     if: >-
-      needs.path-filter.outputs.should_skip != 'true' &&
+      ${{ needs.path-filter.outputs.should_skip != 'true' &&
       (github.event_name != 'pull_request' ||
-       contains(github.event.pull_request.labels.*.name, 'run-tests'))
+       contains(github.event.pull_request.labels.*.name, 'run-tests')) }}
     strategy:
       fail-fast: false
       matrix:
