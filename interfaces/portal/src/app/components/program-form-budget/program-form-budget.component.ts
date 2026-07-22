@@ -98,6 +98,11 @@ export class ProgramFormBudgetComponent {
       currency: programData.currency ?? CurrencyCode.EUR,
       distributionDuration: programData.distributionDuration,
       fixedTransferValue: programData.fixedTransferValue ?? 0,
+      fsps: programData.programFspConfigurations.length
+        ? programData.programFspConfigurations.map(
+            (fspConfig) => fspConfig.fspName,
+          )
+        : [],
     });
   });
 
