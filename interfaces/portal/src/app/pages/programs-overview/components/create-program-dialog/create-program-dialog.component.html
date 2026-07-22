@@ -12,8 +12,13 @@
   (proceed)="goToNextStep()"
 >
   <ng-template #header>
-    <i class="pi pi-plus me-2"></i>
-    <ng-container i18n>Create new program</ng-container>
+    @if (duplicationMode()) {
+      <i class="pi pi-clone me-2"></i>
+      <ng-container i18n>Duplicate program</ng-container>
+    } @else {
+      <i class="pi pi-plus me-2"></i>
+      <ng-container i18n>Create new program</ng-container>
+    }
   </ng-template>
   <ng-template #step>
     <p-card>
@@ -23,13 +28,32 @@
       >
         Program name
       </h2>
-      <p
-        i18n
-        class="mbe-4"
-      >
-        Add a name and description to your program to help your users find it.
-      </p>
-      <app-program-form-name #formName />
+      @if (duplicationMode()) {
+        <p
+          i18n
+          class="mbe-4"
+        >
+          Duplicate "{{ programToDuplicateName() }}". Update the relevant
+          details in the next steps. After duplication is done, link a
+          registration form to complete the setup.
+        </p>
+        <p class="mbe-4">
+          <ng-container i18n>
+            Learn more in the <app-manual-link />
+          </ng-container>
+        </p>
+      } @else {
+        <p
+          i18n
+          class="mbe-4"
+        >
+          Add a name and description to your program to help your users find it.
+        </p>
+      }
+      <app-program-form-name
+        #formName
+        [program]="programToDuplicate()"
+      />
     </p-card>
   </ng-template>
   <ng-template #step>
@@ -47,7 +71,10 @@
       >
         Add general information to define your program details.
       </p>
-      <app-program-form-information #formInformation />
+      <app-program-form-information
+        #formInformation
+        [program]="programToDuplicate()"
+      />
     </p-card>
   </ng-template>
   <ng-template #step>
@@ -58,7 +85,10 @@
       >
         Finance
       </h2>
-      <app-program-form-budget #formBudget />
+      <app-program-form-budget
+        #formBudget
+        [program]="programToDuplicate()"
+      />
     </p-card>
   </ng-template>
   <ng-template #illustration>

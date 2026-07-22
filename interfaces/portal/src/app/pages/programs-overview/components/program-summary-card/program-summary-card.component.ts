@@ -5,9 +5,14 @@ import {
   computed,
   inject,
   input,
+  output,
 } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { MenuItem } from 'primeng/api';
+
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { CardSummaryMetricsContainerComponent } from '~/components/card-summary-metrics-container/card-summary-metrics-container.component';
@@ -16,7 +21,9 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
+import { Program } from '~/domains/program/program.model';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import { AuthService } from '~/services/auth.service';
 
 @Component({
   selector: 'app-program-summary-card',
@@ -38,8 +45,12 @@ export class ProgramSummaryCardComponent {
   private paymentApiService = inject(PaymentApiService);
   private currencyPipe = inject(CurrencyPipe);
   private decimalPipe = inject(DecimalPipe);
+  private router = inject(Router);
+  private authService = inject(AuthService);
 
   public readonly id = input.required<number>();
+
+  public readonly duplicate = output<Program>();
 
   public program = injectQuery(this.programApiService.getProgram(this.id));
   public metrics = injectQuery(() => ({
@@ -51,6 +62,53 @@ export class ProgramSummaryCardComponent {
     enabled: !!this.program.data()?.id,
   }));
   programLink = (programId: number) => ['/', AppRoutes.program, programId];
+
+  public readonly menuItems = computed<MenuItem[]>(() => {
+    const items: MenuItem[] = [
+      {
+        label: $localize`:@@program-card-menu-open:Open`,
+        icon: 'pi pi-external-link',
+        command: () => {
+          void this.router.navigate(this.programLink(this.id()));
+        },
+      },
+    ];
+
+    if (
+      this.authService.hasPermission({
+        programId: this.id(),
+        requiredPermission: PermissionEnum.ProgramUPDATE,
+      })
+    ) {
+      items.push({
+        label: $localize`:@@program-card-menu-edit:Edit`,
+        icon: 'pi pi-pencil',
+        command: () => {
+          void this.router.navigate([
+            '/',
+            AppRoutes.program,
+            this.id(),
+            AppRoutes.programSettings,
+          ]);
+        },
+      });
+    }
+
+    if (this.authService.isOrganizationAdmin) {
+      items.push({
+        label: $localize`:@@program-card-menu-duplicate:Duplicate`,
+        icon: 'pi pi-clone',
+        command: () => {
+          const program = this.program.data();
+          if (program) {
+            this.duplicate.emit(program);
+          }
+        },
+      });
+    }
+
+    return items;
+  });
 
   public readonly getLastPayment = computed(() => {
     const data = this.payments.data();

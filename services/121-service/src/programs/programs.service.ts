@@ -6,6 +6,7 @@ import { GetTokenResult } from '@121-service/src/fsp-integrations/integrations/i
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -17,12 +18,16 @@ import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.d
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
+import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
+
+type ThresholdIdByOldId = Map<number | null, number | null>;
 
 @Injectable()
 export class ProgramService {
@@ -228,7 +233,8 @@ export class ProgramService {
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.Admin],
       scope: undefined,
-    });
+    }); 
+
     return newProgram;
   }
 
@@ -236,6 +242,160 @@ export class ProgramService {
     const program = await this.findProgramOrThrow(programId);
     await this.programAttachmentsService.deleteAllProgramAttachments(programId);
     await this.programRepository.remove(program as ProgramEntity);
+  }
+
+  public async duplicateProgram({
+    copyFromProgramId,
+    programData,
+    userId,
+  }: {
+    copyFromProgramId: number;
+    programData: CreateProgramDto;
+    userId: number;
+  }): Promise<ProgramEntity> {
+    const sourceExists = await this.programRepository.exists({
+      where: { id: Equal(copyFromProgramId) },
+    });
+    if (!sourceExists) {
+      throw new HttpException(
+        { errors: `No program found with id ${copyFromProgramId}` },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const newProgram = await this.create(programData, userId);
+
+    await this.duplicateFspConfigurations({
+      sourceProgramId: copyFromProgramId,
+      targetProgramId: newProgram.id,
+    });
+
+    const newThresholdIdByOldId = await this.duplicateApprovalThresholds({
+      sourceProgramId: copyFromProgramId,
+      targetProgramId: newProgram.id,
+    });
+
+    await this.duplicateAidworkerAssignments({
+      sourceProgramId: copyFromProgramId,
+      targetProgramId: newProgram.id,
+      newThresholdIdByOldId,
+    });
+
+    return newProgram;
+  }
+
+  private async duplicateFspConfigurations({
+    sourceProgramId,
+    targetProgramId,
+  }: {
+    sourceProgramId: number;
+    targetProgramId: number;
+  }): Promise<void> {
+    const fspConfigurationRepository = this.dataSource.getRepository(
+      ProgramFspConfigurationEntity,
+    );
+
+    const propertyRepository = this.dataSource.getRepository(
+      ProgramFspConfigurationPropertyEntity,
+    );
+
+    const sourceConfigurations = await fspConfigurationRepository.find({
+      where: { programId: Equal(sourceProgramId) },
+      relations: ['properties'],
+    });
+
+    for (const sourceConfiguration of sourceConfigurations) {
+      const newConfiguration = await fspConfigurationRepository.save(
+        fspConfigurationRepository.create({
+          programId: targetProgramId,
+          fspName: sourceConfiguration.fspName,
+          name: sourceConfiguration.name,
+          label: sourceConfiguration.label,
+          state: sourceConfiguration.state,
+        }),
+      );
+
+      await propertyRepository.save(
+        sourceConfiguration.properties.map((property) =>
+          propertyRepository.create({
+            programFspConfigurationId: newConfiguration.id,
+            name: property.name,
+            value: property.value,
+          }),
+        ),
+      );
+    }
+  }
+
+  private async duplicateApprovalThresholds({
+    sourceProgramId,
+    targetProgramId,
+  }: {
+    sourceProgramId: number;
+    targetProgramId: number;
+  }): Promise<ThresholdIdByOldId> {
+    const thresholdRepository = this.dataSource.getRepository(
+      ProgramApprovalThresholdEntity,
+    );
+    const sourceThresholds = await thresholdRepository.find({
+      where: { programId: Equal(sourceProgramId) },
+    });
+
+    const newThresholdIdByOldId: ThresholdIdByOldId = new Map([[null, null]]);
+
+    for (const sourceThreshold of sourceThresholds) {
+      const newThreshold = await thresholdRepository.save(
+        thresholdRepository.create({
+          programId: targetProgramId,
+          thresholdAmount: sourceThreshold.thresholdAmount,
+        }),
+      );
+      newThresholdIdByOldId.set(sourceThreshold.id, newThreshold.id);
+    }
+
+    return newThresholdIdByOldId;
+  }
+
+  private async duplicateAidworkerAssignments({
+    sourceProgramId,
+    targetProgramId,
+    newThresholdIdByOldId,
+  }: {
+    sourceProgramId: number;
+    targetProgramId: number;
+    newThresholdIdByOldId: ThresholdIdByOldId;
+  }): Promise<void> {
+    const assignmentRepository = this.dataSource.getRepository(
+      ProgramAidworkerAssignmentEntity,
+    );
+    const sourceAssignments = await assignmentRepository.find({
+      where: { programId: Equal(sourceProgramId) },
+      relations: ['roles'],
+    });
+    const targetAssignments = await assignmentRepository.find({
+      where: { programId: Equal(targetProgramId) },
+    });
+    const alreadyAssignedUserIds = new Set(
+      targetAssignments.map((assignment) => assignment.userId),
+    );
+
+    for (const sourceAssignment of sourceAssignments) {
+      if (alreadyAssignedUserIds.has(sourceAssignment.userId)) {
+        continue;
+      }
+
+      await assignmentRepository.save(
+        assignmentRepository.create({
+          programId: targetProgramId,
+          userId: sourceAssignment.userId,
+          scope: sourceAssignment.scope,
+          roles: sourceAssignment.roles,
+          programApprovalThresholdId: newThresholdIdByOldId.get(
+            sourceAssignment.programApprovalThresholdId,
+          ),
+        }),
+      );
+    }
   }
 
   public async updateProgram(

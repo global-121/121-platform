@@ -435,6 +435,43 @@ export async function createUserWithPermissions({
   return { username, password };
 }
 
+export async function createUserAssignedToProgram({
+  programId,
+  roles,
+  scope,
+  adminAccessToken,
+}: {
+  programId: number;
+  roles: DefaultUserRole[];
+  scope?: string;
+  adminAccessToken: string;
+}): Promise<number> {
+  const uniqueId = generateUniqueTestId();
+  const username = `test_user_${uniqueId}@example.org`;
+
+  await createUser({
+    username,
+    displayName: `Test User ${uniqueId.split('_')[0]}`,
+    adminAccessToken,
+  });
+
+  const userId = await findUserByUsername({
+    programId,
+    username,
+    adminAccessToken,
+  });
+
+  await assignUserToProgram({
+    programId,
+    userId,
+    roles,
+    scope,
+    adminAccessToken,
+  });
+
+  return userId;
+}
+
 export async function createAccessTokenWithPermissions({
   permissions,
   adminAccessToken,

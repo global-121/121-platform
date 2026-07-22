@@ -37,6 +37,22 @@ export async function postProgram(
     .send(program);
 }
 
+export async function duplicateProgram({
+  copyFromProgramId,
+  accessToken,
+  body,
+}: {
+  copyFromProgramId: number;
+  accessToken: string;
+  body: CreateProgramDto;
+}): Promise<request.Response> {
+  return await getServer()
+    .post(`/programs`)
+    .query({ copyFromProgramId })
+    .set('Cookie', [accessToken])
+    .send(body);
+}
+
 export async function patchProgram(
   programId: number,
   programUpdate: object,
@@ -518,11 +534,7 @@ export async function importFspReconciliationCsvFile({
     .attach('file', fileBuffer, fileName);
 }
 
-function createUploadCsvFileFromRows({
-  rows,
-}: {
-  rows: object[];
-}): {
+function createUploadCsvFileFromRows({ rows }: { rows: object[] }): {
   buffer: Buffer;
   fileName: string;
 } {
