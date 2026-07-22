@@ -1,7 +1,10 @@
+import { expect } from '@playwright/test';
+import { format } from 'date-fns/format';
 import { Locator, Page } from 'playwright';
 
 import DataListComponent from '../components/DataListComponent';
 import { PrimeNGDatePicker } from '../components/PrimeNGDatePicker';
+import { ProgramInfo } from '../tests/CreateProgram/create-program-data';
 import BasePage from './BasePage';
 
 class ProgramSettingsPage extends BasePage {
@@ -84,6 +87,37 @@ class ProgramSettingsPage extends BasePage {
 
   async editInformationFieldByLabel(label: string, value: string) {
     await this.page.getByLabel(label).fill(value);
+  }
+
+  async validateProgramDetails({
+    programInfo,
+    programName,
+  }: {
+    programInfo: ProgramInfo;
+    programName?: string;
+  }) {
+    const basicInformationData = await this.basicInformationDataList.getData();
+    expect(basicInformationData).toEqual({
+      '*Program name': programName ?? programInfo.name,
+      'Program description': programInfo.description,
+      'Start date': format(programInfo.dateRange.start, 'd MMMM yyyy'),
+      'End date': format(programInfo.dateRange.end, 'd MMMM yyyy'),
+      Location: programInfo.location,
+      '*Target registrations': programInfo.targetRegistrations,
+      'Enable validation': 'No',
+      'Enable scope': 'No',
+    });
+
+    const budgetData = await this.budgetDataList.getData();
+
+    expect(budgetData).toEqual({
+      'Funds available': programInfo.fundsAvailable,
+      '*Currency': programInfo.currency,
+      'Default transactions per registration':
+        programInfo.defaultNumberOfTransactions,
+      '*Fixed transfer value': programInfo.fixedTransferValue,
+      '*Financial service providers': programInfo.fsps?.join(''),
+    });
   }
 
   async saveChanges() {
