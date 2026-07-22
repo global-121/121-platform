@@ -1,9 +1,9 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 test.beforeEach(async () => {
   await resetDB({
@@ -11,7 +11,10 @@ test.beforeEach(async () => {
   });
 });
 
-test('User is redirected to login when token expires', async ({ page }) => {
+test('User is redirected to login when token expires', async ({
+  page,
+  loginPage,
+}) => {
   await page.route('**/api/users/login', async (route) => {
     const response = await route.fetch();
     const body = await response.json();
@@ -25,7 +28,6 @@ test('User is redirected to login when token expires', async ({ page }) => {
     });
   });
 
-  const loginPage = new LoginPage(page);
   await loginPage.loginAsAdmin();
 
   // Verify we're logged in
@@ -50,8 +52,8 @@ test('User is redirected to login when token expires', async ({ page }) => {
 
 test('User is silently redirected to login on fresh page load with already-expired token (no popup)', async ({
   page,
+  loginPage,
 }) => {
-  const loginPage = new LoginPage(page);
   await loginPage.loginAsAdmin();
 
   // Verify we're logged in
@@ -90,8 +92,8 @@ test('User is silently redirected to login on fresh page load with already-expir
 
 test('User with a valid (non-expired) token is not redirected to login on page reload', async ({
   page,
+  loginPage,
 }) => {
-  const loginPage = new LoginPage(page);
   await loginPage.loginAsAdmin();
 
   // Verify we're logged in

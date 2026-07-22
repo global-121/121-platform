@@ -1,20 +1,18 @@
-import { test } from '@playwright/test';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
-import ChangePasswordPage from '@121-e2e/portal/pages/ChangePasswordPage';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test('Change password redirect', async ({ page }) => {
+test('Change password redirect', async ({
+  loginPage,
+  page,
+  changePasswordPage,
+}) => {
   // Arrange
   await resetDB({
     seedScript: SeedScript.testMultiple,
   });
-  const loginPage = new LoginPage(page);
   await loginPage.loginAsAdmin();
-
-  const changePasswordPage = new ChangePasswordPage(page);
 
   await test.step('Should bring the user to the Change-Password-page from a well-known URL', async () => {
     await page.goto('/.well-known/change-password');
@@ -29,9 +27,7 @@ test('Change password redirect', async ({ page }) => {
   });
 });
 
-test('Login redirect', async ({ page }) => {
-  const loginPage = new LoginPage(page);
-
+test('Login redirect', async ({ page, loginPage }) => {
   await test.step('Should bring the user to the Login-page from a well-known URL', async () => {
     await page.goto('/.well-known/login');
 
