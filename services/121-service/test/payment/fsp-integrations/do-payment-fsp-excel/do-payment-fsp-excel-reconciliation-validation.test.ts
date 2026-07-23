@@ -216,7 +216,11 @@ describe('Reconciliate excel FSP data', () => {
 
     // Assert
     expect(importResult.statusCode).toBe(HttpStatus.BAD_REQUEST);
-    expect(importResult.body).toMatchSnapshot();
+    expect(importResult.body.errors).toContain(
+      'Multiple match columns found in the import file. Please only use one of the following match columns:',
+    );
+    expect(importResult.body.errors).toContain(matchColumn);
+    expect(importResult.body.errors).toContain(differentMatchColumn);
     // Expect that all transactions are still waiting after failed reconciliation attempts - no changes should be made
     expect(transactionStatuses).toEqual(waitingTransactionStatuses);
   });
