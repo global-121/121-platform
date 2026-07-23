@@ -6,12 +6,6 @@ exports[`Reconciliate excel FSP data Should give an error when importing over 10
 ]
 `;
 
-exports[`Reconciliate excel FSP data Should give an error when match there is more than one match column in the import 1`] = `
-{
-  "errors": "Multiple match columns found in the import file. Please only use one of the following match columns: phoneNumber, accountId.",
-}
-`;
-
 exports[`Reconciliate excel FSP data Should give an error when status column has invalid values 1`] = `
 {
   "message": "Invalid status value 'invalid-status'. Allowed values are: success, error",
