@@ -14,7 +14,23 @@ export class QueryTableCellService<TData> {
   private readonly locale = inject<Locale>(LOCALE_ID);
 
   private getCellValue(column: QueryTableColumn<TData>, item: TData) {
-    // We're using radashi.get here to support "leaves" such as "user.username"
+    const value = item[column.field as string] as unknown;
+
+    /*
+      true when
+      - column.field does not include '.'
+      - keys like "attri.bute" exist and have a value
+    */
+    if (value) {
+      return value;
+    }
+
+    /*
+      uses radashi.get to look for
+      attri: {
+        bute: value
+      }
+    */
     return get(item, column.field);
   }
 
