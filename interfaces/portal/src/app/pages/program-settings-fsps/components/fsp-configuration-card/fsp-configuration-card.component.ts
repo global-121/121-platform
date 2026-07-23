@@ -147,12 +147,12 @@ export class FspConfigurationCardComponent {
 
     if (isExcelFsp) {
       const optionsForExcelFsp: MenuItem[] = [
-        createExcelFspMenuItem,
-        reconfigureFspMenuItem,
+        ...createExcelFspMenuItem,
+        ...reconfigureFspMenuItem,
       ];
 
       if (programHasMultipleExcelFsps) {
-        optionsForExcelFsp.push(deleteFspMenuItem);
+        optionsForExcelFsp.push(...deleteFspMenuItem);
       }
 
       return !this.configurationPending() ? optionsForExcelFsp : [];
