@@ -47,6 +47,7 @@ import { Attribute } from '@121-service/src/registration/enum/registration-attri
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
@@ -172,6 +173,10 @@ and adjust as needed.`,
     @Req() req: ScopedUserRequest,
   ): Promise<ProgramEntity> {
     const userId = RequestHelper.getUserId(req);
+    // A global admin who creates a program is assigned the 'admin' role on it, everyone else (a regular organization admin) is assigned 'program-admin'.
+    const creatorRole = req.user?.admin
+      ? DefaultUserRole.Admin
+      : DefaultUserRole.ProgramAdmin;
 
     if (copyFromProgramId !== undefined) {
       const duplicationErrors = await validate(
@@ -186,6 +191,7 @@ and adjust as needed.`,
         copyFromProgramId,
         programData: programData as CreateProgramDto,
         userId,
+        creatorRole,
       });
     }
 
@@ -212,7 +218,11 @@ and adjust as needed.`,
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
 
-    return this.programService.create(programData as CreateProgramDto, userId);
+    return this.programService.create(
+      programData as CreateProgramDto,
+      userId,
+      creatorRole,
+    );
   }
 
   @AuthenticatedUser({ isAdmin: true })
