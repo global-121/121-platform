@@ -2,6 +2,7 @@
   <div
     class="mbe-6 flex items-center rounded-2xl border p-4 inline-full"
     [ngClass]="wrapperVariant()"
+    [attr.data-testid]="'notification-banner'"
   >
     @if (content(); as content) {
       @if (iconVariant()) {

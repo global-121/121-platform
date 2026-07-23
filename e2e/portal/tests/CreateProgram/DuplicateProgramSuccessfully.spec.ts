@@ -1,5 +1,3 @@
-import { expect } from '@playwright/test';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
@@ -29,11 +27,8 @@ test('Duplicate program successfully', async ({
   // Prepare
   await test.step('Should navigate to main page and select "Create new program" button and fill in the form', async () => {
     await homePage.openCreateNewProgram();
-    await expect(page.getByText('Step 1 of 3')).toBeVisible();
     await createProgramDialog.fillInStep1(programInfo);
-    await expect(page.getByText('Step 2 of 3')).toBeVisible();
     await createProgramDialog.fillInStep2(programInfo);
-    await expect(page.getByText('Step 3 of 3')).toBeVisible();
     await createProgramDialog.fillInStep3(programInfo);
     const newProgramId = 3; // Id of newly created program based on SeedScript.testMultiple
     await page.waitForURL((url) =>

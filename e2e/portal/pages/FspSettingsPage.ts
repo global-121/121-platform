@@ -13,6 +13,7 @@ class FspSettingsPage extends BasePage {
   readonly integrationErrorMessage: Locator;
   readonly cancelButton: Locator;
   readonly fspCardTable: Locator;
+  readonly unconfiguredFspWarningBanner: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -27,6 +28,29 @@ class FspSettingsPage extends BasePage {
     });
     this.fspCard = this.page.locator('app-card-with-link');
     this.cancelButton = this.page.getByRole('button', { name: 'Cancel' });
+    this.unconfiguredFspWarningBanner = this.page.getByTestId(
+      'notification-banner',
+    );
+  }
+
+  async validateUnconfiguredFspWarningVisibility() {
+    await expect(this.unconfiguredFspWarningBanner).toBeVisible();
+    await expect(this.unconfiguredFspWarningBanner).toContainText(
+      'Integration required - Integrate your FSPs before paying your registrations.',
+    );
+  }
+
+  async configureExcelFsp() {
+    const exelPaymentInstructionsCard = this.page
+      .locator('app-card-with-link')
+      .filter({ hasText: 'Excel Payment Instructions' });
+    await exelPaymentInstructionsCard
+      .getByRole('button', { name: 'Integrate' })
+      .click();
+    await this.selectMultiselectOptions({
+      dropdownTestId: 'fsp-multiselect',
+      optionsToClick: ['Full Name'],
+    });
   }
 
   async clickFspIntegration() {
@@ -114,14 +138,19 @@ class FspSettingsPage extends BasePage {
   async validateFspVisibility({
     fspNames,
     visible = true,
+    integrated = true,
   }: {
     fspNames: string[];
     visible?: boolean;
+    integrated?: boolean;
   }) {
     for (const fspName of fspNames) {
       const fspLocator = this.fspCard.filter({ hasText: fspName });
       if (visible) {
         await expect(fspLocator).toBeVisible();
+        if (!integrated) {
+          await expect(fspLocator.getByText('Integrate')).toBeVisible();
+        }
       } else {
         await expect(fspLocator).toBeHidden();
       }
