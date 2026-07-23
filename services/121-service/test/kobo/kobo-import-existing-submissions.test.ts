@@ -9,6 +9,7 @@ import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.d
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { KoboMockSubmissionUuids } from '@121-service/test/fixtures/kobo-mock-submission-uuids';
 import {
   patchKoboSubmissions,
@@ -17,6 +18,7 @@ import {
 import { postMessageTemplate } from '@121-service/test/helpers/program.helper';
 import { searchRegistrationByReferenceId } from '@121-service/test/helpers/registration.helper';
 import {
+  createAccessTokenWithPermissions,
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
@@ -61,6 +63,7 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
   async function setup(assetUid: string): Promise<{
     programId: number;
     assetUid: string;
+    accessTokenWithPermissions: string;
   }> {
     const program: CreateProgramDto = {
       ...baseProgram,
@@ -92,7 +95,16 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
       accessToken,
     );
 
-    return { programId, assetUid: uid };
+    const accessTokenWithPermissions = await createAccessTokenWithPermissions({
+      permissions: [
+        PermissionEnum.RegistrationREAD,
+        PermissionEnum.RegistrationPersonalREAD,
+      ],
+      programId,
+      adminAccessToken: accessToken,
+    });
+
+    return { programId, assetUid: uid, accessTokenWithPermissions };
   }
 
   it('should handle case with no submissions', async () => {
@@ -126,7 +138,7 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
     // Arrange
     const assetUid = 'import-happy-flow';
     const expectedReferenceId = `${KoboMockSubmissionUuids.success}-${assetUid}`;
-    const { programId } = await setup(assetUid);
+    const { programId, accessTokenWithPermissions } = await setup(assetUid);
 
     // Act
     const response = await patchKoboSubmissions({ programId, accessToken });
@@ -144,7 +156,7 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
     const searchResponse = await searchRegistrationByReferenceId(
       expectedReferenceId,
       programId,
-      accessToken,
+      accessTokenWithPermissions,
     );
     expect(searchResponse.body.data).toBeArrayOfSize(1);
     expect(searchResponse.body.data[0]).toMatchObject({
