@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { inject, LOCALE_ID } from '@angular/core';
 
-import { get, isObject } from 'radashi';
+import { get } from 'radashi';
 
 import { ChipData } from '~/components/colored-chip/colored-chip.helper';
 import {
@@ -14,13 +14,24 @@ export class QueryTableCellService<TData> {
   private readonly locale = inject<Locale>(LOCALE_ID);
 
   private getCellValue(column: QueryTableColumn<TData>, item: TData) {
-    const splitField = column.field.split('.');
-    // We're using radashi.get here to support "leaves" such as "user.username"
-    if (isObject(item[splitField[0]])) {
-      return get(item, column.field);
+    const value = item[column.field as string] as unknown;
+
+    /*
+      true when
+      - column.field does not include '.'
+      - keys like "attri.bute" exist and have a value
+    */
+    if (value) {
+      return value;
     }
 
-    return item[column.field as string] as unknown;
+    /*
+      uses radashi.get to look for
+      attri: {
+        bute: value
+      }
+    */
+    return get(item, column.field);
   }
 
   getCellText(column: QueryTableColumn<TData>, item: TData) {
