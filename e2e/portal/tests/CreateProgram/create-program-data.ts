@@ -3,12 +3,14 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 
 import { getFspLabels } from '@121-e2e/portal/helpers/get-fsp-labels';
 
-export const createProgramInfo = () => {
+export const createProgramInfo = ({
+  fsps = [Fsps.intersolveVisa, Fsps.intersolveVoucherPaper, Fsps.safaricom],
+}: { fsps?: Fsps[] } = {}) => {
   const todayDate = new Date();
   const futureDate = new Date(todayDate);
   futureDate.setDate(futureDate.getDate() + 1);
 
-  return {
+  const programInfo = {
     name: 'TUiR Warta',
     description: 'TUiR Warta description',
     dateRange: { start: todayDate, end: futureDate },
@@ -20,7 +22,9 @@ export const createProgramInfo = () => {
     defaultNumberOfTransactions: '5',
     fixedTransferValue: '100',
     fsps: getFspLabels({
-      fsps: [Fsps.intersolveVisa, Fsps.intersolveVoucherPaper, Fsps.safaricom],
+      fsps,
     }),
   };
+
+  return programInfo;
 };
