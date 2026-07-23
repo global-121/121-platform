@@ -178,7 +178,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
       queryBuilder.orderBy('rd.value', sortByValue);
       queryBuilder.addSelect('rd.value');
     }
-    // This is somehow needed (without alias!) to make the orderBy work
+    // This is somehow needed to make the orderBy work
     // These values are not returned because they are not mapped later on
     return queryBuilder;
   }

@@ -208,7 +208,7 @@ describe('Load PA table', () => {
         { referenceId: registrationOCW3.referenceId, value: 20 },
         { referenceId: registrationOCW4.referenceId, value: 10 },
       ];
-  
+
       for (const { referenceId, value } of referenceIdToValue) {
         await updateRegistration(
           programIdOCW,
