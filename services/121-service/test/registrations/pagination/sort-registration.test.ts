@@ -177,5 +177,70 @@ describe('Load PA table', () => {
         ]),
       );
     });
+
+    it('should sort numeric attributes numerically, not lexicographically', async () => {
+      // Arrange
+      const numericAttributeName = 'score';
+      const numericAttribute: CreateProgramRegistrationAttributeDto = {
+        name: numericAttributeName,
+        options: [],
+        scoring: {},
+        showInPeopleAffectedTable: true,
+        editableInPortal: true,
+        includeInTransactionExport: true,
+        label: {
+          en: 'Score',
+        },
+        duplicateCheck: false,
+        type: RegistrationAttributeTypes.numeric,
+        isRequired: false,
+      };
+
+      await postProgramRegistrationAttribute(
+        numericAttribute,
+        programIdOCW,
+        accessToken,
+      );
+
+      const referenceIdToValue = [
+        { referenceId: registrationOCW1.referenceId, value: 100 },
+        { referenceId: registrationOCW2.referenceId, value: 5 },
+        { referenceId: registrationOCW3.referenceId, value: 20 },
+        { referenceId: registrationOCW4.referenceId, value: 10 },
+      ];
+
+      for (const { referenceId, value } of referenceIdToValue) {
+        await updateRegistration(
+          programIdOCW,
+          referenceId,
+          { [numericAttributeName]: value },
+          'Set score for numeric sorting test',
+          accessToken,
+        );
+      }
+
+      // Act
+      const ascendingResponse = await getRegistrations({
+        programId: programIdOCW,
+        accessToken,
+        sort: { field: numericAttributeName, direction: 'ASC' },
+      });
+      const descendingResponse = await getRegistrations({
+        programId: programIdOCW,
+        accessToken,
+        sort: { field: numericAttributeName, direction: 'DESC' },
+      });
+
+      // Assert
+      const ascendingValues = ascendingResponse.body.data.map((registration) =>
+        Number(registration[numericAttributeName]),
+      );
+      const descendingValues = descendingResponse.body.data.map(
+        (registration) => Number(registration[numericAttributeName]),
+      );
+
+      expect(ascendingValues).toEqual([5, 10, 20, 100]);
+      expect(descendingValues).toEqual([100, 20, 10, 5]);
+    });
   });
 });
