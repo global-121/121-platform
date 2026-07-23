@@ -7,6 +7,7 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewRepositoryHelper } from '@121-service/src/registration/repositories/helpers/registration-view.repository.helper';
 import { RegistrationScopedBaseRepository } from '@121-service/src/registration/repositories/registration-scoped-base.repository';
@@ -165,9 +166,19 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
       { sortAttributeId: relationInfo.relation.programRegistrationAttributeId },
     );
 
-    queryBuilder.orderBy('rd.value', sortByValue);
-    queryBuilder.addSelect('rd.value');
-    // This is somehow needed (without alias!) to make the orderBy work
+    const isNumericAttribute =
+      relationInfo.type === RegistrationAttributeTypes.numeric ||
+      relationInfo.type === RegistrationAttributeTypes.numericNullable;
+
+    if (isNumericAttribute) {
+      // The alias has no dot, so TypeORM does not try to remap it to a joined relation alias
+      queryBuilder.addSelect("NULLIF(rd.value, '')::numeric", 'rd_value_sort');
+      queryBuilder.orderBy('rd_value_sort', sortByValue);
+    } else {
+      queryBuilder.orderBy('rd.value', sortByValue);
+      queryBuilder.addSelect('rd.value');
+    }
+    // This is somehow needed to make the orderBy work
     // These values are not returned because they are not mapped later on
     return queryBuilder;
   }
