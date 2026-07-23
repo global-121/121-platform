@@ -231,7 +231,7 @@ export class ProgramService {
     }
 
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
-      roles: [DefaultUserRole.Admin],
+      roles: [DefaultUserRole.ProgramAdmin],
       scope: undefined,
     }); 
 
