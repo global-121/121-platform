@@ -5,7 +5,6 @@ import { FspsService } from '@121-service/src/fsp-management/fsp.service';
 import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('fsps')
@@ -13,7 +12,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 export class FspsController {
   public constructor(private readonly fspService: FspsService) {}
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramREAD] })
+  @AuthenticatedUser()
   @ApiOperation({
     summary: 'Get all enabled Financial Service Providers. (Fsps)',
   })
@@ -38,7 +37,7 @@ export class FspsController {
     description: 'Fsp with attributes',
     type: FspSettingsDto,
   })
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramREAD] })
+  @AuthenticatedUser()
   @Get(':fspName')
   public async getFspByName(
     @Param('fspName')
