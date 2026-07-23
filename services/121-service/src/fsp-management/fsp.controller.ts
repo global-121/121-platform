@@ -13,7 +13,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 export class FspsController {
   public constructor(private readonly fspService: FspsService) {}
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramREAD] })
   @ApiOperation({
     summary: 'Get all enabled Financial Service Providers. (Fsps)',
   })
