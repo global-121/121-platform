@@ -109,7 +109,7 @@ export class FspConfigurationFormDialogComponent {
 
       const fspConfiguration = {
         // TODO: AB#38589 - edit name separately from display name
-        name: dash(formGroupData.displayName),
+        name: dash(formGroupData.displayName.trim()),
         label: {
           // Intentionally using 'en' here, as we don't actually want to translate the display name
           en: formGroupData.displayName,
