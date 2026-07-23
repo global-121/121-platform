@@ -2,7 +2,6 @@
   "recommendations": [
     // Sorted alphabetically:
     "ban.spellright",
-    "bierner.markdown-mermaid",
     "danlevett.regex-robin",
     "davidanson.vscode-markdownlint",
     "dbaeumer.vscode-eslint",
