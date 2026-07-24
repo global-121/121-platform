@@ -8,7 +8,6 @@ import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.d
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { KoboMockAssetUids } from '@121-service/test/fixtures/kobo-mock-asset-uids';
 import { KoboMockSubmissionUuids } from '@121-service/test/fixtures/kobo-mock-submission-uuids';
 import {
@@ -17,7 +16,6 @@ import {
   triggerKoboSubmission,
 } from '@121-service/test/helpers/kobo.helper';
 import {
-  createAccessTokenWithPermissions,
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
@@ -45,7 +43,6 @@ const baseProgram: Partial<CreateProgramDto> = {
 
 describe('Download Kobo image for a registration', () => {
   let accessToken: string;
-  let accessTokenWithPermissions: string;
   let programId: number;
   const submissionUuid = `${KoboMockSubmissionUuids.success}-kobo-image-test`;
   const assetUidInput = 'success-asset-kobo-image';
@@ -71,12 +68,6 @@ describe('Download Kobo image for a registration', () => {
     });
     programId = setup.programId;
 
-    accessTokenWithPermissions = await createAccessTokenWithPermissions({
-      permissions: [PermissionEnum.RegistrationPersonalREAD],
-      programId,
-      adminAccessToken: accessToken,
-    });
-
     // Create a registration via Kobo webhook (which stores the image attachment URL)
     await triggerKoboSubmission({
       assetUid: setup.assetUid,
@@ -91,7 +82,7 @@ describe('Download Kobo image for a registration', () => {
       programId,
       submissionUuid,
       attributeName: 'photo',
-      accessToken: accessTokenWithPermissions,
+      accessToken,
     });
     console.log('Response:', response.body);
 

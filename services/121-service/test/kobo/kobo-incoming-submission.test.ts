@@ -9,7 +9,6 @@ import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.d
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { KoboMockAssetUids } from '@121-service/test/fixtures/kobo-mock-asset-uids';
 import { KoboMockSubmissionUuids } from '@121-service/test/fixtures/kobo-mock-submission-uuids';
 import {
@@ -28,7 +27,6 @@ import {
   searchRegistrationByReferenceId,
 } from '@121-service/test/helpers/registration.helper';
 import {
-  createAccessTokenWithPermissions,
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
@@ -73,7 +71,6 @@ describe('Process incoming Kobo submission via webhook', () => {
   async function setup(assetUid: string): Promise<{
     programId: number;
     assetUid: string;
-    accessTokenWithPermissions: string;
   }> {
     const program: CreateProgramDto = {
       ...baseProgram,
@@ -105,25 +102,13 @@ describe('Process incoming Kobo submission via webhook', () => {
       accessToken,
     );
 
-    const accessTokenWithPermissions = await createAccessTokenWithPermissions({
-      permissions: [
-        PermissionEnum.RegistrationREAD,
-        PermissionEnum.RegistrationPersonalREAD,
-        PermissionEnum.RegistrationNotificationREAD,
-      ],
-      programId,
-      adminAccessToken: accessToken,
-    });
-
-    return { programId, assetUid: uid, accessTokenWithPermissions };
+    return { programId, assetUid: uid };
   }
 
   it('should successfully process an incoming Kobo submission and create a registration', async () => {
     // Arrange
     const submissionUuid = `${KoboMockSubmissionUuids.success}-happy-flow`;
-    const { programId, assetUid, accessTokenWithPermissions } = await setup(
-      'success-asset-happy-flow',
-    );
+    const { programId, assetUid } = await setup('success-asset-happy-flow');
 
     // Act
     const triggerSubmissionResponse = await triggerKoboSubmission({
@@ -143,7 +128,7 @@ describe('Process incoming Kobo submission via webhook', () => {
     const searchResponse = await searchRegistrationByReferenceId(
       submissionUuid,
       programId,
-      accessTokenWithPermissions,
+      accessToken,
     );
     expect(searchResponse.body.data).toBeArrayOfSize(1);
     const registration = searchResponse.body.data[0];
@@ -160,7 +145,7 @@ describe('Process incoming Kobo submission via webhook', () => {
     await waitForMessagesToComplete({
       programId,
       referenceIds: [submissionUuid],
-      accessToken: accessTokenWithPermissions,
+      accessToken,
       expectedMessageAttribute: {
         key: 'contentType',
         values: [MessageContentType.new],
@@ -168,7 +153,7 @@ describe('Process incoming Kobo submission via webhook', () => {
     });
 
     const messageHistory = (
-      await getMessageHistory(programId, submissionUuid, accessTokenWithPermissions)
+      await getMessageHistory(programId, submissionUuid, accessToken)
     ).body;
     expect(messageHistory).toHaveLength(1);
     const { attributes, user } = messageHistory[0];
@@ -272,7 +257,7 @@ describe('Process incoming Kobo submission via webhook', () => {
       // fetch the deployment for that asset UID instead of the original one,
       // simulating a submission created after a redeployment.
       const submissionUuid = `${KoboMockSubmissionUuids.success}-version-update`;
-      const { programId, assetUid, accessTokenWithPermissions } = await setup(
+      const { programId, assetUid } = await setup(
         'success-asset-version-update',
       );
 
@@ -301,7 +286,7 @@ describe('Process incoming Kobo submission via webhook', () => {
       const searchResponse = await searchRegistrationByReferenceId(
         submissionUuid,
         programId,
-        accessTokenWithPermissions,
+        accessToken,
       );
       expect(searchResponse.body.data).toBeArrayOfSize(1);
       expect(searchResponse.body.data[0]).toMatchObject({

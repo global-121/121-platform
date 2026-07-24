@@ -172,6 +172,7 @@ and adjust as needed.`,
     @Req() req: ScopedUserRequest,
   ): Promise<ProgramEntity> {
     const userId = RequestHelper.getUserId(req);
+    const isAdmin = RequestHelper.getUserIsAdmin(req);
 
     if (copyFromProgramId !== undefined) {
       const duplicationErrors = await validate(
@@ -186,6 +187,7 @@ and adjust as needed.`,
         copyFromProgramId,
         programData: programData as CreateProgramDto,
         userId,
+        isAdmin,
       });
     }
 
@@ -212,7 +214,11 @@ and adjust as needed.`,
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
 
-    return this.programService.create(programData as CreateProgramDto, userId);
+    return this.programService.create(
+      programData as CreateProgramDto,
+      userId,
+      isAdmin,
+    );
   }
 
   @AuthenticatedUser({ isAdmin: true })

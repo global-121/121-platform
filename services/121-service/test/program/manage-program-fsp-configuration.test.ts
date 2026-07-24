@@ -572,18 +572,10 @@ describe('Manage FSP-configurations', () => {
   it('should not delete existing program FSP-configuration because of active registrations with that config', async () => {
     // Arrange: the config cannot be deleted as long as non-deleted registrations use it, so an included registration is enough (no payment needed)
     programId = await createProgramWithFspConfigurations({ accessToken });
-    const accessTokenWithPermissions = await createAccessTokenWithPermissions({
-      permissions: [
-        PermissionEnum.RegistrationCREATE,
-        PermissionEnum.RegistrationStatusIncludedUPDATE,
-      ],
-      adminAccessToken: accessToken,
-      programId,
-    });
     await seedIncludedRegistrations(
       [{ ...baseRegistrationCbe, referenceId: 'cbe-active-registrations' }],
       programId,
-      accessTokenWithPermissions,
+      accessToken,
     );
 
     // Act
