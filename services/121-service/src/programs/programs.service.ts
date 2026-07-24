@@ -142,6 +142,7 @@ export class ProgramService {
   public async create(
     programData: CreateProgramDto,
     userId: number,
+    isAdmin: boolean,
   ): Promise<ProgramEntity> {
     let newProgram;
 
@@ -230,8 +231,12 @@ export class ProgramService {
       await queryRunner.release();
     }
 
+    const role = isAdmin
+      ? DefaultUserRole.Admin
+      : DefaultUserRole.ProgramAdmin;
+
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
-      roles: [DefaultUserRole.Admin],
+      roles: [role],
       scope: undefined,
     }); 
 
@@ -248,10 +253,12 @@ export class ProgramService {
     copyFromProgramId,
     programData,
     userId,
+    isAdmin,
   }: {
     copyFromProgramId: number;
     programData: CreateProgramDto;
     userId: number;
+    isAdmin: boolean;
   }): Promise<ProgramEntity> {
     const sourceExists = await this.programRepository.exists({
       where: { id: Equal(copyFromProgramId) },
@@ -263,7 +270,7 @@ export class ProgramService {
       );
     }
 
-    const newProgram = await this.create(programData, userId);
+    const newProgram = await this.create(programData, userId, isAdmin);
 
     await this.duplicateFspConfigurations({
       sourceProgramId: copyFromProgramId,

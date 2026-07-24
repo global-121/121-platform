@@ -15,6 +15,16 @@ export class RequestHelper {
 
     return userId;
   }
+  
+  static getUserIsAdmin(req: ScopedUserRequest): boolean {
+    const isAdmin = req.user?.admin;
+
+    if (isAdmin === undefined) {
+      throw new Error('User admin status is not defined');
+    }
+
+    return isAdmin;
+  }
 
   static getUserScope(req: ScopedUserRequest): string {
     const userScope = req.user?.scope;
