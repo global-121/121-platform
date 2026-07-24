@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test';
+import { format } from 'date-fns';
 import { Locator, Page } from 'playwright';
 
 import DataListComponent from '../components/DataListComponent';
@@ -84,6 +86,48 @@ class ProgramSettingsPage extends BasePage {
 
   async editInformationFieldByLabel(label: string, value: string) {
     await this.page.getByLabel(label).fill(value);
+  }
+
+  async validateProgramDetails({
+    programInfo,
+    programName,
+  }: {
+    programInfo: {
+      name: string;
+      description: string;
+      dateRange: { start: Date; end: Date };
+      location: string;
+      targetRegistrations: string;
+      fundsAvailable: string;
+      currency: string;
+      defaultNumberOfTransactions: string;
+      fixedTransferValue: string;
+      fsps?: string[];
+    };
+    programName?: string;
+  }) {
+    const basicInformationData = await this.basicInformationDataList.getData();
+    expect(basicInformationData).toEqual({
+      '*Program name': programName ?? programInfo.name,
+      'Program description': programInfo.description,
+      'Start date': format(programInfo.dateRange.start, 'd MMMM yyyy'),
+      'End date': format(programInfo.dateRange.end, 'd MMMM yyyy'),
+      Location: programInfo.location,
+      '*Target registrations': programInfo.targetRegistrations,
+      'Enable validation': 'No',
+      'Enable scope': 'No',
+    });
+
+    const budgetData = await this.budgetDataList.getData();
+
+    expect(budgetData).toEqual({
+      'Funds available': programInfo.fundsAvailable,
+      '*Currency': programInfo.currency,
+      'Default transactions per registration':
+        programInfo.defaultNumberOfTransactions,
+      '*Fixed transfer value': programInfo.fixedTransferValue,
+      '*Financial service providers': programInfo.fsps?.join(''),
+    });
   }
 
   async saveChanges() {
