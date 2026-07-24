@@ -10,6 +10,7 @@ on:
   merge_group:
     types: [checks_requested]
   pull_request:
+    types: [opened, synchronize, reopened, labeled]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,6 +25,9 @@ env:
 jobs:
   path-filter:
     runs-on: ubuntu-latest
+    if: >-
+      ${{ github.event_name != 'pull_request' ||
+      contains(github.event.pull_request.labels.*.name, 'run-e2e-portal') }}
     outputs:
       should_skip: ${{ steps.filter.outputs.should_skip }}
     steps:
