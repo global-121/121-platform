@@ -13,6 +13,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "chat.useNestedAgentsMdFiles": true,
+  "css.customData": ["interfaces/portal/.vscode/tailwind.css-data.json"],
   "eslint.enable": true,
   "eslint.format.enable": true,
   "eslint.rules.customizations": [

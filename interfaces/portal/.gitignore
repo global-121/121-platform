@@ -23,7 +23,7 @@ yarn-error.log
 
 # Visual Studio Code
 .history/*
-!.vscode/tailwind.json
+!.vscode/tailwind.css-data.json
 
 # Miscellaneous
 .eslintcache
