@@ -47,9 +47,9 @@ export class RequiredAttributesComponent {
     this.fspConfigurationApiService.getFspConfigurations(this.programId),
   );
 
-  readonly programFsps = computed(() => {
+  readonly programFspNames = computed(() => {
     const fspConfigs = this.fspConfigurations.data() ?? [];
-    return fspConfigs.map((config) => FSP_SETTINGS[config.fspName]);
+    return fspConfigs.map((fspConfig) => fspConfig.name);
   });
 
   readonly program = injectQuery(
@@ -100,10 +100,8 @@ export class RequiredAttributesComponent {
       name: 'fsp',
       label: 'Fsp',
       infoTooltip: () => {
-        const fspNames = this.programFsps()
-          .map((fsp) => fsp.name)
-          .join(', ');
-        return this.programFsps().length === 1
+        const fspNames = this.programFspNames().join(', ');
+        return this.programFspNames().length === 1
           ? $localize`fsp should be a 'hidden' field in your form that has the 'default response' set to the FSP name: ${fspNames}`
           : $localize`fsp should be 'select many' with the following FSP names as options: ${fspNames}`;
       },
