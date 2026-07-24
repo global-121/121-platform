@@ -14,7 +14,7 @@ export class CronjobExecutionHelperService {
     fn: () => Promise<number>,
   ): Promise<number | undefined> {
     const startMessage = this.createCronjobStartMessage(methodName);
-    this.azureLogService.consoleLogAndTraceAzure(startMessage);
+    this.azureLogService.traceAzure(startMessage);
 
     try {
       // Execute the cron job function and await its result
@@ -26,7 +26,7 @@ export class CronjobExecutionHelperService {
         batchSize,
         isError: false,
       });
-      this.azureLogService.consoleLogAndTraceAzure(cronjobResultMessage);
+      this.azureLogService.traceAzure(cronjobResultMessage);
       return batchSize;
     } catch (error) {
       // 1. Log the stack trace to the Node logs

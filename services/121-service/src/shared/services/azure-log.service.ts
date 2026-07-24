@@ -43,8 +43,10 @@ export class AzureLogService {
     }
   }
 
-  public consoleLogAndTraceAzure(message: string): void {
-    console.log(message);
+  public traceAzure(message: string): void {
+    if (env.NODE_ENV === 'development') {
+      console.log(message);
+    }
     if (!this.defaultClient) {
       return;
     }

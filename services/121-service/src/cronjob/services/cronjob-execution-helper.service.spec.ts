@@ -43,12 +43,12 @@ describe('CronjobExecutionHelperService', () => {
     );
 
     // Assert
-    expect(azureLogService.consoleLogAndTraceAzure).toHaveBeenCalledTimes(2);
+    expect(azureLogService.traceAzure).toHaveBeenCalledTimes(2);
 
-    const startMessage = (azureLogService.consoleLogAndTraceAzure as jest.Mock)
-      .mock.calls[0][0];
-    const endMessage = (azureLogService.consoleLogAndTraceAzure as jest.Mock)
-      .mock.calls[1][0];
+    const startMessage = (azureLogService.traceAzure as jest.Mock).mock
+      .calls[0][0];
+    const endMessage = (azureLogService.traceAzure as jest.Mock).mock
+      .calls[1][0];
 
     expect(startMessage).toMatch(
       /\[CRON START\].*cronRemoveDeprecatedImageCodes.*started at/,
@@ -69,7 +69,7 @@ describe('CronjobExecutionHelperService', () => {
     );
 
     // Assert
-    expect(azureLogService.consoleLogAndTraceAzure).toHaveBeenCalledTimes(1);
+    expect(azureLogService.traceAzure).toHaveBeenCalledTimes(1);
     expect(azureLogService.logError).toHaveBeenCalledTimes(1);
 
     const errorArg = (azureLogService.logError as jest.Mock).mock.calls[0][0];
