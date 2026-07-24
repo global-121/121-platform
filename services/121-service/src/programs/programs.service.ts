@@ -230,10 +230,15 @@ export class ProgramService {
       await queryRunner.release();
     }
 
+    const creatingUser = await this.userService.findById(userId);
+    const role = creatingUser.isOrganizationAdmin
+      ? DefaultUserRole.ProgramAdmin
+      : DefaultUserRole.Admin;
+
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
-      roles: [DefaultUserRole.Admin],
+      roles: [role],
       scope: undefined,
-    }); 
+    });
 
     return newProgram;
   }
