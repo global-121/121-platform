@@ -340,6 +340,7 @@ class BasePage {
     const headerIndexByName = new Map(
       headerCells.map((columnName, index) => [columnName, index]),
     );
+    const excludedColumnSet = new Set(excludedColumns);
 
     // Validate excluded columns and remove them from the normalized output.
     for (const column of excludedColumns) {
@@ -351,7 +352,7 @@ class BasePage {
     }
 
     const headerCellsToValidate = headerCells.filter(
-      (columnName) => !excludedColumns.includes(columnName),
+      (columnName) => !excludedColumnSet.has(columnName),
     );
     const sortedHeaderCells = [...headerCellsToValidate].sort((a, b) =>
       a.localeCompare(b),
