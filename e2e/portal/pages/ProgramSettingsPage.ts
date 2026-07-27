@@ -89,10 +89,10 @@ class ProgramSettingsPage extends BasePage {
   }
 
   async validateProgramDetails({
-    programInfo,
+    programData,
     programName,
   }: {
-    programInfo: {
+    programData: {
       name: string;
       description: string;
       dateRange: { start: Date; end: Date };
@@ -108,12 +108,12 @@ class ProgramSettingsPage extends BasePage {
   }) {
     const basicInformationData = await this.basicInformationDataList.getData();
     expect(basicInformationData).toEqual({
-      '*Program name': programName ?? programInfo.name,
-      'Program description': programInfo.description,
-      'Start date': format(programInfo.dateRange.start, 'd MMMM yyyy'),
-      'End date': format(programInfo.dateRange.end, 'd MMMM yyyy'),
-      Location: programInfo.location,
-      '*Target registrations': programInfo.targetRegistrations,
+      '*Program name': programName ?? programData.name,
+      'Program description': programData.description,
+      'Start date': format(programData.dateRange.start, 'd MMMM yyyy'),
+      'End date': format(programData.dateRange.end, 'd MMMM yyyy'),
+      Location: programData.location,
+      '*Target registrations': programData.targetRegistrations,
       'Enable validation': 'No',
       'Enable scope': 'No',
     });
@@ -121,12 +121,12 @@ class ProgramSettingsPage extends BasePage {
     const budgetData = await this.budgetDataList.getData();
 
     expect(budgetData).toEqual({
-      'Funds available': programInfo.fundsAvailable,
-      '*Currency': programInfo.currency,
+      'Funds available': programData.fundsAvailable,
+      '*Currency': programData.currency,
       'Default transactions per registration':
-        programInfo.defaultNumberOfTransactions,
-      '*Fixed transfer value': programInfo.fixedTransferValue,
-      '*Financial service providers': programInfo.fsps?.join(''),
+        programData.defaultNumberOfTransactions,
+      '*Fixed transfer value': programData.fixedTransferValue,
+      '*Financial service providers': programData.fsps?.join(''),
     });
   }
 
