@@ -556,6 +556,9 @@ describe('PaymentsManagementService', () => {
       await service.deletePayment(deleteParams);
 
       // Assert
+      expect(
+        transactionsService.deleteTransactionsByPaymentId,
+      ).toHaveBeenCalledWith({ paymentId: 5 });
       expect((service as any).paymentRepository.remove).toHaveBeenCalledWith({
         id: 5,
         programId: 2,

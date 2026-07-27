@@ -520,7 +520,6 @@ export class PaymentsManagementService {
       );
     }
 
-    // Throw if payment is in progress
     const isInProgress =
       await this.paymentsProgressService.isPaymentInProgress(programId);
     if (isInProgress) {
@@ -538,6 +537,8 @@ export class PaymentsManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
+
+    await this.transactionsService.deleteTransactionsByPaymentId({ paymentId });
 
     await this.paymentRepository.remove(payment);
   }

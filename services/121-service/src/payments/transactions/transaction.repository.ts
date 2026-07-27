@@ -7,6 +7,8 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/entiti
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 
+const TRANSACTION_DELETE_BATCH_SIZE = 5000;
+
 export class TransactionRepository extends Repository<TransactionEntity> {
   constructor(
     @InjectRepository(TransactionEntity)
@@ -149,5 +151,31 @@ export class TransactionRepository extends Repository<TransactionEntity> {
       .addOrderBy('transaction.created', 'ASC')
       .addOrderBy('startedEvent.created', 'ASC')
       .getMany();
+  }
+
+  public async deleteByPaymentIdInBatches({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<void> {
+    let hasMore = true;
+    while (hasMore) {
+      const rows = await this.baseRepository
+        .createQueryBuilder('transaction')
+        .select('transaction.id', 'id')
+        .where('transaction.paymentId = :paymentId', { paymentId })
+        .limit(TRANSACTION_DELETE_BATCH_SIZE)
+        .getRawMany<{ id: number }>();
+
+      hasMore = rows.length > 0;
+      if (hasMore) {
+        await this.baseRepository
+          .createQueryBuilder()
+          .delete()
+          .from(TransactionEntity)
+          .where('id = ANY(:ids)', { ids: rows.map((row) => row.id) })
+          .execute();
+      }
+    }
   }
 }
