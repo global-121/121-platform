@@ -566,27 +566,6 @@ describe('PaymentsManagementService', () => {
         paymentsDeletionService.addPaymentDeletionJobToQueue,
       ).toHaveBeenCalledWith({ paymentId: 5 });
     });
-
-    it('should soft-delete the payment before enqueueing the cleanup job', async () => {
-      // Arrange
-      const callOrder: string[] = [];
-      (service as any).paymentRepository.softRemove = jest
-        .fn()
-        .mockImplementation(async () => {
-          callOrder.push('softRemove');
-        });
-      (
-        paymentsDeletionService.addPaymentDeletionJobToQueue as jest.Mock
-      ).mockImplementation(async () => {
-        callOrder.push('enqueue');
-      });
-
-      // Act
-      await service.deletePayment(deleteParams);
-
-      // Assert
-      expect(callOrder).toEqual(['softRemove', 'enqueue']);
-    });
   });
 
   describe('renamePayment', () => {

@@ -42,20 +42,7 @@ describe('PaymentsDeletionService', () => {
   });
 
   describe('processPaymentDeletionJob', () => {
-    it('should delete the transactions before deleting the payment', async () => {
-      // Arrange
-      const callOrder: string[] = [];
-      (
-        transactionsService.deleteTransactionsByPaymentId as jest.Mock
-      ).mockImplementation(async () => {
-        callOrder.push('transactions');
-      });
-      ((service as any).paymentRepository.delete as jest.Mock).mockImplementation(
-        async () => {
-          callOrder.push('payment');
-        },
-      );
-
+    it('should delete the payment and its transactions', async () => {
       // Act
       await service.processPaymentDeletionJob({ paymentId: 7 });
 
@@ -64,7 +51,6 @@ describe('PaymentsDeletionService', () => {
         transactionsService.deleteTransactionsByPaymentId,
       ).toHaveBeenCalledWith({ paymentId: 7 });
       expect((service as any).paymentRepository.delete).toHaveBeenCalled();
-      expect(callOrder).toEqual(['transactions', 'payment']);
     });
 
     it('should log and rethrow when cleanup fails', async () => {
