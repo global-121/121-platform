@@ -74,6 +74,14 @@ export class TransactionsService {
     return savedTransactions.map((t) => t.id);
   }
 
+  public async deleteTransactionsByPaymentId({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<void> {
+    await this.transactionRepository.deleteByPaymentIdInBatches({ paymentId });
+  }
+
   public async saveProgress({
     context,
     description,
