@@ -337,26 +337,41 @@ class BasePage {
       data.sort((a, b) => a.localeCompare(b));
     }
 
-    const dataToValidate = data[0];
-    const dataCells = dataToValidate?.split(',') ?? [];
+    const headerIndexByName = new Map(
+      headerCells.map((columnName, index) => [columnName, index]),
+    );
 
-    // remove excluded columns from the header and data
-    excludedColumns.forEach((column) => {
-      const index = headerCells.indexOf(column);
-      if (index > -1) {
-        headerCells.splice(index, 1);
-        dataCells.splice(index, 1);
-      } else {
+    // Validate excluded columns and remove them from the normalized output.
+    for (const column of excludedColumns) {
+      if (!headerIndexByName.has(column)) {
         throw new Error(
           `Column to exclude "${column}" not found in header row`,
         );
       }
-    });
+    }
 
-    let normalizedDownloadedFile = headerCells.join(',');
+    const headerCellsToValidate = headerCells.filter(
+      (columnName) => !excludedColumns.includes(columnName),
+    );
+    const sortedHeaderCells = [...headerCellsToValidate].sort((a, b) =>
+      a.localeCompare(b),
+    );
+
+    let normalizedDownloadedFile = sortedHeaderCells.join(',');
 
     if (data.length > 0) {
-      normalizedDownloadedFile += '\n' + dataCells.join(',');
+      const dataToValidate = data[0];
+      const dataCells = dataToValidate?.split(',') ?? [];
+
+      const normalizedDataCells = sortedHeaderCells.map((columnName) => {
+        const columnIndex = headerIndexByName.get(columnName);
+        if (columnIndex === undefined) {
+          throw new Error(`Column "${columnName}" not found in header row`);
+        }
+        return dataCells[columnIndex] ?? '';
+      });
+
+      normalizedDownloadedFile += '\n' + normalizedDataCells.join(',');
     }
 
     // make sure we have the expected columns, and also validate the first row of data
