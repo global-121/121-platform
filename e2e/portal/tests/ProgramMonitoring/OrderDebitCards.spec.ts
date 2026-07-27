@@ -58,7 +58,10 @@ test('Should be able to order debit cards when card distribution by mail is disa
   });
 
   await test.step('Disable card distribution by mail', async () => {
-    await fspSettingsPage.openEditFspConfigurationByName('Visa debit card');
+    await fspSettingsPage.clickOptionInFspDropdownMenu({
+      fspName: 'Visa debit card',
+      optionLabel: 'Configure',
+    });
     const cardDistributionSwitch = page.getByRole('switch', {
       name: 'Card distribution by mail',
     });
