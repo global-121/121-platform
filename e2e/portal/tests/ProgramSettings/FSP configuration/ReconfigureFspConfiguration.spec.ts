@@ -58,7 +58,10 @@ test('Reconfigure FSP', async ({
   });
 
   await test.step('Check Visa debit card configuration', async () => {
-    await fspSettingsPage.openEditFspConfigurationByName(visaConfiguration[0]);
+    await fspSettingsPage.clickOptionInFspDropdownMenu({
+      fspName: visaConfiguration[0],
+      optionLabel: 'Configure',
+    });
     await fspSettingsPage.validateFspConfiguration(visaConfiguration);
   });
 
@@ -67,9 +70,10 @@ test('Reconfigure FSP', async ({
   });
 
   await test.step('Validate new Visa debit card was reconfigured', async () => {
-    await fspSettingsPage.openEditFspConfigurationByName(
-      newVisaConfiguration[0],
-    );
+    await fspSettingsPage.clickOptionInFspDropdownMenu({
+      fspName: newVisaConfiguration[0],
+      optionLabel: 'Configure',
+    });
     await fspSettingsPage.validateFspConfiguration(newVisaConfiguration);
   });
 });
