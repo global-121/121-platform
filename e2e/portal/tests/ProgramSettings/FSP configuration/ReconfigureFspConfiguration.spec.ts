@@ -60,7 +60,7 @@ test('Reconfigure FSP', async ({
   await test.step('Check Visa debit card configuration', async () => {
     await fspSettingsPage.clickOptionInFspDropdownMenu({
       fspName: visaConfiguration[0],
-      optionLabel: 'Configure',
+      optionLabel: 'Reconfigure',
     });
     await fspSettingsPage.validateFspConfiguration(visaConfiguration);
   });

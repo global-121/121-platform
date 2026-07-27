@@ -34,7 +34,7 @@ test('Duplicate and delete Excel FSP', async ({
     await homePage.validateToastMessage('Program successfully created.');
   });
 
-  await test.step('Validate that user is warned on having a unconfigured FSP', async () => {
+  await test.step('Validate that user is warned on having an unconfigured FSP', async () => {
     await fspSettingsPage.clickFspIntegration();
     await fspSettingsPage.validateFspVisibility({
       fspNames: ['Excel Payment Instructions'],
@@ -71,7 +71,7 @@ test('Duplicate and delete Excel FSP', async ({
     });
   });
 
-  await test.step('Delete the duplicated program', async () => {
+  await test.step('Delete the duplicated FSP', async () => {
     await fspSettingsPage.deleteFsp({
       fspNames: ['Excel Payment Instructions 2'],
     });
