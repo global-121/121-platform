@@ -9,9 +9,7 @@ export class PaymentAddDeletedAt1785138077570 implements MigrationInterface {
     );
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."payment" DROP COLUMN "deletedAt"`,
-    );
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    console.log('why would you want to go down after all this pain?')
   }
 }
