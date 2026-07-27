@@ -121,6 +121,7 @@ graph LR
   PaymentsModule-->ProgramApprovalThresholdsModule
   PaymentsModule-->ProgramFspConfigurationsModule
   PaymentsModule-->ProgramModule
+  PaymentsModule-->QueuesRegistryModule
   PaymentsModule-->RedisModule
   PaymentsModule-->RegistrationDataModule
   PaymentsModule-->RegistrationEventsModule

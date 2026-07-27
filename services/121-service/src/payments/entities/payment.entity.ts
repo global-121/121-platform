@@ -1,10 +1,11 @@
 import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  Relation,
+    Column,
+    DeleteDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    Relation,
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
@@ -32,4 +33,7 @@ export class PaymentEntity extends Base121Entity {
     cascade: true,
   })
   public approvals: PaymentApprovalEntity[];
+
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  public deletedAt: Date | null;
 }

@@ -11,6 +11,7 @@ import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/pay
 import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
+import { PaymentsDeletionService } from '@121-service/src/payments/services/payments-deletion.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -44,6 +45,7 @@ export class PaymentsManagementService {
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
     private readonly paymentEmailsService: PaymentEmailsService,
+    private readonly paymentsDeletionService: PaymentsDeletionService,
     private readonly azureLogService: AzureLogService,
   ) {}
 
@@ -538,9 +540,11 @@ export class PaymentsManagementService {
       );
     }
 
-    await this.transactionsService.deleteTransactionsByPaymentId({ paymentId });
+    await this.paymentRepository.softRemove(payment);
 
-    await this.paymentRepository.remove(payment);
+    await this.paymentsDeletionService.addPaymentDeletionJobToQueue({
+      paymentId,
+    });
   }
 
   private async processFinalApproval({
