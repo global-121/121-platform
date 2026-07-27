@@ -4,6 +4,7 @@ import { HttpStatus } from '@nestjs/common';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
+import { PaymentsDeletionService } from '@121-service/src/payments/services/payments-deletion.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
 import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
@@ -23,6 +24,7 @@ describe('PaymentsManagementService', () => {
   let paymentsHelperService: PaymentsHelperService;
   let paymentEventsService: PaymentEventsService;
   let transactionsService: TransactionsService;
+  let paymentsDeletionService: PaymentsDeletionService;
   let registrationsBulkService: RegistrationsBulkService;
   let registrationsPaginationService: RegistrationsPaginationService;
   let programApprovalThresholdRepository: ProgramApprovalThresholdRepository;
@@ -48,6 +50,7 @@ describe('PaymentsManagementService', () => {
     paymentsHelperService = unitRef.get(PaymentsHelperService);
     paymentEventsService = unitRef.get(PaymentEventsService);
     transactionsService = unitRef.get(TransactionsService);
+    paymentsDeletionService = unitRef.get(PaymentsDeletionService);
     registrationsBulkService = unitRef.get(RegistrationsBulkService);
     registrationsPaginationService = unitRef.get(
       RegistrationsPaginationService,
@@ -504,7 +507,7 @@ describe('PaymentsManagementService', () => {
       (service as any).paymentRepository.findOne = jest
         .fn()
         .mockResolvedValue({ id: 5, programId: 2 });
-      (service as any).paymentRepository.remove = jest
+      (service as any).paymentRepository.softRemove = jest
         .fn()
         .mockResolvedValue(undefined);
       (
@@ -551,18 +554,38 @@ describe('PaymentsManagementService', () => {
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
     });
 
-    it('should remove the payment when it has not been started', async () => {
+    it('should soft-delete the payment and enqueue the cleanup job when it has not been started', async () => {
       // Act
       await service.deletePayment(deleteParams);
 
       // Assert
+      expect((service as any).paymentRepository.softRemove).toHaveBeenCalledWith(
+        { id: 5, programId: 2 },
+      );
       expect(
-        transactionsService.deleteTransactionsByPaymentId,
+        paymentsDeletionService.addPaymentDeletionJobToQueue,
       ).toHaveBeenCalledWith({ paymentId: 5 });
-      expect((service as any).paymentRepository.remove).toHaveBeenCalledWith({
-        id: 5,
-        programId: 2,
+    });
+
+    it('should soft-delete the payment before enqueueing the cleanup job', async () => {
+      // Arrange
+      const callOrder: string[] = [];
+      (service as any).paymentRepository.softRemove = jest
+        .fn()
+        .mockImplementation(async () => {
+          callOrder.push('softRemove');
+        });
+      (
+        paymentsDeletionService.addPaymentDeletionJobToQueue as jest.Mock
+      ).mockImplementation(async () => {
+        callOrder.push('enqueue');
       });
+
+      // Act
+      await service.deletePayment(deleteParams);
+
+      // Assert
+      expect(callOrder).toEqual(['softRemove', 'enqueue']);
     });
   });
 

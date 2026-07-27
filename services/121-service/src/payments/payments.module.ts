@@ -13,10 +13,12 @@ import { PaymentEmailsModule } from '@121-service/src/payments/payment-emails/pa
 import { PaymentEventsModule } from '@121-service/src/payments/payment-events/payment-events.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { PaymentsProgressModule } from '@121-service/src/payments/payments-progress.module';
+import { PaymentDeletionJobProcessor } from '@121-service/src/payments/processors/payment-deletion-job.processor';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { PaymentRepository } from '@121-service/src/payments/repositories/payment.repository';
 import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
 import { FspEnvVariableValidationService } from '@121-service/src/payments/services/fsp-env-variable-validation.service';
+import { PaymentsDeletionService } from '@121-service/src/payments/services/payments-deletion.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
@@ -30,6 +32,7 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 import { ProgramAidworkerAssignmentsModule } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignments.module';
 import { ProgramApprovalThresholdsModule } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
+import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utils/registration-utils.module';
@@ -66,9 +69,12 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     MessageTemplateModule,
     ProgramApprovalThresholdsModule,
     ProgramAidworkerAssignmentsModule,
+    QueuesRegistryModule,
   ],
   providers: [
     PaymentsManagementService,
+    PaymentsDeletionService,
+    PaymentDeletionJobProcessor,
     PaymentsExecutionService,
     PaymentsReportingService,
     PaymentsReportingHelperService,
