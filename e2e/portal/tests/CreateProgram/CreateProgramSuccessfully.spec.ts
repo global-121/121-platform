@@ -1,11 +1,10 @@
 import { expect } from '@playwright/test';
 
-import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
-import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 
 import CreateProgramDialog from '@121-e2e/portal/components/CreateProgramDialog';
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
+<<<<<<<< HEAD:e2e/portal/tests/CreateProgram/CreateProgramSuccessfully.spec.ts
 import { getFspLabels } from '@121-e2e/portal/helpers/get-fsp-labels';
 
 const todayDate = new Date();
@@ -32,11 +31,24 @@ test.describe.configure({ mode: 'serial' });
 
 test.beforeAll(async ({ onlyResetAndSeedRegistrations }) => {
   await onlyResetAndSeedRegistrations({
+========
+
+import { getProgramData } from './program-data';
+
+const programData = getProgramData();
+
+test.beforeEach(async ({ loginPage }) => {
+  await resetDB({
+>>>>>>>> 40f14cafe (E2E for duplicating program):e2e/portal/tests/CreateProgram/CreateNewProgramSuccessfully.spec.ts
     seedScript: SeedScript.testMultiple,
   });
 });
 
+<<<<<<<< HEAD:e2e/portal/tests/CreateProgram/CreateProgramSuccessfully.spec.ts
 test.beforeEach(async ({ loginPage }) => {
+========
+  // Login
+>>>>>>>> 40f14cafe (E2E for duplicating program):e2e/portal/tests/CreateProgram/CreateNewProgramSuccessfully.spec.ts
   await loginPage.loginAsAdmin();
 });
 
@@ -47,6 +59,7 @@ test('Create program successfully', async ({
 }) => {
   const createProgramDialog = new CreateProgramDialog(page);
   // Act
+<<<<<<<< HEAD:e2e/portal/tests/CreateProgram/CreateProgramSuccessfully.spec.ts
   await test.step('Should display correct program details in settings page', async () => {
     await test.step('Should navigate to main page and select "Create new program" button and fill in the form', async () => {
       await programOverviewPage.openCreateNewProgram();
@@ -64,10 +77,26 @@ test('Create program successfully', async ({
         'Program successfully created.',
       );
     });
+========
+  await test.step('Should navigate to main page and select "Create new program" button and fill in the form', async () => {
+    await homePage.openCreateNewProgram();
+    await expect(page.getByText('Step 1 of 3')).toBeVisible();
+    await createProgramDialog.fillInStep1(programData);
+    await expect(page.getByText('Step 2 of 3')).toBeVisible();
+    await createProgramDialog.fillInStep2(programData);
+    await expect(page.getByText('Step 3 of 3')).toBeVisible();
+    await createProgramDialog.fillInStep3(programData);
+    const newProgramId = 3; // Id of newly created program based on SeedScript.testMultiple
+    await page.waitForURL((url) =>
+      url.pathname.startsWith(`/en-GB/program/${newProgramId}/settings`),
+    );
+    await homePage.validateToastMessage('Program successfully created.');
+>>>>>>>> 40f14cafe (E2E for duplicating program):e2e/portal/tests/CreateProgram/CreateNewProgramSuccessfully.spec.ts
   });
 
   await test.step('Should display correct program details in settings page', async () => {
     await programSettingsPage.validateProgramDetails({ programData });
+<<<<<<<< HEAD:e2e/portal/tests/CreateProgram/CreateProgramSuccessfully.spec.ts
   });
 });
 
@@ -101,6 +130,8 @@ test('Duplicate program successfully', async ({
       programData,
       programName: 'Duplicate Program',
     });
+========
+>>>>>>>> 40f14cafe (E2E for duplicating program):e2e/portal/tests/CreateProgram/CreateNewProgramSuccessfully.spec.ts
   });
 });
 
