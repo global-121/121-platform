@@ -39,7 +39,7 @@ test('Duplicate program successfully', async ({
 
   // Act
   await test.step('Duplicate the program', async () => {
-    await page.goto('/en-GB/programs');
+    await homePage.goto('/programs');
     await homePage.clickDuplicateProgram({ programName: programData.name });
     await createProgramDialog.createDuplicateProgramWithNewName({
       name: 'Duplicate Program',
