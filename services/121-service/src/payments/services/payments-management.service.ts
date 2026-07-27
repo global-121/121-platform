@@ -542,9 +542,14 @@ export class PaymentsManagementService {
 
     await this.paymentRepository.softRemove(payment);
 
-    await this.paymentsDeletionService.addPaymentDeletionJobToQueue({
-      paymentId,
-    });
+    try {
+      await this.paymentsDeletionService.addPaymentDeletionJobToQueue({
+        paymentId,
+      });
+    } catch (error) {
+      await this.paymentRepository.recover(payment);
+      throw error;
+    }
   }
 
   private async processFinalApproval({

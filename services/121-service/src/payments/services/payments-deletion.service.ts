@@ -52,7 +52,8 @@ export class PaymentsDeletionService {
     } catch (error) {
       this.azureLogService.logError(
         new Error(
-          `Failed to clean up soft-deleted payment with id ${paymentId}: ${error}`,
+          `Failed to clean up soft-deleted payment with id ${paymentId}`,
+          { cause: error },
         ),
         true,
       );

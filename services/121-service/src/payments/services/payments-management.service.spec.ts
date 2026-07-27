@@ -510,6 +510,9 @@ describe('PaymentsManagementService', () => {
       (service as any).paymentRepository.softRemove = jest
         .fn()
         .mockResolvedValue(undefined);
+      (service as any).paymentRepository.recover = jest
+        .fn()
+        .mockResolvedValue(undefined);
       (
         paymentsProgressService.isPaymentInProgress as jest.Mock
       ).mockResolvedValue(false);
@@ -565,6 +568,23 @@ describe('PaymentsManagementService', () => {
       expect(
         paymentsDeletionService.addPaymentDeletionJobToQueue,
       ).toHaveBeenCalledWith({ paymentId: 5 });
+    });
+
+    it('should revert the soft-delete and rethrow when enqueueing the cleanup job fails', async () => {
+      // Arrange
+      const error = new Error('queue unavailable');
+      (
+        paymentsDeletionService.addPaymentDeletionJobToQueue as jest.Mock
+      ).mockRejectedValue(error);
+
+      // Act & Assert
+      await expect(service.deletePayment(deleteParams)).rejects.toThrow(
+        'queue unavailable',
+      );
+      expect((service as any).paymentRepository.recover).toHaveBeenCalledWith({
+        id: 5,
+        programId: 2,
+      });
     });
   });
 
