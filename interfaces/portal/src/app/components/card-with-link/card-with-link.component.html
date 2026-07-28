@@ -22,7 +22,7 @@
       />
     }
     <div class="flex-1">
-      <div class="text-lg font-bold">
+      <div>
         @if (!enableLink()) {
           <ng-container *ngTemplateOutlet="cardTitle"></ng-container>
         } @else {
@@ -69,16 +69,19 @@
     <app-skeleton-inline />
   } @else {
     <span
-      class="line-clamp-2 text-ellipsis"
+      class="line-clamp-2 flex text-ellipsis"
       [title]="title()"
       [attr.data-testid]="'card-with-link-title'"
     >
-      {{ title() }}
+      <h1 class="text-lg! font-bold">
+        {{ title() }}
+      </h1>
       @if (!!titleColoredChipLabel()) {
         <app-colored-chip
           [label]="titleColoredChipLabel() ?? ''"
           i18n-label
           [variant]="titleColoredChipColor()"
+          class="relative inset-bs-0.5 ms-1.5 text-sm"
         ></app-colored-chip>
       }
     </span>
