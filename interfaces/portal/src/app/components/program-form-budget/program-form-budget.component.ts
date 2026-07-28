@@ -101,10 +101,6 @@ export class ProgramFormBudgetComponent {
     });
 
     if (!this.programId()) {
-      console.log('----------------------------------------------------------');
-      console.log('------- NO PROGRAMID - PATCHING WITH PROGRAM INSTEAD -----');
-      console.log('----------------------------------------------------------');
-
       this.formGroup.patchValue({
         fsps: programData.programFspConfigurations.length
           ? programData.programFspConfigurations.map(
