@@ -151,7 +151,7 @@ test('Edit Program Information', async ({ programSettingsPage }) => {
         'Default transactions per registration':
           budgetInfo.defaultTransferValue,
         '*Fixed transfer value': budgetInfo.fixedTransferValue,
-        '*Financial service providers': budgetInfo.fsps?.join(''),
+        'Financial service providers': budgetInfo.fsps?.join(''),
       });
     }).toPass({ timeout: 2000 });
   });
