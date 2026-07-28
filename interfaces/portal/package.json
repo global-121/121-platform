@@ -103,7 +103,7 @@
     "jsdom": "^29.1.1",
     "knip": "^6.25.0",
     "ng-extract-i18n-merge": "^3.4.0",
-    "postcss": "^8.5.16",
+    "postcss": "^8.5.23",
     "prettier": "^3.9.4",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "shx": "^0.4.0",
