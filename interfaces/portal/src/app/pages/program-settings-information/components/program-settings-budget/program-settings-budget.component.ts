@@ -41,7 +41,6 @@ import { ToastService } from '~/services/toast.service';
   ],
   templateUrl: './program-settings-budget.component.html',
   providers: [ToastService],
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgramSettingsBudgetComponent {
@@ -86,14 +85,25 @@ export class ProgramSettingsBudgetComponent {
 
       if (this.fspsChanged({ fsps })) {
         try {
+          console.log('-------------------------------------------------');
+          console.log('----------------- FSP CHANGED -------------------');
+          console.log('-------------------------------------------------');
+
           await this.createProgramFspsMutation.mutateAsync({
             fsps,
           });
-        } catch {
-          this.toastService.showToast({
-            severity: 'error',
-            detail: $localize`Failed to update financial service providers.`,
-          });
+        } catch (error) {
+          if (error instanceof Error && error.message) {
+            this.toastService.showToast({
+              severity: 'error',
+              detail: error.message,
+            });
+          } else {
+            this.toastService.showToast({
+              severity: 'error',
+              detail: $localize`Failed to update financial service providers.`,
+            });
+          }
         }
       }
     },
