@@ -21,10 +21,10 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('[Admin] View last login', async ({ usersPage, loginPage }) => {
+test('[Admin] View last login', async ({ usersPage, loginPage, basePage }) => {
   await test.step('Log out and Login with Admin user', async () => {
     // Log out
-    await usersPage.selectAccountOption('Logout');
+    await basePage.selectAccountOption('Logout');
     // Login
     await loginPage.loginAsAdmin();
   });

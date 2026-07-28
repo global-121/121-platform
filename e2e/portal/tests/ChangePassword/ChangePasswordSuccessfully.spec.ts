@@ -1,33 +1,27 @@
-import { test } from '@playwright/test';
-
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 import ChangePasswordPage from '@121-e2e/portal/pages/ChangePasswordPage';
-import HomePage from '@121-e2e/portal/pages/HomePage';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ loginPage }) => {
   await resetDB({
     seedScript: SeedScript.testMultiple,
   });
 
   // Login
-  const loginPage = new LoginPage(page);
   await loginPage.login({
     username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
     password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
   });
 });
 
-test('Change password successfully', async ({ page }) => {
-  const homePage = new HomePage(page);
+test('Change password successfully', async ({ page, loginPage, basePage }) => {
   const changePasswordPage = new ChangePasswordPage(page);
-  const loginPage = new LoginPage(page);
 
   await test.step('Should navigate to user account dropdown and select change password option', async () => {
-    await homePage.selectAccountOption('Change password');
+    await basePage.selectAccountOption('Change password');
   });
 
   await test.step('Should change password successfully', async () => {
@@ -41,7 +35,7 @@ test('Change password successfully', async ({ page }) => {
   });
 
   await test.step('Login with new credentials', async () => {
-    await homePage.selectAccountOption('Logout');
+    await basePage.selectAccountOption('Logout');
     await loginPage.login({
       username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
       password: 'newPassword',
@@ -49,7 +43,7 @@ test('Change password successfully', async ({ page }) => {
   });
 
   await test.step('Login with old credentials', async () => {
-    await homePage.selectAccountOption('Logout');
+    await basePage.selectAccountOption('Logout');
     await loginPage.login({
       username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
       password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',

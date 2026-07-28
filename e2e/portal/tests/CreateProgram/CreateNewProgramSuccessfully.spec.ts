@@ -21,13 +21,13 @@ test.beforeEach(async ({ loginPage }) => {
 
 test('Create program successfully', async ({
   programSettingsPage,
-  homePage,
+  programOverviewPage,
   page,
 }) => {
   const createProgramDialog = new CreateProgramDialog(page);
   // Act
   await test.step('Should navigate to main page and select "Create new program" button and fill in the form', async () => {
-    await homePage.openCreateNewProgram();
+    await programOverviewPage.openCreateNewProgram();
     await expect(page.getByText('Step 1 of 3')).toBeVisible();
     await createProgramDialog.fillInStep1(programData);
     await expect(page.getByText('Step 2 of 3')).toBeVisible();
@@ -38,7 +38,9 @@ test('Create program successfully', async ({
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${newProgramId}/settings`),
     );
-    await homePage.validateToastMessage('Program successfully created.');
+    await programOverviewPage.validateToastMessage(
+      'Program successfully created.',
+    );
   });
 
   await test.step('Should display correct program details in settings page', async () => {
@@ -48,18 +50,18 @@ test('Create program successfully', async ({
 
 test('Create program validation checks on each step', async ({
   page,
-  homePage,
+  programOverviewPage,
 }) => {
   const createProgramDialog = new CreateProgramDialog(page);
 
   // Act
   await test.step('Should navigate to main page and select "Create new program" button', async () => {
-    await homePage.openCreateNewProgram();
+    await programOverviewPage.openCreateNewProgram();
   });
 
   await test.step('Should attempt to proceed without filling in step 1', async () => {
     await createProgramDialog.nextButton.click();
-    await homePage.validateToastMessageAndClose(
+    await programOverviewPage.validateToastMessageAndClose(
       'Please correct the errors in the form.',
     );
     // Program name is mandatory
@@ -73,7 +75,7 @@ test('Create program validation checks on each step', async ({
 
   await test.step('Should attempt to proceed without filling in step 2', async () => {
     await createProgramDialog.nextButton.click();
-    await homePage.validateToastMessageAndClose(
+    await programOverviewPage.validateToastMessageAndClose(
       'Please correct the errors in the form.',
     );
     // Target registrations has a minimum value of 1
@@ -89,6 +91,8 @@ test('Create program validation checks on each step', async ({
 
   await test.step('Should successfully proceed without filling in step 3', async () => {
     await createProgramDialog.submitButton.click();
-    await homePage.validateToastMessage('Program successfully created.');
+    await programOverviewPage.validateToastMessage(
+      'Program successfully created.',
+    );
   });
 });

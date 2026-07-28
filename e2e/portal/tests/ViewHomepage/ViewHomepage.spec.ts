@@ -5,7 +5,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 /**
- * This test is here to just load the homepage and check if it loads without any errors to make sure we don't break the infrastructure that runs the tests.
+ * This test is here to just load the program overview page and check if it loads without any errors to make sure we don't break the infrastructure that runs the tests.
  */
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({

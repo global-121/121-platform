@@ -17,12 +17,13 @@ import {
 
 import ExportData from '@121-e2e/portal/components/ExportData';
 import TableComponent from '@121-e2e/portal/components/TableComponent';
+import BasePage from '@121-e2e/portal/pages/BasePage';
 import FspSettingsPage from '@121-e2e/portal/pages/FspSettingsPage';
-import HomePage from '@121-e2e/portal/pages/HomePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 import ProgramMonitoring from '@121-e2e/portal/pages/ProgramMonitoringPage';
+import ProgramOverviewPage from '@121-e2e/portal/pages/ProgramOverviewPage';
 import ProgramSettingsPage from '@121-e2e/portal/pages/ProgramSettingsPage';
 import ProgramSettingsPaymentApprovalPage from '@121-e2e/portal/pages/ProgramSettingsPaymentApprovalPage';
 import ProgramTeamPage from '@121-e2e/portal/pages/ProgramTeamPage';
@@ -66,8 +67,9 @@ interface Fixtures {
   onlyResetAndSeedRegistrations: (params) => Promise<void>;
   exportDataComponent: ExportData;
   tableComponent: TableComponent;
+  basePage: BasePage;
   fspSettingsPage: FspSettingsPage;
-  homePage: HomePage;
+  programOverviewPage: ProgramOverviewPage;
   loginPage: LoginPage;
   paymentPage: PaymentPage;
   paymentsPage: PaymentsPage;
@@ -276,12 +278,16 @@ export const customSharedFixture = base.extend<Fixtures>({
     await use(new TableComponent(page));
   },
 
+  basePage: async ({ page }, use) => {
+    await use(new BasePage(page));
+  },
+
   fspSettingsPage: async ({ page }, use) => {
     await use(new FspSettingsPage(page));
   },
 
-  homePage: async ({ page }, use) => {
-    await use(new HomePage(page));
+  programOverviewPage: async ({ page }, use) => {
+    await use(new ProgramOverviewPage(page));
   },
 
   loginPage: async ({ page }, use) => {

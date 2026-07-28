@@ -2,7 +2,7 @@ import { Locator, Page } from 'playwright';
 
 import BasePage from '@121-e2e/portal/pages/BasePage';
 
-class HomePage extends BasePage {
+class ProgramOverviewPage extends BasePage {
   readonly createNewProgramButton: Locator;
 
   constructor(page: Page) {
@@ -27,4 +27,4 @@ class HomePage extends BasePage {
   }
 }
 
-export default HomePage;
+export default ProgramOverviewPage;

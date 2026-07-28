@@ -18,7 +18,7 @@ test.beforeEach(async ({ loginPage }) => {
 });
 
 test('Duplicate program successfully', async ({
-  homePage,
+  programOverviewPage,
   page,
   programSettingsPage,
 }) => {
@@ -26,7 +26,7 @@ test('Duplicate program successfully', async ({
 
   // Prepare
   await test.step('Should navigate to main page and select "Create new program" button and fill in the form', async () => {
-    await homePage.openCreateNewProgram();
+    await programOverviewPage.openCreateNewProgram();
     await createProgramDialog.fillInStep1(programData);
     await createProgramDialog.fillInStep2(programData);
     await createProgramDialog.fillInStep3(programData);
@@ -34,13 +34,17 @@ test('Duplicate program successfully', async ({
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${newProgramId}/settings`),
     );
-    await homePage.validateToastMessage('Program successfully created.');
+    await programOverviewPage.validateToastMessage(
+      'Program successfully created.',
+    );
   });
 
   // Act
   await test.step('Duplicate the program', async () => {
-    await homePage.goto('/programs');
-    await homePage.clickDuplicateProgram({ programName: programData.name });
+    await programOverviewPage.goto('/programs');
+    await programOverviewPage.clickDuplicateProgram({
+      programName: programData.name,
+    });
     await createProgramDialog.createDuplicateProgramWithNewName({
       name: 'Duplicate Program',
     });
@@ -48,7 +52,9 @@ test('Duplicate program successfully', async ({
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${newProgramId}/settings`),
     );
-    await homePage.validateToastMessage('Program successfully duplicated.');
+    await programOverviewPage.validateToastMessage(
+      'Program successfully duplicated.',
+    );
   });
 
   // Assert
