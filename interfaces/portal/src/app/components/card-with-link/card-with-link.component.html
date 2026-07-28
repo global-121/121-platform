@@ -73,9 +73,14 @@
       [title]="title()"
       [attr.data-testid]="'card-with-link-title'"
     >
-      <h1 class="text-lg! font-bold">
-        {{ title() }}
-      </h1>
+      @switch (titleHeadingLevel()) {
+        @case ('2') {
+          <h2>{{ title() }}</h2>
+        }
+        @case ('3') {
+          <h3>{{ title() }}</h3>
+        }
+      }
       @if (!!titleColoredChipLabel()) {
         <app-colored-chip
           [label]="titleColoredChipLabel() ?? ''"

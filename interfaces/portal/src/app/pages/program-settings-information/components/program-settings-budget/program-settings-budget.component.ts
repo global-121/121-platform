@@ -95,7 +95,6 @@ export class ProgramSettingsBudgetComponent {
               ?.setErrors({ serverError: error.message });
           }
 
-          // Always show generic error message
           this.toastService.showToast({
             severity: 'error',
             detail: $localize`Failed to update financial service providers.`,

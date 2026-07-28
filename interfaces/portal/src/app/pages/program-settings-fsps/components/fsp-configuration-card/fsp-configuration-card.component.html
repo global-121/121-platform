@@ -1,9 +1,10 @@
 <app-card-with-link
   [title]="fspConfigurationLabel()"
+  titleHeadingLevel="3"
   [image]="fspImage()"
   [menuItems]="menuItems()"
   [enableLink]="true"
-  (cardClicked)="addFspConfiguration.emit(configuration().fspName)"
+  (cardClicked)="reconfigureFsp.emit(configuration())"
 >
   <ng-container card-subtitle>
     <app-colored-chip

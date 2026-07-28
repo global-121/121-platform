@@ -34,13 +34,16 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 })
 export class CardWithLinkComponent {
   readonly href = input<RouterLink['routerLink']>();
+  readonly enableLink = input(true);
+  readonly cardClicked = output();
+
   readonly title = input.required<string>();
   readonly titleColoredChipLabel = input<string>();
   readonly titleColoredChipColor = input<ChipVariant>('grey');
+  readonly titleHeadingLevel = input<'2' | '3'>('2');
+
   readonly image = input<string>();
   readonly loading = input(false);
-  readonly enableLink = input(true);
-  readonly cardClicked = output();
   readonly menuItems = input<MenuItem[]>([]);
   readonly variant = input<'overview'>();
 }
