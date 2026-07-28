@@ -229,7 +229,7 @@ export class ActivityLogExpandedRowComponent implements TableCellComponent<
             },
           },
           {
-            label: $localize`Approved by`,
+            label: $localize`Created by`,
             chipLabel: user.username,
             chipVariant: 'blue',
           },
