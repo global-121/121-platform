@@ -123,7 +123,7 @@ jobs:
   add_preview_link:
     if: (github.event_name == 'pull_request' && github.event.action != 'closed' && needs.test.outputs.preview_url != '')
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       pull-requests: write
     steps:
@@ -138,7 +138,7 @@ jobs:
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest # Needs to be the same as the "deploy_to_aswa"-step; "Azure/static-web-apps-deploy" is (apparently) not supported on 'ubuntu-slim'.
     name: Close Pull Request Job
     environment: 'test'
     steps:
