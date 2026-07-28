@@ -85,25 +85,24 @@ export class ProgramSettingsBudgetComponent {
 
       if (this.fspsChanged({ fsps })) {
         try {
-          console.log('-------------------------------------------------');
-          console.log('----------------- FSP CHANGED -------------------');
-          console.log('-------------------------------------------------');
-
           await this.createProgramFspsMutation.mutateAsync({
             fsps,
           });
         } catch (error) {
           if (error instanceof Error && error.message) {
-            this.toastService.showToast({
-              severity: 'error',
-              detail: error.message,
-            });
-          } else {
-            this.toastService.showToast({
-              severity: 'error',
-              detail: $localize`Failed to update financial service providers.`,
-            });
+            this.formGroup()
+              ?.get('fsps')
+              ?.setErrors({ serverError: error.message });
           }
+
+          // Always show generic error message
+          this.toastService.showToast({
+            severity: 'error',
+            detail: $localize`Failed to update financial service providers.`,
+          });
+
+          // To stop the form from exiting 'edit mode'
+          throw error;
         }
       }
     },
