@@ -61,7 +61,7 @@ class FspSettingsPage extends BasePage {
 
     await this.selectMultiselectOptions({
       dropdownTestId: 'fsp-configuration-field-columnToMatch',
-      optionsToClick: ['Full Name'],
+      optionsToClick: ['First Name'],
     });
   }
 

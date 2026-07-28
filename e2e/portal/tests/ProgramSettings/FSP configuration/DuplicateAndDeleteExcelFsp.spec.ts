@@ -1,37 +1,27 @@
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 
-import CreateProgramDialog from '@121-e2e/portal/components/CreateProgramDialog';
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
-
-import { getProgramData } from '../../CreateProgram/program-data';
-
-const programData = getProgramData({ fsps: [Fsps.excel] });
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
-    seedScript: SeedScript.productionInitialState,
+    seedScript: SeedScript.safaricomProgram,
     skipSeedRegistrations: true,
   });
 });
 
 test('Duplicate and delete Excel FSP', async ({
-  homePage,
-  page,
   fspSettingsPage,
+  programSettingsPage,
+  programOverviewPage,
+  registrationsPage,
 }) => {
-  const createProgramDialog = new CreateProgramDialog(page);
-
-  await test.step('Should navigate to main page and select "Create new program" button and fill in the form', async () => {
-    await homePage.openCreateNewProgram();
-    await createProgramDialog.fillInStep1(programData);
-    await createProgramDialog.fillInStep2(programData);
-    await createProgramDialog.fillInStep3(programData);
-    const newProgramId = 1; // Id of newly created program based on SeedScript.productionInitialState
-    await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/program/${newProgramId}/settings`),
-    );
-    await homePage.validateToastMessage('Program successfully created.');
+  await test.step('Remove Safaricom FSP and add Excel FSP', async () => {
+    await programOverviewPage.selectProgram('Safaricom Program');
+    await registrationsPage.navigateToProgramPage('Settings');
+    await programSettingsPage.changeFspSelectionForProgram({
+      fspNames: [Fsps.safaricom, Fsps.excel],
+    });
   });
 
   await test.step('Validate that user is warned on having an unconfigured FSP', async () => {
