@@ -150,7 +150,7 @@ export class ProgramSettingsBudgetComponent {
         fullWidth: true,
       },
       {
-        label: '*' + $localize`Financial service providers`,
+        label: $localize`Financial service providers`,
         value: FspTagsComponent,
         type: 'component',
         inputs: { programId: this.programId() },
