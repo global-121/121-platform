@@ -11,9 +11,9 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Log Out via Menu', async ({ homePage, loginPage }) => {
+test('Log Out via Menu', async ({ basePage, loginPage }) => {
   await test.step('Should navigate to user account dropdown and select Log-out option', async () => {
-    await homePage.selectAccountOption('Logout');
+    await basePage.selectAccountOption('Logout');
     await loginPage.loginButton.isVisible();
   });
 });

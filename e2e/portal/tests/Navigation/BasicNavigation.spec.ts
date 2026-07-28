@@ -25,26 +25,32 @@ test.describe('Validate basic navigation of the Portal', () => {
     await page.goto(`en-GB/program/${programIdPV}/registrations`);
   });
 
-  test('Navigation from sidebar', async ({ page, homePage }) => {
-    await homePage.goto('/');
-    await homePage.navigateToPage('Users');
+  test('Navigation from sidebar', async ({ page, programOverviewPage }) => {
+    await programOverviewPage.goto('/');
+    await programOverviewPage.navigateToPage('Users');
     await page.waitForURL((url) => url.pathname.startsWith('/en-GB/users'));
 
-    await homePage.navigateToPage('User roles');
+    await programOverviewPage.navigateToPage('User roles');
     await page.waitForURL((url) =>
       url.pathname.startsWith('/en-GB/user-roles'),
     );
   });
 
-  test('Navigation from program header', async ({ page, homePage }) => {
-    await homePage.goto('/programs');
+  test('Navigation from program header', async ({
+    page,
+    programOverviewPage,
+    registrationsPage,
+  }) => {
+    await programOverviewPage.goto('/programs');
     await page.getByRole('link', { name: programTitle }).click();
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdPV}/registrations`),
     );
-    await expect(homePage.logo).toHaveText(`121 Portal ${programTitle}`);
+    await expect(programOverviewPage.logo).toHaveText(
+      `121 Portal ${programTitle}`,
+    );
 
-    await homePage.navigateToProgramPage('Monitoring');
+    await registrationsPage.navigateToProgramPage('Monitoring');
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdPV}/monitoring`),
     );

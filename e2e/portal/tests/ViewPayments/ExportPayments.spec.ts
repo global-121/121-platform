@@ -96,9 +96,10 @@ test('View available actions for admin', async ({ page, paymentsPage }) => {
 test('View available actions for a "view only" user', async ({
   paymentsPage,
   loginPage,
+  basePage,
 }) => {
   await test.step('Log in as view-only user', async () => {
-    await paymentsPage.selectAccountOption('Logout');
+    await basePage.selectAccountOption('Logout');
 
     await loginPage.login({
       skipNavigateToLogin: true,

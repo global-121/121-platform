@@ -94,6 +94,7 @@ test('Payment page should display correctly during all phases of payment with 2 
   loginPage,
   paymentPage,
   paymentsPage,
+  basePage,
 }) => {
   await test.step('Create payment', async () => {
     await paymentsPage.createPayment({});
@@ -193,7 +194,7 @@ test('Payment page should display correctly during all phases of payment with 2 
 
   await test.step('2nd Approve payment by approver-role user', async () => {
     // log in as approver-user
-    await paymentPage.selectAccountOption('Logout');
+    await basePage.selectAccountOption('Logout');
     await loginPage.login({
       username: env.USERCONFIG_121_SERVICE_EMAIL_APPROVER ?? '',
       password: env.USERCONFIG_121_SERVICE_PASSWORD_APPROVER ?? '',
@@ -240,7 +241,7 @@ test('Payment page should display correctly during all phases of payment with 2 
 
   await test.step('Start payment', async () => {
     // return to admin-user
-    await paymentPage.selectAccountOption('Logout');
+    await basePage.selectAccountOption('Logout');
     await loginPage.loginAsAdmin();
     await page.goto(`/en-GB/program/${programIdOCW}/payments/${paymentId}`);
     await paymentPage.waitForPageLoad();

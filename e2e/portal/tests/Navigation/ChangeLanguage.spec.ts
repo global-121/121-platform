@@ -9,12 +9,12 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Change Language', async ({ page, homePage }) => {
+test('Change Language', async ({ page, basePage }) => {
   await page.waitForURL((url) => url.pathname.startsWith('/en-GB/'));
 
-  await homePage.changeLanguage('Nederlands');
+  await basePage.changeLanguage('Nederlands');
   await page.waitForURL((url) => url.pathname.startsWith('/nl/'));
 
-  await homePage.changeLanguage('English');
+  await basePage.changeLanguage('English');
   await page.waitForURL((url) => url.pathname.startsWith('/en-GB/'));
 });

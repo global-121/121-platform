@@ -156,13 +156,13 @@ The Page Object Model is a design pattern that creates an object repository for 
 ### Implementing POM
 
 Page Classes
-Create a page class for each page representing different module and/ or functionality in your application. Here is an example of how you can structure your HomePage class:
+Create a page class for each page representing different module and/ or functionality in your application. Here is an example of how you can structure your programOverviewPage class:
 
 ```ts
 import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
 
-class HomePage {
+class programOverviewPage {
   readonly page: Page;
   readonly programCard: Locator;
 
@@ -176,7 +176,7 @@ class HomePage {
   }
 }
 
-export default HomePage;
+export default programOverviewPage;
 ```
 
 ## Writing Tests
@@ -186,8 +186,7 @@ export default HomePage;
 Here is a simple example of writing a test using the POM structure:
 
 ```ts
-import HomePage from '@121-e2e/pages/Home/HomePage';
-import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -195,7 +194,7 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ loginPage }) => {
   await resetDB({ seedScript: SeedScript.nlrcMultiple });
   const programIdOCW = 3;
   const OcwProgramId = programIdOCW;
@@ -206,15 +205,12 @@ test.beforeEach(async ({ page }) => {
   });
 
   // Login
-  const loginPage = new LoginPage(page);
   await loginPage.loginAsAdmin();
 });
 
-test('Navigate to programme', async ({ page }) => {
-  const homePage = new HomePage(page);
-
+test('Navigate to programme', async ({ programOverviewPage }) => {
   await test.step('Should open PAs for registration', async () => {
-    await homePage.navigateToProgramme('NLRC OCW Program');
+    await programOverviewPage.navigateToProgramme('NLRC OCW Program');
   });
 });
 ```

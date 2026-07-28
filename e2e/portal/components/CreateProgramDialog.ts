@@ -5,6 +5,7 @@ import { PrimeNGDatePicker } from './PrimeNGDatePicker';
 class CreateProgramDialog extends BasePage {
   readonly nextButton: Locator;
   readonly submitButton: Locator;
+  readonly duplicateProgramSubmitButton: Locator;
   readonly dateRangeStartInput: PrimeNGDatePicker;
   readonly dateRangeEndInput: PrimeNGDatePicker;
   readonly currencyDropdown: Locator;
@@ -15,6 +16,9 @@ class CreateProgramDialog extends BasePage {
     this.submitButton = this.page.getByRole('button', {
       name: 'Create program',
     });
+    this.duplicateProgramSubmitButton = this.page.getByRole('button', {
+      name: 'Duplicate program',
+    });
     this.dateRangeStartInput = new PrimeNGDatePicker({
       page: this.page,
       datePicker: this.page.getByLabel('Start date'),
@@ -24,6 +28,16 @@ class CreateProgramDialog extends BasePage {
       datePicker: this.page.getByLabel('End date'),
     });
     this.currencyDropdown = this.page.locator(`[formControlName="currency"]`);
+  }
+
+  async createDuplicateProgramWithNewName({ name }: { name: string }) {
+    await this.page.getByText('Step 1 of 3').waitFor();
+    await this.page.getByLabel('*Program name').fill(name);
+    await this.nextButton.click();
+    await this.page.getByText('Step 2 of 3').waitFor();
+    await this.nextButton.click();
+    await this.page.getByText('Step 3 of 3').waitFor();
+    await this.duplicateProgramSubmitButton.click();
   }
 
   async fillInStep1({
@@ -59,13 +73,13 @@ class CreateProgramDialog extends BasePage {
   async fillInStep3({
     fundsAvailable,
     currency,
-    defaultNrOfTransactions,
+    defaultNumberOfTransactions,
     fixedTransferValue,
     fsps,
   }: {
     fundsAvailable: string;
     currency: string;
-    defaultNrOfTransactions: string;
+    defaultNumberOfTransactions: string;
     fixedTransferValue: string;
     fsps: string[];
   }) {
@@ -76,7 +90,7 @@ class CreateProgramDialog extends BasePage {
       .click();
     await this.page
       .getByLabel('Default transactions per registration')
-      .fill(defaultNrOfTransactions);
+      .fill(defaultNumberOfTransactions);
     await this.page
       .getByLabel('*Fixed transfer value')
       .fill(fixedTransferValue);

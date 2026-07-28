@@ -29,12 +29,12 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
 });
 
 test('Validate that only configured FSPs are present as configured', async ({
-  homePage,
+  programOverviewPage,
   registrationsPage,
   fspSettingsPage,
 }) => {
   await test.step('Navigate to program', async () => {
-    await homePage.selectProgram('NLRC OCW program');
+    await programOverviewPage.selectProgram('NLRC OCW program');
   });
 
   await test.step('Navigate to FSP configuration', async () => {

@@ -38,12 +38,12 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
 });
 
 test('Reconfigure FSP', async ({
-  homePage,
+  programOverviewPage,
   registrationsPage,
   fspSettingsPage,
 }) => {
   await test.step('Navigate to program', async () => {
-    await homePage.selectProgram('NLRC OCW program');
+    await programOverviewPage.selectProgram('NLRC OCW program');
   });
 
   await test.step('Navigate to FSP configuration', async () => {
