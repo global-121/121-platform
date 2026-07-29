@@ -30,6 +30,7 @@ export enum TrackingCategory {
   manageRegistrations = 'Manage Registrations',
   manageTableSettings = 'Manage Table-settings',
   manageTransactions = 'Manage Transactions',
+  programSettings = 'Program Settings',
 }
 
 /**
@@ -59,9 +60,11 @@ export enum TrackingAction {
   selectDropdownOption = 'select: Dropdown Option',
   showColumnFilter = 'show: Column-filter',
   showContextMenu = 'show: Context Menu',
-
   showHenryDunant = 'show: Henry Dunant!',
+
   showSnakeGameOver = 'show: Snake Game Over',
+  toggleProgramScope = 'toggle: Program Scope',
+  toggleProgramValidation = 'toggle: Program Validation',
 }
 
 /**

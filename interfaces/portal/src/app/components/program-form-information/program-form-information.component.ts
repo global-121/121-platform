@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   effect,
+  inject,
   input,
 } from '@angular/core';
 import {
@@ -19,6 +20,11 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
 import { Program } from '~/domains/program/program.model';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingService,
+} from '~/services/tracking.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 export type ProgramInformationFormGroup =
@@ -35,11 +41,12 @@ export type ProgramInformationFormGroup =
     InfoTooltipComponent,
   ],
   templateUrl: './program-form-information.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgramFormInformationComponent {
   readonly program = input<Program>();
+
+  trackingService = inject(TrackingService);
 
   formGroup = new FormGroup({
     startDate: new FormControl<Date | undefined>(
@@ -91,4 +98,22 @@ export class ProgramFormInformationComponent {
   });
 
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
+
+  // Tracking events
+
+  trackValidationToggleEvent(event: { checked: boolean }): void {
+    this.trackingService.trackEvent({
+      category: TrackingCategory.programSettings,
+      action: TrackingAction.toggleProgramValidation,
+      name: event.checked ? 'enabled' : 'disabled',
+    });
+  }
+
+  trackScopeToggleEvent(event: { checked: boolean }): void {
+    this.trackingService.trackEvent({
+      category: TrackingCategory.programSettings,
+      action: TrackingAction.toggleProgramScope,
+      name: event.checked ? 'enabled' : 'disabled',
+    });
+  }
 }
