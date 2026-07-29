@@ -3,7 +3,7 @@
   [loading]="programId() ? fspConfigurations.isPending() : false"
   [disabled]="isDisabled"
   [maxSelectedLabels]="100"
-  data-testid="'fsp-multiselect'"
+  data-testid="fsp-multiselect"
   [ngModel]="selectedOptions()"
   [options]="fspMultiselectOptions()"
   (ngModelChange)="onSelectionChange($event)"

@@ -3,7 +3,7 @@
   [closeOnEscape]="false"
   [(visible)]="dialogVisible"
   styleClass="max-inline-280 sm:min-inline-240"
-  data-testid="'kobo-error-dialog'"
+  data-testid="kobo-error-dialog"
 >
   <ng-template #header>
     <h3>
@@ -33,7 +33,7 @@
         @for (field of missingFieldErrors(); track $index) {
           <li>
             <p-tag
-              data-testid="'kobo-integration-missing-field-' + field"
+              [attr.data-testid]="'kobo-integration-missing-field-' + field"
               severity="info"
               [value]="field"
               rounded

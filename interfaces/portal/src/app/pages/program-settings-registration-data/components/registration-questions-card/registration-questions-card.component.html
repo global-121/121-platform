@@ -8,7 +8,7 @@
   [formGroup]="formGroup"
   [mutation]="updateAttributeLabelsMutation"
   [mutationData]="{ formData: formGroup.getRawValue() }"
-  data-testid="'registration-questions-card'"
+  data-testid="registration-questions-card"
 >
   <p
     i18n
@@ -105,7 +105,12 @@
                       type="text"
                       pInputText
                       [formControlName]="language"
-                      data-testid="`attribute-label-input-${language}-${attribute.name}`"
+                      [attr.data-testid]="
+                        'attribute-label-input-' +
+                        language +
+                        '-' +
+                        attribute.name
+                      "
                       class="inline-full"
                     />
                   } @else {
