@@ -17,6 +17,7 @@ import {
 import { MultiSelectModule } from 'primeng/multiselect';
 
 import { UpdateProgramRegistrationAttributesBatchDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
@@ -30,6 +31,12 @@ import { Attribute } from '~/domains/program/program.model';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+
+const EXCLUDED_ATTRIBUTE_TYPES = [
+  RegistrationAttributeTypes.boolean,
+  RegistrationAttributeTypes.dropdown,
+  RegistrationAttributeTypes.koboImage,
+];
 
 @Component({
   selector: 'app-deduplication-card',
@@ -62,11 +69,16 @@ export class DeduplicationCardComponent {
       return [];
     }
 
-    return this.program.data().programRegistrationAttributes.map((attr) => ({
-      ...attr,
-      labelToShow:
-        this.translatableStringService.translate(attr.label) ?? attr.name,
-    }));
+    return this.program
+      .data()
+      .programRegistrationAttributes.filter(
+        (attr) => !EXCLUDED_ATTRIBUTE_TYPES.includes(attr.type),
+      )
+      .map((attr) => ({
+        ...attr,
+        labelToShow:
+          this.translatableStringService.translate(attr.label) ?? attr.name,
+      }));
   });
   readonly selectedOptions = computed(() =>
     this.programRegistrationAttributes().filter((attr) => attr.duplicateCheck),
