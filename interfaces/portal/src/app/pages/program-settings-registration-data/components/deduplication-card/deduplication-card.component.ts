@@ -17,6 +17,7 @@ import {
 import { MultiSelectModule } from 'primeng/multiselect';
 
 import { UpdateProgramRegistrationAttributesBatchDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
 import {
@@ -26,6 +27,7 @@ import {
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Attribute } from '~/domains/program/program.model';
+import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
@@ -51,6 +53,7 @@ export class DeduplicationCardComponent {
   readonly programApiService = inject(ProgramApiService);
   readonly translatableStringService = inject(TranslatableStringService);
   readonly toastService = inject(ToastService);
+  readonly authService = inject(AuthService);
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
 
@@ -96,9 +99,14 @@ export class DeduplicationCardComponent {
       },
     ];
   });
-  readonly canEdit = computed(() => {
-    return true;
-  });
+
+  readonly canEditAttributes = computed(() =>
+    this.authService.hasPermission({
+      programId: this.programId(),
+      requiredPermission: PermissionEnum.ProgramRegistrationAttributesUPDATE,
+    }),
+  );
+
   formGroup = new FormGroup({
     duplicationFields: new FormControl<string[]>([]),
   });
