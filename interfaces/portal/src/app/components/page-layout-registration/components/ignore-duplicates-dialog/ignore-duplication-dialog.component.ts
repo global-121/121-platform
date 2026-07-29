@@ -41,7 +41,6 @@ type IgnoreDuplicationFormGroup =
   templateUrl: './ignore-duplication-dialog.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
 })
 export class IgnoreDuplicationDialogComponent {
   private registrationApiService = inject(RegistrationApiService);

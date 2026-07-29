@@ -34,7 +34,6 @@ export type NotificationBannerIcon =
   imports: [NgClass],
   templateUrl: './notification-banner.component.html',
   styles: ``,
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationBannerComponent {
