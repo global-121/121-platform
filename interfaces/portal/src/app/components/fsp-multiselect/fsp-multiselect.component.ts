@@ -19,14 +19,13 @@ import { MultiSelectModule } from 'primeng/multiselect';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 
-import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FspApiService } from '~/domains/fsp/fsp.api.service';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
   selector: 'app-fsp-multiselect',
-  imports: [FormFieldWrapperComponent, FormsModule, MultiSelectModule],
+  imports: [FormsModule, MultiSelectModule],
   templateUrl: './fsp-multiselect.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [

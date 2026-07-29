@@ -98,12 +98,17 @@ export class ProgramFormBudgetComponent {
       currency: programData.currency ?? CurrencyCode.EUR,
       distributionDuration: programData.distributionDuration,
       fixedTransferValue: programData.fixedTransferValue ?? 0,
-      fsps: programData.programFspConfigurations.length
-        ? programData.programFspConfigurations.map(
-            (fspConfig) => fspConfig.fspName,
-          )
-        : [],
     });
+
+    if (!this.programId()) {
+      this.formGroup.patchValue({
+        fsps: programData.programFspConfigurations.length
+          ? programData.programFspConfigurations.map(
+              (fspConfig) => fspConfig.fspName,
+            )
+          : [],
+      });
+    }
   });
 
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;

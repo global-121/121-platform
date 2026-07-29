@@ -33,8 +33,6 @@
     <app-skeleton-inline />
   } @else if (fspConfigurations.isSuccess()) {
     @let fspConfigs = fspConfigurations.data();
-    @let fspConfigsFspNames =
-      fspConfigs.map((programFsp) => programFsp.fspName);
 
     @if (fspConfigs.length > 0) {
       <div
@@ -43,7 +41,7 @@
       >
         @for (fspConfiguration of fspConfigs; track fspConfiguration.name) {
           <app-fsp-configuration-card
-            [programFsps]="fspConfigsFspNames"
+            [programFsps]="programFsps()"
             [programId]="programId()"
             [configuration]="fspConfiguration"
             (reconfigureFsp)="reconfigureFspConfiguration.emit($event)"

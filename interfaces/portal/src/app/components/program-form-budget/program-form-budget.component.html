@@ -58,8 +58,13 @@
     />
   </app-form-field-wrapper>
 
-  <app-fsp-multiselect
-    formControlName="fsps"
-    [programId]="program() ? programId() : undefined"
-  ></app-fsp-multiselect>
+  <app-form-field-wrapper
+    label="Financial service providers:"
+    i18n-label
+  >
+    <app-fsp-multiselect
+      formControlName="fsps"
+      [programId]="program() ? programId() : undefined"
+    ></app-fsp-multiselect>
+  </app-form-field-wrapper>
 </ng-container>

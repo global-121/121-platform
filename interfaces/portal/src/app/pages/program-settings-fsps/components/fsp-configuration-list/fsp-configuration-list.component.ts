@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   model,
@@ -50,6 +51,12 @@ export class FspConfigurationListComponent {
   readonly fspConfigurations = this.fspConfigurationsData.fspConfigurations;
   readonly notAllFspsIntegrated =
     this.fspConfigurationsData.notAllFspsIntegrated;
+
+  readonly programFsps = computed<Fsps[]>(
+    () =>
+      this.fspConfigurations.data()?.map((programFsp) => programFsp.fspName) ??
+      [],
+  );
 
   readonly integrationRequiredBannerContent = {
     title: $localize`Integration required`,

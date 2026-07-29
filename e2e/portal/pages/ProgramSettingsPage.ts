@@ -126,7 +126,7 @@ class ProgramSettingsPage extends BasePage {
       'Default transactions per registration':
         programData.defaultNumberOfTransactions,
       '*Fixed transfer value': programData.fixedTransferValue,
-      '*Financial service providers': programData.fsps?.join(''),
+      'Financial service providers': programData.fsps?.join(''),
     });
   }
 

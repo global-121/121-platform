@@ -41,7 +41,6 @@ import { ToastService } from '~/services/toast.service';
   ],
   templateUrl: './program-settings-budget.component.html',
   providers: [ToastService],
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgramSettingsBudgetComponent {
@@ -89,11 +88,20 @@ export class ProgramSettingsBudgetComponent {
           await this.createProgramFspsMutation.mutateAsync({
             fsps,
           });
-        } catch {
+        } catch (error) {
+          if (error instanceof Error && error.message) {
+            this.formGroup()
+              ?.get('fsps')
+              ?.setErrors({ serverError: error.message });
+          }
+
           this.toastService.showToast({
             severity: 'error',
             detail: $localize`Failed to update financial service providers.`,
           });
+
+          // To stop the form from exiting 'edit mode'
+          throw error;
         }
       }
     },
@@ -142,7 +150,7 @@ export class ProgramSettingsBudgetComponent {
         fullWidth: true,
       },
       {
-        label: '*' + $localize`Financial service providers`,
+        label: $localize`Financial service providers`,
         value: FspTagsComponent,
         type: 'component',
         inputs: { programId: this.programId() },
