@@ -174,6 +174,9 @@
         <source>They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings.</source>
         <note priority="1" from="description">They=&apos;Necessary cookies&apos;</note>
       </trans-unit>
+      <trans-unit id="1791177283103909849" datatype="html">
+        <source>Duplication fields:</source>
+      </trans-unit>
       <trans-unit id="1795641661238305703" datatype="html">
         <source>Transaction <x equiv-text="this.paymentDate()" id="PH"/> - transaction history</source>
       </trans-unit>
@@ -233,6 +236,9 @@
       </trans-unit>
       <trans-unit id="2077783620698115246" datatype="html">
         <source>Your score is <x equiv-text="{{ score() }}" id="INTERPOLATION"/>.</source>
+      </trans-unit>
+      <trans-unit id="2095982362430871638" datatype="html">
+        <source>Select 1 or more fields</source>
       </trans-unit>
       <trans-unit id="2099469692592361098" datatype="html">
         <source>Personal information: e-mail and name.</source>
@@ -657,6 +663,9 @@
       <trans-unit id="3757859142679780974" datatype="html">
         <source>Kobo form ”<x equiv-text="this.koboIntegration.data()?.name" id="PH"/>” does not have existing registrations. New registrations will be synced to the program automatically.</source>
       </trans-unit>
+      <trans-unit id="3790402217684465728" datatype="html">
+        <source>Select the fields you would like to use as duplication indicators - if these fields are found to match in 2 or more registrations, the registrations will be flagged as duplicates.</source>
+      </trans-unit>
       <trans-unit id="37959892232763790" datatype="html">
         <source>Welcome to <x equiv-text="{{ program.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
       </trans-unit>
@@ -934,6 +943,9 @@
       </trans-unit>
       <trans-unit id="4821724891066824263" datatype="html">
         <source>You&apos;re about to remove the &quot;<x equiv-text="{{ fspConfigurationLabel() }}" id="INTERPOLATION"/>&quot; FSP configuration from your program. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
+      </trans-unit>
+      <trans-unit id="4870684362400415992" datatype="html">
+        <source>Duplication fields</source>
       </trans-unit>
       <trans-unit id="4890152856739224001" datatype="html">
         <source>Optionally pass a start date and/or an end date to filter the payments. The export is limited to 100,000 records. Adapt your dates if needed.</source>
@@ -1305,6 +1317,9 @@
       <trans-unit id="6456009373504868195" datatype="html">
         <source>Please correct the errors in the form.</source>
       </trans-unit>
+      <trans-unit id="646969840005868516" datatype="html">
+        <source>No duplication field selected</source>
+      </trans-unit>
       <trans-unit id="6502713313006518985" datatype="html">
         <source>Set up the payment&apos;s name.</source>
       </trans-unit>
@@ -1313,6 +1328,9 @@
       </trans-unit>
       <trans-unit id="651664891309642077" datatype="html">
         <source>Failed transactions</source>
+      </trans-unit>
+      <trans-unit id="652894116103613049" datatype="html">
+        <source>De-duplication</source>
       </trans-unit>
       <trans-unit id="6533918067030990396" datatype="html">
         <source>Amount</source>
@@ -1574,6 +1592,9 @@
       </trans-unit>
       <trans-unit id="7585097972263982693" datatype="html">
         <source>Old FSP</source>
+      </trans-unit>
+      <trans-unit id="7585826646011739428" datatype="html">
+        <source>Edit</source>
       </trans-unit>
       <trans-unit id="7613791439001735010" datatype="html">
         <source>Template message</source>
@@ -1865,6 +1886,9 @@
       </trans-unit>
       <trans-unit id="8918915369134420822" datatype="html">
         <source>Message:</source>
+      </trans-unit>
+      <trans-unit id="89246720705175232" datatype="html">
+        <source>An error occurred while updating the attributes.</source>
       </trans-unit>
       <trans-unit id="8934662076309331939" datatype="html">
         <source>Last payment:</source>

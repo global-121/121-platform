@@ -16,6 +16,7 @@ import { RouterLink } from '@angular/router';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TagModule } from 'primeng/tag';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { getRandomInt } from '@121-service/src/utils/random-value.helper';
@@ -36,6 +37,7 @@ export type DataListItem = {
   chipLabel?: string;
   chipVariant?: ChipVariant;
   fullWidth?: boolean;
+  icon?: string;
   detailAction?: {
     component: Type<unknown>;
     inputs: Record<string, unknown>;
@@ -80,6 +82,7 @@ export type DataListItem = {
         value: string;
         label?: string | UILanguageTranslation;
       }[];
+      showAsTags?: boolean;
     }
   | {
       type?: 'text';
@@ -103,6 +106,7 @@ export type DataListItem = {
     NgComponentOutlet,
     RouterLink,
     InputTextModule,
+    TagModule,
   ],
   templateUrl: './data-list.component.html',
   styles: ``,

@@ -44,6 +44,12 @@
             [label]="item.chipLabel"
           />
         } @else if (item.value !== undefined && item.value !== null) {
+          @if (item.icon) {
+            <i
+              class="pi me-1"
+              [ngClass]="item.icon"
+            ></i>
+          }
           <span class="me-1">
             @switch (item.type) {
               @case ('boolean') {
@@ -80,9 +86,27 @@
                 {{ item.value | number }}
               }
               @case ('options') {
-                {{ optionItemValue(item) }}
+                @if (item.showAsTags) {
+                  <ol
+                    class="flex flex-wrap gap-2"
+                    data-testid="integrated-fsp-list"
+                  >
+                    @for (option of item.options; track $index) {
+                      <li>
+                        <p-tag
+                          [value]="
+                            (option.label | translatableString) ?? option.value
+                          "
+                          class="bg-blue-100 text-blue-700"
+                          [rounded]="true"
+                        />
+                      </li>
+                    }
+                  </ol>
+                } @else {
+                  {{ optionItemValue(item) }}
+                }
               }
-
               @case ('component') {
                 <ng-container
                   *ngComponentOutlet="item.value; inputs: item.inputs"
