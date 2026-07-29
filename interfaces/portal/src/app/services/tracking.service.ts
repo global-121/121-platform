@@ -24,6 +24,7 @@ import { environment } from '~environment';
  *
  */
 export enum TrackingCategory {
+  additionalInformationViewed = 'Additional Information Viewed',
   export = 'Export',
   hiddenFeatures = 'Hidden Features',
   manageRegistrations = 'Manage Registrations',
@@ -51,10 +52,14 @@ export enum TrackingAction {
   clickProceedButton = 'click: Proceed Button',
   clickRetryTransactionButton = 'click: Retry Transaction(s) Button',
   clickRevertToDefaultButton = 'click: Revert to Default Button',
+
+  hoverInformationIcon = 'hover: Information Icon',
+
   selectContextMenuOption = 'select: Context-menu Option',
   selectDropdownOption = 'select: Dropdown Option',
   showColumnFilter = 'show: Column-filter',
   showContextMenu = 'show: Context Menu',
+
   showHenryDunant = 'show: Henry Dunant!',
   showSnakeGameOver = 'show: Snake Game Over',
 }

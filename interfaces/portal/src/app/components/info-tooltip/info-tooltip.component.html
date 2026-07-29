@@ -1,7 +1,12 @@
 <sup>
   <i
     class="pi pi-info-circle cursor-help text-xs"
+    tabindex="0"
     [pTooltip]="message()"
     [tooltipPosition]="rtlHelper.createPosition('end')()"
+    (mouseover)="trackEvent()"
+    (focus)="(undefined)"
+    (keydown.enter)="handleEnterKey($event)"
+    (focusout)="handleFocusOut($event)"
   ></i>
 </sup>
