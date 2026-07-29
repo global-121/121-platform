@@ -12,16 +12,11 @@ log() {
 
 log "Running custom pre-commit hook defined in ./husky/pre-commit"
 
-# Prevent committing to "main"-branch:
-if [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ]; then
-  log "You shouldn't commit directly to the main branch."
-  log "Create a feature branch:  git branch new-branch-name"
-  log "Then reset 'main':        git reset --hard origin/main"
-  log "And continue to work:     git checkout new-branch-name"
-  exit 1
-fi
+"$(dirname "$0")/scripts/prevent-commit-to-main.sh"
 
 log "Running lint-staged"
 npx lint-staged
+
+"$(dirname "$0")/scripts/warn-env-example-changes.sh"
 
 log "All done"
