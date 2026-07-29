@@ -43,6 +43,7 @@ export enum TrackingCategory {
  * - Use "human readable" values (but be concise.)
  */
 export enum TrackingAction {
+  addUserToProgramTeam = 'add: User to Program Team',
   clickBulkActionButton = 'click: Bulk Action Button',
   clickClearAllFiltersButton = 'click: Clear All Filters Button',
   clickClearColumnFilterButton = 'click: Clear Column-filter Button',
@@ -52,16 +53,16 @@ export enum TrackingAction {
   clickMoreActionsMenuButton = 'click: More-Actions-menu Button',
   clickProceedButton = 'click: Proceed Button',
   clickRetryTransactionButton = 'click: Retry Transaction(s) Button',
+
   clickRevertToDefaultButton = 'click: Revert to Default Button',
 
   hoverInformationIcon = 'hover: Information Icon',
-
   selectContextMenuOption = 'select: Context-menu Option',
   selectDropdownOption = 'select: Dropdown Option',
   showColumnFilter = 'show: Column-filter',
   showContextMenu = 'show: Context Menu',
-  showHenryDunant = 'show: Henry Dunant!',
 
+  showHenryDunant = 'show: Henry Dunant!',
   showSnakeGameOver = 'show: Snake Game Over',
   toggleProgramScope = 'toggle: Program Scope',
   toggleProgramValidation = 'toggle: Program Validation',

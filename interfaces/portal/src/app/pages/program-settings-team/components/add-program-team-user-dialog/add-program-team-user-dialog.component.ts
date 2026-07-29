@@ -32,6 +32,11 @@ import { ProgramUserWithRolesLabel } from '~/domains/program/program.model';
 import { RoleApiService } from '~/domains/role/role.api.service';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingService,
+} from '~/services/tracking.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
@@ -59,6 +64,7 @@ export class AddProgramTeamUserDialogComponent {
   private roleApiService = inject(RoleApiService);
   private toastService = inject(ToastService);
   private authService = inject(AuthService);
+  private trackingService = inject(TrackingService);
 
   readonly formDialog = viewChild.required<FormDialogComponent>('formDialog');
 
@@ -190,6 +196,13 @@ export class AddProgramTeamUserDialogComponent {
           ? $localize`User updated`
           : $localize`User added`,
       });
+
+      if (!this.isEditing()) {
+        this.trackingService.trackEvent({
+          category: TrackingCategory.programSettings,
+          action: TrackingAction.addUserToProgramTeam,
+        });
+      }
     },
   }));
 
