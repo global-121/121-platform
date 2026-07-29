@@ -144,13 +144,13 @@ export class DeduplicationCardComponent {
       onSuccess: () => {
         this.isEditing.set(false);
         this.toastService.showToast({
-          detail: $localize`Update successful.`,
+          detail: $localize`Deduplication indicators saved successfully.`,
         });
       },
       onError: () => {
         this.toastService.showToast({
           severity: 'error',
-          detail: $localize`An error occurred while updating the attributes.`,
+          detail: $localize`An error occurred while updating.`,
         });
       },
     };

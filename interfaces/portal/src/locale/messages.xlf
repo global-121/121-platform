@@ -426,6 +426,9 @@
       <trans-unit id="2779521124294512411" datatype="html">
         <source>Custom messages are <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>not automatically translated<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> to the registration&apos;s preferred language.</source>
       </trans-unit>
+      <trans-unit id="2786315343832067060" datatype="html">
+        <source>Deduplication indicators saved successfully.</source>
+      </trans-unit>
       <trans-unit id="279195665230166237" datatype="html">
         <source>Reg. #<x equiv-text="registrationId" id="PH"/></source>
       </trans-unit>
@@ -1172,6 +1175,9 @@
       <trans-unit id="5687538980626463491" datatype="html">
         <source>Transfer history</source>
       </trans-unit>
+      <trans-unit id="5694985209402523312" datatype="html">
+        <source>An error occurred while updating.</source>
+      </trans-unit>
       <trans-unit id="5709449651238206423" datatype="html">
         <source>Gotcha!</source>
       </trans-unit>
@@ -1886,9 +1892,6 @@
       </trans-unit>
       <trans-unit id="8918915369134420822" datatype="html">
         <source>Message:</source>
-      </trans-unit>
-      <trans-unit id="89246720705175232" datatype="html">
-        <source>An error occurred while updating the attributes.</source>
       </trans-unit>
       <trans-unit id="8934662076309331939" datatype="html">
         <source>Last payment:</source>
