@@ -137,7 +137,7 @@ export class ActivityLogExpandedRowComponent implements TableCellComponent<
     });
 
   readonly dataList = computed<DataListItem[] | undefined>(() => {
-    const { attributes, user, type } = this.value();
+    const { attributes, type } = this.value();
     switch (type) {
       case ActivityTypeEnum.DataChange:
         return [
@@ -229,19 +229,14 @@ export class ActivityLogExpandedRowComponent implements TableCellComponent<
             },
           },
           {
-            label: $localize`Created by`,
-            chipLabel: user.username,
-            chipVariant: 'blue',
-          },
-          {
-            label: $localize`FSP`,
-            value: attributes.fspConfigurationLabel,
-          },
-          {
             label: $localize`Amount`,
             value: attributes.amount,
             type: 'currency',
             currencyCode: this.context().currencyCode(),
+          },
+          {
+            label: $localize`FSP`,
+            value: attributes.fspConfigurationLabel,
           },
         ];
 
