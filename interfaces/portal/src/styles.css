@@ -459,11 +459,12 @@ svg-icon svg {
   }
 
   /**
-   * Workaround to disable minimizing app-crate-program-dialog.
-   * While minimized, the dialog changes size on step change.
-   * See AB#43199 for details.
+   * Workaround to disable minimizing 'maximized' PrimeNG dialogs.
+   * If a fullscreen dialog is minimized, the dialog UI is broken.
+   * See AB#43199 and AB#43622 for details.
    */
-  app-create-program-dialog {
+  app-create-program-dialog,
+  app-fullscreen-stepper-dialog {
     .p-dialog-maximize-button {
       display: none;
     }
