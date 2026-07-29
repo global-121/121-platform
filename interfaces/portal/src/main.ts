@@ -2,6 +2,8 @@
 
 import { bootstrapApplication } from '@angular/platform-browser';
 
+import { patchPrimeNgAutoFocus } from 'src/patches/primeng-autofocus.patch';
+
 import { AppComponent } from '~/app.component';
 import { getAppConfig } from '~/app.config';
 import { registerChartDefaults } from '~/utils/chart';
@@ -50,6 +52,8 @@ const main = async () => {
       await import('@angular/common/locales/global/sk');
       break;
   }
+
+  patchPrimeNgAutoFocus();
 
   await bootstrapApplication(
     AppComponent,
