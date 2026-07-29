@@ -6,7 +6,7 @@
     @let isAvailable = isImageAvailable({ imageUrl: image.imageUrl });
     <p-accordion-panel
       [value]="index.toString()"
-      [attr.data-testid]="image.dataTestId"
+      data-testid="image.dataTestId"
       class="border-grey-300 border-be"
     >
       <p-accordion-header

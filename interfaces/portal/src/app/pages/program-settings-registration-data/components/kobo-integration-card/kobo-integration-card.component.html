@@ -2,7 +2,7 @@
   [image]="'assets/registration-data/kobo-toolbox.svg'"
   [titleColoredChipLabel]="titleColoredChipLabel()"
   [menuItems]="isKoboIntegrated() ? writableMenuItems() : []"
-  [attr.data-testid]="'kobo-integration-card'"
+  data-testid="'kobo-integration-card'"
   [enableLink]="!isKoboIntegrated()"
   [titleColoredChipColor]="'green'"
   title="KoboToolbox"
