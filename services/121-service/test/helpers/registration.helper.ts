@@ -718,6 +718,7 @@ export function createVisaCardOrder({
   addressCity,
   addressee,
   addresseePhoneNumber,
+  addresseeEmailAddress,
 }: {
   programId: number;
   accessToken: string;
@@ -729,6 +730,7 @@ export function createVisaCardOrder({
   addressCity: string;
   addressee: string;
   addresseePhoneNumber: string;
+  addresseeEmailAddress: string;
 }): Promise<request.Response> {
   return getServer()
     .post(`/programs/${programId}/fsps/intersolve-visa/wallet/cards/orders`)
@@ -742,6 +744,7 @@ export function createVisaCardOrder({
       addressCity,
       addressee,
       addresseePhoneNumber,
+      addresseeEmailAddress,
     });
 }
 
