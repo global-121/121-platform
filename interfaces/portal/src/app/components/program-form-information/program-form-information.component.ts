@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   effect,
-  inject,
   input,
   output,
 } from '@angular/core';
@@ -12,8 +11,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
 
+// import { Router } from '@angular/router';.
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
@@ -47,7 +46,7 @@ export type ProgramInformationFormGroup =
 })
 export class ProgramFormInformationComponent {
   readonly program = input<Program>();
-  readonly router = inject(Router);
+  // readonly router = inject(Router);
   readonly trackEvent = output<TrackingEvent>();
 
   formGroup = new FormGroup({
@@ -101,19 +100,23 @@ export class ProgramFormInformationComponent {
 
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
 
-  // Tracking events
+  readonly isCreateProgram = window.location.href.includes('create-program');
 
-  trackValidationToggleEvent(event: { checked: boolean }): void {
+  trackUseValidationToggleEvent(event: { checked: boolean }): void {
     this.trackEvent.emit({
-      category: TrackingCategory.programSettings,
+      category: this.isCreateProgram
+        ? TrackingCategory.createNewProgram
+        : TrackingCategory.programSettings,
       action: TrackingAction.toggleProgramValidation,
       name: event.checked ? 'enabled' : 'disabled',
     });
   }
 
-  trackScopeToggleEvent(event: { checked: boolean }): void {
+  trackUseScopeToggleEvent(event: { checked: boolean }): void {
     this.trackEvent.emit({
-      category: TrackingCategory.programSettings,
+      category: this.isCreateProgram
+        ? TrackingCategory.createNewProgram
+        : TrackingCategory.programSettings,
       action: TrackingAction.toggleProgramScope,
       name: event.checked ? 'enabled' : 'disabled',
     });

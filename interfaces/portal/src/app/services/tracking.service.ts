@@ -74,8 +74,8 @@ export enum TrackingAction {
   showHenryDunant = 'show: Henry Dunant!',
   showSnakeGameOver = 'show: Snake Game Over',
 
-  toggleProgramScope = 'toggle: Program Scope',
-  toggleProgramValidation = 'toggle: Program Validation',
+  toggleProgramScope = 'toggle: Use Program Scope',
+  toggleProgramValidation = 'toggle: Use Program Validation',
 }
 
 /**
