@@ -4,8 +4,10 @@
     tabindex="0"
     [pTooltip]="message()"
     [tooltipPosition]="rtlHelper.createPosition('end')()"
-    (mouseover)="trackEvent()"
+    (mouseover)="handleMouseOver($event)"
+    (mouseout)="handleMouseOut($event)"
     (focus)="(undefined)"
+    (blur)="handleMouseOut($event)"
     (keydown.enter)="handleEnterKey($event)"
     (focusout)="handleFocusOut($event)"
   ></i>

@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   inject,
   input,
 } from '@angular/core';
@@ -14,6 +15,8 @@ import {
   TrackingService,
 } from '~/services/tracking.service';
 
+const TRACK_EVENT_DELAY_MS = 1500;
+
 @Component({
   selector: 'app-info-tooltip',
   imports: [TooltipModule],
@@ -26,12 +29,52 @@ export class InfoTooltipComponent {
 
   private trackingService = inject(TrackingService);
 
-  trackEvent(): void {
+  private trackEventTimeout: ReturnType<typeof setTimeout> | undefined;
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => {
+      this.cancelTrackEvent();
+    });
+  }
+
+  private scheduleTrackEvent(): void {
+    this.cancelTrackEvent();
+    this.trackEventTimeout = setTimeout(() => {
+      this.trackEvent();
+    }, TRACK_EVENT_DELAY_MS);
+  }
+
+  private cancelTrackEvent(): void {
+    if (this.trackEventTimeout !== undefined) {
+      clearTimeout(this.trackEventTimeout);
+      this.trackEventTimeout = undefined;
+    }
+  }
+
+  private trackEvent(): void {
     this.trackingService.trackEvent({
       category: TrackingCategory.additionalInformationViewed,
       action: TrackingAction.hoverInformationIcon,
       name: this.message(),
     });
+  }
+
+  handleMouseOver(event: Event): void {
+    const target = event.currentTarget;
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    this.scheduleTrackEvent();
+  }
+
+  handleMouseOut(event: Event): void {
+    const target = event.currentTarget;
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    this.cancelTrackEvent();
   }
 
   handleEnterKey(event: Event): void {
@@ -41,7 +84,7 @@ export class InfoTooltipComponent {
     }
 
     target.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
-    this.trackEvent();
+    this.scheduleTrackEvent();
   }
 
   handleFocusOut(event: FocusEvent): void {
@@ -51,5 +94,6 @@ export class InfoTooltipComponent {
     }
 
     target.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+    this.cancelTrackEvent();
   }
 }

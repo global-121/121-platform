@@ -1,7 +1,7 @@
 <app-fullscreen-stepper-dialog
   #createProgramDialog
   [dialogVisible]="currentStep() > 0"
-  (dialogVisibleChange)="currentStep.set($event ? 1 : 0)"
+  (dialogVisibleChange)="onDialogVisibleChange($event)"
   [currentStep]="currentStep()"
   [proceedLabel]="proceedLabel()"
   [cannotProceed]="

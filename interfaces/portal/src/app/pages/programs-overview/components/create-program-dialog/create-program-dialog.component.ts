@@ -35,8 +35,13 @@ import {
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Program } from '~/domains/program/program.model';
+import {
+  CreateNewProgramTracker,
+  createNewProgramTracker,
+} from '~/pages/programs-overview/components/create-program-dialog/createNewProgramTracker';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
+import { TrackingEvent, TrackingService } from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
@@ -57,12 +62,15 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateProgramDialogComponent {
+  private createProgramTracker: CreateNewProgramTracker | undefined;
+
   readonly router = inject(Router);
   readonly authService = inject(AuthService);
   readonly programApiService = inject(ProgramApiService);
   readonly toastService = inject(ToastService);
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
   readonly translatableStringService = inject(TranslatableStringService);
+  readonly trackingService = inject(TrackingService);
 
   readonly createProgramDialog =
     viewChild.required<FullscreenStepperDialogComponent>('createProgramDialog');
@@ -166,6 +174,14 @@ export class CreateProgramDialogComponent {
         this.programToDuplicate()?.id,
       ),
     onSuccess: async (result, variables) => {
+      this.emitTrackingEvents({
+        events:
+          this.createProgramTracker?.complete(
+            this.duplicationMode() ? 'duplicate' : 'create',
+          ) ?? [],
+      });
+      this.createProgramTracker = undefined;
+
       // If the program was created successfully and the user has selected fsps, we create the FSP configurations for the program
       if (result?.id && variables.budgetGroup.fsps.length > 0) {
         try {
@@ -227,7 +243,20 @@ export class CreateProgramDialogComponent {
       return;
     }
 
+    this.createProgramTracker?.goBack();
+    this.createProgramTracker?.leaveStep();
+
     this.currentStep.set((currentStep - 1) as 0 | 1 | 2);
+
+    if (currentStep === 1) {
+      this.emitTrackingEvents({
+        events: this.createProgramTracker?.stop() ?? [],
+      });
+      this.createProgramTracker = undefined;
+      return;
+    }
+
+    this.createProgramTracker?.enterStep((currentStep - 1) as 1 | 2 | 3);
   }
 
   private getFormGroupIfStepIsValid(step: 1 | 2 | 3) {
@@ -269,6 +298,7 @@ export class CreateProgramDialogComponent {
     if (currentStep === 0) {
       // simply open the dialog
       this.currentStep.set(1);
+      this.createProgramTracker?.enterStep(1);
       return;
     }
 
@@ -280,17 +310,40 @@ export class CreateProgramDialogComponent {
 
     if (currentStep === 3) {
       // we're on the last step, so submit
+      this.createProgramTracker?.leaveStep();
       this.createProgramMutation.mutate(formGroup.getRawValue());
       return;
     }
 
+    this.createProgramTracker?.leaveStep();
+
     this.currentStep.set((currentStep + 1) as 2 | 3);
+    this.createProgramTracker?.enterStep((currentStep + 1) as 1 | 2 | 3);
   }
 
   show(program?: Program) {
+    this.createProgramTracker = createNewProgramTracker({});
     this.currentStep.set(0);
     this.formGroup()?.reset();
     this.programToDuplicate.set(program);
     this.goToNextStep();
+  }
+
+  onDialogVisibleChange(isVisible: boolean) {
+    if (isVisible) {
+      return;
+    }
+
+    this.emitTrackingEvents({
+      events: this.createProgramTracker?.stop() ?? [],
+    });
+    this.createProgramTracker = undefined;
+    this.currentStep.set(0);
+  }
+
+  private emitTrackingEvents({ events }: { events: TrackingEvent[] }): void {
+    for (const event of events) {
+      this.trackingService.trackEvent(event);
+    }
   }
 }

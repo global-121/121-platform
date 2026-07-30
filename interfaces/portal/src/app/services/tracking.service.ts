@@ -25,6 +25,7 @@ import { environment } from '~environment';
  */
 export enum TrackingCategory {
   additionalInformationViewed = 'Additional Information Viewed',
+  createNewProgram = 'Create New Program',
   export = 'Export',
   hiddenFeatures = 'Hidden Features',
   manageRegistrations = 'Manage Registrations',
@@ -53,17 +54,26 @@ export enum TrackingAction {
   clickMoreActionsMenuButton = 'click: More-Actions-menu Button',
   clickProceedButton = 'click: Proceed Button',
   clickRetryTransactionButton = 'click: Retry Transaction(s) Button',
-
   clickRevertToDefaultButton = 'click: Revert to Default Button',
+
+  createNewProgramBackButtonClicks = 'event: createNewProgram back button clicks',
+  createNewProgramCloseDialog = 'event: close createNewProgram dialog',
+  createNewProgramStep1Error = 'errors: createNewProgram Step 1',
+  createNewProgramStep1TotalTimeSpent = 'time: createNewProgram Step 1',
+  createNewProgramStep2Error = 'errors: createNewProgram Step 2',
+  createNewProgramStep2TotalTimeSpent = 'time: createNewProgram Step 2',
+  createNewProgramStep3Error = 'errors: createNewProgram Step 3',
+  createNewProgramStep3TotalTimeSpent = 'time: createNewProgram Step 3',
+  createNewProgramTotalTimeSpent = 'time: createNewProgram Total Time',
 
   hoverInformationIcon = 'hover: Information Icon',
   selectContextMenuOption = 'select: Context-menu Option',
   selectDropdownOption = 'select: Dropdown Option',
   showColumnFilter = 'show: Column-filter',
   showContextMenu = 'show: Context Menu',
-
   showHenryDunant = 'show: Henry Dunant!',
   showSnakeGameOver = 'show: Snake Game Over',
+
   toggleProgramScope = 'toggle: Program Scope',
   toggleProgramValidation = 'toggle: Program Validation',
 }
