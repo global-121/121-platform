@@ -39,6 +39,10 @@ export const INTERSOLVE_VISA_SETTINGS: FspSettingsDto = {
       name: FspAttributes.phoneNumber,
       isRequired: true,
     },
+    {
+      name: FspAttributes.email,
+      isRequired: true,
+    },
   ],
   configurationProperties: [
     {
