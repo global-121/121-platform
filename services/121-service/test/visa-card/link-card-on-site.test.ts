@@ -2,11 +2,18 @@ import { HttpStatus } from '@nestjs/common';
 
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { VisaCard121Status } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/wallet-status-121.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdVisa,
   registrationVisa,
+  transferValueVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
+import {
+  doPayment,
+  getTransactionsByPaymentIdPaginated,
+  waitForPaymentAndTransactionsToComplete,
+} from '@121-service/test/helpers/program.helper';
 import { updateProgramCardDistributionByMail } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   getVisaWalletsAndDetails,
@@ -48,20 +55,46 @@ describe('Link Visa debit card on site', () => {
       tokenCode,
     });
 
+    const doPaymentResponse = await doPayment({
+      programId: programIdVisa,
+      transferValue: transferValueVisa,
+      referenceIds: [registrationVisa.referenceId],
+      accessToken,
+    });
+    const paymentId = doPaymentResponse.body.id;
+
+    await waitForPaymentAndTransactionsToComplete({
+      programId: programIdVisa,
+      paymentReferenceIds: [registrationVisa.referenceId],
+      paymentId,
+      accessToken,
+      maxWaitTimeMs: 10_000,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
+
     const getVisaWalletResponse = await getVisaWalletsAndDetails(
       programIdVisa,
       registrationVisa.referenceId,
       accessToken,
     );
     const parentWallet = getVisaWalletResponse.body as IntersolveVisaWalletDto;
-
     const card = parentWallet.cards[0];
+
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
+      programId: programIdVisa,
+      paymentId,
+      registrationReferenceId: registrationVisa.referenceId,
+      accessToken,
+    });
 
     // Assert
     expect(response.status).toBe(HttpStatus.CREATED);
-
     expect(card.tokenCode).toBe(tokenCode);
     expect(card.status).toBe(VisaCard121Status.Active);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
+    expect(transactionsResponse.body.data[0].status).toBe(
+      TransactionStatusEnum.success,
+    );
   });
 
   it('should throw when linking a Visa Debit card that is already linked', async () => {

@@ -959,6 +959,7 @@ export class IntersolveVisaService {
     newIntersolveVisaChildWallet.walletStatus =
       IntersolveVisaTokenStatus.Inactive;
     newIntersolveVisaChildWallet.isLinkedToParentWallet = true;
+    newIntersolveVisaChildWallet.isDebitCardCreated = true;
     newIntersolveVisaChildWallet.lastExternalUpdate = new Date();
     const savedChildWallet =
       await this.intersolveVisaChildWalletScopedRepository.save(
