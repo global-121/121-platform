@@ -130,11 +130,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
 
-    // Payment deletion Queue
-    BullModule.registerQueue({
-      name: QueueNames.paymentDeletion,
-    }),
-
     // Message create Queues
     BullModule.registerQueue({
       name: QueueNames.createMessageReplyOnIncoming,

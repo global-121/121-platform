@@ -5,6 +5,8 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { InstanceReportingTransactionRaw } from '@121-service/src/instance-reporting/interfaces/instance-reporting-transaction-raw.interface';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { LastTransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/last-transaction-event.entity';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 
 export class TransactionRepository extends Repository<TransactionEntity> {
@@ -166,6 +168,23 @@ export class TransactionRepository extends Repository<TransactionEntity> {
   }
 
   public async deleteByIds({ ids }: { ids: number[] }): Promise<void> {
+    // Delete related rows explicitly in child-to-parent order using set-based
+    // queries. This avoids the per-row ON DELETE CASCADE triggers that make
+    // deleting a payment with many transactions prohibitively slow.
+    await this.baseRepository.manager
+      .createQueryBuilder()
+      .delete()
+      .from(LastTransactionEventEntity)
+      .where('transactionId = ANY(:ids)', { ids })
+      .execute();
+
+    await this.baseRepository.manager
+      .createQueryBuilder()
+      .delete()
+      .from(TransactionEventEntity)
+      .where('transactionId = ANY(:ids)', { ids })
+      .execute();
+
     await this.baseRepository
       .createQueryBuilder()
       .delete()

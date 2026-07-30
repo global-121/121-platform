@@ -85,6 +85,7 @@ export class TwilioMessageEntity extends Base121Entity {
   })
   @JoinColumn({ name: 'transactionId' })
   public transaction: Relation<TransactionEntity>;
+  @Index()
   @Column({ type: 'int', nullable: true })
   public transactionId: number | null;
 

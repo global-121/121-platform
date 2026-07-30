@@ -48,7 +48,7 @@ describe('Delete payment', () => {
     });
 
     // Assert
-    expect(deleteResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(deleteResponse.status).toBe(HttpStatus.NO_CONTENT);
 
     const paymentsAfterDelete = await getPayments(programId, accessToken);
     const paymentIdsAfterDelete = paymentsAfterDelete.body.map(

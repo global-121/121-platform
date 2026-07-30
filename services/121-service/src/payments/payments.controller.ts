@@ -222,9 +222,8 @@ export class PaymentsController {
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentDELETE] })
   @ApiResponse({
-    status: HttpStatus.ACCEPTED,
-    description:
-      'Accepted the payment deletion. The payment is no longer visible and its transactions are removed asynchronously.',
+    status: HttpStatus.NO_CONTENT,
+    description: 'Successfully deleted the payment',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -239,7 +238,7 @@ export class PaymentsController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
-  @HttpCode(HttpStatus.ACCEPTED)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('programs/:programId/payments/:paymentId')
   public async deletePayment(
     @Param('programId', ParseIntPipe) programId: number,

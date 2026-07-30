@@ -58,9 +58,6 @@ export class QueuesRegistryService implements OnModuleInit {
     @InjectQueue(QueueNames.paymentCallbackOnafriq)
     public onafriqCallbackQueue: Queue,
 
-    @InjectQueue(QueueNames.paymentDeletion)
-    public paymentDeletionQueue: Queue,
-
     @InjectQueue(QueueNames.createMessageReplyOnIncoming)
     public createMessageReplyOnIncomingQueue: Queue,
 
@@ -107,7 +104,6 @@ export class QueuesRegistryService implements OnModuleInit {
       [QueueNames.paymentReconciliationMtnTransfer]:
         this.mtnTransferReconciliationQueue,
       [QueueNames.paymentCallbackOnafriq]: this.onafriqCallbackQueue,
-      [QueueNames.paymentDeletion]: this.paymentDeletionQueue,
       [QueueNames.createMessageReplyOnIncoming]:
         this.createMessageReplyOnIncomingQueue,
       [QueueNames.createMessageSmallBulk]: this.createMessageSmallBulkQueue,
