@@ -433,6 +433,7 @@ describe('IntersolveVisaAccountManagementService', () => {
         addressCity: 'Amsterdam',
         addressee: 'John Doe',
         addresseePhoneNumber: '+31612345678',
+        addresseeEmailAddress: 'john.doe@example.org',
         userId: 7,
         ...overrides,
       };

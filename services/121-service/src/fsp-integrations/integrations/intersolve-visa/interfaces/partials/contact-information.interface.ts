@@ -6,4 +6,5 @@ export interface ContactInformation {
   readonly addressPostalCode: string;
   readonly addressCity: string;
   readonly phoneNumber: string;
+  readonly emailAddress?: string;
 }
