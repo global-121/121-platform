@@ -52,7 +52,7 @@ export class IntersolveVisaCardOrderProcessorService {
       addressPostalCode: order.addressPostalCode,
       addressCity: order.addressCity,
       phoneNumber: order.addresseePhoneNumber,
-      emailAddress: order.addresseeEmailAddress ?? undefined,
+      emailAddress: order.addresseeEmailAddress,
     };
 
     let cardsSentByIntersolve = 0;

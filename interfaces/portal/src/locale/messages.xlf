@@ -183,6 +183,9 @@
       <trans-unit id="1817782792448180446" datatype="html">
         <source>Integration is already up to date.</source>
       </trans-unit>
+      <trans-unit id="1836864507238577256" datatype="html">
+        <source>Addressee email</source>
+      </trans-unit>
       <trans-unit id="1840148350593500398" datatype="html">
         <source>Make sure the default language in the &apos;Form&apos; tab of Kobo matches the main language of the program. One language must be set to English (EN).</source>
       </trans-unit>
