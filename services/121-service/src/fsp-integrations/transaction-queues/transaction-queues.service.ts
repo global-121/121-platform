@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { Queue } from 'bull';
 import Redis from 'ioredis';
 
 import { AirtelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/airtel-transaction-job.dto';
@@ -11,6 +12,7 @@ import { MtnTransactionJobDto } from '@121-service/src/fsp-integrations/transact
 import { NedbankTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/nedbank-transaction-job.dto';
 import { OnafriqTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/onafriq-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/safaricom-transaction-job.dto';
+import { SharedTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/shared-transaction-job.dto';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -29,124 +31,120 @@ export class TransactionQueuesService {
   public async addIntersolveVisaTransactionJobs(
     visaTransactionJobs: IntersolveVisaTransactionJobDto[],
   ): Promise<void> {
-    for (const visaTransactionJob of visaTransactionJobs) {
-      const job =
-        await this.queuesService.transactionJobIntersolveVisaQueue.add(
-          JobNames.default,
-          visaTransactionJob,
-        );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+    await this.addTransactionJobsToQueue({
+      queue: this.queuesService.transactionJobIntersolveVisaQueue,
+      transactionJobs: visaTransactionJobs,
+    });
   }
 
   public async addIntersolveVoucherTransactionJobs(
     voucherTransactionJobs: IntersolveVoucherTransactionJobDto[],
   ): Promise<void> {
-    for (const voucherTransactionJob of voucherTransactionJobs) {
-      const job =
-        await this.queuesService.transactionJobIntersolveVoucherQueue.add(
-          JobNames.default,
-          voucherTransactionJob,
-        );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+    await this.addTransactionJobsToQueue({
+      queue: this.queuesService.transactionJobIntersolveVoucherQueue,
+      transactionJobs: voucherTransactionJobs,
+    });
   }
 
   public async addSafaricomTransactionJobs(
     safaricomTransactionJobs: SafaricomTransactionJobDto[],
   ): Promise<void> {
-    for (const safaricomTransactionJob of safaricomTransactionJobs) {
-      const job = await this.queuesService.transactionJobSafaricomQueue.add(
-        JobNames.default,
-        safaricomTransactionJob,
-      );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+    await this.addTransactionJobsToQueue({
+      queue: this.queuesService.transactionJobSafaricomQueue,
+      transactionJobs: safaricomTransactionJobs,
+    });
   }
 
   public async addAirtelTransactionJobs(
     airtelTransactionJobs: AirtelTransactionJobDto[],
   ): Promise<void> {
-    for (const airtelTransactionJob of airtelTransactionJobs) {
-      const job = await this.queuesService.transactionJobAirtelQueue.add(
-        JobNames.default,
-        airtelTransactionJob,
-      );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+    await this.addTransactionJobsToQueue({
+      queue: this.queuesService.transactionJobAirtelQueue,
+      transactionJobs: airtelTransactionJobs,
+    });
   }
 
   public async addCooperativeBankOfOromiaTransactionJobs(
     cooperativeBankOfOromiaTransactionJobs: CooperativeBankOfOromiaTransactionJobDto[],
   ): Promise<void> {
-    for (const cooperativeBankOfOromiaTransactionJob of cooperativeBankOfOromiaTransactionJobs) {
-      const job =
-        await this.queuesService.transactionJobCooperativeBankOfOromiaQueue.add(
-          JobNames.default,
-          cooperativeBankOfOromiaTransactionJob,
-        );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+    await this.addTransactionJobsToQueue({
+      queue: this.queuesService.transactionJobCooperativeBankOfOromiaQueue,
+      transactionJobs: cooperativeBankOfOromiaTransactionJobs,
+    });
   }
 
   public async addNedbankTransactionJobs(
     nedbankTransactionJobs: NedbankTransactionJobDto[],
   ): Promise<void> {
-    for (const nedbankTransactionJob of nedbankTransactionJobs) {
-      const job = await this.queuesService.transactionJobNedbankQueue.add(
-        JobNames.default,
-        nedbankTransactionJob,
-      );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+    await this.addTransactionJobsToQueue({
+      queue: this.queuesService.transactionJobNedbankQueue,
+      transactionJobs: nedbankTransactionJobs,
+    });
   }
 
   public async addOnafriqTransactionJobs(
     onafriqTransactionJobs: OnafriqTransactionJobDto[],
   ): Promise<void> {
-    for (const onafriqTransactionJob of onafriqTransactionJobs) {
-      const job = await this.queuesService.transactionJobOnafriqQueue.add(
-        JobNames.default,
-        onafriqTransactionJob,
-      );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+    await this.addTransactionJobsToQueue({
+      queue: this.queuesService.transactionJobOnafriqQueue,
+      transactionJobs: onafriqTransactionJobs,
+    });
   }
 
   public async addCommercialBankOfEthiopiaTransactionJobs(
     commercialBankOfEthiopiaTransactionJobs: CommercialBankEthiopiaTransactionJobDto[],
   ): Promise<void> {
-    for (const commercialBankOfEthiopiaTransactionJob of commercialBankOfEthiopiaTransactionJobs) {
-      const job =
-        await this.queuesService.transactionJobCommercialBankEthiopiaQueue.add(
-          JobNames.default,
-          commercialBankOfEthiopiaTransactionJob,
-        );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+    await this.addTransactionJobsToQueue({
+      queue: this.queuesService.transactionJobCommercialBankEthiopiaQueue,
+      transactionJobs: commercialBankOfEthiopiaTransactionJobs,
+    });
   }
 
   public async addExcelTransactionJobs(
     excelTransactionJobs: ExcelTransactionJobDto[],
   ): Promise<void> {
-    for (const excelTransactionJob of excelTransactionJobs) {
-      const job = await this.queuesService.transactionJobExcelQueue.add(
-        JobNames.default,
-        excelTransactionJob,
-      );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+    await this.addTransactionJobsToQueue({
+      queue: this.queuesService.transactionJobExcelQueue,
+      transactionJobs: excelTransactionJobs,
+    });
   }
 
   public async addMtnTransactionJobs(
     mtnTransactionJobs: MtnTransactionJobDto[],
   ): Promise<void> {
-    for (const mtnTransactionJob of mtnTransactionJobs) {
-      const job = await this.queuesService.transactionJobMtnQueue.add(
-        JobNames.default,
-        mtnTransactionJob,
+    await this.addTransactionJobsToQueue({
+      queue: this.queuesService.transactionJobMtnQueue,
+      transactionJobs: mtnTransactionJobs,
+    });
+  }
+
+  private async addTransactionJobsToQueue({
+    queue,
+    transactionJobs,
+  }: {
+    queue: Queue;
+    transactionJobs: SharedTransactionJobDto[];
+  }): Promise<void> {
+    if (transactionJobs.length === 0) {
+      return;
+    }
+
+    const jobs = await queue.addBulk(
+      transactionJobs.map((transactionJob) => ({
+        name: JobNames.default,
+        data: transactionJob,
+      })),
+    );
+
+    const jobIds = jobs
+      .filter((job) => job.id != null)
+      .map((job) => String(job.id));
+
+    if (jobIds.length > 0) {
+      await this.redisClient.sadd(
+        getRedisSetName(transactionJobs[0].programId),
+        ...jobIds,
       );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }
   }
 }
