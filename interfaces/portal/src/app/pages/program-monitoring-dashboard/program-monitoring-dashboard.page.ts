@@ -32,7 +32,6 @@ export interface ChartTextAlternativeOptions {
   templateUrl: './program-monitoring-dashboard.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     PageLayoutMonitoringComponent,
     ChartModule,

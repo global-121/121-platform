@@ -71,7 +71,6 @@ app
 ```typescript
 @Component({
   selector: 'app-user-profile',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, ReactiveFormsModule],
   template: `...`,

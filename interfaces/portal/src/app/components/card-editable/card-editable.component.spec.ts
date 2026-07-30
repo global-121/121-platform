@@ -8,7 +8,6 @@ import { CardEditableComponent } from '~/components/card-editable/card-editable.
 
 @Component({
   selector: 'app-test-host',
-  standalone: true,
   imports: [CardEditableComponent],
   template: `
     <app-card-editable

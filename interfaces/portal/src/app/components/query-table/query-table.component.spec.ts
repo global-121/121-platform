@@ -55,7 +55,6 @@ interface TestContext {
 
 @Component({
   selector: 'app-query-table-host-spec',
-  standalone: true,
   imports: [QueryTableComponent],
   template: `
     <app-query-table
@@ -99,7 +98,6 @@ class QueryTableHostComponent {
 
 @Component({
   selector: 'app-test-expandable-cell',
-  standalone: true,
   template: '',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

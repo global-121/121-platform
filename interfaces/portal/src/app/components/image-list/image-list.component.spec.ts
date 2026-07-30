@@ -19,7 +19,6 @@ interface KoboImageItem {
 
 @Component({
   selector: 'app-test-host',
-  standalone: true,
   imports: [ImageListComponent],
   template: ` <app-image-list [images]="images()" /> `,
   changeDetection: ChangeDetectionStrategy.OnPush,

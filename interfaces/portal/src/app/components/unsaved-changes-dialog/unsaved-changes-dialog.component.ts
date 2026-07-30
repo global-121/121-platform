@@ -10,7 +10,6 @@ import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-unsaved-changes-dialog',
-  standalone: true,
   imports: [DialogModule, ButtonModule],
   templateUrl: './unsaved-changes-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
