@@ -17,9 +17,6 @@ export enum QueueNames {
   paymentCallbackOnafriq = 'onafriqCallback',
   paymentReconciliationMtnTransfer = 'mtnTransferReconciliation',
 
-  // payment management jobs
-  paymentDeletion = 'paymentDeletion',
-
   // create message jobs
   createMessageReplyOnIncoming = 'replyOnIncoming',
   createMessageSmallBulk = 'smallBulk',
