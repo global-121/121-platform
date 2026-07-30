@@ -909,6 +909,7 @@ export class RegistrationsService {
       FspAttributes.addressCity,
       FspAttributes.phoneNumber,
       FspAttributes.fullName,
+      FspAttributes.email,
     ];
 
     const registrationData = (
@@ -937,6 +938,7 @@ export class RegistrationsService {
       addressPostalCode: registrationData[FspAttributes.addressPostalCode],
       addressCity: registrationData[FspAttributes.addressCity],
       phoneNumber: registrationData[FspAttributes.phoneNumber]!,
+      emailAddress: registrationData[FspAttributes.email] ?? undefined,
     };
   }
 }
