@@ -12,4 +12,5 @@ export enum FspAttributes {
   bankAccountNumber = 'bankAccountNumber',
   whatsappPhoneNumber = 'whatsappPhoneNumber',
   phoneNumberPayment = 'phoneNumberPayment',
+  email = 'email',
 }

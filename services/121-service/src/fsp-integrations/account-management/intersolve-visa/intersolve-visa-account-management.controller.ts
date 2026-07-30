@@ -337,6 +337,7 @@ export class IntersolveVisaAccountManagementController {
         addressHouseNumberAddition: body.addressHouseNumberAddition,
         addressee: body.addressee,
         addresseePhoneNumber: body.addresseePhoneNumber,
+        addresseeEmailAddress: body.addresseeEmailAddress,
         userId,
       },
     );

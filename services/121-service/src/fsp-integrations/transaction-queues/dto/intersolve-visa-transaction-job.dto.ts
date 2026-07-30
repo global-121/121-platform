@@ -8,4 +8,5 @@ export interface IntersolveVisaTransactionJobDto extends SharedTransactionJobDto
   readonly addressHouseNumberAddition: string;
   readonly addressPostalCode?: string;
   readonly addressCity: string;
+  readonly email?: string;
 }

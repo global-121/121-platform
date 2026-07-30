@@ -22,6 +22,7 @@ export class VisaCardOrderMapper {
       noOfCardsOrdered: entity.noOfCardsOrdered,
       address: this.formatAddressForDisplay({ entity }),
       addresseePhoneNumber: entity.addresseePhoneNumber,
+      addresseeEmailAddress: entity.addresseeEmailAddress,
       orderedByUsername: entity.user?.username ?? `${entity.userId}`,
       created: entity.created,
     };

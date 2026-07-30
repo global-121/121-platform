@@ -3,6 +3,7 @@ export interface CreatePhysicalCardRequestIntersolveApiDto {
   readonly firstName: string;
   readonly lastName: string;
   readonly mobileNumber: string;
+  readonly address3?: string;
   readonly cardAddress: AddressIntersolveApi;
   readonly pinAddress: AddressIntersolveApi;
   readonly pinStatus: string;

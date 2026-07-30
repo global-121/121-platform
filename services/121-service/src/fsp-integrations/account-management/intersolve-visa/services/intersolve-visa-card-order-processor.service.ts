@@ -41,9 +41,7 @@ export class IntersolveVisaCardOrderProcessorService {
     coverLetterCode: string;
   }): Promise<void> {
     if (!order.addresseePhoneNumber) {
-      throw new Error(
-        `Card order ${order.id} is missing addresseePhoneNumber`,
-      );
+      throw new Error(`Card order ${order.id} is missing addresseePhoneNumber`);
     }
 
     const contactInformation: ContactInformation = {
@@ -54,6 +52,7 @@ export class IntersolveVisaCardOrderProcessorService {
       addressPostalCode: order.addressPostalCode,
       addressCity: order.addressCity,
       phoneNumber: order.addresseePhoneNumber,
+      emailAddress: order.addresseeEmailAddress ?? undefined,
     };
 
     let cardsSentByIntersolve = 0;

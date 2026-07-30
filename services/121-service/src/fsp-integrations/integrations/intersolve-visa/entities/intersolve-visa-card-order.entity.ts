@@ -53,4 +53,7 @@ export class VisaCardOrderEntity extends Base121Entity {
 
   @Column({ type: 'character varying' })
   public addresseePhoneNumber: string;
+
+  @Column({ type: 'character varying', nullable: true })
+  public addresseeEmailAddress: string | null;
 }

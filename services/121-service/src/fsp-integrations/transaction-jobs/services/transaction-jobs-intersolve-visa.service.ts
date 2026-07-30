@@ -119,6 +119,7 @@ export class TransactionJobsIntersolveVisaService implements TransactionJobServi
             addressPostalCode: transactionJob.addressPostalCode!,
             addressCity: transactionJob.addressCity!,
             phoneNumber: transactionJob.phoneNumber!,
+            emailAddress: transactionJob.email!,
           },
           transferValueInMajorUnit,
           brandCode,
