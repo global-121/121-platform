@@ -625,5 +625,28 @@ describe('IntersolveVisaService', () => {
         contactInformation,
       });
     });
+
+    it('passes emailAddress through to createPhysicalCard when provided', async () => {
+      jest
+        .spyOn(apiService, 'issueToken')
+        .mockResolvedValue({ code: 'token-456' } as any);
+
+      const contactInformationWithEmail = {
+        ...contactInformation,
+        emailAddress: 'john.doe@example.org',
+      };
+
+      await service.issueTokenAndCreatePhysicalCard({
+        brandCode: 'BRAND',
+        coverLetterCode: 'COVER_LETTER',
+        contactInformation: contactInformationWithEmail,
+      });
+
+      expect(apiService.createPhysicalCard).toHaveBeenCalledWith({
+        tokenCode: 'token-456',
+        coverLetterCode: 'COVER_LETTER',
+        contactInformation: contactInformationWithEmail,
+      });
+    });
   });
 });
