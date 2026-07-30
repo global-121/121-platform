@@ -98,11 +98,12 @@ export const createNewProgramTracker = ({
       });
     }
 
-    console.log('backButtonClicksEvent fired 1');
-    events.push(backButtonClicksEvent());
+    if (backButtonClicks > 0) {
+      events.push(backButtonClicksEvent());
+    }
 
     reset();
-    return events;
+    return [...events, ...otherEvents];
   };
 
   const stop = (): TrackingEvent[] => {
@@ -114,11 +115,12 @@ export const createNewProgramTracker = ({
       action: TrackingAction.createNewProgramCloseDialog,
     });
 
-    console.log('backButtonClicksEvent fired 2');
-    events.push(backButtonClicksEvent());
+    if (backButtonClicks > 0) {
+      events.push(backButtonClicksEvent());
+    }
 
     reset();
-    return events;
+    return [...events, ...otherEvents];
   };
 
   const addTrackEvent = (event: TrackingEvent): void => {

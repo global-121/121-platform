@@ -160,7 +160,7 @@ export class HttpWrapperService {
     isUpload = false,
     httpParams: params,
   }: PerformRequestParams): Promise<T> {
-    // console.log(`HttpWrapperService ${method}: ${url}`, body ?? '');
+    console.log(`HttpWrapperService ${method}: ${url}`, body ?? '');
 
     try {
       const response = await lastValueFrom<Error | HttpErrorResponse | T>(
@@ -173,14 +173,14 @@ export class HttpWrapperService {
             body,
           })
           .pipe(
-            tap(() => {
-              // console.log(
-              //   `HttpWrapperService ${method}: ${url}${
-              //     params ? `\nParams ${JSON.stringify(params, null, 2)}` : ''
-              //   }${body ? `\nBody: ${JSON.stringify(body, null, 2)}` : ''}`,
-              //   '\nResponse:',
-              //   response,
-              // );
+            tap((response) => {
+              console.log(
+                `HttpWrapperService ${method}: ${url}${
+                  params ? `\nParams ${JSON.stringify(params, null, 2)}` : ''
+                }${body ? `\nBody: ${JSON.stringify(body, null, 2)}` : ''}`,
+                '\nResponse:',
+                response,
+              );
             }),
             catchError((error: HttpErrorResponse) => this.handleError(error)),
           ),
