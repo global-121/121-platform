@@ -42,8 +42,8 @@ const normalizeKoboImageValue = (value: unknown): string =>
     SkeletonModule,
     ButtonModule,
     DataListComponent,
-    ImageListComponent,
     EditPersonalInformationComponent,
+    ImageListComponent,
   ],
   templateUrl: './program-registration-personal-information.page.html',
   styles: ``,
@@ -150,13 +150,6 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
     ),
   );
 
-  readonly textDataList = computed(() =>
-    this.dataList().filter(
-      (item): item is Exclude<DataListItem, { type: 'koboImage' }> =>
-        item.type !== 'koboImage',
-    ),
-  );
-
   readonly imageDataList = computed(() =>
     this.dataList().filter(
       (item): item is Extract<DataListItem, { type: 'koboImage' }> =>
@@ -176,13 +169,11 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
     })),
   );
 
-  readonly editableAttributeList = computed(() =>
-    (this.registrationAttributes.data() ?? []).filter(
-      (attribute) => attribute.type !== RegistrationAttributeTypes.koboImage,
-    ),
-  );
-
   readonly hasKoboImages = computed(() => this.imageDataList().length > 0);
+
+  readonly editableAttributeList = computed(
+    () => this.registrationAttributes.data() ?? [],
+  );
 
   onRegistrationUpdated() {
     this.isEditing.set(false);

@@ -9,14 +9,12 @@ import {
 } from '@angular/core';
 
 import { AccordionModule } from 'primeng/accordion';
-import { ImageModule } from 'primeng/image';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
-import {
-  ChipVariant,
-  ColoredChipComponent,
-} from '~/components/colored-chip/colored-chip.component';
+import { ImageViewerComponent } from '~/components/image-viewer/image-viewer.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
@@ -24,20 +22,16 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
   selector: 'app-image-list',
   imports: [
     AccordionModule,
-    ColoredChipComponent,
-    ImageModule,
     TranslatableStringPipe,
+    ButtonModule,
+    DialogModule,
+    ImageViewerComponent,
   ],
   templateUrl: './image-list.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImageListComponent {
-  readonly availableChipLabel = $localize`:@@image-available:Available`;
-  readonly notAvailableChipLabel = $localize`:@@image-not-available:Not available`;
-  readonly availableChipVariant: ChipVariant = 'green';
-  readonly notAvailableChipVariant: ChipVariant = 'red';
-
   private readonly destroyRef = inject(DestroyRef);
   private readonly registrationApiService = inject(RegistrationApiService);
   readonly images = input.required<
@@ -51,6 +45,10 @@ export class ImageListComponent {
     }[]
   >();
   readonly downloadedImageObjectUrls = signal<(null | string)[]>([]);
+
+  readonly visibleImageIndex = signal<null | number>(null);
+
+  isMaximized = false;
 
   constructor() {
     // Downloaded images are kept as blob object URLs, which must be revoked
@@ -87,15 +85,6 @@ export class ImageListComponent {
     });
   }
 
-  objectUrlForImageIndex({ index }: { index: number }): null | string {
-    const objectUrl = this.downloadedImageObjectUrls()[index];
-    if (!objectUrl) {
-      return null;
-    }
-
-    return objectUrl;
-  }
-
   isImageAvailable({ imageUrl }: { imageUrl: string }): boolean {
     return (
       typeof imageUrl === 'string' &&
@@ -104,7 +93,7 @@ export class ImageListComponent {
     );
   }
 
-  async onAccordionOpen({ imageIndex }: { imageIndex: number }): Promise<void> {
+  async openImage({ imageIndex }: { imageIndex: number }): Promise<void> {
     const images = this.images();
 
     if (imageIndex < 0 || imageIndex >= images.length) {
@@ -113,7 +102,7 @@ export class ImageListComponent {
 
     const image = images[imageIndex];
 
-    await this.onImagePanelOpen({
+    await this.loadImage({
       index: imageIndex,
       programId: image.programId,
       referenceId: image.referenceId,
@@ -121,7 +110,7 @@ export class ImageListComponent {
     });
   }
 
-  async onImagePanelOpen({
+  async loadImage({
     index,
     programId,
     referenceId,
