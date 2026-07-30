@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class DebitCardOrderAddEmailAddress1785396780571 implements MigrationInterface {
-  name = 'DebitCardOrderAddEmailAddress1785396780571';
+export class VisaCardOrderAddAddresseeEmailAddress1785396780571 implements MigrationInterface {
+  name = 'VisaCardOrderAddAddresseeEmailAddress1785396780571';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
