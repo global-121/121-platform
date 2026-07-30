@@ -1,0 +1,34 @@
+<div class="flex items-center gap-2 inline-full">
+  <strong>
+    <i class="pi pi-image me-2"></i>
+
+    {{ label() | translatableString }}:
+  </strong>
+
+  @if (isAvailable()) {
+    <app-colored-chip
+      label="Available"
+      i18n-label="@@image-available"
+      variant="green"
+    />
+  } @else {
+    <app-colored-chip
+      label="Not available"
+      i18n-label="@@image-not-available"
+      variant="red"
+    />
+  }
+
+  @if (isAvailable()) {
+    <p-button
+      i18n
+      (click)="showViewer()"
+      outlined
+      rounded
+      size="small"
+      class="ms-auto"
+    >
+      Show Image
+    </p-button>
+  }
+</div>

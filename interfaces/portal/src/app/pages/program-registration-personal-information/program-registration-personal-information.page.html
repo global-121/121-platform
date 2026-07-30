@@ -20,32 +20,25 @@
             />
           </div>
         }
-        @if (hasKoboImages()) {
-          <div class="grid gap-4 lg:grid-cols-2">
-            <app-data-list
-              [data]="textDataList()"
-              [forceOneColumn]="true"
-            />
-            <app-image-list [images]="koboImages()" />
-          </div>
-        } @else {
-          <app-data-list [data]="dataList()" />
-        }
+        <app-data-list [data]="dataList()" />
       } @else {
         <app-edit-personal-information
           #editPersonalInformation
           [programId]="programId()"
           [registrationId]="registrationId()"
           [attributeList]="editableAttributeList()"
-          [forceOneColumn]="hasKoboImages()"
           (cancelEditing)="isEditing.set(false)"
           (registrationUpdated)="onRegistrationUpdated()"
-        >
-          @if (hasKoboImages()) {
-            <app-image-list [images]="koboImages()" />
-          }
-        </app-edit-personal-information>
+        />
       }
+    }
+    @if (hasKoboImages()) {
+      <!--
+        XXX: This would be the "hidden modal-container", with all the actual image-viewer-modals, controlled by the buttons in the list(s) above.
+      -->
+      <div style="outline: 2px dashed hotpink">
+        <app-image-list [images]="koboImages()" />
+      </div>
     }
   </div>
 </app-page-layout-registration>

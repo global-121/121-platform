@@ -32,65 +32,69 @@
       rounded
     />
   </div>
-  <div
-    class="grid gap-4"
-    [class.lg:grid-cols-2]="forceOneColumn()"
-  >
-    <div
-      class="grid grid-cols-1 gap-x-5 gap-y-8"
-      [class.md:grid-cols-2]="!forceOneColumn()"
-    >
+  <div class="grid gap-4">
+    <div class="grid grid-cols-1 gap-x-5 gap-y-8 md:grid-cols-2">
       @for (attribute of attributeList(); track $index) {
-        <div class="">
-          <app-form-field-wrapper
-            [dataTestId]="'edit-personal-information-' + attribute.name"
-            [label]="attribute.label"
-            [labelTooltip]="attribute.editInfo"
-            [errorMessage]="formFieldErrors()()(attribute.name)"
-            [isRequired]="attribute.isRequired"
-          >
-            @let type = attribute.type;
+        <div>
+          @let type = attribute.type;
 
-            @if (type === 'date') {
-              <p-datepicker
-                [formControlName]="attribute.name"
-                [showClear]="true"
-                appendTo="body"
+          @if (type === 'kobo-image') {
+            <!-- XXX: Layout is TBD by design/final-state of the Figma ; this is just to make it "not super weird/ugly": -->
+            <div class="flex items-center gap-2 block-full">
+              <app-image-viewer-trigger
+                [imageUrl]="attribute.value?.toString() ?? ''"
+                [label]="attribute.label"
+                [name]="attribute.name"
               />
-            } @else if (type === 'dropdown') {
-              <p-select
-                [formControlName]="attribute.name"
-                [options]="attribute.options"
-                [optionLabel]="'label'"
-                [optionValue]="'value'"
-                placeholder="Type or select"
-                i18n-placeholder="@@generic-type-or-select"
-                [filter]="true"
-                [showClear]="attribute.isRequired === false"
-              />
-            } @else if (type === 'boolean') {
-              <p-checkbox
-                [formControlName]="attribute.name"
-                [binary]="true"
-                [value]="true"
-              />
-            } @else {
-              <input
-                pInputText
-                [type]="
-                  type === 'numeric' || type === 'numeric-nullable'
-                    ? 'number'
-                    : 'text'
-                "
-                [formControlName]="attribute.name"
-                autocomplete="off"
-              />
-            }
-          </app-form-field-wrapper>
+            </div>
+          } @else {
+            <app-form-field-wrapper
+              [dataTestId]="'edit-personal-information-' + attribute.name"
+              [label]="attribute.label"
+              [labelTooltip]="attribute.editInfo"
+              [errorMessage]="formFieldErrors()()(attribute.name)"
+              [isRequired]="attribute.isRequired"
+            >
+              @if (type === 'date') {
+                <p-datepicker
+                  [formControlName]="attribute.name"
+                  [showClear]="true"
+                  appendTo="body"
+                />
+              } @else if (type === 'dropdown') {
+                <p-select
+                  [formControlName]="attribute.name"
+                  [options]="attribute.options"
+                  [optionLabel]="'label'"
+                  [optionValue]="'value'"
+                  placeholder="Type or select"
+                  i18n-placeholder="@@generic-type-or-select"
+                  [filter]="true"
+                  [showClear]="attribute.isRequired === false"
+                />
+              } @else if (type === 'boolean') {
+                <p-checkbox
+                  [formControlName]="attribute.name"
+                  [binary]="true"
+                  [value]="true"
+                />
+              } @else {
+                <input
+                  pInputText
+                  [type]="
+                    type === 'numeric' || type === 'numeric-nullable'
+                      ? 'number'
+                      : 'text'
+                  "
+                  [formControlName]="attribute.name"
+                  autocomplete="off"
+                />
+              }
+            </app-form-field-wrapper>
+          }
         </div>
       }
     </div>
-    <ng-content></ng-content>
   </div>
 </form>
 <app-form-dialog
