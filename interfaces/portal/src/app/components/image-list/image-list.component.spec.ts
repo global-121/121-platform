@@ -43,7 +43,8 @@ class TestHostComponent {
     },
   ]);
 }
-
+// XXX: All these tests are probably not relevant anymore...
+// But I just kept them, as parts might be useful for other components' tests.
 describe('ImageListComponent', () => {
   let hostComponent: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
@@ -176,6 +177,9 @@ describe('ImageListComponent', () => {
 
     header.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await Promise.resolve();
+    fixture.detectChanges();
+
+    const image = root.querySelector('img');
 
     expect(downloadKoboImage).toHaveBeenCalledWith({
       programId: 1,
@@ -186,7 +190,7 @@ describe('ImageListComponent', () => {
     expect(rendererComponent.downloadedImageObjectUrls()[0]).toBe(
       'blob:https://example.org/kobo-image',
     );
-    expect(rendererComponent.objectUrlForImageIndex({ index: 0 })).toBe(
+    expect(image?.getAttribute('src')).toBe(
       'blob:https://example.org/kobo-image',
     );
     expect(revokeObjectUrl).not.toHaveBeenCalled();
