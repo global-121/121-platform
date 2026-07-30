@@ -14,6 +14,7 @@ const stepTimeSpentAction: Record<ProgramStep, TrackingAction> = {
 };
 
 export interface CreateNewProgramTracker {
+  addTrackEvent: (event: TrackingEvent) => void;
   enterStep: (step: ProgramStep) => void;
   leaveStep: () => void;
   goBack: () => void;
@@ -32,6 +33,7 @@ export const createNewProgramTracker = ({
   let activeStep: ProgramStep | undefined;
   let activeStepStartedAt: number | undefined;
   let backButtonClicks = 0;
+  const otherEvents: TrackingEvent[] = [];
 
   const enterStep = (step: ProgramStep): void => {
     flowStartedAt ??= now();
@@ -96,6 +98,7 @@ export const createNewProgramTracker = ({
       });
     }
 
+    console.log('backButtonClicksEvent fired 1');
     events.push(backButtonClicksEvent());
 
     reset();
@@ -111,13 +114,19 @@ export const createNewProgramTracker = ({
       action: TrackingAction.createNewProgramCloseDialog,
     });
 
+    console.log('backButtonClicksEvent fired 2');
     events.push(backButtonClicksEvent());
 
     reset();
     return events;
   };
 
+  const addTrackEvent = (event: TrackingEvent): void => {
+    otherEvents.push(event);
+  };
+
   return {
+    addTrackEvent,
     enterStep,
     leaveStep,
     goBack,

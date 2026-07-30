@@ -4,6 +4,7 @@ import {
   effect,
   inject,
   input,
+  output,
 } from '@angular/core';
 import {
   FormControl,
@@ -11,6 +12,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
@@ -23,7 +25,7 @@ import { Program } from '~/domains/program/program.model';
 import {
   TrackingAction,
   TrackingCategory,
-  TrackingService,
+  TrackingEvent,
 } from '~/services/tracking.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
@@ -45,8 +47,8 @@ export type ProgramInformationFormGroup =
 })
 export class ProgramFormInformationComponent {
   readonly program = input<Program>();
-
-  trackingService = inject(TrackingService);
+  readonly router = inject(Router);
+  readonly trackEvent = output<TrackingEvent>();
 
   formGroup = new FormGroup({
     startDate: new FormControl<Date | undefined>(
@@ -102,7 +104,7 @@ export class ProgramFormInformationComponent {
   // Tracking events
 
   trackValidationToggleEvent(event: { checked: boolean }): void {
-    this.trackingService.trackEvent({
+    this.trackEvent.emit({
       category: TrackingCategory.programSettings,
       action: TrackingAction.toggleProgramValidation,
       name: event.checked ? 'enabled' : 'disabled',
@@ -110,7 +112,7 @@ export class ProgramFormInformationComponent {
   }
 
   trackScopeToggleEvent(event: { checked: boolean }): void {
-    this.trackingService.trackEvent({
+    this.trackEvent.emit({
       category: TrackingCategory.programSettings,
       action: TrackingAction.toggleProgramScope,
       name: event.checked ? 'enabled' : 'disabled',

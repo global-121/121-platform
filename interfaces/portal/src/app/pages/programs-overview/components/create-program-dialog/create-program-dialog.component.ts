@@ -346,4 +346,8 @@ export class CreateProgramDialogComponent {
       this.trackingService.trackEvent(event);
     }
   }
+
+  handleTrackEvent(event: TrackingEvent): void {
+    this.createProgramTracker?.addTrackEvent(event);
+  }
 }

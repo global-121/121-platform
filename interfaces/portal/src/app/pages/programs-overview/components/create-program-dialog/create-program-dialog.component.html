@@ -87,6 +87,7 @@
       <app-program-form-information
         #formInformation
         [program]="programToDuplicate()"
+        (trackEvent)="handleTrackEvent($event)"
       />
     </p-card>
   </ng-template>
