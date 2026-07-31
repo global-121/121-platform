@@ -50,8 +50,8 @@ export class CreateVisaCardOrderDto {
   @IsString()
   public readonly addresseePhoneNumber: string;
 
-  @ApiProperty({ example: 'john.doe@example.org', required: false })
-  @IsOptional()
+  @ApiProperty({ example: 'john.doe@example.org' })
+  @IsNotEmpty()
   @IsString()
-  public readonly addresseeEmailAddress?: string;
+  public readonly addresseeEmailAddress: string;
 }

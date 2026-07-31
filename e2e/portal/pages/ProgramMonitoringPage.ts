@@ -15,6 +15,7 @@ interface OrderDebitCardOrder {
   addressHouseNumberAddition: string;
   addressee: string;
   phoneNumber: string;
+  emailAddress: string;
 }
 class ProgramMonitoring extends BasePage {
   page: Page;
@@ -358,6 +359,7 @@ class ProgramMonitoring extends BasePage {
     noOfCards,
     addressee,
     phoneNumber,
+    emailAddress,
     addressPostalCode,
     addressCity,
     addressStreet,
@@ -370,6 +372,7 @@ class ProgramMonitoring extends BasePage {
     await this.page
       .getByLabel('Addressee (name of the recipient of the package)')
       .fill(addressee);
+    await this.page.getByLabel('Addressee email').fill(emailAddress);
     await this.page.getByLabel('Addressee phone number').fill(phoneNumber);
     await this.page.getByLabel('Street').fill(addressStreet);
     await this.page.getByLabel('House number').fill(addressHouseNumber);
