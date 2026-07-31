@@ -198,7 +198,6 @@ export class TransactionJobsCreationService {
               registrationView[FspAttributes.addressPostalCode],
             addressCity: registrationView[FspAttributes.addressCity],
             phoneNumber: registrationView[FspAttributes.phoneNumber], // Phonenumber is a required field if a registration has visa as FSP
-            email: registrationView[FspAttributes.email], // Email is a required field if a registration has visa as FSP
           };
         },
       );
