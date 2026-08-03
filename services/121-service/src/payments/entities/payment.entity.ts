@@ -1,5 +1,6 @@
 import {
   Column,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -32,4 +33,7 @@ export class PaymentEntity extends Base121Entity {
     cascade: true,
   })
   public approvals: PaymentApprovalEntity[];
+
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  public deletedAt: Date | null;
 }

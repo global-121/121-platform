@@ -11,6 +11,7 @@ import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/pay
 import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
+import { PaymentsDeletionService } from '@121-service/src/payments/services/payments-deletion.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -44,6 +45,7 @@ export class PaymentsManagementService {
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
     private readonly paymentEmailsService: PaymentEmailsService,
+    private readonly paymentsDeletionService: PaymentsDeletionService,
     private readonly azureLogService: AzureLogService,
   ) {}
 
@@ -520,7 +522,6 @@ export class PaymentsManagementService {
       );
     }
 
-    // Throw if payment is in progress
     const isInProgress =
       await this.paymentsProgressService.isPaymentInProgress(programId);
     if (isInProgress) {
@@ -539,7 +540,16 @@ export class PaymentsManagementService {
       );
     }
 
-    await this.paymentRepository.remove(payment);
+    await this.paymentRepository.softRemove(payment);
+
+    try {
+      await this.paymentsDeletionService.addPaymentDeletionJobToQueue({
+        paymentId,
+      });
+    } catch (error) {
+      await this.paymentRepository.recover(payment);
+      throw error;
+    }
   }
 
   private async processFinalApproval({

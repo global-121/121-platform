@@ -13,6 +13,8 @@ import { TransactionEventsScopedRepository } from '@121-service/src/payments/tra
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
+
+const TRANSACTION_DELETE_BATCH_SIZE = 5000;
 @Injectable()
 export class TransactionsService {
   public constructor(
@@ -72,6 +74,22 @@ export class TransactionsService {
     }
 
     return savedTransactions.map((t) => t.id);
+  }
+
+  public async deleteTransactionsByPaymentId({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<void> {
+    const transactionIds = await this.transactionRepository.getIdsByPaymentId({
+      paymentId,
+    });
+
+    const chunks = chunk(transactionIds, TRANSACTION_DELETE_BATCH_SIZE);
+
+    for (const transactionIdsBatch of chunks) {
+      await this.transactionRepository.deleteByIds({ ids: transactionIdsBatch });
+    }
   }
 
   public async saveProgress({

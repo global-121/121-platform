@@ -150,4 +150,27 @@ export class TransactionRepository extends Repository<TransactionEntity> {
       .addOrderBy('startedEvent.created', 'ASC')
       .getMany();
   }
+
+  public async getIdsByPaymentId({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<number[]> {
+    const rows = await this.baseRepository
+      .createQueryBuilder('transaction')
+      .select('transaction.id', 'id')
+      .where('transaction.paymentId = :paymentId', { paymentId })
+      .getRawMany<{ id: number }>();
+
+    return rows.map((row) => row.id);
+  }
+
+  public async deleteByIds({ ids }: { ids: number[] }): Promise<void> {
+    await this.baseRepository
+      .createQueryBuilder()
+      .delete()
+      .from(TransactionEntity)
+      .where('id = ANY(:ids)', { ids })
+      .execute();
+  }
 }
