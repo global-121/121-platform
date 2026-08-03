@@ -5,19 +5,19 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AxiosResponse } from 'axios';
+import path from 'node:path';
 import { Readable } from 'node:stream';
 import { Equal, Repository } from 'typeorm';
 
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
+import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
-const ALLOWED_IMAGE_MIMETYPES = new Set([
-  'image/jpeg',
-  'image/png',
-]);
+const ALLOWED_IMAGE_MIMETYPES = new Set(['image/jpeg', 'image/png']);
 
 @Injectable()
 export class KoboImageService {
@@ -26,6 +26,7 @@ export class KoboImageService {
 
   constructor(
     private readonly httpService: CustomHttpService,
+    private readonly koboApiService: KoboApiService,
     private readonly registrationsService: RegistrationsService,
     private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
   ) {}
@@ -50,18 +51,23 @@ export class KoboImageService {
       throw new NotFoundException('No Kobo integration found for this program');
     }
 
-    await this.registrationsService.getRegistrationOrThrow({
-      referenceId,
-      programId,
-    });
-
     await this.validateAttributeIsKoboImage({ programId, attributeName });
 
-    const imageUrl = await this.getImageUrlForAttribute({
+    const imageValue = await this.getImageValueForAttribute({
       programId,
       referenceId,
       attributeName,
     });
+
+    const imageUrl = this.isResolvedDownloadUrl(imageValue)
+      ? imageValue
+      : await this.resolveImageDownloadUrlOrThrow({
+          imageValue,
+          referenceId,
+          koboUrl: koboEntity.url,
+          koboToken: koboEntity.token,
+          assetId: koboEntity.assetUid,
+        });
 
     this.validateUrlBelongsToKoboAsset({
       imageUrl,
@@ -105,7 +111,7 @@ export class KoboImageService {
     }
   }
 
-  private async getImageUrlForAttribute({
+  private async getImageValueForAttribute({
     programId,
     referenceId,
     attributeName,
@@ -114,21 +120,75 @@ export class KoboImageService {
     referenceId: string;
     attributeName: string;
   }): Promise<string> {
-    const registration =
-      await this.registrationsService.getOnePaginatedRegistrationByReferenceId({
-        referenceId,
-        programId,
-        select: [attributeName],
-      });
+    let registration: MappedPaginatedRegistrationDto;
+    try {
+      registration =
+        await this.registrationsService.getOnePaginatedRegistrationByReferenceId(
+          {
+            referenceId,
+            programId,
+            select: [attributeName],
+          },
+        );
+    } catch {
+      throw new NotFoundException(
+        `No registration found for referenceId '${referenceId}'`,
+      );
+    }
 
-    const url = registration[attributeName] as string | undefined;
-    if (!url) {
+    const imageValue = registration[attributeName] as string | undefined;
+    if (!imageValue) {
       throw new NotFoundException(
         `No image stored for attribute '${attributeName}' on this registration`,
       );
     }
 
-    return url;
+    return imageValue;
+  }
+
+  private async resolveImageDownloadUrlOrThrow({
+    imageValue,
+    referenceId,
+    koboUrl,
+    koboToken,
+    assetId,
+  }: {
+    imageValue: string;
+    referenceId: string;
+    koboUrl: string;
+    koboToken: string;
+    assetId: string;
+  }): Promise<string> {
+    const filename = path.basename(imageValue);
+    if (!filename) {
+      throw new BadRequestException('Image filename is invalid');
+    }
+
+    const submission = await this.koboApiService.getSubmission({
+      token: koboToken,
+      assetId,
+      baseUrl: koboUrl,
+      submissionUuid: referenceId,
+    });
+
+    const attachments = submission._attachments ?? [];
+    const matchingAttachment = attachments.find((attachment) =>
+      attachment.filename.endsWith(filename),
+    );
+
+    if (!matchingAttachment) {
+      throw new NotFoundException(
+        `No matching attachment found for image filename '${filename}' in Kobo submission`,
+      );
+    }
+
+    return matchingAttachment.download_url;
+  }
+
+  private isResolvedDownloadUrl(imageValue: string): boolean {
+    return (
+      imageValue.startsWith('http://') || imageValue.startsWith('https://')
+    );
   }
 
   private validateUrlBelongsToKoboAsset({
@@ -140,9 +200,20 @@ export class KoboImageService {
     koboBaseUrl: string;
     assetId: string;
   }): void {
-    const imageOrigin = new URL(imageUrl).origin;
-    const koboOrigin = new URL(koboBaseUrl).origin;
-    const assetIdFromUrl = imageUrl.split('/').find((part) => part === assetId);
+    let imageOrigin: string;
+    let koboOrigin: string;
+
+    try {
+      imageOrigin = new URL(imageUrl).origin;
+    } catch {
+      throw new BadRequestException('Image URL is invalid');
+    }
+
+    try {
+      koboOrigin = new URL(koboBaseUrl).origin;
+    } catch {
+      throw new BadRequestException('Kobo base URL is invalid');
+    }
 
     if (imageOrigin !== koboOrigin) {
       throw new BadRequestException(
@@ -150,7 +221,9 @@ export class KoboImageService {
       );
     }
 
-    if (assetId && !assetIdFromUrl) {
+    const hasAssetIdInUrl = imageUrl.split('/').includes(assetId);
+
+    if (assetId && !hasAssetIdInUrl) {
       throw new BadRequestException(
         `Image URL does not contain the expected asset ID: ${assetId}`,
       );
