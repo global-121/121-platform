@@ -168,9 +168,6 @@ export class TransactionRepository extends Repository<TransactionEntity> {
   }
 
   public async deleteByIds({ ids }: { ids: number[] }): Promise<void> {
-    // Delete related rows explicitly in child-to-parent order using set-based
-    // queries. This avoids the per-row ON DELETE CASCADE triggers that make
-    // deleting a payment with many transactions prohibitively slow.
     await this.baseRepository.manager
       .createQueryBuilder()
       .delete()

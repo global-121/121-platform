@@ -81,30 +81,16 @@ export class TransactionsService {
   }: {
     paymentId: number;
   }): Promise<void> {
-    console.log(
-      '🚀 ~ TransactionsService ~ deleteTransactionsByPaymentId ~ deleteTransactionsByPaymentId:',
-    );
     const transactionIds = await this.transactionRepository.getIdsByPaymentId({
       paymentId,
     });
-    console.log(
-      `Length of transactions to delete for payment ${paymentId}: ${transactionIds.length}`,
-    );
 
     const chunks = chunk(transactionIds, TRANSACTION_DELETE_BATCH_SIZE);
 
-    let i = 0;
-    for (const transactionIdsBatch of chunks) {
-      console.time(
-        `Deleting batch of ${transactionIdsBatch.length} transactions for payment ${paymentId} chunk i=${i}`,
-      );
+    for (const transactionIdsChunk of chunks) {
       await this.transactionRepository.deleteByIds({
-        ids: transactionIdsBatch,
+        ids: transactionIdsChunk,
       });
-      console.timeEnd(
-        `Deleting batch of ${transactionIdsBatch.length} transactions for payment ${paymentId} chunk i=${i}`,
-      );
-      i++;
     }
   }
 

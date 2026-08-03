@@ -539,15 +539,9 @@ export class PaymentsManagementService {
       );
     }
 
-    console.time(`Deleting payment ${paymentId} and related transactions`);
-
-    // Delete the related transactions (and their events) in batches before
-    // removing the payment. This keeps the deletion synchronous while avoiding
-    // the slow per-row ON DELETE CASCADE triggers on large payments.
     await this.transactionsService.deleteTransactionsByPaymentId({ paymentId });
 
     await this.paymentRepository.remove(payment);
-    console.timeEnd(`Deleting payment ${paymentId} and related transactions`);
   }
 
   private async processFinalApproval({
