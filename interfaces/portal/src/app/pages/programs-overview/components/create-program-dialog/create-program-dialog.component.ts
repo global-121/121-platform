@@ -174,14 +174,6 @@ export class CreateProgramDialogComponent {
         this.programToDuplicate()?.id,
       ),
     onSuccess: async (result, variables) => {
-      this.emitTrackingEvents({
-        events:
-          this.createProgramTracker?.complete({
-            mode: this.duplicationMode() ? 'duplicate' : 'create',
-          }) ?? [],
-      });
-      this.createProgramTracker = undefined;
-
       // If the program was created successfully and the user has selected fsps, we create the FSP configurations for the program
       if (result?.id && variables.budgetGroup.fsps.length > 0) {
         try {
@@ -212,6 +204,14 @@ export class CreateProgramDialogComponent {
           ? $localize`Program successfully duplicated.`
           : $localize`Program successfully created.`,
       });
+
+      this.emitTrackingEvents({
+        events:
+          this.createProgramTracker?.complete({
+            mode: this.duplicationMode() ? 'duplicate' : 'create',
+          }) ?? [],
+      });
+      this.createProgramTracker = undefined;
     },
     onError: (error) => {
       this.toastService.showToast({

@@ -85,46 +85,45 @@ export const createNewProgramTracker = ({
     otherEvents.length = 0;
   };
 
-  const complete = ({ mode }: { mode: CompletionMode }): TrackingEvent[] => {
+  const finalizeEvents = (
+    finalEvent: TrackingEvent | undefined,
+  ): TrackingEvent[] => {
     leaveStep();
     const events = stepTimeEvents();
 
-    if (flowStartedAt !== undefined) {
-      events.push({
-        category: TrackingCategory.createNewProgram,
-        action: TrackingAction.createNewProgramTotalTimeSpent,
-        name:
-          mode === 'duplicate'
-            ? 'Duplicate program completed'
-            : 'Create program completed',
-        value: Math.round((now() - flowStartedAt) / 1000),
-      });
+    if (finalEvent) {
+      events.push(finalEvent);
     }
 
     if (backButtonClicks > 0) {
       events.push(backButtonClicksEvent());
     }
 
+    events.push(...otherEvents);
     reset();
-    return [...events, ...otherEvents];
+    return events;
   };
 
-  const stop = (): TrackingEvent[] => {
-    leaveStep();
-    const events = stepTimeEvents();
+  const complete = ({ mode }: { mode: CompletionMode }): TrackingEvent[] =>
+    finalizeEvents(
+      flowStartedAt !== undefined
+        ? {
+            category: TrackingCategory.createNewProgram,
+            action: TrackingAction.createNewProgramTotalTimeSpent,
+            name:
+              mode === 'duplicate'
+                ? 'Duplicate program completed'
+                : 'Create program completed',
+            value: Math.round((now() - flowStartedAt) / 1000),
+          }
+        : undefined,
+    );
 
-    events.push({
+  const stop = (): TrackingEvent[] =>
+    finalizeEvents({
       category: TrackingCategory.createNewProgram,
       action: TrackingAction.createNewProgramCloseDialog,
     });
-
-    if (backButtonClicks > 0) {
-      events.push(backButtonClicksEvent());
-    }
-
-    reset();
-    return [...events, ...otherEvents];
-  };
 
   const addTrackEvent = ({ event }: { event: TrackingEvent }): void => {
     otherEvents.push(event);
