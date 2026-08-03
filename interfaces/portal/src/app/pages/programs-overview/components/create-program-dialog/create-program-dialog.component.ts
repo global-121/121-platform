@@ -38,7 +38,7 @@ import { Program } from '~/domains/program/program.model';
 import {
   CreateNewProgramTracker,
   createNewProgramTracker,
-} from '~/pages/programs-overview/components/create-program-dialog/createNewProgramTracker';
+} from '~/pages/programs-overview/components/create-program-dialog/create-new-program-tracker';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { TrackingEvent, TrackingService } from '~/services/tracking.service';
@@ -176,9 +176,9 @@ export class CreateProgramDialogComponent {
     onSuccess: async (result, variables) => {
       this.emitTrackingEvents({
         events:
-          this.createProgramTracker?.complete(
-            this.duplicationMode() ? 'duplicate' : 'create',
-          ) ?? [],
+          this.createProgramTracker?.complete({
+            mode: this.duplicationMode() ? 'duplicate' : 'create',
+          }) ?? [],
       });
       this.createProgramTracker = undefined;
 
@@ -256,7 +256,9 @@ export class CreateProgramDialogComponent {
       return;
     }
 
-    this.createProgramTracker?.enterStep((currentStep - 1) as 1 | 2 | 3);
+    this.createProgramTracker?.enterStep({
+      step: (currentStep - 1) as 1 | 2 | 3,
+    });
   }
 
   private getFormGroupIfStepIsValid(step: 1 | 2 | 3) {
@@ -298,7 +300,7 @@ export class CreateProgramDialogComponent {
     if (currentStep === 0) {
       // simply open the dialog
       this.currentStep.set(1);
-      this.createProgramTracker?.enterStep(1);
+      this.createProgramTracker?.enterStep({ step: 1 });
       return;
     }
 
@@ -318,7 +320,9 @@ export class CreateProgramDialogComponent {
     this.createProgramTracker?.leaveStep();
 
     this.currentStep.set((currentStep + 1) as 2 | 3);
-    this.createProgramTracker?.enterStep((currentStep + 1) as 1 | 2 | 3);
+    this.createProgramTracker?.enterStep({
+      step: (currentStep + 1) as 1 | 2 | 3,
+    });
   }
 
   show(program?: Program) {
@@ -348,6 +352,6 @@ export class CreateProgramDialogComponent {
   }
 
   handleTrackEvent(event: TrackingEvent): void {
-    this.createProgramTracker?.addTrackEvent(event);
+    this.createProgramTracker?.addTrackEvent({ event });
   }
 }

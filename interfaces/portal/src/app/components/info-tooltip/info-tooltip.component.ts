@@ -26,9 +26,7 @@ const TRACK_EVENT_DELAY_MS = 1000;
 export class InfoTooltipComponent {
   readonly rtlHelper = inject(RtlHelperService);
   readonly message = input.required<string>();
-
   private trackingService = inject(TrackingService);
-
   private trackEventTimeout: ReturnType<typeof setTimeout> | undefined;
 
   constructor() {
@@ -85,6 +83,14 @@ export class InfoTooltipComponent {
 
     target.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
     this.scheduleTrackEvent();
+  }
+
+  // Intentional: focus alone does not open tooltip or track.
+  handleFocus(event: FocusEvent): void {
+    const target = event.currentTarget;
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
   }
 
   handleFocusOut(event: FocusEvent): void {

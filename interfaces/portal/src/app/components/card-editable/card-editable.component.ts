@@ -82,10 +82,9 @@ export class CardEditableComponent<TMutationData = unknown> {
       onSuccess: () => {
         this.isEditing.set(false);
 
-        if (this.trackEventsOnSave().length > 0) {
-          this.trackEventsOnSave().forEach((event) => {
-            this.trackingService.trackEvent(event);
-          });
+        const trackEventsOnSave = this.trackEventsOnSave();
+        for (const event of trackEventsOnSave) {
+          this.trackingService.trackEvent(event);
         }
       },
     });

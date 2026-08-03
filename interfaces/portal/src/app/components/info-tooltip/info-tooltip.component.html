@@ -6,7 +6,7 @@
     [tooltipPosition]="rtlHelper.createPosition('end')()"
     (mouseover)="handleMouseOver($event)"
     (mouseout)="handleMouseOut($event)"
-    (focus)="(undefined)"
+    (focus)="handleFocus($event)"
     (blur)="handleMouseOut($event)"
     (keydown.enter)="handleEnterKey($event)"
     (focusout)="handleFocusOut($event)"

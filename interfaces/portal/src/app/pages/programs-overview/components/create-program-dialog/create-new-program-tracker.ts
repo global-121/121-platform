@@ -14,11 +14,11 @@ const stepTimeSpentAction: Record<ProgramStep, TrackingAction> = {
 };
 
 export interface CreateNewProgramTracker {
-  addTrackEvent: (event: TrackingEvent) => void;
-  enterStep: (step: ProgramStep) => void;
+  addTrackEvent: ({ event }: { event: TrackingEvent }) => void;
+  enterStep: ({ step }: { step: ProgramStep }) => void;
   leaveStep: () => void;
   goBack: () => void;
-  complete: (mode: CompletionMode) => TrackingEvent[];
+  complete: ({ mode }: { mode: CompletionMode }) => TrackingEvent[];
   stop: () => TrackingEvent[];
 }
 
@@ -35,7 +35,7 @@ export const createNewProgramTracker = ({
   let backButtonClicks = 0;
   const otherEvents: TrackingEvent[] = [];
 
-  const enterStep = (step: ProgramStep): void => {
+  const enterStep = ({ step }: { step: ProgramStep }): void => {
     flowStartedAt ??= now();
     activeStep = step;
     activeStepStartedAt = now();
@@ -79,10 +79,13 @@ export const createNewProgramTracker = ({
   const reset = (): void => {
     secondsPerStep.clear();
     flowStartedAt = undefined;
+    activeStep = undefined;
+    activeStepStartedAt = undefined;
     backButtonClicks = 0;
+    otherEvents.length = 0;
   };
 
-  const complete = (mode: CompletionMode): TrackingEvent[] => {
+  const complete = ({ mode }: { mode: CompletionMode }): TrackingEvent[] => {
     leaveStep();
     const events = stepTimeEvents();
 
@@ -123,7 +126,7 @@ export const createNewProgramTracker = ({
     return [...events, ...otherEvents];
   };
 
-  const addTrackEvent = (event: TrackingEvent): void => {
+  const addTrackEvent = ({ event }: { event: TrackingEvent }): void => {
     otherEvents.push(event);
   };
 

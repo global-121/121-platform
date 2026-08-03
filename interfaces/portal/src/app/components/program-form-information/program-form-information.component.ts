@@ -96,7 +96,10 @@ export class ProgramFormInformationComponent {
     });
   });
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
-  readonly isCreateProgram = window.location.href.includes('create-program');
+
+  readonly isCreateProgram =
+    typeof window !== 'undefined' &&
+    window.location.href.includes('create-program');
 
   constructor() {
     trackFieldErrors({
