@@ -90,13 +90,15 @@ if (shouldBeEnabled(process.env.USE_IN_TWILIO_FLEX_IFRAME)) {
 }
 
 // Optional: AWS Connect
-if (shouldBeEnabled(process.env.USE_IN_AWS_CONNECT_IFRAME)) {
+if (process.env.AWS_CONNECT_IFRAME_URL) {
   console.info('✅ Allow loading the Portal in an iframe on AWS Connect');
+
+  const awsConnectUrl = new URL(process.env.AWS_CONNECT_IFRAME_URL);
 
   let frameAncestors = contentSecurityPolicy.get('frame-ancestors') ?? [];
   contentSecurityPolicy.set('frame-ancestors', [
     ...frameAncestors,
-    'https://nlrc-poc.my.connect.aws',
+    awsConnectUrl.origin,
   ]);
 }
 
