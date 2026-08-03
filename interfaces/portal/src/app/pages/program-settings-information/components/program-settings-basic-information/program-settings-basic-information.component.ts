@@ -38,6 +38,7 @@ import {
 import { AuthService } from '~/services/auth.service';
 import { RegistrationsTableColumnService } from '~/services/registrations-table-column.service';
 import { ToastService } from '~/services/toast.service';
+import { TrackingEvent, TrackingService } from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import {
   getLocaleLabel,
@@ -71,24 +72,21 @@ export class ProgramSettingsBasicInformationComponent {
   programApiService = inject(ProgramApiService);
   registrationsTableColumnService = inject(RegistrationsTableColumnService);
   toastService = inject(ToastService);
+  trackingService = inject(TrackingService);
   translatableStringService = inject(TranslatableStringService);
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
-
   readonly canEdit = computed(() =>
     this.authService.hasPermission({
       programId: this.programId(),
       requiredPermission: PermissionEnum.ProgramUPDATE,
     }),
   );
-
   readonly programFormName =
     viewChild<ProgramFormNameComponent>('programFormName');
   readonly programFormInformation = viewChild<ProgramFormInformationComponent>(
     'programFormInformation',
   );
-
-  // These are two separate components/formGroups because they are also
   // used separately in the program creation flow
   readonly formGroup = computed(() => {
     const nameGroup = this.programFormName()?.formGroup;
@@ -103,7 +101,7 @@ export class ProgramSettingsBasicInformationComponent {
       informationGroup,
     });
   });
-
+  // These are two separate components/formGroups because they are also
   updateProgramMutation = injectMutation(() => ({
     mutationFn: async ({
       nameGroup: { name, description },
@@ -154,7 +152,6 @@ export class ProgramSettingsBasicInformationComponent {
       });
     },
   }));
-
   readonly programBasicInformationData = computed(() => {
     const programData = this.program.data();
 
@@ -216,4 +213,7 @@ export class ProgramSettingsBasicInformationComponent {
       loading: this.program.isPending(),
     }));
   });
+  handleTrackEvent(event: TrackingEvent): void {
+    this.trackingService.trackEvent(event);
+  }
 }

@@ -25,7 +25,7 @@ import {
   TrackingCategory,
   TrackingEvent,
 } from '~/services/tracking.service';
-import { generateFieldErrors } from '~/utils/form-validation';
+import { generateFieldErrors, trackFieldErrors } from '~/utils/form-validation';
 
 export type ProgramInformationFormGroup =
   (typeof ProgramFormInformationComponent)['prototype']['formGroup'];
@@ -96,8 +96,22 @@ export class ProgramFormInformationComponent {
     });
   });
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
-
   readonly isCreateProgram = window.location.href.includes('create-program');
+
+  constructor() {
+    trackFieldErrors({
+      formGroup: this.formGroup,
+      onFieldError: ({ field, error }) => {
+        this.trackEvent.emit({
+          category: this.isCreateProgram
+            ? TrackingCategory.createNewProgram
+            : TrackingCategory.programSettings,
+          action: TrackingAction.formValidationError,
+          name: `${field}: ${error}`,
+        });
+      },
+    });
+  }
 
   trackUseValidationToggleEvent(event: { checked: boolean }): void {
     this.trackEvent.emit({

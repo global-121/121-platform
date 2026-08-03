@@ -1,4 +1,5 @@
 import { computed } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormGroup } from '@angular/forms';
 
 import { get } from 'radashi';
@@ -71,3 +72,37 @@ export const generateFieldErrors = <T extends FormGroup>(
         return validationFunc(control);
       },
   );
+
+/**
+ * Subscribe to a FormGroup's controls and invoke `onFieldError` whenever a control
+ * transitions into a validation error (on blur/touch), passing the field name and the
+ * error key (e.g. "required", "min"). Repeated identical errors are deduplicated. Must
+ * be called within an injection context so the subscriptions are cleaned up on destroy.
+ */
+export const trackFieldErrors = ({
+  formGroup,
+  onFieldError,
+}: {
+  formGroup: FormGroup;
+  onFieldError: (params: { field: string; error: string }) => void;
+}) => {
+  const lastErrors = new Map<string, string | undefined>();
+
+  for (const [field, control] of Object.entries(formGroup.controls)) {
+    control.events.pipe(takeUntilDestroyed()).subscribe(() => {
+      const error =
+        control.touched && control.errors
+          ? Object.keys(control.errors).join(', ')
+          : undefined;
+
+      if (error === lastErrors.get(field)) {
+        return;
+      }
+      lastErrors.set(field, error);
+
+      if (error !== undefined) {
+        onFieldError({ field, error });
+      }
+    });
+  }
+};

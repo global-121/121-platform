@@ -66,6 +66,8 @@ export enum TrackingAction {
   createNewProgramStep3TotalTimeSpent = 'time: createNewProgram Step 3',
   createNewProgramTotalTimeSpent = 'time: createNewProgram Total Time',
 
+  formValidationError = 'errors: Form Validation',
+
   hoverInformationIcon = 'hover: Information Icon',
   selectContextMenuOption = 'select: Context-menu Option',
   selectDropdownOption = 'select: Dropdown Option',

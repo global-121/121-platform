@@ -34,6 +34,7 @@
     <app-program-form-information
       #programFormInformation
       [program]="program.data()"
+      (trackEvent)="handleTrackEvent($event)"
     />
   }
 </app-card-editable>
