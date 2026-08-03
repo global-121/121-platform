@@ -495,6 +495,7 @@ export class IntersolveVisaAccountManagementService {
     addressCity,
     addressee,
     addresseePhoneNumber,
+    addresseeEmailAddress,
     userId,
   }: {
     programId: number;
@@ -506,6 +507,7 @@ export class IntersolveVisaAccountManagementService {
     addressCity: string;
     addressee: string;
     addresseePhoneNumber: string;
+    addresseeEmailAddress: string;
     userId: number;
   }): Promise<{
     id: number;
@@ -565,6 +567,7 @@ export class IntersolveVisaAccountManagementService {
     order.status = VisaCardOrderStatus.Processing;
     order.addressee = addressee;
     order.addresseePhoneNumber = addresseePhoneNumber;
+    order.addresseeEmailAddress = addresseeEmailAddress;
     order.addressStreet = addressStreet;
     order.addressHouseNumber = addressHouseNumber;
     order.addressHouseNumberAddition = addressHouseNumberAddition ?? null;

@@ -423,6 +423,9 @@ export class IntersolveVisaApiService {
       firstName: '',
       lastName: contactInformation.name,
       mobileNumber: formatPhoneNumber(contactInformation.phoneNumber), // must match \"([+]){1}([1-9]){1}([0-9]){5,14}\"
+      ...(contactInformation.emailAddress && {
+        address3: contactInformation.emailAddress,
+      }),
       cardAddress: {
         address1: this.createAddressString(contactInformation),
         address2: contactInformation.name,

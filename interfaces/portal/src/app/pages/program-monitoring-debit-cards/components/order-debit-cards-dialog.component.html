@@ -53,6 +53,21 @@
     </app-form-field-wrapper>
 
     <app-form-field-wrapper
+      label="Addressee email"
+      i18n-label
+      [errorMessage]="formFieldErrors()('addresseeEmailAddress')"
+      [isRequired]="true"
+    >
+      <input
+        pInputText
+        [pSize]="'large'"
+        type="email"
+        formControlName="addresseeEmailAddress"
+        autocomplete="off"
+      />
+    </app-form-field-wrapper>
+
+    <app-form-field-wrapper
       label="Addressee phone number"
       i18n-label
       [errorMessage]="formFieldErrors()('addresseePhoneNumber')"

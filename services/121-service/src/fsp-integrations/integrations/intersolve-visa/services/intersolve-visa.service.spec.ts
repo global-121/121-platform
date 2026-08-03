@@ -590,6 +590,7 @@ describe('IntersolveVisaService', () => {
       addressPostalCode: '1011AB',
       addressCity: 'Amsterdam',
       phoneNumber: '+31600000000',
+      emailAddress: 'john.doe@example.org',
     };
 
     it('throws when issueToken does not return a token code', async () => {

@@ -19,6 +19,7 @@ const orderDebitCardOrder = {
   addressHouseNumber: '50',
   addressHouseNumberAddition: 'K',
   phoneNumber: '123456789',
+  emailAddress: 'john.doe@example.org',
   addressee: 'John Doe',
 };
 

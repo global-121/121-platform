@@ -62,3 +62,54 @@ describe('IntersolveVisaApiService - intersolveApiRequest retry logic', () => {
     expect(mockHttpService.request).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('IntersolveVisaApiService - createPhysicalCard', () => {
+  let service: IntersolveVisaApiService;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    service = new IntersolveVisaApiService(mockHttpService as any);
+    service.getAuthenticationToken = jest.fn().mockResolvedValue('token');
+    mockHttpService.request.mockResolvedValue({
+      status: 200,
+      statusText: 'OK',
+      data: { data: {} },
+    });
+  });
+
+  const baseContactInformation = {
+    name: 'John Doe',
+    addressStreet: 'Damrak',
+    addressHouseNumber: '1',
+    addressPostalCode: '1011AB',
+    addressCity: 'Amsterdam',
+    phoneNumber: '+31600000000',
+  };
+
+  it('includes address3 in the request payload when emailAddress is provided', async () => {
+    await service.createPhysicalCard({
+      tokenCode: 'token-123',
+      coverLetterCode: 'COVER',
+      contactInformation: {
+        ...baseContactInformation,
+        emailAddress: 'john@example.org',
+      },
+    });
+
+    expect(mockHttpService.request).toHaveBeenCalledTimes(1);
+    const callPayload = mockHttpService.request.mock.calls[0][0].payload;
+    expect(callPayload.address3).toBe('john@example.org');
+  });
+
+  it('does not include address3 in the request payload when emailAddress is undefined', async () => {
+    await service.createPhysicalCard({
+      tokenCode: 'token-123',
+      coverLetterCode: 'COVER',
+      contactInformation: baseContactInformation,
+    });
+
+    expect(mockHttpService.request).toHaveBeenCalledTimes(1);
+    const callPayload = mockHttpService.request.mock.calls[0][0].payload;
+    expect(callPayload).not.toHaveProperty('address3');
+  });
+});
