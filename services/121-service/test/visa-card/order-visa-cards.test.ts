@@ -92,6 +92,7 @@ describe('Order visa debit cards in batch', () => {
           noOfCardsOrdered: noOfCards,
           address: 'John Doe, Damrak 1 A, 1011AB, Amsterdam',
           addresseePhoneNumber,
+          addresseeEmailAddress: 'john.doe@example.org',
         }),
       ]),
     );
