@@ -1,11 +1,12 @@
 import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  Relation,
+    Column,
+    Entity,
+    Index,
+    JoinColumn,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    Relation,
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
@@ -20,6 +21,7 @@ export class PaymentApprovalEntity extends Base121Entity {
   })
   @JoinColumn({ name: 'paymentId' })
   public payment: Relation<PaymentEntity>;
+  @Index()
   @Column()
   public paymentId: number;
 

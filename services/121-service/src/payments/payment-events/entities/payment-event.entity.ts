@@ -1,11 +1,11 @@
 import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  Relation,
+    Column,
+    Entity,
+    Index,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    Relation,
 } from 'typeorm';
 
 import { Base121OptionalAuditedEntity } from '@121-service/src/base-audited.entity';
@@ -34,6 +34,7 @@ export class PaymentEventEntity extends Base121OptionalAuditedEntity {
   @ManyToOne(() => PaymentEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'paymentId' })
   public payment: Relation<PaymentEntity>;
+  @Index()
   @Column()
   public paymentId: number;
 }
