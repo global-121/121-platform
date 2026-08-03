@@ -114,6 +114,9 @@ export class ProgramSettingsBudgetComponent {
       this.toastService.showToast({
         detail: $localize`Budget details saved successfully.`,
       });
+
+      // Reset trackSaveEventPayloads
+      this.trackSaveEventPayloads = [this.trackSaveEventInitialPayload];
     },
   }));
 
@@ -176,12 +179,16 @@ export class ProgramSettingsBudgetComponent {
     return [...new Set(fspConfigs.map((fsp) => fsp.fspName))];
   });
 
-  trackSaveEventPayloads: TrackingEvent[] = [
-    {
-      category: TrackingCategory.programSettings,
-      action: TrackingAction.programSettingsBudgetSaveButtonClick,
-    },
-  ];
+  readonly trackSaveEventInitialPayload: TrackingEvent = {
+    category: TrackingCategory.programSettings,
+    action: TrackingAction.programSettingsBasicInfoSaveButtonClick,
+  };
+
+  trackSaveEventPayloads: TrackingEvent[] = [this.trackSaveEventInitialPayload];
+
+  handleTrackEvent(event: TrackingEvent): void {
+    this.trackSaveEventPayloads = [...this.trackSaveEventPayloads, event];
+  }
 
   fspsChanged({ fsps }: { fsps: Fsps[] }): boolean {
     return (

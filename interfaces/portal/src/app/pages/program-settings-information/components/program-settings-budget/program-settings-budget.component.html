@@ -20,6 +20,7 @@
       #programFormBudget
       [program]="program.data()"
       [programId]="programId()"
+      (trackEvent)="handleTrackEvent($event)"
     />
   }
 </app-card-editable>
