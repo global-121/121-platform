@@ -13,6 +13,7 @@ class FspSettingsPage extends BasePage {
   readonly integrationErrorMessage: Locator;
   readonly cancelButton: Locator;
   readonly fspCardTable: Locator;
+  readonly unconfiguredFspWarningBanner: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -27,19 +28,84 @@ class FspSettingsPage extends BasePage {
     });
     this.fspCard = this.page.locator('app-card-with-link');
     this.cancelButton = this.page.getByRole('button', { name: 'Cancel' });
+    this.unconfiguredFspWarningBanner = this.page.getByTestId(
+      'fsp-integration-required-banner',
+    );
+  }
+
+  async validateUnconfiguredFspWarningVisibility() {
+    await expect(this.unconfiguredFspWarningBanner).toBeVisible();
+    await expect(this.unconfiguredFspWarningBanner).toContainText(
+      'Integration required - Integrate your FSPs before paying your registrations.',
+    );
+  }
+
+  async clickIntegrateButtonForFsp({
+    fspDisplayName,
+  }: {
+    fspDisplayName: string;
+  }) {
+    const fspCard = this.page
+      .locator('app-card-with-link')
+      .filter({ hasText: fspDisplayName });
+    await fspCard.getByRole('button', { name: 'Integrate' }).click();
+  }
+
+  async configureExcelFsp({ withName }: { withName?: string }) {
+    if (withName) {
+      const name = withName;
+      await this.page
+        .getByTestId('fsp-configuration-field-displayName')
+        .fill(name);
+    }
+
+    await this.selectMultiselectOptions({
+      dropdownTestId: 'fsp-configuration-field-columnToMatch',
+      optionsToClick: ['First Name'],
+    });
   }
 
   async clickFspIntegration() {
     await this.page.getByRole('link', { name: 'FSP integration' }).click();
   }
 
-  async openEditFspConfigurationByName(fspName: string) {
-    const fspCard = this.fspCard
-      .filter({ hasText: fspName })
-      .getByLabel('More actions');
+  async validateFspOptionVisibility({
+    fspName,
+    optionLabel,
+    visible = true,
+  }: {
+    fspName: string;
+    optionLabel: string;
+    visible?: boolean;
+  }) {
+    const fspCard = this.fspCard.filter({ hasText: fspName });
     await expect(fspCard).toBeVisible();
-    await fspCard.click();
-    await this.page.getByRole('menuitem', { name: 'Reconfigure' }).click();
+    await fspCard.getByLabel('More actions').click();
+    const option = this.page.getByRole('menuitem', {
+      name: optionLabel,
+    });
+
+    if (visible) {
+      await expect(option).toBeVisible();
+    } else {
+      await expect(option).toBeHidden();
+    }
+  }
+
+  async clickOptionInFspDropdownMenu({
+    fspName,
+    optionLabel,
+  }: {
+    fspName: string;
+    optionLabel: string;
+  }) {
+    const fspCard = this.fspCard.filter({ hasText: fspName });
+    await expect(fspCard).toBeVisible();
+    await fspCard.getByLabel('More actions').click();
+    const option = this.page.getByRole('menuitem', {
+      name: optionLabel,
+    });
+    await option.click();
   }
 
   async getAllRequiredAttributes({
@@ -114,14 +180,19 @@ class FspSettingsPage extends BasePage {
   async validateFspVisibility({
     fspNames,
     visible = true,
+    integrated = true,
   }: {
     fspNames: string[];
     visible?: boolean;
+    integrated?: boolean;
   }) {
     for (const fspName of fspNames) {
       const fspLocator = this.fspCard.filter({ hasText: fspName });
       if (visible) {
         await expect(fspLocator).toBeVisible();
+        if (!integrated) {
+          await expect(fspLocator.getByText('Integrate')).toBeVisible();
+        }
       } else {
         await expect(fspLocator).toBeHidden();
       }

@@ -11,6 +11,7 @@
     fieldType() === FspConfigurationPropertyInputType.selectAttributeMultiple
   ) {
     <p-multiselect
+      [attr.data-testid]="`fsp-configuration-field-${fspFormField().name}`"
       [options]="programAttributes.data()"
       [formControlName]="fspFormField().name"
       [optionLabel]="'label'"
@@ -24,6 +25,7 @@
     fieldType() === FspConfigurationPropertyInputType.selectAttribute
   ) {
     <p-select
+      [attr.data-testid]="`fsp-configuration-field-${fspFormField().name}`"
       [options]="programAttributes.data()"
       [formControlName]="fspFormField().name"
       [optionLabel]="'label'"
@@ -34,9 +36,13 @@
       [showClear]="false"
     />
   } @else if (fieldType() === FspConfigurationPropertyInputType.toggleSwitch) {
-    <p-toggle-switch [formControlName]="fspFormField().name" />
+    <p-toggle-switch
+      [attr.data-testid]="`fsp-configuration-field-${fspFormField().name}`"
+      [formControlName]="fspFormField().name"
+    />
   } @else if (fieldType() === FspConfigurationPropertyInputType.numberInput) {
     <input
+      [attr.data-testid]="`fsp-configuration-field-${fspFormField().name}`"
       pInputText
       type="number"
       [formControlName]="fspFormField().name"
@@ -44,6 +50,7 @@
     />
   } @else {
     <input
+      [attr.data-testid]="`fsp-configuration-field-${fspFormField().name}`"
       pInputText
       [formControlName]="fspFormField().name"
       [placeholder]="inputTextPlaceholder()"
