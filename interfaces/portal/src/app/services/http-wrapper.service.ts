@@ -173,7 +173,7 @@ export class HttpWrapperService {
             body,
           })
           .pipe(
-            tap(() => {
+            tap((response) => {
               console.log(
                 `HttpWrapperService ${method}: ${url}${
                   params ? `\nParams ${JSON.stringify(params, null, 2)}` : ''
