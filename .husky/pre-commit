@@ -2,6 +2,7 @@
 #
 # git hook to run a command before actually committing when running `git commit`:
 #
+set -euo pipefail
 
 ORANGE='\033[0;33m'
 NC='\033[0m' # No Color
@@ -10,7 +11,7 @@ log() {
   printf "${ORANGE}[pre-commit]${NC} %s\n" "$1"
 }
 
-log "Running custom pre-commit hook defined in ./husky/pre-commit"
+log "Running pre-commit hooks in ./husky/pre-commit"
 
 # Prevent committing to "main"-branch:
 if [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ]; then
@@ -23,5 +24,8 @@ fi
 
 log "Running lint-staged"
 npx lint-staged
+
+log "Checking for changes to .env.example"
+"$(dirname "$0")/scripts/warn-env-example-changes.sh"
 
 log "All done"
