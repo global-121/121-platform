@@ -12,7 +12,6 @@ import {
   Validators,
 } from '@angular/forms';
 
-// import { Router } from '@angular/router';.
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
@@ -46,7 +45,6 @@ export type ProgramInformationFormGroup =
 })
 export class ProgramFormInformationComponent {
   readonly program = input<Program>();
-  // readonly router = inject(Router);
   readonly trackEvent = output<TrackingEvent>();
 
   formGroup = new FormGroup({
@@ -97,7 +95,6 @@ export class ProgramFormInformationComponent {
       enableScope: programData.enableScope,
     });
   });
-
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
 
   readonly isCreateProgram = window.location.href.includes('create-program');

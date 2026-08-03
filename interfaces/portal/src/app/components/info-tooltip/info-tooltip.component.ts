@@ -15,7 +15,7 @@ import {
   TrackingService,
 } from '~/services/tracking.service';
 
-const TRACK_EVENT_DELAY_MS = 1500;
+const TRACK_EVENT_DELAY_MS = 1000;
 
 @Component({
   selector: 'app-info-tooltip',
