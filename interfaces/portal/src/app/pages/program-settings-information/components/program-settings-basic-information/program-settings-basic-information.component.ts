@@ -106,7 +106,7 @@ export class ProgramSettingsBasicInformationComponent {
       informationGroup,
     });
   });
-  // These are two separate components/formGroups because they are also
+
   updateProgramMutation = injectMutation(() => ({
     mutationFn: async ({
       nameGroup: { name, description },
