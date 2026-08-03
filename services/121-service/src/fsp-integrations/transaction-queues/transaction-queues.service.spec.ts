@@ -50,10 +50,10 @@ describe('TransactionQueuesService', () => {
       .mock(QueuesRegistryService)
       .using({
         transactionJobIntersolveVisaQueue: {
-          add: jest.fn(),
+          addBulk: jest.fn(),
         },
         transactionJobSafaricomQueue: {
-          add: jest.fn(),
+          addBulk: jest.fn(),
         },
       })
       .compile();
@@ -68,13 +68,8 @@ describe('TransactionQueuesService', () => {
 
   it('should add transaction job to queue: intersolve-visa', async () => {
     jest
-      .spyOn(queuesService.transactionJobIntersolveVisaQueue as any, 'add')
-      .mockReturnValue({
-        data: {
-          id: 1,
-          programId: 3,
-        },
-      });
+      .spyOn(queuesService.transactionJobIntersolveVisaQueue as any, 'addBulk')
+      .mockResolvedValue([{ id: 1 }]);
 
     // Act
     await transactionQueuesService.addIntersolveVisaTransactionJobs(
@@ -83,25 +78,22 @@ describe('TransactionQueuesService', () => {
 
     // Assert
     expect(
-      queuesService.transactionJobIntersolveVisaQueue.add,
+      queuesService.transactionJobIntersolveVisaQueue.addBulk,
     ).toHaveBeenCalledTimes(1);
     expect(
-      queuesService.transactionJobIntersolveVisaQueue.add,
-    ).toHaveBeenCalledWith(
-      JobNames.default,
-      mockIntersolveVisaTransactionJobDto[0],
-    );
+      queuesService.transactionJobIntersolveVisaQueue.addBulk,
+    ).toHaveBeenCalledWith([
+      {
+        name: JobNames.default,
+        data: mockIntersolveVisaTransactionJobDto[0],
+      },
+    ]);
   });
 
   it('should add transaction job to queue: safaricom', async () => {
     jest
-      .spyOn(queuesService.transactionJobSafaricomQueue as any, 'add')
-      .mockReturnValue({
-        data: {
-          id: 1,
-          programId: 3,
-        },
-      });
+      .spyOn(queuesService.transactionJobSafaricomQueue as any, 'addBulk')
+      .mockResolvedValue([{ id: 1 }]);
 
     // Act
     await transactionQueuesService.addSafaricomTransactionJobs(
@@ -110,11 +102,15 @@ describe('TransactionQueuesService', () => {
 
     // Assert
     expect(
-      queuesService.transactionJobSafaricomQueue.add,
+      queuesService.transactionJobSafaricomQueue.addBulk,
     ).toHaveBeenCalledTimes(1);
-    expect(queuesService.transactionJobSafaricomQueue.add).toHaveBeenCalledWith(
-      JobNames.default,
-      mockSafaricomTransactionJobDto[0],
-    );
+    expect(
+      queuesService.transactionJobSafaricomQueue.addBulk,
+    ).toHaveBeenCalledWith([
+      {
+        name: JobNames.default,
+        data: mockSafaricomTransactionJobDto[0],
+      },
+    ]);
   });
 });

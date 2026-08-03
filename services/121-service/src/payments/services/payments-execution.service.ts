@@ -69,9 +69,10 @@ export class PaymentsExecutionService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      const programFspConfigurationNames = uniqueFspConfigsForApprovedTransactions.map(
-        (config) => config.programFspConfigurationName,
-      );
+      const programFspConfigurationNames =
+        uniqueFspConfigsForApprovedTransactions.map(
+          (config) => config.programFspConfigurationName,
+        );
       await this.paymentsHelperService.checkFspConfigurationsOrThrow(
         programId,
         programFspConfigurationNames,
