@@ -11,9 +11,7 @@ export class AddTwilioMessageTransactionIdIndex1785339181226
     );
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `DROP INDEX "121-service"."IDX_cd56d3267e8553557ec97c6741"`,
-    );
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    console.log('what goes up does not always have to go down');
   }
 }

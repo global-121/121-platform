@@ -15,6 +15,7 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 const TRANSACTION_DELETE_BATCH_SIZE = 5000;
+
 @Injectable()
 export class TransactionsService {
   public constructor(
