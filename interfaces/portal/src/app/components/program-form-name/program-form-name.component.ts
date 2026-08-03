@@ -4,6 +4,7 @@ import {
   effect,
   inject,
   input,
+  output,
 } from '@angular/core';
 import {
   FormControl,
@@ -17,8 +18,13 @@ import { TextareaModule } from 'primeng/textarea';
 
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { Program } from '~/domains/program/program.model';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingEvent,
+} from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
-import { generateFieldErrors } from '~/utils/form-validation';
+import { generateFieldErrors, trackFieldErrors } from '~/utils/form-validation';
 
 export type ProgramNameFormGroup =
   (typeof ProgramFormNameComponent)['prototype']['formGroup'];
@@ -39,6 +45,7 @@ export class ProgramFormNameComponent {
   readonly program = input<Program>();
 
   private translatableStringService = inject(TranslatableStringService);
+  readonly trackEvent = output<TrackingEvent>();
 
   formGroup = new FormGroup({
     name: new FormControl('', {
@@ -55,7 +62,6 @@ export class ProgramFormNameComponent {
   });
 
   formFieldErrors = generateFieldErrors(this.formGroup);
-
   updateFormGroup = effect(() => {
     const programData = this.program();
 
@@ -71,4 +77,21 @@ export class ProgramFormNameComponent {
       ),
     });
   });
+
+  readonly isCreateProgram = window.location.href.includes('create-program');
+
+  constructor() {
+    trackFieldErrors({
+      formGroup: this.formGroup,
+      onFieldError: ({ field, error }) => {
+        this.trackEvent.emit({
+          category: this.isCreateProgram
+            ? TrackingCategory.createNewProgram
+            : TrackingCategory.programSettings,
+          action: TrackingAction.formValidationError,
+          name: `${field}: ${error}`,
+        });
+      },
+    });
+  }
 }

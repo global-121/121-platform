@@ -38,7 +38,12 @@ import {
 import { AuthService } from '~/services/auth.service';
 import { RegistrationsTableColumnService } from '~/services/registrations-table-column.service';
 import { ToastService } from '~/services/toast.service';
-import { TrackingEvent, TrackingService } from '~/services/tracking.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingEvent,
+  TrackingService,
+} from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import {
   getLocaleLabel,
@@ -150,6 +155,9 @@ export class ProgramSettingsBasicInformationComponent {
       this.toastService.showToast({
         detail: $localize`Basic information details saved successfully.`,
       });
+
+      // Reset trackSaveEventPayloads
+      this.trackSaveEventPayloads = [this.trackSaveEventInitialPayload];
     },
   }));
   readonly programBasicInformationData = computed(() => {
@@ -213,7 +221,15 @@ export class ProgramSettingsBasicInformationComponent {
       loading: this.program.isPending(),
     }));
   });
+
+  readonly trackSaveEventInitialPayload: TrackingEvent = {
+    category: TrackingCategory.programSettings,
+    action: TrackingAction.programSettingsBasicInfoSaveButtonClick,
+  };
+
+  trackSaveEventPayloads: TrackingEvent[] = [this.trackSaveEventInitialPayload];
+
   handleTrackEvent(event: TrackingEvent): void {
-    this.trackingService.trackEvent(event);
+    this.trackSaveEventPayloads = [...this.trackSaveEventPayloads, event];
   }
 }

@@ -65,10 +65,13 @@ export enum TrackingAction {
   createNewProgramStep3Error = 'errors: createNewProgram Step 3',
   createNewProgramStep3TotalTimeSpent = 'time: createNewProgram Step 3',
   createNewProgramTotalTimeSpent = 'time: createNewProgram Total Time',
-
   formValidationError = 'errors: Form Validation',
 
   hoverInformationIcon = 'hover: Information Icon',
+
+  programSettingsBasicInfoSaveButtonClick = 'click: Program Settings info Save Button',
+  programSettingsBudgetSaveButtonClick = 'click: Program Settings Budget Save Button',
+
   selectContextMenuOption = 'select: Context-menu Option',
   selectDropdownOption = 'select: Dropdown Option',
   showColumnFilter = 'show: Column-filter',

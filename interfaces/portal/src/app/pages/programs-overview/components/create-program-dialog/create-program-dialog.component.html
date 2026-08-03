@@ -66,6 +66,7 @@
       <app-program-form-name
         #formName
         [program]="programToDuplicate()"
+        (trackEvent)="handleTrackEvent($event)"
       />
     </p-card>
   </ng-template>
@@ -102,6 +103,7 @@
       <app-program-form-budget
         #formBudget
         [program]="programToDuplicate()"
+        (trackEvent)="handleTrackEvent($event)"
       />
     </p-card>
   </ng-template>
