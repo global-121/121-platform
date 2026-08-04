@@ -92,9 +92,6 @@
       <trans-unit id="1417693714872528491" datatype="html">
         <source>This field is required.</source>
       </trans-unit>
-      <trans-unit id="1418298414186660333" datatype="html">
-        <source>Open image</source>
-      </trans-unit>
       <trans-unit id="1419676661357831374" datatype="html">
         <source>Registration data</source>
       </trans-unit>
@@ -338,9 +335,6 @@
       </trans-unit>
       <trans-unit id="236706714969062748" datatype="html">
         <source>Create another Excel FSP</source>
-      </trans-unit>
-      <trans-unit id="2369036670791367450" datatype="html">
-        <source>name/ID: &quot;<x equiv-text="{{ image.attributeName }}" id="INTERPOLATION"/>&quot; URL: <x equiv-text="{{ image.imageUrl }}" id="INTERPOLATION_1"/></source>
       </trans-unit>
       <trans-unit id="2378622458638065888" datatype="html">
         <source>How to contact us</source>
