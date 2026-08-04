@@ -15,20 +15,6 @@
         disabled
       />
 
-      <!-- @if (isAvailable()) {
-      <app-colored-chip
-        label="Available"
-        i18n-label="@@image-available"
-        variant="green"
-      />
-    } @else {
-      <app-colored-chip
-        label="Not available"
-        i18n-label="@@image-not-available"
-        variant="red"
-      />
-    } -->
-
       @if (isAvailable()) {
         <p-button
           (click)="toggleViewer()"

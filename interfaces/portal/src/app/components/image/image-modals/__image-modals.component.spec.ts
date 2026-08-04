@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
-import { ImageListComponent } from '~/components/image-list/image-list.component';
+import { ImageModalsComponent } from '~/components/image/image-modals/image-modals.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 
 interface KoboImageItem {
@@ -19,8 +19,9 @@ interface KoboImageItem {
 
 @Component({
   selector: 'app-test-host',
-  imports: [ImageListComponent],
-  template: ` <app-image-list [images]="images()" /> `,
+  standalone: true,
+  imports: [ImageModalsComponent],
+  template: ` <app-image-modals [images]="images()" /> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class TestHostComponent {
@@ -48,7 +49,7 @@ class TestHostComponent {
 describe('ImageListComponent', () => {
   let hostComponent: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
-  let rendererComponent: ImageListComponent;
+  let rendererComponent: ImageModalsComponent;
   const downloadedBlob = new Blob(['image-file']);
   const downloadKoboImage = vi.fn().mockResolvedValue(downloadedBlob);
   const createObjectUrl = vi
@@ -60,7 +61,7 @@ describe('ImageListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ImageListComponent, TestHostComponent],
+      imports: [ImageModalsComponent, TestHostComponent],
       providers: [
         {
           provide: RegistrationApiService,
@@ -74,7 +75,7 @@ describe('ImageListComponent', () => {
     fixture = TestBed.createComponent(TestHostComponent);
     hostComponent = fixture.componentInstance;
     rendererComponent = fixture.debugElement.children[0]
-      .componentInstance as ImageListComponent;
+      .componentInstance as ImageModalsComponent;
     fixture.detectChanges();
 
     downloadKoboImage.mockClear();

@@ -6,26 +6,18 @@ import {
   input,
 } from '@angular/core';
 
-import { Button } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
-import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ImageViewerService } from '~/components/image/services/image-viewer.service';
-import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import { isImageAvailable } from '~/components/image/utils/is-image-available';
 
 @Component({
-  selector: 'app-image-viewer-trigger',
-  imports: [
-    Button,
-    TranslatableStringPipe,
-    ColoredChipComponent,
-    InputText,
-    FormFieldWrapperComponent,
-  ],
-  templateUrl: './image-viewer-trigger.component.html',
+  selector: 'app-image-modal-trigger',
+  imports: [ButtonModule, ColoredChipComponent],
+  templateUrl: './image-modal-trigger.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: `
     :host {
@@ -33,7 +25,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
     }
   `,
 })
-export class ImageViewerTriggerComponent {
+export class ImageModalTriggerComponent {
   private readonly imageViewerService = inject(ImageViewerService);
 
   readonly label = input.required<string | UILanguageTranslation>();
@@ -46,15 +38,9 @@ export class ImageViewerTriggerComponent {
     return !!imageUrl && this.imageViewerService.isOpen({ imageUrl });
   });
 
-  isAvailable(): boolean {
-    return !(
-      this.imageUrl() === null ||
-      this.imageUrl() === undefined ||
-      typeof this.imageUrl() !== 'string' ||
-      this.imageUrl()?.trim().length === 0 ||
-      this.imageUrl()?.trim().toLowerCase() === 'null'
-    );
-  }
+  readonly isAvailable = computed(() =>
+    isImageAvailable({ imageUrl: this.imageUrl() }),
+  );
 
   toggleViewer() {
     const imageUrl = this.imageUrl();
