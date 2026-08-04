@@ -571,12 +571,7 @@ export class IntersolveVisaService {
     newIntersolveVisaChildWallet.walletStatus =
       tokenResult.status as IntersolveVisaTokenStatus;
     newIntersolveVisaChildWallet.lastExternalUpdate = new Date();
-    newIntersolveVisaChildWallet.isLinkedToParentWallet = true;
-    // An on-site replacement uses an already-printed physical card, so no new card has to be created for it
-    if (input.physicalCardToken) {
-      newIntersolveVisaChildWallet.isDebitCardCreated = true;
-      newIntersolveVisaChildWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
-    }
+    newIntersolveVisaChildWallet.isLinkedToParentWallet = true; 
     const newChildWallet =
       await this.intersolveVisaChildWalletScopedRepository.save(
         newIntersolveVisaChildWallet,
@@ -584,18 +579,24 @@ export class IntersolveVisaService {
     intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets.push(
       newChildWallet,
     );
-
+ 
     // Update old child wallet: set status to SUBSTITUTED
     childWalletToReplace.walletStatus = IntersolveVisaTokenStatus.Substituted;
     await this.intersolveVisaChildWalletScopedRepository.save(
       childWalletToReplace,
     );
+ 
+    if (!input.physicalCardToken) {
+      await this.intersolveVisaApiService.createPhysicalCard({
+        tokenCode: newChildWallet.tokenCode,
+        contactInformation: input.contactInformation,
+        coverLetterCode: input.coverLetterCode,
+      });
+    }
 
-    await this.createDebitCardIfNotExists({
-      childWallet: newChildWallet,
-      contactInformation: input.contactInformation,
-      coverLetterCode: input.coverLetterCode,
-    });
+    newChildWallet.isDebitCardCreated = true;
+    newChildWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
+    await this.intersolveVisaChildWalletScopedRepository.save(newChildWallet);
   }
 
   public async hasIntersolveCustomer(registrationId: number): Promise<boolean> {
