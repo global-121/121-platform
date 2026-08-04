@@ -571,7 +571,7 @@ export class IntersolveVisaService {
     newIntersolveVisaChildWallet.walletStatus =
       tokenResult.status as IntersolveVisaTokenStatus;
     newIntersolveVisaChildWallet.lastExternalUpdate = new Date();
-    newIntersolveVisaChildWallet.isLinkedToParentWallet = true; 
+    newIntersolveVisaChildWallet.isLinkedToParentWallet = true;
     const newChildWallet =
       await this.intersolveVisaChildWalletScopedRepository.save(
         newIntersolveVisaChildWallet,
@@ -579,7 +579,7 @@ export class IntersolveVisaService {
     intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets.push(
       newChildWallet,
     );
- 
+
     // Update old child wallet: set status to SUBSTITUTED
     childWalletToReplace.walletStatus = IntersolveVisaTokenStatus.Substituted;
     await this.intersolveVisaChildWalletScopedRepository.save(
