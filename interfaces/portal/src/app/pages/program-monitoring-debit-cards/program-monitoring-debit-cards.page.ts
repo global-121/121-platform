@@ -81,6 +81,16 @@ export class ProgramMonitoringDebitCardsPageComponent {
       type: QueryTableColumnType.TEXT,
     },
     {
+      field: 'addresseePhoneNumber',
+      header: $localize`Phone number`,
+      type: QueryTableColumnType.TEXT,
+    },
+    {
+      field: 'addresseeEmailAddress',
+      header: $localize`Email address`,
+      type: QueryTableColumnType.TEXT,
+    },
+    {
       field: 'orderedByUsername',
       header: $localize`Ordered By`,
       type: QueryTableColumnType.TEXT,

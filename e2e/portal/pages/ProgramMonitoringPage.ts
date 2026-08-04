@@ -402,6 +402,8 @@ class ProgramMonitoring extends BasePage {
     addressStreet,
     addressHouseNumber,
     addressHouseNumberAddition,
+    phoneNumber,
+    emailAddress,
   }: OrderDebitCardOrder) {
     const visaCardOrdersTable = new TableComponent(
       this.page,
@@ -415,6 +417,8 @@ class ProgramMonitoring extends BasePage {
       'Cards processed',
       'Order status',
       'Address',
+      'Phone number',
+      'Email address',
       'Ordered By',
       'Ordered On',
     ]);
@@ -427,6 +431,8 @@ class ProgramMonitoring extends BasePage {
       noOfCardsOrdered,
       'Completed',
       addressColumn,
+      phoneNumber,
+      emailAddress,
       'admin@example.org',
       expect.any(String), // Ordered On can be variable, so we just check that it's a string
     ]);
