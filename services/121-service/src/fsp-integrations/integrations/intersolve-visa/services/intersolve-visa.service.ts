@@ -585,15 +585,15 @@ export class IntersolveVisaService {
     await this.intersolveVisaChildWalletScopedRepository.save(
       childWalletToReplace,
     );
+ 
+    if (!input.physicalCardToken) {
+      await this.intersolveVisaApiService.createPhysicalCard({
+        tokenCode: newChildWallet.tokenCode,
+        contactInformation: input.contactInformation,
+        coverLetterCode: input.coverLetterCode,
+      });
+    }
 
-    // Create new card
-    await this.intersolveVisaApiService.createPhysicalCard({
-      tokenCode: newChildWallet.tokenCode,
-      contactInformation: input.contactInformation,
-      coverLetterCode: input.coverLetterCode,
-    });
-
-    // Update child wallet: set isDebitCardCreated to true
     newChildWallet.isDebitCardCreated = true;
     newChildWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
     await this.intersolveVisaChildWalletScopedRepository.save(newChildWallet);

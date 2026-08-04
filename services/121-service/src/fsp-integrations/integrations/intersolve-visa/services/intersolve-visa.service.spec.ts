@@ -64,6 +64,7 @@ describe('IntersolveVisaService', () => {
             setTokenBlocked: jest.fn(),
             issueToken: jest.fn(),
             createPhysicalCard: jest.fn(),
+            substituteToken: jest.fn(),
             getAuthenticationToken: jest.fn().mockResolvedValue('mock-token'),
           },
         },
@@ -86,6 +87,7 @@ describe('IntersolveVisaService', () => {
           useValue: {
             updateUnscoped: jest.fn(),
             findOneOrFail: jest.fn(),
+            save: jest.fn(),
           },
         },
         {
@@ -625,6 +627,90 @@ describe('IntersolveVisaService', () => {
         coverLetterCode: 'COVER_LETTER',
         contactInformation,
       });
+    });
+  });
+
+  describe('replaceCard', () => {
+    const contactInformation = {
+      name: 'John Doe',
+      addressStreet: 'Damrak',
+      addressHouseNumber: '1',
+      addressPostalCode: '1011AB',
+      addressCity: 'Amsterdam',
+      phoneNumber: '+31600000000',
+      emailAddress: 'john.doe@example.org',
+    };
+    const brandCode = 'BRAND';
+    const coverLetterCode = 'COVER_LETTER';
+
+    beforeEach(() => {
+      const childWalletToReplace = new IntersolveVisaChildWalletEntity();
+      childWalletToReplace.id = 10;
+      childWalletToReplace.tokenCode = 'old-token';
+      childWalletToReplace.isTokenBlocked = false;
+      childWalletToReplace.isDebitCardCreated = true;
+      childWalletToReplace.created = new Date('2023-01-01T00:00:00Z');
+
+      const parentWalletWithCard = new IntersolveVisaParentWalletEntity();
+      parentWalletWithCard.tokenCode = 'parent-token';
+      parentWalletWithCard.intersolveVisaChildWallets = [childWalletToReplace];
+
+      const customerWithCard = new IntersolveVisaCustomerEntity();
+      customerWithCard.holderId = 'holder-1';
+      customerWithCard.intersolveVisaParentWallet = parentWalletWithCard;
+
+      jest
+        .spyOn(customerRepo, 'findOneWithWalletsByRegistrationId')
+        .mockResolvedValue(customerWithCard);
+      (childWalletRepo.save as jest.Mock).mockImplementation(
+        async (wallet: IntersolveVisaChildWalletEntity) => ({
+          ...wallet,
+          id: wallet.id ?? 20,
+        }),
+      );
+      jest.spyOn(apiService, 'substituteToken').mockResolvedValue(undefined);
+      jest.spyOn(childWalletRepo, 'updateUnscoped').mockImplementation();
+    });
+
+    it('should not create a physical card when replacing an on-site linked card, because the physical card already exists', async () => {
+      // Arrange: an on-site replacement provides an already-printed physical card token
+      jest.spyOn(apiService, 'getToken').mockResolvedValue({
+        status: IntersolveVisaTokenStatus.Active,
+        blocked: false,
+        balance: 0,
+      });
+
+      // Act
+      await service.replaceCard({
+        registrationId,
+        contactInformation,
+        brandCode,
+        coverLetterCode,
+        physicalCardToken: 'new-physical-token',
+      });
+
+      // Assert
+      expect(apiService.createPhysicalCard).not.toHaveBeenCalled();
+    });
+
+    it('should create a physical card when replacing a by-mail card, because no physical card exists yet', async () => {
+      // Arrange: a by-mail replacement has no physical card token, so a new token is issued
+      jest.spyOn(apiService, 'issueToken').mockResolvedValue({
+        code: 'new-token',
+        status: IntersolveVisaTokenStatus.Active,
+        blocked: false,
+      });
+
+      // Act
+      await service.replaceCard({
+        registrationId,
+        contactInformation,
+        brandCode,
+        coverLetterCode,
+      });
+
+      // Assert
+      expect(apiService.createPhysicalCard).toHaveBeenCalled();
     });
   });
 });
