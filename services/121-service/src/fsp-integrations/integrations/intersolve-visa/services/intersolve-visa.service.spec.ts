@@ -665,7 +665,7 @@ describe('IntersolveVisaService', () => {
       (childWalletRepo.save as jest.Mock).mockImplementation(
         async (wallet: IntersolveVisaChildWalletEntity) => ({
           ...wallet,
-          id: 20,
+          id: wallet.id ?? 20,
         }),
       );
       jest.spyOn(apiService, 'substituteToken').mockResolvedValue(undefined);
