@@ -1,5 +1,6 @@
 import { FspEnvVariablesDto } from '@121-service/src/fsp-integrations/shared/dto/fsp-env-variables.dto';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { FspEnvVariableValidationService } from '@121-service/src/payments/services/fsp-env-variable-validation.service';
 
 describe('FSP environment variable validation', () => {
@@ -12,6 +13,7 @@ describe('FSP environment variable validation', () => {
     // Act
     const { ok, messages } = service.validateFspEnvVariableSettings({
       fspEnvVariableSettings: mockSettings as any,
+      twilioMode: TwilioMode.mock,
     });
 
     // Assert
@@ -35,6 +37,7 @@ describe('FSP environment variable validation', () => {
       // Act
       const { ok, messages } = service.validateFspEnvVariableSettings({
         fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.mock,
       });
 
       // Assert
@@ -57,6 +60,7 @@ describe('FSP environment variable validation', () => {
       // Act
       const { ok, messages } = service.validateFspEnvVariableSettings({
         fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.mock,
       });
 
       // Assert
@@ -81,6 +85,7 @@ describe('FSP environment variable validation', () => {
       // Act
       const { ok, messages } = service.validateFspEnvVariableSettings({
         fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.mock,
       });
 
       // Assert
@@ -103,6 +108,7 @@ describe('FSP environment variable validation', () => {
       // Act
       const { ok, messages } = service.validateFspEnvVariableSettings({
         fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.mock,
       });
 
       // Assert
@@ -128,6 +134,7 @@ describe('FSP environment variable validation', () => {
       // Act
       const { ok, messages } = service.validateFspEnvVariableSettings({
         fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.mock,
       });
 
       // Assert
@@ -151,6 +158,7 @@ describe('FSP environment variable validation', () => {
       // Act
       const { ok, messages } = service.validateFspEnvVariableSettings({
         fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.mock,
       });
 
       // Assert
@@ -180,6 +188,7 @@ describe('FSP environment variable validation', () => {
       // Act
       const { ok, messages } = service.validateFspEnvVariableSettings({
         fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.mock,
       });
 
       // Assert
@@ -207,6 +216,7 @@ describe('FSP environment variable validation', () => {
       // Act
       const { ok, messages } = service.validateFspEnvVariableSettings({
         fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.mock,
       });
 
       // Assert
@@ -234,6 +244,7 @@ describe('FSP environment variable validation', () => {
       // Act
       const { ok, messages } = service.validateFspEnvVariableSettings({
         fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.mock,
       });
 
       // Assert
@@ -257,6 +268,7 @@ describe('FSP environment variable validation', () => {
       // Act
       const { ok } = service.validateFspEnvVariableSettings({
         fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.mock,
       });
 
       // Assert
@@ -277,10 +289,102 @@ describe('FSP environment variable validation', () => {
       // Act
       const { ok } = service.validateFspEnvVariableSettings({
         fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.mock,
       });
 
       // Assert
       expect(ok).toBe(true);
+    });
+  });
+
+  describe('when an FSP requires Twilio', () => {
+    it('is not ok when a requiresTwilio FSP is enabled but Twilio is disabled', () => {
+      // Arrange
+      const mockSettings: Record<string, FspEnvVariablesDto> = {
+        voucherLikeFsp: {
+          mode: FspMode.external,
+          variables: {},
+          requiresTwilio: true,
+        },
+      };
+
+      // Act
+      const { ok, messages } = service.validateFspEnvVariableSettings({
+        fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.disabled,
+      });
+
+      // Assert
+      expect(ok).toBe(false);
+      expect(messages[0]).toContain('TWILIO_MODE=DISABLED');
+      expect(messages[0]).toContain('voucherLikeFsp');
+    });
+
+    it('is ok when Twilio is not disabled', () => {
+      // Arrange
+      const mockSettings: Record<string, FspEnvVariablesDto> = {
+        voucherLikeFsp: {
+          mode: FspMode.external,
+          variables: {},
+          requiresTwilio: true,
+        },
+      };
+
+      // Act
+      const { ok } = service.validateFspEnvVariableSettings({
+        fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.mock,
+      });
+
+      // Assert
+      expect(ok).toBe(true);
+    });
+
+    it('is ok when the requiresTwilio FSP is disabled', () => {
+      // Arrange
+      const mockSettings: Record<string, FspEnvVariablesDto> = {
+        voucherLikeFsp: {
+          mode: FspMode.disabled,
+          variables: {},
+          requiresTwilio: true,
+        },
+      };
+
+      // Act
+      const { ok } = service.validateFspEnvVariableSettings({
+        fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.disabled,
+      });
+
+      // Assert
+      expect(ok).toBe(true);
+    });
+
+    it('reports both the missing variable and the Twilio requirement', () => {
+      // Arrange
+      const mockSettings: Record<string, FspEnvVariablesDto> = {
+        voucherLikeFsp: {
+          mode: FspMode.external,
+          variables: { API_KEY: undefined },
+          requiresTwilio: true,
+        },
+      };
+
+      // Act
+      const { ok, messages } = service.validateFspEnvVariableSettings({
+        fspEnvVariableSettings: mockSettings as any,
+        twilioMode: TwilioMode.disabled,
+      });
+
+      // Assert
+      expect(ok).toBe(false);
+      expect(messages).toHaveLength(2);
+      expect(
+        messages.some((message) => message.includes('TWILIO_MODE=DISABLED')),
+      ).toBe(true);
+      expect(messages.some((message) => message.includes('"API_KEY"'))).toBe(
+        true,
+      );
     });
   });
 });

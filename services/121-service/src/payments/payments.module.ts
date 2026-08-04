@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { env } from '@121-service/src/env';
 import { FSP_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-env-variable-settings.const';
 import { TransactionQueuesModule } from '@121-service/src/fsp-integrations/transaction-queues/transaction-queues.module';
 import { FspsModule } from '@121-service/src/fsp-management/fsp.module';
@@ -101,6 +102,7 @@ export class PaymentsModule implements OnModuleInit {
     const validationResult =
       this.fspEnvVariableValidationService.validateFspEnvVariableSettings({
         fspEnvVariableSettings: FSP_ENV_VARIABLE_SETTINGS,
+        twilioMode: env.TWILIO_MODE,
       });
 
     const messagePrefix = 'FSP environment variable validation';

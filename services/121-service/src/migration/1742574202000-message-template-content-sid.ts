@@ -1,6 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { env } from '@121-service/src/env';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 
 export class MessageTemplateContentSid1742574202000 implements MigrationInterface {
   name = 'MessageTemplateContentSid1742574202000';
@@ -71,7 +72,7 @@ export class MessageTemplateContentSid1742574202000 implements MigrationInterfac
     // Migrate instance that are in mock mode: important for demo and training
     // This will set the contentSid to a mock value related to the language and type
     // It does not take into account the mock message we have for PV and OCW, it seemed not worth the effort
-    if (env.MOCK_TWILIO) {
+    if (env.TWILIO_MODE === TwilioMode.mock) {
       for (const messageTemplate of currentMessageTemplates) {
         const language = messageTemplate.language;
         const type =

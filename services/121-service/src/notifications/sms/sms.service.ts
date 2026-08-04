@@ -56,10 +56,12 @@ export class SmsService {
     } catch (error) {
       await this.storeSendSms({
         message: {
-          accountSid: env.TWILIO_SID,
+          // These are guaranteed to be set here: sending only reaches this point
+          // when TWILIO_MODE is MOCK or EXTERNAL
+          accountSid: env.TWILIO_SID!,
           body: message,
           to,
-          messagingServiceSid: env.TWILIO_MESSAGING_SID,
+          messagingServiceSid: env.TWILIO_MESSAGING_SID!,
           dateCreated: new Date(),
           sid: `failed-${uuid()}`,
           status: 'failed',
