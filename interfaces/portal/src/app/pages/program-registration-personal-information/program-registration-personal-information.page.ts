@@ -20,7 +20,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { ImageListComponent } from '~/components/image-list/image-list.component';
+import { ImageModalsComponent } from '~/components/image/image-modals/image-modals.component';
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -43,7 +43,7 @@ const normalizeKoboImageValue = (value: unknown): string =>
     ButtonModule,
     DataListComponent,
     EditPersonalInformationComponent,
-    ImageListComponent,
+    ImageModalsComponent,
   ],
   templateUrl: './program-registration-personal-information.page.html',
   styles: ``,

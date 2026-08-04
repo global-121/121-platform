@@ -15,23 +15,24 @@ import { DialogModule } from 'primeng/dialog';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
-import { ImageViewerComponent } from '~/components/image-viewer/image-viewer.component';
+import { ImageViewerComponent } from '~/components/image/image-viewer/image-viewer.component';
+import { ImageViewerService } from '~/components/image/services/image-viewer.service';
+import { isImageAvailable } from '~/components/image/utils/is-image-available';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
-import { ImageViewerService } from '~/services/image-viewer.service';
 
 @Component({
-  selector: 'app-image-list',
+  selector: 'app-image-modals',
   imports: [
     TranslatableStringPipe,
     ButtonModule,
     DialogModule,
     ImageViewerComponent,
   ],
-  templateUrl: './image-list.component.html',
+  templateUrl: './image-modals.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ImageListComponent {
+export class ImageModalsComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly registrationApiService = inject(RegistrationApiService);
   private readonly imageViewerService = inject(ImageViewerService);
@@ -118,11 +119,7 @@ export class ImageListComponent {
   }
 
   isImageAvailable({ imageUrl }: { imageUrl: string }): boolean {
-    return (
-      typeof imageUrl === 'string' &&
-      imageUrl.trim().length > 0 &&
-      imageUrl.trim().toLowerCase() !== 'null'
-    );
+    return isImageAvailable({ imageUrl });
   }
 
   async openImage({ imageIndex }: { imageIndex: number }): Promise<void> {
