@@ -6,6 +6,7 @@ import {
   inject,
   input,
   signal,
+  untracked,
 } from '@angular/core';
 
 import { AccordionModule } from 'primeng/accordion';
@@ -17,6 +18,7 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
 import { ImageViewerComponent } from '~/components/image-viewer/image-viewer.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import { ImageViewerService } from '~/services/image-viewer.service';
 
 @Component({
   selector: 'app-image-list',
@@ -34,6 +36,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 export class ImageListComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly registrationApiService = inject(RegistrationApiService);
+  private readonly imageViewerService = inject(ImageViewerService);
   readonly images = input.required<
     {
       label: string | UILanguageTranslation;
@@ -46,7 +49,7 @@ export class ImageListComponent {
   >();
   readonly downloadedImageObjectUrls = signal<(null | string)[]>([]);
 
-  readonly visibleImageIndex = signal<null | number>(null);
+  readonly openImageIndexes = signal<ReadonlySet<number>>(new Set());
 
   isMaximized = false;
 
@@ -82,6 +85,38 @@ export class ImageListComponent {
     // Revoke everything that's left once the component itself is destroyed.
     this.destroyRef.onDestroy(() => {
       revokeBlobObjectUrls(this.downloadedImageObjectUrls());
+    });
+
+    // Open the matching dialog when another component requests an image by URL.
+    effect(() => {
+      const request = this.imageViewerService.openRequest();
+
+      if (!request) {
+        return;
+      }
+
+      const index = untracked(() =>
+        this.images().findIndex((image) => image.imageUrl === request.imageUrl),
+      );
+
+      if (index === -1) {
+        return;
+      }
+
+      void this.openImage({ imageIndex: index });
+      this.openDialog({ imageIndex: index });
+    });
+  }
+
+  openDialog({ imageIndex }: { imageIndex: number }): void {
+    this.openImageIndexes.update((indexes) => new Set(indexes).add(imageIndex));
+  }
+
+  closeDialog({ imageIndex }: { imageIndex: number }): void {
+    this.openImageIndexes.update((indexes) => {
+      const updatedIndexes = new Set(indexes);
+      updatedIndexes.delete(imageIndex);
+      return updatedIndexes;
     });
   }
 

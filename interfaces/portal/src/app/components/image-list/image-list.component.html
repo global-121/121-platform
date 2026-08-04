@@ -13,19 +13,10 @@
         XXX: These properties/attributes should probably be used to identify each modal,
         so they can be triggered by "any other element"... (i.e. the image-viewer-trigger component)
         -->
-        <pre i18n>
-name/ID: "{{ image.attributeName }}"
-URL: {{ image.imageUrl }}</pre>
-
-        <p-button
-          outlined
-          (click)="
-            openImage({ imageIndex: index }); visibleImageIndex.set(index)
-          "
-          i18n
-        >
-          Open image
-        </p-button>
+        <!-- <pre i18n>
+          name/ID: "{{ image.attributeName }}"
+          URL: {{ image.imageUrl }}
+        </pre> -->
 
         <p-dialog
           [modal]="false"
@@ -35,13 +26,14 @@ URL: {{ image.imageUrl }}</pre>
           [dismissableMask]="false"
           [blockScroll]="false"
           [maximizable]="true"
-          [visible]="visibleImageIndex() === index"
+          [visible]="openImageIndexes().has(index)"
           [appendTo]="'body'"
           [style]="{ width: '42rem', height: '42rem' }"
           (onMaximize)="isMaximized = !isMaximized"
-          (onHide)="visibleImageIndex.set(null)"
+          (onHide)="closeDialog({ imageIndex: index })"
           [styleClass]="isMaximized ? '' : 'cursor-move'"
           [contentStyleClass]="'cursor-default'"
+          [resizable]="true"
         >
           <ng-template #header>
             <div>

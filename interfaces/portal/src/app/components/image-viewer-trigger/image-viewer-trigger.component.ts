@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+} from '@angular/core';
 
 import { Button } from 'primeng/button';
 
@@ -6,19 +11,17 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import { ImageViewerService } from '~/services/image-viewer.service';
 
 @Component({
   selector: 'app-image-viewer-trigger',
   imports: [Button, TranslatableStringPipe, ColoredChipComponent],
   templateUrl: './image-viewer-trigger.component.html',
-  styles: `
-    :host {
-      width: 100%; /* To make the component itself a real 'block' */
-    }
-  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImageViewerTriggerComponent {
+  private readonly imageViewerService = inject(ImageViewerService);
+
   readonly label = input.required<string | UILanguageTranslation>();
   readonly name = input<string>();
   readonly imageUrl = input<null | string | undefined>();
@@ -34,11 +37,12 @@ export class ImageViewerTriggerComponent {
   }
 
   showViewer() {
-    console.log(`
-      This should open the image viewer for:
-      imageUrl: ${this.imageUrl() ?? 'N/A'},
-      name: ${this.name() ?? 'N/A'}
-      (Or some other unique identifier)
-    `);
+    const imageUrl = this.imageUrl();
+
+    if (!imageUrl || !this.isAvailable()) {
+      return;
+    }
+
+    this.imageViewerService.requestOpenImage({ imageUrl });
   }
 }
