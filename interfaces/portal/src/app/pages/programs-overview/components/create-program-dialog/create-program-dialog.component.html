@@ -37,17 +37,11 @@
           the following details carried over:
         </p>
         <ul class="mbe-4 flex flex-wrap gap-2">
-          @for (detail of carriedOverDetails; track detail) {
+          @for (relation of duplicatedProgramRelations; track relation) {
             <li>
-              <p-tag
-                severity="info"
-                [value]="detail"
-                rounded
-                style="
-                  --p-tag-info-background: #e9f2ff;
-                  --p-tag-info-color: #0d2a88;
-                  --p-tag-padding: 0.25rem 1rem;
-                "
+              <app-colored-chip
+                variant="blue"
+                [label]="relation"
               />
             </li>
           }
