@@ -33,11 +33,30 @@
           i18n
           class="mbe-4"
         >
-          Duplicate "{{ programToDuplicateName() }}". Update the relevant
-          details in the next steps. After duplication is done, link a
-          registration form to complete the setup.
+          A duplicate of "{{ programToDuplicateName() }}" will be created with
+          the following details carried over:
         </p>
+        <ul class="mbe-4 flex flex-wrap gap-2">
+          @for (detail of carriedOverDetails; track detail) {
+            <li>
+              <p-tag
+                severity="info"
+                [value]="detail"
+                rounded
+                style="
+                  --p-tag-info-background: #e9f2ff;
+                  --p-tag-info-color: #0d2a88;
+                  --p-tag-padding: 0.25rem 1rem;
+                "
+              />
+            </li>
+          }
+        </ul>
         <p class="mbe-4">
+          <ng-container i18n>
+            Update the relevant details in the next steps, then link a
+            registration form to complete setup.
+          </ng-container>
           <ng-container i18n>
             Learn more in the <app-manual-link />
           </ng-container>

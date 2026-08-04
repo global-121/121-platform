@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
+import { TagModule } from 'primeng/tag';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
@@ -48,6 +49,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     ProgramFormInformationComponent,
     ProgramFormBudgetComponent,
     ManualLinkComponent,
+    TagModule,
   ],
   providers: [ToastService],
   templateUrl: './create-program-dialog.component.html',
@@ -85,6 +87,13 @@ export class CreateProgramDialogComponent {
       this.programToDuplicate()?.titlePortal,
     ),
   );
+
+  // Details that are automatically copied to the duplicated program by the backend
+  readonly carriedOverDetails = [
+    $localize`:@@duplicate-program-carried-over-fsp-configurations:FSP configurations`,
+    $localize`:@@duplicate-program-carried-over-approval-thresholds:Approval thresholds`,
+    $localize`:@@duplicate-program-carried-over-program-team:Program team`,
+  ];
 
   readonly formGroup = computed(() => {
     const nameGroup = this.formName()?.formGroup;
