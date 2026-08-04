@@ -539,6 +539,8 @@ export class PaymentsManagementService {
       );
     }
 
+    await this.transactionsService.deleteTransactionsByPaymentId({ paymentId });
+
     await this.paymentRepository.remove(payment);
   }
 

@@ -551,11 +551,14 @@ describe('PaymentsManagementService', () => {
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
     });
 
-    it('should remove the payment when it has not been started', async () => {
+    it('should delete the related transactions and remove the payment when it has not been started', async () => {
       // Act
       await service.deletePayment(deleteParams);
 
       // Assert
+      expect(
+        transactionsService.deleteTransactionsByPaymentId,
+      ).toHaveBeenCalledWith({ paymentId: 5 });
       expect((service as any).paymentRepository.remove).toHaveBeenCalledWith({
         id: 5,
         programId: 2,
