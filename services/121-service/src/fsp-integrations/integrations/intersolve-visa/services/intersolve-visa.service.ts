@@ -587,16 +587,17 @@ export class IntersolveVisaService {
     );
 
     // Create new card
-    await this.intersolveVisaApiService.createPhysicalCard({
-      tokenCode: newChildWallet.tokenCode,
+    const { isNewCardCreated } = await this.createDebitCardIfNotExists({
+      childWallet: newChildWallet,
       contactInformation: input.contactInformation,
       coverLetterCode: input.coverLetterCode,
     });
 
-    // Update child wallet: set isDebitCardCreated to true
-    newChildWallet.isDebitCardCreated = true;
-    newChildWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
-    await this.intersolveVisaChildWalletScopedRepository.save(newChildWallet);
+    if (!isNewCardCreated) {
+      newChildWallet.isDebitCardCreated = true;
+      newChildWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
+      await this.intersolveVisaChildWalletScopedRepository.save(newChildWallet);
+    }
   }
 
   public async hasIntersolveCustomer(registrationId: number): Promise<boolean> {
