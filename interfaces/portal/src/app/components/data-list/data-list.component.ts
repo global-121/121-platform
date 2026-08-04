@@ -24,7 +24,7 @@ import {
   ChipVariant,
   ColoredChipComponent,
 } from '~/components/colored-chip/colored-chip.component';
-import { ImageViewerTriggerComponent } from '~/components/image-viewer-trigger/image-viewer-trigger.component';
+import { ImageModalTriggerComponent } from '~/components/image/image-modal-trigger/image-modal-trigger.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -102,7 +102,7 @@ export type DataListItem = {
     NgComponentOutlet,
     RouterLink,
     InputTextModule,
-    ImageViewerTriggerComponent,
+    ImageModalTriggerComponent,
   ],
   templateUrl: './data-list.component.html',
   styles: ``,

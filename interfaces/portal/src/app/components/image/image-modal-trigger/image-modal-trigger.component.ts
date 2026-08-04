@@ -7,16 +7,25 @@ import {
 } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ImageViewerService } from '~/components/image/services/image-viewer.service';
 import { isImageAvailable } from '~/components/image/utils/is-image-available';
+import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
 @Component({
   selector: 'app-image-modal-trigger',
-  imports: [ButtonModule, ColoredChipComponent],
+  imports: [
+    ButtonModule,
+    ColoredChipComponent,
+    FormFieldWrapperComponent,
+    TranslatableStringPipe,
+    InputTextModule,
+  ],
   templateUrl: './image-modal-trigger.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: `
