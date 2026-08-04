@@ -88,7 +88,6 @@ export class CreateProgramDialogComponent {
     ),
   );
 
-  // Details that are automatically copied to the duplicated program by the backend
   readonly duplicatedProgramRelations = [
     $localize`:@@duplicate-program-carried-over-fsp-configurations:FSP configurations`,
     $localize`:@@duplicate-program-carried-over-approval-thresholds:Approval thresholds`,
