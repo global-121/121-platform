@@ -1013,9 +1013,6 @@
       <trans-unit id="5179155984601144030" datatype="html">
         <source>Create payment</source>
       </trans-unit>
-      <trans-unit id="5187788891727888797" datatype="html">
-        <source>Show Image</source>
-      </trans-unit>
       <trans-unit id="5189461683300981166" datatype="html">
         <source>You&apos;re about to unpause debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>.</source>
       </trans-unit>
@@ -2335,11 +2332,17 @@
       <trans-unit id="image-not-available" datatype="html">
         <source>Not available</source>
       </trans-unit>
+      <trans-unit id="image-viewer-hide" datatype="html">
+        <source>Hide</source>
+      </trans-unit>
       <trans-unit id="image-viewer-rotate-clockwise" datatype="html">
         <source>Rotate clockwise</source>
       </trans-unit>
       <trans-unit id="image-viewer-rotate-counter-clockwise" datatype="html">
         <source>Rotate counter-clockwise</source>
+      </trans-unit>
+      <trans-unit id="image-viewer-show" datatype="html">
+        <source>Show</source>
       </trans-unit>
       <trans-unit id="image-viewer-zoom-in" datatype="html">
         <source>Zoom in</source>

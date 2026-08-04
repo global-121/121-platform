@@ -1,52 +1,35 @@
-<!--
-  XXX: This list-markup is just for debugging;
-  This should be an invisible container, that can keep track of all the modals.
-  AND do some fancy "caching" of already-downloaded-images, so that the user doesn't have to re-download the same image if they open it again.
--->
-<ul class="list-disc">
-  @for (image of images(); track index; let index = $index) {
-    @let isAvailable = isImageAvailable({ imageUrl: image.imageUrl });
+@for (image of images(); track index; let index = $index) {
+  @let isAvailable = isImageAvailable({ imageUrl: image.imageUrl });
 
-    @if (isAvailable) {
-      <li>
-        <!--
-        XXX: These properties/attributes should probably be used to identify each modal,
-        so they can be triggered by "any other element"... (i.e. the image-viewer-trigger component)
-        -->
-        <!-- <pre i18n>
-          name/ID: "{{ image.attributeName }}"
-          URL: {{ image.imageUrl }}
-        </pre> -->
+  @if (isAvailable) {
+    <p-dialog
+      [modal]="false"
+      [draggable]="true"
+      [closeOnEscape]="false"
+      [resizable]="true"
+      [dismissableMask]="false"
+      [blockScroll]="false"
+      [maximizable]="true"
+      [visible]="openImageIndexes().has(index)"
+      [appendTo]="'body'"
+      [style]="{ width: '42rem', height: '42rem' }"
+      (onMaximize)="isMaximized = !isMaximized"
+      (onHide)="closeDialog({ imageIndex: index })"
+      [styleClass]="isMaximized ? '' : 'cursor-move'"
+      [contentStyleClass]="'cursor-default'"
+      [resizable]="true"
+      class="shadow-2xl"
+    >
+      <ng-template #header>
+        <div>
+          <i class="pi pi-image me-2"></i>
+          <strong>{{ image.label | translatableString }}:</strong>
+        </div>
+      </ng-template>
 
-        <p-dialog
-          [modal]="false"
-          [draggable]="true"
-          [closeOnEscape]="false"
-          [resizable]="true"
-          [dismissableMask]="false"
-          [blockScroll]="false"
-          [maximizable]="true"
-          [visible]="openImageIndexes().has(index)"
-          [appendTo]="'body'"
-          [style]="{ width: '42rem', height: '42rem' }"
-          (onMaximize)="isMaximized = !isMaximized"
-          (onHide)="closeDialog({ imageIndex: index })"
-          [styleClass]="isMaximized ? '' : 'cursor-move'"
-          [contentStyleClass]="'cursor-default'"
-          [resizable]="true"
-        >
-          <ng-template #header>
-            <div>
-              <i class="pi pi-image me-2"></i>
-              <strong>{{ image.label | translatableString }}:</strong>
-            </div>
-          </ng-template>
-
-          <app-image-viewer
-            [imageUrl]="downloadedImageObjectUrls()[index] ?? image.imageUrl"
-          />
-        </p-dialog>
-      </li>
-    }
+      <app-image-viewer
+        [imageUrl]="downloadedImageObjectUrls()[index] ?? image.imageUrl"
+      />
+    </p-dialog>
   }
-</ul>
+}
