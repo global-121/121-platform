@@ -33,12 +33,7 @@
       }
     }
     @if (hasKoboImages()) {
-      <!--
-        XXX: This would be the "hidden modal-container", with all the actual image-viewer-modals, controlled by the buttons in the list(s) above.
-      -->
-      <div style="outline: 2px dashed hotpink">
-        <app-image-list [images]="koboImages()" />
-      </div>
+      <app-image-list [images]="koboImages()" />
     }
   </div>
 </app-page-layout-registration>

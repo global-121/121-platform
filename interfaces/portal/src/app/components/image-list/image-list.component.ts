@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   effect,
   inject,
@@ -9,7 +10,6 @@ import {
   untracked,
 } from '@angular/core';
 
-import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 
@@ -23,14 +23,12 @@ import { ImageViewerService } from '~/services/image-viewer.service';
 @Component({
   selector: 'app-image-list',
   imports: [
-    AccordionModule,
     TranslatableStringPipe,
     ButtonModule,
     DialogModule,
     ImageViewerComponent,
   ],
   templateUrl: './image-list.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImageListComponent {
@@ -49,7 +47,19 @@ export class ImageListComponent {
   >();
   readonly downloadedImageObjectUrls = signal<(null | string)[]>([]);
 
-  readonly openImageIndexes = signal<ReadonlySet<number>>(new Set());
+  // Visible dialogs are derived from the shared open-image state (keyed by URL).
+  readonly openImageIndexes = computed(() => {
+    const openImageUrls = this.imageViewerService.openImageUrls();
+    const indexes = new Set<number>();
+
+    this.images().forEach((image, index) => {
+      if (openImageUrls.has(image.imageUrl)) {
+        indexes.add(index);
+      }
+    });
+
+    return indexes;
+  });
 
   isMaximized = false;
 
@@ -87,37 +97,24 @@ export class ImageListComponent {
       revokeBlobObjectUrls(this.downloadedImageObjectUrls());
     });
 
-    // Open the matching dialog when another component requests an image by URL.
+    // Download images as they are opened elsewhere; downloads are idempotent.
     effect(() => {
-      const request = this.imageViewerService.openRequest();
+      const openImageUrls = this.imageViewerService.openImageUrls();
 
-      if (!request) {
-        return;
-      }
-
-      const index = untracked(() =>
-        this.images().findIndex((image) => image.imageUrl === request.imageUrl),
-      );
-
-      if (index === -1) {
-        return;
-      }
-
-      void this.openImage({ imageIndex: index });
-      this.openDialog({ imageIndex: index });
+      untracked(() => {
+        this.images().forEach((image, index) => {
+          if (openImageUrls.has(image.imageUrl)) {
+            void this.openImage({ imageIndex: index });
+          }
+        });
+      });
     });
-  }
-
-  openDialog({ imageIndex }: { imageIndex: number }): void {
-    this.openImageIndexes.update((indexes) => new Set(indexes).add(imageIndex));
   }
 
   closeDialog({ imageIndex }: { imageIndex: number }): void {
-    this.openImageIndexes.update((indexes) => {
-      const updatedIndexes = new Set(indexes);
-      updatedIndexes.delete(imageIndex);
-      return updatedIndexes;
-    });
+    const image = this.images()[imageIndex];
+
+    this.imageViewerService.close({ imageUrl: image.imageUrl });
   }
 
   isImageAvailable({ imageUrl }: { imageUrl: string }): boolean {
