@@ -9,6 +9,7 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
   readonly editInformationReasonField: Locator;
   readonly saveButton: Locator;
   readonly registrationTitle: Locator;
+  readonly imageViewerDialog: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -20,6 +21,7 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     );
     this.saveButton = this.page.getByRole('button', { name: 'Save' });
     this.registrationTitle = this.page.getByTestId('registration-title');
+    this.imageViewerDialog = page.locator('.p-dialog');
   }
 
   async editRegistration({
@@ -152,12 +154,8 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
 
   koboImageTrigger({ label }: { label: string }): Locator {
     return this.page
-      .locator('app-image-modal-trigger')
+      .locator('app-image-dialog-trigger')
       .filter({ hasText: label });
-  }
-
-  koboImageDialog(): Locator {
-    return this.page.locator('[data-testid="image-viewer-dialog"]');
   }
 
   async toggleKoboImageModal({ label }: { label: string }): Promise<void> {

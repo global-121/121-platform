@@ -498,18 +498,7 @@ export class KoboMockService {
         'group_or1bl43/How_are_you_today_select_one': 'great',
         photo:
           'username/attachments/form-id/submission-uuid/important_photo.jpg',
-        idPhoto:
-          'username/attachments/form-id/submission-uuid/important_photo.jpg',
         _attachments: [
-          {
-            filename:
-              'username/attachments/form-id/submission-uuid/important_photo.jpg',
-            download_url: this.buildAttachmentDownloadUrl({
-              origin,
-              uid_asset,
-            }),
-            mimetype: 'image/jpeg',
-          },
           {
             filename:
               'username/attachments/form-id/submission-uuid/important_photo.jpg',

@@ -95,11 +95,10 @@ test('User can open Kobo image modal and image is downloaded only when modal ope
     ]);
 
     await expect(
-      registrationPersonalInformationPage.koboImageDialog(),
+      registrationPersonalInformationPage.imageViewerDialog,
     ).toBeVisible();
     await expect(
-      registrationPersonalInformationPage
-        .koboImageDialog()
+      registrationPersonalInformationPage.imageViewerDialog
         .locator('app-image-viewer img')
         .first(),
     ).toBeVisible();
