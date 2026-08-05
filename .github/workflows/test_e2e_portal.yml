@@ -24,6 +24,7 @@ env:
 jobs:
   path-filter:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
     outputs:
       should_skip: ${{ steps.filter.outputs.should_skip }}
     steps:
