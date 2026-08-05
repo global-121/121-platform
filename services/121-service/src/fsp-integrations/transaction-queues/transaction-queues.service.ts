@@ -141,10 +141,14 @@ export class TransactionQueuesService {
       .map((job) => String(job.id));
 
     if (jobIds.length > 0) {
-      await this.redisClient.sadd(
-        getRedisSetName(transactionJobs[0].programId),
-        ...jobIds,
-      );
+      const redisSetName = getRedisSetName(transactionJobs[0].programId);
+      const batchSize = 10_000;
+      const pipeline = this.redisClient.pipeline();
+      for (let i = 0; i < jobIds.length; i += batchSize) {
+        const batch = jobIds.slice(i, i + batchSize);
+        pipeline.sadd(redisSetName, ...batch);
+      }
+      await pipeline.exec();
     }
   }
 }
