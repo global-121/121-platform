@@ -148,7 +148,17 @@ export class TransactionQueuesService {
         const batch = jobIds.slice(i, i + batchSize);
         pipeline.sadd(redisSetName, ...batch);
       }
-      await pipeline.exec();
+      const results = await pipeline.exec();
+      if (results == null) {
+        throw new Error(
+          `Failed to add job IDs to Redis set ${redisSetName}: pipeline aborted`,
+        );
+      }
+      for (const [error] of results) {
+        if (error) {
+          throw error;
+        }
+      }
     }
   }
 }
