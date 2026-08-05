@@ -77,10 +77,10 @@ jobs:
 
   test-shard-e2e:
     runs-on: ubuntu-latest
+    if: ${{ (github.event_name != 'pull_request' || github.event.pull_request.draft == false) && needs.path-filter.outputs.should_skip != 'true' }}
     needs:
       - path-filter
       - lint-code
-    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
     strategy:
       fail-fast: false
       matrix:

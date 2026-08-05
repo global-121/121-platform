@@ -14,8 +14,8 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-slim
-    # Don't run this check on dependabot PRs
-    if: contains(github.actor, 'dependabot') == false
+    # Don't run this check on dependabot PRs and draft PRs
+    if: ${{ contains(github.actor, 'dependabot') == false && (github.event_name != 'pull_request' || github.event.pull_request.draft == false) }}
 
     steps:
       - name: Check PR description and labels
