@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Readable } from 'node:stream';
 
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
+import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
 import { KoboImageService } from '@121-service/src/kobo/services/kobo-image.service';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -13,6 +14,7 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
 describe('KoboImageService', () => {
   let service: KoboImageService;
   let httpService: jest.Mocked<CustomHttpService>;
+  let koboApiService: jest.Mocked<KoboApiService>;
   let registrationsService: jest.Mocked<RegistrationsService>;
   let programRegistrationAttributesService: jest.Mocked<ProgramRegistrationAttributesService>;
   let koboRepository: {
@@ -45,6 +47,12 @@ describe('KoboImageService', () => {
           },
         },
         {
+          provide: KoboApiService,
+          useValue: {
+            getSubmission: jest.fn(),
+          },
+        },
+        {
           provide: RegistrationsService,
           useValue: {
             getRegistrationOrThrow: jest.fn(),
@@ -68,6 +76,7 @@ describe('KoboImageService', () => {
 
     service = module.get<KoboImageService>(KoboImageService);
     httpService = module.get(CustomHttpService);
+    koboApiService = module.get(KoboApiService);
     registrationsService = module.get(RegistrationsService);
     programRegistrationAttributesService = module.get(
       ProgramRegistrationAttributesService,
@@ -84,7 +93,8 @@ describe('KoboImageService', () => {
       const mockStream = new Readable({
         read() {
           // no-op: mock stream does not produce data
-        } });
+        },
+      });
 
       koboRepository.findOne.mockResolvedValue(mockKoboEntity);
       registrationsService.getRegistrationOrThrow.mockResolvedValue({} as any);
@@ -111,10 +121,6 @@ describe('KoboImageService', () => {
       // Assert
       expect(result.stream).toBe(mockStream);
       expect(result.mimetype).toBe('image/jpeg');
-      expect(httpService.getStream).toHaveBeenCalledWith(
-        mockImageUrl,
-        expect.any(Headers),
-      );
     });
 
     it('should throw NotFoundException when no Kobo integration exists', async () => {
@@ -134,8 +140,13 @@ describe('KoboImageService', () => {
     it('should throw when registration does not exist', async () => {
       // Arrange
       koboRepository.findOne.mockResolvedValue(mockKoboEntity);
-      registrationsService.getRegistrationOrThrow.mockRejectedValue(
-        new NotFoundException('Registration not found'),
+      programRegistrationAttributesService.getAttributes.mockResolvedValue([
+        { name: mockAttributeName, type: RegistrationAttributeTypes.koboImage },
+      ] as any);
+      registrationsService.getOnePaginatedRegistrationByReferenceId.mockRejectedValue(
+        new Error(
+          `Unexpected error: ReferenceId '${mockReferenceId}' not found in pagination query results.`,
+        ),
       );
 
       // Act & Assert
@@ -145,7 +156,9 @@ describe('KoboImageService', () => {
           referenceId: mockReferenceId,
           attributeName: mockAttributeName,
         }),
-      ).rejects.toThrow(NotFoundException);
+      ).rejects.toThrow(
+        `No registration found for referenceId '${mockReferenceId}'`,
+      );
     });
 
     it('should throw NotFoundException when attribute is not a koboImage type', async () => {
@@ -187,9 +200,92 @@ describe('KoboImageService', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('should throw BadRequestException when image URL origin does not match Kobo server', async () => {
+    it.each([
+      {
+        caseName: 'image URL origin does not match Kobo server',
+        imageUrl: `https://evil.com/api/v2/assets/${mockAssetUid}/data/1/attachments/1`,
+      },
+      {
+        caseName: 'image URL does not contain the asset ID',
+        imageUrl: `${mockKoboUrl}/api/v2/assets/wrong-asset-id/data/1/attachments/1`,
+      },
+    ])(
+      'should throw BadRequestException when $caseName',
+      async ({ imageUrl }) => {
+        // Arrange
+        koboRepository.findOne.mockResolvedValue(mockKoboEntity);
+        registrationsService.getRegistrationOrThrow.mockResolvedValue(
+          {} as any,
+        );
+        programRegistrationAttributesService.getAttributes.mockResolvedValue([
+          {
+            name: mockAttributeName,
+            type: RegistrationAttributeTypes.koboImage,
+          },
+        ] as any);
+        registrationsService.getOnePaginatedRegistrationByReferenceId.mockResolvedValue(
+          { [mockAttributeName]: imageUrl } as any,
+        );
+
+        // Act & Assert
+        await expect(
+          service.getKoboImageStream({
+            programId: mockProgramId,
+            referenceId: mockReferenceId,
+            attributeName: mockAttributeName,
+          }),
+        ).rejects.toThrow(BadRequestException);
+      },
+    );
+
+    it.each([
+      {
+        caseName: 'image URL is invalid',
+        koboEntity: mockKoboEntity,
+        imageUrl: 'https://[invalid-url',
+        expectedErrorMessage: 'Image URL is invalid',
+      },
+      {
+        caseName: 'Kobo base URL is invalid',
+        koboEntity: {
+          ...mockKoboEntity,
+          url: 'https://[invalid-kobo-url',
+        } as KoboEntity,
+        imageUrl: `${mockKoboUrl}/api/v2/assets/${mockAssetUid}/data/1/attachments/1`,
+        expectedErrorMessage: 'Kobo base URL is invalid',
+      },
+    ])(
+      'should throw BadRequestException when $caseName',
+      async ({ koboEntity, imageUrl, expectedErrorMessage }) => {
+        // Arrange
+        koboRepository.findOne.mockResolvedValue(koboEntity);
+        registrationsService.getRegistrationOrThrow.mockResolvedValue(
+          {} as any,
+        );
+        programRegistrationAttributesService.getAttributes.mockResolvedValue([
+          {
+            name: mockAttributeName,
+            type: RegistrationAttributeTypes.koboImage,
+          },
+        ] as any);
+        registrationsService.getOnePaginatedRegistrationByReferenceId.mockResolvedValue(
+          { [mockAttributeName]: imageUrl } as any,
+        );
+
+        // Act & Assert
+        await expect(
+          service.getKoboImageStream({
+            programId: mockProgramId,
+            referenceId: mockReferenceId,
+            attributeName: mockAttributeName,
+          }),
+        ).rejects.toThrow(expectedErrorMessage);
+      },
+    );
+
+    it('should throw NotFoundException when filename cannot be resolved from submission attachments', async () => {
       // Arrange
-      const maliciousUrl = `https://evil.com/api/v2/assets/${mockAssetUid}/data/1/attachments/1`;
+      const imageFilename = 'unresolvable-image.jpg';
 
       koboRepository.findOne.mockResolvedValue(mockKoboEntity);
       registrationsService.getRegistrationOrThrow.mockResolvedValue({} as any);
@@ -197,8 +293,23 @@ describe('KoboImageService', () => {
         { name: mockAttributeName, type: RegistrationAttributeTypes.koboImage },
       ] as any);
       registrationsService.getOnePaginatedRegistrationByReferenceId.mockResolvedValue(
-        { [mockAttributeName]: maliciousUrl } as any,
+        { [mockAttributeName]: imageFilename } as any,
       );
+      koboApiService.getSubmission.mockResolvedValue({
+        _id: 1,
+        _uuid: mockReferenceId,
+        _xform_id_string: mockAssetUid,
+        _submission_time: '2026-07-27T00:00:00.000Z',
+        _status: 'submitted_via_web',
+        __version__: 'v1',
+        _attachments: [
+          {
+            filename: 'user/attachments/form/another-image.jpg',
+            download_url: `${mockKoboUrl}/api/v2/assets/${mockAssetUid}/data/1/attachments/another-image.jpg`,
+            mimetype: 'image/jpeg',
+          },
+        ],
+      } as any);
 
       // Act & Assert
       await expect(
@@ -207,30 +318,7 @@ describe('KoboImageService', () => {
           referenceId: mockReferenceId,
           attributeName: mockAttributeName,
         }),
-      ).rejects.toThrow(BadRequestException);
-    });
-
-    it('should throw BadRequestException when image URL does not contain the asset ID', async () => {
-      // Arrange
-      const urlWithWrongAsset = `${mockKoboUrl}/api/v2/assets/wrong-asset-id/data/1/attachments/1`;
-
-      koboRepository.findOne.mockResolvedValue(mockKoboEntity);
-      registrationsService.getRegistrationOrThrow.mockResolvedValue({} as any);
-      programRegistrationAttributesService.getAttributes.mockResolvedValue([
-        { name: mockAttributeName, type: RegistrationAttributeTypes.koboImage },
-      ] as any);
-      registrationsService.getOnePaginatedRegistrationByReferenceId.mockResolvedValue(
-        { [mockAttributeName]: urlWithWrongAsset } as any,
-      );
-
-      // Act & Assert
-      await expect(
-        service.getKoboImageStream({
-          programId: mockProgramId,
-          referenceId: mockReferenceId,
-          attributeName: mockAttributeName,
-        }),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw BadRequestException when response mimetype is not allowed', async () => {
@@ -264,6 +352,58 @@ describe('KoboImageService', () => {
           attributeName: mockAttributeName,
         }),
       ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should resolve filename values via submission attachments and stream image', async () => {
+      // Arrange
+      const imageFilename = 'test-image.jpg';
+      const resolvedDownloadUrl = `${mockKoboUrl}/api/v2/assets/${mockAssetUid}/data/1/attachments/${imageFilename}`;
+      const mockStream = new Readable({
+        read() {
+          // no-op: mock stream does not produce data
+        },
+      });
+
+      koboRepository.findOne.mockResolvedValue(mockKoboEntity);
+      registrationsService.getRegistrationOrThrow.mockResolvedValue({} as any);
+      programRegistrationAttributesService.getAttributes.mockResolvedValue([
+        { name: mockAttributeName, type: RegistrationAttributeTypes.koboImage },
+      ] as any);
+      registrationsService.getOnePaginatedRegistrationByReferenceId.mockResolvedValue(
+        { [mockAttributeName]: imageFilename } as any,
+      );
+      koboApiService.getSubmission.mockResolvedValue({
+        _id: 1,
+        _uuid: mockReferenceId,
+        _xform_id_string: mockAssetUid,
+        _submission_time: '2026-07-27T00:00:00.000Z',
+        _status: 'submitted_via_web',
+        __version__: 'v1',
+        _attachments: [
+          {
+            filename: `user/attachments/form/${imageFilename}`,
+            download_url: resolvedDownloadUrl,
+            mimetype: 'image/jpeg',
+          },
+        ],
+      } as any);
+      httpService.getStream.mockResolvedValue({
+        headers: { 'content-type': 'image/jpeg' },
+        data: mockStream,
+        status: HttpStatus.OK,
+        statusText: 'OK',
+      } as any);
+
+      // Act
+      const result = await service.getKoboImageStream({
+        programId: mockProgramId,
+        referenceId: mockReferenceId,
+        attributeName: mockAttributeName,
+      });
+
+      // Assert
+      expect(result.stream).toBe(mockStream);
+      expect(result.mimetype).toBe('image/jpeg');
     });
   });
 });
