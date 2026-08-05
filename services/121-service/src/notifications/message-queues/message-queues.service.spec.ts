@@ -18,7 +18,10 @@ import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-r
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 jest.mock('@121-service/src/env', () => ({
-  env: { TWILIO_MODE: 'MOCK' },
+  env: {
+    ...jest.requireActual('@121-service/src/env').env,
+    TWILIO_MODE: 'MOCK',
+  },
 }));
 
 const mockEnv = env as { TWILIO_MODE: string };
