@@ -33,7 +33,6 @@ import { FspConfigurationService } from '~/services/fsp-configuration.service';
     ToggleSwitchModule,
   ],
   templateUrl: './fsp-configuration-property-form-field.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FspConfigurationPropertyFormFieldComponent {

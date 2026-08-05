@@ -5,6 +5,7 @@ import {
   inject,
   input,
   LOCALE_ID,
+  output,
 } from '@angular/core';
 import {
   FormControl,
@@ -23,7 +24,12 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { FspMultiselectComponent } from '~/components/fsp-multiselect/fsp-multiselect.component';
 import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
 import { Program } from '~/domains/program/program.model';
-import { generateFieldErrors } from '~/utils/form-validation';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingEvent,
+} from '~/services/tracking.service';
+import { generateFieldErrors, trackFieldErrors } from '~/utils/form-validation';
 import { Locale } from '~/utils/locale';
 
 export type ProgramBudgetFormGroup =
@@ -46,6 +52,7 @@ export class ProgramFormBudgetComponent {
   private readonly locale = inject<Locale>(LOCALE_ID);
   readonly program = input<Program>();
   readonly programId = input<string>();
+  readonly trackEvent = output<TrackingEvent>();
 
   readonly currencies = Object.values(CurrencyCode)
     .map((code) => ({
@@ -85,7 +92,6 @@ export class ProgramFormBudgetComponent {
   });
 
   formFieldErrors = generateFieldErrors(this.formGroup);
-
   updateFormGroup = effect(() => {
     const programData = this.program();
 
@@ -110,6 +116,24 @@ export class ProgramFormBudgetComponent {
       });
     }
   });
-
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
+
+  readonly isCreateProgram =
+    typeof window !== 'undefined' &&
+    window.location.href.includes('create-program');
+
+  constructor() {
+    trackFieldErrors({
+      formGroup: this.formGroup,
+      onFieldError: ({ field, error }) => {
+        this.trackEvent.emit({
+          category: this.isCreateProgram
+            ? TrackingCategory.createNewProgram
+            : TrackingCategory.programSettings,
+          action: TrackingAction.formValidationError,
+          name: `${field}: ${error}`,
+        });
+      },
+    });
+  }
 }

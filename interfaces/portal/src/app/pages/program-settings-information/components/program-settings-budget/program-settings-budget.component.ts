@@ -31,6 +31,11 @@ import { ProgramApiService } from '~/domains/program/program.api.service';
 import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingEvent,
+} from '~/services/tracking.service';
 
 @Component({
   selector: 'app-program-settings-budget',
@@ -109,6 +114,9 @@ export class ProgramSettingsBudgetComponent {
       this.toastService.showToast({
         detail: $localize`Budget details saved successfully.`,
       });
+
+      // Reset trackSaveEventPayloads
+      this.trackSaveEventPayloads = [this.trackSaveEventInitialPayload];
     },
   }));
 
@@ -170,6 +178,17 @@ export class ProgramSettingsBudgetComponent {
     const fspConfigs = this.program.data()?.programFspConfigurations ?? [];
     return [...new Set(fspConfigs.map((fsp) => fsp.fspName))];
   });
+
+  readonly trackSaveEventInitialPayload: TrackingEvent = {
+    category: TrackingCategory.programSettings,
+    action: TrackingAction.programSettingsBasicInfoSaveButtonClick,
+  };
+
+  trackSaveEventPayloads: TrackingEvent[] = [this.trackSaveEventInitialPayload];
+
+  handleTrackEvent(event: TrackingEvent): void {
+    this.trackSaveEventPayloads = [...this.trackSaveEventPayloads, event];
+  }
 
   fspsChanged({ fsps }: { fsps: Fsps[] }): boolean {
     return (

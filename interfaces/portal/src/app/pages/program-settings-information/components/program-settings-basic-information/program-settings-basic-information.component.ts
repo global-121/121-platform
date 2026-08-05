@@ -38,6 +38,12 @@ import {
 import { AuthService } from '~/services/auth.service';
 import { RegistrationsTableColumnService } from '~/services/registrations-table-column.service';
 import { ToastService } from '~/services/toast.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingEvent,
+  TrackingService,
+} from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import {
   getLocaleLabel,
@@ -71,24 +77,21 @@ export class ProgramSettingsBasicInformationComponent {
   programApiService = inject(ProgramApiService);
   registrationsTableColumnService = inject(RegistrationsTableColumnService);
   toastService = inject(ToastService);
+  trackingService = inject(TrackingService);
   translatableStringService = inject(TranslatableStringService);
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
-
   readonly canEdit = computed(() =>
     this.authService.hasPermission({
       programId: this.programId(),
       requiredPermission: PermissionEnum.ProgramUPDATE,
     }),
   );
-
   readonly programFormName =
     viewChild<ProgramFormNameComponent>('programFormName');
   readonly programFormInformation = viewChild<ProgramFormInformationComponent>(
     'programFormInformation',
   );
-
-  // These are two separate components/formGroups because they are also
   // used separately in the program creation flow
   readonly formGroup = computed(() => {
     const nameGroup = this.programFormName()?.formGroup;
@@ -152,9 +155,11 @@ export class ProgramSettingsBasicInformationComponent {
       this.toastService.showToast({
         detail: $localize`Basic information details saved successfully.`,
       });
+
+      // Reset trackSaveEventPayloads
+      this.trackSaveEventPayloads = [this.trackSaveEventInitialPayload];
     },
   }));
-
   readonly programBasicInformationData = computed(() => {
     const programData = this.program.data();
 
@@ -216,4 +221,15 @@ export class ProgramSettingsBasicInformationComponent {
       loading: this.program.isPending(),
     }));
   });
+
+  readonly trackSaveEventInitialPayload: TrackingEvent = {
+    category: TrackingCategory.programSettings,
+    action: TrackingAction.programSettingsBasicInfoSaveButtonClick,
+  };
+
+  trackSaveEventPayloads: TrackingEvent[] = [this.trackSaveEventInitialPayload];
+
+  handleTrackEvent(event: TrackingEvent): void {
+    this.trackSaveEventPayloads = [...this.trackSaveEventPayloads, event];
+  }
 }

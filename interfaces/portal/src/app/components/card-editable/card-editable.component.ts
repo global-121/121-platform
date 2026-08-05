@@ -16,6 +16,7 @@ import { FocusTrapModule } from 'primeng/focustrap';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
+import { TrackingEvent, TrackingService } from '~/services/tracking.service';
 
 @Component({
   selector: 'app-card-editable',
@@ -52,6 +53,9 @@ export class CardEditableComponent<TMutationData = unknown> {
   // TODO: this should become redundant once "mutation" is required (see above)
   readonly isSaveable = computed(() => !!this.mutation());
 
+  readonly trackEventsOnSave = input<TrackingEvent[]>([]);
+  trackingService = inject(TrackingService);
+
   onFormSubmit() {
     const formGroup = this.formGroup();
 
@@ -77,6 +81,11 @@ export class CardEditableComponent<TMutationData = unknown> {
     mutation.mutate(mutationData, {
       onSuccess: () => {
         this.isEditing.set(false);
+
+        const trackEventsOnSave = this.trackEventsOnSave();
+        for (const event of trackEventsOnSave) {
+          this.trackingService.trackEvent(event);
+        }
       },
     });
   }

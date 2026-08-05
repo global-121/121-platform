@@ -3,6 +3,7 @@ import {
   Component,
   effect,
   input,
+  output,
 } from '@angular/core';
 import {
   FormControl,
@@ -19,7 +20,12 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
 import { Program } from '~/domains/program/program.model';
-import { generateFieldErrors } from '~/utils/form-validation';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingEvent,
+} from '~/services/tracking.service';
+import { generateFieldErrors, trackFieldErrors } from '~/utils/form-validation';
 
 export type ProgramInformationFormGroup =
   (typeof ProgramFormInformationComponent)['prototype']['formGroup'];
@@ -35,11 +41,11 @@ export type ProgramInformationFormGroup =
     InfoTooltipComponent,
   ],
   templateUrl: './program-form-information.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgramFormInformationComponent {
   readonly program = input<Program>();
+  readonly trackEvent = output<TrackingEvent>();
 
   formGroup = new FormGroup({
     startDate: new FormControl<Date | undefined>(
@@ -89,6 +95,44 @@ export class ProgramFormInformationComponent {
       enableScope: programData.enableScope,
     });
   });
-
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
+
+  readonly isCreateProgram =
+    typeof window !== 'undefined' &&
+    window.location.href.includes('create-program');
+
+  constructor() {
+    trackFieldErrors({
+      formGroup: this.formGroup,
+      onFieldError: ({ field, error }) => {
+        this.trackEvent.emit({
+          category: this.isCreateProgram
+            ? TrackingCategory.createNewProgram
+            : TrackingCategory.programSettings,
+          action: TrackingAction.formValidationError,
+          name: `${field}: ${error}`,
+        });
+      },
+    });
+  }
+
+  trackUseValidationToggleEvent(event: { checked: boolean }): void {
+    this.trackEvent.emit({
+      category: this.isCreateProgram
+        ? TrackingCategory.createNewProgram
+        : TrackingCategory.programSettings,
+      action: TrackingAction.toggleProgramValidation,
+      name: event.checked ? 'enabled' : 'disabled',
+    });
+  }
+
+  trackUseScopeToggleEvent(event: { checked: boolean }): void {
+    this.trackEvent.emit({
+      category: this.isCreateProgram
+        ? TrackingCategory.createNewProgram
+        : TrackingCategory.programSettings,
+      action: TrackingAction.toggleProgramScope,
+      name: event.checked ? 'enabled' : 'disabled',
+    });
+  }
 }

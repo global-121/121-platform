@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import {
   AbstractControl,
   FormControl,
@@ -6,9 +7,9 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { generateFieldErrors } from '~/utils/form-validation';
+import { generateFieldErrors, trackFieldErrors } from '~/utils/form-validation';
 
 describe('Form Validation Utils', () => {
   describe('generateFieldErrors', () => {
@@ -149,6 +150,99 @@ describe('Form Validation Utils', () => {
       expect(() => getFieldError('nonExistentControl')).toThrow();
 
       expect(getFieldError('required')).toBe('This field is required.'); // Should use generic validator
+    });
+  });
+
+  describe('trackFieldErrors', () => {
+    beforeEach(() => {
+      TestBed.configureTestingModule({});
+    });
+
+    const buildFormGroup = () =>
+      new FormGroup({
+        required: new FormControl('', {
+          validators: [Validators.required],
+        }),
+        optional: new FormControl('some value'),
+      });
+
+    it('emits the field name and error key when a control becomes touched and invalid', () => {
+      const formGroup = buildFormGroup();
+      const onFieldError = vi.fn();
+
+      TestBed.runInInjectionContext(() => {
+        trackFieldErrors({ formGroup, onFieldError });
+      });
+
+      formGroup.controls.required.markAsTouched();
+
+      expect(onFieldError).toHaveBeenCalledTimes(1);
+      expect(onFieldError).toHaveBeenCalledWith({
+        field: 'required',
+        error: 'required',
+      });
+    });
+
+    it('does not emit for a valid control', () => {
+      const formGroup = buildFormGroup();
+      const onFieldError = vi.fn();
+
+      TestBed.runInInjectionContext(() => {
+        trackFieldErrors({ formGroup, onFieldError });
+      });
+
+      formGroup.controls.optional.markAsTouched();
+
+      expect(onFieldError).not.toHaveBeenCalled();
+    });
+
+    it('deduplicates the same error key', () => {
+      const formGroup = buildFormGroup();
+      const onFieldError = vi.fn();
+
+      TestBed.runInInjectionContext(() => {
+        trackFieldErrors({ formGroup, onFieldError });
+      });
+
+      formGroup.controls.required.markAsTouched();
+      formGroup.controls.required.setValue('');
+
+      expect(onFieldError).toHaveBeenCalledTimes(1);
+    });
+
+    it('re-emits after the error clears and then reoccurs', () => {
+      const formGroup = buildFormGroup();
+      const onFieldError = vi.fn();
+
+      TestBed.runInInjectionContext(() => {
+        trackFieldErrors({ formGroup, onFieldError });
+      });
+
+      formGroup.controls.required.markAsTouched();
+      formGroup.controls.required.setValue('now valid');
+      formGroup.controls.required.setValue('');
+
+      expect(onFieldError).toHaveBeenCalledTimes(2);
+    });
+
+    it('joins multiple error keys', () => {
+      const formGroup = new FormGroup({
+        field: new FormControl('', {
+          validators: [() => ({ foo: true, bar: true })],
+        }),
+      });
+      const onFieldError = vi.fn();
+
+      TestBed.runInInjectionContext(() => {
+        trackFieldErrors({ formGroup, onFieldError });
+      });
+
+      formGroup.controls.field.markAsTouched();
+
+      expect(onFieldError).toHaveBeenCalledWith({
+        field: 'field',
+        error: 'foo, bar',
+      });
     });
   });
 });

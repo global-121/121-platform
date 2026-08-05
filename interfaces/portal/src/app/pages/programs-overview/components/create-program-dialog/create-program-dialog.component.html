@@ -1,7 +1,7 @@
 <app-fullscreen-stepper-dialog
   #createProgramDialog
   [dialogVisible]="currentStep() > 0"
-  (dialogVisibleChange)="currentStep.set($event ? 1 : 0)"
+  (dialogVisibleChange)="onDialogVisibleChange($event)"
   [currentStep]="currentStep()"
   [proceedLabel]="proceedLabel()"
   [cannotProceed]="
@@ -66,6 +66,7 @@
       <app-program-form-name
         #formName
         [program]="programToDuplicate()"
+        (trackEvent)="handleTrackEvent($event)"
       />
     </p-card>
   </ng-template>
@@ -87,6 +88,7 @@
       <app-program-form-information
         #formInformation
         [program]="programToDuplicate()"
+        (trackEvent)="handleTrackEvent($event)"
       />
     </p-card>
   </ng-template>
@@ -101,6 +103,7 @@
       <app-program-form-budget
         #formBudget
         [program]="programToDuplicate()"
+        (trackEvent)="handleTrackEvent($event)"
       />
     </p-card>
   </ng-template>

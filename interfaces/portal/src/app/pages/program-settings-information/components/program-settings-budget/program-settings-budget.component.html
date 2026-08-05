@@ -7,6 +7,7 @@
   [(isEditing)]="isEditing"
   [formGroup]="formGroup()"
   [mutation]="updateProgramMutation"
+  [trackEventsOnSave]="trackSaveEventPayloads"
   [mutationData]="formGroup()?.getRawValue()"
 >
   @if (!isEditing()) {
@@ -19,6 +20,7 @@
       #programFormBudget
       [program]="program.data()"
       [programId]="programId()"
+      (trackEvent)="handleTrackEvent($event)"
     />
   }
 </app-card-editable>
