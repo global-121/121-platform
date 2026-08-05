@@ -34,7 +34,7 @@ import { Subscription } from 'rxjs';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
-import { ImageModalTriggerComponent } from '~/components/image/image-modal-trigger/image-modal-trigger.component';
+import { ImageDialogTriggerComponent } from '~/components/image/image-dialog-trigger/image-dialog-trigger.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { Registration } from '~/domains/registration/registration.model';
 import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
@@ -59,7 +59,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     CheckboxModule,
     FormDialogComponent,
     FormsModule,
-    ImageModalTriggerComponent,
+    ImageDialogTriggerComponent,
   ],
   templateUrl: './edit-personal-information.component.html',
   styles: ``,

@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
-import { ImageModalsComponent } from '~/components/image/image-modals/image-modals.component';
+import { ImageDialogsComponent } from '~/components/image/image-dialogs/image-dialogs.component';
 import { ImageViewerService } from '~/components/image/services/image-viewer.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 
@@ -25,8 +25,8 @@ const secondImageUrl = 'https://example.org/photo-2.jpg';
 @Component({
   selector: 'app-test-host',
   standalone: true,
-  imports: [ImageModalsComponent],
-  template: ` <app-image-modals [images]="images()" /> `,
+  imports: [ImageDialogsComponent],
+  template: ` <app-image-dialogs [images]="images()" /> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class TestHostComponent {
@@ -50,10 +50,10 @@ class TestHostComponent {
   ]);
 }
 
-describe('ImageModalsComponent', () => {
+describe('ImageDialogsComponent', () => {
   let hostComponent: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
-  let imageModalsComponent: ImageModalsComponent;
+  let imageDialogsComponent: ImageDialogsComponent;
   let imageViewerService: ImageViewerService;
   const downloadedBlob = new Blob(['image-file']);
   const downloadKoboImage = vi.fn().mockResolvedValue(downloadedBlob);
@@ -66,7 +66,7 @@ describe('ImageModalsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ImageModalsComponent, TestHostComponent],
+      imports: [ImageDialogsComponent, TestHostComponent],
       providers: [
         {
           provide: RegistrationApiService,
@@ -79,8 +79,8 @@ describe('ImageModalsComponent', () => {
 
     fixture = TestBed.createComponent(TestHostComponent);
     hostComponent = fixture.componentInstance;
-    imageModalsComponent = fixture.debugElement.children[0]
-      .componentInstance as ImageModalsComponent;
+    imageDialogsComponent = fixture.debugElement.children[0]
+      .componentInstance as ImageDialogsComponent;
     imageViewerService = TestBed.inject(ImageViewerService);
     fixture.detectChanges();
 
@@ -108,23 +108,25 @@ describe('ImageModalsComponent', () => {
   });
 
   it('treats empty and "null" URLs as unavailable', () => {
-    expect(imageModalsComponent.isImageAvailable({ imageUrl: '' })).toBe(false);
-    expect(imageModalsComponent.isImageAvailable({ imageUrl: 'null' })).toBe(
+    expect(imageDialogsComponent.isImageAvailable({ imageUrl: '' })).toBe(
+      false,
+    );
+    expect(imageDialogsComponent.isImageAvailable({ imageUrl: 'null' })).toBe(
       false,
     );
     expect(
-      imageModalsComponent.isImageAvailable({ imageUrl: firstImageUrl }),
+      imageDialogsComponent.isImageAvailable({ imageUrl: firstImageUrl }),
     ).toBe(true);
   });
 
   it('derives visible dialogs from the shared image viewer service', () => {
-    expect(imageModalsComponent.openImageIndexes().size).toBe(0);
+    expect(imageDialogsComponent.openImageIndexes().size).toBe(0);
 
     imageViewerService.open({ imageUrl: secondImageUrl });
     fixture.detectChanges();
 
-    expect(imageModalsComponent.openImageIndexes().has(1)).toBe(true);
-    expect(imageModalsComponent.openImageIndexes().has(0)).toBe(false);
+    expect(imageDialogsComponent.openImageIndexes().has(1)).toBe(true);
+    expect(imageDialogsComponent.openImageIndexes().has(0)).toBe(false);
   });
 
   it('downloads the image when it is opened and stores the object URL', async () => {
@@ -139,7 +141,7 @@ describe('ImageModalsComponent', () => {
       attributeName: 'upload_an_image',
     });
     expect(createObjectUrl).toHaveBeenCalledWith(downloadedBlob);
-    expect(imageModalsComponent.downloadedImageObjectUrls()[0]).toBe(
+    expect(imageDialogsComponent.downloadedImageObjectUrls()[0]).toBe(
       'blob:https://example.org/kobo-image',
     );
   });
@@ -163,12 +165,12 @@ describe('ImageModalsComponent', () => {
     imageViewerService.open({ imageUrl: firstImageUrl });
     fixture.detectChanges();
 
-    expect(imageModalsComponent.openImageIndexes().has(0)).toBe(true);
+    expect(imageDialogsComponent.openImageIndexes().has(0)).toBe(true);
 
-    imageModalsComponent.closeDialog({ imageIndex: 0 });
+    imageDialogsComponent.closeDialog({ imageIndex: 0 });
     fixture.detectChanges();
 
-    expect(imageModalsComponent.openImageIndexes().has(0)).toBe(false);
+    expect(imageDialogsComponent.openImageIndexes().has(0)).toBe(false);
     expect(imageViewerService.isOpen({ imageUrl: firstImageUrl })).toBe(false);
   });
 });

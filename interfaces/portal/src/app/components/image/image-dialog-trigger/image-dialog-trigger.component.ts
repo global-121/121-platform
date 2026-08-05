@@ -22,7 +22,7 @@ import { isImageAvailable } from '~/components/image/utils/is-image-available';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
 @Component({
-  selector: 'app-image-modal-trigger',
+  selector: 'app-image-dialog-trigger',
   imports: [
     ButtonModule,
     ColoredChipComponent,
@@ -31,7 +31,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
     InputTextModule,
     NgTemplateOutlet,
   ],
-  templateUrl: './image-modal-trigger.component.html',
+  templateUrl: './image-dialog-trigger.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: `
     :host {
@@ -39,7 +39,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
     }
   `,
 })
-export class ImageModalTriggerComponent {
+export class ImageDialogTriggerComponent {
   private readonly imageViewerService = inject(ImageViewerService);
 
   readonly label = input.required<string | UILanguageTranslation>();
@@ -63,7 +63,7 @@ export class ImageModalTriggerComponent {
     variant: (this.isAvailable() ? 'green' : 'red') as ChipVariant,
   }));
 
-  toggleViewer() {
+  toggleImageViewerDialog() {
     const imageUrl = this.imageUrl();
 
     if (!imageUrl || !this.isAvailable()) {
