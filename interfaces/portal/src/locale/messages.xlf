@@ -971,6 +971,9 @@
       <trans-unit id="5004550577313573215" datatype="html">
         <source>Total amount</source>
       </trans-unit>
+      <trans-unit id="5028251453651641459" datatype="html">
+        <source>Update the relevant details in the next steps, then link a registration form to complete the setup.</source>
+      </trans-unit>
       <trans-unit id="5035732150329518917" datatype="html">
         <source>You&apos;re about to download an Excel file for all status &amp; data changes.</source>
       </trans-unit>
@@ -1204,9 +1207,6 @@
       </trans-unit>
       <trans-unit id="5971081331538192247" datatype="html">
         <source>Data column name</source>
-      </trans-unit>
-      <trans-unit id="5989538255414362997" datatype="html">
-        <source>Update the relevant details in the next steps, then link a registration form to complete the setup.</source>
       </trans-unit>
       <trans-unit id="5995232414192798763" datatype="html">
         <source>Financial Service Provider(s)</source>
