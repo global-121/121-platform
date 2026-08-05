@@ -3,9 +3,10 @@ import { Locator, Page } from 'playwright';
 
 import DialogComponent from '../components/DialogComponent';
 import TableComponent from '../components/TableComponent';
+import { validateComponentVisibility } from '../utils';
 import BasePage from './BasePage';
 
-class RegistrationDataPage extends BasePage {
+class ProgramSettingsRegistrationDataPage extends BasePage {
   readonly addKoboToolboxButton: Locator;
   readonly continueButton: Locator;
   readonly koboCardEllipsisMenu: Locator;
@@ -15,9 +16,14 @@ class RegistrationDataPage extends BasePage {
   readonly closeImportDialog: Locator;
   readonly languageTabs: Locator;
   readonly programAttributesTable: Locator;
-  readonly editLabelsButton: Locator;
-  readonly cancelButton: Locator;
-  readonly saveButton: Locator;
+  readonly registrationQuestionsCardEditButton: Locator;
+  readonly registrationQuestionsCardCancelButton: Locator;
+  readonly registrationQuestionsCardSaveButton: Locator;
+  readonly deduplicationCardDatalist: Locator;
+  readonly deduplicationCardMultiselect: Locator;
+  readonly deduplicationCardEditButton: Locator;
+  readonly deduplicationCardCancelButton: Locator;
+  readonly deduplicationCardSaveButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -39,13 +45,30 @@ class RegistrationDataPage extends BasePage {
     this.programAttributesTable = this.page.getByTestId(
       'program-attributes-table',
     );
-    this.editLabelsButton = this.page.getByTestId('editable-card-edit-button');
-    this.cancelButton = this.page.getByRole('button', {
-      name: 'Cancel',
-    });
-    this.saveButton = this.page.getByRole('button', {
-      name: 'Save',
-    });
+    this.registrationQuestionsCardEditButton = this.page.getByTestId(
+      'registration-questions-card-edit-button',
+    );
+    this.registrationQuestionsCardCancelButton = this.page.getByTestId(
+      'registration-questions-card-cancel-button',
+    );
+    this.registrationQuestionsCardSaveButton = this.page.getByTestId(
+      'registration-questions-card-save-button',
+    );
+    this.deduplicationCardDatalist = this.page.getByTestId(
+      'deduplication-card-datalist',
+    );
+    this.deduplicationCardMultiselect = this.page.getByTestId(
+      'deduplication-card-multiselect',
+    );
+    this.deduplicationCardEditButton = this.page.getByTestId(
+      'deduplication-card-edit-button',
+    );
+    this.deduplicationCardCancelButton = this.page.getByTestId(
+      'deduplication-card-cancel-button',
+    );
+    this.deduplicationCardSaveButton = this.page.getByTestId(
+      'deduplication-card-save-button',
+    );
   }
 
   async koboSuccessfullyLinkedDialog({
@@ -272,27 +295,25 @@ class RegistrationDataPage extends BasePage {
   }
 
   async validateEditButton({ visible }: { visible: boolean }) {
-    if (visible) {
-      await expect(this.editLabelsButton).toBeVisible();
-    } else {
-      await expect(this.editLabelsButton).toBeHidden();
-    }
+    await validateComponentVisibility({
+      component: this.registrationQuestionsCardEditButton,
+      visible,
+    });
   }
 
   async validateCancelButton({ visible }: { visible: boolean }) {
     if (visible) {
-      await expect(this.cancelButton).toBeVisible();
+      await expect(this.registrationQuestionsCardCancelButton).toBeVisible();
     } else {
-      await expect(this.cancelButton).toBeHidden();
+      await expect(this.registrationQuestionsCardCancelButton).toBeHidden();
     }
   }
 
   async validateSaveButton({ visible }: { visible: boolean }) {
-    if (visible) {
-      await expect(this.saveButton).toBeVisible();
-    } else {
-      await expect(this.saveButton).toBeHidden();
-    }
+    await validateComponentVisibility({
+      component: this.registrationQuestionsCardSaveButton,
+      visible,
+    });
   }
 
   async editLabels({
@@ -300,7 +321,7 @@ class RegistrationDataPage extends BasePage {
   }: {
     labelUpdates: { name: string; label: string }[];
   }) {
-    await this.editLabelsButton.click();
+    await this.registrationQuestionsCardEditButton.click();
     await this.validateEditButton({ visible: false });
     await this.validateCancelButton({ visible: true });
     await this.validateSaveButton({ visible: true });
@@ -312,7 +333,7 @@ class RegistrationDataPage extends BasePage {
       await input.fill(update.label);
     }
 
-    await this.saveButton.click();
+    await this.registrationQuestionsCardSaveButton.click();
 
     await this.validateEditButton({ visible: true });
     await this.validateCancelButton({ visible: false });
@@ -328,6 +349,67 @@ class RegistrationDataPage extends BasePage {
       /^\d{2}\/\d{2}\/\d{4}, \d{2}:\d{2}$/,
     );
   }
+
+  async validateDeduplicationCardDatalist({
+    visible,
+    duplicationFields,
+  }: {
+    visible: boolean;
+    duplicationFields: string[];
+  }) {
+    await validateComponentVisibility({
+      component: this.deduplicationCardDatalist,
+      visible,
+    });
+
+    for (const duplicationField of duplicationFields) {
+      await expect(this.deduplicationCardDatalist).toContainText(
+        duplicationField,
+      );
+    }
+  }
+
+  async editDuplicationFields({
+    newDuplicationFields,
+  }: {
+    newDuplicationFields: string[];
+  }) {
+    await validateComponentVisibility({
+      component: this.deduplicationCardEditButton,
+      visible: true,
+    });
+
+    await this.deduplicationCardEditButton.click();
+
+    await validateComponentVisibility({
+      component: this.deduplicationCardEditButton,
+      visible: false,
+    });
+    await validateComponentVisibility({
+      component: this.deduplicationCardCancelButton,
+      visible: true,
+    });
+    await validateComponentVisibility({
+      component: this.deduplicationCardSaveButton,
+      visible: true,
+    });
+    await validateComponentVisibility({
+      component: this.deduplicationCardMultiselect,
+      visible: true,
+    });
+
+    await this.selectMultiselectOptions({
+      dropdownTestId: 'deduplication-card-multiselect',
+      optionsToClick: newDuplicationFields,
+    });
+
+    await this.deduplicationCardSaveButton.click();
+
+    await validateComponentVisibility({
+      component: this.deduplicationCardMultiselect,
+      visible: false,
+    });
+  }
 }
 
-export default RegistrationDataPage;
+export default ProgramSettingsRegistrationDataPage;

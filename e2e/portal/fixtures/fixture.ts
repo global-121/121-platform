@@ -26,9 +26,9 @@ import ProgramMonitoring from '@121-e2e/portal/pages/ProgramMonitoringPage';
 import ProgramOverviewPage from '@121-e2e/portal/pages/ProgramOverviewPage';
 import ProgramSettingsPage from '@121-e2e/portal/pages/ProgramSettingsPage';
 import ProgramSettingsPaymentApprovalPage from '@121-e2e/portal/pages/ProgramSettingsPaymentApprovalPage';
+import ProgramSettingsRegistrationDataPage from '@121-e2e/portal/pages/ProgramSettingsRegistrationDataPage';
 import ProgramTeamPage from '@121-e2e/portal/pages/ProgramTeamPage';
 import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
-import RegistrationDataPage from '@121-e2e/portal/pages/RegistrationDataPage';
 import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCardPage';
 import RegistrationPersonalInformationPage from '@121-e2e/portal/pages/RegistrationPersonalInformationPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
@@ -65,23 +65,23 @@ interface Fixtures {
     password: string;
   }) => Promise<void>;
   onlyResetAndSeedRegistrations: (params) => Promise<void>;
-  exportDataComponent: ExportData;
-  tableComponent: TableComponent;
   basePage: BasePage;
+  exportDataComponent: ExportData;
   fspSettingsPage: FspSettingsPage;
-  programOverviewPage: ProgramOverviewPage;
   loginPage: LoginPage;
   paymentPage: PaymentPage;
   paymentsPage: PaymentsPage;
   programMonitoringPage: ProgramMonitoring;
+  programOverviewPage: ProgramOverviewPage;
   programSettingsPage: ProgramSettingsPage;
   programSettingsPaymentApprovalPage: ProgramSettingsPaymentApprovalPage;
+  programSettingsRegistrationDataPage: ProgramSettingsRegistrationDataPage;
   programTeamPage: ProgramTeamPage;
   registrationActivityLogPage: RegistrationActivityLogPage;
-  registrationDataPage: RegistrationDataPage;
   registrationDebitCardPage: RegistrationDebitCardPage;
   registrationPersonalInformationPage: RegistrationPersonalInformationPage;
   registrationsPage: RegistrationsPage;
+  tableComponent: TableComponent;
   usersPage: UsersPage;
 }
 
@@ -314,16 +314,16 @@ export const customSharedFixture = base.extend<Fixtures>({
     await use(new ProgramSettingsPaymentApprovalPage(page));
   },
 
+  programSettingsRegistrationDataPage: async ({ page }, use) => {
+    await use(new ProgramSettingsRegistrationDataPage(page));
+  },
+
   programTeamPage: async ({ page }, use) => {
     await use(new ProgramTeamPage(page));
   },
 
   registrationActivityLogPage: async ({ page }, use) => {
     await use(new RegistrationActivityLogPage(page));
-  },
-
-  registrationDataPage: async ({ page }, use) => {
-    await use(new RegistrationDataPage(page));
   },
 
   registrationDebitCardPage: async ({ page }, use) => {

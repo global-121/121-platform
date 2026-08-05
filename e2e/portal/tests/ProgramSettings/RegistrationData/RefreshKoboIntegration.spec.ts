@@ -24,64 +24,64 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
 });
 
 test('Refresh Kobo integration - happy flow (integration updated)', async ({
-  registrationDataPage,
+  programSettingsRegistrationDataPage,
 }) => {
   await test.step('Add Kobo integration with always-new-version asset', async () => {
-    await registrationDataPage.addKoboIntegration({
+    await programSettingsRegistrationDataPage.addKoboIntegration({
       url: alwaysNewVersionUrl,
       apiKey: koboIntegrationBase.apiKey,
     });
-    await registrationDataPage.koboSuccessfullyLinkedDialog({
+    await programSettingsRegistrationDataPage.koboSuccessfullyLinkedDialog({
       closeDialog: true,
     });
   });
 
   await test.step('Click "Refresh link" from the ellipsis menu', async () => {
-    await registrationDataPage.refreshKoboIntegration();
+    await programSettingsRegistrationDataPage.refreshKoboIntegration();
   });
 
   await test.step('Validate success toast: integration updated', async () => {
-    await registrationDataPage.validateUpdatedAtValue();
-    await registrationDataPage.validateToastMessageAndClose(
+    await programSettingsRegistrationDataPage.validateUpdatedAtValue();
+    await programSettingsRegistrationDataPage.validateToastMessageAndClose(
       'Integration updated successfully.',
     );
   });
 });
 
 test('Refresh Kobo integration - already up to date', async ({
-  registrationDataPage,
+  programSettingsRegistrationDataPage,
 }) => {
   await test.step('Add Kobo integration with static-version asset', async () => {
-    await registrationDataPage.addKoboIntegration({
+    await programSettingsRegistrationDataPage.addKoboIntegration({
       url: alreadyUpToDateUrl,
       apiKey: koboIntegrationBase.apiKey,
     });
-    await registrationDataPage.koboSuccessfullyLinkedDialog({
+    await programSettingsRegistrationDataPage.koboSuccessfullyLinkedDialog({
       closeDialog: true,
     });
   });
 
   await test.step('Click "Refresh link" from the ellipsis menu', async () => {
-    await registrationDataPage.refreshKoboIntegration();
+    await programSettingsRegistrationDataPage.refreshKoboIntegration();
   });
 
   await test.step('Validate info toast: already up to date', async () => {
-    await registrationDataPage.validateToastMessageAndClose(
+    await programSettingsRegistrationDataPage.validateToastMessageAndClose(
       'Integration is already up to date.',
     );
   });
 });
 
 test('Refresh Kobo integration - unsuccessful', async ({
-  registrationDataPage,
+  programSettingsRegistrationDataPage,
   page,
 }) => {
   await test.step('Add Kobo integration', async () => {
-    await registrationDataPage.addKoboIntegration({
+    await programSettingsRegistrationDataPage.addKoboIntegration({
       url: alreadyUpToDateUrl,
       apiKey: koboIntegrationBase.apiKey,
     });
-    await registrationDataPage.koboSuccessfullyLinkedDialog({
+    await programSettingsRegistrationDataPage.koboSuccessfullyLinkedDialog({
       closeDialog: true,
     });
   });
@@ -97,26 +97,26 @@ test('Refresh Kobo integration - unsuccessful', async ({
   });
 
   await test.step('Click "Refresh link" from the ellipsis menu', async () => {
-    await registrationDataPage.refreshKoboIntegration();
+    await programSettingsRegistrationDataPage.refreshKoboIntegration();
   });
 
   await test.step('Validate error toast: update unsuccessful', async () => {
-    await registrationDataPage.validateToastMessageAndClose(
+    await programSettingsRegistrationDataPage.validateToastMessageAndClose(
       'Integration update unsuccessful. Please try again.',
     );
   });
 });
 
 test('Refresh Kobo integration - unsuccessful with error payload', async ({
-  registrationDataPage,
+  programSettingsRegistrationDataPage,
   page,
 }) => {
   await test.step('Add Kobo integration with always-new-version asset', async () => {
-    await registrationDataPage.addKoboIntegration({
+    await programSettingsRegistrationDataPage.addKoboIntegration({
       url: alwaysNewVersionUrl,
       apiKey: koboIntegrationBase.apiKey,
     });
-    await registrationDataPage.koboSuccessfullyLinkedDialog({
+    await programSettingsRegistrationDataPage.koboSuccessfullyLinkedDialog({
       closeDialog: true,
     });
   });
@@ -136,28 +136,30 @@ test('Refresh Kobo integration - unsuccessful with error payload', async ({
   });
 
   await test.step('Click "Refresh link" from the ellipsis menu', async () => {
-    await registrationDataPage.refreshKoboIntegration();
+    await programSettingsRegistrationDataPage.refreshKoboIntegration();
   });
 
   await test.step('Validate error dialog for Kobo integration failure', async () => {
-    await registrationDataPage.validateToastMessage(
+    await programSettingsRegistrationDataPage.validateToastMessage(
       'Integration update unsuccessful. Please try again.',
     );
 
-    await registrationDataPage.validateErrorDialogIsShown();
+    await programSettingsRegistrationDataPage.validateErrorDialogIsShown();
 
-    await registrationDataPage.validateMissingFields({
+    await programSettingsRegistrationDataPage.validateMissingFields({
       missingFields: ['phoneNumber'],
     });
 
-    await registrationDataPage.validateKoboConfigurationErrorsTable({
-      configurationErrorsTableColumns: ['Field', 'Error', 'Solution'],
-      configurationErrors: [
-        'fullName',
-        "Attribute 'fullName' is missing",
-        'Add the missing attribute to the Kobo form',
-      ],
-    });
+    await programSettingsRegistrationDataPage.validateKoboConfigurationErrorsTable(
+      {
+        configurationErrorsTableColumns: ['Field', 'Error', 'Solution'],
+        configurationErrors: [
+          'fullName',
+          "Attribute 'fullName' is missing",
+          'Add the missing attribute to the Kobo form',
+        ],
+      },
+    );
   });
 });
 

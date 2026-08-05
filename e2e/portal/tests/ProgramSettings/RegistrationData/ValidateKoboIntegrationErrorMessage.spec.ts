@@ -14,50 +14,55 @@ const koboIntegrationDetails = {
 };
 
 test.beforeEach(
-  async ({ resetDBAndSeedRegistrations, registrationDataPage }) => {
+  async ({
+    resetDBAndSeedRegistrations,
+    programSettingsRegistrationDataPage,
+  }) => {
     await resetDBAndSeedRegistrations({
       seedScript: SeedScript.safaricomProgram,
       registrations: registrationsSafaricom,
       programId: programIdSafaricom,
       navigateToPage: `/program/${programIdSafaricom}/settings/registration-data`,
     });
-    await registrationDataPage.clickRegistrationDataSection();
+    await programSettingsRegistrationDataPage.clickRegistrationDataSection();
   },
 );
 
 test('Add Kobo integration with invalid details and validate error message', async ({
-  registrationDataPage,
+  programSettingsRegistrationDataPage,
 }) => {
   await test.step('Add Kobo integration un-successfully', async () => {
-    await registrationDataPage.addKoboToolboxIntegration({
+    await programSettingsRegistrationDataPage.addKoboToolboxIntegration({
       url: koboIntegrationDetails.url,
       apiKey: koboIntegrationDetails.apiKey,
     });
   });
 
   await test.step('Validate error dialog for Kobo integration failure', async () => {
-    await registrationDataPage.validateToastMessage(
+    await programSettingsRegistrationDataPage.validateToastMessage(
       'Error while integrating Kobo form',
     );
 
-    await registrationDataPage.validateErrorDialogIsShown();
+    await programSettingsRegistrationDataPage.validateErrorDialogIsShown();
 
-    await registrationDataPage.validateMissingFields({
+    await programSettingsRegistrationDataPage.validateMissingFields({
       missingFields: ['phoneNumber', 'nationalId'],
     });
 
-    await registrationDataPage.validateFormSettingError({
+    await programSettingsRegistrationDataPage.validateFormSettingError({
       formSettingError:
         "Invalid language code: 'null', use a valid ISO 639 language code.",
     });
 
-    await registrationDataPage.validateKoboConfigurationErrorsTable({
-      configurationErrorsTableColumns: ['Field', 'Error', 'Solution'],
-      configurationErrors: [
-        'fullName',
-        "Attribute 'fullName' is missing",
-        'Add the missing attribute to the Kobo form',
-      ],
-    });
+    await programSettingsRegistrationDataPage.validateKoboConfigurationErrorsTable(
+      {
+        configurationErrorsTableColumns: ['Field', 'Error', 'Solution'],
+        configurationErrors: [
+          'fullName',
+          "Attribute 'fullName' is missing",
+          'Add the missing attribute to the Kobo form',
+        ],
+      },
+    );
   });
 });

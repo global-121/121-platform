@@ -87,10 +87,7 @@
               }
               @case ('options') {
                 @if (item.showAsTags) {
-                  <ol
-                    class="flex flex-wrap gap-2"
-                    data-testid="integrated-fsp-list"
-                  >
+                  <ol class="flex flex-wrap gap-2">
                     @for (option of item.options; track $index) {
                       <li>
                         <p-tag

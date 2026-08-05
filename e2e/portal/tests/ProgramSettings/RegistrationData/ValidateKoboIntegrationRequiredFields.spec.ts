@@ -38,18 +38,18 @@ const allRequiredAttributesFromSeed = [
 ];
 
 test('Check if all required fields are shown prior to integration', async ({
-  registrationDataPage,
+  programSettingsRegistrationDataPage,
 }) => {
   await test.step('Validate required fields', async () => {
-    await registrationDataPage.clickRegistrationDataSection();
-    await registrationDataPage.validateKoboRequiredFieldsTable({
+    await programSettingsRegistrationDataPage.clickRegistrationDataSection();
+    await programSettingsRegistrationDataPage.validateKoboRequiredFieldsTable({
       requiredDataColumnNames: allRequiredAttributesFromSeed,
     });
   });
 });
 
 test('Check if all required fields are updated when adding a FSP', async ({
-  registrationDataPage,
+  programSettingsRegistrationDataPage,
   programSettingsPage,
 }) => {
   await test.step('add FSP', async () => {
@@ -60,8 +60,8 @@ test('Check if all required fields are updated when adding a FSP', async ({
   });
 
   await test.step('Validate required fields', async () => {
-    await registrationDataPage.clickRegistrationDataSection();
-    await registrationDataPage.validateKoboRequiredFieldsTable({
+    await programSettingsRegistrationDataPage.clickRegistrationDataSection();
+    await programSettingsRegistrationDataPage.validateKoboRequiredFieldsTable({
       requiredDataColumnNames: [...allRequiredAttributesFromSeed, 'nationalId'],
     });
   });
@@ -69,7 +69,7 @@ test('Check if all required fields are updated when adding a FSP', async ({
 
 test('Check if scope is not shown when scope is disabled', async ({
   programSettingsPage,
-  registrationDataPage,
+  programSettingsRegistrationDataPage,
   page,
 }) => {
   await test.step('Disable scope', async () => {
@@ -93,8 +93,8 @@ test('Check if scope is not shown when scope is disabled', async ({
   });
 
   await test.step('Validate scope not shown as required field', async () => {
-    await registrationDataPage.clickRegistrationDataSection();
-    await registrationDataPage.validateKoboRequiredFieldsTable({
+    await programSettingsRegistrationDataPage.clickRegistrationDataSection();
+    await programSettingsRegistrationDataPage.validateKoboRequiredFieldsTable({
       requiredDataColumnNames: [
         ...allRequiredAttributesFromSeed.filter(
           (attribute) => attribute !== 'scope',
@@ -105,7 +105,7 @@ test('Check if scope is not shown when scope is disabled', async ({
 });
 
 test('Check if all required fields are updated when deleting a FSP', async ({
-  registrationDataPage,
+  programSettingsRegistrationDataPage,
   programSettingsPage,
 }) => {
   await test.step('delete FSP', async () => {
@@ -116,8 +116,8 @@ test('Check if all required fields are updated when deleting a FSP', async ({
   });
 
   await test.step('Validate required fields', async () => {
-    await registrationDataPage.clickRegistrationDataSection();
-    await registrationDataPage.validateKoboRequiredFieldsTable({
+    await programSettingsRegistrationDataPage.clickRegistrationDataSection();
+    await programSettingsRegistrationDataPage.validateKoboRequiredFieldsTable({
       requiredDataColumnNames: [
         'fsp',
         'scope',

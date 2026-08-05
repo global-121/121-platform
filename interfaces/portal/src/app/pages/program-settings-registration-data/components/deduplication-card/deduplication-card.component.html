@@ -8,7 +8,7 @@
   [formGroup]="formGroup"
   [mutation]="updateDuplicationAttibutesMutation"
   [mutationData]="{ formData: formGroup.getRawValue() }"
-  [attr.data-testid]="'registration-questions-card'"
+  [dataTestId]="'deduplication-card'"
 >
   <p
     i18n
@@ -40,7 +40,7 @@
         [display]="'chip'"
         [filter]="false"
         [appendTo]="'body'"
-        [attr.data-testid]="'deduplication-settings-multiselect'"
+        [attr.data-testid]="'deduplication-card-multiselect'"
       >
       </p-multiselect>
     </app-form-field-wrapper>
@@ -48,6 +48,7 @@
     <app-data-list
       [data]="dataListData()"
       [forceOneColumn]="true"
+      [attr.data-testid]="'deduplication-card-datalist'"
     ></app-data-list>
   }
 </app-card-editable>

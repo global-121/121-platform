@@ -9,3 +9,11 @@ export const expectedSortedArraysToEqual = (
 
   expect(sortedActual).toEqual(sortedExpected);
 };
+
+export const validateComponentVisibility = ({ component, visible }) => {
+  if (visible) {
+    return expect(component).toBeVisible();
+  } else {
+    return expect(component).toBeHidden();
+  }
+};
