@@ -3,11 +3,26 @@
   But for the time being I guess this is fine...
 -->
 
-@if (mode() === 'edit') {
+@if (mode() === 'view') {
+  <div class="flex items-center gap-2 inline-full">
+    <strong>
+      <i class="pi pi-image me-2"></i>
+      {{ label() | translatableString }}:
+    </strong>
+
+    <app-colored-chip
+      [label]="coloredChipProps().label"
+      [variant]="coloredChipProps().variant"
+    />
+
+    @if (isAvailable()) {
+      <ng-container *ngTemplateOutlet="modalTriggerButton"></ng-container>
+    }
+  </div>
+} @else {
   <app-form-field-wrapper [label]="label() | translatableString">
     <div class="relative">
       <div
-        i18n
         class="from-grey-500/0 pointer-events-none absolute inset-y-px inset-e-20 bg-linear-to-r to-(--p-inputtext-disabled-background) inline-40"
       ></div>
       <input
@@ -22,62 +37,26 @@
       />
 
       @if (isAvailable()) {
-        <p-button
-          (click)="toggleViewer()"
-          class="ms-auto"
-          size="small"
-          outlined
-          rounded
-          class="absolute inset-e-2 inset-bs-1/2 -translate-y-1/2"
-        >
-          @if (isOpen()) {
-            <span class="pi pi-eye-slash"></span>
-            <span i18n="@@image-viewer-hide">Hide</span>
-          } @else {
-            <span class="pi pi-eye"></span>
-            <span i18n="@@image-viewer-show">Show</span>
-          }
-        </p-button>
+        <ng-container *ngTemplateOutlet="modalTriggerButton"></ng-container>
       }
     </div>
   </app-form-field-wrapper>
-} @else {
-  <div class="flex items-center gap-2 inline-full">
-    <strong>
-      <i class="pi pi-image me-2"></i>
-      {{ label() | translatableString }}:
-    </strong>
-
-    @if (isAvailable()) {
-      <app-colored-chip
-        label="Available"
-        i18n-label="@@image-available"
-        variant="green"
-      />
-    } @else {
-      <app-colored-chip
-        label="Not available"
-        i18n-label="@@image-not-available"
-        variant="red"
-      />
-    }
-
-    @if (isAvailable()) {
-      <p-button
-        (click)="toggleViewer()"
-        class="ms-auto"
-        size="small"
-        outlined
-        rounded
-      >
-        @if (isOpen()) {
-          <span class="pi pi-eye-slash"></span>
-          <span i18n="@@image-viewer-hide">Hide</span>
-        } @else {
-          <span class="pi pi-eye"></span>
-          <span i18n="@@image-viewer-show">Show</span>
-        }
-      </p-button>
-    }
-  </div>
 }
+
+<ng-template #modalTriggerButton>
+  <p-button
+    (click)="toggleViewer()"
+    class="ms-auto"
+    size="small"
+    outlined
+    rounded
+  >
+    @if (isOpen()) {
+      <span class="pi pi-eye-slash"></span>
+      <span i18n="@@image-viewer-hide">Hide</span>
+    } @else {
+      <span class="pi pi-eye"></span>
+      <span i18n="@@image-viewer-show">Show</span>
+    }
+  </p-button>
+</ng-template>

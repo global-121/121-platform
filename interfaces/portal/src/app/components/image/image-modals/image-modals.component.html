@@ -6,7 +6,6 @@
       [modal]="false"
       [draggable]="true"
       [closeOnEscape]="false"
-      [resizable]="true"
       [dismissableMask]="false"
       [blockScroll]="false"
       [maximizable]="true"
@@ -19,10 +18,12 @@
       [contentStyleClass]="'cursor-default'"
       [resizable]="true"
       class="shadow-2xl"
+      data-testid="image-viewer-dialog"
     >
       <ng-template #header>
         <div>
           <i class="pi pi-image me-2"></i>
+          <!-- TODO, why is this translated? -->
           <strong>{{ image.label | translatableString }}:</strong>
         </div>
       </ng-template>
