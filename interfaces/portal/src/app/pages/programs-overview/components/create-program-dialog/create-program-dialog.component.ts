@@ -17,6 +17,7 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { AppRoutes } from '~/app.routes';
+import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import {
@@ -48,6 +49,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     ProgramFormInformationComponent,
     ProgramFormBudgetComponent,
     ManualLinkComponent,
+    ColoredChipComponent,
   ],
   providers: [ToastService],
   templateUrl: './create-program-dialog.component.html',
@@ -85,6 +87,12 @@ export class CreateProgramDialogComponent {
       this.programToDuplicate()?.titlePortal,
     ),
   );
+
+  readonly duplicatedProgramRelations = [
+    $localize`:@@duplicate-program-carried-over-fsp-configurations:FSP configurations`,
+    $localize`:@@duplicate-program-carried-over-approval-thresholds:Approval thresholds`,
+    $localize`:@@duplicate-program-carried-over-program-team:Program team`,
+  ];
 
   readonly formGroup = computed(() => {
     const nameGroup = this.formName()?.formGroup;

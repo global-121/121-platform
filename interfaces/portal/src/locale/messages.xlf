@@ -959,9 +959,6 @@
       <trans-unit id="4964612859944755976" datatype="html">
         <source>Import complete with errors</source>
       </trans-unit>
-      <trans-unit id="4968022490428591399" datatype="html">
-        <source>Duplicate &quot;<x equiv-text="{{ programToDuplicateName() }}" id="INTERPOLATION"/>&quot;. Update the relevant details in the next steps. After duplication is done, link a registration form to complete the setup.</source>
-      </trans-unit>
       <trans-unit id="4970172669399649769" datatype="html">
         <source>Make sure to match the required format of the template CSV-file.</source>
       </trans-unit>
@@ -976,6 +973,9 @@
       </trans-unit>
       <trans-unit id="5004550577313573215" datatype="html">
         <source>Total amount</source>
+      </trans-unit>
+      <trans-unit id="5028251453651641459" datatype="html">
+        <source>Update the relevant details in the next steps, then link a registration form to complete the setup.</source>
       </trans-unit>
       <trans-unit id="5035732150329518917" datatype="html">
         <source>You&apos;re about to download an Excel file for all status &amp; data changes.</source>
@@ -1902,6 +1902,9 @@
       <trans-unit id="9063819144679824048" datatype="html">
         <source>People included</source>
       </trans-unit>
+      <trans-unit id="9087327525266557453" datatype="html">
+        <source>A duplicate of &quot;<x equiv-text="{{ programToDuplicateName() }}" id="INTERPOLATION"/>&quot; will be created with the following details carried over:</source>
+      </trans-unit>
       <trans-unit id="9088314425699939664" datatype="html">
         <source>You&apos;re about to rename the payment created on <x equiv-text="{{ paymentDate() }}" id="INTERPOLATION"/>. Choose a clear name so other users can easily find it. If this payment has already started, make sure to inform relevant users.</source>
       </trans-unit>
@@ -2135,6 +2138,15 @@
       </trans-unit>
       <trans-unit id="duplicate-program" datatype="html">
         <source>Duplicate program</source>
+      </trans-unit>
+      <trans-unit id="duplicate-program-carried-over-approval-thresholds" datatype="html">
+        <source>Approval thresholds</source>
+      </trans-unit>
+      <trans-unit id="duplicate-program-carried-over-fsp-configurations" datatype="html">
+        <source>FSP configurations</source>
+      </trans-unit>
+      <trans-unit id="duplicate-program-carried-over-program-team" datatype="html">
+        <source>Program team</source>
       </trans-unit>
       <trans-unit id="duplicate-status" datatype="html">
         <source>Duplicates</source>
