@@ -22,17 +22,17 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
 @Component({
-  selector: 'app-image-modals',
+  selector: 'app-image-dialogs',
   imports: [
     TranslatableStringPipe,
     ButtonModule,
     DialogModule,
     ImageViewerComponent,
   ],
-  templateUrl: './image-modals.component.html',
+  templateUrl: './image-dialogs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ImageModalsComponent {
+export class ImageDialogsComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly registrationApiService = inject(RegistrationApiService);
   private readonly imageViewerService = inject(ImageViewerService);

@@ -29,7 +29,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('User can open Kobo image panel and image is downloaded only when panel opens', async ({
+test('User can open Kobo image modal and image is downloaded only when modal opens', async ({
   page,
   programSettingsRegistrationDataPage,
   registrationPersonalInformationPage,
@@ -77,7 +77,7 @@ test('User can open Kobo image panel and image is downloaded only when panel ope
     `/program/${programIdSafaricom}/registrations/${registrationId}/personal-information`,
   );
 
-  await test.step('Kobo image panel is visible and starts as available', async () => {
+  await test.step('Kobo image trigger is visible and starts as available', async () => {
     await registrationPersonalInformationPage.validateKoboImageStatus({
       label: koboImageLabel,
       status: 'Available',
@@ -86,24 +86,32 @@ test('User can open Kobo image panel and image is downloaded only when panel ope
     expect(koboImageDownloadRequestCount).toBe(0);
   });
 
-  await test.step('Opening panel triggers a single image download', async () => {
+  await test.step('Opening modal triggers a single image download', async () => {
     await Promise.all([
       page.waitForRequest(
         (request) =>
           request.method() === 'GET' &&
           request.url().includes(koboImageDownloadApiPath),
       ),
-      registrationPersonalInformationPage.clickKoboImageAccordionHeader({
+      registrationPersonalInformationPage.toggleKoboImageModal({
         label: koboImageLabel,
       }),
     ]);
 
-    await expect(page.locator('app-image-list img').first()).toBeVisible();
+    await expect(
+      registrationPersonalInformationPage.koboImageDialog(),
+    ).toBeVisible();
+    await expect(
+      registrationPersonalInformationPage
+        .koboImageDialog()
+        .locator('app-image-viewer img')
+        .first(),
+    ).toBeVisible();
     expect(koboImageDownloadRequestCount).toBe(1);
   });
 
-  await test.step('Re-opening panel does not trigger an additional download', async () => {
-    await registrationPersonalInformationPage.clickKoboImageAccordionHeader({
+  await test.step('Re-opening modal does not trigger an additional download', async () => {
+    await registrationPersonalInformationPage.toggleKoboImageModal({
       label: koboImageLabel,
     });
 
@@ -117,7 +125,7 @@ test('User can open Kobo image panel and image is downloaded only when panel ope
       .then(() => true)
       .catch(() => false);
 
-    await registrationPersonalInformationPage.clickKoboImageAccordionHeader({
+    await registrationPersonalInformationPage.toggleKoboImageModal({
       label: koboImageLabel,
     });
 

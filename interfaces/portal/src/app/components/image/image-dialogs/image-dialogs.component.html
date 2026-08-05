@@ -18,7 +18,7 @@
       [contentStyleClass]="'cursor-default'"
       [resizable]="true"
       class="shadow-2xl"
-      data-testid="image-viewer-dialog"
+      [attr.data-testid]="`image-viewer-dialog-${image.label}`"
     >
       <ng-template #header>
         <div>

@@ -21,7 +21,7 @@
           class="py-1"
         />
       } @else if (item.type === 'koboImage') {
-        <app-image-modal-trigger
+        <app-image-dialog-trigger
           [imageUrl]="item.value"
           [label]="item.label | translatableString"
         />

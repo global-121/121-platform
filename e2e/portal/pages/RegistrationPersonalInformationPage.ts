@@ -150,20 +150,20 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     }
   }
 
-  koboImageAccordionHeader({ label }: { label: string }): Locator {
+  koboImageTrigger({ label }: { label: string }): Locator {
     return this.page
-      .locator('app-image-list p-accordion-header')
+      .locator('app-image-modal-trigger')
       .filter({ hasText: label });
   }
 
-  async clickKoboImageAccordionHeader({
-    label,
-  }: {
-    label: string;
-  }): Promise<void> {
-    const header = this.koboImageAccordionHeader({ label });
-    await expect(header).toBeVisible();
-    await header.click();
+  koboImageDialog(): Locator {
+    return this.page.locator('[data-testid="image-viewer-dialog"]');
+  }
+
+  async toggleKoboImageModal({ label }: { label: string }): Promise<void> {
+    const button = this.koboImageTrigger({ label }).getByRole('button');
+    await expect(button).toBeVisible();
+    await button.click();
   }
 
   async validateKoboImageStatus({
@@ -173,8 +173,8 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     label: string;
     status: 'Available' | 'Not available';
   }): Promise<void> {
-    const header = this.koboImageAccordionHeader({ label });
-    await expect(header).toContainText(status);
+    const trigger = this.koboImageTrigger({ label });
+    await expect(trigger).toContainText(status);
   }
 }
 

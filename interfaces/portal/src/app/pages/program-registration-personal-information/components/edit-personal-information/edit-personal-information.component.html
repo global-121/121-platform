@@ -41,7 +41,7 @@
           @if (type === 'kobo-image') {
             <!-- XXX: Layout is TBD by design/final-state of the Figma ; this is just to make it "not super weird/ugly": -->
             <div class="flex items-center gap-2 block-full">
-              <app-image-modal-trigger
+              <app-image-dialog-trigger
                 [imageUrl]="attribute.value?.toString() ?? ''"
                 [label]="attribute.label"
                 [name]="attribute.name"

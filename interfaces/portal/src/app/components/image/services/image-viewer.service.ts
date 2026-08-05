@@ -1,5 +1,8 @@
 import { Injectable, signal } from '@angular/core';
 
+// This is just a bridge service to allow the ImageDialogsComponent and ImageViewerComponent
+// to share state about which images are currently open (keyed by image URL).
+
 @Injectable({ providedIn: 'root' })
 export class ImageViewerService {
   // Source of truth for which images are currently open, keyed by image URL.
