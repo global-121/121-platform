@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,7 +12,10 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
-import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import {
+  ChipVariant,
+  ColoredChipComponent,
+} from '~/components/colored-chip/colored-chip.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ImageViewerService } from '~/components/image/services/image-viewer.service';
 import { isImageAvailable } from '~/components/image/utils/is-image-available';
@@ -25,6 +29,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
     FormFieldWrapperComponent,
     TranslatableStringPipe,
     InputTextModule,
+    NgTemplateOutlet,
   ],
   templateUrl: './image-modal-trigger.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,6 +55,13 @@ export class ImageModalTriggerComponent {
   readonly isAvailable = computed(() =>
     isImageAvailable({ imageUrl: this.imageUrl() }),
   );
+
+  readonly coloredChipProps = computed(() => ({
+    label: this.isAvailable()
+      ? $localize`:@@image-available:Available`
+      : $localize`:@@image-not-available:Not available`,
+    variant: (this.isAvailable() ? 'green' : 'red') as ChipVariant,
+  }));
 
   toggleViewer() {
     const imageUrl = this.imageUrl();
