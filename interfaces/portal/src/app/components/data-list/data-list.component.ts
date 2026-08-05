@@ -24,6 +24,7 @@ import {
   ChipVariant,
   ColoredChipComponent,
 } from '~/components/colored-chip/colored-chip.component';
+import { ImageListItemComponent } from '~/components/image/image-data-list-item/image-list-item.component';
 import { ImageDialogTriggerComponent } from '~/components/image/image-dialog-trigger/image-dialog-trigger.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
@@ -103,6 +104,7 @@ export type DataListItem = {
     RouterLink,
     InputTextModule,
     ImageDialogTriggerComponent,
+    ImageListItemComponent,
   ],
   templateUrl: './data-list.component.html',
   styles: ``,

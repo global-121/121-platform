@@ -39,15 +39,19 @@
           @let type = attribute.type;
 
           @if (type === 'kobo-image') {
-            <!-- XXX: Layout is TBD by design/final-state of the Figma ; this is just to make it "not super weird/ugly": -->
-            <div class="flex items-center gap-2 block-full">
+            <!-- This may look weird, but it's actually mimicing a form field - hence [mode]='edit' -->
+            <app-image-list-item
+              [label]="attribute.label"
+              [imageUrl]="attribute.value?.toString() ?? ''"
+              [mode]="'edit'"
+            >
               <app-image-dialog-trigger
                 [imageUrl]="attribute.value?.toString() ?? ''"
                 [label]="attribute.label"
                 [name]="attribute.name"
                 [mode]="'edit'"
               />
-            </div>
+            </app-image-list-item>
           } @else {
             <app-form-field-wrapper
               [dataTestId]="'edit-personal-information-' + attribute.name"

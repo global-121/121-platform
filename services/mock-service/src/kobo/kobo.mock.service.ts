@@ -300,6 +300,15 @@ const happyFlowFromDefinition: KoboAssetDeployment = {
           required: false,
           $autoname: 'photo',
         },
+        {
+          name: 'idPhoto',
+          type: 'image',
+          $kuid: 'ph7rt00',
+          label: ['Upload your ID document', 'Upload je identiteitsbewijs'],
+          $xpath: 'idPhoto',
+          required: false,
+          $autoname: 'idPhoto',
+        },
       ],
       choices: [
         {
@@ -498,6 +507,8 @@ export class KoboMockService {
         'group_or1bl43/How_are_you_today_select_one': 'great',
         photo:
           'username/attachments/form-id/submission-uuid/important_photo.jpg',
+        idPhoto:
+          'username/attachments/form-id/submission-uuid/identity_document.jpg',
         _attachments: [
           {
             filename:
@@ -505,6 +516,17 @@ export class KoboMockService {
             download_url: this.buildAttachmentDownloadUrl({
               origin,
               uid_asset,
+              attachmentId: 1,
+            }),
+            mimetype: 'image/jpeg',
+          },
+          {
+            filename:
+              'username/attachments/form-id/submission-uuid/identity_document.jpg',
+            download_url: this.buildAttachmentDownloadUrl({
+              origin,
+              uid_asset,
+              attachmentId: 2,
             }),
             mimetype: 'image/jpeg',
           },
@@ -571,6 +593,8 @@ export class KoboMockService {
         'group_or1bl43/How_are_you_today_select_one': 'great',
         photo:
           'username/attachments/form-id/submission-uuid/important_photo.jpg',
+        idPhoto:
+          'username/attachments/form-id/submission-uuid/identity_document.jpg',
         _attachments: [
           {
             filename:
@@ -578,6 +602,17 @@ export class KoboMockService {
             download_url: this.buildAttachmentDownloadUrl({
               origin,
               uid_asset,
+              attachmentId: 1,
+            }),
+            mimetype: 'image/jpeg',
+          },
+          {
+            filename:
+              'username/attachments/form-id/submission-uuid/identity_document.jpg',
+            download_url: this.buildAttachmentDownloadUrl({
+              origin,
+              uid_asset,
+              attachmentId: 2,
             }),
             mimetype: 'image/jpeg',
           },
@@ -664,15 +699,18 @@ export class KoboMockService {
   private buildAttachmentDownloadUrl({
     origin,
     uid_asset,
+    attachmentId,
   }: {
     origin: string;
     uid_asset: string;
+    attachmentId: number;
   }): string {
     return joinURL(
       origin,
       'api/kobo/api/v2/assets',
       uid_asset,
-      'data/1/attachments/1',
+      'data/1/attachments',
+      attachmentId.toString(),
     );
   }
 }
