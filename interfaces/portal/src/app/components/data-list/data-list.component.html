@@ -21,10 +21,15 @@
           class="py-1"
         />
       } @else if (item.type === 'koboImage') {
-        <app-image-dialog-trigger
-          [imageUrl]="item.value"
+        <app-image-list-item
           [label]="item.label | translatableString"
-        />
+          [imageUrl]="item.value"
+        >
+          <app-image-dialog-trigger
+            [imageUrl]="item.value"
+            [label]="item.label | translatableString"
+          />
+        </app-image-list-item>
       } @else {
         <div class="me-1">
           <strong>{{ item.label | translatableString }}:</strong>

@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,21 +15,12 @@ import {
   ChipVariant,
   ColoredChipComponent,
 } from '~/components/colored-chip/colored-chip.component';
-import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ImageViewerService } from '~/components/image/services/image-viewer.service';
 import { isImageAvailable } from '~/components/image/utils/is-image-available';
-import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
 @Component({
   selector: 'app-image-dialog-trigger',
-  imports: [
-    ButtonModule,
-    ColoredChipComponent,
-    FormFieldWrapperComponent,
-    TranslatableStringPipe,
-    InputTextModule,
-    NgTemplateOutlet,
-  ],
+  imports: [ButtonModule, ColoredChipComponent, InputTextModule],
   templateUrl: './image-dialog-trigger.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: `
@@ -45,7 +35,6 @@ export class ImageDialogTriggerComponent {
   readonly label = input.required<string | UILanguageTranslation>();
   readonly name = input<string>();
   readonly imageUrl = input<null | string | undefined>();
-  readonly mode = input<'edit' | 'view'>('view');
 
   readonly isOpen = computed(() => {
     const imageUrl = this.imageUrl();
