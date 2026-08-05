@@ -582,9 +582,6 @@
       <trans-unit id="3460608979438095670" datatype="html">
         <source>Retry failed transaction</source>
       </trans-unit>
-      <trans-unit id="3488602326654044677" datatype="html">
-        <source>Approved by</source>
-      </trans-unit>
       <trans-unit id="349264413670639690" datatype="html">
         <source>Choose message</source>
       </trans-unit>
