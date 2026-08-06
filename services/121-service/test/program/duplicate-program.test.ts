@@ -44,7 +44,6 @@ describe('Duplicate program', () => {
     validation: true,
     enableScope: false,
     enableMaxPayments: true,
-    allowEmptyPhoneNumber: false,
   };
 
   const sourceFspConfiguration: CreateProgramFspConfigurationDto = {
@@ -80,8 +79,8 @@ describe('Duplicate program', () => {
     });
 
     // Approval thresholds
-    const [lowThresholdApproverId, highThresholdApproverId] =
-      await Promise.all([
+    const [lowThresholdApproverId, highThresholdApproverId] = await Promise.all(
+      [
         createUserAssignedToProgram({
           programId: sourceProgramId,
           roles: [DefaultUserRole.View],
@@ -92,7 +91,8 @@ describe('Duplicate program', () => {
           roles: [DefaultUserRole.View],
           adminAccessToken: accessToken,
         }),
-      ]);
+      ],
+    );
     const sourceThresholds: CreateProgramApprovalThresholdDto[] = [
       {
         thresholdAmount: lowThresholdAmount,
@@ -219,10 +219,7 @@ describe('Duplicate program', () => {
     return new Map(
       [...users]
         .sort((a, b) => a.id - b.id)
-        .map((user) => [
-          user.id,
-          user.roles.map((role) => role.role).sort(),
-        ]),
+        .map((user) => [user.id, user.roles.map((role) => role.role).sort()]),
     );
   }
 

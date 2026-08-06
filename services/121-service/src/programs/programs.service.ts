@@ -181,7 +181,6 @@ export class ProgramService {
     ];
     program.enableMaxPayments = !!programData.enableMaxPayments;
     program.enableScope = !!programData.enableScope;
-    program.allowEmptyPhoneNumber = !!programData.allowEmptyPhoneNumber;
     program.monitoringDashboardUrl = programData.monitoringDashboardUrl ?? null;
     program.budget = programData.budget ?? null;
 
@@ -231,14 +230,12 @@ export class ProgramService {
       await queryRunner.release();
     }
 
-    const role = isAdmin
-      ? DefaultUserRole.Admin
-      : DefaultUserRole.ProgramAdmin;
+    const role = isAdmin ? DefaultUserRole.Admin : DefaultUserRole.ProgramAdmin;
 
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
       roles: [role],
       scope: undefined,
-    }); 
+    });
 
     return newProgram;
   }
@@ -460,7 +457,6 @@ export class ProgramService {
       languages: program.languages,
       enableMaxPayments: program.enableMaxPayments,
       enableScope: program.enableScope,
-      allowEmptyPhoneNumber: program.allowEmptyPhoneNumber,
     };
     if (program.monitoringDashboardUrl) {
       programDto.monitoringDashboardUrl = program.monitoringDashboardUrl;

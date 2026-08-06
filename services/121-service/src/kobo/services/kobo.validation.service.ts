@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { isDefined } from 'class-validator';
 import { Equal } from 'typeorm';
 
+import { env } from '@121-service/src/env';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/fsp-management/fsp-attribute-type-mapping';
 import { getFspAttributeNames } from '@121-service/src/fsp-management/fsp-settings.helpers';
@@ -13,6 +14,7 @@ import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-sur
 import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 import { KoboLanguageMapper } from '@121-service/src/kobo/mappers/kobo-language.mapper';
 import { fspQuestionName } from '@121-service/src/kobo/services/kobo.service';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -46,7 +48,6 @@ export class KoboValidationService {
       where: { id: Equal(programId) },
       select: {
         fullnameNamingConvention: true,
-        allowEmptyPhoneNumber: true,
         enableScope: true,
       },
     });
@@ -83,7 +84,6 @@ export class KoboValidationService {
       accumulatedErrors: errors,
       error: this.validatePhoneNumberSurveyItem({
         koboSurveyItems: formDefinition.survey,
-        allowEmptyPhoneNumber: program.allowEmptyPhoneNumber,
       }),
     });
 
@@ -297,10 +297,8 @@ export class KoboValidationService {
   // Phone number is a special case in validation as it part of the registration entity and not only a program registration attribute
   private validatePhoneNumberSurveyItem({
     koboSurveyItems,
-    allowEmptyPhoneNumber,
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
-    allowEmptyPhoneNumber: boolean;
   }): KoboValidationError[] {
     const errors: KoboValidationError[] = [];
 
@@ -308,14 +306,14 @@ export class KoboValidationService {
       (item) => item.name === DefaultRegistrationDataAttributeNames.phoneNumber,
     );
 
-    // Only validate existence if empty phone numbers are not allowed
-    if (!phoneNumberItem && !allowEmptyPhoneNumber) {
+    // Twilio needs a phoneNumber to send messages, so the survey item is required when Twilio is enabled.
+    if (!phoneNumberItem && env.TWILIO_MODE !== TwilioMode.disabled) {
       errors.push({
         type: KoboValidationErrorType.missingField,
         attributeName: DefaultRegistrationDataAttributeNames.phoneNumber,
         error: `Attribute '${DefaultRegistrationDataAttributeNames.phoneNumber}' is missing`,
         solution:
-          'Add a phoneNumber field with text type including country code, or set program.allowEmptyPhoneNumber to true',
+          'Add a phoneNumber field with text type including country code, or contact 121 support to disable Twilio for this instance',
       });
     }
 

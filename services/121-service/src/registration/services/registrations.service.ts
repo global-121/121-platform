@@ -281,14 +281,7 @@ export class RegistrationsService {
   public async cleanCustomDataIfPhoneNr(
     customDataKey: string,
     customDataValue: string | number | string[] | boolean | null,
-    programId: number,
   ) {
-    const allowEmptyPhoneNumber = (
-      await this.programRepository.findOneBy({
-        id: programId,
-      })
-    )?.allowEmptyPhoneNumber;
-
     const answersTypeTel: string[] = [];
     const programRegistrationAttributes =
       await this.programRegistrationAttributeRepository.find({
@@ -302,26 +295,9 @@ export class RegistrationsService {
       return customDataValue;
     }
 
-    if (
-      !allowEmptyPhoneNumber &&
-      customDataKey === DefaultRegistrationDataAttributeNames.phoneNumber
-    ) {
-      // phoneNumber cannot be empty
-      if (!customDataValue) {
-        throw new HttpException(
-          'Phone number cannot be empty',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      // otherwise check
-      return await this.lookupService.lookupAndCorrect(String(customDataValue));
-    }
-
     if (!customDataValue) {
-      // other tel-types (e.g. whatsappPhoneNumber) can be empty
       return customDataValue;
     }
-    // otherwise check
     return await this.lookupService.lookupAndCorrect(String(customDataValue));
   }
 
@@ -561,11 +537,7 @@ export class RegistrationsService {
     registration: RegistrationEntity;
     program: ProgramEntity;
   }): Promise<RegistrationEntity> {
-    value = await this.cleanCustomDataIfPhoneNr(
-      attribute,
-      value,
-      registration.programId,
-    );
+    value = await this.cleanCustomDataIfPhoneNr(attribute, value);
 
     if (typeof registration[attribute] !== 'undefined') {
       registration[attribute] = value;

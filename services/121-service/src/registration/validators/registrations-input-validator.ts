@@ -12,7 +12,6 @@ import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dt
 import { AdditionalAttributes } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import {
-  DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -193,16 +192,6 @@ export class RegistrationsInputValidator {
         validatedRegistrationInput.referenceId = row.referenceId as string;
       }
 
-      const errorObjValidatePhoneNr = this.validatePhoneNumberEmpty({
-        row,
-        i,
-        program,
-        typeOfInput,
-      });
-      if (errorObjValidatePhoneNr) {
-        rowErrors.push(errorObjValidatePhoneNr);
-      }
-
       /*
        * =============================================
        * Validate fsp config related attributes
@@ -272,6 +261,21 @@ export class RegistrationsInputValidator {
             if (RegistrationValidationInputType.bulkUpdate === typeOfInput) {
               return;
             }
+
+            // row[att.name] is undefined here only for create (update/bulkUpdate with undefined already returned above), meaning the attribute was left out entirely
+            if (att.isRequired && !row[att.name]) {
+              rowErrors.push({
+                index: i,
+                column: att.name,
+                value: row[att.name],
+                error:
+                  typeOfInput === RegistrationValidationInputType.create
+                    ? `${att.name} is required when creating a new registration for this program.`
+                    : `${att.name} is not allowed to be updated to an empty value.`,
+              });
+              return;
+            }
+
             /*
              * ==================================================================
              * If an attribute is a phone number, validate it using Twilio lookup
@@ -347,9 +351,7 @@ export class RegistrationsInputValidator {
             rowErrors.push(errorObj);
           } else if (row[att.name] !== undefined) {
             validatedRegistrationInput.data[att.name] = row[att.name] as
-              | string
-              | number
-              | boolean;
+              string | number | boolean;
           }
         }),
       );
@@ -682,49 +684,6 @@ export class RegistrationsInputValidator {
           error: 'referenceId already exists in database',
         };
       }
-    }
-  }
-
-  private validatePhoneNumberEmpty({
-    row,
-    i,
-    program,
-    typeOfInput,
-  }: {
-    row: any;
-    i: number;
-    program: ProgramEntity;
-    typeOfInput: RegistrationValidationInputType;
-  }): ValidateRegistrationErrorObject | undefined {
-    // If the program allows empty phone numbers, skip this validation
-    if (program.allowEmptyPhoneNumber) {
-      return;
-    }
-    if (
-      typeOfInput === RegistrationValidationInputType.create &&
-      !row.phoneNumber
-    ) {
-      return {
-        index: i,
-        column: DefaultRegistrationDataAttributeNames.phoneNumber,
-        value: undefined,
-        error:
-          'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
-      };
-    }
-
-    if (
-      typeOfInput === RegistrationValidationInputType.update &&
-      row.phoneNumber === ''
-    ) {
-      // on an update phonenumber can be empty if it is not being updated
-      return {
-        index: i,
-        column: DefaultRegistrationDataAttributeNames.phoneNumber,
-        value: row.phoneNumber,
-        error:
-          'PhoneNumber is not allowed to be updated to an empty value. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
-      };
     }
   }
 

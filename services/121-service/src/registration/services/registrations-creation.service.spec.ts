@@ -24,9 +24,7 @@ describe('RegistrationsCreationService', () => {
     const programService = unitRef.get(ProgramService);
     jest
       .spyOn(programService as any, 'findProgramOrThrow')
-      .mockImplementation(() => ({
-        allowEmptyPhoneNumber: false,
-      }));
+      .mockImplementation(() => ({}));
 
     // Mock registrationsInputValidator.findProgramOrThrow
     const registrationsInputValidator = unitRef.get(
@@ -62,7 +60,6 @@ describe('RegistrationsCreationService', () => {
     );
     jest.spyOn(programRepository as any, 'findOneBy').mockImplementation(() => {
       return Promise.resolve({
-        allowEmptyPhoneNumber: false,
         languages: [language],
       });
     });

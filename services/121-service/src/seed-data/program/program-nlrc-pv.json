@@ -126,7 +126,6 @@
   "languages": ["ar", "en", "es", "fr", "id", "nl", "pt", "tl", "uk"],
   "enableMaxPayments": true,
   "enableScope": true,
-  "allowEmptyPhoneNumber": true,
   "programFspConfigurations": [
     {
       "fsp": "Intersolve-voucher-whatsapp",
