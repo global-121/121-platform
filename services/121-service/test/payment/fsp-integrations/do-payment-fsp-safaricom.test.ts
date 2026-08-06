@@ -3,14 +3,12 @@ import { HttpStatus } from '@nestjs/common';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   getTransactionsByPaymentIdPaginated,
-  patchProgram,
   retryPayment,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -49,15 +47,6 @@ describe('Do payment to 1 PA', () => {
     });
 
     it('should successfully pay-out', async () => {
-      // Arrange
-      const program = {
-        allowEmptyPhoneNumber: false,
-      };
-
-      // Act
-      // Call the update function
-      await patchProgram(2, program as UpdateProgramDto, accessToken);
-
       // Arrange
       registrationSafaricom.phoneNumber = '254708374149';
       await seedIncludedRegistrations(

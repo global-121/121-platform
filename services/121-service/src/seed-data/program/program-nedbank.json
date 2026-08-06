@@ -52,7 +52,6 @@
   "languages": ["en", "nl"],
   "enableMaxPayments": true,
   "enableScope": true,
-  "allowEmptyPhoneNumber": true,
   "programFspConfigurations": [
     {
       "fsp": "Nedbank",

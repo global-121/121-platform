@@ -168,6 +168,7 @@
     },
     {
       "name": "phoneNumber",
+      "isRequired": true,
       "label": {
         "ar": "الهاتف.",
         "en": "Phone Nr.",
@@ -272,7 +273,6 @@
   "languages": ["ar", "en", "es", "fr", "nl"],
   "enableMaxPayments": false,
   "enableScope": false,
-  "allowEmptyPhoneNumber": false,
   "programFspConfigurations": [
     {
       "fsp": "Intersolve-voucher-whatsapp",

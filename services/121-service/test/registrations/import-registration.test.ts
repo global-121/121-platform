@@ -13,7 +13,6 @@ import {
   registrationScopedTurkanaNorthPv,
 } from '@121-service/test/fixtures/scoped-registrations';
 import {
-  patchProgram,
   setAllProgramsRegistrationAttributesNonRequired,
   waitForMessagesToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -33,7 +32,6 @@ import {
   programIdOCW,
   programIdPV,
   programIdWesteros,
-  registrationPV5,
   registrationWesteros1,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -199,37 +197,6 @@ describe('Import a registration', () => {
     expect(registration).toHaveLength(0);
   });
 
-  it('should import registrations with empty phoneNumber, when program allows this', async () => {
-    // Arrange
-    await resetDB({ seedScript: SeedScript.nlrcMultiple });
-    accessToken = await getAccessToken();
-    const registrationPVCopy = { ...registrationPV5 };
-    // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)"
-    delete registrationPVCopy.phoneNumber;
-    const programUpdate = {
-      allowEmptyPhoneNumber: true,
-    };
-    await patchProgram(programIdPV, programUpdate, accessToken);
-
-    // Act
-    const response = await importRegistrations(
-      programIdPV,
-      [registrationPVCopy],
-      accessToken,
-    );
-    expect(response.statusCode).toBe(HttpStatus.CREATED);
-
-    const result = await searchRegistrationByReferenceId(
-      registrationPVCopy.referenceId,
-      programIdPV,
-      accessToken,
-    );
-    const registration = result.body.data[0];
-    for (const key in registrationPVCopy) {
-      expect(registration[key]).toBe(registrationPVCopy[key]);
-    }
-  });
-
   it('should throw an error with a numeric registration atribute set to null', async () => {
     // Arrange
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
@@ -374,11 +341,6 @@ describe('Import a registration', () => {
       referenceId: 'registrationWesterosEmpty',
       programFspConfigurationName: 'ironBank',
     };
-
-    const programUpdate = {
-      allowEmptyPhoneNumber: true,
-    };
-    await patchProgram(programIdWesteros, programUpdate, accessToken);
 
     // Patch all programRegistationAttributes to be non-required
     await setAllProgramsRegistrationAttributesNonRequired(

@@ -199,10 +199,6 @@ export class ProgramReturnDto {
   @IsBoolean()
   public readonly enableScope: boolean;
 
-  @ApiProperty({ example: false })
-  @IsBoolean()
-  public readonly allowEmptyPhoneNumber: boolean;
-
   @ApiProperty()
   @IsArray()
   public readonly fspConfigurations: ProgramFspConfigurationResponseDto[];

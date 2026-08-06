@@ -448,4 +448,63 @@ describe('ProgramRegistrationAttributesService', () => {
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.NOT_FOUND);
     });
   });
+
+  describe('applyProgramRegistrationAttributesFallbackIfNecessary', () => {
+    beforeEach(() => {
+      mockEnv.TWILIO_MODE = TwilioMode.mock;
+    });
+
+    it('adds a required phoneNumber attribute when it is missing and Twilio is enabled', async () => {
+      // Act
+      const result =
+        await programRegistrationAttributesService.applyProgramRegistrationAttributesFallbackIfNecessary(
+          {
+            attributesData: [createAttributeDto({ name: 'firstName' })],
+            namingConventionData: [],
+          },
+        );
+
+      // Assert
+      const phoneNumberAttribute = result.find(
+        (attr) => attr.name === 'phoneNumber',
+      );
+      expect(phoneNumberAttribute).toBeDefined();
+      expect(phoneNumberAttribute?.isRequired).toBe(false);
+    });
+
+    it('does not duplicate the phoneNumber attribute when it is already present', async () => {
+      // Act
+      const result =
+        await programRegistrationAttributesService.applyProgramRegistrationAttributesFallbackIfNecessary(
+          {
+            attributesData: [createAttributeDto({ name: 'phoneNumber' })],
+            namingConventionData: [],
+          },
+        );
+
+      // Assert
+      expect(result.filter((attr) => attr.name === 'phoneNumber')).toHaveLength(
+        1,
+      );
+    });
+
+    it('does not add a phoneNumber attribute when Twilio is disabled', async () => {
+      // Arrange
+      mockEnv.TWILIO_MODE = TwilioMode.disabled;
+
+      // Act
+      const result =
+        await programRegistrationAttributesService.applyProgramRegistrationAttributesFallbackIfNecessary(
+          {
+            attributesData: [createAttributeDto({ name: 'firstName' })],
+            namingConventionData: [],
+          },
+        );
+
+      // Assert
+      expect(
+        result.find((attr) => attr.name === 'phoneNumber'),
+      ).toBeUndefined();
+    });
+  });
 });

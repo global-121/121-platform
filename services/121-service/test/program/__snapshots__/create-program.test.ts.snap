@@ -2,7 +2,6 @@
 
 exports[`Create program should post a program: Create program response for program: CBE Program 1`] = `
 {
-  "allowEmptyPhoneNumber": false,
   "budget": null,
   "currency": "ETB",
   "description": {
@@ -56,7 +55,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
-      "isRequired": false,
+      "isRequired": true,
       "label": {
         "am": "ስልክ ቁጥር",
         "en": "Phone number",
@@ -328,7 +327,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
-      "isRequired": false,
+      "isRequired": true,
       "koboLabel": null,
       "label": {
         "am": "ስልክ ቁጥር",
@@ -461,7 +460,7 @@ exports[`Create program should post a program: Create program response for progr
       "editableInPortal": true,
       "id": 27,
       "includeInTransactionExport": true,
-      "isRequired": false,
+      "isRequired": true,
       "koboLabel": null,
       "label": {
         "am": "ስልክ ቁጥር",
@@ -487,7 +486,6 @@ exports[`Create program should post a program: Create program response for progr
 
 exports[`Create program should post a program: Create program response for program: NLRC OCW program 1`] = `
 {
-  "allowEmptyPhoneNumber": false,
   "budget": null,
   "currency": "EUR",
   "description": {
@@ -545,7 +543,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
-      "isRequired": false,
+      "isRequired": true,
       "label": {
         "en": "Phone Number",
       },
@@ -829,7 +827,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
-      "isRequired": false,
+      "isRequired": true,
       "koboLabel": null,
       "label": {
         "en": "Phone Number",
@@ -968,7 +966,7 @@ exports[`Create program should post a program: Create program response for progr
       "editableInPortal": false,
       "id": 19,
       "includeInTransactionExport": false,
-      "isRequired": false,
+      "isRequired": true,
       "koboLabel": null,
       "label": {
         "en": "Phone Number",
