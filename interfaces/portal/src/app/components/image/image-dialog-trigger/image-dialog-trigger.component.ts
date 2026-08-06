@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
@@ -20,7 +19,7 @@ import { isImageAvailable } from '~/components/image/utils/is-image-available';
 
 @Component({
   selector: 'app-image-dialog-trigger',
-  imports: [ButtonModule, ColoredChipComponent, InputTextModule],
+  imports: [ButtonModule, ColoredChipComponent],
   templateUrl: './image-dialog-trigger.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

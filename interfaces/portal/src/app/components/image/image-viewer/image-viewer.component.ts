@@ -11,11 +11,10 @@ import {
 import Panzoom, { PanzoomObject } from '@panzoom/panzoom';
 import { ButtonModule } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
-import { ImageModule } from 'primeng/image';
 
 @Component({
   selector: 'app-image-viewer',
-  imports: [ButtonModule, ButtonGroupModule, ImageModule],
+  imports: [ButtonModule, ButtonGroupModule],
   templateUrl: './image-viewer.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
