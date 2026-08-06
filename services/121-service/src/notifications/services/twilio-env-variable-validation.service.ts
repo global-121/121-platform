@@ -12,7 +12,6 @@ export class TwilioEnvVariableValidationService {
     mode: TwilioMode;
     variables: Record<string, string | undefined>;
   }): { ok: boolean; messages: string[] } {
-    // When Twilio is disabled, no environment variables are required.
     if (mode === TwilioMode.disabled) {
       return {
         ok: true,

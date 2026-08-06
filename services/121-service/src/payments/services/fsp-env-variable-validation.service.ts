@@ -55,23 +55,18 @@ export class FspEnvVariableValidationService {
   }): string[] {
     const { mode, variables, requiresTwilio } = envVariableSettings;
 
-    // A disabled FSP has nothing to validate.
     if (mode === FspMode.disabled) {
       return [];
     }
 
     const messages: string[] = [];
 
-    // FSPs that deliver to registrations over WhatsApp/SMS via Twilio (e.g.
-    // Intersolve Voucher) cannot function when Twilio is disabled. This applies
-    // whenever the FSP is enabled (MOCK or EXTERNAL).
     if (requiresTwilio && twilioMode === TwilioMode.disabled) {
       messages.push(
         `FSP "${fsp}" is enabled and requires Twilio, but "TWILIO_MODE=DISABLED". Set TWILIO_MODE to MOCK or EXTERNAL.`,
       );
     }
 
-    // Only EXTERNAL requires the full set of env variables to be set.
     if (mode === FspMode.external) {
       const envVariableIsSet = (envVar: unknown): boolean =>
         envVar !== undefined && envVar !== null && envVar !== '';

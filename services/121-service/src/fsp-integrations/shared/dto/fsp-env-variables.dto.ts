@@ -6,7 +6,5 @@ export class FspEnvVariablesDto {
 
   readonly variables: EnvVariablesReadOnly;
 
-  // When true, this FSP deliveres message via WhatsApp/SMS via Twilio
-  // and therefore cannot function when Twilio is disabled (TWILIO_MODE=DISABLED).
   readonly requiresTwilio?: boolean;
 }
