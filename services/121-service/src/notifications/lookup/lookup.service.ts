@@ -18,7 +18,6 @@ export class LookupService {
     phoneNumber: string,
     throwNoException?: boolean,
   ): Promise<string | undefined> {
-    // When Twilio is disabled, skip the carrier lookup and pass the number through.
     if (env.TWILIO_MODE === TwilioMode.disabled) {
       return this.sanitizePhoneNrExtra(phoneNumber).replace(/\D/g, '');
     }
