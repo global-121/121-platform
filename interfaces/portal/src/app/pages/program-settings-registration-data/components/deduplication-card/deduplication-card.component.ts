@@ -88,7 +88,7 @@ export class DeduplicationCardComponent {
         {
           label,
           type: 'text',
-          value: $localize`No duplication field selected`,
+          value: $localize`Select duplication field`,
           icon: 'pi-exclamation-triangle text-red-500',
         },
       ];

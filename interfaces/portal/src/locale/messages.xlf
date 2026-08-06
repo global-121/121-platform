@@ -1320,9 +1320,6 @@
       <trans-unit id="6456009373504868195" datatype="html">
         <source>Please correct the errors in the form.</source>
       </trans-unit>
-      <trans-unit id="646969840005868516" datatype="html">
-        <source>No duplication field selected</source>
-      </trans-unit>
       <trans-unit id="6502713313006518985" datatype="html">
         <source>Set up the payment&apos;s name.</source>
       </trans-unit>
@@ -1928,6 +1925,9 @@
       </trans-unit>
       <trans-unit id="9063819144679824048" datatype="html">
         <source>People included</source>
+      </trans-unit>
+      <trans-unit id="9074750416898369270" datatype="html">
+        <source>Select duplication field</source>
       </trans-unit>
       <trans-unit id="9087327525266557453" datatype="html">
         <source>A duplicate of &quot;<x equiv-text="{{ programToDuplicateName() }}" id="INTERPOLATION"/>&quot; will be created with the following details carried over:</source>
