@@ -129,6 +129,8 @@ describe('Import a Kobo form definition', () => {
       ...expectedAttributeNamesBeforeKobo,
       'How_are_you_today_select_one',
       'What_is_2_2_number',
+      'driversLicensePhoto',
+      'idPhoto',
       'photo',
     ];
 
