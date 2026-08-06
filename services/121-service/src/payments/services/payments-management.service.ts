@@ -22,6 +22,7 @@ import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/pr
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
+import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
@@ -90,6 +91,13 @@ export class PaymentsManagementService {
 
       if (dryRun || !transferValue) {
         return bulkActionResultPaymentDto;
+      }
+
+      if (bulkActionResultPaymentDto.duplicateCount > 0) {
+        throw new HttpException(
+          `Cannot create payment: ${bulkActionResultPaymentDto.duplicateCount} registration(s) have duplicate status. Remove duplicates from your selection or resolve them first.`,
+          HttpStatus.BAD_REQUEST,
+        );
       }
 
       if (!thresholds || thresholds.length === 0) {
@@ -172,6 +180,7 @@ export class PaymentsManagementService {
           ...bulkActionResultDto,
           sumPaymentAmountMultiplier: 0,
           programFspConfigurationNames: [],
+          duplicateCount: 0,
         },
         registrationsForPayment: [],
       };
@@ -222,10 +231,16 @@ export class PaymentsManagementService {
     );
 
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
+    const duplicateCount = registrationsForPayment.filter(
+      (registration) =>
+        registration.duplicateStatus === DuplicateStatus.duplicate,
+    ).length;
+
     const bulkActionResultPaymentDto: BulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
       programFspConfigurationNames,
+      duplicateCount,
     };
 
     return {

@@ -87,6 +87,7 @@ describe('PaymentsManagementService', () => {
           referenceId: 'ref1',
           paymentAmountMultiplier: 1,
           programFspConfigurationName: 'fspA',
+          duplicateStatus: 'unique',
         },
       ]);
     const params = { ...basePaymentParams, dryRun: true };
@@ -108,6 +109,79 @@ describe('PaymentsManagementService', () => {
     expect(result).toEqual({
       sumPaymentAmountMultiplier: 1,
       programFspConfigurationNames: ['fspA'],
+      duplicateCount: 0,
+    });
+  });
+
+  it('should return duplicateCount in dryRun when registrations have duplicate status', async () => {
+    // Arrange
+    jest
+      .spyOn(
+        programApprovalThresholdRepository as any,
+        'getThresholdsForPaymentAmount',
+      )
+      .mockResolvedValue([{ id: 1, thresholdAmount: 0 }]);
+    jest
+      .spyOn(
+        registrationsPaginationService as any,
+        'getRegistrationViewsNoLimit',
+      )
+      .mockResolvedValue([
+        {
+          referenceId: 'ref1',
+          paymentAmountMultiplier: 1,
+          programFspConfigurationName: 'fspA',
+          duplicateStatus: 'duplicate',
+        },
+        {
+          referenceId: 'ref2',
+          paymentAmountMultiplier: 1,
+          programFspConfigurationName: 'fspA',
+          duplicateStatus: 'unique',
+        },
+        {
+          referenceId: 'ref3',
+          paymentAmountMultiplier: 1,
+          programFspConfigurationName: 'fspA',
+          duplicateStatus: 'duplicate',
+        },
+      ]);
+    const params = { ...basePaymentParams, dryRun: true };
+
+    // Act
+    const result = await service.createPayment(params);
+
+    // Assert
+    expect(result.duplicateCount).toBe(2);
+  });
+
+  it('should throw when creating payment with duplicate registrations', async () => {
+    // Arrange
+    jest
+      .spyOn(service as any, 'getPaymentDryRunDetailsOrThrow')
+      .mockResolvedValue({
+        bulkActionResultPaymentDto: {
+          sumPaymentAmountMultiplier: 1,
+          programFspConfigurationNames: ['fspA'],
+          duplicateCount: 2,
+        },
+        registrationsForPayment: [
+          {
+            referenceId: 'ref1',
+            paymentAmountMultiplier: 1,
+            programFspConfigurationName: 'fspA',
+            duplicateStatus: 'duplicate',
+          },
+        ],
+        thresholds: [{ id: 1, thresholdAmount: 0 }],
+      });
+
+    // Act & Assert
+    await expect(
+      service.createPayment({ ...basePaymentParams, dryRun: false }),
+    ).rejects.toMatchObject({
+      status: 400,
+      message: expect.stringContaining('duplicate status'),
     });
   });
 
@@ -119,6 +193,7 @@ describe('PaymentsManagementService', () => {
         bulkActionResultPaymentDto: {
           sumPaymentAmountMultiplier: 1,
           programFspConfigurationNames: ['fspA'],
+          duplicateCount: 0,
         },
         registrationsForPayment: [
           {
@@ -165,6 +240,7 @@ describe('PaymentsManagementService', () => {
     expect(result).toEqual({
       sumPaymentAmountMultiplier: 1,
       programFspConfigurationNames: ['fspA'],
+      duplicateCount: 0,
       id: 123,
     });
   });
