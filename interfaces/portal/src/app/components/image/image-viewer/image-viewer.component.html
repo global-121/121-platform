@@ -1,0 +1,62 @@
+<div class="relative overflow-clip block-full inline-full">
+  <p-buttongroup
+    class="absolute inset-e-2 inset-bs-2.5 z-10 flex gap-2 rounded-full bg-white"
+  >
+    <p-button
+      title="Rotate clockwise"
+      i18n-title="@@image-viewer-rotate-clockwise"
+      aria-label="Rotate clockwise"
+      i18n-aria-label="@@image-viewer-rotate-clockwise"
+      (click)="rotateClockwise()"
+      icon="pi pi-refresh"
+      rounded
+      outlined
+      size="large"
+    />
+    <p-button
+      title="Rotate counter-clockwise"
+      i18n-title="@@image-viewer-rotate-counter-clockwise"
+      aria-label="Rotate counter-clockwise"
+      i18n-aria-label="@@image-viewer-rotate-counter-clockwise"
+      (click)="rotateCounterClockwise()"
+      icon="pi pi-undo"
+      rounded
+      outlined
+      size="large"
+    />
+    <p-button
+      title="Zoom in"
+      i18n-title="@@image-viewer-zoom-in"
+      aria-label="Zoom in"
+      i18n-aria-label="@@image-viewer-zoom-in"
+      (click)="zoomIn()"
+      icon="pi pi-search-plus"
+      rounded
+      outlined
+      size="large"
+    />
+    <p-button
+      title="Zoom out"
+      i18n-title="@@image-viewer-zoom-out"
+      aria-label="Zoom out"
+      i18n-aria-label="@@image-viewer-zoom-out"
+      (click)="zoomOut()"
+      icon="pi pi-search-minus"
+      rounded
+      outlined
+      size="large"
+    />
+  </p-buttongroup>
+
+  <div
+    class="bg-grey-100/75 absolute inset-0 flex items-center justify-center overflow-hidden rounded-md"
+  >
+    <img
+      #imageElement
+      [src]="imageUrl()"
+      [alt]=""
+      class="object-cover inline-full"
+      style="transition: transform 120ms ease-in-out"
+    />
+  </div>
+</div>

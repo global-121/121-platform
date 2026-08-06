@@ -1,0 +1,25 @@
+<div [class]="wrapperClassName()">
+  @if (includeColoredChip()) {
+    <app-colored-chip
+      [label]="coloredChipProps().label"
+      [variant]="coloredChipProps().variant"
+    />
+  }
+  @if (isAvailable()) {
+    <p-button
+      (click)="toggleImageViewerDialog()"
+      class="ms-auto [&>button]:bg-white!"
+      size="small"
+      outlined
+      rounded
+    >
+      @if (isOpen()) {
+        <span class="pi pi-eye-slash"></span>
+        <span i18n="@@image-viewer-hide">Hide</span>
+      } @else {
+        <span class="pi pi-eye"></span>
+        <span i18n="@@image-viewer-show">Show</span>
+      }
+    </p-button>
+  }
+</div>

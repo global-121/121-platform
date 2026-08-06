@@ -18,7 +18,9 @@ const assetIdFromKoboUrl =
 
 const importedRegistrationReferenceId = `success-${assetIdFromKoboUrl}`;
 const koboImageAttributeName = 'photo';
-const koboImageLabel = 'Upload an important photo';
+const koboImageOneLabel = 'Upload an important photo';
+const koboImageTwoLabel = 'Upload your ID document';
+const koboImageThreeLabel = "Upload your driver's license";
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
@@ -29,7 +31,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('User can open Kobo image panel and image is downloaded only when panel opens', async ({
+test('User can open Kobo images modals', async ({
   page,
   registrationDataPage,
   registrationPersonalInformationPage,
@@ -73,34 +75,43 @@ test('User can open Kobo image panel and image is downloaded only when panel ope
     `/program/${programIdSafaricom}/registrations/${registrationId}/personal-information`,
   );
 
-  await test.step('Kobo image panel is visible and starts as available', async () => {
+  await test.step('Kobo image trigger is visible and starts as available', async () => {
     await registrationPersonalInformationPage.validateKoboImageStatus({
-      label: koboImageLabel,
+      label: koboImageOneLabel,
       status: 'Available',
     });
 
     expect(koboImageDownloadRequestCount).toBe(0);
   });
 
-  await test.step('Opening panel triggers a single image download', async () => {
+  await test.step('Opening modal triggers a single image download', async () => {
     await Promise.all([
       page.waitForRequest(
         (request) =>
           request.method() === 'GET' &&
           request.url().includes(koboImageDownloadApiPath),
       ),
-      registrationPersonalInformationPage.clickKoboImageAccordionHeader({
-        label: koboImageLabel,
+      registrationPersonalInformationPage.toggleKoboImageDialog({
+        label: koboImageOneLabel,
       }),
     ]);
 
-    await expect(page.locator('app-image-list img').first()).toBeVisible();
+    await expect(
+      registrationPersonalInformationPage.imageViewerDialog.getByText(
+        koboImageOneLabel,
+      ),
+    ).toBeVisible();
+    await expect(
+      registrationPersonalInformationPage.imageViewerDialog
+        .locator('app-image-viewer img')
+        .first(),
+    ).toBeVisible();
     expect(koboImageDownloadRequestCount).toBe(1);
   });
 
-  await test.step('Re-opening panel does not trigger an additional download', async () => {
-    await registrationPersonalInformationPage.clickKoboImageAccordionHeader({
-      label: koboImageLabel,
+  await test.step('Re-opening modal does not trigger an additional download', async () => {
+    await registrationPersonalInformationPage.toggleKoboImageDialog({
+      label: koboImageOneLabel,
     });
 
     const secondDownloadRequestPromise = page
@@ -113,13 +124,32 @@ test('User can open Kobo image panel and image is downloaded only when panel ope
       .then(() => true)
       .catch(() => false);
 
-    await registrationPersonalInformationPage.clickKoboImageAccordionHeader({
-      label: koboImageLabel,
+    await registrationPersonalInformationPage.toggleKoboImageDialog({
+      label: koboImageOneLabel,
     });
 
     const secondDownloadDetected = await secondDownloadRequestPromise;
 
     expect(secondDownloadDetected).toBe(false);
     expect(koboImageDownloadRequestCount).toBe(1);
+  });
+
+  await test.step('Should be able to open multiple kobo image modals', async () => {
+    await registrationPersonalInformationPage.toggleKoboImageDialog({
+      label: koboImageTwoLabel,
+    });
+
+    await expect(
+      registrationPersonalInformationPage.imageViewerDialog.getByText(
+        koboImageTwoLabel,
+      ),
+    ).toBeVisible();
+  });
+
+  await test.step('Kobo image trigger is not visible when Not available', async () => {
+    await registrationPersonalInformationPage.validateKoboImageStatus({
+      label: koboImageThreeLabel,
+      status: 'Not available',
+    });
   });
 });

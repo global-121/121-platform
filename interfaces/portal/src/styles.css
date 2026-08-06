@@ -166,6 +166,9 @@ svg-icon svg {
   :root {
     --toolbar-height: calc(48 / 14 * 1rem);
     --p-form-field-padding-y: 0.75rem;
+
+    --p-inputtext-disabled-background: #ecf0f4; /* bg-grey-100 */
+    --p-inputtext-disabled-text-color: #6b7280; /* text-grey-700 */
   }
 
   /* 
