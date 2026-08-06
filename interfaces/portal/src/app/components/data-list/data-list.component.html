@@ -21,20 +21,22 @@
           class="py-1"
         />
       } @else if (item.type === 'koboImage') {
-        <div class="me-1">
-          <strong>
-            <i class="pi pi-image me-2"></i>
-            {{ item.label | translatableString }}:
-          </strong>
-        </div>
-        <div class="relative">
-          <div class="absolute">
-            <app-image-dialog-trigger
-              [imageUrl]="item.value"
-              [label]="item.label | translatableString"
-              [includeColoredChip]="true"
-            />
+        <div class="grid grid-cols-[auto_1fr] inline-full">
+          <div class="me-1">
+            <strong>
+              <i class="pi pi-image me-2"></i>
+              {{ item.label | translatableString }}:
+            </strong>
           </div>
+          <span class="relative ms-1">
+            <div class="absolute inset-x-0 inset-bs-1/2 -translate-y-1/2">
+              <app-image-dialog-trigger
+                [imageUrl]="item.value"
+                [label]="item.label | translatableString"
+                [includeColoredChip]="true"
+              />
+            </div>
+          </span>
         </div>
       } @else {
         <div class="me-1">
