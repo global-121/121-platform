@@ -141,10 +141,24 @@ export class TransactionQueuesService {
       .map((job) => String(job.id));
 
     if (jobIds.length > 0) {
-      await this.redisClient.sadd(
-        getRedisSetName(transactionJobs[0].programId),
-        ...jobIds,
-      );
+      const redisSetName = getRedisSetName(transactionJobs[0].programId);
+      const batchSize = 10_000;
+      const pipeline = this.redisClient.pipeline();
+      for (let i = 0; i < jobIds.length; i += batchSize) {
+        const batch = jobIds.slice(i, i + batchSize);
+        pipeline.sadd(redisSetName, ...batch);
+      }
+      const results = await pipeline.exec();
+      if (results == null) {
+        throw new Error(
+          `Failed to add job IDs to Redis set ${redisSetName}: pipeline aborted`,
+        );
+      }
+      for (const [error] of results) {
+        if (error) {
+          throw error;
+        }
+      }
     }
   }
 }
