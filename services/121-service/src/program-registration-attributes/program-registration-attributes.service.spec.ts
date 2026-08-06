@@ -3,6 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
+import { env } from '@121-service/src/env';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import {
   CreateProgramRegistrationAttributeDto,
@@ -13,6 +15,15 @@ import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/en
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/test-helpers/createQueryBuilderMock.helper';
+
+jest.mock('@121-service/src/env', () => ({
+  env: {
+    ...jest.requireActual('@121-service/src/env').env,
+    TWILIO_MODE: 'MOCK',
+  },
+}));
+
+const mockEnv = env as unknown as { TWILIO_MODE: string };
 
 describe('ProgramRegistrationAttributesService', () => {
   let programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
@@ -203,6 +214,10 @@ describe('ProgramRegistrationAttributesService', () => {
   });
 
   describe('deleteProgramRegistrationAttribute', () => {
+    beforeEach(() => {
+      mockEnv.TWILIO_MODE = TwilioMode.mock;
+    });
+
     it('should scope lookup by both program id and attribute id before delete', async () => {
       // Arrange
       const programId = 1;
@@ -261,6 +276,64 @@ describe('ProgramRegistrationAttributesService', () => {
           }),
         }),
       );
+    });
+
+    it('should throw when deleting the phoneNumber attribute while Twilio is enabled', async () => {
+      // Arrange
+      mockEnv.TWILIO_MODE = TwilioMode.mock;
+      const programId = 1;
+      const programRegistrationAttributeId = 99;
+      const attributeEntity = createAttributeEntity({
+        id: programRegistrationAttributeId,
+        programId,
+        name: 'phoneNumber',
+      });
+
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'findOne')
+        .mockResolvedValue(attributeEntity);
+      const removeSpy = jest
+        .spyOn(programRegistrationAttributeRepository, 'remove')
+        .mockResolvedValue(attributeEntity);
+
+      // Act + Assert
+      await expect(
+        programRegistrationAttributesService.deleteProgramRegistrationAttribute(
+          programId,
+          programRegistrationAttributeId,
+        ),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+      expect(removeSpy).not.toHaveBeenCalled();
+    });
+
+    it('should delete the phoneNumber attribute when Twilio is disabled', async () => {
+      // Arrange
+      mockEnv.TWILIO_MODE = TwilioMode.disabled;
+      const programId = 1;
+      const programRegistrationAttributeId = 99;
+      const attributeEntity = createAttributeEntity({
+        id: programRegistrationAttributeId,
+        programId,
+        name: 'phoneNumber',
+      });
+
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'findOne')
+        .mockResolvedValue(attributeEntity);
+      const removeSpy = jest
+        .spyOn(programRegistrationAttributeRepository, 'remove')
+        .mockResolvedValue(attributeEntity);
+
+      // Act
+      const result =
+        await programRegistrationAttributesService.deleteProgramRegistrationAttribute(
+          programId,
+          programRegistrationAttributeId,
+        );
+
+      // Assert
+      expect(result).toEqual(attributeEntity);
+      expect(removeSpy).toHaveBeenCalledWith(attributeEntity);
     });
   });
 
