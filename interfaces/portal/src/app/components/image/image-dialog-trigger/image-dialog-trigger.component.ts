@@ -23,11 +23,6 @@ import { isImageAvailable } from '~/components/image/utils/is-image-available';
   imports: [ButtonModule, ColoredChipComponent, InputTextModule],
   templateUrl: './image-dialog-trigger.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: `
-    :host {
-      width: 100%; /* To make the component itself a real 'block' */
-    }
-  `,
 })
 export class ImageDialogTriggerComponent {
   private readonly imageViewerService = inject(ImageViewerService);

@@ -152,14 +152,27 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     }
   }
 
-  koboImageTrigger({ label }: { label: string }): Locator {
-    return this.page
-      .locator('app-image-dialog-trigger')
+  async koboImageDataListItem({ label }: { label: string }): Promise<Locator> {
+    const dataListItem = this.page
+      .locator('[data-testid-category="data-list-item"]')
       .filter({ hasText: label });
+    return dataListItem;
   }
 
-  async toggleKoboImageModal({ label }: { label: string }): Promise<void> {
-    const button = this.koboImageTrigger({ label }).getByRole('button');
+  async getKoboImageDialogTrigger({
+    label,
+  }: {
+    label: string;
+  }): Promise<Locator> {
+    const koboImageDialogTrigger = this.page
+      .locator('[data-testid-category="data-list-item"]')
+      .filter({ hasText: label })
+      .getByRole('button');
+    return koboImageDialogTrigger;
+  }
+
+  async toggleKoboImageDialog({ label }: { label: string }): Promise<void> {
+    const button = await this.getKoboImageDialogTrigger({ label });
     await expect(button).toBeVisible();
     await button.click();
   }
@@ -171,8 +184,12 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     label: string;
     status: 'Available' | 'Not available';
   }): Promise<void> {
-    const trigger = this.koboImageTrigger({ label });
+    const trigger = await this.koboImageDataListItem({ label });
     await expect(trigger).toContainText(status);
+
+    if (status === 'Not available') {
+      await expect(trigger.getByRole('button')).toHaveCount(0);
+    }
   }
 }
 

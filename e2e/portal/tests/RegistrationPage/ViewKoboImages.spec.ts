@@ -18,7 +18,9 @@ const assetIdFromKoboUrl =
 
 const importedRegistrationReferenceId = `success-${assetIdFromKoboUrl}`;
 const koboImageAttributeName = 'photo';
-const koboImageLabel = 'Upload an important photo';
+const koboImageOneLabel = 'Upload an important photo';
+const koboImageTwoLabel = 'Upload your ID document';
+const koboImageThreeLabel = "Upload your driver's license";
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
@@ -29,7 +31,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('User can open Kobo image modal and image is downloaded only when modal opens', async ({
+test('User can open Kobo images modals', async ({
   page,
   programSettingsRegistrationDataPage,
   registrationPersonalInformationPage,
@@ -79,7 +81,7 @@ test('User can open Kobo image modal and image is downloaded only when modal ope
 
   await test.step('Kobo image trigger is visible and starts as available', async () => {
     await registrationPersonalInformationPage.validateKoboImageStatus({
-      label: koboImageLabel,
+      label: koboImageOneLabel,
       status: 'Available',
     });
 
@@ -93,13 +95,15 @@ test('User can open Kobo image modal and image is downloaded only when modal ope
           request.method() === 'GET' &&
           request.url().includes(koboImageDownloadApiPath),
       ),
-      registrationPersonalInformationPage.toggleKoboImageModal({
-        label: koboImageLabel,
+      registrationPersonalInformationPage.toggleKoboImageDialog({
+        label: koboImageOneLabel,
       }),
     ]);
 
     await expect(
-      registrationPersonalInformationPage.imageViewerDialog,
+      registrationPersonalInformationPage.imageViewerDialog.getByText(
+        koboImageOneLabel,
+      ),
     ).toBeVisible();
     await expect(
       registrationPersonalInformationPage.imageViewerDialog
@@ -110,8 +114,8 @@ test('User can open Kobo image modal and image is downloaded only when modal ope
   });
 
   await test.step('Re-opening modal does not trigger an additional download', async () => {
-    await registrationPersonalInformationPage.toggleKoboImageModal({
-      label: koboImageLabel,
+    await registrationPersonalInformationPage.toggleKoboImageDialog({
+      label: koboImageOneLabel,
     });
 
     const secondDownloadRequestPromise = page
@@ -124,13 +128,32 @@ test('User can open Kobo image modal and image is downloaded only when modal ope
       .then(() => true)
       .catch(() => false);
 
-    await registrationPersonalInformationPage.toggleKoboImageModal({
-      label: koboImageLabel,
+    await registrationPersonalInformationPage.toggleKoboImageDialog({
+      label: koboImageOneLabel,
     });
 
     const secondDownloadDetected = await secondDownloadRequestPromise;
 
     expect(secondDownloadDetected).toBe(false);
     expect(koboImageDownloadRequestCount).toBe(1);
+  });
+
+  await test.step('Should be able to open multiple kobo image modals', async () => {
+    await registrationPersonalInformationPage.toggleKoboImageDialog({
+      label: koboImageTwoLabel,
+    });
+
+    await expect(
+      registrationPersonalInformationPage.imageViewerDialog.getByText(
+        koboImageTwoLabel,
+      ),
+    ).toBeVisible();
+  });
+
+  await test.step('Kobo image trigger is not visible when Not available', async () => {
+    await registrationPersonalInformationPage.validateKoboImageStatus({
+      label: koboImageThreeLabel,
+      status: 'Not available',
+    });
   });
 });
