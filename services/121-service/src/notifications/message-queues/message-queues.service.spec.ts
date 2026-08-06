@@ -53,6 +53,7 @@ describe('MessageQueuesService', () => {
   });
 
   beforeEach(() => {
+    jest.clearAllMocks();
     mockEnv.TWILIO_MODE = TwilioMode.mock;
   });
 
