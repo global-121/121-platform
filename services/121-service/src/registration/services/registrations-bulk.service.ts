@@ -289,6 +289,7 @@ export class RegistrationsBulkService {
         GenericRegistrationAttributes.programFspConfigurationName,
       );
       query.select.push('fspName');
+      query.select.push('duplicateStatus');
     }
     if (includeSendMessageProperties) {
       query.select.push('id');
