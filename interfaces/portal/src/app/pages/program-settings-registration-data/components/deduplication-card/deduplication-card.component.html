@@ -1,0 +1,54 @@
+<app-card-editable
+  header="De-duplication"
+  i18n-header
+  editPencilTitle="Edit"
+  i18n-editPencilTitle
+  [canEdit]="canEditAttributes()"
+  [(isEditing)]="isEditing"
+  [formGroup]="formGroup"
+  [mutation]="updateDuplicationAttributesMutation"
+  [mutationData]="{ formData: formGroup.getRawValue() }"
+  [dataTestId]="'deduplication-card'"
+>
+  <p
+    i18n
+    class="mbe-4"
+  >
+    Choose the fields you want to use as duplication indicators. Go for unique
+    identifiers like phone numbers, bank account numbers, or ID numbers. If any
+    of these fields match across two or more registrations, those registrations
+    will be marked as duplicates.
+  </p>
+
+  @if (isEditing()) {
+    <app-form-field-wrapper
+      label="Duplication fields:"
+      [isRequired]="false"
+      i18n-label
+    >
+      <p-multiselect
+        class="wrapped-chip-multiselect"
+        [options]="programRegistrationAttributes()"
+        [optionLabel]="'labelToShow'"
+        [optionValue]="'name'"
+        formControlName="duplicationFields"
+        placeholder="Select 1 or more fields"
+        i18n-placeholder
+        [loading]="program.isPending()"
+        [maxSelectedLabels]="100"
+        [showToggleAll]="false"
+        [display]="'chip'"
+        [filter]="false"
+        [appendTo]="'body'"
+        [attr.data-testid]="'deduplication-card-multiselect'"
+      >
+      </p-multiselect>
+    </app-form-field-wrapper>
+  } @else {
+    <app-data-list
+      [data]="dataListData()"
+      [forceOneColumn]="true"
+      [attr.data-testid]="'deduplication-card-datalist'"
+    ></app-data-list>
+  }
+</app-card-editable>

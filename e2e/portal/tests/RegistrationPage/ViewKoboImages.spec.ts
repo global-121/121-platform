@@ -31,23 +31,27 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
 
 test('User can open Kobo image panel and image is downloaded only when panel opens', async ({
   page,
-  registrationDataPage,
+  programSettingsRegistrationDataPage,
   registrationPersonalInformationPage,
 }) => {
   await test.step('Add Kobo integration and import existing Kobo registrations', async () => {
-    await registrationDataPage.addKoboIntegration(koboIntegrationDetails);
-    await registrationDataPage.koboSuccessfullyLinkedDialog({
+    await programSettingsRegistrationDataPage.addKoboIntegration(
+      koboIntegrationDetails,
+    );
+    await programSettingsRegistrationDataPage.koboSuccessfullyLinkedDialog({
       closeDialog: true,
     });
 
-    await registrationDataPage.openImportExistingKoboRegistrationsDialog();
-    await registrationDataPage.initiateImportButton.click();
+    await programSettingsRegistrationDataPage.openImportExistingKoboRegistrationsDialog();
+    await programSettingsRegistrationDataPage.initiateImportButton.click();
 
     await expect(
-      registrationDataPage.importDialog.getByText('Imported successfully: 1'),
+      programSettingsRegistrationDataPage.importDialog.getByText(
+        'Imported successfully: 1',
+      ),
     ).toBeVisible();
 
-    await registrationDataPage.closeImportDialog.click();
+    await programSettingsRegistrationDataPage.closeImportDialog.click();
   });
 
   const accessToken = await getAccessToken();

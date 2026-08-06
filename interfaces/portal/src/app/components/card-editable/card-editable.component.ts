@@ -37,6 +37,7 @@ export class CardEditableComponent<TMutationData = unknown> {
   readonly canEdit = input.required<boolean>();
   readonly isEditing = model.required<boolean>();
   readonly editPencilTitle = input.required<string>();
+  readonly dataTestId = input('editable-card');
 
   // TODO: AB#38151 this mutation and mutationData should become required once the "program settings team"
   // page uses a mutation to update the checklist on save

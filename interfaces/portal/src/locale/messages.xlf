@@ -174,6 +174,9 @@
         <source>They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings.</source>
         <note priority="1" from="description">They=&apos;Necessary cookies&apos;</note>
       </trans-unit>
+      <trans-unit id="1791177283103909849" datatype="html">
+        <source>Duplication fields:</source>
+      </trans-unit>
       <trans-unit id="1795641661238305703" datatype="html">
         <source>Transaction <x equiv-text="this.paymentDate()" id="PH"/> - transaction history</source>
       </trans-unit>
@@ -233,6 +236,9 @@
       </trans-unit>
       <trans-unit id="2077783620698115246" datatype="html">
         <source>Your score is <x equiv-text="{{ score() }}" id="INTERPOLATION"/>.</source>
+      </trans-unit>
+      <trans-unit id="2095982362430871638" datatype="html">
+        <source>Select 1 or more fields</source>
       </trans-unit>
       <trans-unit id="2099469692592361098" datatype="html">
         <source>Personal information: e-mail and name.</source>
@@ -419,6 +425,9 @@
       </trans-unit>
       <trans-unit id="2779521124294512411" datatype="html">
         <source>Custom messages are <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>not automatically translated<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> to the registration&apos;s preferred language.</source>
+      </trans-unit>
+      <trans-unit id="2786315343832067060" datatype="html">
+        <source>Deduplication indicators saved successfully.</source>
       </trans-unit>
       <trans-unit id="279195665230166237" datatype="html">
         <source>Reg. #<x equiv-text="registrationId" id="PH"/></source>
@@ -932,6 +941,9 @@
       <trans-unit id="4821724891066824263" datatype="html">
         <source>You&apos;re about to remove the &quot;<x equiv-text="{{ fspConfigurationLabel() }}" id="INTERPOLATION"/>&quot; FSP configuration from your program. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
       </trans-unit>
+      <trans-unit id="4870684362400415992" datatype="html">
+        <source>Duplication fields</source>
+      </trans-unit>
       <trans-unit id="4890152856739224001" datatype="html">
         <source>Optionally pass a start date and/or an end date to filter the payments. The export is limited to 100,000 records. Adapt your dates if needed.</source>
       </trans-unit>
@@ -1157,6 +1169,9 @@
       <trans-unit id="5687538980626463491" datatype="html">
         <source>Transfer history</source>
       </trans-unit>
+      <trans-unit id="5694985209402523312" datatype="html">
+        <source>An error occurred while updating.</source>
+      </trans-unit>
       <trans-unit id="5709449651238206423" datatype="html">
         <source>Gotcha!</source>
       </trans-unit>
@@ -1311,6 +1326,9 @@
       <trans-unit id="651664891309642077" datatype="html">
         <source>Failed transactions</source>
       </trans-unit>
+      <trans-unit id="652894116103613049" datatype="html">
+        <source>De-duplication</source>
+      </trans-unit>
       <trans-unit id="6533918067030990396" datatype="html">
         <source>Amount</source>
       </trans-unit>
@@ -1385,6 +1403,9 @@
       </trans-unit>
       <trans-unit id="6820887192467365708" datatype="html">
         <source>Edit basic information</source>
+      </trans-unit>
+      <trans-unit id="6821230510150972530" datatype="html">
+        <source>Choose the fields you want to use as duplication indicators. Go for unique identifiers like phone numbers, bank account numbers, or ID numbers. If any of these fields match across two or more registrations, those registrations will be marked as duplicates.</source>
       </trans-unit>
       <trans-unit id="6885844978916799621" datatype="html">
         <source>Budget</source>
@@ -1571,6 +1592,9 @@
       </trans-unit>
       <trans-unit id="7585097972263982693" datatype="html">
         <source>Old FSP</source>
+      </trans-unit>
+      <trans-unit id="7585826646011739428" datatype="html">
+        <source>Edit</source>
       </trans-unit>
       <trans-unit id="7613791439001735010" datatype="html">
         <source>Template message</source>
@@ -1898,6 +1922,9 @@
       </trans-unit>
       <trans-unit id="9063819144679824048" datatype="html">
         <source>People included</source>
+      </trans-unit>
+      <trans-unit id="9074750416898369270" datatype="html">
+        <source>Select duplication field</source>
       </trans-unit>
       <trans-unit id="9087327525266557453" datatype="html">
         <source>A duplicate of &quot;<x equiv-text="{{ programToDuplicateName() }}" id="INTERPOLATION"/>&quot; will be created with the following details carried over:</source>

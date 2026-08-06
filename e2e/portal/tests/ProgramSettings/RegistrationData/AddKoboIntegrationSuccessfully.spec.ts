@@ -18,7 +18,7 @@ const koboIntegrationFormColumns = [
 
 test('Add Kobo integration successfully', async ({
   resetDBAndSeedRegistrations,
-  registrationDataPage,
+  programSettingsRegistrationDataPage,
   registrationsPage,
   tableComponent,
 }) => {
@@ -39,16 +39,18 @@ test('Add Kobo integration successfully', async ({
   });
 
   await test.step('Navigate to registration data page', async () => {
-    await registrationDataPage.navigateToProgramPage('Settings');
+    await programSettingsRegistrationDataPage.navigateToProgramPage('Settings');
   });
 
   await test.step('Add Kobo integration', async () => {
-    await registrationDataPage.addKoboIntegration(koboIntegrationDetails);
-    await registrationDataPage.koboSuccessfullyLinkedDialog({
+    await programSettingsRegistrationDataPage.addKoboIntegration(
+      koboIntegrationDetails,
+    );
+    await programSettingsRegistrationDataPage.koboSuccessfullyLinkedDialog({
       closeDialog: true,
     });
-    await registrationDataPage.validateKoboRequiredFieldsTableNotVisible();
-    await registrationDataPage.validateProgramAttributesTable({
+    await programSettingsRegistrationDataPage.validateKoboRequiredFieldsTableNotVisible();
+    await programSettingsRegistrationDataPage.validateProgramAttributesTable({
       attributes: kobooAttributes,
     });
   });

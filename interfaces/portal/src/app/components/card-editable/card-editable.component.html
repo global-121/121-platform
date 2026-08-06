@@ -1,4 +1,8 @@
-<p-card [class]="isEditing() ? 'outline-purple outline-2' : ''">
+<p-card
+  [class]="isEditing() ? 'outline-purple outline-2' : ''"
+  class="mbe-4"
+  [attr.data-testid]="dataTestId()"
+>
   <form
     (ngSubmit)="onFormSubmit()"
     (keydown.control.enter)="onFormSubmit()"
@@ -22,7 +26,7 @@
               (click)="isEditing.set(true)"
               [title]="editPencilTitle()"
               [ariaLabel]="editPencilTitle()"
-              data-testid="editable-card-edit-button"
+              [attr.data-testid]="dataTestId() + '-edit-button'"
             />
           } @else {
             <p-button
@@ -36,6 +40,7 @@
               rounded
               severity="contrast"
               [disabled]="mutation()?.isPending()"
+              [attr.data-testid]="dataTestId() + '-cancel-button'"
             />
             @if (isSaveable()) {
               <p-button
@@ -47,6 +52,7 @@
                 [iconPos]="rtlHelper.createPosition('start')()"
                 rounded
                 [loading]="mutation()?.isPending()"
+                [attr.data-testid]="dataTestId() + '-save-button'"
               />
             }
           }

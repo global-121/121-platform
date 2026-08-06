@@ -23,11 +23,11 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
 });
 
 test('Check if all FSPs are shown in the Registration integration section', async ({
-  registrationDataPage,
+  programSettingsRegistrationDataPage,
 }) => {
   await test.step('Validate required fields', async () => {
-    await registrationDataPage.clickRegistrationDataSection();
-    await registrationDataPage.validateProgramFspsPills({
+    await programSettingsRegistrationDataPage.clickRegistrationDataSection();
+    await programSettingsRegistrationDataPage.validateProgramFspsPills({
       fspNames: availableFsps,
     });
   });
