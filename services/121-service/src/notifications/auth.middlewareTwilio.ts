@@ -5,6 +5,7 @@ import twilio from 'twilio';
 
 import { EXTERNAL_API } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 
 @Injectable()
 export class AuthMiddlewareTwilio implements NestMiddleware {
@@ -13,9 +14,20 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    if (env.MOCK_TWILIO) {
+    if (env.TWILIO_MODE === TwilioMode.mock) {
       return next();
     }
+
+    if (env.TWILIO_MODE === TwilioMode.disabled) {
+      throw new HttpException(
+        'Twilio is disabled, cannot accept incoming requests',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    // When TWILIO_MODE is EXTERNAL, validate the request signature to ensure it comes from Twilio.
+    // The env is always set as we validate this in startup
+    const authToken = env.TWILIO_AUTHTOKEN!;
 
     let twilioSignature: string | string[] | undefined =
       req.headers['x-twilio-signature'];
@@ -30,7 +42,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     }
 
     const validWhatsAppStatus = twilio.validateRequest(
-      env.TWILIO_AUTHTOKEN,
+      authToken,
       twilioSignature,
       EXTERNAL_API.whatsAppStatus,
       req.body,
@@ -40,7 +52,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     }
 
     const validWhatsAppIncoming = twilio.validateRequest(
-      env.TWILIO_AUTHTOKEN,
+      authToken,
       twilioSignature,
       EXTERNAL_API.whatsAppIncoming,
       req.body,
@@ -50,7 +62,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     }
 
     const validSms = twilio.validateRequest(
-      env.TWILIO_AUTHTOKEN,
+      authToken,
       twilioSignature,
       EXTERNAL_API.smsStatus,
       req.body,

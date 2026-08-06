@@ -8,4 +8,6 @@ export const INTERSOLVE_VOUCHER_ENV_VARIABLE_SETTINGS: FspEnvVariablesDto = {
     names: Object.keys(intersolveVoucherEnvVariablesSchema),
     allEnvVariables: env,
   }),
+  // Vouchers are delivered to registrations over WhatsApp/SMS via Twilio.
+  requiresTwilio: true,
 };

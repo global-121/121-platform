@@ -4,6 +4,8 @@ import { chunk } from 'lodash';
 import { FilterOperator } from 'nestjs-paginate';
 import { Equal, In, QueryFailedError, Repository } from 'typeorm';
 
+import { env } from '@121-service/src/env';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import {
   CreateProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
@@ -21,6 +23,7 @@ import {
 import { FilterAttributeDto } from '@121-service/src/registration/dto/filter-attribute.dto';
 import {
   Attribute,
+  DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -575,6 +578,17 @@ export class ProgramRegistrationAttributesService {
       const errors = `Program registration attribute with id: '${programRegistrationAttributeId}' not found for program '${programId}'.`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+
+    // Twilio needs a phoneNumber to send messages, so it cannot be removed while Twilio is enabled.
+    if (
+      env.TWILIO_MODE !== TwilioMode.disabled &&
+      programRegistrationAttribute.name ===
+        DefaultRegistrationDataAttributeNames.phoneNumber
+    ) {
+      const errors = `The '${DefaultRegistrationDataAttributeNames.phoneNumber}' attribute cannot be deleted while Twilio is enabled.`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+
     return await this.programRegistrationAttributeRepository.remove(
       programRegistrationAttribute,
     );

@@ -7,6 +7,7 @@ import {
   EXTERNAL_API,
   IS_DEVELOPMENT,
 } from '@121-service/src/config';
+import { env } from '@121-service/src/env';
 import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
 import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import {
@@ -22,6 +23,7 @@ import {
 import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
@@ -422,6 +424,11 @@ export class MessageIncomingService {
         return;
       } else {
         // If multiple or 0 programs and phonenumber not found: use generic reply in code. Not via queue as that requires a registration.
+        // This call bypasses the message queue, so it is not covered by the
+        // TWILIO_MODE=DISABLED guard in MessageQueuesService.addMessageJob and needs its own check.
+        if (env.TWILIO_MODE === TwilioMode.disabled) {
+          return;
+        }
         await this.whatsappService.sendWhatsapp({
           message: this.genericDefaultReplies[this.fallbackLanguage],
           recipientPhoneNr: fromNumber,

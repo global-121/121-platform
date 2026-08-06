@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import { Equal, Repository } from 'typeorm';
 
+import { env } from '@121-service/src/env';
 import {
   ExtendedMessageProccessType,
   MessageJobCustomDataDto,
@@ -12,6 +13,7 @@ import {
 } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import {
   DEFAULT_QUEUE_CREATE_MESSAGE,
   MESSAGE_QUEUE_MAP,
@@ -81,6 +83,11 @@ export class MessageQueuesService {
     userId: MessageSenderUserId;
     bulkSize?: number;
   }): Promise<void> {
+    // Twilio is disabled: never enqueue outgoing messages, as they would never be sent.
+    if (env.TWILIO_MODE === TwilioMode.disabled) {
+      return;
+    }
+
     // If messageProcessType is smsOrWhatsappTemplateGeneric, check if registration has whatsappPhoneNumber
     const messageProcessType: MessageProcessType =
       extendedMessageProcessType ===

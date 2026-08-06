@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
@@ -49,9 +50,12 @@ export class SeedMultipleNLRCMockData implements InterfaceScript<SeedMultipleNLR
     seedConfig,
     approverMode,
   }: SeedMultipleNLRCRunParams): Promise<void> {
-    if (env.INTERSOLVE_MODE !== FspMode.mock || !env.MOCK_TWILIO) {
+    if (
+      env.INTERSOLVE_MODE !== FspMode.mock ||
+      env.TWILIO_MODE !== TwilioMode.mock
+    ) {
       throw new HttpException(
-        `To seed NLRC multiple mock data, set INTERSOLVE_MODE=MOCK and MOCK_TWILIO=true. Use a different reset scenario/script or update your environment variables. Current values: INTERSOLVE_MODE=${env.INTERSOLVE_MODE}, MOCK_TWILIO=${env.MOCK_TWILIO}`,
+        `To seed NLRC multiple mock data, set INTERSOLVE_MODE=MOCK and TWILIO_MODE=MOCK. Use a different reset scenario/script or update your environment variables. Current values: INTERSOLVE_MODE=${env.INTERSOLVE_MODE}, TWILIO_MODE=${env.TWILIO_MODE}`,
         HttpStatus.BAD_REQUEST,
       );
     }

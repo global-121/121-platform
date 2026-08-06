@@ -4,6 +4,7 @@ import { v4 as createUuid } from 'uuid';
 import { z } from 'zod/v4';
 
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 
 // Please keep the following order/structure for FSP-related environment variables:
 // - FSPs alphabetically
@@ -345,11 +346,14 @@ export const env = createEnv({
     MOCK_DAILY_EXCHANGE_RATES: z.stringbool().default(false),
 
     // Third-party: Twilio
-    MOCK_TWILIO: z.stringbool().default(false),
-    TWILIO_SID: z.string().startsWith('AC'),
-    TWILIO_AUTHTOKEN: z.string(),
-    TWILIO_WHATSAPP_NUMBER: z.string().min(10).regex(/\d+/),
-    TWILIO_MESSAGING_SID: z.string().startsWith('MG'),
+    // The TWILIO_* variables are optional because they are not required when
+    // TWILIO_MODE=DISABLED. When TWILIO_MODE is MOCK or EXTERNAL, their presence
+    // is validated on startup by the TwilioEnvVariableValidationService.
+    TWILIO_MODE: z.enum(TwilioMode).default(TwilioMode.disabled),
+    TWILIO_SID: z.string().startsWith('AC').optional(),
+    TWILIO_AUTHTOKEN: z.string().optional(),
+    TWILIO_WHATSAPP_NUMBER: z.string().min(10).regex(/\d+/).optional(),
+    TWILIO_MESSAGING_SID: z.string().startsWith('MG').optional(),
 
     // Third-party: Kobo Connect
     KOBO_CONNECT_API_URL: z
