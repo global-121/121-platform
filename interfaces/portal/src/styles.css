@@ -162,6 +162,14 @@ svg-icon svg {
    So there will only be ONE section/grouping per PrimeNG component.
 */
 
+.fake-input-field {
+  @apply relative;
+
+  &::after {
+    @apply from-grey-500/0 pointer-events-none absolute inset-y-px inset-e-20 bg-linear-to-r to-(--p-inputtext-disabled-background) inline-40;
+  }
+}
+
 @layer primeng-customisations {
   :root {
     --toolbar-height: calc(48 / 14 * 1rem);
