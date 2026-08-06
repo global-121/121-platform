@@ -5,111 +5,115 @@
   (keydown.meta.enter)="onSubmit()"
   class="relative"
 >
-  <div class="sticky inset-bs-0 flex items-center bg-white py-1 inline-full">
-    <i class="pi pi-pencil me-4 text-xl"></i>
-    <span
-      class="txt-h-1 me-auto"
-      i18n
-      >Editing personal information</span
-    >
-    <p-button
-      label="Cancel"
-      i18n-label="@@generic-cancel"
-      (click)="cancelEditing.emit()"
-      icon="pi pi-times"
-      [iconPos]="rtlHelper.createPosition('start')()"
-      outlined
-      rounded
-      severity="contrast"
-      class="me-4"
-    />
-    <p-button
-      type="submit"
-      label="Save"
-      i18n-label="@@generic-save"
-      icon="pi pi-check"
-      [iconPos]="rtlHelper.createPosition('start')()"
-      rounded
-    />
-  </div>
-  <div class="grid gap-4">
-    <div class="grid grid-cols-1 gap-x-5 gap-y-2 md:grid-cols-2">
-      @for (attribute of attributeList(); track $index) {
-        <div>
-          @let type = attribute.type;
-
-          @if (type === 'kobo-image') {
-            <app-form-field-wrapper [label]="attribute.label">
-              <div class="relative">
-                <div
-                  class="from-grey-500/0 pointer-events-none absolute inset-y-px inset-e-20 bg-linear-to-r to-(--p-inputtext-disabled-background) inline-40"
-                ></div>
-                <input
-                  class="cursor-not-allowed"
-                  [value]="attribute.value?.toString() ?? ''"
-                  autocomplete="off"
-                  type="text"
-                  [disabled]="true"
-                  pInputText
-                  readonly
-                />
-                <div class="absolute inset-e-2 inset-bs-1/2 -translate-y-1/2">
-                  <app-image-dialog-trigger
-                    [imageUrl]="attribute.value?.toString() ?? ''"
-                    [label]="attribute.label"
-                    [name]="attribute.name"
-                  />
-                </div>
-              </div>
-            </app-form-field-wrapper>
-          } @else {
-            <app-form-field-wrapper
-              [dataTestId]="'edit-personal-information-' + attribute.name"
-              [label]="attribute.label"
-              [labelTooltip]="attribute.editInfo"
-              [errorMessage]="formFieldErrors()()(attribute.name)"
-              [isRequired]="attribute.isRequired"
-            >
-              @if (type === 'date') {
-                <p-datepicker
-                  [formControlName]="attribute.name"
-                  [showClear]="true"
-                  appendTo="body"
-                />
-              } @else if (type === 'dropdown') {
-                <p-select
-                  [formControlName]="attribute.name"
-                  [options]="attribute.options"
-                  [optionLabel]="'label'"
-                  [optionValue]="'value'"
-                  placeholder="Type or select"
-                  i18n-placeholder="@@generic-type-or-select"
-                  [filter]="true"
-                  [showClear]="attribute.isRequired === false"
-                />
-              } @else if (type === 'boolean') {
-                <p-checkbox
-                  [formControlName]="attribute.name"
-                  [binary]="true"
-                  [value]="true"
-                />
-              } @else {
-                <input
-                  pInputText
-                  [type]="
-                    type === 'numeric' || type === 'numeric-nullable'
-                      ? 'number'
-                      : 'text'
-                  "
-                  [formControlName]="attribute.name"
-                  autocomplete="off"
-                />
-              }
-            </app-form-field-wrapper>
-          }
-        </div>
-      }
+  <div
+    class="sticky inset-bs-2 z-50 mbe-2 flex items-center bg-white outline-8 outline-white inline-full"
+  >
+    <div class="flex flex-1 items-center">
+      <i class="pi pi-pencil me-2.5 text-lg"></i>
+      <span
+        class="txt-h-1 me-auto font-medium"
+        i18n
+      >
+        Editing personal information
+      </span>
     </div>
+    <div class="flex gap-4">
+      <p-button
+        label="Cancel"
+        i18n-label="@@generic-cancel"
+        (click)="cancelEditing.emit()"
+        icon="pi pi-times"
+        [iconPos]="rtlHelper.createPosition('start')()"
+        outlined
+        rounded
+        severity="contrast"
+      />
+      <p-button
+        type="submit"
+        label="Save"
+        i18n-label="@@generic-save"
+        icon="pi pi-check"
+        [iconPos]="rtlHelper.createPosition('start')()"
+        rounded
+      />
+    </div>
+  </div>
+  <div class="mbs-4 grid grid-cols-1 gap-x-5 gap-y-2 md:grid-cols-2">
+    @for (attribute of attributeList(); track $index) {
+      <div>
+        @let type = attribute.type;
+
+        @if (type === 'kobo-image') {
+          <app-form-field-wrapper [label]="attribute.label">
+            <div class="relative">
+              <div
+                class="from-grey-500/0 pointer-events-none absolute inset-y-px inset-e-20 bg-linear-to-r to-(--p-inputtext-disabled-background) inline-40"
+              ></div>
+              <input
+                class="cursor-not-allowed"
+                [value]="attribute.value?.toString() ?? ''"
+                autocomplete="off"
+                type="text"
+                [disabled]="true"
+                pInputText
+                readonly
+              />
+              <div class="absolute inset-e-2 inset-bs-1/2 -translate-y-1/2">
+                <app-image-dialog-trigger
+                  [imageUrl]="attribute.value?.toString() ?? ''"
+                  [label]="attribute.label"
+                  [name]="attribute.name"
+                />
+              </div>
+            </div>
+          </app-form-field-wrapper>
+        } @else {
+          <app-form-field-wrapper
+            [dataTestId]="'edit-personal-information-' + attribute.name"
+            [label]="attribute.label"
+            [labelTooltip]="attribute.editInfo"
+            [errorMessage]="formFieldErrors()()(attribute.name)"
+            [isRequired]="attribute.isRequired"
+          >
+            @if (type === 'date') {
+              <p-datepicker
+                [formControlName]="attribute.name"
+                [showClear]="true"
+                appendTo="body"
+              />
+            } @else if (type === 'dropdown') {
+              <p-select
+                [formControlName]="attribute.name"
+                [options]="attribute.options"
+                [optionLabel]="'label'"
+                [optionValue]="'value'"
+                placeholder="Type or select"
+                i18n-placeholder="@@generic-type-or-select"
+                [filter]="true"
+                [showClear]="attribute.isRequired === false"
+              />
+            } @else if (type === 'boolean') {
+              <p-checkbox
+                [formControlName]="attribute.name"
+                [binary]="true"
+                [value]="true"
+              />
+            } @else {
+              <input
+                pInputText
+                [type]="
+                  type === 'numeric' || type === 'numeric-nullable'
+                    ? 'number'
+                    : 'text'
+                "
+                [formControlName]="attribute.name"
+                autocomplete="off"
+              />
+            }
+          </app-form-field-wrapper>
+        }
+      </div>
+    }
   </div>
 </form>
 <app-form-dialog

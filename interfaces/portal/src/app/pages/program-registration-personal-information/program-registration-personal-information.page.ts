@@ -171,9 +171,16 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
 
   readonly hasKoboImages = computed(() => this.imageDataList().length > 0);
 
-  readonly editableAttributeList = computed(
-    () => this.registrationAttributes.data() ?? [],
-  );
+  readonly editableAttributeList = computed(() => {
+    const editableAttributes = (this.registrationAttributes.data() ?? []).map(
+      (attribute) =>
+        attribute.type === RegistrationAttributeTypes.koboImage
+          ? { ...attribute, isEditable: false }
+          : attribute,
+    );
+
+    return editableAttributes;
+  });
 
   onRegistrationUpdated() {
     this.isEditing.set(false);

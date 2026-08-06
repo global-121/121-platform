@@ -19,10 +19,16 @@ import { ImageViewerComponent } from '~/components/image/image-viewer/image-view
 import { ImageViewerService } from '~/components/image/services/image-viewer.service';
 import { isImageAvailable } from '~/components/image/utils/is-image-available';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
 @Component({
   selector: 'app-image-dialogs',
-  imports: [ButtonModule, DialogModule, ImageViewerComponent],
+  imports: [
+    ButtonModule,
+    DialogModule,
+    ImageViewerComponent,
+    TranslatableStringPipe,
+  ],
   templateUrl: './image-dialogs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
