@@ -39,18 +39,29 @@
           @let type = attribute.type;
 
           @if (type === 'kobo-image') {
-            <!-- This may look weird, but it's actually mimicing a form field - hence [mode]='edit' -->
-            <app-image-list-item
-              [label]="attribute.label"
-              [imageUrl]="attribute.value?.toString() ?? ''"
-              [mode]="'edit'"
-            >
-              <app-image-dialog-trigger
-                [imageUrl]="attribute.value?.toString() ?? ''"
-                [label]="attribute.label"
-                [name]="attribute.name"
-              />
-            </app-image-list-item>
+            <app-form-field-wrapper [label]="attribute.label">
+              <div class="relative">
+                <div
+                  class="from-grey-500/0 pointer-events-none absolute inset-y-px inset-e-20 bg-linear-to-r to-(--p-inputtext-disabled-background) inline-40"
+                ></div>
+                <input
+                  class="cursor-not-allowed"
+                  [value]="attribute.value?.toString() ?? ''"
+                  autocomplete="off"
+                  type="text"
+                  [disabled]="true"
+                  pInputText
+                  readonly
+                />
+                <div class="absolute inset-e-2 inset-bs-1/2 -translate-y-1/2">
+                  <app-image-dialog-trigger
+                    [imageUrl]="attribute.value?.toString() ?? ''"
+                    [label]="attribute.label"
+                    [name]="attribute.name"
+                  />
+                </div>
+              </div>
+            </app-form-field-wrapper>
           } @else {
             <app-form-field-wrapper
               [dataTestId]="'edit-personal-information-' + attribute.name"

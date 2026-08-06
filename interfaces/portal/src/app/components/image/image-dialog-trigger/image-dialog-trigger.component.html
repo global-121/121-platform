@@ -1,13 +1,15 @@
-<div class="absolute inset-e-2 inset-bs-1/2 -translate-y-1/2">
-  <app-colored-chip
-    [label]="coloredChipProps().label"
-    [variant]="coloredChipProps().variant"
-  />
+<div class="">
+  @if (includeColoredChip()) {
+    <app-colored-chip
+      [label]="coloredChipProps().label"
+      [variant]="coloredChipProps().variant"
+    />
+  }
 
   @if (isAvailable()) {
     <p-button
       (click)="toggleImageViewerDialog()"
-      class="ms-auto"
+      class="ms-auto [&>button]:bg-white!"
       size="small"
       outlined
       rounded

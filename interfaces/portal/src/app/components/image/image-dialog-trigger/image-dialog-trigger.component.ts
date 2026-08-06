@@ -35,6 +35,7 @@ export class ImageDialogTriggerComponent {
   readonly label = input.required<string | UILanguageTranslation>();
   readonly name = input<string>();
   readonly imageUrl = input<null | string | undefined>();
+  readonly includeColoredChip = input(false);
 
   readonly isOpen = computed(() => {
     const imageUrl = this.imageUrl();
