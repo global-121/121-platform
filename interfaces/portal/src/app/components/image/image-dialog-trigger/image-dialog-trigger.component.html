@@ -1,11 +1,10 @@
-<div class="flex items-center justify-between inline-full">
+<div [class]="wrapperClassName()">
   @if (includeColoredChip()) {
     <app-colored-chip
       [label]="coloredChipProps().label"
       [variant]="coloredChipProps().variant"
     />
   }
-
   @if (isAvailable()) {
     <p-button
       (click)="toggleImageViewerDialog()"

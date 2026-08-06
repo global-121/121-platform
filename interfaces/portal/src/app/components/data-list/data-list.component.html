@@ -31,9 +31,10 @@
           <span class="relative ms-1">
             <div class="absolute inset-x-0 inset-bs-1/2 -translate-y-1/2">
               <app-image-dialog-trigger
-                [imageUrl]="item.value"
+                [wrapperClassName]="'flex items-center justify-between inline-full'"
                 [label]="item.label | translatableString"
                 [includeColoredChip]="true"
+                [imageUrl]="item.value"
               />
             </div>
           </span>

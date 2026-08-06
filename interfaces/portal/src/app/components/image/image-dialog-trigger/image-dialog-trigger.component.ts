@@ -36,6 +36,7 @@ export class ImageDialogTriggerComponent {
   readonly name = input<string>();
   readonly imageUrl = input<null | string | undefined>();
   readonly includeColoredChip = input(false);
+  readonly wrapperClassName = input('');
 
   readonly isOpen = computed(() => {
     const imageUrl = this.imageUrl();
