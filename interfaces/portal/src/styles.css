@@ -170,6 +170,10 @@ svg-icon svg {
   }
 }
 
+/* * {
+  box-shadow: 0 0 0 1px inset red;
+} */
+
 @layer primeng-customisations {
   :root {
     --toolbar-height: calc(48 / 14 * 1rem);
