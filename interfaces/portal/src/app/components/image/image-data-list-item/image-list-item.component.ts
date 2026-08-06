@@ -20,6 +20,6 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 })
 export class ImageListItemComponent {
   readonly label = input.required<string | UILanguageTranslation>();
-  readonly mode = input<'edit' | 'view'>('view');
+  readonly mode = input.required<'edit' | 'view'>();
   readonly imageUrl = input<null | string | undefined>();
 }

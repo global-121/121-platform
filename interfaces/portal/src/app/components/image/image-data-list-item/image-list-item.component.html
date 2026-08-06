@@ -13,7 +13,7 @@
       <i class="pi pi-image me-2"></i>
       {{ label() }}:
     </strong>
-    <ng-content></ng-content>
+    <ng-content select="view-content" />
   </div>
 } @else {
   <app-form-field-wrapper [label]="label()">
@@ -31,7 +31,7 @@
         readonly
         disabled
       />
-      <ng-content></ng-content>
+      <ng-content />
     </div>
   </app-form-field-wrapper>
 }

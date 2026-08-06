@@ -24,10 +24,12 @@
         <app-image-list-item
           [label]="item.label | translatableString"
           [imageUrl]="item.value"
+          [mode]="'view'"
         >
           <app-image-dialog-trigger
             [imageUrl]="item.value"
             [label]="item.label | translatableString"
+            ngProjectAs="view-content"
           />
         </app-image-list-item>
       } @else {
