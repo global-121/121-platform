@@ -309,6 +309,15 @@ const happyFlowFromDefinition: KoboAssetDeployment = {
           required: false,
           $autoname: 'idPhoto',
         },
+        {
+          name: 'driversLicensePhoto',
+          type: 'image',
+          $kuid: 'ph7rt01',
+          label: ["Upload your driver's license", 'Upload je rijbewijs'],
+          $xpath: 'driversLicensePhoto',
+          required: false,
+          $autoname: 'driversLicensePhoto',
+        },
       ],
       choices: [
         {
@@ -595,6 +604,7 @@ export class KoboMockService {
           'username/attachments/form-id/submission-uuid/important_photo.jpg',
         idPhoto:
           'username/attachments/form-id/submission-uuid/identity_document.jpg',
+        driversLicensePhoto: '',
         _attachments: [
           {
             filename:
