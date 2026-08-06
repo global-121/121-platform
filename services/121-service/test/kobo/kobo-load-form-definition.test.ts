@@ -174,16 +174,14 @@ describe('Import a Kobo form definition', () => {
      {
        "isRequired": false,
        "koboLabel": {
-         "en": "What is your name (text)?",
-         "nl": "Hoe heet je?",
+         "en": "Upload your driver's license",
+         "nl": "Upload je rijbewijs",
        },
-       "label": {
-         "en": "Full name",
-       },
-       "name": "fullName",
+       "label": null,
+       "name": "driversLicensePhoto",
        "options": [],
        "showInPeopleAffectedTable": true,
-       "type": "text",
+       "type": "kobo-image",
      }
     `);
   });
