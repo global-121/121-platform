@@ -5,7 +5,6 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
-  patchProgram,
   patchProgramRegistrationAttribute,
   setAllProgramsRegistrationAttributesNonRequired,
 } from '@121-service/test/helpers/program.helper';
@@ -350,11 +349,6 @@ describe('Update attribute of PA', () => {
       [registrationWesteros1],
       accessToken,
     );
-    const programUpdate = {
-      allowEmptyPhoneNumber: true,
-    };
-    await patchProgram(programIdWesteros, programUpdate, accessToken);
-
     await setAllProgramsRegistrationAttributesNonRequired(
       programIdWesteros,
       accessToken,

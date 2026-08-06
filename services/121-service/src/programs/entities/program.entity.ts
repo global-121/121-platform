@@ -105,9 +105,6 @@ export class ProgramEntity extends Base121Entity {
   @Column({ nullable: true, default: null, type: 'character varying' })
   public monitoringDashboardUrl: string | null;
 
-  @Column({ default: false })
-  public allowEmptyPhoneNumber: boolean;
-
   @OneToMany(
     () => MessageTemplateEntity,
     (messageTemplates) => messageTemplates.program,

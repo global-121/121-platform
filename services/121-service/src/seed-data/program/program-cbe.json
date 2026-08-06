@@ -34,6 +34,7 @@
     },
     {
       "name": "phoneNumber",
+      "isRequired": true,
       "label": {
         "en": "Phone number",
         "am": "ስልክ ቁጥር"
@@ -130,7 +131,6 @@
   "languages": ["en", "am"],
   "enableMaxPayments": true,
   "enableScope": false,
-  "allowEmptyPhoneNumber": false,
   "programFspConfigurations": [
     {
       "fsp": "Commercial-bank-ethiopia",

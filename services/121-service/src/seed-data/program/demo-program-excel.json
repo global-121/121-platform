@@ -279,6 +279,7 @@
     },
     {
       "name": "phoneNumber",
+      "isRequired": true,
       "label": {
         "en": "Phone Number",
         "es": "Número de teléfono",
@@ -318,6 +319,5 @@
   "languages": ["en", "es", "fr"],
   "enableMaxPayments": true,
   "enableScope": true,
-  "allowEmptyPhoneNumber": false,
   "monitoringDashboardUrl": "https://app.powerbi.com/view?r=eyJrIjoiMzMwYzRiZTMtNmY1ZC00NDg2LWI1MWItMDEzZmJjOGQzMWJjIiwidCI6ImQzYWI5NzkwLTZhZTItNGJkOC1hYTVlLTAyODY0NDgzZTdjNyIsImMiOjh9"
 }

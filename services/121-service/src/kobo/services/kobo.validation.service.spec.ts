@@ -1,13 +1,24 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { env } from '@121-service/src/env';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboValidationService } from '@121-service/src/kobo/services/kobo.validation.service';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+
+jest.mock('@121-service/src/env', () => ({
+  env: {
+    ...jest.requireActual('@121-service/src/env').env,
+    TWILIO_MODE: 'DISABLED',
+  },
+}));
+
+const mockEnv = env as unknown as { TWILIO_MODE: string };
 
 describe('KoboValidationService', () => {
   let service: KoboValidationService;
@@ -98,6 +109,7 @@ describe('KoboValidationService', () => {
   const programId = 1;
 
   beforeEach(async () => {
+    mockEnv.TWILIO_MODE = TwilioMode.disabled;
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         KoboValidationService,
@@ -393,7 +405,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
         mockFspConfigs,
@@ -408,8 +419,9 @@ describe('KoboValidationService', () => {
       ).resolves.not.toThrow();
     });
 
-    it('should throw HttpException when phoneNumber is missing and allowEmptyPhoneNumber is false', async () => {
+    it('should throw HttpException when phoneNumber is missing and Twilio is enabled', async () => {
       // Arrange
+      mockEnv.TWILIO_MODE = TwilioMode.mock;
       const mockFspConfigs = [];
 
       const formDefinitionMissingPhoneNumber: KoboFormDefinition = {
@@ -422,7 +434,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
         mockFspConfigs,
@@ -446,15 +457,16 @@ describe('KoboValidationService', () => {
          {
            "attributeName": "phoneNumber",
            "error": "Attribute 'phoneNumber' is missing",
-           "solution": "Add a phoneNumber field with text type including country code, or set program.allowEmptyPhoneNumber to true",
+           "solution": "Add a phoneNumber field with text type including country code, or contact 121 support to disable Twilio for this instance",
            "type": "missingField",
          },
        ]
       `);
     });
 
-    it('should pass validation when phoneNumber is missing but allowEmptyPhoneNumber is true', async () => {
+    it('should pass validation when phoneNumber is missing and Twilio is disabled', async () => {
       // Arrange
+      mockEnv.TWILIO_MODE = TwilioMode.disabled;
       const mockFspConfigs = [];
 
       const formDefinitionMissingPhoneNumber: KoboFormDefinition = {
@@ -467,7 +479,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
         mockFspConfigs,
@@ -501,7 +512,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
         mockFspConfigs,
@@ -549,7 +559,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
         enableScope: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
@@ -584,7 +593,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
         enableScope: true,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
@@ -614,7 +622,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
         enableScope: true,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
@@ -665,7 +672,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
         enableScope: true,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
@@ -719,7 +725,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
         enableScope: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
@@ -772,7 +777,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
         enableScope: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
@@ -818,7 +822,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
         enableScope: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
@@ -846,7 +849,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
         enableScope: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
@@ -899,7 +901,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
         enableScope: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
@@ -939,7 +940,6 @@ describe('KoboValidationService', () => {
     beforeEach(() => {
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
         enableScope: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
@@ -1309,7 +1309,6 @@ describe('KoboValidationService', () => {
     // Arrange
     (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
       fullnameNamingConvention: [],
-      allowEmptyPhoneNumber: true,
       enableScope: false,
     });
     (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue([]);
