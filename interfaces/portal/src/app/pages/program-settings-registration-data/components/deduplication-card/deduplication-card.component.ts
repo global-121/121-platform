@@ -5,7 +5,6 @@ import {
   effect,
   inject,
   input,
-  model,
   signal,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -27,7 +26,6 @@ import {
 } from '~/components/data-list/data-list.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { Attribute } from '~/domains/program/program.model';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -54,8 +52,6 @@ const EXCLUDED_ATTRIBUTE_TYPES = [
 export class DeduplicationCardComponent {
   readonly programId = input.required<string>();
   readonly isEditing = signal(false);
-
-  readonly multiSelectModel = model<Attribute[]>([]);
 
   readonly programApiService = inject(ProgramApiService);
   readonly translatableStringService = inject(TranslatableStringService);
@@ -106,8 +102,7 @@ export class DeduplicationCardComponent {
           value: attr.name,
           label: attr.label,
         })),
-        type: 'options',
-        showAsTags: true,
+        type: 'tags',
       },
     ];
   });
@@ -123,7 +118,7 @@ export class DeduplicationCardComponent {
     duplicationFields: new FormControl<string[]>([]),
   });
 
-  updateDuplicationAttibutesMutation = injectMutation(() => {
+  updateDuplicationAttributesMutation = injectMutation(() => {
     type formGroupRawValueType = typeof this.formGroup.getRawValue;
 
     return {
@@ -143,6 +138,7 @@ export class DeduplicationCardComponent {
       },
       onSuccess: () => {
         this.isEditing.set(false);
+        void this.program.refetch();
         this.toastService.showToast({
           detail: $localize`Deduplication indicators saved successfully.`,
         });

@@ -82,7 +82,14 @@ export type DataListItem = {
         value: string;
         label?: string | UILanguageTranslation;
       }[];
-      showAsTags?: boolean;
+    }
+  | {
+      type: 'tags';
+      value: string | string[];
+      options: {
+        value: string;
+        label?: string | UILanguageTranslation;
+      }[];
     }
   | {
       type?: 'text';

@@ -666,9 +666,6 @@
       <trans-unit id="3757859142679780974" datatype="html">
         <source>Kobo form ”<x equiv-text="this.koboIntegration.data()?.name" id="PH"/>” does not have existing registrations. New registrations will be synced to the program automatically.</source>
       </trans-unit>
-      <trans-unit id="3790402217684465728" datatype="html">
-        <source>Select the fields you would like to use as duplication indicators - if these fields are found to match in 2 or more registrations, the registrations will be flagged as duplicates.</source>
-      </trans-unit>
       <trans-unit id="37959892232763790" datatype="html">
         <source>Welcome to <x equiv-text="{{ program.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
       </trans-unit>
@@ -1412,6 +1409,9 @@
       </trans-unit>
       <trans-unit id="6820887192467365708" datatype="html">
         <source>Edit basic information</source>
+      </trans-unit>
+      <trans-unit id="6821230510150972530" datatype="html">
+        <source>Choose the fields you want to use as duplication indicators. Go for unique identifiers like phone numbers, bank account numbers, or ID numbers. If any of these fields match across two or more registrations, those registrations will be marked as duplicates.</source>
       </trans-unit>
       <trans-unit id="6885844978916799621" datatype="html">
         <source>Budget</source>

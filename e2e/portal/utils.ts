@@ -1,4 +1,4 @@
-import { expect } from '@playwright/test';
+import { expect, Locator } from '@playwright/test';
 
 export const expectedSortedArraysToEqual = (
   actual: string[],
@@ -10,7 +10,13 @@ export const expectedSortedArraysToEqual = (
   expect(sortedActual).toEqual(sortedExpected);
 };
 
-export const validateComponentVisibility = ({ component, visible }) => {
+export const validateComponentVisibility = ({
+  component,
+  visible,
+}: {
+  component: Locator;
+  visible: boolean;
+}) => {
   if (visible) {
     return expect(component).toBeVisible();
   } else {
