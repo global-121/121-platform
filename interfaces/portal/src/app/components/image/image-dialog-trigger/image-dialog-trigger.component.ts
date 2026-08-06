@@ -48,6 +48,13 @@ export class ImageDialogTriggerComponent {
     variant: (this.isAvailable() ? 'green' : 'red') as ChipVariant,
   }));
 
+  readonly buttonProps = computed(() => ({
+    label: this.isOpen()
+      ? $localize`:@@image-viewer-hide:Hide`
+      : $localize`:@@image-viewer-show:Show`,
+    icon: this.isOpen() ? 'pi pi-eye-slash' : 'pi pi-eye',
+  }));
+
   toggleImageViewerDialog() {
     const imageUrl = this.imageUrl();
 
