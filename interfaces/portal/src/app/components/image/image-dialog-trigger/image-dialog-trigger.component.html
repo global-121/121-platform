@@ -1,22 +1,24 @@
-<app-colored-chip
-  [label]="coloredChipProps().label"
-  [variant]="coloredChipProps().variant"
-/>
+<div class="absolute inset-e-2 inset-bs-1/2 -translate-y-1/2">
+  <app-colored-chip
+    [label]="coloredChipProps().label"
+    [variant]="coloredChipProps().variant"
+  />
 
-@if (isAvailable()) {
-  <p-button
-    (click)="toggleImageViewerDialog()"
-    class="ms-auto"
-    size="small"
-    outlined
-    rounded
-  >
-    @if (isOpen()) {
-      <span class="pi pi-eye-slash"></span>
-      <span i18n="@@image-viewer-hide">Hide</span>
-    } @else {
-      <span class="pi pi-eye"></span>
-      <span i18n="@@image-viewer-show">Show</span>
-    }
-  </p-button>
-}
+  @if (isAvailable()) {
+    <p-button
+      (click)="toggleImageViewerDialog()"
+      class="ms-auto"
+      size="small"
+      outlined
+      rounded
+    >
+      @if (isOpen()) {
+        <span class="pi pi-eye-slash"></span>
+        <span i18n="@@image-viewer-hide">Hide</span>
+      } @else {
+        <span class="pi pi-eye"></span>
+        <span i18n="@@image-viewer-show">Show</span>
+      }
+    </p-button>
+  }
+</div>

@@ -34,6 +34,7 @@ import { Subscription } from 'rxjs';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
+import { ImageListItemComponent } from '~/components/image/image-data-list-item/image-list-item.component';
 import { ImageDialogTriggerComponent } from '~/components/image/image-dialog-trigger/image-dialog-trigger.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { Registration } from '~/domains/registration/registration.model';
@@ -60,6 +61,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     FormDialogComponent,
     FormsModule,
     ImageDialogTriggerComponent,
+    ImageListItemComponent,
   ],
   templateUrl: './edit-personal-information.component.html',
   styles: ``,
