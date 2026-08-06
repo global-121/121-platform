@@ -73,6 +73,8 @@ export class PaymentsManagementService {
       await this.paymentsProgressService.checkAndLockPaymentProgressOrThrow({
         programId,
       });
+
+      
     }
 
     // put all operations in try, to be able to always end with an unlock-payments action, also in case of failure
