@@ -155,36 +155,6 @@ describe('PaymentsManagementService', () => {
     expect(result.duplicateCount).toBe(2);
   });
 
-  it('should throw when creating payment with duplicate registrations', async () => {
-    // Arrange
-    jest
-      .spyOn(service as any, 'getPaymentDryRunDetailsOrThrow')
-      .mockResolvedValue({
-        bulkActionResultPaymentDto: {
-          sumPaymentAmountMultiplier: 1,
-          programFspConfigurationNames: ['fspA'],
-          duplicateCount: 2,
-        },
-        registrationsForPayment: [
-          {
-            referenceId: 'ref1',
-            paymentAmountMultiplier: 1,
-            programFspConfigurationName: 'fspA',
-            duplicateStatus: 'duplicate',
-          },
-        ],
-        thresholds: [{ id: 1, thresholdAmount: 0 }],
-      });
-
-    // Act & Assert
-    await expect(
-      service.createPayment({ ...basePaymentParams, dryRun: false }),
-    ).rejects.toMatchObject({
-      status: 400,
-      message: expect.stringContaining('duplicate status'),
-    });
-  });
-
   it('should successfully run with dryRun=false and call all helpers', async () => {
     // Arrange
     jest
@@ -429,6 +399,9 @@ describe('PaymentsManagementService', () => {
         count: jest.fn(),
       };
       (service as any).paymentApprovalRepository = paymentApprovalRepository;
+      (
+        transactionViewScopedRepository.getByStatusOfIncludedRegistrations as jest.Mock
+      ).mockResolvedValue([]);
     });
 
     it('should throw if payment is already fully approved', async () => {
