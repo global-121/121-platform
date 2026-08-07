@@ -819,7 +819,8 @@
     "params": [
       "mockPowerNumberRegistrations",
       "mockNumberPayments",
-      "includeRegistrationEvents"
+      "includeRegistrationEvents",
+      "skipIntroduceDuplicates"
     ]
   },
   {
