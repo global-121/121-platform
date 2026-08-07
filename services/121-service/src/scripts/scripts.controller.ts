@@ -205,6 +205,7 @@ export class ScriptsController {
     mockPowerNumberRegistrations: string,
     @Query('mockNumberPayments') mockNumberPayments: string,
     @Query('includeRegistrationEvents') includeRegistrationEvents: boolean,
+    @Query('skipIntroduceDuplicates') skipIntroduceDuplicates: boolean,
     @Res() res,
   ): Promise<void> {
     if (body.secret !== env.RESET_SECRET) {
@@ -221,6 +222,7 @@ export class ScriptsController {
       powerNrRegistrationsString: mockPowerNumberRegistrations,
       nrPaymentsString: mockNumberPayments,
       includeRegistrationEvents,
+      skipIntroduceDuplicates,
     });
 
     return res
