@@ -28,6 +28,7 @@ import { ProgramRepository } from '@121-service/src/programs/repositories/progra
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
@@ -43,11 +44,16 @@ export class OnafriqReconciliationService {
     private readonly redisClient: Redis,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly programRepository: ProgramRepository,
+    private readonly azureLogService: AzureLogService,
   ) {}
 
   public async processTransactionCallback(
     onafriqTransactionCallback: OnafriqTransactionCallbackDto,
   ): Promise<void> {
+    this.azureLogService.traceAzure(
+      `Incoming Onafriq transaction callback received: thirdPartyTransId=${onafriqTransactionCallback.thirdPartyTransId}, mfsTransId=${onafriqTransactionCallback.mfsTransId}`,
+    );
+
     const onafriqTransactionCallbackJob: OnafriqTransactionCallbackJobDto = {
       thirdPartyTransId: onafriqTransactionCallback.thirdPartyTransId,
       mfsTransId: onafriqTransactionCallback.mfsTransId,

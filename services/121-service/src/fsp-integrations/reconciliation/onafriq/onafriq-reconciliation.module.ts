@@ -12,6 +12,7 @@ import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-con
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-logger.middleware';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
@@ -28,6 +29,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TransactionCallbackJobProcessorOnafriq,
     createScopedRepositoryProvider(OnafriqTransactionEntity),
     createScopedRepositoryProvider(TransactionEventEntity),
+    AzureLogService,
   ],
   controllers: [OnafriqReconciliationController],
   exports: [OnafriqReconciliationService],
