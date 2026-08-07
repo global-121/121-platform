@@ -98,13 +98,6 @@ export class RegistrationsBulkService {
         ),
       });
       resultDto.duplicateCount = duplicateCount;
-
-      if (!dryRun && duplicateCount > 0) {
-        throw new HttpException(
-          `Cannot include registrations: ${duplicateCount} registration(s) have duplicate status. Remove duplicates from your selection or resolve them first.`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
     }
 
     if (!dryRun) {

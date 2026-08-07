@@ -89,6 +89,7 @@ describe('Status Change Payment In Large Program', () => {
       await duplicateRegistrationsAndPaymentData({
         powerNumberRegistration: duplicateNumber,
         accessToken,
+        skipIntroduceDuplicates: true,
         body: {
           secret: env.RESET_SECRET,
         },
