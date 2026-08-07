@@ -229,6 +229,7 @@ export class PaymentsExecutionService {
         totalFilterCount: referenceIds.length,
         applicableCount: transactionDetails.length,
         nonApplicableCount: referenceIds.length - transactionDetails.length,
+        duplicateCount: 0,
       };
 
       if (dryRun) {
