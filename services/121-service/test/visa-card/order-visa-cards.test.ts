@@ -97,4 +97,25 @@ describe('Order visa debit cards in batch', () => {
       ]),
     );
   });
+
+  it('should reject a card order when addressee phone number is invalid according to Twilio lookup', async () => {
+    const response = await createVisaCardOrder({
+      programId: programIdVisa,
+      accessToken,
+      noOfCards: 2,
+      addressStreet: 'Damrak',
+      addressHouseNumber: '1',
+      addressHouseNumberAddition: 'A',
+      addressPostalCode: '1011AB',
+      addressCity: 'Amsterdam',
+      addressee: 'John Doe',
+      addresseePhoneNumber: '16005550005',
+      addresseeEmailAddress: 'john.doe@example.org',
+    });
+
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toBe(
+      'addresseePhoneNumber is not a valid phone number.',
+    );
+  });
 });

@@ -13,6 +13,10 @@ import { Locale } from '~/utils/locale';
 export class QueryTableCellService<TData> {
   private readonly locale = inject<Locale>(LOCALE_ID);
 
+  private isMissingValue(value: unknown): boolean {
+    return value === undefined || value === null || value === '';
+  }
+
   private getCellValue(column: QueryTableColumn<TData>, item: TData) {
     const value = item[column.field as string] as unknown;
 
@@ -21,7 +25,7 @@ export class QueryTableCellService<TData> {
       - column.field does not include '.'
       - keys like "attri.bute" exist and have a value
     */
-    if (value) {
+    if (!this.isMissingValue(value)) {
       return value;
     }
 
@@ -48,7 +52,7 @@ export class QueryTableCellService<TData> {
 
     const text = this.getCellValue(column, item);
 
-    if (!text) {
+    if (this.isMissingValue(text)) {
       return;
     }
 
@@ -68,7 +72,7 @@ export class QueryTableCellService<TData> {
         typeof text !== 'string' &&
         typeof text !== 'number'
       ) {
-        throw new Error(
+        throw new TypeError(
           `Expected field ${column.field} to be a Date or string, but got ${typeof text}`,
         );
       }
@@ -76,7 +80,7 @@ export class QueryTableCellService<TData> {
     }
 
     if (typeof text !== 'string' && typeof text !== 'number') {
-      throw new Error(
+      throw new TypeError(
         `Expected field ${column.field} to be a string or number, but got ${typeof text}`,
       );
     }
@@ -92,7 +96,7 @@ export class QueryTableCellService<TData> {
   ) {
     const cellValue = this.getCellValue(column, item);
 
-    if (!cellValue) {
+    if (this.isMissingValue(cellValue)) {
       return;
     }
 

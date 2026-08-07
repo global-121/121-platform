@@ -5,7 +5,6 @@ import {
   input,
   viewChild,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -19,6 +18,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
+import { DEFAULT_ATTRIBUTE_EDIT_INFO } from '~/domains/program/program-attribute.helpers';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
@@ -36,10 +36,12 @@ import { generateFieldErrors } from '~/utils/form-validation';
   providers: [],
 })
 export class OrderDebitCardsDialogComponent {
+  readonly phoneNumberEditInfo = DEFAULT_ATTRIBUTE_EDIT_INFO.phoneNumber;
+
   readonly programId = input.required<string>();
   readonly toastService = inject(ToastService);
 
-  private programApiService = inject(ProgramApiService);
+  private readonly programApiService = inject(ProgramApiService);
 
   readonly formDialog = viewChild.required<FormDialogComponent>(
     'orderDebitCardsDialog',
@@ -138,15 +140,18 @@ export class OrderDebitCardsDialogComponent {
         disabled: false,
       },
       {
-        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-        validators: [Validators.required],
+        validators: [
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+          Validators.required,
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+          Validators.email,
+        ],
         nonNullable: true,
       },
     ),
   });
 
-  readonly formEvents = toSignal(this.formGroup.events);
-  readonly formFieldErrors = generateFieldErrors(this.formGroup, {});
+  readonly formFieldErrors = generateFieldErrors(this.formGroup);
 
   readonly orderVisaCards = injectMutation(() => ({
     mutationFn: () => {

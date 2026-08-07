@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsEmail,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -52,6 +53,6 @@ export class CreateVisaCardOrderDto {
 
   @ApiProperty({ example: 'john.doe@example.org' })
   @IsNotEmpty()
-  @IsString()
+  @IsEmail()
   public readonly addresseeEmailAddress: string;
 }

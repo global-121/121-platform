@@ -5,6 +5,7 @@ import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-int
 import { IntersolveVisaCardOrderProcessorService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/services/intersolve-visa-card-order-processor.service';
 import { IntersolveVisaDataSynchronizationModule } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.module';
 import { IntersolveVisaModule } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa.module';
+import { LookupModule } from '@121-service/src/notifications/lookup/lookup.module';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
@@ -14,6 +15,7 @@ import { UserModule } from '@121-service/src/user/user.module';
 @Module({
   imports: [
     MessageQueuesModule,
+    LookupModule,
     IntersolveVisaModule,
     ProgramFspConfigurationsModule,
     UserModule,
