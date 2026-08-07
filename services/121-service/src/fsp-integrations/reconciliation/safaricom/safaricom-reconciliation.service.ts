@@ -15,6 +15,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
 export class SafaricomReconciliationService {
@@ -24,11 +25,16 @@ export class SafaricomReconciliationService {
     private readonly queuesService: QueuesRegistryService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
+    private readonly azureLogService: AzureLogService,
   ) {}
 
   public async processTransferCallback(
     safaricomTransferCallback: SafaricomTransferCallbackDto,
   ): Promise<void> {
+    this.azureLogService.traceAzure(
+      `Incoming Safaricom transfer callback received: originatorConversationId=${safaricomTransferCallback.Result.OriginatorConversationID}, mpesaTransactionId=${safaricomTransferCallback.Result.TransactionID}`,
+    );
+
     const safaricomTransferCallbackJob: SafaricomTransferCallbackJobDto = {
       originatorConversationId:
         safaricomTransferCallback.Result.OriginatorConversationID,
@@ -62,6 +68,11 @@ export class SafaricomReconciliationService {
         `Safaricom Timeout Callback does not contain OriginatorConversationID.`,
       );
     }
+
+    this.azureLogService.traceAzure(
+      `Incoming Safaricom timeout callback received: originatorConversationId=${safaricomTimeoutCallback.OriginatorConversationID}`,
+    );
+
     const safaricomTimeoutCallbackJob: SafaricomTimeoutCallbackJobDto = {
       originatorConversationId:
         safaricomTimeoutCallback.OriginatorConversationID,
