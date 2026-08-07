@@ -44,11 +44,98 @@ npm run start:portal        # Start frontend (Angular dev server)
 
 ### General Principles
 
+**General Rules:**
+
 - Follow existing code patterns and architectural decisions
-- Prioritize readability and maintainability over clever solutions
-- Write self-documenting code with clear naming conventions
-- Prefer using already-installed utility libraries over custom implementations.
-- Prefer built-in language features over custom implementations.
+- Prioritize readability and maintainability over clever or oneline solutions
+- Write self-descriptive variable-, function- and classnames
+- Refrain from writing comments when the code describes itself
+- If a clever solution in unavoidable wrap it in a function with a self-describing name
+- Prefer using already-installed utility libraries over custom implementations
+- Prefer built-in language features over custom implementations
+- Prefer early returns over optional chaining
+
+**Examples:**
+
+prefer:
+
+```js
+const resolvedImageUrl = resolveImageUrl(submission);
+
+const resolveImageUrl = (submission) => {
+  if (!submission) {
+    return;
+  }
+
+  const attachments = submission._attachments;
+  const matchingAttachment = attachments.find((attachment) =>
+    attachment.filename.endsWith(filename),
+  );
+
+  if (!matchingAttachment) {
+    return;
+  }
+
+  return matchingAttachment.download_url;
+};
+```
+
+over:
+
+```js
+const resolvedImageUrl = submission._attachments?.find((attachment) =>
+  attachment.filename.endsWith(filename),
+)?.download_url;
+```
+
+prefer:
+
+```js
+const mimetype = extractMimetype(contentType);
+
+const extractMimetype = (contentType) => {
+  if (!contentType) {
+    return;
+  }
+
+  const [mediaType] = contentType.split(';');
+
+  if (!mediaType) {
+    return;
+  }
+
+  return mediaType.trim();
+};
+```
+
+over:
+
+```js
+const mimetype = contentType?.split(';')[0]?.trim() ?? '';
+```
+
+prefer:
+
+```js
+if (mode === TwilioMode.disabled) {
+  return {
+    ok: true,
+    messages: ['Twilio is disabled, no variables required'],
+  };
+}
+```
+
+over:
+
+```js
+// When Twilio is disabled, no environment variables are required.
+if (mode === TwilioMode.disabled) {
+  return {
+    ok: true,
+    messages: ['Twilio is disabled, no variables required'],
+  };
+}
+```
 
 ### Things to Avoid
 
