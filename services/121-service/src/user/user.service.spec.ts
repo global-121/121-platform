@@ -11,6 +11,7 @@ import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 
@@ -51,6 +52,7 @@ describe('UserService', () => {
           useValue: {
             isApprover: jest.fn(),
             findByUserId: jest.fn(),
+            findOne: jest.fn(),
             createQueryBuilder: jest.fn(),
           },
         },
@@ -82,6 +84,80 @@ describe('UserService', () => {
       ProgramAidworkerAssignmentRepository,
     );
     userEmailsService = module.get<UserEmailsService>(UserEmailsService);
+  });
+
+  describe('canActivate', () => {
+    const userId = 123;
+    const programId = 456;
+    const requiredPermissions = [
+      PermissionEnum.PaymentREAD,
+      PermissionEnum.PaymentCREATE,
+    ];
+
+    it('should return false when the program ID is invalid', async () => {
+      const result = await service.canActivate(
+        requiredPermissions,
+        'invalid-program-id',
+        userId,
+      );
+
+      expect(result).toBe(false);
+    });
+
+    it('should return false when no permissions are required', async () => {
+      const result = await service.canActivate([], programId, userId);
+
+      expect(result).toBe(false);
+    });
+
+    it('should return false when the user is not assigned to the program', async () => {
+      jest.spyOn(assignmentRepository, 'findOne').mockResolvedValue(null);
+
+      const result = await service.canActivate(
+        requiredPermissions,
+        programId,
+        userId,
+      );
+
+      expect(result).toBe(false);
+    });
+
+    it('should return true when the user has every required permission', async () => {
+      jest.spyOn(assignmentRepository, 'findOne').mockResolvedValue({
+        roles: [
+          { permissions: [{ name: PermissionEnum.PaymentREAD }] },
+          { permissions: [{ name: PermissionEnum.PaymentCREATE }] },
+        ],
+      } as ProgramAidworkerAssignmentEntity);
+
+      await expect(
+        service.canActivate(requiredPermissions, programId, userId),
+      ).resolves.toBe(true);
+    });
+
+    it('should return false when the user is missing a required permission', async () => {
+      jest.spyOn(assignmentRepository, 'findOne').mockResolvedValue({
+        roles: [{ permissions: [{ name: PermissionEnum.PaymentREAD }] }],
+      } as ProgramAidworkerAssignmentEntity);
+
+      await expect(
+        service.canActivate(requiredPermissions, programId, userId),
+      ).resolves.toBe(false);
+    });
+
+    it('should return true when required permissions contain duplicates', async () => {
+      jest.spyOn(assignmentRepository, 'findOne').mockResolvedValue({
+        roles: [{ permissions: [{ name: PermissionEnum.PaymentREAD }] }],
+      } as ProgramAidworkerAssignmentEntity);
+
+      await expect(
+        service.canActivate(
+          [PermissionEnum.PaymentREAD, PermissionEnum.PaymentREAD],
+          programId,
+          userId,
+        ),
+      ).resolves.toBe(true);
+    });
   });
 
   describe('findUserProgramAssignmentsOrThrow', () => {

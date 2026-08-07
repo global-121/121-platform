@@ -15,14 +15,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 
@@ -30,7 +23,9 @@ import { env } from '@121-service/src/env';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { KoboConnectService } from '@121-service/src/kobo-connect/kobo-connect.service';
-import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
+import {
+  ProgramRegistrationAttributesService
+} from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import {
   CreateProgramRegistrationAttributeDto,
@@ -41,7 +36,9 @@ import {
 import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import {
+  ProgramRegistrationAttributeEntity
+} from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
@@ -268,12 +265,7 @@ and adjust as needed.`,
     return await this.programService.updateProgram(programId, updateProgramDto);
   }
 
-  @AuthenticatedUser({
-    permissions: [
-      PermissionEnum.ProgramUPDATE,
-      PermissionEnum.ProgramRegistrationAttributesCREATE,
-    ],
-  })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramRegistrationAttributesCREATE] })
   @ApiOperation({ summary: 'Create registration attribute' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/registration-attributes')
@@ -290,12 +282,7 @@ and adjust as needed.`,
     );
   }
 
-  @AuthenticatedUser({
-    permissions: [
-      PermissionEnum.ProgramUPDATE,
-      PermissionEnum.ProgramRegistrationAttributesUPDATE,
-    ],
-  })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramRegistrationAttributesUPDATE] })
   @ApiOperation({ summary: 'Update program registration attribute' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -331,12 +318,7 @@ and adjust as needed.`,
     );
   }
 
-  @AuthenticatedUser({
-    permissions: [
-      PermissionEnum.ProgramUPDATE,
-      PermissionEnum.ProgramRegistrationAttributesDELETE,
-    ],
-  })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramRegistrationAttributesDELETE] })
   @ApiOperation({
     summary:
       'Delete Registration Attribute for a Program. Also deletes the data of this Attribute for the Registrations in this Program.',
@@ -417,13 +399,13 @@ and adjust as needed.`,
         return [];
       }
     }
-    const attr = await this.programRegistrationAttributesService.getAttributes({
+
+    return await this.programRegistrationAttributesService.getAttributes({
       programId,
       includeProgramRegistrationAttributes,
       includeTemplateDefaultAttributes,
       filterShowInRegistrationsTable,
     });
-    return attr;
   }
 
   // TODO: REFACTOR: This endpoint's return is not typed as a DTO, so it is not clear what the response structure is in Swagger UI. See guidelines.

@@ -89,23 +89,35 @@ export class UserService {
     userId: number,
   ): Promise<boolean> {
     // if programId is not a number then it is not a programId so a user does not have access
-    // the query builder cannot handle this so we need to check it here
-    if (isNaN(Number(programId))) {
+    const numericProgramId = Number(programId);
+
+    if (Number.isNaN(numericProgramId) || !permissions || permissions.length === 0) {
       return false;
     }
-    const results = await this.userRepository
-      .createQueryBuilder('user')
-      .leftJoin('user.programAssignments', 'assignment')
-      .leftJoin('assignment.program', 'program')
-      .leftJoin('assignment.roles', 'roles')
-      .leftJoin('roles.permissions', 'permissions')
-      .where('user.id = :userId', { userId })
-      .andWhere('program.id = :programId', { programId })
-      .andWhere('permissions.name IN (:...permissions)', {
-        permissions,
-      })
-      .getCount();
-    return results >= 1;
+
+    const requiredPermissions = new Set(permissions);
+
+    const programAssignment = await this.assignmentRepository.findOne({
+      where: {
+        userId: Equal(userId),
+        programId: Equal(numericProgramId),
+      },
+      relations: ['roles', 'roles.permissions'],
+    });
+    if (!programAssignment) {
+      return false;
+    }
+
+    for (const role of programAssignment.roles ?? []) {
+      for (const permission of role.permissions ?? []) {
+        requiredPermissions.delete(permission.name);
+        if (requiredPermissions.size === 0) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   public async getUserRoles(): Promise<UserRoleResponseDTO[]> {
