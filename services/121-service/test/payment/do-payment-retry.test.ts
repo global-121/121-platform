@@ -28,10 +28,12 @@ const registrationSuccess = {
   ...registrationAHWhatsapp,
   referenceId: 'ref-success',
   fullName: 'Success Payment',
+  phoneNumber: '14155238801',
 };
 const registrationError1 = {
   ...registrationAHWhatsapp,
   whatsappPhoneNumber: '15005550001', // number that will always cause an error
+  phoneNumber: '15005550001',
   referenceId: 'ref-error1',
   fullName: 'Error Payment 1',
 };
@@ -39,6 +41,7 @@ const registrationError1 = {
 const registrationError2 = {
   ...registrationAHWhatsapp,
   whatsappPhoneNumber: '16005550006', // number that will always cause an error
+  phoneNumber: '16005550006',
   referenceId: 'ref-error2',
   fullName: 'Error Payment 2',
 };
@@ -46,6 +49,7 @@ const registrationError2 = {
 const registrationWaiting = {
   ...registrationAHWhatsapp,
   whatsappPhoneNumber: '16005550002', // number that will always cause a waiting status
+  phoneNumber: '16005550002',
   referenceId: 'ref-waiting',
   fullName: 'Waiting Payment',
 };
