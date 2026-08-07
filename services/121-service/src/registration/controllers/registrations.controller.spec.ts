@@ -93,6 +93,7 @@ describe('RegistrationsController', () => {
         totalFilterCount: 1,
         applicableCount: 1,
         nonApplicableCount: 0,
+        duplicateCount: 0,
       };
 
       jest

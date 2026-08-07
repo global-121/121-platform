@@ -17,6 +17,7 @@ import { MessageSenderUserId } from '@121-service/src/notifications/types/messag
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
+import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import {
   DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
@@ -86,6 +87,26 @@ export class RegistrationsBulkService {
       programId,
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses, registrationStatus),
     );
+
+    if (registrationStatus === RegistrationStatusEnum.included) {
+      const duplicateCount = await this.countDuplicatesInSelection({
+        programId,
+        paginateQuery,
+        queryBuilder: this.getStatusUpdateBaseQuery(
+          allowedCurrentStatuses,
+          registrationStatus,
+        ),
+      });
+      resultDto.duplicateCount = duplicateCount;
+
+      if (!dryRun && duplicateCount > 0) {
+        throw new HttpException(
+          `Cannot include registrations: ${duplicateCount} registration(s) have duplicate status. Remove duplicates from your selection or resolve them first.`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
     if (!dryRun) {
       this.applyRegistrationStatusUpdate({
         paginateQuery,
@@ -251,7 +272,32 @@ export class RegistrationsBulkService {
       nonApplicableCount:
         (selectedRegistrations.meta.totalItems ?? 0) -
         (applicableRegistrations.meta.totalItems ?? 0),
+      duplicateCount: 0,
     };
+  }
+
+  private async countDuplicatesInSelection({
+    programId,
+    paginateQuery,
+    queryBuilder,
+  }: {
+    programId: number;
+    paginateQuery: PaginateQuery;
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>;
+  }): Promise<number> {
+    const duplicateQuery = structuredClone(paginateQuery);
+    duplicateQuery.filter = {
+      ...duplicateQuery.filter,
+      duplicateStatus: DuplicateStatus.duplicate,
+    };
+    const duplicateResult =
+      await this.registrationsPaginationService.getPaginate({
+        query: { ...duplicateQuery, limit: 1 },
+        programId,
+        hasPersonalReadPermission: true,
+        queryBuilder: queryBuilder.clone(),
+      });
+    return duplicateResult.meta.totalItems ?? 0;
   }
 
   public getBaseQuery(): ScopedQueryBuilder<RegistrationViewEntity> {
