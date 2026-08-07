@@ -93,13 +93,6 @@ export class PaymentsManagementService {
         return bulkActionResultPaymentDto;
       }
 
-      if (bulkActionResultPaymentDto.duplicateCount > 0) {
-        throw new HttpException(
-          `Cannot create payment: ${bulkActionResultPaymentDto.duplicateCount} registration(s) have duplicate status. Remove duplicates from your selection or resolve them first.`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
       if (!thresholds || thresholds.length === 0) {
         throw new HttpException(
           'No approval thresholds found for this payment amount, cannot create payment',
@@ -394,6 +387,12 @@ export class PaymentsManagementService {
       currentApprovalStep,
     });
 
+    // Check for duplicate registrations before allowing approval
+    await this.throwIfPaymentHasDuplicateRegistrations({
+      programId,
+      paymentId,
+    });
+
     const totalApprovals = await this.paymentApprovalRepository.count({
       where: { paymentId: Equal(paymentId) },
     });
@@ -466,6 +465,53 @@ export class PaymentsManagementService {
       throw new HttpException(
         'User is not assigned to the current approval step and cannot approve it',
         HttpStatus.FORBIDDEN,
+      );
+    }
+  }
+
+  private async throwIfPaymentHasDuplicateRegistrations({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): Promise<void> {
+    const transactionsForPayment =
+      await this.transactionViewScopedRepository.getByStatusOfIncludedRegistrations(
+        {
+          programId,
+          paymentId,
+          status: TransactionStatusEnum.pendingApproval,
+        },
+      );
+
+    const registrationIds = [
+      ...new Set(transactionsForPayment.map((t) => t.registrationId)),
+    ];
+    if (registrationIds.length === 0) {
+      return;
+    }
+
+    const duplicateRegistrations =
+      await this.registrationsPaginationService.getRegistrationViewsNoLimit({
+        programId,
+        paginateQuery: {
+          path: '',
+          filter: {
+            duplicateStatus: DuplicateStatus.duplicate,
+          },
+        },
+        queryBuilder: this.registrationsBulkService
+          .getBaseQuery()
+          .andWhere('registration.id IN (:...registrationIds)', {
+            registrationIds,
+          }),
+      });
+
+    if (duplicateRegistrations.length > 0) {
+      throw new HttpException(
+        `Cannot approve payment: ${duplicateRegistrations.length} registration(s) have duplicate status. Resolve duplicates before approving this payment.`,
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
@@ -577,6 +623,7 @@ export class PaymentsManagementService {
           status: TransactionStatusEnum.pendingApproval,
         },
       );
+
     if (transactionsToApprove.length === 0) {
       throw new HttpException(
         'No "pending approval" transactions found for this payment.',
