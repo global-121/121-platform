@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsEmail,
   IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
+  Matches,
   Max,
   Min,
 } from 'class-validator';
@@ -48,10 +50,13 @@ export class CreateVisaCardOrderDto {
   @ApiProperty({ example: '+31612345678' })
   @IsNotEmpty()
   @IsString()
+  @Matches(/^\+[1-9]\d{5,14}$/, {
+    message: 'addresseePhoneNumber must be in international format.',
+  })
   public readonly addresseePhoneNumber: string;
 
   @ApiProperty({ example: 'john.doe@example.org' })
   @IsNotEmpty()
-  @IsString()
+  @IsEmail()
   public readonly addresseeEmailAddress: string;
 }

@@ -97,4 +97,35 @@ describe('Order visa debit cards in batch', () => {
       ]),
     );
   });
+
+  it('should reject a card order when addressee phone number is not in international format', async () => {
+    const response = await createVisaCardOrder({
+      programId: programIdVisa,
+      accessToken,
+      noOfCards: 2,
+      addressStreet: 'Damrak',
+      addressHouseNumber: '1',
+      addressHouseNumberAddition: 'A',
+      addressPostalCode: '1011AB',
+      addressCity: 'Amsterdam',
+      addressee: 'John Doe',
+      addresseePhoneNumber: '061122334',
+      addresseeEmailAddress: 'john.doe@example.org',
+    });
+
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+
+    const validationErrors = response.body.message as {
+      property: string;
+      constraints: Record<string, string>;
+    }[];
+
+    const phoneNumberError = validationErrors.find(
+      (error) => error.property === 'addresseePhoneNumber',
+    );
+    expect(phoneNumberError).toBeDefined();
+    expect(Object.values(phoneNumberError?.constraints ?? {})).toContain(
+      'addresseePhoneNumber must be in international format, for example +31612345678',
+    );
+  });
 });

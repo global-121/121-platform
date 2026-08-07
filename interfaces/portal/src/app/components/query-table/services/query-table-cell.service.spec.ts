@@ -85,6 +85,19 @@ describe('QueryTableCellService', () => {
     expect(result).toBe('42');
   });
 
+  it('should keep zero values visible in numeric columns', () => {
+    const testItem = { id: 1, value: 0 };
+    const numericColumn: QueryTableColumn<TestCellItem> = {
+      header: 'Value',
+      field: 'value',
+      type: QueryTableColumnType.NUMERIC,
+    };
+
+    const result = service.getCellText(numericColumn, testItem);
+
+    expect(result).toBe('0');
+  });
+
   it('should handle date columns correctly', () => {
     const testItem = { id: 1, dateString: '2023-12-25T10:30:00Z' };
     const dateColumn: QueryTableColumn<TestCellItem> = {
