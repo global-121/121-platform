@@ -32,6 +32,9 @@ describe('Form Validation Utils', () => {
       max: new FormControl(15, {
         validators: [Validators.max(10)],
       }),
+      pattern: new FormControl('invalid', {
+        validators: [Validators.pattern(/^valid$/)],
+      }),
       untouchedButRequired: new FormControl<string | undefined>(
         { value: undefined, disabled: false },
         {
@@ -100,6 +103,13 @@ describe('Form Validation Utils', () => {
     it('should return max error message', () => {
       const getFieldError = generateFieldErrors(formGroup)();
       expect(getFieldError('max')).toBe('This field cannot be more than 10.');
+    });
+
+    it('should return pattern error message', () => {
+      const getFieldError = generateFieldErrors(formGroup)();
+      expect(getFieldError('pattern')).toBe(
+        'This field does not match the required format.',
+      );
     });
 
     it('should return required error message for whitespace-only value', () => {

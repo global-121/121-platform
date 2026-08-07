@@ -1371,6 +1371,9 @@
       <trans-unit id="6751289562324913219" datatype="html">
         <source>Form setting errors</source>
       </trans-unit>
+      <trans-unit id="6764055222311470737" datatype="html">
+        <source>This field does not match the required format.</source>
+      </trans-unit>
       <trans-unit id="6768832079771465748" datatype="html">
         <source>Field changed</source>
       </trans-unit>
