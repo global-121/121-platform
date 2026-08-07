@@ -354,6 +354,7 @@ export async function changeRegistrationStatus({
     filter = {},
     includeTemplatedMessage = false,
     reason = 'default reason',
+    dryRun = false,
   } = {},
 }: {
   programId: number;
@@ -364,12 +365,17 @@ export async function changeRegistrationStatus({
     filter?: Record<string, string>;
     includeTemplatedMessage?: boolean;
     reason?: string | null;
+    dryRun?: boolean;
   };
 }): Promise<request.Response> {
   const queryParams: Record<string, string> = {};
 
   if (referenceIds) {
     queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
+  }
+
+  if (dryRun) {
+    queryParams['dryRun'] = 'true';
   }
 
   if (filter) {
