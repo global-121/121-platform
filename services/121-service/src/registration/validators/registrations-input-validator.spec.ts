@@ -106,6 +106,15 @@ const program = {
   programRegistrationAttributes: dynamicAttributes,
 };
 
+const programWithRequiredPhoneNumber = {
+  ...program,
+  programRegistrationAttributes: dynamicAttributes.map((att) =>
+    att.name === DefaultRegistrationDataAttributeNames.phoneNumber
+      ? { ...att, isRequired: true }
+      : att,
+  ),
+};
+
 describe('RegistrationsInputValidator', () => {
   let validator: RegistrationsInputValidator;
   let mockProgramRepository: Partial<Repository<ProgramEntity>>;
@@ -293,16 +302,15 @@ describe('RegistrationsInputValidator', () => {
     expect(validRegistrations.length).toBe(0);
   });
 
-  it('should report errors for a missing phonenumber when it is not allowed', async () => {
+  it('should report an error when a required tel attribute is missing on create', async () => {
+    mockProgramRepository.findOneOrFail = jest
+      .fn()
+      .mockResolvedValue(programWithRequiredPhoneNumber);
+
     const csvArray = [
       {
-        namePartnerOrganization: 'ABC',
         preferredLanguage: RegistrationPreferredLanguage.en,
-        maxPayments: '5',
-        nameFirst: 'Test',
-        nameLast: 'Test',
-        programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
-        whatsappPhoneNumber: '1234567890',
+        programFspConfigurationName: Fsps.excel,
         scope: 'country',
       },
     ];
@@ -319,16 +327,62 @@ describe('RegistrationsInputValidator', () => {
 
     expect(errors).toEqual(
       expect.arrayContaining([
-        {
-          index: 0,
-          referenceId: undefined,
+        expect.objectContaining({
           column: DefaultRegistrationDataAttributeNames.phoneNumber,
-          value: undefined,
           error:
-            'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
-        },
+            'phoneNumber is required when creating a new registration for this program.',
+        }),
       ]),
     );
+  });
+
+  it('should report an error when a required tel attribute is cleared on update', async () => {
+    mockProgramRepository.findOneOrFail = jest
+      .fn()
+      .mockResolvedValue(programWithRequiredPhoneNumber);
+
+    // an empty string represents an explicit attempt to clear the field, as opposed to omitting it
+    const csvArray = [{ phoneNumber: '' }];
+
+    const { errors } = await validator.validateAndCleanInput({
+      registrationInputArray: csvArray,
+      programId,
+      userId,
+      typeOfInput: RegistrationValidationInputType.update,
+      validationConfig: {
+        validateExistingReferenceId: false,
+      },
+    });
+
+    expect(errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          column: DefaultRegistrationDataAttributeNames.phoneNumber,
+          error: 'phoneNumber is not allowed to be updated to an empty value.',
+        }),
+      ]),
+    );
+  });
+
+  it('should not report an error when a required tel attribute is left out of an update', async () => {
+    mockProgramRepository.findOneOrFail = jest
+      .fn()
+      .mockResolvedValue(programWithRequiredPhoneNumber);
+
+    // omitting the key entirely (undefined) means the field is left untouched, unlike an explicit empty string
+    const csvArray = [{ fullName: 'Unchanged phoneNumber' }];
+
+    const { errors } = await validator.validateAndCleanInput({
+      registrationInputArray: csvArray,
+      programId,
+      userId,
+      typeOfInput: RegistrationValidationInputType.update,
+      validationConfig: {
+        validateExistingReferenceId: false,
+      },
+    });
+
+    expect(errors).toEqual([]);
   });
 
   it('should add max payment when its null', async () => {
@@ -356,13 +410,7 @@ describe('RegistrationsInputValidator', () => {
   // This can happen we creating registrations with a csv file
   it('should be able to post all non required attributes as empty string', async () => {
     jest.spyOn(userService, 'getUserScopeForProgram').mockResolvedValue('');
-    const programAllowsEmptyPhoneNumber = {
-      ...program,
-      allowEmptyPhoneNumber: true,
-    };
-    mockProgramRepository.findOneOrFail = jest
-      .fn()
-      .mockResolvedValue(programAllowsEmptyPhoneNumber);
+    mockProgramRepository.findOneOrFail = jest.fn().mockResolvedValue(program);
 
     const csvArray = [
       {
