@@ -115,12 +115,14 @@ export function duplicateRegistrationsAndPaymentData({
   accessToken,
   body = {},
   numberOfPayments = 0,
+  skipIntroduceDuplicates = false,
 }: {
   powerNumberRegistration: number;
   includeRegistrationEvents?: boolean;
   accessToken: string;
   body: object;
   numberOfPayments?: number;
+  skipIntroduceDuplicates?: boolean;
 }): Promise<request.Response> {
   return getServer()
     .post('/scripts/duplicate-registrations')
@@ -129,6 +131,7 @@ export function duplicateRegistrationsAndPaymentData({
       mockPowerNumberRegistrations: powerNumberRegistration,
       mockNumberPayments: numberOfPayments,
       includeRegistrationEvents,
+      skipIntroduceDuplicates,
     })
     .send(body);
 }
