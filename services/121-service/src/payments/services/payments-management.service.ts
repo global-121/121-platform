@@ -22,6 +22,7 @@ import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/pr
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
+import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
@@ -172,6 +173,7 @@ export class PaymentsManagementService {
           ...bulkActionResultDto,
           sumPaymentAmountMultiplier: 0,
           programFspConfigurationNames: [],
+          duplicateCount: 0,
         },
         registrationsForPayment: [],
       };
@@ -222,10 +224,16 @@ export class PaymentsManagementService {
     );
 
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
+    const duplicateCount = registrationsForPayment.filter(
+      (registration) =>
+        registration.duplicateStatus === DuplicateStatus.duplicate,
+    ).length;
+
     const bulkActionResultPaymentDto: BulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
       programFspConfigurationNames,
+      duplicateCount,
     };
 
     return {
@@ -379,6 +387,12 @@ export class PaymentsManagementService {
       currentApprovalStep,
     });
 
+    // Check for duplicate registrations before allowing approval
+    await this.throwIfPaymentHasDuplicateRegistrations({
+      programId,
+      paymentId,
+    });
+
     const totalApprovals = await this.paymentApprovalRepository.count({
       where: { paymentId: Equal(paymentId) },
     });
@@ -451,6 +465,53 @@ export class PaymentsManagementService {
       throw new HttpException(
         'User is not assigned to the current approval step and cannot approve it',
         HttpStatus.FORBIDDEN,
+      );
+    }
+  }
+
+  private async throwIfPaymentHasDuplicateRegistrations({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): Promise<void> {
+    const transactionsForPayment =
+      await this.transactionViewScopedRepository.getByStatusOfIncludedRegistrations(
+        {
+          programId,
+          paymentId,
+          status: TransactionStatusEnum.pendingApproval,
+        },
+      );
+
+    const registrationIds = [
+      ...new Set(transactionsForPayment.map((t) => t.registrationId)),
+    ];
+    if (registrationIds.length === 0) {
+      return;
+    }
+
+    const duplicateRegistrations =
+      await this.registrationsPaginationService.getRegistrationViewsNoLimit({
+        programId,
+        paginateQuery: {
+          path: '',
+          filter: {
+            duplicateStatus: DuplicateStatus.duplicate,
+          },
+        },
+        queryBuilder: this.registrationsBulkService
+          .getBaseQuery()
+          .andWhere('registration.id IN (:...registrationIds)', {
+            registrationIds,
+          }),
+      });
+
+    if (duplicateRegistrations.length > 0) {
+      throw new HttpException(
+        `Cannot approve payment: ${duplicateRegistrations.length} registration(s) have duplicate status. Resolve duplicates before approving this payment.`,
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
@@ -562,6 +623,7 @@ export class PaymentsManagementService {
           status: TransactionStatusEnum.pendingApproval,
         },
       );
+
     if (transactionsToApprove.length === 0) {
       throw new HttpException(
         'No "pending approval" transactions found for this payment.',
