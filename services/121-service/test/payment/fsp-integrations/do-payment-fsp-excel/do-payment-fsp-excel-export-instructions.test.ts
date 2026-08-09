@@ -83,6 +83,7 @@ describe('Do payment with Excel FSP', () => {
       ...registrationWesteros1,
       referenceId: 'AH-001',
       phoneNumber: '31612345678',
+      whatsappPhoneNumber: '31612345678',
       programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
     };
 
