@@ -30,6 +30,13 @@ import {
   registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
+// Create unique registrations for payment tests to avoid duplicate detection blocking approval
+const uniqueRegistrationsPV = registrationsPV.map((reg, index) => ({
+  ...reg,
+  phoneNumber: `1415523600${index}`,
+  whatsappPhoneNumber: `1415523600${index}`,
+}));
+
 let adminAccessToken: string;
 let accessTokenFinanceManager: string;
 let accessTokenCvaManager: string;
@@ -367,7 +374,7 @@ describe('payments with different total amounts should hit different thresholds'
   it('if 1 threshold is set that should be the only hit', async () => {
     // Arrange
     await setupPaymentApprovalTest({
-      registrations: registrationsPV,
+      registrations: uniqueRegistrationsPV,
       thresholds: [
         {
           thresholdAmount: 0,
@@ -396,7 +403,7 @@ describe('payments with different total amounts should hit different thresholds'
     // Also testing order irrelevance here.
     // Arrange
     await setupPaymentApprovalTest({
-      registrations: registrationsPV,
+      registrations: uniqueRegistrationsPV,
       thresholds: [
         {
           thresholdAmount: 200, // 200 < 280, so should be hit
@@ -430,7 +437,7 @@ describe('payments with different total amounts should hit different thresholds'
   it('if 2nd threshold is over total amount it should not be hit', async () => {
     // Arrange
     await setupPaymentApprovalTest({
-      registrations: registrationsPV,
+      registrations: uniqueRegistrationsPV,
       thresholds: [
         {
           thresholdAmount: 0,
@@ -462,7 +469,7 @@ describe('payments with different total amounts should hit different thresholds'
   it('if 2nd threshold is under total amount and 3rd is over then only 1 and 2 should be hit', async () => {
     // Arrange
     await setupPaymentApprovalTest({
-      registrations: registrationsPV,
+      registrations: uniqueRegistrationsPV,
       thresholds: [
         {
           thresholdAmount: 0,

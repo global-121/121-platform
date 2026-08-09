@@ -131,7 +131,7 @@ export function duplicateRegistrationsAndPaymentData({
       mockPowerNumberRegistrations: powerNumberRegistration,
       mockNumberPayments: numberOfPayments,
       includeRegistrationEvents,
-      skipIntroduceDuplicates,
+      ...(skipIntroduceDuplicates && { skipIntroduceDuplicates: true }),
     })
     .send(body);
 }
