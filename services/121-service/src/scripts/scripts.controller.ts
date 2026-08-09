@@ -194,6 +194,12 @@ export class ScriptsController {
     description: `Set to 'true' to include registration events in the duplication.`,
     example: 'false',
   })
+  @ApiQuery({
+    name: 'skipIntroduceDuplicates',
+    required: false,
+    description: `Set to 'true' to skip introducing duplicates after data duplication.`,
+    example: 'false',
+  })
   @ApiOperation({
     summary:
       'Duplicate registrations, used for load testing. It also changes all phonenumber to a random number. Only usable in test or development.',
