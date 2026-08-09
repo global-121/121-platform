@@ -113,7 +113,7 @@ export class ScriptsService {
     }); // Ensure payment related data is extended
     await this.seedMockHelper.updateDerivedData();
     await this.seedMockHelper.updateSequenceNumbers();
-    if (!skipIntroduceDuplicates) {
+    if (String(skipIntroduceDuplicates) !== 'true') {
       await this.seedMockHelper.introduceDuplicates();
     }
   }
