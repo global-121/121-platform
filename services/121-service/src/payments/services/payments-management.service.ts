@@ -224,10 +224,12 @@ export class PaymentsManagementService {
     );
 
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
-    const duplicateCount = registrationsForPayment.filter(
-      (registration) =>
-        registration.duplicateStatus === DuplicateStatus.duplicate,
-    ).length;
+    const duplicateCount = registrationsForPayment.reduce(
+      (count, registration) =>
+        count +
+        (registration.duplicateStatus === DuplicateStatus.duplicate ? 1 : 0),
+      0,
+    );
 
     const bulkActionResultPaymentDto: BulkActionResultPaymentDto = {
       ...bulkActionResultDto,
