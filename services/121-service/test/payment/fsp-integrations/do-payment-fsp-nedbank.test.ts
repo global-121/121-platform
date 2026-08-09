@@ -480,12 +480,15 @@ describe('Do payment', () => {
           [NedbankVoucherStatus.REFUNDED]: TransactionStatusEnum.error,
         };
         const registrations: ImportRegistrationsDto[] = [];
+        let phoneCounter = 0;
         for (const status in nedbanVoucherStatusToTransactionStatus) {
           const registration = {
             ...registrationNedbank,
             referenceId: `${NebankGetOrderMockReference.mock}-${status}`,
+            phoneNumber: `2700000${String(phoneCounter).padStart(4, '0')}`,
           };
           registrations.push(registration);
+          phoneCounter++;
         }
         await seedPaidRegistrations({
           registrations,
@@ -645,7 +648,7 @@ describe('Do payment', () => {
         // Assert
         expect(doPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
         expect(doPaymentResponse.body.message).toContain(
-          `Program FSP configuration ${Fsps.nedbank} is not fully configured`
+          `Program FSP configuration ${Fsps.nedbank} is not fully configured`,
         );
       });
     });
