@@ -25,11 +25,8 @@ const transferValue = 50;
 
 // Set up 3 registrations of which 1 succeeds (visa), 1 fails (visa with magic mock fail name) and 1 on waiting (AH voucher with magic mock nr to not get incoming message)
 registrationPV7.fullName = 'mock-fail-create-customer';
-registrationPV7.phoneNumber = '14155235552';
-registrationPV7.whatsappPhoneNumber = '14155235552';
 const noIncomingMessagePhoneNumber = '16005550002'; // magic phone-nr to not get incoming message
 registrationPV6.whatsappPhoneNumber = noIncomingMessagePhoneNumber;
-registrationPV6.phoneNumber = '16005550002';
 const registrationsPV = [registrationPV6, registrationPV7, registrationPV8];
 
 const seedTwoPayments = async () => {
