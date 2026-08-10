@@ -1,22 +1,25 @@
 import {
+  Body,
   Controller,
+  Delete,
+  Get,
   HttpCode,
+  HttpStatus,
+  Param,
   ParseArrayPipe,
+  ParseIntPipe,
+  Patch,
+  Post,
   Put,
   UseGuards,
 } from '@nestjs/common';
 import {
-  Body,
-  Delete,
-  Get,
-  HttpStatus,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-} from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
@@ -104,20 +107,18 @@ export class ProgramFspConfigurationsController {
 
   @AuthenticatedUser({
     permissions: [
-      PermissionEnum.ProgramFspConfigCREATE, 
+      PermissionEnum.ProgramFspConfigCREATE,
       PermissionEnum.ProgramFspConfigUPDATE,
-      PermissionEnum.ProgramFspConfigDELETE
+      PermissionEnum.ProgramFspConfigDELETE,
     ],
   })
   @ApiOperation({
-    summary:
-      'Update Program FSP configurations based on a list of FSP names.',
+    summary: 'Update Program FSP configurations based on a list of FSP names.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description:
-      'Program FSP configurations have been successfully updated.',
+    description: 'Program FSP configurations have been successfully updated.',
   })
   @ApiBody({
     schema: {
@@ -144,12 +145,10 @@ export class ProgramFspConfigurationsController {
     @Body('fsps', new ParseArrayPipe({ items: String }))
     fsps: Fsps[],
   ): Promise<void> {
-    await this.programFspConfigurationsService.updateProgramFspConfigurations(
-      {
-        programId,
-        fsps,
-      },
-    );
+    await this.programFspConfigurationsService.updateProgramFspConfigurations({
+      programId,
+      fsps,
+    });
   }
 
   @AuthenticatedUser({
@@ -265,12 +264,7 @@ export class ProgramFspConfigurationsController {
     );
   }
 
-  @AuthenticatedUser({
-    permissions: [
-      PermissionEnum.ProgramREAD,
-      PermissionEnum.ProgramFspConfigREAD,
-    ],
-  })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramREAD] })
   @ApiOperation({
     summary:
       'Retrieve allowlisted public properties for FSP-configuration. Only returns properties that are safe to expose to non-admin users based on the Program FSP-configuration Property type.',

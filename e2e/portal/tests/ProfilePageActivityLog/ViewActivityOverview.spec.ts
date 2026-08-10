@@ -176,6 +176,7 @@ test.describe('as user with only view paper voucher permissions', () => {
       const { username, password } = await createUserWithPermissions({
         permissions: [
           PermissionEnum.PaymentREAD,
+          PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.PaymentVoucherPaperREAD,
