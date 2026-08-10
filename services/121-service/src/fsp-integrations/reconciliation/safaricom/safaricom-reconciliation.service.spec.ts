@@ -12,6 +12,7 @@ import {
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 describe('SafaricomReconciliationService', () => {
   let safaricomReconciliationService: SafaricomReconciliationService;
@@ -47,6 +48,10 @@ describe('SafaricomReconciliationService', () => {
           useValue: {
             sadd: jest.fn(),
           },
+        },
+        {
+          provide: AzureLogService,
+          useValue: { traceAzure: jest.fn(), logError: jest.fn() },
         },
       ],
     }).compile();

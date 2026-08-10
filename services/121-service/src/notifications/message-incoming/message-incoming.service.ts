@@ -33,6 +33,7 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
@@ -64,6 +65,7 @@ export class MessageIncomingService {
     private readonly transactionRepository: TransactionRepository,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly registrationsService: RegistrationsService,
+    private readonly azureLogService: AzureLogService,
   ) {}
 
   public async getGenericNotificationText(
@@ -129,6 +131,9 @@ export class MessageIncomingService {
   public async addIncomingWhatsappToQueue(
     callbackData: TwilioIncomingCallbackDto,
   ): Promise<void> {
+    this.azureLogService.traceAzure(
+      `Incoming WhatsApp message received: sid=${callbackData.MessageSid}, from=${callbackData.From}`,
+    );
     await this.queuesService.messageIncomingCallbackQueue.add(
       ProcessNameMessage.whatsapp,
       callbackData,
