@@ -1,49 +1,69 @@
 import { Injectable } from '@nestjs/common';
 
-import { AlfouadTransferStatus } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-transfer-status.enum';
+import { AlfouadTransactionState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-transaction-state.enum';
+import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { CreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/create-transfer-params.interface';
+import { CreateTransferResult } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/create-transfer-result.interface';
 import { AlfouadApiService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.service';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 @Injectable()
 export class AlfouadService {
-  public constructor(private readonly alfouadApiService: AlfouadApiService) {}
+  public constructor(
+    private readonly alfouadApiService: AlfouadApiService,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+  ) {}
 
-  public async createTransfer({
-    alfouadReferenceId,
-    amount,
-    currency,
-    externalId,
-    phoneNumberPayment,
-  }: CreateTransferParams): Promise<void> {
-    await this.alfouadApiService.createTransfer({
-      alfouadReferenceId,
-      amount,
-      currency,
-      externalId,
-      phoneNumber: phoneNumberPayment,
-    });
+  public async getAlfouadFspConfig({
+    programFspConfigurationId,
+  }: {
+    programFspConfigurationId: number;
+  }): Promise<AlfouadRequestIdentity> {
+    const properties =
+      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
+        programFspConfigurationId,
+        names: [
+          FspConfigurationProperties.accountAlfouad,
+          FspConfigurationProperties.branchIdAlfouad,
+          FspConfigurationProperties.usernameAlfouad,
+          FspConfigurationProperties.passwordAlfouad,
+          FspConfigurationProperties.publicKeyAlfouad,
+        ],
+      });
+
+    const valueOf = (name: FspConfigurationProperties): string =>
+      properties.find((property) => property.name === name)?.value as string;
+
+    return {
+      account: valueOf(FspConfigurationProperties.accountAlfouad),
+      branchId: valueOf(FspConfigurationProperties.branchIdAlfouad),
+      username: valueOf(FspConfigurationProperties.usernameAlfouad),
+      password: valueOf(FspConfigurationProperties.passwordAlfouad),
+      publicKey: valueOf(FspConfigurationProperties.publicKeyAlfouad),
+    };
   }
 
-  public async getTransfer({
-    alfouadReferenceId,
-  }: {
-    alfouadReferenceId: string;
-  }): Promise<AlfouadTransferStatus> {
-    return this.alfouadApiService.getTransfer({ alfouadReferenceId });
+  public async createTransfer(
+    params: CreateTransferParams,
+  ): Promise<CreateTransferResult> {
+    return this.alfouadApiService.createTransfer(params);
   }
 
-  public mapAlfouadStatusToTransactionStatus({
-    alfouadStatus,
+  public mapAlfouadStateToTransactionStatus({
+    alfouadState,
   }: {
-    alfouadStatus: AlfouadTransferStatus;
+    alfouadState: AlfouadTransactionState;
   }): TransactionStatusEnum {
-    switch (alfouadStatus) {
-      case AlfouadTransferStatus.successful:
+    switch (alfouadState) {
+      case AlfouadTransactionState.paid:
         return TransactionStatusEnum.success;
-      case AlfouadTransferStatus.pending:
+      case AlfouadTransactionState.pendingApproval:
+      case AlfouadTransactionState.approved:
+      case AlfouadTransactionState.hold:
         return TransactionStatusEnum.waiting;
-      case AlfouadTransferStatus.failed:
+      case AlfouadTransactionState.canceled:
         return TransactionStatusEnum.error;
       default:
         return TransactionStatusEnum.error;
