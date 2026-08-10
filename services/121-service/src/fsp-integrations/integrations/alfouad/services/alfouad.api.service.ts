@@ -17,6 +17,10 @@ import { AlfouadEncryptionService } from '@121-service/src/fsp-integrations/inte
 import { SensitivePiiValue } from '@121-service/src/shared/consts/sensitive-pii-value.class';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
+// The Al Fouad API returns HTTP 200 with `State` "1" on success and "0" on a
+// business failure (in which case `ErrorCode` is populated).
+const SUCCESS_STATE = '1';
+
 @Injectable()
 export class AlfouadApiService {
   public constructor(

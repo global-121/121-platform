@@ -208,7 +208,11 @@ export const safaricomEnvVariablesSchema = {
 const fspEnvVariablesSchema = {
   ...airtelEnvVariablesSchema,
   ...alfouadEnvVariablesSchema,
+<<<<<<< HEAD
   ...alfouadOptionalEnvVariablesSchema,
+||||||| parent of 587d45150 (alfouad doc implementation)
+=======
+>>>>>>> 587d45150 (alfouad doc implementation)
   ...commercialBankEthiopiaEnvVariablesSchema,
   ...cooperativeBankOfOromiaEnvVariablesSchema,
   // No environment variables for Excel FSP.
