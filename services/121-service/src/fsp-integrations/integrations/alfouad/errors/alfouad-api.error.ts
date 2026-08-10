@@ -1,18 +1,16 @@
-import { AlfouadTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-transfer-error-types.enum';
-
 export class AlfouadApiError extends Error {
-  type: AlfouadTransferErrorTypes;
+  public readonly errorCode: string | null;
 
   constructor({
-    type,
     message,
+    errorCode,
   }: {
-    type: AlfouadTransferErrorTypes;
     message: string;
+    errorCode?: string | null;
   }) {
     super(`Alfouad API Error: ${message}`);
     Object.setPrototypeOf(this, new.target.prototype);
     this.name = 'AlfouadApiError';
-    this.type = type;
+    this.errorCode = errorCode ?? null;
   }
 }
