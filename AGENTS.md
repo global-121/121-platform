@@ -60,37 +60,6 @@ npm run start:portal        # Start frontend (Angular dev server)
 prefer:
 
 ```js
-const resolvedImageUrl = resolveImageUrl(submission);
-
-const resolveImageUrl = (submission) => {
-  if (!submission) {
-    return;
-  }
-
-  const attachments = submission._attachments;
-  const matchingAttachment = attachments.find((attachment) =>
-    attachment.filename.endsWith(filename),
-  );
-
-  if (!matchingAttachment) {
-    return;
-  }
-
-  return matchingAttachment.download_url;
-};
-```
-
-over:
-
-```js
-const resolvedImageUrl = submission._attachments?.find((attachment) =>
-  attachment.filename.endsWith(filename),
-)?.download_url;
-```
-
-prefer:
-
-```js
 const mimetype = extractMimetype(contentType);
 
 const extractMimetype = (contentType) => {
