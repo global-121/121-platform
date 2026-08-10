@@ -39,6 +39,14 @@ export const alfouadEnvVariablesSchema = {
     .optional(),
 };
 
+const alfouadOptionalEnvVariablesSchema = {
+  ALFOUAD_ACCOUNT: z.string().optional(),
+  ALFOUAD_BRANCH_ID: z.string().optional(),
+  ALFOUAD_USERNAME: z.string().optional(),
+  ALFOUAD_PASSWORD: z.string().optional(),
+  ALFOUAD_PUBLIC_KEY: z.string().optional(),
+};
+
 export const commercialBankEthiopiaEnvVariablesSchema = {
   COMMERCIAL_BANK_ETHIOPIA_MODE: FspModeSchema,
 
@@ -200,6 +208,7 @@ export const safaricomEnvVariablesSchema = {
 const fspEnvVariablesSchema = {
   ...airtelEnvVariablesSchema,
   ...alfouadEnvVariablesSchema,
+  ...alfouadOptionalEnvVariablesSchema,
   ...commercialBankEthiopiaEnvVariablesSchema,
   ...cooperativeBankOfOromiaEnvVariablesSchema,
   // No environment variables for Excel FSP.

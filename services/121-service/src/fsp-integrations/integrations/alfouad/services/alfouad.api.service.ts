@@ -10,9 +10,7 @@ import { AlfouadApiHelperService } from '@121-service/src/fsp-integrations/integ
 import { AlfouadEncryptionService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.encryption.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
-// The Al Fouad API returns HTTP 200 with `State` "1" on success and "0" on a
-// business failure (in which case `ErrorCode` is populated).
-const SUCCESS_STATE = '1';
+const ALFOUAD_SUCCES_STATE = '1';
 
 @Injectable()
 export class AlfouadApiService {
@@ -26,40 +24,35 @@ export class AlfouadApiService {
     requestIdentity,
     ...transaction
   }: CreateTransferParams): Promise<CreateTransferResult> {
-    const headers = this.buildAuthHeaders({ requestIdentity });
     const payload =
       this.alfouadApiHelperService.createTransactionPayload(transaction);
-    const url = new URL(
-      'api/Transaction/TransactionCreate',
-      this.alfouadApiHelperService.getBaseUrl(),
-    );
 
-    let response: AxiosResponse<AlfouadApiCreateTransactionResponseBody>;
-    try {
-      response = await this.httpService.post<
-        AxiosResponse<AlfouadApiCreateTransactionResponseBody>
-      >(url.toString(), payload, headers);
-    } catch (error) {
-      throw new AlfouadApiError({
-        message: `Error creating transaction: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      });
-    }
-
-    if (!response || response.status < 200 || response.status >= 300) {
-      throw new AlfouadApiError({
-        message: `Failed to create transaction (HTTP ${response?.status ?? 'unknown'}).`,
-      });
-    }
+    const response =
+      await this.sendAuthenticatedRequest<AlfouadApiCreateTransactionResponseBody>(
+        {
+          method: 'POST',
+          path: 'api/Transaction/TransactionCreate',
+          payload,
+          requestIdentity,
+        },
+      );
 
     const body = response.data;
-    if (body?.State !== SUCCESS_STATE) {
+
+    if (!body) {
       throw new AlfouadApiError({
-        message: body?.Message ?? 'Unknown error',
-        errorCode: body?.ErrorCode,
+        message: 'No response body received from Al Fouad API',
       });
     }
 
-    const transactionUid = body.TransactionInfo?.transactionUid;
+    if (body.State !== ALFOUAD_SUCCES_STATE) {
+      throw new AlfouadApiError({
+        message: body.Message ?? 'Unknown error',
+        errorCode: body.ErrorCode,
+      });
+    }
+
+    const transactionUid = body.TransactionInfo?.TransactionUID;
     if (!transactionUid) {
       throw new AlfouadApiError({
         message: 'Transaction created but no TransactionUID was returned',
@@ -67,6 +60,48 @@ export class AlfouadApiService {
     }
 
     return { transactionUid };
+  }
+
+  private async sendAuthenticatedRequest<T>({
+    method,
+    path,
+    payload,
+    requestIdentity,
+  }: {
+    method: 'GET' | 'POST';
+    path: string;
+    payload?: unknown;
+    requestIdentity: AlfouadRequestIdentity;
+  }): Promise<AxiosResponse<T>> {
+    const headers = this.buildAuthHeaders({ requestIdentity });
+    const url = new URL(
+      path,
+      this.alfouadApiHelperService.getBaseUrl(),
+    ).toString();
+
+    let response: AxiosResponse<T>;
+    try {
+      response =
+        method === 'POST'
+          ? await this.httpService.post<AxiosResponse<T>>(
+              url,
+              payload,
+              headers,
+            )
+          : await this.httpService.get<AxiosResponse<T>>(url, headers);
+    } catch (error) {
+      throw new AlfouadApiError({
+        message: `Error calling ${path}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      });
+    }
+
+    if (!response || response.status < 200 || response.status >= 300) {
+      throw new AlfouadApiError({
+        message: `Request to ${path} failed (HTTP ${response?.status ?? 'unknown'}).`,
+      });
+    }
+
+    return response;
   }
 
   private buildAuthHeaders({
