@@ -213,8 +213,12 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
       invalidateCacheAgainAfterDelay: 500,
     },
     onSuccess: (data, variables) => {
-      if (data.nonApplicableCount === 0) {
-        // case #1: the change can be applied to all registrations
+      // Registrations with a pending-approval payment also need explicit confirmation, not just non-applicable ones
+      const needsConfirmation =
+        data.nonApplicableCount > 0 || (data.pendingApprovalCount ?? 0) > 0;
+
+      if (!needsConfirmation) {
+        // case #1: the change can be applied to all registrations, without any pending-approval payments
         if (variables.dryRun) {
           this.changeStatusMutation.mutate({ dryRun: false });
           return;
@@ -237,7 +241,7 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
         return;
       }
 
-      // case #3: the change can be applied to only some of the registrations
+      // case #3: some registrations are non-applicable and/or have a payment pending approval
       this.dialogVisible.set(false);
       this.dryRunWarningDialog().show({
         resetMutation: false,

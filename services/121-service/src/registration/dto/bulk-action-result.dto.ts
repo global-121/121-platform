@@ -13,6 +13,14 @@ export class BulkActionResultDto {
 
   @ApiProperty({ example: 2 })
   public readonly nonApplicableCount: number;
+
+  @ApiProperty({
+    example: 1,
+    required: false,
+    description:
+      'Number of applicable registrations that have a payment pending approval. Only computed for status changes to declined, paused, or deleted.',
+  })
+  public readonly pendingApprovalCount?: number;
 }
 
 export class BulkActionResultPaymentDto extends BulkActionResultDto {
