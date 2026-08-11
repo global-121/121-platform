@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common';
 
+import { env } from '@121-service/src/env';
 import { FSP_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-env-variable-settings.const';
 import { PaymentsModule } from '@121-service/src/payments/payments.module';
 import { FspEnvVariableValidationService } from '@121-service/src/payments/services/fsp-env-variable-validation.service';
@@ -43,6 +44,7 @@ describe('PaymentsModule', () => {
         fspEnvVariableValidationService.validateFspEnvVariableSettings,
       ).toHaveBeenCalledWith({
         fspEnvVariableSettings: FSP_ENV_VARIABLE_SETTINGS,
+        twilioMode: env.TWILIO_MODE,
       });
       expect(logSpy).toHaveBeenCalledWith(
         'FSP environment variable validation succeeded, no missing variables',

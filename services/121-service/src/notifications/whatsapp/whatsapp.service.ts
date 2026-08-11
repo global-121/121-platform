@@ -17,6 +17,7 @@ import {
 } from '@121-service/src/notifications/entities/twilio.entity';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
@@ -71,13 +72,15 @@ export class WhatsappService {
       from: formatWhatsAppNumber(env.TWILIO_WHATSAPP_NUMBER),
       statusCallback:
         EXTERNAL_API.whatsAppStatus +
-        (env.MOCK_TWILIO ? `?messageContentType=${messageContentType}` : ''),
+        (env.TWILIO_MODE === TwilioMode.mock
+          ? `?messageContentType=${messageContentType}`
+          : ''),
       to: formatWhatsAppNumber(recipientPhoneNr),
     };
     if (mediaUrl) {
       payload['mediaUrl'] = mediaUrl;
     }
-    if (env.MOCK_TWILIO) {
+    if (env.TWILIO_MODE === TwilioMode.mock) {
       payload['messageContentType'] = messageContentType;
     }
 
@@ -137,10 +140,12 @@ export class WhatsappService {
 
       await this.storeSendWhatsapp({
         message: {
-          accountSid: env.TWILIO_SID,
+          // These are guaranteed to be set here: sending only reaches this point
+          // when TWILIO_MODE is MOCK or EXTERNAL
+          accountSid: env.TWILIO_SID!,
           body: payload.body ?? '',
           to: payload.to,
-          messagingServiceSid: env.TWILIO_MESSAGING_SID,
+          messagingServiceSid: env.TWILIO_MESSAGING_SID!,
           dateCreated: new Date(),
           sid: `failed-${uuid()}`,
           status: 'failed',
@@ -260,6 +265,10 @@ export class WhatsappService {
     messageTemplates: MessageTemplateEntity[],
     sessionId: string,
   ): Promise<void> {
+    if (env.TWILIO_MODE === TwilioMode.disabled) {
+      // Twilio is disabled: silently skip sending the messages.
+      return;
+    }
     for (const messageTemplate of messageTemplates) {
       const payload = {
         body: messageTemplate.message ?? undefined,

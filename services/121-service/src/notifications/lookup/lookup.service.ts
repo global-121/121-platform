@@ -1,5 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
+import { env } from '@121-service/src/env';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { twilioClient } from '@121-service/src/notifications/twilio.client';
 
 @Injectable()
@@ -16,6 +18,9 @@ export class LookupService {
     phoneNumber: string,
     throwNoException?: boolean,
   ): Promise<string | undefined> {
+    if (env.TWILIO_MODE === TwilioMode.disabled) {
+      return this.sanitizePhoneNrExtra(phoneNumber).replace(/\D/g, '');
+    }
     try {
       // Add additional sanitizing (including NL-specific) because user is given no opportunity to correct here
       const updatedPhone = this.sanitizePhoneNrExtra(phoneNumber);
@@ -34,26 +39,6 @@ export class LookupService {
         throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
     }
-  }
-
-  public async getLocalNumber(
-    phoneNumber: string,
-  ): Promise<number | undefined> {
-    try {
-      // Add additional sanitizing (including NL-specific) because user is given no opportunity to correct here
-      const updatedPhone = this.sanitizePhoneNrExtra(phoneNumber);
-
-      const lookupResponse = await twilioClient.lookups.v1
-        .phoneNumbers(updatedPhone)
-        .fetch({ type: ['carrier'] });
-      return Number(lookupResponse.nationalFormat.replace(/\s/g, ''));
-    } catch (e) {
-      if (e.status === HttpStatus.NOT_FOUND) {
-        const errors = `Phone number incorrect`;
-        throw new HttpException(errors, HttpStatus.BAD_REQUEST);
-      }
-    }
-    return;
   }
 
   public sanitizePhoneNrExtra(phoneNumber: string): string {

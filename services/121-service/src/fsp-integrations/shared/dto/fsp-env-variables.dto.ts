@@ -5,4 +5,6 @@ export class FspEnvVariablesDto {
   readonly mode: FspMode;
 
   readonly variables: EnvVariablesReadOnly;
+
+  readonly requiresTwilio?: boolean;
 }

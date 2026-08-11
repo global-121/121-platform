@@ -6,20 +6,23 @@ import {
 } from '@121-service/src/fsp-integrations/settings/fsp-env-variable-settings.const';
 import { FspEnvVariablesDto } from '@121-service/src/fsp-integrations/shared/dto/fsp-env-variables.dto';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 
 @Injectable()
 export class FspEnvVariableValidationService {
   private readonly logger = new Logger(FspEnvVariableValidationService.name);
 
   // A pure function.
+  // Validates every FSP's environment: the required env variables for EXTERNAL
+  // FSPs, and — for FSPs that deliver via Twilio (`requiresTwilio: true`) — that
+  // Twilio is not disabled.
   public validateFspEnvVariableSettings({
     fspEnvVariableSettings,
+    twilioMode,
   }: {
     fspEnvVariableSettings: FspEnvVariableSettingsRecord;
+    twilioMode: TwilioMode;
   }): { ok: boolean; messages: string[] } {
-    // For all FSPs that are enabled via `{FSP}_MODE=EXTERNAL`, ensure that all
-    // required env variables are set.
-
     // `Object.keys` and `Object.entries` cannot guarantee their input won't
     // have excess properties. But because we are the source of the input here
     // we *can* guarantee it and so we assert the type.
@@ -27,57 +30,60 @@ export class FspEnvVariableValidationService {
       fspEnvVariableSettings,
     ) as FspsWithoutIntersolveVoucherExceptions[];
 
-    const validationResults = fsps.map((fsp) =>
+    const messages = fsps.flatMap((fsp) =>
       this.validateEnvVariableSettingsForSingleFsp({
         fsp,
         envVariableSettings: fspEnvVariableSettings[fsp],
+        twilioMode,
       }),
     );
 
-    const failedValidations = validationResults.filter(
-      (result): result is string => result !== undefined,
-    );
-    if (failedValidations.length === 0) {
+    if (messages.length === 0) {
       return { ok: true, messages: ['no missing variables'] };
     }
-    return { ok: false, messages: failedValidations };
+    return { ok: false, messages };
   }
 
   private validateEnvVariableSettingsForSingleFsp({
     fsp,
     envVariableSettings,
+    twilioMode,
   }: {
     fsp: FspsWithoutIntersolveVoucherExceptions;
     envVariableSettings: FspEnvVariablesDto;
-  }): undefined | string {
-    const { mode, variables } = envVariableSettings;
+    twilioMode: TwilioMode;
+  }): string[] {
+    const { mode, variables, requiresTwilio } = envVariableSettings;
 
-    switch (mode) {
-      case FspMode.disabled:
-      case FspMode.mock:
-        return;
-      case FspMode.external:
-        break;
-      default: {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- exhaustive check necessary
-        const exhaustiveCheck: never = mode;
+    if (mode === FspMode.disabled) {
+      return [];
+    }
+
+    const messages: string[] = [];
+
+    if (requiresTwilio && twilioMode === TwilioMode.disabled) {
+      messages.push(
+        `FSP "${fsp}" is enabled and requires Twilio, but "TWILIO_MODE=DISABLED". Set TWILIO_MODE to MOCK or EXTERNAL.`,
+      );
+    }
+
+    if (mode === FspMode.external) {
+      const envVariableIsSet = (envVar: unknown): boolean =>
+        envVar !== undefined && envVar !== null && envVar !== '';
+
+      const missingVariablesNames = Object.entries(variables)
+        .filter(([_key, value]) => !envVariableIsSet(value))
+        .map(([name, _value]) => `"${name}"`);
+
+      if (missingVariablesNames.length > 0) {
+        messages.push(
+          `FSP "${fsp}" is enabled using "{FSP}_MODE=EXTERNAL", but is missing the following required environment variables: ${missingVariablesNames.join(
+            ', ',
+          )}.`,
+        );
       }
     }
 
-    const envVariableIsSet = (envVar: unknown): boolean =>
-      envVar !== undefined && envVar !== null && envVar !== '';
-
-    const missingVariables = Object.entries(variables).filter(
-      ([_key, value]) => !envVariableIsSet(value),
-    );
-
-    if (missingVariables.length === 0) {
-      return;
-    }
-
-    const missingVariablesNames = missingVariables
-      .map(([name, _value]) => `"${name}"`)
-      .join(', ');
-    return `FSP "${fsp}" is enabled using "{FSP}_MODE=EXTERNAL", but is missing the following required environment variables: ${missingVariablesNames}.`;
+    return messages;
   }
 }

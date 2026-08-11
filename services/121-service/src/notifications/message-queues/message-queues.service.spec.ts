@@ -2,6 +2,7 @@ import { TestBed } from '@automock/jest';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { env } from '@121-service/src/env';
 import {
   MessageJobDto,
   MessageProcessType,
@@ -9,11 +10,21 @@ import {
 } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
+import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+
+jest.mock('@121-service/src/env', () => ({
+  env: {
+    ...jest.requireActual('@121-service/src/env').env,
+    TWILIO_MODE: 'MOCK',
+  },
+}));
+
+const mockEnv = env as { TWILIO_MODE: string };
 
 describe('MessageQueuesService', () => {
   let queueMessageService: MessageQueuesService;
@@ -39,6 +50,11 @@ describe('MessageQueuesService', () => {
     messageTemplateRepository = unitRef.get(
       getRepositoryToken(MessageTemplateEntity) as any,
     );
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockEnv.TWILIO_MODE = TwilioMode.mock;
   });
 
   it('should be defined', () => {
@@ -80,6 +96,27 @@ describe('MessageQueuesService', () => {
         mediaUrl: undefined,
       },
     );
+  });
+
+  it('should not add message to queue when TWILIO_MODE is disabled', async () => {
+    // Arrange
+    mockEnv.TWILIO_MODE = TwilioMode.disabled;
+    const messageJob = {
+      ...baseMessageJob,
+      whatsappPhoneNumber: '1234567890',
+      messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+    } satisfies MessageJobDto;
+
+    // Act
+    await queueMessageService.addMessageJob({
+      ...messageJob,
+      extendedMessageProcessType: messageJob.messageProcessType,
+    });
+
+    // Assert
+    expect(
+      queuesService.createMessageSmallBulkQueue.add,
+    ).not.toHaveBeenCalled();
   });
 
   it('should resolve smsOrWhatsappTemplateGeneric to whatsappTemplateGeneric when whatsappPhoneNumber is set', async () => {

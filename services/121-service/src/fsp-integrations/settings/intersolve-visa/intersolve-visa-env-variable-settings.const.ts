@@ -8,4 +8,5 @@ export const INTERSOLVE_VISA_ENV_VARIABLE_SETTINGS: FspEnvVariablesDto = {
     names: Object.keys(intersolveVisaEnvVariablesSchema),
     allEnvVariables: env,
   }),
+  requiresTwilio: true,
 };
