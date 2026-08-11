@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
-import { AlFouadCreateTransactionRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-create-transaction-request-body.dto';
-import { CreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/create-transfer-params.interface';
+import { AlfouadCreateTransactionRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-create-transaction-request-body.dto';
+import { AlfouadCreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transfer-params.interface';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 
 const AGENT_CODE_CASH_PICKUP_ANYWHERE = 0;
@@ -13,6 +13,13 @@ export class AlfouadApiHelperService {
     if (env.ALFOUAD_MODE === FspMode.mock) {
       return new URL('api/fsp/alfouad/', env.MOCK_SERVICE_URL);
     }
+
+    if (!env.ALFOUAD_API_URL) {
+      throw new Error(
+        'ALFOUAD_API_URL is not set (required when ALFOUAD_MODE is EXTERNAL)',
+      );
+    }
+  
     return new URL(`${env.ALFOUAD_API_URL!}/`);
   }
 
@@ -61,7 +68,7 @@ export class AlfouadApiHelperService {
     deliveryCurrencyCode,
     deliveryAmount,
     reasonCode,
-  }: Omit<CreateTransferParams, 'requestIdentity'>): AlFouadCreateTransactionRequestBodyDto {
+  }: Omit<AlfouadCreateTransferParams, 'requestIdentity'>): AlfouadCreateTransactionRequestBodyDto {
     return {
       SenderFullName: senderFullName,
       SenderPhoneNumber: senderPhoneNumber,
