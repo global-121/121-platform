@@ -74,7 +74,7 @@ jobs:
         run: 'npm run test:coverage'
 
       - name: 'Upload coverage report to QLTY'
-        uses: qltysh/qlty-action/coverage@dafbc1e328f1f92525f1a3916724bd5fa01498e8
+        uses: qltysh/qlty-action/coverage@08a0a862c159eae9b9003081da6663d96efef637
         with:
           oidc: true
           add-prefix: ${{ env.interfacePath }}
