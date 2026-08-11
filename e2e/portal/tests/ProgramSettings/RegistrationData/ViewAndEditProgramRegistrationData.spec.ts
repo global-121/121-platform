@@ -32,7 +32,7 @@ const labelUpdates = [
 
 test('View program and edit kobo attributes in settings page', async ({
   resetDBAndSeedRegistrations,
-  registrationDataPage,
+  programSettingsRegistrationDataPage,
 }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.safaricomProgram,
@@ -42,32 +42,34 @@ test('View program and edit kobo attributes in settings page', async ({
   });
 
   await test.step('Add Kobo integration', async () => {
-    await registrationDataPage.addKoboIntegration(koboIntegrationDetails);
-    await registrationDataPage.koboSuccessfullyLinkedDialog({
+    await programSettingsRegistrationDataPage.addKoboIntegration(
+      koboIntegrationDetails,
+    );
+    await programSettingsRegistrationDataPage.koboSuccessfullyLinkedDialog({
       closeDialog: true,
     });
   });
 
   await test.step('Validate language tabs', async () => {
-    await registrationDataPage.validateLanguageTabs({
+    await programSettingsRegistrationDataPage.validateLanguageTabs({
       languages: languagesAfterIntegration,
     });
   });
 
   await test.step('Validate default attributes in table', async () => {
-    await registrationDataPage.validateProgramAttributesTable({
+    await programSettingsRegistrationDataPage.validateProgramAttributesTable({
       attributes: defaultSafaricomAttributes,
     });
   });
 
   await test.step('Validate kobo attributes in table', async () => {
-    await registrationDataPage.validateProgramAttributesTable({
+    await programSettingsRegistrationDataPage.validateProgramAttributesTable({
       attributes: kobooAttributes,
     });
   });
 
   await test.step('Edit attribute labels', async () => {
-    await registrationDataPage.editLabels({
+    await programSettingsRegistrationDataPage.editLabels({
       labelUpdates,
     });
   });
