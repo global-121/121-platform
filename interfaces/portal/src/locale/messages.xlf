@@ -816,7 +816,7 @@
         <source>Amount sent per payment</source>
       </trans-unit>
       <trans-unit id="428968768517674095" datatype="html">
-        <source>Would you like to proceed with <x equiv-text="{{ changeStatusMutation.data()?.applicableCount }}" id="INTERPOLATION"/> registration(s)?</source>
+        <source>Would you like to proceed with <x equiv-text="{{ dryRunData?.applicableCount }}" id="INTERPOLATION"/> registration(s)?</source>
       </trans-unit>
       <trans-unit id="4309697217076303455" datatype="html">
         <source><x equiv-text="paymentCount.toString()" id="count"/> (out of <x equiv-text="maxPayments.toString()" id="totalCount"/>)</source>
@@ -989,6 +989,9 @@
       <trans-unit id="5035732150329518917" datatype="html">
         <source>You&apos;re about to download an Excel file for all status &amp; data changes.</source>
       </trans-unit>
+      <trans-unit id="5060288231641087708" datatype="html">
+        <source>There are <x equiv-text="{{ dryRunData.pendingApprovalCount }}" id="INTERPOLATION"/> registration(s) with a payment pending approval</source>
+      </trans-unit>
       <trans-unit id="5061826209151408276" datatype="html">
         <source>This privacy notice tells you what to expect us to do with your personal information when you use the 121 Platform.</source>
       </trans-unit>
@@ -1143,7 +1146,7 @@
         <source>Use the arrow keys or W A S D to play the game</source>
       </trans-unit>
       <trans-unit id="561353031255604069" datatype="html">
-        <source>There are <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registration(s) that don&apos;t support this action</source>
+        <source>There are <x equiv-text="{{ dryRunData.nonApplicableCount }}" id="INTERPOLATION"/> registration(s) that don&apos;t support this action</source>
       </trans-unit>
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
@@ -1694,6 +1697,9 @@
       </trans-unit>
       <trans-unit id="8066608938393600549" datatype="html">
         <source>Message</source>
+      </trans-unit>
+      <trans-unit id="8069376225853843957" datatype="html">
+        <source>Their status will still be changed to &quot;<x equiv-text="{{ statusLabel() | lowercase }}" id="INTERPOLATION"/>&quot; if you proceed.</source>
       </trans-unit>
       <trans-unit id="8089925871034232084" datatype="html">
         <source>The data column name of the question.</source>

@@ -116,6 +116,7 @@
     </div>
   </form>
 </p-dialog>
+
 <app-form-dialog
   #dryRunWarningDialog
   header="Warning"
@@ -129,27 +130,44 @@
     dryRun: false,
   }"
 >
-  <b i18n
-    >There are
-    {{ changeStatusMutation.data()?.nonApplicableCount }}
-    registration(s) that don't support this action</b
-  >
-  <p class="pbs-2">
-    {{ changeStatusWarningMessage() }}
-  </p>
-  <p
-    class="pbs-2"
-    i18n
-  >
-    Registrations that do not support this action will remain in their current
-    status.
-  </p>
+  @let dryRunData = changeStatusMutation.data();
+  @if (dryRunData && dryRunData.nonApplicableCount > 0) {
+    <b i18n
+      >There are
+      {{ dryRunData.nonApplicableCount }}
+      registration(s) that don't support this action</b
+    >
+    <p class="pbs-2">
+      {{ changeStatusWarningMessage() }}
+    </p>
+    <p
+      class="pbs-2"
+      i18n
+    >
+      Registrations that do not support this action will remain in their current
+      status.
+    </p>
+  }
+  @if (dryRunData && (dryRunData.pendingApprovalCount ?? 0) > 0) {
+    <b i18n
+      >There are
+      {{ dryRunData.pendingApprovalCount }}
+      registration(s) with a payment pending approval</b
+    >
+    <p
+      class="pbs-2"
+      i18n
+    >
+      Their status will still be changed to "{{ statusLabel() | lowercase }}" if
+      you proceed.
+    </p>
+  }
   <p
     i18n
     class="pbs-2"
   >
     Would you like to proceed with
-    {{ changeStatusMutation.data()?.applicableCount }}
+    {{ dryRunData?.applicableCount }}
     registration(s)?
   </p>
 </app-form-dialog>
