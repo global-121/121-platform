@@ -10,9 +10,9 @@ import {
 } from '@azure/msal-browser';
 import { QueryClient } from '@tanstack/angular-query-experimental';
 
-import { AppRoutes } from '~/app.routes';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
+import { AppRoutes } from '~/enums/app-routes.enum';
 import { AUTH_ERROR_IN_STATE_KEY } from '~/services/auth/auth.constants';
 import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
 import { getMsalAuthAppProviders } from '~/services/auth/strategies/msal-auth/msal-auth.app-providers';

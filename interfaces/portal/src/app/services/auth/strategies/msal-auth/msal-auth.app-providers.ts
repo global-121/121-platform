@@ -19,7 +19,7 @@ import {
   PublicClientApplication,
 } from '@azure/msal-browser';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/enums/app-routes.enum';
 import { isIframed } from '~/utils/is-iframed';
 import { getOriginUrl } from '~/utils/url-helper';
 import { environment } from '~environment';
