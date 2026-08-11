@@ -47,10 +47,10 @@ npm run start:portal        # Start frontend (Angular dev server)
 **General Rules:**
 
 - Follow existing code patterns and architectural decisions
-- Prioritize readability and maintainability over clever or oneline solutions
-- Write self-descriptive variable-, function- and classnames
+- Prioritize readability and maintainability over clever or one-line solutions
+- Write self-descriptive variable, function, and class names
 - Refrain from writing comments when the code describes itself
-- If a clever solution in unavoidable wrap it in a function with a self-describing name
+- If a clever solution is unavoidable, wrap it in a function with a self-describing name
 - Prefer using already-installed utility libraries over custom implementations
 - Prefer built-in language features over custom implementations
 - Prefer early returns over optional chaining
