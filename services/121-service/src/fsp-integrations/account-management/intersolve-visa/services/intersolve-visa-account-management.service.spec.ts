@@ -15,6 +15,7 @@ import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/sh
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
@@ -29,6 +30,7 @@ describe('IntersolveVisaAccountManagementService', () => {
   let cardOrderRepository: jest.Mocked<IntersolveVisaCardOrderRepository>;
   let cardOrderProcessorService: jest.Mocked<IntersolveVisaCardOrderProcessorService>;
   let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
+  let lookupService: jest.Mocked<LookupService>;
 
   function mockGetRegistrationOrThrow(returnValue: any) {
     jest
@@ -124,6 +126,12 @@ describe('IntersolveVisaAccountManagementService', () => {
           },
         },
         {
+          provide: LookupService,
+          useValue: {
+            lookupAndCorrect: jest.fn(),
+          },
+        },
+        {
           provide: AzureLogService,
           useValue: {
             logError: jest.fn(),
@@ -152,6 +160,7 @@ describe('IntersolveVisaAccountManagementService', () => {
     programFspConfigurationRepository = module.get(
       ProgramFspConfigurationRepository,
     ) as jest.Mocked<ProgramFspConfigurationRepository>;
+    lookupService = module.get(LookupService) as jest.Mocked<LookupService>;
   });
 
   describe('linkDebitCardToRegistration', () => {
@@ -440,6 +449,7 @@ describe('IntersolveVisaAccountManagementService', () => {
     }
 
     beforeEach(() => {
+      lookupService.lookupAndCorrect.mockResolvedValue('31612345678');
       programFspConfigurationRepository.getByProgramIdAndFspName.mockResolvedValue(
         visaFspConfigurations,
       );
@@ -526,6 +536,16 @@ describe('IntersolveVisaAccountManagementService', () => {
       ).rejects.toThrow('db down');
     });
 
+    it('throws when Twilio lookup cannot validate addresseePhoneNumber', async () => {
+      lookupService.lookupAndCorrect.mockResolvedValue(
+        undefined as unknown as string,
+      );
+
+      await expect(
+        service.createVisaCardOrder(buildOrderInput()),
+      ).rejects.toThrow('addresseePhoneNumber is not a valid phone number.');
+    });
+
     it('returns the accepted order and starts background processing', async () => {
       cardOrderRepository.save.mockResolvedValue({
         id: 42,
@@ -546,7 +566,13 @@ describe('IntersolveVisaAccountManagementService', () => {
           noOfCards: 3,
           noOfCardsOrdered: 0,
           status: VisaCardOrderStatus.Processing,
+          addresseePhoneNumber: '+31612345678',
         }),
+      );
+
+      expect(lookupService.lookupAndCorrect).toHaveBeenCalledWith(
+        '+31612345678',
+        true,
       );
 
       expect(result).toEqual({

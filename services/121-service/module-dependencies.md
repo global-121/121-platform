@@ -41,6 +41,7 @@ graph LR
   InstanceReportingModule-->TransactionsModule
   IntersolveVisaAccountManagementModule-->IntersolveVisaDataSynchronizationModule
   IntersolveVisaAccountManagementModule-->IntersolveVisaModule
+  IntersolveVisaAccountManagementModule-->LookupModule
   IntersolveVisaAccountManagementModule-->MessageQueuesModule
   IntersolveVisaAccountManagementModule-->ProgramFspConfigurationsModule
   IntersolveVisaAccountManagementModule-->RegistrationsModule

@@ -18,7 +18,7 @@ const orderDebitCardOrder = {
   addressStreet: 'Anna van Saksenlaan',
   addressHouseNumber: '50',
   addressHouseNumberAddition: 'K',
-  phoneNumber: '123456789',
+  phoneNumber: '+31612345678',
   emailAddress: 'john.doe@example.org',
   addressee: 'John Doe',
 };

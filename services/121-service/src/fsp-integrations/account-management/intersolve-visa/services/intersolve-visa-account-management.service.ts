@@ -23,10 +23,12 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 
 @Injectable()
 export class IntersolveVisaAccountManagementService {
@@ -39,6 +41,7 @@ export class IntersolveVisaAccountManagementService {
     private readonly walletClosureScopedRepository: IntersolveVisaWalletClosureScopedRepository,
     private readonly cardOrderRepository: IntersolveVisaCardOrderRepository,
     private readonly cardOrderProcessorService: IntersolveVisaCardOrderProcessorService,
+    private readonly lookupService: LookupService,
     private readonly azureLogService: AzureLogService,
   ) {}
 
@@ -559,6 +562,11 @@ export class IntersolveVisaAccountManagementService {
         },
       );
 
+    const normalizedAddresseePhoneNumber =
+      await this.normalizeAddresseePhoneNumber({
+        addresseePhoneNumber,
+      });
+
     const order = new VisaCardOrderEntity();
     order.programId = programId;
     order.userId = userId;
@@ -566,7 +574,7 @@ export class IntersolveVisaAccountManagementService {
     order.noOfCardsOrdered = 0;
     order.status = VisaCardOrderStatus.Processing;
     order.addressee = addressee;
-    order.addresseePhoneNumber = addresseePhoneNumber;
+    order.addresseePhoneNumber = normalizedAddresseePhoneNumber;
     order.addresseeEmailAddress = addresseeEmailAddress;
     order.addressStreet = addressStreet;
     order.addressHouseNumber = addressHouseNumber;
@@ -591,6 +599,26 @@ export class IntersolveVisaAccountManagementService {
       id: savedOrder.id,
       noOfCards: savedOrder.noOfCards,
     };
+  }
+
+  private async normalizeAddresseePhoneNumber({
+    addresseePhoneNumber,
+  }: {
+    addresseePhoneNumber: string;
+  }): Promise<string> {
+    const sanitizedPhoneNumber = await this.lookupService.lookupAndCorrect(
+      addresseePhoneNumber,
+      true,
+    );
+
+    if (!sanitizedPhoneNumber) {
+      throw new HttpException(
+        'addresseePhoneNumber is not a valid phone number.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return formatPhoneNumber(sanitizedPhoneNumber);
   }
 
   public async getVisaCardOrders({

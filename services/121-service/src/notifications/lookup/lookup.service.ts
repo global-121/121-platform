@@ -34,7 +34,6 @@ export class LookupService {
         throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
     }
-    return;
   }
 
   public async getLocalNumber(
