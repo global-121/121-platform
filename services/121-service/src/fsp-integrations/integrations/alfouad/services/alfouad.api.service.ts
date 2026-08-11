@@ -17,7 +17,7 @@ import { AlfouadEncryptionService } from '@121-service/src/fsp-integrations/inte
 import { SensitivePiiValue } from '@121-service/src/shared/consts/sensitive-pii-value.class';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
-const ALFOUAD_SUCCES_STATE = '1';
+const ALFOUAD_SUCCESS_STATE = '1';
 
 @Injectable()
 export class AlfouadApiService {
