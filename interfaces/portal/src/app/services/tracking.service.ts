@@ -1,4 +1,10 @@
-import { inject, Injectable, isDevMode } from '@angular/core';
+import {
+  EnvironmentProviders,
+  inject,
+  Injectable,
+  isDevMode,
+  Provider,
+} from '@angular/core';
 
 import { MatomoTracker, provideMatomo, withRouter } from 'ngx-matomo-client';
 import { parseMatomoConnectionString } from 'scripts/lib/matomo.utils.mjs';
@@ -109,27 +115,31 @@ const IS_MATOMO_ENABLED = () =>
   providedIn: 'root',
 })
 export class TrackingService {
-  public static APP_PROVIDERS = IS_MATOMO_ENABLED()
-    ? [
-        provideMatomo(
-          {
-            siteId: MATOMO_CONNECTION_INFO.id,
-            trackerUrl: MATOMO_CONNECTION_INFO.api,
-            trackerUrlSuffix: '', // Should be included in `connectionInfo.api` used as `trackerUrl`
-            scriptUrl: MATOMO_CONNECTION_INFO.sdk,
-            acceptDoNotTrack: true, // Prevent unnecessary requests to the Matomo API
-            requireConsent: 'none', // Will change with AB#33767
-            runOutsideAngularZone: true,
-            enableJSErrorTracking: false, // We use ApplicationInsights for this
-            enableLinkTracking: 'enable-pseudo', // Enable tracking of right/middle-clicks
-            trackAppInitialLoad: false,
-          },
-          withRouter({
-            exclude: [new RegExp(AppRoutes.authCallback)],
-          }),
-        ),
-      ]
-    : [];
+  // Lazy getter to avoid reading `AppRoutes` at module-load time, which can be
+  // `undefined` due to circular imports and crash app bootstrap.
+  public static get APP_PROVIDERS(): (EnvironmentProviders | Provider)[] {
+    return IS_MATOMO_ENABLED()
+      ? [
+          provideMatomo(
+            {
+              siteId: MATOMO_CONNECTION_INFO.id,
+              trackerUrl: MATOMO_CONNECTION_INFO.api,
+              trackerUrlSuffix: '', // Should be included in `connectionInfo.api` used as `trackerUrl`
+              scriptUrl: MATOMO_CONNECTION_INFO.sdk,
+              acceptDoNotTrack: true, // Prevent unnecessary requests to the Matomo API
+              requireConsent: 'none', // Will change with AB#33767
+              runOutsideAngularZone: true,
+              enableJSErrorTracking: false, // We use ApplicationInsights for this
+              enableLinkTracking: 'enable-pseudo', // Enable tracking of right/middle-clicks
+              trackAppInitialLoad: false,
+            },
+            withRouter({
+              exclude: [new RegExp(AppRoutes.authCallback)],
+            }),
+          ),
+        ]
+      : [];
+  }
 
   private readonly tracker = IS_MATOMO_ENABLED()
     ? inject(MatomoTracker)
