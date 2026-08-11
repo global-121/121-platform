@@ -21,16 +21,24 @@
           class="py-1"
         />
       } @else if (item.type === 'koboImage') {
-        <app-image-list
-          class="inline-full"
-          [images]="[
-            {
-              label: item.label,
-              imageUrl: item.value,
-              dataTestId: item.dataTestId,
-            },
-          ]"
-        />
+        <div class="grid grid-cols-[auto_1fr] inline-full">
+          <div class="me-1">
+            <strong>
+              <i class="pi pi-image me-2"></i>
+              {{ item.label | translatableString }}:
+            </strong>
+          </div>
+          <span class="relative ms-1">
+            <div class="absolute inset-x-0 inset-bs-1/2 -translate-y-1/2">
+              <app-image-dialog-trigger
+                [wrapperClassName]="'flex items-center justify-between inline-full'"
+                [label]="item.label | translatableString"
+                [includeColoredChip]="true"
+                [imageUrl]="item.value"
+              />
+            </div>
+          </span>
+        </div>
       } @else {
         <div class="me-1">
           <strong>{{ item.label | translatableString }}:</strong>

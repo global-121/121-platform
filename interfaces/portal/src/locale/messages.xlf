@@ -369,9 +369,6 @@
       <trans-unit id="2459708623953075527" datatype="html">
         <source>Import PDF, PNG, JPG or DOC files to your program. The files will be available for viewing and exporting to users with the permission to view files.</source>
       </trans-unit>
-      <trans-unit id="2470271119948012900" datatype="html">
-        <source>Editing personal information</source>
-      </trans-unit>
       <trans-unit id="2483631699978730341" datatype="html">
         <source>Registrations by creation date (last 2 weeks)</source>
       </trans-unit>
@@ -742,6 +739,9 @@
       </trans-unit>
       <trans-unit id="4033651697146421557" datatype="html">
         <source>&apos;New&apos;</source>
+      </trans-unit>
+      <trans-unit id="4034470532550333987" datatype="html">
+        <source>Editing personal information</source>
       </trans-unit>
       <trans-unit id="4034832711447871121" datatype="html">
         <source>Max. 60 characters</source>
@@ -2358,6 +2358,24 @@
       </trans-unit>
       <trans-unit id="image-not-available" datatype="html">
         <source>Not available</source>
+      </trans-unit>
+      <trans-unit id="image-viewer-hide" datatype="html">
+        <source>Hide</source>
+      </trans-unit>
+      <trans-unit id="image-viewer-rotate-clockwise" datatype="html">
+        <source>Rotate clockwise</source>
+      </trans-unit>
+      <trans-unit id="image-viewer-rotate-counter-clockwise" datatype="html">
+        <source>Rotate counter-clockwise</source>
+      </trans-unit>
+      <trans-unit id="image-viewer-show" datatype="html">
+        <source>Show</source>
+      </trans-unit>
+      <trans-unit id="image-viewer-zoom-in" datatype="html">
+        <source>Zoom in</source>
+      </trans-unit>
+      <trans-unit id="image-viewer-zoom-out" datatype="html">
+        <source>Zoom out</source>
       </trans-unit>
       <trans-unit id="import-registrations-error" datatype="html">
         <source>Failed to import registrations. Please try again.</source>

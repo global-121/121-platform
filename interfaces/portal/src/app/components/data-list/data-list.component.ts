@@ -25,7 +25,7 @@ import {
   ChipVariant,
   ColoredChipComponent,
 } from '~/components/colored-chip/colored-chip.component';
-import { ImageListComponent } from '~/components/image-list/image-list.component';
+import { ImageDialogTriggerComponent } from '~/components/image/image-dialog-trigger/image-dialog-trigger.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -107,13 +107,13 @@ export type DataListItem = {
     DecimalPipe,
     SkeletonModule,
     ColoredChipComponent,
-    ImageListComponent,
     TranslatableStringPipe,
     NgClass,
     NgComponentOutlet,
     RouterLink,
     InputTextModule,
     TagModule,
+    ImageDialogTriggerComponent,
   ],
   templateUrl: './data-list.component.html',
   styles: ``,

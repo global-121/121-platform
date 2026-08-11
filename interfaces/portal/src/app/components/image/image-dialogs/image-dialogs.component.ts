@@ -1,45 +1,41 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   effect,
   inject,
   input,
   signal,
+  untracked,
 } from '@angular/core';
 
-import { AccordionModule } from 'primeng/accordion';
-import { ImageModule } from 'primeng/image';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
-import {
-  ChipVariant,
-  ColoredChipComponent,
-} from '~/components/colored-chip/colored-chip.component';
+import { ImageViewerComponent } from '~/components/image/image-viewer/image-viewer.component';
+import { ImageViewerService } from '~/components/image/services/image-viewer.service';
+import { isImageAvailable } from '~/components/image/utils/is-image-available';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
 @Component({
-  selector: 'app-image-list',
+  selector: 'app-image-dialogs',
   imports: [
-    AccordionModule,
-    ColoredChipComponent,
-    ImageModule,
+    ButtonModule,
+    DialogModule,
+    ImageViewerComponent,
     TranslatableStringPipe,
   ],
-  templateUrl: './image-list.component.html',
-  styles: ``,
+  templateUrl: './image-dialogs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ImageListComponent {
-  readonly availableChipLabel = $localize`:@@image-available:Available`;
-  readonly notAvailableChipLabel = $localize`:@@image-not-available:Not available`;
-  readonly availableChipVariant: ChipVariant = 'green';
-  readonly notAvailableChipVariant: ChipVariant = 'red';
-
+export class ImageDialogsComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly registrationApiService = inject(RegistrationApiService);
+  private readonly imageViewerService = inject(ImageViewerService);
   readonly images = input.required<
     {
       label: string | UILanguageTranslation;
@@ -51,6 +47,22 @@ export class ImageListComponent {
     }[]
   >();
   readonly downloadedImageObjectUrls = signal<(null | string)[]>([]);
+
+  // Visible dialogs are derived from the shared open-image state (keyed by URL).
+  readonly openImageIndexes = computed(() => {
+    const openImageUrls = this.imageViewerService.openImageUrls();
+    const indexes = new Set<number>();
+
+    this.images().forEach((image, index) => {
+      if (openImageUrls.has(image.imageUrl)) {
+        indexes.add(index);
+      }
+    });
+
+    return indexes;
+  });
+
+  isMaximized = false;
 
   constructor() {
     // Downloaded images are kept as blob object URLs, which must be revoked
@@ -85,26 +97,32 @@ export class ImageListComponent {
     this.destroyRef.onDestroy(() => {
       revokeBlobObjectUrls(this.downloadedImageObjectUrls());
     });
+
+    // Download images as they are opened elsewhere; downloads are idempotent.
+    effect(() => {
+      const openImageUrls = this.imageViewerService.openImageUrls();
+
+      untracked(() => {
+        this.images().forEach((image, index) => {
+          if (openImageUrls.has(image.imageUrl)) {
+            void this.openImage({ imageIndex: index });
+          }
+        });
+      });
+    });
   }
 
-  objectUrlForImageIndex({ index }: { index: number }): null | string {
-    const objectUrl = this.downloadedImageObjectUrls()[index];
-    if (!objectUrl) {
-      return null;
-    }
+  closeDialog({ imageIndex }: { imageIndex: number }): void {
+    const image = this.images()[imageIndex];
 
-    return objectUrl;
+    this.imageViewerService.close({ imageUrl: image.imageUrl });
   }
 
   isImageAvailable({ imageUrl }: { imageUrl: string }): boolean {
-    return (
-      typeof imageUrl === 'string' &&
-      imageUrl.trim().length > 0 &&
-      imageUrl.trim().toLowerCase() !== 'null'
-    );
+    return isImageAvailable({ imageUrl });
   }
 
-  async onAccordionOpen({ imageIndex }: { imageIndex: number }): Promise<void> {
+  async openImage({ imageIndex }: { imageIndex: number }): Promise<void> {
     const images = this.images();
 
     if (imageIndex < 0 || imageIndex >= images.length) {
@@ -113,7 +131,7 @@ export class ImageListComponent {
 
     const image = images[imageIndex];
 
-    await this.onImagePanelOpen({
+    await this.loadImage({
       index: imageIndex,
       programId: image.programId,
       referenceId: image.referenceId,
@@ -121,7 +139,7 @@ export class ImageListComponent {
     });
   }
 
-  async onImagePanelOpen({
+  async loadImage({
     index,
     programId,
     referenceId,

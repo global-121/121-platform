@@ -20,7 +20,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { ImageListComponent } from '~/components/image-list/image-list.component';
+import { ImageDialogsComponent } from '~/components/image/image-dialogs/image-dialogs.component';
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -42,8 +42,8 @@ const normalizeKoboImageValue = (value: unknown): string =>
     SkeletonModule,
     ButtonModule,
     DataListComponent,
-    ImageListComponent,
     EditPersonalInformationComponent,
+    ImageDialogsComponent,
   ],
   templateUrl: './program-registration-personal-information.page.html',
   styles: ``,
@@ -150,13 +150,6 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
     ),
   );
 
-  readonly textDataList = computed(() =>
-    this.dataList().filter(
-      (item): item is Exclude<DataListItem, { type: 'koboImage' }> =>
-        item.type !== 'koboImage',
-    ),
-  );
-
   readonly imageDataList = computed(() =>
     this.dataList().filter(
       (item): item is Extract<DataListItem, { type: 'koboImage' }> =>
@@ -176,13 +169,18 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
     })),
   );
 
-  readonly editableAttributeList = computed(() =>
-    (this.registrationAttributes.data() ?? []).filter(
-      (attribute) => attribute.type !== RegistrationAttributeTypes.koboImage,
-    ),
-  );
-
   readonly hasKoboImages = computed(() => this.imageDataList().length > 0);
+
+  readonly editableAttributeList = computed(() => {
+    const editableAttributes = (this.registrationAttributes.data() ?? []).map(
+      (attribute) =>
+        attribute.type === RegistrationAttributeTypes.koboImage
+          ? { ...attribute, isEditable: false }
+          : attribute,
+    );
+
+    return editableAttributes;
+  });
 
   onRegistrationUpdated() {
     this.isEditing.set(false);

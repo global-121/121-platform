@@ -34,6 +34,7 @@ import { Subscription } from 'rxjs';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
+import { ImageDialogTriggerComponent } from '~/components/image/image-dialog-trigger/image-dialog-trigger.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { Registration } from '~/domains/registration/registration.model';
 import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
@@ -58,6 +59,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     CheckboxModule,
     FormDialogComponent,
     FormsModule,
+    ImageDialogTriggerComponent,
   ],
   templateUrl: './edit-personal-information.component.html',
   styles: ``,
@@ -71,7 +73,6 @@ export class EditPersonalInformationComponent
   readonly programId = input.required<string>();
   readonly registrationId = input.required<string>();
   readonly attributeList = input.required<NormalizedRegistrationAttribute[]>();
-  readonly forceOneColumn = input(false);
   readonly cancelEditing = output();
   readonly registrationUpdated = output<Registration>();
 
