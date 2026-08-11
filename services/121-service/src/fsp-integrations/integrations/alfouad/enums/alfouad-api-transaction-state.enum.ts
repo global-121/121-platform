@@ -1,4 +1,4 @@
-export enum AlfouadTransactionState {
+export enum AlfouadApiTransactionStateEnum {
   pendingApproval = 1,
   approved = 2,
   paid = 3,

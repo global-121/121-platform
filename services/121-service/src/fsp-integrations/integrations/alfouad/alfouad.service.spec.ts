@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest/dist/testbed-factory';
 
 import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/alfouad.service';
-import { AlfouadTransactionState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-transaction-state.enum';
+import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 
 jest.mock('@121-service/src/env', () => ({
@@ -29,16 +29,16 @@ describe('AlfouadService', () => {
   describe('mapAlfouadStateToTransactionStatus', () => {
     it('should map paid to success', () => {
       const result = alfouadService.mapAlfouadStateToTransactionStatus({
-        alfouadState: AlfouadTransactionState.paid,
+        alfouadState: AlfouadApiTransactionStateEnum.paid,
       });
 
       expect(result).toBe(TransactionStatusEnum.success);
     });
 
     it.each([
-      AlfouadTransactionState.pendingApproval,
-      AlfouadTransactionState.approved,
-      AlfouadTransactionState.hold,
+      AlfouadApiTransactionStateEnum.pendingApproval,
+      AlfouadApiTransactionStateEnum.approved,
+      AlfouadApiTransactionStateEnum.hold,
     ])('should map state %s to waiting', (alfouadState) => {
       const result = alfouadService.mapAlfouadStateToTransactionStatus({
         alfouadState,
@@ -49,7 +49,7 @@ describe('AlfouadService', () => {
 
     it('should map canceled to error', () => {
       const result = alfouadService.mapAlfouadStateToTransactionStatus({
-        alfouadState: AlfouadTransactionState.canceled,
+        alfouadState: AlfouadApiTransactionStateEnum.canceled,
       });
 
       expect(result).toBe(TransactionStatusEnum.error);

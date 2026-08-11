@@ -1,4 +1,4 @@
-export interface AlfouadApiCreateTransactionResponseBody {
+export interface AlfouadApiCreateTransactionResponseBodyDto {
   readonly State: string;
   readonly Message: string;
   readonly ErrorCode?: string | null;

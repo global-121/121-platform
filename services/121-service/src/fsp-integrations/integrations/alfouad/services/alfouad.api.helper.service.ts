@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
-import { CreateTransactionRequestBody } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/create-transaction-request-body.dto';
+import { AlFouadCreateTransactionRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-create-transaction-request-body.dto';
 import { CreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/create-transfer-params.interface';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 
@@ -61,7 +61,7 @@ export class AlfouadApiHelperService {
     deliveryCurrencyCode,
     deliveryAmount,
     reasonCode,
-  }: Omit<CreateTransferParams, 'requestIdentity'>): CreateTransactionRequestBody {
+  }: Omit<CreateTransferParams, 'requestIdentity'>): AlFouadCreateTransactionRequestBodyDto {
     return {
       SenderFullName: senderFullName,
       SenderPhoneNumber: senderPhoneNumber,

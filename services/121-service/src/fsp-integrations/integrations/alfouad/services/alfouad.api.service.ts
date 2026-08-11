@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 
-import { AlfouadApiCreateTransactionResponseBody } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/create-transaction-response-body.dto';
+import { AlfouadApiCreateTransactionResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-create-transaction-response-body.dto';
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { CreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/create-transfer-params.interface';
@@ -28,7 +28,7 @@ export class AlfouadApiService {
       this.alfouadApiHelperService.createTransactionPayload(transaction);
 
     const response =
-      await this.sendAuthenticatedRequest<AlfouadApiCreateTransactionResponseBody>(
+      await this.sendAuthenticatedRequest<AlfouadApiCreateTransactionResponseBodyDto>(
         {
           method: 'POST',
           path: 'api/Transaction/TransactionCreate',
