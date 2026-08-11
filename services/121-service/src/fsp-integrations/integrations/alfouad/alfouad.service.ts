@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { AlfouadTransactionState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-transaction-state.enum';
+import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { CreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/create-transfer-params.interface';
 import { CreateTransferResult } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/create-transfer-result.interface';
@@ -54,16 +54,16 @@ export class AlfouadService {
   public mapAlfouadStateToTransactionStatus({
     alfouadState,
   }: {
-    alfouadState: AlfouadTransactionState;
+    alfouadState: AlfouadApiTransactionStateEnum;
   }): TransactionStatusEnum {
     switch (alfouadState) {
-      case AlfouadTransactionState.paid:
+      case AlfouadApiTransactionStateEnum.paid:
         return TransactionStatusEnum.success;
-      case AlfouadTransactionState.pendingApproval:
-      case AlfouadTransactionState.approved:
-      case AlfouadTransactionState.hold:
+      case AlfouadApiTransactionStateEnum.pendingApproval:
+      case AlfouadApiTransactionStateEnum.approved:
+      case AlfouadApiTransactionStateEnum.hold:
         return TransactionStatusEnum.waiting;
-      case AlfouadTransactionState.canceled:
+      case AlfouadApiTransactionStateEnum.canceled:
         return TransactionStatusEnum.error;
       default:
         return TransactionStatusEnum.error;
