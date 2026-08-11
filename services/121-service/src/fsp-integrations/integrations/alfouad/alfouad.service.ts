@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
 import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
+import { AlfouadCreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transfer-params.interface';
+import { AlfouadCreateTransferResult } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transfer-result.interface';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
-import { CreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/create-transfer-params.interface';
-import { CreateTransferResult } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/create-transfer-result.interface';
 import { AlfouadApiService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -46,8 +46,8 @@ export class AlfouadService {
   }
 
   public async createTransfer(
-    params: CreateTransferParams,
-  ): Promise<CreateTransferResult> {
+    params: AlfouadCreateTransferParams,
+  ): Promise<AlfouadCreateTransferResult> {
     return this.alfouadApiService.createTransfer(params);
   }
 

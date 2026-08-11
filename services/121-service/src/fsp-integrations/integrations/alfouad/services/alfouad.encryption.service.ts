@@ -3,8 +3,6 @@ import { constants, createPublicKey, publicEncrypt } from 'node:crypto';
 
 @Injectable()
 export class AlfouadEncryptionService {
-  // Encrypts a value with the agent's RSA public key, matching the BestRate
-  // reference implementation: PKCS#1 v1.5 padding, result Base64-encoded.
   public encrypt({
     data,
     publicKeyXml,
@@ -16,8 +14,8 @@ export class AlfouadEncryptionService {
     const publicKey = createPublicKey({
       key: {
         kty: 'RSA',
-        n: this.toBase64Url(modulus),
-        e: this.toBase64Url(exponent),
+        n: Buffer.from(modulus, 'base64').toString('base64url'),
+        e: Buffer.from(exponent, 'base64').toString('base64url'),
       },
       format: 'jwk',
     });
@@ -28,14 +26,18 @@ export class AlfouadEncryptionService {
     return encrypted.toString('base64');
   }
 
-  // The public key is provided as a .NET `RSAParameters` XML string containing
-  // the standard-Base64 Modulus and Exponent.
   private parseRsaParameters({ publicKeyXml }: { publicKeyXml: string }): {
     modulus: string;
     exponent: string;
   } {
-    const modulus = publicKeyXml.match(/<Modulus>(.*?)<\/Modulus>/)?.[1];
-    const exponent = publicKeyXml.match(/<Exponent>(.*?)<\/Exponent>/)?.[1];
+    const modulus = this.extractXmlTagValue({
+      xml: publicKeyXml,
+      tag: 'Modulus',
+    });
+    const exponent = this.extractXmlTagValue({
+      xml: publicKeyXml,
+      tag: 'Exponent',
+    });
     if (!modulus || !exponent) {
       throw new Error(
         'Invalid Al Fouad public key: expected RSAParameters XML with Modulus and Exponent',
@@ -44,7 +46,23 @@ export class AlfouadEncryptionService {
     return { modulus, exponent };
   }
 
-  private toBase64Url(base64: string): string {
-    return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  private extractXmlTagValue({
+    xml,
+    tag,
+  }: {
+    xml: string;
+    tag: string;
+  }): string | undefined {
+    const match = xml.match(new RegExp(`<${tag}>(.*?)</${tag}>`));
+    if (!match) {
+      return;
+    }
+
+    const [, value] = match;
+    if (!value) {
+      return;
+    }
+
+    return value.trim();
   }
 }

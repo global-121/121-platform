@@ -1,4 +1,4 @@
-export interface AlFouadCreateTransactionRequestBodyDto {
+export interface AlfouadCreateTransactionRequestBodyDto {
   readonly SenderFullName: string;
   readonly SenderPhoneNumber: string;
   readonly BeneficiaryFullName: string;

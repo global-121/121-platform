@@ -3,14 +3,14 @@ import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios
 
 import { AlfouadApiCreateTransactionResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-create-transaction-response-body.dto';
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
+import { AlfouadCreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transfer-params.interface';
+import { AlfouadCreateTransferResult } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transfer-result.interface';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
-import { CreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/create-transfer-params.interface';
-import { CreateTransferResult } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/create-transfer-result.interface';
 import { AlfouadApiHelperService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.helper.service';
 import { AlfouadEncryptionService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.encryption.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
-const ALFOUAD_SUCCES_STATE = '1';
+const ALFOUAD_SUCCESS_STATE = '1';
 
 @Injectable()
 export class AlfouadApiService {
@@ -23,7 +23,7 @@ export class AlfouadApiService {
   public async createTransfer({
     requestIdentity,
     ...transaction
-  }: CreateTransferParams): Promise<CreateTransferResult> {
+  }: AlfouadCreateTransferParams): Promise<AlfouadCreateTransferResult> {
     const payload =
       this.alfouadApiHelperService.createTransactionPayload(transaction);
 
@@ -45,7 +45,7 @@ export class AlfouadApiService {
       });
     }
 
-    if (body.State !== ALFOUAD_SUCCES_STATE) {
+    if (body.State !== ALFOUAD_SUCCESS_STATE) {
       throw new AlfouadApiError({
         message: body.Message ?? 'Unknown error',
         errorCode: body.ErrorCode,
