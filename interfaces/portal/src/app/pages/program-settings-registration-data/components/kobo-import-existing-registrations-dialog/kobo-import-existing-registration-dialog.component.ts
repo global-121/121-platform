@@ -139,10 +139,18 @@ export class KoboImportExistingRegistrationsDialogComponent {
     if (errors?.length) {
       // We need to add a ID because the table expects it, without <app-query-table> throws a typescript error
       const detailedErrorsWithIndexedIds: ValidationErrorTableRow[] =
-        errors.map((error: ValidationError, index: number) => ({
-          ...error,
-          id: index,
-        }));
+        errors.map((error: ValidationError, index: number) => {
+          // I'm sorry about this ugly 'fix'. Truly. If this code were a person, it would apologize too.
+          // check AB#43075 for more context as to why we did this...
+          if (error.column === 'programFspConfigurationName') {
+            error.column = 'fsp';
+            error.error = error.error.replace('FspConfigurationName', 'Fsp');
+          }
+          return {
+            ...error,
+            id: index,
+          };
+        });
 
       return detailedErrorsWithIndexedIds;
     }
