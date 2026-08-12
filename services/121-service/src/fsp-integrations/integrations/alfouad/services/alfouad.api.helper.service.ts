@@ -1,11 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
-import { AlfouadCreateTransactionRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-create-transaction-request-body.dto';
-import { AlfouadCreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transfer-params.interface';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
-
-const AGENT_CODE_CASH_PICKUP_ANYWHERE = 0;
 
 @Injectable()
 export class AlfouadApiHelperService {
@@ -54,34 +50,6 @@ export class AlfouadApiHelperService {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     });
-  }
-
-  public createTransactionPayload({
-    senderFullName,
-    senderPhoneNumber,
-    beneficiaryFullName,
-    beneficiaryPhoneNumber,
-    referenceNumber,
-    countryCode,
-    cityCode,
-    agentCode,
-    deliveryCurrencyCode,
-    deliveryAmount,
-    reasonCode,
-  }: Omit<AlfouadCreateTransferParams, 'requestIdentity'>): AlfouadCreateTransactionRequestBodyDto {
-    return {
-      SenderFullName: senderFullName,
-      SenderPhoneNumber: senderPhoneNumber,
-      BeneficiaryFullName: beneficiaryFullName,
-      BeneficiaryPhoneNumber: beneficiaryPhoneNumber,
-      ReferenceNumber: referenceNumber,
-      CountryCode: countryCode,
-      CityCode: cityCode,
-      AgentCode: agentCode ?? AGENT_CODE_CASH_PICKUP_ANYWHERE,
-      DeliveryCurrencyCode: deliveryCurrencyCode,
-      DeliveryAmount: deliveryAmount,
-      ReasonCode: reasonCode,
-    };
   }
 
   private escapeXml(value: string): string {

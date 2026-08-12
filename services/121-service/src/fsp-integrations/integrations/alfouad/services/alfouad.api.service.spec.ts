@@ -60,7 +60,6 @@ describe('AlfouadApiService', () => {
           provide: AlfouadApiHelperService,
           useValue: {
             getBaseUrl: jest.fn().mockReturnValue(baseUrl),
-            createTransactionPayload: jest.fn().mockReturnValue({}),
             buildAuthorizationValue: jest.fn().mockReturnValue('auth-value'),
             createRequestHeaders: jest.fn().mockReturnValue(requestHeaders),
           },
@@ -92,7 +91,21 @@ describe('AlfouadApiService', () => {
 
       // Assert
       expect(result).toEqual({ transactionUid: '519090100013' });
-      expect(post).toHaveBeenCalledWith(expectedUrl, {}, requestHeaders);
+      expect(post).toHaveBeenCalledWith(
+        expectedUrl,
+        {
+          SenderFullName: 'Test Sender',
+          SenderPhoneNumber: '0900000000',
+          BeneficiaryFullName: 'Test Beneficiary',
+          BeneficiaryPhoneNumber: '0911111111',
+          ReferenceNumber: 'RC-TEST-1',
+          CountryCode: 'SY',
+          CityCode: 'Damascus',
+          DeliveryCurrencyCode: 'SYP',
+          DeliveryAmount: 10000,
+        },
+        requestHeaders,
+      );
     });
 
     it('should throw with the message and error code when State is not success', async () => {

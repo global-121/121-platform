@@ -1,0 +1,86 @@
+@startuml
+title scenario Process Al Fouad Transaction Job
+
+start
+
+:System initiates or retries transaction event;
+note left
+  Handles 2 retry types correctly:
+  1. Payment Retry: transaction has status Failed and the
+     user retries the payment it belongs to.
+  2. Queue Retry: the worker crashed / timed out mid-job
+     and the processor picks up the same job again.
+  Transaction is set to 'waiting' here so it is not retried
+  while we are about to create it at Al Fouad.
+end note
+
+:System reads Al Fouad request identity
+(account, branch, username, password, public key)
+from the program FSP configuration;
+
+:System looks for an existing alfouad_transaction
+for this transactionId whose status is null;
+note left
+  Recovers an in-flight transaction after a crash or a
+  timeout during create, so we reuse its ReferenceNumber
+  instead of creating a second transaction.
+end note
+
+if (Existing transaction with status = null?) then (no)
+  :System counts failed transaction attempts
+   for this transactionId;
+  :System generates ReferenceNumber;
+  note right
+    ReferenceNumber = generateUUIDFromSeed(
+      referenceId + transactionId + failedTransactionAttempts)
+    - Payment Retry: attempts++ -> NEW reference.
+    - Queue Retry: same attempts -> SAME reference, so
+      Al Fouad answers 822 and we reconcile the existing one.
+  end note
+  :System stores alfouad_transaction
+   (ReferenceNumber, status = null);
+else (yes)
+  :System reuses the stored ReferenceNumber;
+endif
+
+:System authenticates and calls
+ Al Fouad TransactionCreate;
+note right: RSA-encrypted password inside a Base64 <Authentication> Bearer token.
+
+switch (Outcome?)
+case (State=1 success)
+  :System stores TransactionUID and sets status = created;
+  :System leaves transaction on 'waiting'
+   and creates a success transaction event;
+
+case (State=0, 822 duplicate or timeout)
+  :System calls TransactionByRef
+   with the same ReferenceNumber;
+  if (Transaction found at Al Fouad?) then (yes)
+    :System stores TransactionUID and maps lifecycle state
+     (Paid=3 -> success, Canceled=5 -> error, 1/2/4 -> waiting);
+    :System leaves transaction on 'waiting'
+     and creates a success transaction event;
+  else (no)
+    if (Reason was 822 duplicate?) then (yes - inconsistent)
+      :Duplicate reported but reference not found:
+       set transaction 'error' and raise an alert;
+    else (timeout - not created)
+      :System leaves status = null and transaction on 'waiting';
+      note right
+        Reconciliation / the next attempt reuses the SAME
+        ReferenceNumber to create it (no self-requeue,
+        no infinite loop).
+      end note
+    endif
+  endif
+
+case (State=0, other error e.g. 45)
+  :System sets alfouad_transaction status = failed;
+  :System updates transaction to 'error'
+   and creates related event;
+endswitch
+
+:System updates Redis in-progress set;
+stop
+@enduml
