@@ -135,63 +135,28 @@
 >
   @let dryRunData = changeStatusMutation.data();
 
-  @if (dryRunData && dryRunData.nonApplicableCount > 0) {
-    <b i18n
-      >There are
-      {{ dryRunData.nonApplicableCount }}
-      registration(s) that don't support this action</b
-    >
-    <p class="pbs-2">
-      {{ changeStatusWarningMessage() }}
-    </p>
-    <p
-      class="pbs-2"
-      i18n
-    >
-      Registrations that do not support this action will remain in their current
-      status.
-    </p>
-  }
-
   @if (dryRunData && (dryRunData.pendingApprovalCount ?? 0) > 0) {
-    <strong>
-      <p i18n>
-        You're about to <strong>{{ statusVerb() | lowercase }}</strong>
+    <p>
+      <strong i18n>
+        You're about to {{ statusVerb() | lowercase }}
         {{ dryRunData.pendingApprovalCount }} registration(s) that are included
         in a payment that's waiting for approval.
-      </p>
-    </strong>
-
-    @if (status() === RegistrationStatusEnum.declined) {
-      <p i18n>
-        Declining a registration included in a payment will exclude them from
-        that payment. To ensure they still receive their transfer, cancel this
-        action and decline them after payment.
-      </p>
-    }
-
-    @if (status() === RegistrationStatusEnum.paused) {
-      <p i18n>
-        Pausing a registration that’s included in a payment will result in a
-        failed transfer, if you include them in the future you’d be able to
-        retry failed payment.
-      </p>
-    }
-
-    <p i18n>
-      Would you like to "{{ statusVerb() | lowercase }}" these
-      {{ dryRunData.pendingApprovalCount }} registration(s)?
+      </strong>
     </p>
-  } @else {
-    <p
-      i18n
-      class="pbs-2"
-    >
-      Would you like to proceed with
-      {{ dryRunData?.applicableCount }}
-      registration(s)?
-    </p>
+
+    @if (pendingApprovalExplanation(); as explanation) {
+      <p>{{ explanation }}</p>
+    }
   }
+
+  <p
+    i18n
+    class="pbs-2"
+  >
+    Would you like to proceed with
+    {{ dryRunData?.applicableCount }}
+    registration(s)?
+  </p>
 </app-form-dialog>
 
 <p-dialog
