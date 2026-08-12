@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
 import { AlfouadCreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transfer-params.interface';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
@@ -42,16 +43,18 @@ const createTransferInput: AlfouadCreateTransferParams = {
 describe('AlfouadApiService', () => {
   let service: AlfouadApiService;
   let post: jest.Mock;
+  let get: jest.Mock;
 
   beforeEach(async () => {
     post = jest.fn();
+    get = jest.fn();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AlfouadApiService,
         {
           provide: CustomHttpService,
-          useValue: { post, get: jest.fn() },
+          useValue: { post, get },
         },
         {
           provide: AlfouadApiHelperService,
@@ -164,6 +167,116 @@ describe('AlfouadApiService', () => {
       await expect(act).rejects.toThrow(
         'Error calling api/Transaction/TransactionCreate: network down',
       );
+    });
+
+    it('should recover the TransactionUID via TransactionByRef on a duplicate (822)', async () => {
+      // Arrange
+      post.mockResolvedValue({
+        status: HttpStatus.OK,
+        data: {
+          State: '0',
+          Message: 'duplicate Reference Number',
+          ErrorCode: '822',
+        },
+      });
+      get.mockResolvedValue({
+        status: HttpStatus.OK,
+        data: {
+          State: '1',
+          Message: 'Pending_Approval',
+          TransactionInfo: { TransactionUID: '519090100013' },
+        },
+      });
+
+      // Act
+      const result = await service.createTransfer(createTransferInput);
+
+      // Assert
+      expect(result).toEqual({ transactionUid: '519090100013' });
+    });
+
+    it('should throw on a duplicate (822) when the transaction cannot be found', async () => {
+      // Arrange
+      post.mockResolvedValue({
+        status: HttpStatus.OK,
+        data: {
+          State: '0',
+          Message: 'duplicate Reference Number',
+          ErrorCode: '822',
+        },
+      });
+      get.mockResolvedValue({
+        status: HttpStatus.OK,
+        data: { State: '0', Message: 'Not found' },
+      });
+
+      // Act
+      const act = service.createTransfer(createTransferInput);
+
+      // Assert
+      await expect(act).rejects.toThrow('was not found');
+      await expect(act).rejects.toHaveProperty('errorCode', '822');
+    });
+  });
+
+  describe('getTransactionByRef', () => {
+    it('should return the mapped state and TransactionUID when found', async () => {
+      // Arrange
+      get.mockResolvedValue({
+        status: HttpStatus.OK,
+        data: {
+          State: '2',
+          Message: 'Approved',
+          TransactionInfo: { TransactionUID: '519090100013' },
+        },
+      });
+
+      // Act
+      const result = await service.getTransactionByRef({
+        referenceNumber: 'RC-TEST-1',
+        requestIdentity,
+      });
+
+      // Assert
+      expect(result).toEqual({
+        state: AlfouadApiTransactionStateEnum.approved,
+        transactionUid: '519090100013',
+      });
+      expect(get).toHaveBeenCalledWith(
+        'https://alfouad.example.org/api/Transaction/TransactionByRef?ReferenceNumber=RC-TEST-1',
+        requestHeaders,
+      );
+    });
+
+    it('should return undefined when the state is not a known lifecycle state', async () => {
+      // Arrange
+      get.mockResolvedValue({
+        status: HttpStatus.OK,
+        data: { State: '0', Message: 'Not found' },
+      });
+
+      // Act
+      const result = await service.getTransactionByRef({
+        referenceNumber: 'RC-TEST-1',
+        requestIdentity,
+      });
+
+      // Assert
+      expect(result).toBeUndefined();
+    });
+
+    it('should throw when no response body is returned', async () => {
+      // Arrange
+      get.mockResolvedValue({ status: HttpStatus.OK, data: null });
+
+      // Act
+      const act = service.getTransactionByRef({
+        referenceNumber: 'RC-TEST-1',
+        requestIdentity,
+      });
+
+      // Assert
+      await expect(act).rejects.toThrow('No response body received');
     });
   });
 });
