@@ -2673,26 +2673,20 @@
       <trans-unit id="registration-status-deleted" datatype="html">
         <source>Deleted</source>
       </trans-unit>
-      <trans-unit id="registration-status-dialog-submit-button-labels-complete" datatype="html">
-        <source>Complete</source>
-      </trans-unit>
       <trans-unit id="registration-status-dialog-submit-button-labels-decline" datatype="html">
-        <source>Decline</source>
+        <source>Decline registrations</source>
       </trans-unit>
       <trans-unit id="registration-status-dialog-submit-button-labels-delete" datatype="html">
-        <source>Delete</source>
+        <source>Delete registrations</source>
       </trans-unit>
       <trans-unit id="registration-status-dialog-submit-button-labels-include" datatype="html">
-        <source>Include</source>
+        <source>Include registrations</source>
       </trans-unit>
       <trans-unit id="registration-status-dialog-submit-button-labels-pause" datatype="html">
-        <source>Pause</source>
-      </trans-unit>
-      <trans-unit id="registration-status-dialog-submit-button-labels-register" datatype="html">
-        <source>Register</source>
+        <source>Pause registrations</source>
       </trans-unit>
       <trans-unit id="registration-status-dialog-submit-button-labels-validate" datatype="html">
-        <source>Validate</source>
+        <source>Validate registrations</source>
       </trans-unit>
       <trans-unit id="registration-status-included" datatype="html">
         <source>Included</source>
