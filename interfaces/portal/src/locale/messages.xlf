@@ -62,9 +62,6 @@
       <trans-unit id="1297402576657440154" datatype="html">
         <source>Transactions per payment</source>
       </trans-unit>
-      <trans-unit id="1302184832753381211" datatype="html">
-        <source>Including</source>
-      </trans-unit>
       <trans-unit id="1307602065632249368" datatype="html">
         <source>Export the FSP instructions and save the exported XLSX-file in the format required by the Financial Service Provider.</source>
       </trans-unit>
@@ -88,6 +85,9 @@
       </trans-unit>
       <trans-unit id="138735154290622738" datatype="html">
         <source>yourname@example.org</source>
+      </trans-unit>
+      <trans-unit id="1395032276253887547" datatype="html">
+        <source>Pausing a registration that’s included in a payment will result in a failed transfer, if you include them in the future you’d be able to retry failed payment.</source>
       </trans-unit>
       <trans-unit id="1403545532790809587" datatype="html">
         <source>Reconfigure <x equiv-text="this.fspLabel()" id="fspName"/></source>
@@ -393,9 +393,6 @@
       <trans-unit id="2560790823235400386" datatype="html">
         <source>No debit cards found</source>
       </trans-unit>
-      <trans-unit id="2564986692899370666" datatype="html">
-        <source><x equiv-text="{{ statusGerund() }}" id="INTERPOLATION"/> a registration that&apos;s included in a payment will result in a failed transfer, if you include them in the future you&apos;d be able to retry failed payment.</source>
-      </trans-unit>
       <trans-unit id="2569607511969570423" datatype="html">
         <source>Export selected registrations</source>
       </trans-unit>
@@ -446,9 +443,6 @@
       </trans-unit>
       <trans-unit id="2818334334996550834" datatype="html">
         <source>Kobo form refresh errors</source>
-      </trans-unit>
-      <trans-unit id="28184998386226894" datatype="html">
-        <source>Pausing</source>
       </trans-unit>
       <trans-unit id="2832894421278390919" datatype="html">
         <source>Invalid email or password. Double-check your credentials and try again.</source>
@@ -527,9 +521,6 @@
       </trans-unit>
       <trans-unit id="3099882906994173432" datatype="html">
         <source>Linked</source>
-      </trans-unit>
-      <trans-unit id="3141301060598402455" datatype="html">
-        <source>Deleting</source>
       </trans-unit>
       <trans-unit id="3142649024295180156" datatype="html">
         <source>Choose file</source>
@@ -863,9 +854,6 @@
       <trans-unit id="4421433274861560863" datatype="html">
         <source>Add a user to the 121 platform. Fill in the fields below to create a new user account.</source>
       </trans-unit>
-      <trans-unit id="4465385057621611056" datatype="html">
-        <source>Validating</source>
-      </trans-unit>
       <trans-unit id="4478569469579904965" datatype="html">
         <source>The note will be visible to other 121 users who are permitted to view personal profiles.</source>
       </trans-unit>
@@ -934,6 +922,9 @@
       </trans-unit>
       <trans-unit id="471816275243265264" datatype="html">
         <source>Location</source>
+      </trans-unit>
+      <trans-unit id="4736973860327687161" datatype="html">
+        <source>You&apos;re about to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> <x equiv-text="{{ dryRunData.pendingApprovalCount }}" id="INTERPOLATION_1"/> registration(s) that are included in a payment that&apos;s waiting for approval.</source>
       </trans-unit>
       <trans-unit id="4746344653872488527" datatype="html">
         <source>Export payment list</source>
@@ -1169,9 +1160,6 @@
       <trans-unit id="566208731639813177" datatype="html">
         <source>Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the program team&apos;s page. To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.</source>
       </trans-unit>
-      <trans-unit id="5667836214859665218" datatype="html">
-        <source>Declining</source>
-      </trans-unit>
       <trans-unit id="5670622821110743398" datatype="html">
         <source>Program information</source>
       </trans-unit>
@@ -1333,7 +1321,7 @@
         <source>Total payment amount</source>
       </trans-unit>
       <trans-unit id="6438873380402957093" datatype="html">
-        <source>Would you like to &quot;<x equiv-text="{{ statusVerb() }}" id="INTERPOLATION"/>&quot; these <x equiv-text="{{ dryRunData.pendingApprovalCount }}" id="INTERPOLATION_1"/> registration(s)?</source>
+        <source>Would you like to &quot;<x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/>&quot; these <x equiv-text="{{ dryRunData.pendingApprovalCount }}" id="INTERPOLATION_1"/> registration(s)?</source>
       </trans-unit>
       <trans-unit id="6456009373504868195" datatype="html">
         <source>Please correct the errors in the form.</source>
@@ -1469,9 +1457,6 @@
       </trans-unit>
       <trans-unit id="7006682445961797483" datatype="html">
         <source><x equiv-text="this.approvalsGiven()" id="PH"/> of <x equiv-text="this.approvalsRequired()" id="PH_1"/> approved</source>
-      </trans-unit>
-      <trans-unit id="7013426431142913192" datatype="html">
-        <source>You&apos;re about to &quot;<x equiv-text="{{ statusVerb() }}" id="INTERPOLATION"/>&quot; <x equiv-text="{{ dryRunData.pendingApprovalCount }}" id="INTERPOLATION_1"/> registration(s) that are included in a payment that&apos;s waiting for approval.</source>
       </trans-unit>
       <trans-unit id="7014051207286040747" datatype="html">
         <source>Data column name</source>
@@ -1619,6 +1604,9 @@
       </trans-unit>
       <trans-unit id="7585826646011739428" datatype="html">
         <source>Edit</source>
+      </trans-unit>
+      <trans-unit id="7599211658353827397" datatype="html">
+        <source>Declining a registration included in a payment will exclude them from that payment. To ensure they still receive their transfer, cancel this action and decline them after payment.</source>
       </trans-unit>
       <trans-unit id="7613791439001735010" datatype="html">
         <source>Template message</source>
