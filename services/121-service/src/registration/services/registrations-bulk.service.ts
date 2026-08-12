@@ -106,10 +106,10 @@ export class RegistrationsBulkService {
       },
     );
 
-    const resultDto = {
-      ...bulkActionResult,
-      pendingApprovalCount,
-    };
+    const resultDto =
+      pendingApprovalCount === undefined
+        ? bulkActionResult
+        : { ...bulkActionResult, pendingApprovalCount };
 
     if (!dryRun) {
       this.applyRegistrationStatusUpdate({
