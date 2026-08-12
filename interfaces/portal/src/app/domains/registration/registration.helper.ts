@@ -18,9 +18,11 @@ export const REGISTRATION_STATUS_LABELS: Record<
 };
 
 export const REGISTRATION_UPDATE_DIALOG_SUBMIT_BUTTON_LABELS: Record<
-  Exclude<RegistrationStatusEnum, 'completed' | 'new'>,
+  RegistrationStatusEnum,
   string
 > = {
+  [RegistrationStatusEnum.new]: '',
+  [RegistrationStatusEnum.completed]: '',
   [RegistrationStatusEnum.included]: $localize`:@@registration-status-dialog-submit-button-labels-include:Include registrations`,
   [RegistrationStatusEnum.declined]: $localize`:@@registration-status-dialog-submit-button-labels-decline:Decline registrations`,
   [RegistrationStatusEnum.validated]: $localize`:@@registration-status-dialog-submit-button-labels-validate:Validate registrations`,

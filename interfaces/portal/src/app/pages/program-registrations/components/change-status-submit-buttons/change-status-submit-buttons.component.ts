@@ -27,7 +27,6 @@ export class ChangeStatusSubmitButtonsComponent {
 
   readonly buttonText = computed(() => {
     const status = this.status();
-    console.log('ChangeStatusSubmitButtonsComponent: status =', status);
     if (!status) {
       return '';
     }
