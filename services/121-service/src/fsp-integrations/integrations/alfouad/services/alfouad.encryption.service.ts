@@ -11,6 +11,7 @@ export class AlfouadEncryptionService {
     publicKeyXml: string;
   }): string {
     const { modulus, exponent } = this.parseRsaParameters({ publicKeyXml });
+
     const publicKey = createPublicKey({
       key: {
         kty: 'RSA',
@@ -19,10 +20,12 @@ export class AlfouadEncryptionService {
       },
       format: 'jwk',
     });
+
     const encrypted = publicEncrypt(
       { key: publicKey, padding: constants.RSA_PKCS1_PADDING },
       Buffer.from(data, 'utf8'),
     );
+
     return encrypted.toString('base64');
   }
 
@@ -38,11 +41,13 @@ export class AlfouadEncryptionService {
       xml: publicKeyXml,
       tag: 'Exponent',
     });
+
     if (!modulus || !exponent) {
       throw new Error(
         'Invalid Al Fouad public key: expected RSAParameters XML with Modulus and Exponent',
       );
     }
+
     return { modulus, exponent };
   }
 

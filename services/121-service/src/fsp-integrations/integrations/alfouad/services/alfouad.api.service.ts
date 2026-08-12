@@ -2,9 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 
 import { AlfouadApiCreateTransactionResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-create-transaction-response-body.dto';
+import { AlfouadApiGetTransactionResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-get-transaction-response-body.dto';
+import { AlfouadApiErrorCode } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-error-code.enum';
+import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
 import { AlfouadCreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transfer-params.interface';
 import { AlfouadCreateTransferResult } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transfer-result.interface';
+import { AlfouadGetTransactionResult } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-get-transaction-result.interface';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { AlfouadApiHelperService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.helper.service';
 import { AlfouadEncryptionService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.encryption.service';
@@ -46,6 +50,13 @@ export class AlfouadApiService {
     }
 
     if (body.State !== ALFOUAD_SUCCESS_STATE) {
+      if (body.ErrorCode === AlfouadApiErrorCode.duplicateReferenceNumber) {
+        return this.recoverDuplicateTransfer({
+          referenceNumber: transaction.referenceNumber,
+          requestIdentity,
+        });
+      }
+
       throw new AlfouadApiError({
         message: body.Message ?? 'Unknown error',
         errorCode: body.ErrorCode,
@@ -60,6 +71,68 @@ export class AlfouadApiService {
     }
 
     return { transactionUid };
+  }
+
+  public async getTransactionByRef({
+    referenceNumber,
+    requestIdentity,
+  }: {
+    referenceNumber: string;
+    requestIdentity: AlfouadRequestIdentity;
+  }): Promise<AlfouadGetTransactionResult | undefined> {
+    const response =
+      await this.sendAuthenticatedRequest<AlfouadApiGetTransactionResponseBodyDto>(
+        {
+          method: 'GET',
+          path: `api/Transaction/TransactionByRef?ReferenceNumber=${encodeURIComponent(referenceNumber)}`,
+          requestIdentity,
+        },
+      );
+
+    const body = response.data;
+    if (!body) {
+      throw new AlfouadApiError({
+        message: 'No response body received from Al Fouad API',
+      });
+    }
+
+    const state = this.parseTransactionState(body.State);
+    if (state === undefined) {
+      return state;
+    }
+
+    return { state, transactionUid: body.TransactionInfo?.TransactionUID };
+  }
+
+  private async recoverDuplicateTransfer({
+    referenceNumber,
+    requestIdentity,
+  }: {
+    referenceNumber: string;
+    requestIdentity: AlfouadRequestIdentity;
+  }): Promise<AlfouadCreateTransferResult> {
+    const existing = await this.getTransactionByRef({
+      referenceNumber,
+      requestIdentity,
+    });
+
+    if (!existing?.transactionUid) {
+      throw new AlfouadApiError({
+        message: `Duplicate ReferenceNumber ${referenceNumber} was reported but the transaction was not found`,
+        errorCode: AlfouadApiErrorCode.duplicateReferenceNumber,
+      });
+    }
+
+    return { transactionUid: existing.transactionUid };
+  }
+
+  private parseTransactionState(
+    state: string,
+  ): AlfouadApiTransactionStateEnum | undefined {
+    const validStates: string[] = Object.values(AlfouadApiTransactionStateEnum);
+    return validStates.includes(state)
+      ? (state as AlfouadApiTransactionStateEnum)
+      : undefined;
   }
 
   private async sendAuthenticatedRequest<T>({
