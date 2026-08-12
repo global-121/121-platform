@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 
-import { AlfouadApiCreateTransactionResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-create-transaction-response-body.dto';
-import { AlfouadApiGetTransactionResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-get-transaction-response-body.dto';
+import { AlfouadApiResponseDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-response.dto';
 import { AlfouadApiErrorCode } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-error-code.enum';
 import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
@@ -26,20 +25,40 @@ export class AlfouadApiService {
 
   public async createTransfer({
     requestIdentity,
-    ...transaction
+    senderFullName,
+    senderPhoneNumber,
+    beneficiaryFullName,
+    beneficiaryPhoneNumber,
+    referenceNumber,
+    countryCode,
+    cityCode,
+    agentCode,
+    deliveryCurrencyCode,
+    deliveryAmount,
+    reasonCode,
   }: AlfouadCreateTransferParams): Promise<AlfouadCreateTransferResult> {
-    const payload =
-      this.alfouadApiHelperService.createTransactionPayload(transaction);
+    const payload = {
+      SenderFullName: senderFullName,
+      SenderPhoneNumber: senderPhoneNumber,
+      BeneficiaryFullName: beneficiaryFullName,
+      BeneficiaryPhoneNumber: beneficiaryPhoneNumber,
+      ReferenceNumber: referenceNumber,
+      CountryCode: countryCode,
+      CityCode: cityCode,
+      AgentCode: agentCode, //default is 0 for cash pickup anywhere
+      DeliveryCurrencyCode: deliveryCurrencyCode,
+      DeliveryAmount: deliveryAmount,
+      ReasonCode: reasonCode,
+    }
 
-    const response =
-      await this.sendAuthenticatedRequest<AlfouadApiCreateTransactionResponseBodyDto>(
-        {
-          method: 'POST',
-          path: 'api/Transaction/TransactionCreate',
-          payload,
-          requestIdentity,
-        },
-      );
+    const response = await this.sendAuthenticatedRequest<AlfouadApiResponseDto>(
+      {
+        method: 'POST',
+        path: 'api/Transaction/TransactionCreate',
+        payload,
+        requestIdentity,
+      },
+    );
 
     const body = response.data;
 
@@ -52,7 +71,7 @@ export class AlfouadApiService {
     if (body.State !== ALFOUAD_SUCCESS_STATE) {
       if (body.ErrorCode === AlfouadApiErrorCode.duplicateReferenceNumber) {
         return this.recoverDuplicateTransfer({
-          referenceNumber: transaction.referenceNumber,
+          referenceNumber,
           requestIdentity,
         });
       }
@@ -80,14 +99,13 @@ export class AlfouadApiService {
     referenceNumber: string;
     requestIdentity: AlfouadRequestIdentity;
   }): Promise<AlfouadGetTransactionResult | undefined> {
-    const response =
-      await this.sendAuthenticatedRequest<AlfouadApiGetTransactionResponseBodyDto>(
-        {
-          method: 'GET',
-          path: `api/Transaction/TransactionByRef?ReferenceNumber=${encodeURIComponent(referenceNumber)}`,
-          requestIdentity,
-        },
-      );
+    const response = await this.sendAuthenticatedRequest<AlfouadApiResponseDto>(
+      {
+        method: 'GET',
+        path: `api/Transaction/TransactionByRef?ReferenceNumber=${encodeURIComponent(referenceNumber)}`,
+        requestIdentity,
+      },
+    );
 
     const body = response.data;
     if (!body) {
@@ -156,11 +174,7 @@ export class AlfouadApiService {
     try {
       response =
         method === 'POST'
-          ? await this.httpService.post<AxiosResponse<T>>(
-              url,
-              payload,
-              headers,
-            )
+          ? await this.httpService.post<AxiosResponse<T>>(url, payload, headers)
           : await this.httpService.get<AxiosResponse<T>>(url, headers);
     } catch (error) {
       throw new AlfouadApiError({
