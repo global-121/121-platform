@@ -134,6 +134,7 @@
   }"
 >
   @let dryRunData = changeStatusMutation.data();
+
   @if (dryRunData && dryRunData.nonApplicableCount > 0) {
     <b i18n
       >There are
@@ -151,20 +152,25 @@
       status.
     </p>
   }
+
   @if (dryRunData && (dryRunData.pendingApprovalCount ?? 0) > 0) {
-    <b i18n
-      >There are
-      {{ dryRunData.pendingApprovalCount }}
-      registration(s) with a payment pending approval</b
-    >
-    <p
-      class="pbs-2"
-      i18n
-    >
-      Their status will still be changed to "{{ statusLabel() | lowercase }}" if
-      you proceed.
+    <p i18n>
+      You're about to "{{ statusVerb() }}"
+      {{ dryRunData.pendingApprovalCount }} registration(s) that are included in
+      a payment that's waiting for approval.
+    </p>
+    <p i18n>
+      {{ statusGerund() }} a registration that's included in a payment will
+      result in a failed transfer, if you include them in the future you'd be
+      able to retry failed payment.
+    </p>
+
+    <p i18n>
+      Would you like to "{{ statusVerb() }}" these
+      {{ dryRunData.pendingApprovalCount }} registration(s)?
     </p>
   }
+
   <p
     i18n
     class="pbs-2"

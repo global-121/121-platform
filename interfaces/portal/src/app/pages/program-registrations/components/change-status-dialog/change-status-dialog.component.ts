@@ -28,6 +28,7 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import {
+  REGISTRATION_STATUS_GERUND,
   REGISTRATION_STATUS_ICON,
   REGISTRATION_STATUS_LABELS,
   REGISTRATION_STATUS_VERB,
@@ -118,6 +119,14 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
       return '';
     }
     return REGISTRATION_STATUS_VERB[status];
+  });
+
+  readonly statusGerund = computed(() => {
+    const status = this.status();
+    if (!status) {
+      return '';
+    }
+    return REGISTRATION_STATUS_GERUND[status];
   });
 
   readonly changeStatusWarningMessage = computed(() => {

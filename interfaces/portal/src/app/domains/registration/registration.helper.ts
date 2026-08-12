@@ -50,6 +50,19 @@ export const REGISTRATION_STATUS_VERB: Record<RegistrationStatusEnum, string> =
     [RegistrationStatusEnum.deleted]: $localize`Delete`,
   };
 
+export const REGISTRATION_STATUS_GERUND: Record<
+  RegistrationStatusEnum,
+  string
+> = {
+  [RegistrationStatusEnum.new]: '',
+  [RegistrationStatusEnum.completed]: '',
+  [RegistrationStatusEnum.validated]: $localize`Validating`,
+  [RegistrationStatusEnum.included]: $localize`Including`,
+  [RegistrationStatusEnum.paused]: $localize`Pausing`,
+  [RegistrationStatusEnum.declined]: $localize`Declining`,
+  [RegistrationStatusEnum.deleted]: $localize`Deleting`,
+};
+
 export const DUPLICATE_STATUS_LABELS: Record<DuplicateStatus, string> = {
   [DuplicateStatus.duplicate]: $localize`:@@duplicate-status-duplicate:Duplicate`,
   [DuplicateStatus.unique]: $localize`:@@duplicate-status-unique:Unique`,
