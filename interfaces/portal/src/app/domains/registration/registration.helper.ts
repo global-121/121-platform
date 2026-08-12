@@ -18,16 +18,14 @@ export const REGISTRATION_STATUS_LABELS: Record<
 };
 
 export const REGISTRATION_UPDATE_DIALOG_SUBMIT_BUTTON_LABELS: Record<
-  RegistrationStatusEnum,
+  Exclude<RegistrationStatusEnum, 'completed' | 'new'>,
   string
 > = {
-  [RegistrationStatusEnum.included]: $localize`:@@registration-status-dialog-submit-button-labels-include:Include`,
-  [RegistrationStatusEnum.new]: $localize`:@@registration-status-dialog-submit-button-labels-register:Register`,
-  [RegistrationStatusEnum.validated]: $localize`:@@registration-status-dialog-submit-button-labels-validate:Validate`,
-  [RegistrationStatusEnum.declined]: $localize`:@@registration-status-dialog-submit-button-labels-decline:Decline`,
-  [RegistrationStatusEnum.completed]: $localize`:@@registration-status-dialog-submit-button-labels-complete:Complete`,
-  [RegistrationStatusEnum.deleted]: $localize`:@@registration-status-dialog-submit-button-labels-delete:Delete`,
-  [RegistrationStatusEnum.paused]: $localize`:@@registration-status-dialog-submit-button-labels-pause:Pause`,
+  [RegistrationStatusEnum.included]: $localize`:@@registration-status-dialog-submit-button-labels-include:Include registrations`,
+  [RegistrationStatusEnum.declined]: $localize`:@@registration-status-dialog-submit-button-labels-decline:Decline registrations`,
+  [RegistrationStatusEnum.validated]: $localize`:@@registration-status-dialog-submit-button-labels-validate:Validate registrations`,
+  [RegistrationStatusEnum.deleted]: $localize`:@@registration-status-dialog-submit-button-labels-delete:Delete registrations`,
+  [RegistrationStatusEnum.paused]: $localize`:@@registration-status-dialog-submit-button-labels-pause:Pause registrations`,
 };
 
 export const REGISTRATION_STATUS_ICON: Record<RegistrationStatusEnum, string> =
