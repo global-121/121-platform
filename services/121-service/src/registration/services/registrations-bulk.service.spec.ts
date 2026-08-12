@@ -199,7 +199,7 @@ describe('RegistrationBulkService', () => {
       messageContentType: undefined,
     };
 
-    it('does not compute pendingApprovalCount for statuses outside declined/paused/deleted', async () => {
+    it('does not compute pendingApprovalCount for statuses outside declined/paused', async () => {
       // Act
       const result =
         await registrationsBulkService.updateRegistrationStatusOrDryRun({
@@ -268,29 +268,6 @@ describe('RegistrationBulkService', () => {
 
       // Assert
       expect(result.pendingApprovalCount).toBe(2);
-    });
-
-    it('computes pendingApprovalCount for the delete dry run', async () => {
-      // Arrange
-      jest
-        .spyOn(transactionScopedRepository, 'createQueryBuilder')
-        .mockImplementation(() =>
-          generateMockCreateQueryBuilder(
-            { count: '1' },
-            { useGetRawOne: true },
-          ),
-        );
-
-      // Act
-      const result = await registrationsBulkService.deleteRegistrations({
-        paginateQuery,
-        programId,
-        dryRun: true,
-        reason: 'test',
-      });
-
-      // Assert
-      expect(result.pendingApprovalCount).toBe(1);
     });
   });
 });

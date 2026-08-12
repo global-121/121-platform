@@ -69,7 +69,6 @@ export class RegistrationsBulkService {
   private static readonly statusesRequiringPendingApprovalCheck = [
     RegistrationStatusEnum.declined,
     RegistrationStatusEnum.paused,
-    RegistrationStatusEnum.deleted,
   ];
 
   public async updateRegistrationStatusOrDryRun({
@@ -92,18 +91,25 @@ export class RegistrationsBulkService {
     const allowedCurrentStatuses =
       this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
 
-    const resultDto = await this.getBulkActionResult(
+    const bulkActionResult = await this.getBulkActionResult(
       paginateQuery,
       programId,
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses, registrationStatus),
     );
 
-    const pendingApprovalCount = await this.getPendingApprovalCountIfApplicable({
-      registrationStatus,
-      allowedCurrentStatuses,
-      paginateQuery,
-      programId,
-    });
+    const pendingApprovalCount = await this.getPendingApprovalCountIfApplicable(
+      {
+        registrationStatus,
+        allowedCurrentStatuses,
+        paginateQuery,
+        programId,
+      },
+    );
+
+    const resultDto = {
+      ...bulkActionResult,
+      pendingApprovalCount,
+    };
 
     if (!dryRun) {
       this.applyRegistrationStatusUpdate({
@@ -120,7 +126,7 @@ export class RegistrationsBulkService {
     }
     // Get the referenceIds for the update separately as running a query with no limit is slower
     // so you show the result of the applicable registrations earlier
-    return { ...resultDto, pendingApprovalCount };
+    return resultDto;
   }
 
   public async deleteRegistrations({
@@ -151,15 +157,6 @@ export class RegistrationsBulkService {
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
     );
 
-    const pendingApprovalCount = await this.getPendingApprovalCountIfApplicable(
-      {
-        registrationStatus: RegistrationStatusEnum.deleted,
-        allowedCurrentStatuses,
-        paginateQuery,
-        programId,
-      },
-    );
-
     if (!dryRun) {
       this.deleteBatch({
         paginateQuery,
@@ -170,7 +167,7 @@ export class RegistrationsBulkService {
         this.azureLogService.logError(error, true);
       });
     }
-    return { ...resultDto, pendingApprovalCount };
+    return resultDto;
   }
 
   public async sendMessagesOrDryRun(
