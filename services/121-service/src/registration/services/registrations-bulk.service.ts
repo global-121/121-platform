@@ -523,6 +523,8 @@ export class RegistrationsBulkService {
         programId,
         paginateQuery,
         queryBuilder,
+        // Only referenceId is selected here, so the 'data' relation join can be skipped
+        includeRegistrationDataRelation: false,
       });
 
     return data.map((r) => r.referenceId);

@@ -45,11 +45,14 @@ export class RegistrationsPaginationService {
     programId,
     hasPersonalReadPermission,
     queryBuilder,
+    includeRegistrationDataRelation = true,
   }: {
     query: PaginateQueryLimitRequired;
     programId: number;
     hasPersonalReadPermission: boolean;
     queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>;
+    // Set to false when only root columns (e.g. referenceId) are needed, to skip the costly eager-loaded 'data' relation join
+    includeRegistrationDataRelation?: boolean;
   }): Promise<FindAllRegistrationsResultDto> {
     // Deep clone query here to prevent mutation out of this function
     query = structuredClone(query);
@@ -137,7 +140,9 @@ export class RegistrationsPaginationService {
     }
 
     if (hasPersonalReadPermission) {
-      paginateConfigCopy.relations = ['data'];
+      paginateConfigCopy.relations = includeRegistrationDataRelation
+        ? ['data']
+        : [];
     } else {
       paginateConfigCopy.relations = [];
       paginateConfigCopy.searchableColumns = [];
@@ -187,10 +192,13 @@ export class RegistrationsPaginationService {
     programId,
     paginateQuery,
     queryBuilder,
+    includeRegistrationDataRelation = true,
   }: {
     programId: number;
     paginateQuery: PaginateQuery;
     queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>;
+    // Set to false when only root columns (e.g. referenceId) are needed, to skip the costly eager-loaded 'data' relation join
+    includeRegistrationDataRelation?: boolean;
   }) {
     paginateQuery.page = 1;
     const paginateQueryWithNoLimit = { ...paginateQuery, limit: -1 };
@@ -200,6 +208,7 @@ export class RegistrationsPaginationService {
       programId,
       hasPersonalReadPermission: true,
       queryBuilder: queryBuilder ? queryBuilder.clone() : undefined,
+      includeRegistrationDataRelation,
     });
 
     return paginateResult.data;
