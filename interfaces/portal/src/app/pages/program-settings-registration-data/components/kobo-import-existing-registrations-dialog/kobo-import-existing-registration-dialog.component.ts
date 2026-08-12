@@ -143,9 +143,14 @@ export class KoboImportExistingRegistrationsDialogComponent {
           // I'm sorry about this ugly 'fix'. Truly. If this code were a person, it would apologize too.
           // check AB#43075 for more context as to why we did this...
           if (error.column === 'programFspConfigurationName') {
-            error.column = 'fsp';
-            error.error = error.error.replace('FspConfigurationName', 'Fsp');
+            return {
+              error: error.error.replace('FspConfigurationName', 'Fsp'),
+              referenceId: error.referenceId,
+              column: 'fsp',
+              id: index,
+            };
           }
+
           return {
             ...error,
             id: index,
