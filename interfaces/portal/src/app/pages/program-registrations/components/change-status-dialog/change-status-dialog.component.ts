@@ -30,6 +30,7 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
 import {
   REGISTRATION_STATUS_ICON,
   REGISTRATION_STATUS_LABELS,
+  REGISTRATION_STATUS_PENDING_APPROVAL_EXPLANATION,
   REGISTRATION_STATUS_VERB,
 } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
@@ -118,6 +119,14 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
       return '';
     }
     return REGISTRATION_STATUS_VERB[status];
+  });
+
+  readonly pendingApprovalExplanation = computed(() => {
+    const status = this.status();
+    if (!status) {
+      return undefined;
+    }
+    return REGISTRATION_STATUS_PENDING_APPROVAL_EXPLANATION[status];
   });
 
   readonly changeStatusWarningMessage = computed(() => {

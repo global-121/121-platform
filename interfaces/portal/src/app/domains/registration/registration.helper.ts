@@ -30,6 +30,13 @@ export const REGISTRATION_UPDATE_DIALOG_SUBMIT_BUTTON_LABELS: Record<
   [RegistrationStatusEnum.paused]: $localize`:@@registration-status-dialog-submit-button-labels-pause:Pause registrations`,
 };
 
+export const REGISTRATION_STATUS_PENDING_APPROVAL_EXPLANATION: Partial<
+  Record<RegistrationStatusEnum, string>
+> = {
+  [RegistrationStatusEnum.declined]: $localize`:@@change-status-declined-pending-approval-explanation:Declining a registration included in a payment will exclude them from that payment. To ensure they still receive their transfer, cancel this action and decline them after payment.`,
+  [RegistrationStatusEnum.paused]: $localize`:@@change-status-paused-pending-approval-explanation:Pausing a registration that’s included in a payment will result in a failed transfer. If you include them in the future, you’ll be able to retry the failed payment.`,
+};
+
 export const REGISTRATION_STATUS_ICON: Record<RegistrationStatusEnum, string> =
   {
     [RegistrationStatusEnum.new]: '',

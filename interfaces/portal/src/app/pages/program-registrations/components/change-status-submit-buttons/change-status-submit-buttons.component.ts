@@ -28,7 +28,7 @@ export class ChangeStatusSubmitButtonsComponent {
   readonly buttonText = computed(() => {
     const status = this.status();
     if (!status) {
-      return '';
+      return $localize`:@@generic-approve:Approve`;
     }
     return REGISTRATION_UPDATE_DIALOG_SUBMIT_BUTTON_LABELS[status];
   });
