@@ -7,6 +7,8 @@ import {
 
 import { ButtonModule } from 'primeng/button';
 
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+
 import { Registration } from '~/domains/registration/registration.model';
 import { ChangeStatusSubmitButtonsComponent } from '~/pages/program-registrations/components/change-status-submit-buttons/change-status-submit-buttons.component';
 import { CustomMessagePreviewComponent } from '~/pages/program-registrations/components/custom-message-preview/custom-message-preview.component';
@@ -30,6 +32,7 @@ export class ChangeStatusContentsWithTemplatedMessageComponent {
   readonly enableSendMessage = input.required<boolean>();
   readonly isMutating = input(false);
   readonly cancelChangeStatus = output();
+  readonly status = input<RegistrationStatusEnum | undefined>();
 
   cancelClick() {
     this.cancelChangeStatus.emit();

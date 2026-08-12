@@ -103,6 +103,7 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
     }
     return REGISTRATION_STATUS_ICON[status];
   });
+
   readonly statusLabel = computed(() => {
     const status = this.status();
     if (!status) {
@@ -110,6 +111,7 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
     }
     return REGISTRATION_STATUS_LABELS[status];
   });
+
   readonly statusVerb = computed(() => {
     const status = this.status();
     if (!status) {
@@ -117,6 +119,7 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
     }
     return REGISTRATION_STATUS_VERB[status];
   });
+
   readonly changeStatusWarningMessage = computed(() => {
     switch (this.status()) {
       case RegistrationStatusEnum.validated:
@@ -133,6 +136,7 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
         return $localize`:@@change-status-default-warning:This action can not be applied to registrations you have selected.`;
     }
   });
+
   readonly canSendMessage = computed(() => {
     const status = this.status();
     if (!status) {
