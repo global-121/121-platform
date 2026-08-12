@@ -126,7 +126,7 @@ export class RegistrationsBulkService {
     }
     // Get the referenceIds for the update separately as running a query with no limit is slower
     // so you show the result of the applicable registrations earlier
-    return { ...resultDto, pendingApprovalCount };
+    return resultDto;
   }
 
   public async deleteRegistrations({
@@ -167,7 +167,7 @@ export class RegistrationsBulkService {
         this.azureLogService.logError(error, true);
       });
     }
-    return { ...resultDto, pendingApprovalCount };
+    return resultDto;
   }
 
   public async sendMessagesOrDryRun(
