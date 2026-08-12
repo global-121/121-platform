@@ -62,6 +62,9 @@
       <trans-unit id="1297402576657440154" datatype="html">
         <source>Transactions per payment</source>
       </trans-unit>
+      <trans-unit id="1302184832753381211" datatype="html">
+        <source>Including</source>
+      </trans-unit>
       <trans-unit id="1307602065632249368" datatype="html">
         <source>Export the FSP instructions and save the exported XLSX-file in the format required by the Financial Service Provider.</source>
       </trans-unit>
@@ -390,6 +393,9 @@
       <trans-unit id="2560790823235400386" datatype="html">
         <source>No debit cards found</source>
       </trans-unit>
+      <trans-unit id="2564986692899370666" datatype="html">
+        <source><x equiv-text="{{ statusGerund() }}" id="INTERPOLATION"/> a registration that&apos;s included in a payment will result in a failed transfer, if you include them in the future you&apos;d be able to retry failed payment.</source>
+      </trans-unit>
       <trans-unit id="2569607511969570423" datatype="html">
         <source>Export selected registrations</source>
       </trans-unit>
@@ -440,6 +446,9 @@
       </trans-unit>
       <trans-unit id="2818334334996550834" datatype="html">
         <source>Kobo form refresh errors</source>
+      </trans-unit>
+      <trans-unit id="28184998386226894" datatype="html">
+        <source>Pausing</source>
       </trans-unit>
       <trans-unit id="2832894421278390919" datatype="html">
         <source>Invalid email or password. Double-check your credentials and try again.</source>
@@ -518,6 +527,9 @@
       </trans-unit>
       <trans-unit id="3099882906994173432" datatype="html">
         <source>Linked</source>
+      </trans-unit>
+      <trans-unit id="3141301060598402455" datatype="html">
+        <source>Deleting</source>
       </trans-unit>
       <trans-unit id="3142649024295180156" datatype="html">
         <source>Choose file</source>
@@ -851,6 +863,9 @@
       <trans-unit id="4421433274861560863" datatype="html">
         <source>Add a user to the 121 platform. Fill in the fields below to create a new user account.</source>
       </trans-unit>
+      <trans-unit id="4465385057621611056" datatype="html">
+        <source>Validating</source>
+      </trans-unit>
       <trans-unit id="4478569469579904965" datatype="html">
         <source>The note will be visible to other 121 users who are permitted to view personal profiles.</source>
       </trans-unit>
@@ -988,9 +1003,6 @@
       </trans-unit>
       <trans-unit id="5035732150329518917" datatype="html">
         <source>You&apos;re about to download an Excel file for all status &amp; data changes.</source>
-      </trans-unit>
-      <trans-unit id="5060288231641087708" datatype="html">
-        <source>There are <x equiv-text="{{ dryRunData.pendingApprovalCount }}" id="INTERPOLATION"/> registration(s) with a payment pending approval</source>
       </trans-unit>
       <trans-unit id="5061826209151408276" datatype="html">
         <source>This privacy notice tells you what to expect us to do with your personal information when you use the 121 Platform.</source>
@@ -1157,6 +1169,9 @@
       <trans-unit id="566208731639813177" datatype="html">
         <source>Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the program team&apos;s page. To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.</source>
       </trans-unit>
+      <trans-unit id="5667836214859665218" datatype="html">
+        <source>Declining</source>
+      </trans-unit>
       <trans-unit id="5670622821110743398" datatype="html">
         <source>Program information</source>
       </trans-unit>
@@ -1317,6 +1332,9 @@
       <trans-unit id="6430223777327451722" datatype="html">
         <source>Total payment amount</source>
       </trans-unit>
+      <trans-unit id="6438873380402957093" datatype="html">
+        <source>Would you like to &quot;<x equiv-text="{{ statusVerb() }}" id="INTERPOLATION"/>&quot; these <x equiv-text="{{ dryRunData.pendingApprovalCount }}" id="INTERPOLATION_1"/> registration(s)?</source>
+      </trans-unit>
       <trans-unit id="6456009373504868195" datatype="html">
         <source>Please correct the errors in the form.</source>
       </trans-unit>
@@ -1451,6 +1469,9 @@
       </trans-unit>
       <trans-unit id="7006682445961797483" datatype="html">
         <source><x equiv-text="this.approvalsGiven()" id="PH"/> of <x equiv-text="this.approvalsRequired()" id="PH_1"/> approved</source>
+      </trans-unit>
+      <trans-unit id="7013426431142913192" datatype="html">
+        <source>You&apos;re about to &quot;<x equiv-text="{{ statusVerb() }}" id="INTERPOLATION"/>&quot; <x equiv-text="{{ dryRunData.pendingApprovalCount }}" id="INTERPOLATION_1"/> registration(s) that are included in a payment that&apos;s waiting for approval.</source>
       </trans-unit>
       <trans-unit id="7014051207286040747" datatype="html">
         <source>Data column name</source>
@@ -1697,9 +1718,6 @@
       </trans-unit>
       <trans-unit id="8066608938393600549" datatype="html">
         <source>Message</source>
-      </trans-unit>
-      <trans-unit id="8069376225853843957" datatype="html">
-        <source>Their status will still be changed to &quot;<x equiv-text="{{ statusLabel() | lowercase }}" id="INTERPOLATION"/>&quot; if you proceed.</source>
       </trans-unit>
       <trans-unit id="8089925871034232084" datatype="html">
         <source>The data column name of the question.</source>
