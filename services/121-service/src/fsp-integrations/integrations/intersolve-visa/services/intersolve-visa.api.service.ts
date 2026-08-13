@@ -609,16 +609,14 @@ export class IntersolveVisaApiService {
     holderId: string;
     addressStreet: string;
     addressHouseNumber: string;
-    addressHouseNumberAddition: string | undefined;
+    addressHouseNumberAddition: string | null | undefined;
     addressPostalCode: string;
     addressCity: string;
   }): Promise<void> {
     // Create the request
     const requestBody = {
       type: 'HOME',
-      addressLine1: `${
-        addressStreet + ' ' + addressHouseNumber + addressHouseNumberAddition
-      }`,
+      addressLine1: `${addressStreet} ${addressHouseNumber}${addressHouseNumberAddition ?? ''}`,
       city: addressCity,
       postalCode: addressPostalCode,
       country: 'NL',

@@ -113,3 +113,33 @@ describe('IntersolveVisaApiService - createPhysicalCard', () => {
     expect(callPayload).not.toHaveProperty('address3');
   });
 });
+
+describe('IntersolveVisaApiService - updateCustomerAddress', () => {
+  let service: IntersolveVisaApiService;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    service = new IntersolveVisaApiService(mockHttpService as any);
+    service.getAuthenticationToken = jest.fn().mockResolvedValue('token');
+    mockHttpService.request.mockResolvedValue({
+      status: 200,
+      statusText: 'OK',
+      data: { data: {} },
+    });
+  });
+
+  it('updateCustomerAddress omits house-number addition when it is null', async () => {
+    await service.updateCustomerAddress({
+      holderId: 'holder-123',
+      addressStreet: 'Milanenhorst',
+      addressHouseNumber: '84',
+      addressHouseNumberAddition: null,
+      addressPostalCode: '2317CH',
+      addressCity: 'Leiderdorp',
+    });
+
+    expect(mockHttpService.request).toHaveBeenCalledTimes(1);
+    const callPayload = mockHttpService.request.mock.calls[0][0].payload;
+    expect(callPayload.addressLine1).toBe('Milanenhorst 84');
+  });
+});
