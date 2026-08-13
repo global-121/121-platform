@@ -6,6 +6,7 @@ import { DuplicateOriginatorConversationIdError } from '@121-service/src/fsp-int
 import { SafaricomApiError } from '@121-service/src/fsp-integrations/integrations/safaricom/errors/safaricom-api.error';
 import { SafaricomTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomService } from '@121-service/src/fsp-integrations/integrations/safaricom/safaricom.service';
+import { generateTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
 import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { SafaricomTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -14,7 +15,6 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
 export class TransactionJobsSafaricomService implements TransactionJobService<SafaricomTransactionJobDto> {
@@ -49,9 +49,11 @@ export class TransactionJobsSafaricomService implements TransactionJobService<Sa
     // Using this count to generate the originatorConversationId ensures that on:
     // a. Payment retry, a new originatorConversationId is generated, which will not be blocked by Onafriq API, as desired.
     // b. Queue retry: on queue retry, the same originatorConversationId is generated, which will be blocked by Onafriq API, as desired.
-    const originatorConversationId = generateUUIDFromSeed(
-      `ReferenceId=${transactionJob.referenceId},TransactionId=${transactionJob.transactionId},Attempt=${failedTransactionAttempts}`,
-    );
+    const originatorConversationId = generateTransactionReference({
+      referenceId: transactionJob.referenceId,
+      transactionId: transactionJob.transactionId,
+      failedTransactionAttempts,
+    });
 
     // 3. Create or update Safaricom Transfer with originatorConversationId
     await this.upsertSafaricomTransfer(

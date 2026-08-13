@@ -7,6 +7,7 @@ import { NedbankVoucherScopedRepository } from '@121-service/src/fsp-integration
 import { NedbankService } from '@121-service/src/fsp-integrations/integrations/nedbank/services/nedbank.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
+import { generateTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
 import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { NedbankTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/nedbank-transaction-job.dto';
@@ -16,7 +17,6 @@ import { TransactionEventCreationContext } from '@121-service/src/payments/trans
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
 export class TransactionJobsNedbankService implements TransactionJobService<NedbankTransactionJobDto> {
@@ -73,9 +73,11 @@ export class TransactionJobsNedbankService implements TransactionJobService<Nedb
       // Using this count to generate the OrderReferenceId ensures that:
       // a. On payment retry, a new reference is generated (needed because a new reference is required by nedbank if a failed order was created).
       // b. Queue Retry: on queue retry, the same OrderReferenceId is generated, which is beneficial because the old successful/failed Order response would be returned.
-      orderCreateReference = generateUUIDFromSeed(
-        `ReferenceId=${transactionJob.referenceId},TransactionId=${transactionId},Attempt=${failedTransactionAttempts}`,
-      ).replace(/^(.{14})5/, '$14');
+      orderCreateReference = generateTransactionReference({
+        referenceId: transactionJob.referenceId,
+        transactionId,
+        failedTransactionAttempts,
+      }).replace(/^(.{14})5/, '$14');
 
       // THIS IS MOCK FUNCTIONALITY FOR TESTING PURPOSES ONLY
       if (
