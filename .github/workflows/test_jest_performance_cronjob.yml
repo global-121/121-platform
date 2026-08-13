@@ -41,6 +41,7 @@ jobs:
       shard1_files: ${{ steps.discover.outputs.shard1_files }}
       long_test_1: ${{ steps.discover.outputs.long_test_1 }}
       long_test_2: ${{ steps.discover.outputs.long_test_2 }}
+      long_test_3: ${{ steps.discover.outputs.long_test_3 }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v7
@@ -49,11 +50,14 @@ jobs:
         run: |
           LONG_TEST_1="payment-100k-registration-intersolve-visa.test.ts"
           LONG_TEST_2="performance-during-payment.test.ts"
-          SHARD1_FILES=$(find services/121-service/test/performance -name '*.test.ts' ! -name "$LONG_TEST_1" ! -name "$LONG_TEST_2" -print0 | xargs -0 -n1 basename | sort | xargs | tr ' ' ',')
+          # Isolated in its own shard so it doesn't inherit resource pressure from export-100k-registrations-ocw
+          LONG_TEST_3="find-duplicates-100k-registrations.test.ts"
+          SHARD1_FILES=$(find services/121-service/test/performance -name '*.test.ts' ! -name "$LONG_TEST_1" ! -name "$LONG_TEST_2" ! -name "$LONG_TEST_3" -print0 | xargs -0 -n1 basename | sort | xargs | tr ' ' ',')
           {
             echo "shard1_files=$SHARD1_FILES"
             echo "long_test_1=$LONG_TEST_1"
             echo "long_test_2=$LONG_TEST_2"
+            echo "long_test_3=$LONG_TEST_3"
           } >> $GITHUB_OUTPUT
 
   performance-test-shard:
@@ -63,7 +67,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: [1, 2, 3, 4]
         include:
           - shard: 1
             test_files: ${{ needs.generate-test-files.outputs.shard1_files }}
@@ -71,6 +75,8 @@ jobs:
             test_files: ${{ needs.generate-test-files.outputs.long_test_1 }}
           - shard: 3
             test_files: ${{ needs.generate-test-files.outputs.long_test_2 }}
+          - shard: 4
+            test_files: ${{ needs.generate-test-files.outputs.long_test_3 }}
 
     steps:
       - name: Check out repository code
