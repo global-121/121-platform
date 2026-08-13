@@ -654,13 +654,9 @@ export class IntersolveVisaApiService {
       postalCode: contactInformation.addressPostalCode,
       mobileNumber: formatPhoneNumber(contactInformation.phoneNumber),
     };
-    console.log(
-      '🚀 ~ IntersolveVisaApiService ~ updatePhysicalCardContactInformation ~ requestBody:',
-      requestBody,
-    );
 
     // Send the request: https://service-integration.intersolve.nl/payment-instrument-payment/swagger/index.html
-    const rewsponse = await this.intersolveApiRequest<void>({
+    await this.intersolveApiRequest<void>({
       errorPrefix:
         IntersolveVisa121ErrorText.updatePhysicalCardContactInformationError,
       method: 'POST',
@@ -668,10 +664,6 @@ export class IntersolveVisaApiService {
       apiPath: 'payment-instrument-payment',
       endpoint: `tokens/${tokenCode}/change-contact-information`,
     });
-    console.log(
-      '🚀 ~ IntersolveVisaApiService ~ updatePhysicalCardContactInformation ~ rewsponse:',
-      rewsponse,
-    );
   }
 
   // Helper function to convert errors in an Intersolve API Response into a message string.
