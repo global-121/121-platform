@@ -1,9 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { Equal, Not, Repository } from 'typeorm';
 
 import { IntersolveVisaCustomerEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-customer.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
@@ -38,6 +39,11 @@ export class IntersolveVisaCustomerScopedRepository extends ScopedRepository<Int
   public async findWithRegistration({ take }: { take?: number }) {
     return await this.find({
       relations: ['registration'],
+      where: {
+        registration: {
+          registrationStatus: Not(Equal(RegistrationStatusEnum.deleted)),
+        },
+      },
       take,
     });
   }
