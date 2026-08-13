@@ -180,7 +180,7 @@ describe('Process incoming Kobo submission via webhook', () => {
     // The mock service returns the error it receives from 121-service, so we can test that the 121-service returns the correct error
     expect(triggerSubmissionResponse.status).toBe(HttpStatus.BAD_REQUEST);
     expect(triggerSubmissionResponse.body[0].error).toMatchInlineSnapshot(
-      `"FspConfigurationName Invalid-FSP not found in program. Allowed values: Safaricom"`,
+      `"Fsp Invalid-FSP not found in program. Allowed values: Safaricom"`,
     );
 
     //  no registration was created
