@@ -632,6 +632,38 @@ export class IntersolveVisaApiService {
     });
   }
 
+  // The Customer API only updates the customer, the PaymentInstrument API is needed to also forward the address to Enfuce for the card renewal (shipping) process.
+  public async updatePhysicalCardContactInformation({
+    tokenCode,
+    contactInformation,
+  }: {
+    tokenCode: string;
+    contactInformation: ContactInformation;
+  }): Promise<void> {
+    // Create the request
+    const requestBody = {
+      address1: this.createAddressString(contactInformation),
+      address2: null,
+      address3: null,
+      address4: null,
+      city: contactInformation.addressCity,
+      country: 'NLD',
+      region: null,
+      postalCode: contactInformation.addressPostalCode,
+      mobileNumber: formatPhoneNumber(contactInformation.phoneNumber),
+    };
+
+    // Send the request: https://service-integration.intersolve.nl/payment-instrument-payment/swagger/index.html
+    await this.intersolveApiRequest<void>({
+      errorPrefix:
+        IntersolveVisa121ErrorText.updatePhysicalCardContactInformationError,
+      method: 'POST',
+      payload: requestBody,
+      apiPath: 'payment-instrument-payment',
+      endpoint: `tokens/${tokenCode}/change-contact-information`,
+    });
+  }
+
   // Helper function to convert errors in an Intersolve API Response into a message string.
   private convertResponseErrorsToMessage(
     errorsInResponseDto: ErrorsInResponseIntersolveApi[] | undefined,
@@ -668,10 +700,7 @@ export class IntersolveVisaApiService {
     method: 'GET' | 'POST' | 'PUT' | 'PATCH';
     endpoint: string;
     apiPath:
-      | 'customer'
-      | 'pointofsale'
-      | 'payment-instrument-payment'
-      | 'wallet';
+      'customer' | 'pointofsale' | 'payment-instrument-payment' | 'wallet';
     payload?: unknown;
   }) {
     const authToken = await this.getAuthenticationToken();

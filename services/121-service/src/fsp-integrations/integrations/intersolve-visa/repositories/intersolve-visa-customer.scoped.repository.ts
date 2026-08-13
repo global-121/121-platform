@@ -35,6 +35,13 @@ export class IntersolveVisaCustomerScopedRepository extends ScopedRepository<Int
     });
   }
 
+  public async findWithRegistration({ take }: { take?: number }) {
+    return await this.find({
+      relations: ['registration'],
+      take,
+    });
+  }
+
   public async findOneByRegistrationIdOrFail(registrationId: number) {
     const customer = await this.findOne({
       where: { registrationId: Equal(registrationId) },

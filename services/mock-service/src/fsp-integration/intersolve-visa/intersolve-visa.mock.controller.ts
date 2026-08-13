@@ -136,6 +136,17 @@ export class IntersolveVisaMockController {
     return this.intersolveVisaMockService.updateCustomerAddress(payload);
   }
 
+  @ApiOperation({ summary: 'Update physical card contact information' })
+  @Post(
+    'payment-instrument-payment/v1/tokens/:tokenCode/change-contact-information',
+  )
+  public changeCardContactInformation(
+    @Body() payload: Record<string, string>,
+    @Param('tokenCode') _tokenCode: string,
+  ): { status: number } {
+    return this.intersolveVisaMockService.changeCardContactInformation(payload);
+  }
+
   // get customer individual
   @ApiOperation({ summary: 'Get customer individual' })
   @Get('customer/v1/customers/:holderId/individual')

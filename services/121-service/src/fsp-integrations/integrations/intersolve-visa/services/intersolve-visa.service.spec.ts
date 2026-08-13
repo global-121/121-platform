@@ -65,6 +65,10 @@ describe('IntersolveVisaService', () => {
             issueToken: jest.fn(),
             createPhysicalCard: jest.fn(),
             substituteToken: jest.fn(),
+            updateCustomerPhoneNumber: jest.fn(),
+            updateCustomerIndividualName: jest.fn(),
+            updateCustomerAddress: jest.fn(),
+            updatePhysicalCardContactInformation: jest.fn(),
             getAuthenticationToken: jest.fn().mockResolvedValue('mock-token'),
           },
         },
@@ -711,6 +715,117 @@ describe('IntersolveVisaService', () => {
 
       // Assert
       expect(apiService.createPhysicalCard).toHaveBeenCalled();
+    });
+  });
+
+  describe('sendUpdatedCustomerInformation', () => {
+    const contactInformation = {
+      name: 'John Doe',
+      addressStreet: 'Damrak',
+      addressHouseNumber: '1',
+      addressPostalCode: '1011AB',
+      addressCity: 'Amsterdam',
+      phoneNumber: '+31600000000',
+      emailAddress: 'john.doe@example.org',
+    };
+
+    const buildCustomerWithChildWallets = (
+      childWallets: IntersolveVisaChildWalletEntity[],
+    ): IntersolveVisaCustomerEntity => {
+      const parentWalletWithCards = new IntersolveVisaParentWalletEntity();
+      parentWalletWithCards.tokenCode = 'parent-token';
+      parentWalletWithCards.intersolveVisaChildWallets = childWallets;
+
+      const customerWithCards = new IntersolveVisaCustomerEntity();
+      customerWithCards.holderId = 'holder-1';
+      customerWithCards.intersolveVisaParentWallet = parentWalletWithCards;
+      return customerWithCards;
+    };
+
+    it('should throw when no customer is found for the registration', async () => {
+      // Arrange
+      jest
+        .spyOn(customerRepo, 'findOneWithWalletsByRegistrationId')
+        .mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(
+        service.sendUpdatedCustomerInformation({
+          registrationId,
+          contactInformation,
+        }),
+      ).rejects.toThrow(
+        `IntersolveVisaCustomerEntity with registrationId ${registrationId} not found.`,
+      );
+      expect(
+        apiService.updatePhysicalCardContactInformation,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should update customer information and forward the address to the newest card', async () => {
+      // Arrange
+      const olderChildWallet = new IntersolveVisaChildWalletEntity();
+      olderChildWallet.tokenCode = 'older-token';
+      olderChildWallet.created = new Date('2023-01-01T00:00:00Z');
+
+      const newerChildWallet = new IntersolveVisaChildWalletEntity();
+      newerChildWallet.tokenCode = 'newer-token';
+      newerChildWallet.created = new Date('2024-06-01T00:00:00Z');
+
+      jest
+        .spyOn(customerRepo, 'findOneWithWalletsByRegistrationId')
+        .mockResolvedValue(
+          buildCustomerWithChildWallets([olderChildWallet, newerChildWallet]),
+        );
+
+      // Act
+      await service.sendUpdatedCustomerInformation({
+        registrationId,
+        contactInformation,
+      });
+
+      // Assert
+      expect(apiService.updateCustomerPhoneNumber).toHaveBeenCalledWith({
+        holderId: 'holder-1',
+        phoneNumber: contactInformation.phoneNumber,
+      });
+      expect(apiService.updateCustomerIndividualName).toHaveBeenCalledWith({
+        holderId: 'holder-1',
+        name: contactInformation.name,
+      });
+      expect(apiService.updateCustomerAddress).toHaveBeenCalledWith({
+        holderId: 'holder-1',
+        addressStreet: contactInformation.addressStreet,
+        addressHouseNumber: contactInformation.addressHouseNumber,
+        addressHouseNumberAddition: undefined,
+        addressPostalCode: contactInformation.addressPostalCode,
+        addressCity: contactInformation.addressCity,
+      });
+      expect(
+        apiService.updatePhysicalCardContactInformation,
+      ).toHaveBeenCalledWith({
+        tokenCode: 'newer-token',
+        contactInformation,
+      });
+    });
+
+    it('should not forward the address to a card when the customer has no child wallet', async () => {
+      // Arrange
+      jest
+        .spyOn(customerRepo, 'findOneWithWalletsByRegistrationId')
+        .mockResolvedValue(buildCustomerWithChildWallets([]));
+
+      // Act
+      await service.sendUpdatedCustomerInformation({
+        registrationId,
+        contactInformation,
+      });
+
+      // Assert
+      expect(apiService.updateCustomerAddress).toHaveBeenCalled();
+      expect(
+        apiService.updatePhysicalCardContactInformation,
+      ).not.toHaveBeenCalled();
     });
   });
 });
