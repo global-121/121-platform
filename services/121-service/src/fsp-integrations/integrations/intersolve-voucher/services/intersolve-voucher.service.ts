@@ -17,7 +17,6 @@ import {
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from '@121-service/src/notifications/dto/twilio.dto';
-import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
@@ -49,8 +48,6 @@ export class IntersolveVoucherService {
   public readonly transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(TwilioMessageEntity)
-  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
   private readonly fallbackRegistrationPreferredLanguage =
     RegistrationPreferredLanguage.en;
@@ -122,7 +119,7 @@ export class IntersolveVoucherService {
         );
         return;
       } else {
-        // .. if existing voucher is found, then continue with that one, and don't create new one
+        // .. if existing voucher found, then continue with that one, and don't create new one
         paResult.status = TransactionStatusEnum.success;
       }
     } else {
@@ -458,38 +455,31 @@ export class IntersolveVoucherService {
   public async updateTransactionProgressBasedOnInitialMessage({
     transactionId,
     newTransactionStatus,
-    messageSid,
     errorMessage,
     userId,
     programFspConfigurationId,
   }: {
     transactionId: number;
-    newTransactionStatus: TransactionStatusEnum;
-    messageSid?: string;
+    newTransactionStatus:
+      | TransactionStatusEnum.waiting
+      | TransactionStatusEnum.error;
     errorMessage?: string;
     userId: number;
     programFspConfigurationId: number;
   }): Promise<void> {
-    await this.transactionsService.saveProgress({
-      context: {
-        transactionId,
-        userId,
-        programFspConfigurationId,
-      },
+    const context = {
+      transactionId,
+      userId,
+      programFspConfigurationId,
+    };
+
+    await this.transactionsService.saveProgressUnlessTransactionFailed({
+      context,
       description:
         TransactionEventDescription.intersolveVoucherInitialMessageSent,
       newTransactionStatus,
       errorMessage,
     });
-
-    if (messageSid) {
-      await this.twilioMessageRepository.update(
-        { sid: messageSid },
-        {
-          transactionId,
-        },
-      );
-    }
   }
 
   public async getVoucherImage(
@@ -680,13 +670,11 @@ export class IntersolveVoucherService {
     transactionId,
     newTransactionStatus,
     errorMessage,
-    messageSid,
     intersolveVoucherId,
   }: {
     transactionId: number;
     newTransactionStatus: TransactionStatusEnum;
     errorMessage: string | null;
-    messageSid?: string;
     intersolveVoucherId: number;
   }): Promise<void> {
     await this.transactionsService.saveProgressFromExternalSource({
@@ -703,15 +691,6 @@ export class IntersolveVoucherService {
       });
     intersolveVoucher.send = true;
     await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
-
-    if (messageSid) {
-      await this.twilioMessageRepository.update(
-        { sid: messageSid },
-        {
-          transactionId,
-        },
-      );
-    }
   }
 
   public async getVouchersWithBalance(

@@ -47,6 +47,25 @@ export class TransactionRepository extends Repository<TransactionEntity> {
       .execute();
   }
 
+  public async updateStatusUnlessIn({
+    transactionId,
+    newTransactionStatus,
+    excludedStatuses,
+  }: {
+    transactionId: number;
+    newTransactionStatus: TransactionStatusEnum;
+    excludedStatuses: TransactionStatusEnum[];
+  }): Promise<boolean> {
+    const updateResult = await this.createQueryBuilder('transaction')
+      .update()
+      .set({ status: newTransactionStatus })
+      .where('id = :transactionId', { transactionId })
+      .andWhere('status NOT IN (:...excludedStatuses)', { excludedStatuses })
+      .execute();
+
+    return updateResult.affected === 1;
+  }
+
   public async getStatusByIdOrThrow(
     transactionId: number,
   ): Promise<TransactionStatusEnum> {
