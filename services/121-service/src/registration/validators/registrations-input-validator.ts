@@ -347,9 +347,7 @@ export class RegistrationsInputValidator {
             rowErrors.push(errorObj);
           } else if (row[att.name] !== undefined) {
             validatedRegistrationInput.data[att.name] = row[att.name] as
-              | string
-              | number
-              | boolean;
+              string | number | boolean;
           }
         }),
       );
@@ -468,7 +466,7 @@ export class RegistrationsInputValidator {
         index: i,
         value: programFspName,
         column: AdditionalAttributes.programFspConfigurationName,
-        error: `FspConfigurationName ${programFspName} not found in program. Allowed values: ${programFspConfigurations
+        error: `Fsp ${programFspName} not found in program. Allowed values: ${programFspConfigurations
           .map((fspConfig) => fspConfig.name)
           .join(', ')}`,
       };

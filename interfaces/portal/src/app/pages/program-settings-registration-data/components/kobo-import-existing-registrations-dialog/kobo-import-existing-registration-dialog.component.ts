@@ -15,6 +15,8 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+
 import {
   ChipVariant,
   ColoredChipComponent,
@@ -142,10 +144,12 @@ export class KoboImportExistingRegistrationsDialogComponent {
         errors.map((error: ValidationError, index: number) => {
           // I'm sorry about this ugly 'fix'. Truly. If this code were a person, it would apologize too.
           // check AB#43075 for more context as to why we did this...
-          if (error.column === 'programFspConfigurationName') {
+          if (
+            error.column ===
+            GenericRegistrationAttributes.programFspConfigurationName.toString()
+          ) {
             return {
-              error: error.error.replace('FspConfigurationName', 'Fsp'),
-              referenceId: error.referenceId,
+              ...error,
               column: 'fsp',
               id: index,
             };
