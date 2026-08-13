@@ -1,0 +1,45 @@
+@startuml
+title scenario Process Al Fouad Reconciliation (nightly cron)
+
+legend top right
+  Al Fouad state -> 121 status
+  --
+  3 (Paid) -> success
+  1/ 2/ 4 (Pending_Approval/ Approved/ Hold) -> waiting
+  5 (Canceled) -> error
+endlegend
+
+start
+:System gets 'waiting' transactions;
+
+repeat
+  :Take next selected transaction;
+
+  :System recomputes ReferenceNumber:
+  referenceId + transactionId + failedTransactionAttempts;
+
+  :System authenticates and calls
+    getTransactionByRef with referenceNumber;
+
+  if (Transaction found at AlFouad?) then (no)
+    :Throw error: Al Fouad 
+    transaction not found;
+  else (yes)
+    switch (Transaction state?)
+    case (Paid)
+      :Update transaction to 'success'
+        and create reconciliation event;
+    case (Canceled)
+      :Update transaction to 'error' (with cancel reason)
+        and create reconciliation event;
+    case (Pending / Approved / Hold)
+      :Leave 'waiting';
+    endswitch
+  endif
+
+repeat while (More transactions?) is (yes) not (no)
+
+:System logs the number of transactions processed;
+
+stop
+@enduml
