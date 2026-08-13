@@ -230,14 +230,14 @@ export class ProgramRegistrationAttributesService {
       (attr) => attr.name === DefaultRegistrationDataAttributeNames.phoneNumber,
     );
 
-    // Twilio needs a required phoneNumber to send messages, so only add it when Twilio is enabled.
+    // Twilio uses the phoneNumber to send messages, so add it (non-required) when Twilio is enabled.
     if (
       env.TWILIO_MODE !== TwilioMode.disabled &&
       phoneNumberAttributeMissing
     ) {
       programRegistrationAttributes.push({
         name: DefaultRegistrationDataAttributeNames.phoneNumber,
-        type: RegistrationAttributeTypes.text,
+        type: RegistrationAttributeTypes.tel,
         label: { en: 'Phone number' },
         isRequired: false,
       });

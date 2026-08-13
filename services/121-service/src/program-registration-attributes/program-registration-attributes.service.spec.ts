@@ -457,7 +457,7 @@ describe('ProgramRegistrationAttributesService', () => {
       mockEnv.TWILIO_MODE = TwilioMode.mock;
     });
 
-    it('adds a required phoneNumber attribute when it is missing and Twilio is enabled', async () => {
+    it('adds a non-required phoneNumber attribute when it is missing and Twilio is enabled', async () => {
       // Act
       const result =
         await programRegistrationAttributesService.applyProgramRegistrationAttributesFallbackIfNecessary(
@@ -474,6 +474,7 @@ describe('ProgramRegistrationAttributesService', () => {
       );
       expect(phoneNumberAttribute).toBeDefined();
       expect(phoneNumberAttribute?.isRequired).toBe(false);
+      expect(phoneNumberAttribute?.type).toBe(RegistrationAttributeTypes.tel);
     });
 
     it('does not duplicate the phoneNumber attribute when it is already present', async () => {
