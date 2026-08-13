@@ -45,7 +45,7 @@ export class AlfouadApiService {
       ReferenceNumber: referenceNumber,
       CountryCode: countryCode,
       CityCode: cityCode,
-      AgentCode: agentCode, //default is 0 for cash pickup anywhere
+      AgentCode: agentCode,
       DeliveryCurrencyCode: deliveryCurrencyCode,
       DeliveryAmount: deliveryAmount,
       ReasonCode: reasonCode,
