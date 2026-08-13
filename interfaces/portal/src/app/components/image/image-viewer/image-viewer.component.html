@@ -49,14 +49,24 @@
   </p-buttongroup>
 
   <div
+    i18n
     class="bg-grey-100/75 absolute inset-0 flex items-center justify-center overflow-hidden rounded-md"
   >
-    <img
-      #imageElement
-      [src]="imageUrl()"
-      [alt]=""
-      class="object-cover inline-full"
-      style="transition: transform 120ms ease-in-out"
-    />
+    @if (isImageBlob()) {
+      <img
+        #imageElement
+        [src]="imageUrl()"
+        [alt]=""
+        class="object-contain inline-full max-block-full max-inline-full"
+        style="transition: transform 120ms ease-in-out"
+      />
+    } @else {
+      <p-progressSpinner
+        class="inline-10"
+        strokeWidth="8"
+        fill="transparent"
+        animationDuration=".5s"
+      ></p-progressSpinner>
+    }
   </div>
 </div>

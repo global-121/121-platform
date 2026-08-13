@@ -11,10 +11,11 @@ import {
 import Panzoom, { PanzoomObject } from '@panzoom/panzoom';
 import { ButtonModule } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-image-viewer',
-  imports: [ButtonModule, ButtonGroupModule],
+  imports: [ButtonModule, ButtonGroupModule, ProgressSpinner],
   templateUrl: './image-viewer.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -24,6 +25,7 @@ export class ImageViewerComponent {
   private readonly ZOOM_FACTOR_MAX = 5;
 
   readonly imageUrl = input.required<string>();
+  readonly isImageBlob = computed(() => this.imageUrl().includes('blob:'));
 
   readonly imageElement =
     viewChild.required<ElementRef<HTMLImageElement>>('imageElement');
