@@ -72,10 +72,15 @@ export class RequiredAttributesComponent {
       return [];
     }
 
-    const requiredAttributeNames = new Set<string>([
-      FspAttributes.fullName,
-      FspAttributes.phoneNumber,
-    ]);
+    const requiredAttributeNames = new Set<string>([FspAttributes.fullName]);
+
+    // Workaround: the backend only auto-adds phoneNumber when Twilio is enabled, so its presence here is
+    // a proxy for "Twilio is enabled" (an admin manually adding it via the API instead is very unlikely).
+    // Kobo forms must include this field whenever Twilio is enabled
+    const phoneNumberAttributeName: string = FspAttributes.phoneNumber;
+    if (attributes.some((attr) => attr.name === phoneNumberAttributeName)) {
+      requiredAttributeNames.add(phoneNumberAttributeName);
+    }
 
     for (const fspConfig of fspConfigs) {
       const fspSetting = FSP_SETTINGS[fspConfig.fspName];
