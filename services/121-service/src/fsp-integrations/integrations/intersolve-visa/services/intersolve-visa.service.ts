@@ -86,9 +86,9 @@ export class IntersolveVisaService {
       brandCode,
     });
 
-    // Sort wallets by newest creation date first, so that we can hereafter assume the first element represents the current wallet
-    intersolveVisaChildWallets.sort((a, b) => (a.created < b.created ? 1 : -1));
-    const newestChildWallet = intersolveVisaChildWallets[0];
+    const newestChildWallet = this.getNewestChildWallet(
+      intersolveVisaChildWallets,
+    );
 
     await this.linkChildWalletToParentWalletIfUnlinked(
       intersolveVisaParentWallet,
@@ -533,13 +533,10 @@ export class IntersolveVisaService {
         'This Registration does not have an Intersolve Visa Child Wallet. Cannot replace card.',
       );
     }
-    // Sort wallets by newest creation date first, so that we can hereafter assume the first element represents the current wallet
-    intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets.sort(
-      (a, b) => (a.created < b.created ? 1 : -1),
-    );
-    const childWalletToReplace =
+    const childWalletToReplace = this.getNewestChildWallet(
       intersolveVisaCustomer.intersolveVisaParentWallet
-        .intersolveVisaChildWallets[0];
+        .intersolveVisaChildWallets,
+    );
 
     // Update Customer at Intersolve with the received address and phone number, to make sure that any old data at Intersolve is replaced.
     if (childWalletToReplace.isTokenBlocked) {
@@ -585,7 +582,7 @@ export class IntersolveVisaService {
     await this.intersolveVisaChildWalletScopedRepository.save(
       childWalletToReplace,
     );
- 
+
     if (!input.physicalCardToken) {
       await this.intersolveVisaApiService.createPhysicalCard({
         tokenCode: newChildWallet.tokenCode,
@@ -606,6 +603,24 @@ export class IntersolveVisaService {
       },
     });
     return count > 0;
+  }
+
+  public async getRegistrationReferencesForAllCustomers({
+    limit,
+  }: {
+    limit?: number;
+  }): Promise<
+    { registrationId: number; referenceId: string; programId: number }[]
+  > {
+    const customers =
+      await this.intersolveVisaCustomerScopedRepository.findWithRegistration({
+        take: limit,
+      });
+    return customers.map((customer) => ({
+      registrationId: customer.registrationId,
+      referenceId: customer.registration.referenceId,
+      programId: customer.registration.programId,
+    }));
   }
 
   private async getOrIssueToken({
@@ -843,6 +858,7 @@ export class IntersolveVisaService {
    * This function sends updated contact information for a customer to Intersolve. It uses 2 api call:
    * - update the address
    * - update phone number
+   * It also forwards the updated contact information for the latest card to the PaymentInstrument API, which is needed to get the new shipping address to Enfuce for the card renewal process.
    * @param {SendUpdatedContactInformationParams} input - The updated contact information for the customer.
    * @throws {Error} Throws an Error if no customer is found for the given registration ID.
    * @returns {Promise<void>}
@@ -852,9 +868,14 @@ export class IntersolveVisaService {
     contactInformation,
   }: SendUpdatedContactInformationParams): Promise<void> {
     const customer =
-      await this.intersolveVisaCustomerScopedRepository.findOneByRegistrationIdOrFail(
+      await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         registrationId,
       );
+    if (!customer) {
+      throw new Error(
+        `IntersolveVisaCustomerEntity with registrationId ${registrationId} not found.`,
+      );
+    }
     if (contactInformation.phoneNumber) {
       await this.intersolveVisaApiService.updateCustomerPhoneNumber({
         holderId: customer.holderId,
@@ -885,6 +906,34 @@ export class IntersolveVisaService {
       addressPostalCode: contactInformation.addressPostalCode,
       addressCity: contactInformation.addressCity,
     });
+
+    const latestChildWallet = this.getLatestChildWallet(customer);
+    if (latestChildWallet) {
+      await this.intersolveVisaApiService.updatePhysicalCardContactInformation({
+        tokenCode: latestChildWallet.tokenCode,
+        contactInformation,
+      });
+    }
+  }
+
+  private getLatestChildWallet(
+    customer: IntersolveVisaCustomerEntity,
+  ): IntersolveVisaChildWalletEntity | undefined {
+    const childWallets =
+      customer.intersolveVisaParentWallet?.intersolveVisaChildWallets;
+    if (!childWallets || childWallets.length === 0) {
+      return undefined;
+    }
+    return this.getNewestChildWallet(childWallets);
+  }
+
+  // Sort by newest creation date first, so that the first element represents the current card
+  private getNewestChildWallet(
+    childWallets: IntersolveVisaChildWalletEntity[],
+  ): IntersolveVisaChildWalletEntity {
+    return [...childWallets].sort((a, b) =>
+      a.created < b.created ? 1 : -1,
+    )[0];
   }
 
   public async getWallet(tokenCode: string): Promise<GetTokenResult> {

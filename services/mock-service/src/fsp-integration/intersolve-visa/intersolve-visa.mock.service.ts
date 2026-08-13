@@ -656,6 +656,37 @@ export class IntersolveVisaMockService {
     };
   }
 
+  public changeCardContactInformation(
+    payload: Record<string, string>,
+  ): IntersolveVisaMockResponseDto {
+    const requiredKeys = ['address1', 'city', 'postalCode', 'country'];
+    for (const key of requiredKeys) {
+      if (!payload[key] || payload[key].includes('undefined')) {
+        return {
+          status: HttpStatus.BAD_REQUEST,
+          statusText: 'Bad Request',
+          data: {
+            success: false,
+            errors: [
+              {
+                code: 'INVALID_PARAMETERS',
+                field: key,
+                description: `The ${key} field is required.`,
+              },
+            ],
+          },
+        };
+      }
+    }
+    return {
+      status: HttpStatus.OK,
+      statusText: 'OK',
+      data: {
+        success: true,
+      },
+    };
+  }
+
   public getCustomerIndividual(
     _holderId: string,
   ): IntersolveVisaMockResponseDto {
