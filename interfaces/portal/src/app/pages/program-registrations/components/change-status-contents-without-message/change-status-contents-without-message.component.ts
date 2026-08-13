@@ -40,6 +40,7 @@ export class ChangeStatusContentsWithoutMessageComponent {
   readonly cancelChangeStatus = output();
   readonly confirmChangeStatus = output();
   readonly status = input<RegistrationStatusEnum | undefined>();
+  readonly submitButtonText = input<string | undefined>();
 
   formGroup = new FormGroup({
     confirmAction: new FormControl(false, {
