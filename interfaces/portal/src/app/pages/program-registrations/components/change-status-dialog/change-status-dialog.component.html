@@ -71,7 +71,7 @@
           (confirmChangeStatus)="onFormSubmit()"
           [showAreYouSureCheckbox]="status() === RegistrationStatusEnum.deleted"
           [isMutating]="changeStatusMutation.isPending()"
-          [status]="status()"
+          [submitButtonText]="submitButtonText()"
         />
       } @else {
         @if (messageTemplateKey.isLoading()) {
@@ -101,7 +101,7 @@
               [previewRegistration]="actionData()?.previewItem"
               [isMutating]="changeStatusMutation.isPending()"
               (cancelChangeStatus)="onChangeStatusCancel()"
-              [status]="status()"
+              [submitButtonText]="submitButtonText()"
             />
           } @else {
             <app-change-status-contents-with-custom-message
@@ -111,7 +111,7 @@
               [isMutating]="changeStatusMutation.isPending()"
               (cancelChangeStatus)="onChangeStatusCancel()"
               (customMessageUpdated)="customMessage.set($event)"
-              [status]="status()"
+              [submitButtonText]="submitButtonText()"
             />
           }
         }
