@@ -60,7 +60,7 @@ describe('AlfouadApiService', () => {
           provide: AlfouadApiHelperService,
           useValue: {
             getBaseUrl: jest.fn().mockReturnValue(baseUrl),
-            buildAuthorizationValue: jest.fn().mockReturnValue('auth-value'),
+            buildAuthorizationToken: jest.fn().mockReturnValue('auth-value'),
             createRequestHeaders: jest.fn().mockReturnValue(requestHeaders),
           },
         },
@@ -75,22 +75,17 @@ describe('AlfouadApiService', () => {
   });
 
   describe('createTransfer', () => {
-    it('should return the TransactionUID on success', async () => {
+    it('should send the transfer and resolve on success', async () => {
       // Arrange
       post.mockResolvedValue({
         status: HttpStatus.OK,
-        data: {
-          State: '1',
-          Message: 'Success',
-          TransactionInfo: { TransactionUID: '519090100013' },
-        },
+        data: { State: '1', Message: 'Success' },
       });
 
       // Act
-      const result = await service.createTransfer(createTransferInput);
+      await service.createTransfer(createTransferInput);
 
       // Assert
-      expect(result).toEqual({ transactionUid: '519090100013' });
       expect(post).toHaveBeenCalledWith(
         expectedUrl,
         {
@@ -136,21 +131,7 @@ describe('AlfouadApiService', () => {
       const act = service.createTransfer(createTransferInput);
 
       // Assert
-      await expect(act).rejects.toThrow('No response body received');
-    });
-
-    it('should throw when the success response has no TransactionUID', async () => {
-      // Arrange
-      post.mockResolvedValue({
-        status: HttpStatus.OK,
-        data: { State: '1', Message: 'Success' },
-      });
-
-      // Act
-      const act = service.createTransfer(createTransferInput);
-
-      // Assert
-      await expect(act).rejects.toThrow('no TransactionUID was returned');
+      await expect(act).rejects.toThrow('No response received');
     });
 
     it('should throw on a non-2xx HTTP status', async () => {
@@ -182,7 +163,7 @@ describe('AlfouadApiService', () => {
       );
     });
 
-    it('should recover the TransactionUID via TransactionByRef on a duplicate (822)', async () => {
+    it('should recover via TransactionByRef on a duplicate (822)', async () => {
       // Arrange
       post.mockResolvedValue({
         status: HttpStatus.OK,
@@ -194,18 +175,14 @@ describe('AlfouadApiService', () => {
       });
       get.mockResolvedValue({
         status: HttpStatus.OK,
-        data: {
-          State: '1',
-          Message: 'Pending_Approval',
-          TransactionInfo: { TransactionUID: '519090100013' },
-        },
+        data: { State: '1', Message: 'Pending_Approval' },
       });
 
       // Act
-      const result = await service.createTransfer(createTransferInput);
+      const act = service.createTransfer(createTransferInput);
 
       // Assert
-      expect(result).toEqual({ transactionUid: '519090100013' });
+      await expect(act).resolves.toBeUndefined();
     });
 
     it('should throw on a duplicate (822) when the transaction cannot be found', async () => {
@@ -233,28 +210,21 @@ describe('AlfouadApiService', () => {
   });
 
   describe('getTransactionByRef', () => {
-    it('should return the mapped state and TransactionUID when found', async () => {
+    it('should return the mapped state when found', async () => {
       // Arrange
       get.mockResolvedValue({
         status: HttpStatus.OK,
-        data: {
-          State: '2',
-          Message: 'Approved',
-          TransactionInfo: { TransactionUID: '519090100013' },
-        },
+        data: { State: '2', Message: 'Approved' },
       });
 
       // Act
-      const result = await service.getTransactionByRef({
+      const result = await service.getTransactionStateByRef({
         referenceNumber: 'RC-TEST-1',
         requestIdentity,
       });
 
       // Assert
-      expect(result).toEqual({
-        state: AlfouadApiTransactionStateEnum.approved,
-        transactionUid: '519090100013',
-      });
+      expect(result).toBe(AlfouadApiTransactionStateEnum.approved);
       expect(get).toHaveBeenCalledWith(
         'https://alfouad.example.org/api/Transaction/TransactionByRef?ReferenceNumber=RC-TEST-1',
         requestHeaders,
@@ -269,7 +239,7 @@ describe('AlfouadApiService', () => {
       });
 
       // Act
-      const result = await service.getTransactionByRef({
+      const result = await service.getTransactionStateByRef({
         referenceNumber: 'RC-TEST-1',
         requestIdentity,
       });
@@ -283,13 +253,13 @@ describe('AlfouadApiService', () => {
       get.mockResolvedValue({ status: HttpStatus.OK, data: null });
 
       // Act
-      const act = service.getTransactionByRef({
+      const act = service.getTransactionStateByRef({
         referenceNumber: 'RC-TEST-1',
         requestIdentity,
       });
 
       // Assert
-      await expect(act).rejects.toThrow('No response body received');
+      await expect(act).rejects.toThrow('No response received');
     });
   });
 });

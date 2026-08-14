@@ -63,10 +63,10 @@ describe('AlfouadApiHelperService', () => {
     });
   });
 
-  describe('buildAuthorizationValue', () => {
+  describe('buildAuthorizationToken', () => {
     it('should Base64-encode the Authentication XML', () => {
       // Act
-      const value = service.buildAuthorizationValue({
+      const value = service.buildAuthorizationToken({
         account: '161010004501',
         branchId: '1',
         username: 'Red Crescent',
@@ -87,7 +87,7 @@ describe('AlfouadApiHelperService', () => {
 
     it('should escape XML-special characters in the values', () => {
       // Act
-      const value = service.buildAuthorizationValue({
+      const value = service.buildAuthorizationToken({
         account: '1',
         branchId: '1',
         username: 'A & B <x>',
@@ -104,7 +104,7 @@ describe('AlfouadApiHelperService', () => {
     it('should set the Bearer token and JSON content-type headers', () => {
       // Act
       const headers = service.createRequestHeaders({
-        authorizationValue: 'abc123',
+        authorizationToken: 'abc123',
       });
 
       // Assert

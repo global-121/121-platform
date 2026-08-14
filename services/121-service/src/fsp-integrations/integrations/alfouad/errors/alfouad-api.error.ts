@@ -8,7 +8,7 @@ export class AlfouadApiError extends Error {
     message: string;
     errorCode?: string | null;
   }) {
-    super(`Alfouad API Error: ${message}`);
+    super(message);
     Object.setPrototypeOf(this, new.target.prototype);
     this.name = 'AlfouadApiError';
     this.errorCode = errorCode ?? null;

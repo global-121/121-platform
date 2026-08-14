@@ -1,5 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { constants, createPublicKey, publicEncrypt } from 'node:crypto';
+import { xml2js } from 'xml-js';
+
+interface RsaParametersXml {
+  RSAParameters: {
+    Modulus: { _text: string };
+    Exponent: { _text: string };
+  };
+}
 
 @Injectable()
 export class AlfouadEncryptionService {
@@ -33,14 +41,10 @@ export class AlfouadEncryptionService {
     modulus: string;
     exponent: string;
   } {
-    const modulus = this.extractXmlTagValue({
-      xml: publicKeyXml,
-      tag: 'Modulus',
-    });
-    const exponent = this.extractXmlTagValue({
-      xml: publicKeyXml,
-      tag: 'Exponent',
-    });
+    const parsed = xml2js(publicKeyXml, { compact: true }) as RsaParametersXml;
+
+    const modulus = parsed.RSAParameters?.Modulus?._text?.trim();
+    const exponent = parsed.RSAParameters?.Exponent?._text?.trim();
 
     if (!modulus || !exponent) {
       throw new Error(
@@ -49,25 +53,5 @@ export class AlfouadEncryptionService {
     }
 
     return { modulus, exponent };
-  }
-
-  private extractXmlTagValue({
-    xml,
-    tag,
-  }: {
-    xml: string;
-    tag: string;
-  }): string | undefined {
-    const match = xml.match(new RegExp(`<${tag}>(.*?)</${tag}>`));
-    if (!match) {
-      return;
-    }
-
-    const [, value] = match;
-    if (!value) {
-      return;
-    }
-
-    return value.trim();
   }
 }
