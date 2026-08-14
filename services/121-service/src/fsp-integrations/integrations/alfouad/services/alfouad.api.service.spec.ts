@@ -2,8 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
-import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
-import { AlfouadCreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transfer-params.interface';
+import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-params.interface';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { AlfouadApiHelperService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.helper.service';
 import { AlfouadApiService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.service';
@@ -25,7 +24,7 @@ const requestIdentity: AlfouadRequestIdentity = {
   publicKey: '<RSAParameters />',
 };
 
-const createTransferInput: AlfouadCreateTransferParams = {
+const createTransactionInput: AlfouadCreateTransactionParams = {
   senderFullName: 'Test Sender',
   senderPhoneNumber: '0900000000',
   beneficiaryFullName: 'Test Beneficiary',
@@ -72,38 +71,7 @@ describe('AlfouadApiService', () => {
     service = module.get<AlfouadApiService>(AlfouadApiService);
   });
 
-  describe('createTransfer', () => {
-    it('should throw with the message and error code when State is not success', async () => {
-      // Arrange
-      post.mockResolvedValue({
-        status: HttpStatus.OK,
-        data: {
-          State: '0',
-          Message: "You don't have permission to exceed the account limit.",
-          ErrorCode: '45',
-        },
-      });
-
-      // Act
-      const act = service.createTransfer(createTransferInput);
-
-      // Assert
-      await expect(act).rejects.toBeInstanceOf(AlfouadApiError);
-      await expect(act).rejects.toThrow('account limit');
-      await expect(act).rejects.toHaveProperty('errorCode', '45');
-    });
-
-    it('should throw when no response body is returned', async () => {
-      // Arrange
-      post.mockResolvedValue({ status: HttpStatus.OK, data: null });
-
-      // Act
-      const act = service.createTransfer(createTransferInput);
-
-      // Assert
-      await expect(act).rejects.toThrow('No response received');
-    });
-
+  describe('createTransaction', () => {
     it('should throw on a non-2xx HTTP status', async () => {
       // Arrange
       post.mockResolvedValue({
@@ -112,7 +80,7 @@ describe('AlfouadApiService', () => {
       });
 
       // Act
-      const act = service.createTransfer(createTransferInput);
+      const act = service.createTransaction(createTransactionInput);
 
       // Assert
       await expect(act).rejects.toThrow(
@@ -125,61 +93,16 @@ describe('AlfouadApiService', () => {
       post.mockRejectedValue(new Error('network down'));
 
       // Act
-      const act = service.createTransfer(createTransferInput);
+      const act = service.createTransaction(createTransactionInput);
 
       // Assert
       await expect(act).rejects.toThrow(
         'Error calling api/Transaction/TransactionCreate: network down',
       );
     });
-
-    it('should recover via TransactionByRef on a duplicate (822)', async () => {
-      // Arrange
-      post.mockResolvedValue({
-        status: HttpStatus.OK,
-        data: {
-          State: '0',
-          Message: 'duplicate Reference Number',
-          ErrorCode: '822',
-        },
-      });
-      get.mockResolvedValue({
-        status: HttpStatus.OK,
-        data: { State: '1', Message: 'Pending_Approval' },
-      });
-
-      // Act
-      const act = service.createTransfer(createTransferInput);
-
-      // Assert
-      await expect(act).resolves.toBeUndefined();
-    });
-
-    it('should throw on a duplicate (822) when the transaction cannot be found', async () => {
-      // Arrange
-      post.mockResolvedValue({
-        status: HttpStatus.OK,
-        data: {
-          State: '0',
-          Message: 'duplicate Reference Number',
-          ErrorCode: '822',
-        },
-      });
-      get.mockResolvedValue({
-        status: HttpStatus.OK,
-        data: { State: '0', Message: 'Not found' },
-      });
-
-      // Act
-      const act = service.createTransfer(createTransferInput);
-
-      // Assert
-      await expect(act).rejects.toThrow('was not found');
-      await expect(act).rejects.toHaveProperty('errorCode', '822');
-    });
   });
 
-  describe('getTransactionByRef', () => {
+  describe('getTransactionStateByRef', () => {
     it('should return the mapped state when found', async () => {
       // Arrange
       get.mockResolvedValue({
@@ -212,20 +135,6 @@ describe('AlfouadApiService', () => {
 
       // Assert
       expect(result).toBeUndefined();
-    });
-
-    it('should throw when no response body is returned', async () => {
-      // Arrange
-      get.mockResolvedValue({ status: HttpStatus.OK, data: null });
-
-      // Act
-      const act = service.getTransactionStateByRef({
-        referenceNumber: 'RC-TEST-1',
-        requestIdentity,
-      });
-
-      // Assert
-      await expect(act).rejects.toThrow('No response received');
     });
   });
 });

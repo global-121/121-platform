@@ -1,6 +1,6 @@
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 
-export interface AlfouadCreateTransferParams {
+export interface AlfouadCreateTransactionParams {
   readonly senderFullName: string;
   readonly senderPhoneNumber: string;
   readonly beneficiaryFullName: string;

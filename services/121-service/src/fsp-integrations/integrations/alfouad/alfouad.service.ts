@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
+import { AlfouadApiErrorCode } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-error-code.enum';
+import { AlfouadApiResponseStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-response-state.enum';
 import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
-import { AlfouadCreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transfer-params.interface';
+import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
+import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-params.interface';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { AlfouadApiService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
@@ -43,10 +46,51 @@ export class AlfouadService {
     };
   }
 
-  public async createTransfer(
-    params: AlfouadCreateTransferParams,
+  public async createTransaction(
+    params: AlfouadCreateTransactionParams,
   ): Promise<void> {
-    return this.alfouadApiService.createTransfer(params);
+    const response = await this.alfouadApiService.createTransaction(params);
+
+    const { State, ErrorCode, Message } = response;
+
+    if (State === AlfouadApiResponseStateEnum.success) {
+      return;
+    }
+
+    if (ErrorCode === AlfouadApiErrorCode.duplicateReferenceNumber) {
+      const { referenceNumber, requestIdentity } = params;
+
+      await this.confirmDuplicateTransactionExists({ referenceNumber, requestIdentity });
+      return;
+    }
+
+    throw new AlfouadApiError({
+      message: Message ?? 'Unknown error',
+      errorCode: ErrorCode,
+    });
+  }
+
+  private async confirmDuplicateTransactionExists({
+    referenceNumber,
+    requestIdentity,
+  }: {
+    referenceNumber: string;
+    requestIdentity: AlfouadRequestIdentity;
+  }): Promise<void> {
+    const transactionState =
+      await this.alfouadApiService.getTransactionStateByRef({
+        referenceNumber,
+        requestIdentity,
+      });
+
+    //TODO: decide handling different states when implementing the service
+
+    if (!transactionState) {
+      throw new AlfouadApiError({
+        message: `Duplicate ReferenceNumber ${referenceNumber} was reported but the transaction was not found`,
+        errorCode: AlfouadApiErrorCode.duplicateReferenceNumber,
+      });
+    }
   }
 
   public async getTransactionStateByRef({
