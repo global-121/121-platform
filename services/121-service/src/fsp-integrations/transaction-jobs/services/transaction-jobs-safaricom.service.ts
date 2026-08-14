@@ -6,7 +6,7 @@ import { DuplicateOriginatorConversationIdError } from '@121-service/src/fsp-int
 import { SafaricomApiError } from '@121-service/src/fsp-integrations/integrations/safaricom/errors/safaricom-api.error';
 import { SafaricomTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomService } from '@121-service/src/fsp-integrations/integrations/safaricom/safaricom.service';
-import { generateTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
+import { computeTransactionReference as computeTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
 import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { SafaricomTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -45,11 +45,8 @@ export class TransactionJobsSafaricomService implements TransactionJobService<Sa
       await this.transactionEventScopedRepository.countFailedTransactionAttempts(
         transactionJob.transactionId,
       );
-    // originatorConversationId is generated using: (referenceId + transactionId + failedTransactionAttempts)
-    // Using this count to generate the originatorConversationId ensures that on:
-    // a. Payment retry, a new originatorConversationId is generated, which will not be blocked by Onafriq API, as desired.
-    // b. Queue retry: on queue retry, the same originatorConversationId is generated, which will be blocked by Onafriq API, as desired.
-    const originatorConversationId = generateTransactionReference({
+
+    const originatorConversationId = computeTransactionReference({
       referenceId: transactionJob.referenceId,
       transactionId: transactionJob.transactionId,
       failedTransactionAttempts,

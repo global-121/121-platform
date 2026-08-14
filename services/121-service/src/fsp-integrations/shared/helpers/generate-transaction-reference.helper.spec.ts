@@ -1,13 +1,13 @@
-import { generateTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
+import { computeTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 jest.mock('@121-service/src/utils/uuid.helpers', () => ({
   generateUUIDFromSeed: jest.fn().mockReturnValue('seeded-uuid'),
 }));
 
-describe('generateTransactionReference', () => {
+describe('computeTransactionReference', () => {
   it('should seed the UUID with referenceId, transactionId and attempts', () => {
-    const result = generateTransactionReference({
+    const result = computeTransactionReference({
       referenceId: 'some-ref',
       transactionId: 1,
       failedTransactionAttempts: 0,

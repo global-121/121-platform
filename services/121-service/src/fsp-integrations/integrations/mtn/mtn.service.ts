@@ -9,7 +9,7 @@ import { MtnTransferStatusResponse } from '@121-service/src/fsp-integrations/int
 import { MtnApiService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
-import { generateTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
+import { computeTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
@@ -60,7 +60,7 @@ export class MtnService {
     transactionId: number;
     failedTransactionAttempts: number;
   }): string {
-    const seededMtnReferenceId = generateTransactionReference({
+    const seededMtnReferenceId = computeTransactionReference({
       referenceId,
       transactionId,
       failedTransactionAttempts,

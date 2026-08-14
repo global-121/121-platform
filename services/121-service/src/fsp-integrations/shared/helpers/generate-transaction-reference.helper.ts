@@ -10,11 +10,11 @@ import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
  * - Queue retry: the same count yields the SAME reference, so the FSP blocks it
  *   as a duplicate (preventing a double transaction).
  *
- * Determinism relies on env.UUID_NAMESPACE being pinned for the environment
+ * Determinism relies on env.UUID_NAMESPACE being set for the environment
  * (it defaults to a random value per process when unset). Reconciliation that
  * recomputes the reference only matches while that namespace stays constant.
  */
-export function generateTransactionReference({
+export function computeTransactionReference({
   referenceId,
   transactionId,
   failedTransactionAttempts,
