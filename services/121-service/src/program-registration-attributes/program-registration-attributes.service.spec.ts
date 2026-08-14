@@ -13,7 +13,10 @@ import {
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
-import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  DefaultRegistrationDataAttributeNames,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/test-helpers/createQueryBuilderMock.helper';
 
 jest.mock('@121-service/src/env', () => ({
@@ -286,7 +289,7 @@ describe('ProgramRegistrationAttributesService', () => {
       const attributeEntity = createAttributeEntity({
         id: programRegistrationAttributeId,
         programId,
-        name: 'phoneNumber',
+        name: DefaultRegistrationDataAttributeNames.phoneNumber,
       });
 
       jest
@@ -314,7 +317,7 @@ describe('ProgramRegistrationAttributesService', () => {
       const attributeEntity = createAttributeEntity({
         id: programRegistrationAttributeId,
         programId,
-        name: 'phoneNumber',
+        name: DefaultRegistrationDataAttributeNames.phoneNumber,
       });
 
       jest
@@ -446,6 +449,77 @@ describe('ProgramRegistrationAttributesService', () => {
           },
         ),
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.NOT_FOUND);
+    });
+  });
+
+  describe('Applying the phoneNumber attribute fallback', () => {
+    beforeEach(() => {
+      mockEnv.TWILIO_MODE = TwilioMode.mock;
+    });
+
+    it('adds a non-required phoneNumber attribute when it is missing and Twilio is enabled', async () => {
+      // Act
+      const result =
+        await programRegistrationAttributesService.applyProgramRegistrationAttributesFallbackIfNecessary(
+          {
+            attributesData: [createAttributeDto({ name: 'firstName' })],
+            namingConventionData: [],
+          },
+        );
+
+      // Assert
+      const phoneNumberAttribute = result.find(
+        (attr) =>
+          attr.name === DefaultRegistrationDataAttributeNames.phoneNumber,
+      );
+      expect(phoneNumberAttribute).toBeDefined();
+      expect(phoneNumberAttribute?.isRequired).toBe(false);
+      expect(phoneNumberAttribute?.type).toBe(RegistrationAttributeTypes.tel);
+    });
+
+    it('does not duplicate the phoneNumber attribute when it is already present', async () => {
+      // Act
+      const result =
+        await programRegistrationAttributesService.applyProgramRegistrationAttributesFallbackIfNecessary(
+          {
+            attributesData: [
+              createAttributeDto({
+                name: DefaultRegistrationDataAttributeNames.phoneNumber,
+              }),
+            ],
+            namingConventionData: [],
+          },
+        );
+
+      // Assert
+      expect(
+        result.filter(
+          (attr) =>
+            attr.name === DefaultRegistrationDataAttributeNames.phoneNumber,
+        ),
+      ).toHaveLength(1);
+    });
+
+    it('does not add a phoneNumber attribute when Twilio is disabled', async () => {
+      // Arrange
+      mockEnv.TWILIO_MODE = TwilioMode.disabled;
+
+      // Act
+      const result =
+        await programRegistrationAttributesService.applyProgramRegistrationAttributesFallbackIfNecessary(
+          {
+            attributesData: [createAttributeDto({ name: 'firstName' })],
+            namingConventionData: [],
+          },
+        );
+
+      // Assert
+      expect(
+        result.find(
+          (attr) =>
+            attr.name === DefaultRegistrationDataAttributeNames.phoneNumber,
+        ),
+      ).toBeUndefined();
     });
   });
 });

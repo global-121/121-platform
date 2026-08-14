@@ -101,10 +101,6 @@ export abstract class BaseProgramDto {
   @IsBoolean()
   public readonly enableScope?: boolean;
 
-  @IsOptional()
-  @IsBoolean()
-  public readonly allowEmptyPhoneNumber?: boolean;
-
   @ApiProperty({ example: 'https://example.org/dashboard' })
   @IsOptional()
   @IsString()

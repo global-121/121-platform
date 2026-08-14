@@ -3,7 +3,6 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { ProgramService } from '@121-service/src/programs/programs.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationsCreationService } from '@121-service/src/registration/services/registrations-creation.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
@@ -19,14 +18,6 @@ describe('RegistrationsCreationService', () => {
       RegistrationsCreationService,
     ).compile();
     registrationsCreationService = unit;
-
-    // Mock programService.findProgramOrThrow
-    const programService = unitRef.get(ProgramService);
-    jest
-      .spyOn(programService as any, 'findProgramOrThrow')
-      .mockImplementation(() => ({
-        allowEmptyPhoneNumber: false,
-      }));
 
     // Mock registrationsInputValidator.findProgramOrThrow
     const registrationsInputValidator = unitRef.get(
@@ -62,7 +53,6 @@ describe('RegistrationsCreationService', () => {
     );
     jest.spyOn(programRepository as any, 'findOneBy').mockImplementation(() => {
       return Promise.resolve({
-        allowEmptyPhoneNumber: false,
         languages: [language],
       });
     });

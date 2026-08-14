@@ -13,6 +13,7 @@ import { TableModule } from 'primeng/table';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
+import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 import { FspTagsComponent } from '~/components/fsp-tags/fsp-tags.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
@@ -72,10 +73,16 @@ export class RequiredAttributesComponent {
       return [];
     }
 
-    const requiredAttributeNames = new Set<string>([
-      FspAttributes.fullName,
-      FspAttributes.phoneNumber,
-    ]);
+    const requiredAttributeNames = new Set<string>([FspAttributes.fullName]);
+
+    // Workaround: the backend only auto-adds phoneNumber when Twilio is enabled, so its presence here is
+    // a proxy for "Twilio is enabled" (an admin manually adding it via the API instead is very unlikely).
+    // Kobo forms must include this field whenever Twilio is enabled
+    const phoneNumberAttributeName: string =
+      DefaultRegistrationDataAttributeNames.phoneNumber;
+    if (attributes.some((attr) => attr.name === phoneNumberAttributeName)) {
+      requiredAttributeNames.add(phoneNumberAttributeName);
+    }
 
     for (const fspConfig of fspConfigs) {
       const fspSetting = FSP_SETTINGS[fspConfig.fspName];

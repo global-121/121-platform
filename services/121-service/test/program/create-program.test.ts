@@ -215,7 +215,7 @@ describe('Create program', () => {
           expect.objectContaining({
             name: 'phoneNumber',
             label: expect.objectContaining({ en: 'Phone number' }),
-            type: 'text',
+            type: 'tel',
           }),
         ]),
       }),

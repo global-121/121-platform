@@ -42,6 +42,7 @@
     },
     {
       "name": "phoneNumber",
+      "isRequired": true,
       "label": {
         "en": "Phone Number for communication"
       },
@@ -71,7 +72,6 @@
   "languages": ["en"],
   "enableMaxPayments": true,
   "enableScope": false,
-  "allowEmptyPhoneNumber": false,
   "programFspConfigurations": [
     {
       "fsp": "Onafriq",

@@ -226,15 +226,20 @@ export class ProgramRegistrationAttributesService {
   }): Promise<ProgramRegistrationAttribute[]> {
     const programRegistrationAttributes = attributesData ?? [];
 
-    // make sure phoneNumber is in programRegistrationAttributes
+    const phoneNumberAttributeMissing = !programRegistrationAttributes.find(
+      (attr) => attr.name === DefaultRegistrationDataAttributeNames.phoneNumber,
+    );
 
+    // Twilio uses the phoneNumber to send messages, so add it (non-required) when Twilio is enabled.
     if (
-      !programRegistrationAttributes.find((attr) => attr.name === 'phoneNumber')
+      env.TWILIO_MODE !== TwilioMode.disabled &&
+      phoneNumberAttributeMissing
     ) {
       programRegistrationAttributes.push({
-        name: 'phoneNumber',
-        type: RegistrationAttributeTypes.text,
+        name: DefaultRegistrationDataAttributeNames.phoneNumber,
+        type: RegistrationAttributeTypes.tel,
         label: { en: 'Phone number' },
+        isRequired: false,
       });
     }
 
