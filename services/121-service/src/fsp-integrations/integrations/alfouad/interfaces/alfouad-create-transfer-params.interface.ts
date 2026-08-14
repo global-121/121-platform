@@ -11,6 +11,5 @@ export interface AlfouadCreateTransferParams {
   readonly deliveryCurrencyCode: string;
   readonly deliveryAmount: number;
   readonly agentCode?: number;
-  readonly reasonCode?: string;
   readonly requestIdentity: AlfouadRequestIdentity;
 }

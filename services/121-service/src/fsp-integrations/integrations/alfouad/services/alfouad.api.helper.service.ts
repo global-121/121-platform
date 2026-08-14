@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { js2xml } from 'xml-js';
 
 import { env } from '@121-service/src/env';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
@@ -19,7 +20,7 @@ export class AlfouadApiHelperService {
     return new URL(`${env.ALFOUAD_API_URL!}/`);
   }
 
-  public buildAuthorizationValue({
+  public buildAuthorizationToken({
     account,
     branchId,
     username,
@@ -30,32 +31,30 @@ export class AlfouadApiHelperService {
     username: string;
     encryptedPassword: string;
   }): string {
-    const xml =
-      `<Authentication>` +
-      `<Account>${this.escapeXml(account)}</Account>` +
-      `<BranchId>${this.escapeXml(branchId)}</BranchId>` +
-      `<UserName>${this.escapeXml(username)}</UserName>` +
-      `<Password>${this.escapeXml(encryptedPassword)}</Password>` +
-      `</Authentication>`;
+    const xml = js2xml(
+      {
+        Authentication: {
+          Account: { _text: account },
+          BranchId: { _text: branchId },
+          UserName: { _text: username },
+          Password: { _text: encryptedPassword },
+        },
+      },
+      { compact: true },
+    );
+
     return Buffer.from(xml, 'utf8').toString('base64');
   }
 
   public createRequestHeaders({
-    authorizationValue,
+    authorizationToken,
   }: {
-    authorizationValue: string;
+    authorizationToken: string;
   }): Headers {
     return new Headers({
-      Authorization: `Bearer ${authorizationValue}`,
+      Authorization: `Bearer ${authorizationToken}`,
       Accept: 'application/json',
       'Content-Type': 'application/json',
     });
-  }
-
-  private escapeXml(value: string): string {
-    return value
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
   }
 }

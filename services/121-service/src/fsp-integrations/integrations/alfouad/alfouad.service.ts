@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
+import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
 import { AlfouadCreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transfer-params.interface';
-import { AlfouadCreateTransferResult } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transfer-result.interface';
-import { AlfouadGetTransactionResult } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-get-transaction-result.interface';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { AlfouadApiService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
@@ -46,18 +45,18 @@ export class AlfouadService {
 
   public async createTransfer(
     params: AlfouadCreateTransferParams,
-  ): Promise<AlfouadCreateTransferResult> {
+  ): Promise<void> {
     return this.alfouadApiService.createTransfer(params);
   }
 
-  public async getTransactionByRef({
+  public async getTransactionStateByRef({
     referenceNumber,
     requestIdentity,
   }: {
     referenceNumber: string;
     requestIdentity: AlfouadRequestIdentity;
-  }): Promise<AlfouadGetTransactionResult | undefined> {
-    return this.alfouadApiService.getTransactionByRef({
+  }): Promise<AlfouadApiTransactionStateEnum | undefined> {
+    return this.alfouadApiService.getTransactionStateByRef({
       referenceNumber,
       requestIdentity,
     });
