@@ -1,17 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 
-import { AlfouadApiResponseDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-response.dto';
-import { AlfouadApiErrorCode } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-error-code.enum';
+import { AlfouadApiCreateTransactionResponseDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-create-transaction-response.dto';
+import { AlfouadApiGetTransactionResponseDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-get-transaction-response.dto';
 import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
-import { AlfouadCreateTransferParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transfer-params.interface';
+import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-params.interface';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { AlfouadApiHelperService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.helper.service';
 import { AlfouadEncryptionService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.encryption.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-
-const ALFOUAD_SUCCESS_STATE = '1';
 
 @Injectable()
 export class AlfouadApiService {
@@ -21,7 +19,7 @@ export class AlfouadApiService {
     private readonly alfouadEncryptionService: AlfouadEncryptionService,
   ) {}
 
-  public async createTransfer({
+  public async createTransaction({
     requestIdentity,
     senderFullName,
     senderPhoneNumber,
@@ -33,7 +31,7 @@ export class AlfouadApiService {
     agentCode,
     deliveryCurrencyCode,
     deliveryAmount,
-  }: AlfouadCreateTransferParams): Promise<void> {
+  }: AlfouadCreateTransactionParams): Promise<AlfouadApiCreateTransactionResponseDto> {
     const payload = {
       SenderFullName: senderFullName,
       SenderPhoneNumber: senderPhoneNumber,
@@ -47,7 +45,7 @@ export class AlfouadApiService {
       DeliveryAmount: deliveryAmount,
     }
 
-    const response = await this.sendAuthenticatedRequest<AlfouadApiResponseDto>(
+    const response = await this.sendAuthenticatedRequest<AlfouadApiCreateTransactionResponseDto>(
       {
         method: 'POST',
         path: 'api/Transaction/TransactionCreate',
@@ -56,26 +54,7 @@ export class AlfouadApiService {
       },
     );
 
-    const body = response.data;
-    if (!body) {
-      throw new AlfouadApiError({
-        message: 'No response received from Al Fouad',
-      });
-    }
-
-    if (body.State === ALFOUAD_SUCCESS_STATE) {
-      return;
-    }
-
-    if (body.ErrorCode === AlfouadApiErrorCode.duplicateReferenceNumber) {
-      await this.checkDuplicateTransactionState({ referenceNumber, requestIdentity });
-      return;
-    }
-
-    throw new AlfouadApiError({
-      message: body.Message ?? 'Unknown error',
-      errorCode: body.ErrorCode,
-    });
+    return response.data;
   }
 
   public async getTransactionStateByRef({
@@ -85,7 +64,7 @@ export class AlfouadApiService {
     referenceNumber: string;
     requestIdentity: AlfouadRequestIdentity;
   }): Promise<AlfouadApiTransactionStateEnum | undefined> {
-    const response = await this.sendAuthenticatedRequest<AlfouadApiResponseDto>(
+    const response = await this.sendAuthenticatedRequest<AlfouadApiGetTransactionResponseDto>(
       {
         method: 'GET',
         path: `api/Transaction/TransactionByRef?ReferenceNumber=${encodeURIComponent(referenceNumber)}`,
@@ -93,36 +72,9 @@ export class AlfouadApiService {
       },
     );
 
-    const body = response.data;
-    if (!body) {
-      throw new AlfouadApiError({
-        message: 'No response received from Al Fouad',
-      });
-    }
+    const transaction = response.data;
 
-    const state = this.parseTransactionState(body.State);
-
-    return state;
-  }
-
-  private async checkDuplicateTransactionState({
-    referenceNumber,
-    requestIdentity,
-  }: {
-    referenceNumber: string;
-    requestIdentity: AlfouadRequestIdentity;
-  }): Promise<void> {
-    const transactionState = await this.getTransactionStateByRef({
-      referenceNumber,
-      requestIdentity,
-    });
-
-    if (!transactionState) {
-      throw new AlfouadApiError({
-        message: `Duplicate ReferenceNumber ${referenceNumber} was reported but the transaction was not found`,
-        errorCode: AlfouadApiErrorCode.duplicateReferenceNumber,
-      });
-    }
+    return this.parseTransactionState(transaction.State);
   }
 
   private parseTransactionState(
