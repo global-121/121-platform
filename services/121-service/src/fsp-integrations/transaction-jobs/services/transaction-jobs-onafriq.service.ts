@@ -6,6 +6,7 @@ import { OnafriqApiResponseStatusType } from '@121-service/src/fsp-integrations/
 import { OnafriqError } from '@121-service/src/fsp-integrations/integrations/onafriq/errors/onafriq.error';
 import { OnafriqService } from '@121-service/src/fsp-integrations/integrations/onafriq/services/onafriq.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { computeTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
 import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { OnafriqTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/onafriq-transaction-job.dto';
@@ -17,7 +18,6 @@ import { TransactionsService } from '@121-service/src/payments/transactions/tran
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
 export class TransactionJobsOnafriqService implements TransactionJobService<OnafriqTransactionJobDto> {
@@ -54,9 +54,11 @@ export class TransactionJobsOnafriqService implements TransactionJobService<Onaf
     // Using this count to generate the thirdPartyTransId ensures that on:
     // a. Payment retry, a new thirdPartyTransId is generated, which will not be blocked by Onafriq API, as desired.
     // b. Queue retry: on queue retry, the same thirdPartyTransId is generated, which will be blocked by Onafriq API, as desired.
-    const thirdPartyTransId = generateUUIDFromSeed(
-      `ReferenceId=${transactionJob.referenceId},TransactionId=${transactionJob.transactionId},Attempt=${failedTransactionAttempts}`,
-    );
+    const thirdPartyTransId = computeTransactionReference({
+      referenceId: transactionJob.referenceId,
+      transactionId: transactionJob.transactionId,
+      failedTransactionAttempts,
+    });
 
     // 3. Create or update Onafriq Transaction with thirdPartyTransId ..
     await this.upsertOnafriqTransaction(thirdPartyTransId, transactionJob);
