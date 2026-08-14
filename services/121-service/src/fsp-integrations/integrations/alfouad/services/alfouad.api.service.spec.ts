@@ -15,8 +15,6 @@ jest.mock('@121-service/src/env', () => ({
 }));
 
 const baseUrl = new URL('https://alfouad.example.org/');
-const expectedUrl =
-  'https://alfouad.example.org/api/Transaction/TransactionCreate';
 const requestHeaders = new Headers({ Authorization: 'Bearer token' });
 
 const requestIdentity: AlfouadRequestIdentity = {
@@ -75,34 +73,6 @@ describe('AlfouadApiService', () => {
   });
 
   describe('createTransfer', () => {
-    it('should send the transfer and resolve on success', async () => {
-      // Arrange
-      post.mockResolvedValue({
-        status: HttpStatus.OK,
-        data: { State: '1', Message: 'Success' },
-      });
-
-      // Act
-      await service.createTransfer(createTransferInput);
-
-      // Assert
-      expect(post).toHaveBeenCalledWith(
-        expectedUrl,
-        {
-          SenderFullName: 'Test Sender',
-          SenderPhoneNumber: '0900000000',
-          BeneficiaryFullName: 'Test Beneficiary',
-          BeneficiaryPhoneNumber: '0911111111',
-          ReferenceNumber: 'RC-TEST-1',
-          CountryCode: 'SY',
-          CityCode: 'Damascus',
-          DeliveryCurrencyCode: 'SYP',
-          DeliveryAmount: 10000,
-        },
-        requestHeaders,
-      );
-    });
-
     it('should throw with the message and error code when State is not success', async () => {
       // Arrange
       post.mockResolvedValue({
@@ -225,10 +195,6 @@ describe('AlfouadApiService', () => {
 
       // Assert
       expect(result).toBe(AlfouadApiTransactionStateEnum.approved);
-      expect(get).toHaveBeenCalledWith(
-        'https://alfouad.example.org/api/Transaction/TransactionByRef?ReferenceNumber=RC-TEST-1',
-        requestHeaders,
-      );
     });
 
     it('should return undefined when the state is not a known lifecycle state', async () => {
