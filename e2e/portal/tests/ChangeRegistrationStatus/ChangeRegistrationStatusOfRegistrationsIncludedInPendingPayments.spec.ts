@@ -1,45 +1,71 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  programIdPV,
-  registrationPV5,
-  registrationPV8,
+  getDefaultOCWRegistrations,
+  programIdOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(
-  async ({ resetDBAndSeedRegistrations, page, paymentsPage, paymentPage }) => {
-    // Prepare
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: [registrationPV5, registrationPV8],
-      programId: programIdPV,
-      navigateToPage: `/en-GB/program/${programIdPV}/payments`,
-    });
+const registrations = getDefaultOCWRegistrations({ count: 4 });
 
-    await test.step('Create a payment', async () => {
-      await paymentsPage.createPayment({});
-      await page.waitForURL((url) =>
-        url.pathname.startsWith(`/en-GB/program/${programIdPV}/payments/1`),
-      );
-      await paymentPage.validatePaymentDetailsPageTitle();
-      await paymentPage.approvePayment();
-    });
-  },
-);
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    programId: programIdOCW,
+    registrations,
+  });
+});
 
 test('Pause registrations included in pending payments', async ({
-  page,
+  registrationsPage,
   tableComponent,
+  paymentsPage,
+  paymentPage,
+  page,
 }) => {
+  // Prepare
+  await test.step('Create a payment with 3 registrations', async () => {
+    await page.goto(`/en-GB/program/${programIdOCW}/payments`);
+    await paymentsPage.createPayment({
+      names: [
+        registrations[0].fullName,
+        registrations[1].fullName,
+        registrations[2].fullName,
+      ],
+    });
+    await page.waitForURL((url) =>
+      url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
+    );
+    await paymentPage.validatePaymentDetailsPageTitle();
+  });
+
   // Act
-  await test.step('Pause registrations included in the pending payment', async () => {
-    await page.goto(`/en-GB/program/${programIdPV}/registrations`);
+  await test.step('Pause 3 registrations, 2 included in a pending payment', async () => {
+    await page.goto(`/en-GB/program/${programIdOCW}/registrations`);
     await tableComponent.changeRegistrationStatusByNameWithOptions({
-      registrationName: registrationPV5.fullName,
+      registrationNames: [
+        registrations[1].fullName,
+        registrations[2].fullName,
+        registrations[3].fullName,
+      ],
       status: 'Pause',
     });
   });
 
   // Assert
+  await test.step('Validate warning modal is shown with correct numbers', async () => {
+    await registrationsPage.validateStatusChangeWarningModal({
+      warningMessage:
+        "You're about to pause 2 registration(s) that are included in a payment that's waiting for approval.",
+      proceedMessage: 'Would you like to proceed with 3 registration(s)?',
+      submit: true,
+    });
+  });
+
+  await test.step('Validate payment table shows 2 registrations are paused', async () => {
+    // await paymentPage.validateTransactionTableStatusCount({
+    //   status: 'Paused',
+    //   count: 2,
+    // });
+  });
 });

@@ -129,6 +129,8 @@
   acceptLabel="Proceed"
   i18n-acceptLabel="@@generic-proceed"
   [mutation]="changeStatusMutation"
+  [dialogTestId]="'change-status-dry-run-warning-dialog'"
+  [submitButtonDataTestId]="'change-status-dry-run-warning-dialog-submit'"
   [mutationData]="{
     dryRun: false,
   }"

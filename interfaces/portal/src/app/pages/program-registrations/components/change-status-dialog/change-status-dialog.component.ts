@@ -134,7 +134,7 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
   readonly submitButtonText = computed(() => {
     return getRegistrationUpdateDialogSubmitLabel({
       status: this.status(),
-      count: this.changeStatusMutation.data()?.applicableCount,
+      count: this.actionData()?.count,
     });
   });
 
@@ -154,6 +154,7 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
     ];
     return statusesWithSendMessageEnabled.includes(status);
   });
+
   readonly reasonIsRequired = computed(() => {
     const status = this.status();
     if (!status) {

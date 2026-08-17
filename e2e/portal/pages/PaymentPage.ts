@@ -40,7 +40,7 @@ class PaymentPage extends BasePage {
       name: 'Import file',
     });
     this.formDialogProceedButton = this.page.getByTestId(
-      'form-dialog-proceed-button',
+      'form-dialog-submit-button',
     );
     this.viewPaymentTitle = this.page.getByRole('heading', {
       name: /Payment/,
@@ -357,6 +357,22 @@ class PaymentPage extends BasePage {
       title,
     ); // the title does not contain 'transfer history' text therefore we check for 'transaction history' text which is always present and then check if the date and rest of the string is correct
   }
+
+  // // @Reviewer, is count okay here you think?
+  // async validateTransactionTableStatusCount({
+  //   status,
+  //   count,
+  // }: {
+  //   status: string;
+  //   count: number;
+  // }) {
+  //   const statuses = await this.table.getTextArrayFromColumnWithHeader({
+  //     columnHeader: 'Registration Status',
+  //   });
+
+  //   const actualCount = statuses.filter((s) => s === status).length;
+  //   expect(actualCount).toBe(count);
+  // }
 
   async validateTransactionHistoryTableValues({
     expectedValues,
