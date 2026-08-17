@@ -51,7 +51,7 @@ export const FSP_IMAGE_URLS: Record<Fsps, string> = {
   [Fsps.onafriq]: 'assets/fsps/onafriq.jpg',
   [Fsps.cooperativeBankOfOromia]: 'assets/fsps/cbo.png',
   [Fsps.mtn]: 'assets/fsps/mtn.png',
-  [Fsps.alfouad]: 'assets/fsps/alfouad.png',
+  [Fsps.alfouad]: 'assets/fsps/alfouad.jpg',
 };
 
 const hasPendingFspConfiguration = ({
