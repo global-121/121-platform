@@ -107,19 +107,24 @@ class PaymentsPage extends BasePage {
     onlyStep1?: boolean;
   }) {
     await this.createNewPaymentButton.click();
+
     if (name !== undefined) {
       await this.paymentNameInput.clear();
       await this.paymentNameInput.fill(name);
     }
+
     await this.continueToRegistrationButton.click();
     await this.selectAllRegistrations();
     await this.addToPaymentButton.click();
+
     if (onlyStep1) {
       return;
     }
+
     if (note) {
       await this.addPaymentNote(note);
     }
+
     await this.createPaymentButton.click();
   }
 
