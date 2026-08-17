@@ -12,6 +12,7 @@
   ></app-custom-message-preview>
 }
 <app-change-status-submit-buttons
+  [submitButtonText]="submitButtonText()"
   [isMutating]="isMutating()"
   (cancelClick)="cancelClick()"
 />

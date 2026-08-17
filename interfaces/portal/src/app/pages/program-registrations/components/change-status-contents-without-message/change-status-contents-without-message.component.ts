@@ -15,6 +15,8 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { ChangeStatusSubmitButtonsComponent } from '~/pages/program-registrations/components/change-status-submit-buttons/change-status-submit-buttons.component';
 import { generateFieldErrors } from '~/utils/form-validation';
@@ -37,6 +39,8 @@ export class ChangeStatusContentsWithoutMessageComponent {
   readonly isMutating = input(false);
   readonly cancelChangeStatus = output();
   readonly confirmChangeStatus = output();
+  readonly status = input<RegistrationStatusEnum | undefined>();
+  readonly submitButtonText = input<string | undefined>();
 
   formGroup = new FormGroup({
     confirmAction: new FormControl(false, {

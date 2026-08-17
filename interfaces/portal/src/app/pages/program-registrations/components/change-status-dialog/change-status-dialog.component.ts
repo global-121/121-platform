@@ -28,8 +28,11 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import {
+  getChangeStatusWarningMessage,
+  getRegistrationUpdateDialogSubmitLabel,
   REGISTRATION_STATUS_ICON,
   REGISTRATION_STATUS_LABELS,
+  REGISTRATION_STATUS_PENDING_APPROVAL_EXPLANATION,
   REGISTRATION_STATUS_VERB,
 } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
@@ -103,6 +106,7 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
     }
     return REGISTRATION_STATUS_ICON[status];
   });
+
   readonly statusLabel = computed(() => {
     const status = this.status();
     if (!status) {
@@ -110,6 +114,7 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
     }
     return REGISTRATION_STATUS_LABELS[status];
   });
+
   readonly statusVerb = computed(() => {
     const status = this.status();
     if (!status) {
@@ -117,22 +122,26 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
     }
     return REGISTRATION_STATUS_VERB[status];
   });
-  readonly changeStatusWarningMessage = computed(() => {
-    switch (this.status()) {
-      case RegistrationStatusEnum.validated:
-        return $localize`:@@change-status-validate-warning:The action "Validate" can only be applied to registrations with the "New" status.`;
-      case RegistrationStatusEnum.included:
-        return $localize`:@@change-status-include-warning:The action "Include" can only be applied to registrations that do not have status "Included" and whose “Payments left” is larger than 0.`;
-      case RegistrationStatusEnum.paused:
-        return $localize`:@@change-status-pause-warning:The action "Pause" can only be applied to registrations with the "Included" status.`;
-      case RegistrationStatusEnum.declined:
-        return $localize`:@@change-status-decline-warning:The action "Decline" can not be applied to registrations with the "Declined" or "Completed" status.`;
-      case RegistrationStatusEnum.deleted:
-        return $localize`:@@change-status-delete-warning:The action "Delete" can not be applied to registrations with the "Completed" status.`;
-      default:
-        return $localize`:@@change-status-default-warning:This action can not be applied to registrations you have selected.`;
+
+  readonly pendingApprovalExplanation = computed(() => {
+    const status = this.status();
+    if (!status) {
+      return undefined;
     }
+    return REGISTRATION_STATUS_PENDING_APPROVAL_EXPLANATION[status];
   });
+
+  readonly submitButtonText = computed(() => {
+    return getRegistrationUpdateDialogSubmitLabel({
+      status: this.status(),
+      count: this.changeStatusMutation.data()?.applicableCount,
+    });
+  });
+
+  readonly changeStatusWarningMessage = computed(() => {
+    return getChangeStatusWarningMessage({ status: this.status() });
+  });
+
   readonly canSendMessage = computed(() => {
     const status = this.status();
     if (!status) {
@@ -213,8 +222,12 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
       invalidateCacheAgainAfterDelay: 500,
     },
     onSuccess: (data, variables) => {
-      if (data.nonApplicableCount === 0) {
-        // case #1: the change can be applied to all registrations
+      // Registrations with a pending-approval payment also need explicit confirmation, not just non-applicable ones
+      const needsConfirmation =
+        data.nonApplicableCount > 0 || (data.pendingApprovalCount ?? 0) > 0;
+
+      if (!needsConfirmation) {
+        // case #1: the change can be applied to all registrations, without any pending-approval payments
         if (variables.dryRun) {
           this.changeStatusMutation.mutate({ dryRun: false });
           return;
@@ -237,7 +250,7 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
         return;
       }
 
-      // case #3: the change can be applied to only some of the registrations
+      // case #3: some registrations are non-applicable and/or have a payment pending approval
       this.dialogVisible.set(false);
       this.dryRunWarningDialog().show({
         resetMutation: false,

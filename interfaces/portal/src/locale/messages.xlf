@@ -816,7 +816,7 @@
         <source>Amount sent per payment</source>
       </trans-unit>
       <trans-unit id="428968768517674095" datatype="html">
-        <source>Would you like to proceed with <x equiv-text="{{ changeStatusMutation.data()?.applicableCount }}" id="INTERPOLATION"/> registration(s)?</source>
+        <source>Would you like to proceed with <x equiv-text="{{ dryRunData?.applicableCount }}" id="INTERPOLATION"/> registration(s)?</source>
       </trans-unit>
       <trans-unit id="4309697217076303455" datatype="html">
         <source><x equiv-text="paymentCount.toString()" id="count"/> (out of <x equiv-text="maxPayments.toString()" id="totalCount"/>)</source>
@@ -983,6 +983,9 @@
       <trans-unit id="5004550577313573215" datatype="html">
         <source>Total amount</source>
       </trans-unit>
+      <trans-unit id="501769714612198671" datatype="html">
+        <source>You&apos;re about to <x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/> <x equiv-text="{{ dryRunData.pendingApprovalCount }}" id="INTERPOLATION_1"/> registration(s) that are included in a payment that&apos;s waiting for approval.</source>
+      </trans-unit>
       <trans-unit id="5028251453651641459" datatype="html">
         <source>Update the relevant details in the next steps, then link a registration form to complete the setup.</source>
       </trans-unit>
@@ -1141,9 +1144,6 @@
       </trans-unit>
       <trans-unit id="5595826100350402634" datatype="html">
         <source>Use the arrow keys or W A S D to play the game</source>
-      </trans-unit>
-      <trans-unit id="561353031255604069" datatype="html">
-        <source>There are <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registration(s) that don&apos;t support this action</source>
       </trans-unit>
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
@@ -1851,9 +1851,6 @@
       <trans-unit id="8733206904097373941" datatype="html">
         <source>This will download an Excel file with all unused voucher(s).</source>
       </trans-unit>
-      <trans-unit id="8735352957921555136" datatype="html">
-        <source>Registrations that do not support this action will remain in their current status.</source>
-      </trans-unit>
       <trans-unit id="8747826357702572054" datatype="html">
         <source>Financial service providers:</source>
       </trans-unit>
@@ -2058,6 +2055,9 @@
       <trans-unit id="change-status-decline-warning" datatype="html">
         <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Declined&quot; or &quot;Completed&quot; status.</source>
       </trans-unit>
+      <trans-unit id="change-status-declined-pending-approval-explanation" datatype="html">
+        <source>Declining a registration included in a payment will exclude them from that payment. To ensure they still receive their transfer, cancel this action and decline them after payment.</source>
+      </trans-unit>
       <trans-unit id="change-status-default-warning" datatype="html">
         <source>This action can not be applied to registrations you have selected.</source>
       </trans-unit>
@@ -2069,6 +2069,9 @@
       </trans-unit>
       <trans-unit id="change-status-pause-warning" datatype="html">
         <source>The action &quot;Pause&quot; can only be applied to registrations with the &quot;Included&quot; status.</source>
+      </trans-unit>
+      <trans-unit id="change-status-paused-pending-approval-explanation" datatype="html">
+        <source>Pausing a registration that’s included in a payment will result in a failed transfer. If you include them in the future, you’ll be able to retry the failed payment.</source>
       </trans-unit>
       <trans-unit id="change-status-validate-warning" datatype="html">
         <source>The action &quot;Validate&quot; can only be applied to registrations with the &quot;New&quot; status.</source>
@@ -2666,6 +2669,21 @@
       </trans-unit>
       <trans-unit id="registration-status-deleted" datatype="html">
         <source>Deleted</source>
+      </trans-unit>
+      <trans-unit id="registration-status-dialog-submit-button-labels-decline" datatype="html">
+        <source>Decline registration</source>
+      </trans-unit>
+      <trans-unit id="registration-status-dialog-submit-button-labels-delete" datatype="html">
+        <source>Delete registration</source>
+      </trans-unit>
+      <trans-unit id="registration-status-dialog-submit-button-labels-include" datatype="html">
+        <source>Include registration</source>
+      </trans-unit>
+      <trans-unit id="registration-status-dialog-submit-button-labels-pause" datatype="html">
+        <source>Pause registration</source>
+      </trans-unit>
+      <trans-unit id="registration-status-dialog-submit-button-labels-validate" datatype="html">
+        <source>Validate registration</source>
       </trans-unit>
       <trans-unit id="registration-status-included" datatype="html">
         <source>Included</source>
