@@ -66,6 +66,11 @@
     "params": []
   },
   {
+    "method": "patch",
+    "path": "/api/cronjobs/fsps/alfouad",
+    "params": []
+  },
+  {
     "method": "put",
     "path": "/api/cronjobs/exchange-rates",
     "params": []

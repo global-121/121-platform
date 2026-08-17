@@ -10,12 +10,16 @@ graph LR
   AirtelModule-->QueuesRegistryModule
   AirtelModule-->RedisModule
   AlfouadModule-->ProgramFspConfigurationsModule
+  AlfouadReconciliationModule-->AlfouadModule
+  AlfouadReconciliationModule-->TransactionEventsModule
+  AlfouadReconciliationModule-->TransactionsModule
   CommercialBankEthiopiaAccountManagementModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaAccountManagementModule-->ProgramModule
   CommercialBankEthiopiaAccountManagementModule-->RegistrationsModule
   CooperativeBankOfOromiaAccountManagementModule-->CooperativeBankOfOromiaModule
   CooperativeBankOfOromiaAccountManagementModule-->ProgramModule
   CooperativeBankOfOromiaAccountManagementModule-->RegistrationsModule
+  CronjobModule-->AlfouadReconciliationModule
   CronjobModule-->CommercialBankEthiopiaAccountManagementModule
   CronjobModule-->CooperativeBankOfOromiaAccountManagementModule
   CronjobModule-->ExchangeRatesModule

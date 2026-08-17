@@ -15,6 +15,7 @@ import { OnafriqModule } from '@121-service/src/fsp-integrations/integrations/on
 import { SafaricomModule } from '@121-service/src/fsp-integrations/integrations/safaricom/safaricom.module';
 import { createTransactionJobProcessor } from '@121-service/src/fsp-integrations/transaction-jobs/processor/create-transaction-job-processor';
 import { TransactionJobsAirtelService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-airtel.service';
+import { TransactionJobsAlfouadService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-alfouad.service';
 import { TransactionJobsCommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-commercial-bank-ethiopia.service';
 import { TransactionJobsCooperativeBankOfOromiaService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-cooperative-bank-of-oromia.service';
 import { TransactionJobsExcelService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-excel.service';
@@ -51,6 +52,7 @@ const transactionJobProcessors = [
   createTransactionJobProcessor(QueueNames.transactionJobsCommercialBankEthiopia, TransactionJobsCommercialBankEthiopiaService),
   createTransactionJobProcessor(QueueNames.transactionJobsExcel, TransactionJobsExcelService),
   createTransactionJobProcessor(QueueNames.transactionJobsMtn, TransactionJobsMtnService),
+  createTransactionJobProcessor(QueueNames.transactionJobsAlfouad, TransactionJobsAlfouadService),
 ];
 
 @Module({
@@ -91,6 +93,7 @@ const transactionJobProcessors = [
     TransactionJobsCommercialBankEthiopiaService,
     TransactionJobsMtnService,
     TransactionJobsExcelService,
+    TransactionJobsAlfouadService,
     createScopedRepositoryProvider(OnafriqTransactionEntity),
     TransactionEventsScopedRepository,
   ],

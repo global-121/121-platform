@@ -30,9 +30,10 @@ export const airtelEnvVariablesSchema = {
   AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY: z.string().optional(),
 };
 
-//TODO: export when Alfouad is implemented
-const alfouadEnvVariablesSchema = {
+export const alfouadEnvVariablesSchema = {
   ALFOUAD_MODE: FspModeSchema,
+
+  CRON_ALFOUAD_RECONCILIATION: z.stringbool().default(false),
 
   ALFOUAD_API_URL: z
     .url()
