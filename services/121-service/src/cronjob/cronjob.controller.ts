@@ -1,19 +1,19 @@
 import {
-    Body,
-    Controller,
-    Delete,
-    HttpCode,
-    HttpStatus,
-    Post,
-    Put,
-    UseGuards,
+  Body,
+  Controller,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Put,
+  UseGuards,
 } from '@nestjs/common';
 import { Patch } from '@nestjs/common';
 import {
-    ApiExcludeEndpoint,
-    ApiOperation,
-    ApiResponse,
-    ApiTags,
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
@@ -167,14 +167,14 @@ export class CronjobController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      '[CRON] Reconcile Al Fouad transactions by checking the latest status of each waiting transaction',
+      '[CRON] Reconcile AlFouad transactions by checking the latest status of each waiting transaction',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Number of Al Fouad transactions processed for reconciliation',
+    description: 'AlFouad transaction update process started',
   })
   @Patch('fsps/alfouad')
-  public async cronDoAlfouadReconciliation(): Promise<number | undefined> {
+  public async cronDoAlfouadReconciliation(): Promise<void> {
     return await this.cronjobExecutionService.cronDoAlfouadReconciliation();
   }
 

@@ -89,8 +89,8 @@ export class CronjobExecutionService {
     );
   }
 
-  public async cronDoAlfouadReconciliation(): Promise<number | undefined> {
-    return await this.cronjobExecutionHelperService.executeWithLogging(
+  public async cronDoAlfouadReconciliation(): Promise<void> {
+    await this.cronjobExecutionHelperService.executeWithLogging(
       'cronDoAlfouadReconciliation',
       () => this.alfouadReconciliationService.doAlfouadReconciliation(),
     );

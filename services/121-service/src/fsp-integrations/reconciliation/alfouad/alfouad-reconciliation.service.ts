@@ -3,10 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/alfouad.service';
 import { mapAlfouadStateToTransactionStatus } from '@121-service/src/fsp-integrations/integrations/alfouad/helpers/map-alfouad-state-to-transaction-status.helper';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
-import {
-  ALFOUAD_RECONCILIATION_CANCELED_MESSAGE,
-  ALFOUAD_RECONCILIATION_MAX_TRANSACTIONS_PER_RUN,
-} from '@121-service/src/fsp-integrations/reconciliation/alfouad/alfouad-reconciliation.config';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { computeTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -28,7 +24,7 @@ export class AlfouadReconciliationService {
     const transactionIds =
       await this.transactionRepository.getWaitingTransactionIdsByFsp({
         fspName: Fsps.alfouad,
-        limit: ALFOUAD_RECONCILIATION_MAX_TRANSACTIONS_PER_RUN,
+        limit: 1000,
       });
 
     for (const transactionId of transactionIds) {
@@ -76,7 +72,7 @@ export class AlfouadReconciliationService {
       newTransactionStatus,
       errorMessage:
         newTransactionStatus === TransactionStatusEnum.error
-          ? ALFOUAD_RECONCILIATION_CANCELED_MESSAGE
+          ? 'The transaction was canceled at Al Fouad.'
           : undefined,
     });
   }
@@ -88,6 +84,7 @@ export class AlfouadReconciliationService {
       await this.transactionRepository.getReferenceIdByTransactionIdOrThrow(
         transactionId,
       );
+
     const failedTransactionAttempts =
       await this.transactionEventScopedRepository.countFailedTransactionAttempts(
         transactionId,
