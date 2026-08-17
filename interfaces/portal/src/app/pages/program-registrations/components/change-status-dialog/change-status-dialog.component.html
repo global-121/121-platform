@@ -3,6 +3,7 @@
   [closeOnEscape]="false"
   styleClass="md:min-inline-184"
   [(visible)]="dialogVisible"
+  data-testid="change-status-dialog"
   [modal]="true"
 >
   <ng-template pTemplate="header">
@@ -121,6 +122,7 @@
 </p-dialog>
 
 <app-form-dialog
+  data-testid="change-status-dry-run-warning-dialog"
   #dryRunWarningDialog
   header="Warning"
   i18n-header="@@generic-warning"
