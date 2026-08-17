@@ -428,14 +428,12 @@ export class IntersolveVisaApiService {
       }),
       cardAddress: {
         address1: this.createAddressString(contactInformation),
-        address2: contactInformation.name,
         city: contactInformation.addressCity,
         country: 'NLD',
         postalCode: contactInformation.addressPostalCode,
       },
       pinAddress: {
         address1: this.createAddressString(contactInformation),
-        address2: contactInformation.name,
         city: contactInformation.addressCity,
         country: 'NLD',
         postalCode: contactInformation.addressPostalCode,
