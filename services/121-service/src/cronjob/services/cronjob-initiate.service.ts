@@ -124,6 +124,17 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'patch', headers);
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_3AM, {
+    disabled: !env.CRON_ALFOUAD_RECONCILIATION,
+  })
+  public async cronDoAlfouadReconciliation(cronJobMethodName): cronReturn {
+    const { baseCronUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
+    // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
+    const url = `${baseCronUrl}/fsps/alfouad`;
+    return await this.callEndpoint(url, 'patch', headers);
+  }
+
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
     disabled: !env.CRON_GET_DAILY_EXCHANGE_RATES,
   })

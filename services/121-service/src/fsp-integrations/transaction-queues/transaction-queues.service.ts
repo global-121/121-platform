@@ -3,6 +3,7 @@ import { Queue } from 'bull';
 import Redis from 'ioredis';
 
 import { AirtelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/airtel-transaction-job.dto';
+import { AlfouadTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/alfouad-transaction-job.dto';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
 import { CooperativeBankOfOromiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/cooperative-bank-of-oromia-transaction-job.dto';
 import { ExcelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/excel-transaction-job.dto';
@@ -115,6 +116,15 @@ export class TransactionQueuesService {
     await this.addTransactionJobsToQueue({
       queue: this.queuesService.transactionJobMtnQueue,
       transactionJobs: mtnTransactionJobs,
+    });
+  }
+
+  public async addAlfouadTransactionJobs(
+    alfouadTransactionJobs: AlfouadTransactionJobDto[],
+  ): Promise<void> {
+    await this.addTransactionJobsToQueue({
+      queue: this.queuesService.transactionJobAlfouadQueue,
+      transactionJobs: alfouadTransactionJobs,
     });
   }
 

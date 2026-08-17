@@ -6,6 +6,7 @@ import { CommercialBankEthiopiaAccountManagementService } from '@121-service/src
 import { CooperativeBankOfOromiaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/cooperative-bank-of-oromia-account-management.service';
 import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
 import { IntersolveVoucherCronService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher-cron.service';
+import { AlfouadReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/alfouad/alfouad-reconciliation.service';
 import { IntersolveVisaReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/intersolve-visa/intersolve-visa-reconciliation.service';
 import { IntersolveVoucherReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/intersolve-voucher/intersolve-voucher-reconciliation.service';
 import { MtnReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.service';
@@ -24,6 +25,7 @@ export class CronjobExecutionService {
     private readonly nedbankReconciliationService: NedbankReconciliationService,
     private readonly onafriqReconciliationService: OnafriqReconciliationService,
     private readonly mtnReconciliationService: MtnReconciliationService,
+    private readonly alfouadReconciliationService: AlfouadReconciliationService,
     private readonly exchangeRatesService: ExchangeRatesService,
     private readonly cronjobExecutionHelperService: CronjobExecutionHelperService,
   ) {}
@@ -84,6 +86,13 @@ export class CronjobExecutionService {
     return await this.cronjobExecutionHelperService.executeWithLogging(
       'cronDoMtnReconciliation',
       () => this.mtnReconciliationService.doMtnReconciliation(),
+    );
+  }
+
+  public async cronDoAlfouadReconciliation(): Promise<number | undefined> {
+    return await this.cronjobExecutionHelperService.executeWithLogging(
+      'cronDoAlfouadReconciliation',
+      () => this.alfouadReconciliationService.doAlfouadReconciliation(),
     );
   }
 
