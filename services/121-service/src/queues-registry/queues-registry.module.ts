@@ -2,8 +2,8 @@ import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 
 import {
-  MTN_RECONCILIATION_QUEUE_LIMITER_DURATION_MS,
-  MTN_RECONCILIATION_QUEUE_MAX_JOBS_PER_SECOND,
+    MTN_RECONCILIATION_QUEUE_LIMITER_DURATION_MS,
+    MTN_RECONCILIATION_QUEUE_MAX_JOBS_PER_SECOND,
 } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.config';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
