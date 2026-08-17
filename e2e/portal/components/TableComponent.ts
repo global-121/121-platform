@@ -429,7 +429,8 @@ class TableComponent {
     customMessage,
   }: {
     registrationName: string;
-    status: string;
+    status:
+      'Pause' | 'Decline' | 'Delete' | 'Include' | 'Validate' | 'Complete';
     sendMessage?: boolean;
     sendCustomMessage?: boolean;
     sendTemplatedMessage?: boolean;
