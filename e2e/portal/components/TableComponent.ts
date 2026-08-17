@@ -46,7 +46,7 @@ class TableComponent {
     this.spinbuttonField = this.page.getByRole('spinbutton');
     this.searchBox = this.page.getByRole('searchbox');
     this.checkbox = this.page.getByRole('checkbox');
-    this.approveButton = this.page.getByRole('button', { name: 'Approve' });
+    this.approveButton = this.page.getByTestId('change-status-submit-button');
     this.continueToPreviewButton = this.page.getByRole('button', {
       name: 'Continue to preview',
     });
@@ -429,7 +429,8 @@ class TableComponent {
     customMessage,
   }: {
     registrationName: string;
-    status: string;
+    status:
+      'Pause' | 'Decline' | 'Delete' | 'Include' | 'Validate' | 'Complete';
     sendMessage?: boolean;
     sendCustomMessage?: boolean;
     sendTemplatedMessage?: boolean;
