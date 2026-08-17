@@ -17,17 +17,58 @@ export const REGISTRATION_STATUS_LABELS: Record<
   [RegistrationStatusEnum.paused]: $localize`:@@registration-status-paused:Paused`,
 };
 
-export const REGISTRATION_UPDATE_DIALOG_SUBMIT_BUTTON_LABELS: Record<
-  RegistrationStatusEnum,
-  string
-> = {
-  [RegistrationStatusEnum.new]: '',
-  [RegistrationStatusEnum.completed]: '',
-  [RegistrationStatusEnum.included]: $localize`:@@registration-status-dialog-submit-button-labels-include:Include registrations`,
-  [RegistrationStatusEnum.declined]: $localize`:@@registration-status-dialog-submit-button-labels-decline:Decline registrations`,
-  [RegistrationStatusEnum.validated]: $localize`:@@registration-status-dialog-submit-button-labels-validate:Validate registrations`,
-  [RegistrationStatusEnum.deleted]: $localize`:@@registration-status-dialog-submit-button-labels-delete:Delete registrations`,
-  [RegistrationStatusEnum.paused]: $localize`:@@registration-status-dialog-submit-button-labels-pause:Pause registrations`,
+export const getRegistrationUpdateDialogSubmitLabel = ({
+  status,
+  count,
+}: {
+  status: RegistrationStatusEnum | undefined;
+  count: number | undefined;
+}): string => {
+  switch (status) {
+    case RegistrationStatusEnum.included:
+      return count === 1
+        ? $localize`:@@registration-status-dialog-submit-button-labels-include:Include registration`
+        : $localize`:@@registration-status-dialog-submit-button-labels-include:Include registrations`;
+    case RegistrationStatusEnum.declined:
+      return count === 1
+        ? $localize`:@@registration-status-dialog-submit-button-labels-decline:Decline registration`
+        : $localize`:@@registration-status-dialog-submit-button-labels-decline:Decline registrations`;
+    case RegistrationStatusEnum.validated:
+      return count === 1
+        ? $localize`:@@registration-status-dialog-submit-button-labels-validate:Validate registration`
+        : $localize`:@@registration-status-dialog-submit-button-labels-validate:Validate registrations`;
+    case RegistrationStatusEnum.deleted:
+      return count === 1
+        ? $localize`:@@registration-status-dialog-submit-button-labels-delete:Delete registration`
+        : $localize`:@@registration-status-dialog-submit-button-labels-delete:Delete registrations`;
+    case RegistrationStatusEnum.paused:
+      return count === 1
+        ? $localize`:@@registration-status-dialog-submit-button-labels-pause:Pause registration`
+        : $localize`:@@registration-status-dialog-submit-button-labels-pause:Pause registrations`;
+    default:
+      return $localize`:@@generic-approve:Approve`;
+  }
+};
+
+export const getChangeStatusWarningMessage = ({
+  status,
+}: {
+  status: RegistrationStatusEnum | undefined;
+}): string => {
+  switch (status) {
+    case RegistrationStatusEnum.validated:
+      return $localize`:@@change-status-validate-warning:The action "Validate" can only be applied to registrations with the "New" status.`;
+    case RegistrationStatusEnum.included:
+      return $localize`:@@change-status-include-warning:The action "Include" can only be applied to registrations that do not have status "Included" and whose “Payments left” is larger than 0.`;
+    case RegistrationStatusEnum.paused:
+      return $localize`:@@change-status-pause-warning:The action "Pause" can only be applied to registrations with the "Included" status.`;
+    case RegistrationStatusEnum.declined:
+      return $localize`:@@change-status-decline-warning:The action "Decline" can not be applied to registrations with the "Declined" or "Completed" status.`;
+    case RegistrationStatusEnum.deleted:
+      return $localize`:@@change-status-delete-warning:The action "Delete" can not be applied to registrations with the "Completed" status.`;
+    default:
+      return $localize`:@@change-status-default-warning:This action can not be applied to registrations you have selected.`;
+  }
 };
 
 export const REGISTRATION_STATUS_PENDING_APPROVAL_EXPLANATION: Partial<
