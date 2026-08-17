@@ -36,15 +36,21 @@ describe('Find duplicates in 100k registrations within expected range', () => {
     // Arrange
     const startTime = Date.now();
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
+     
+    console.log(`[timing] resetDB: ${Date.now() - startTime}ms`);
     accessToken = await getAccessToken();
     // Upload registration
+    const beforeImport = Date.now();
     const importRegistrationResponse = await importRegistrations(
       programIdOCW,
       [registrationVisa],
       accessToken,
     );
+     
+    console.log(`[timing] importRegistrations: ${Date.now() - beforeImport}ms`);
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration to be more than 100k
+    const beforeDuplicate = Date.now();
     const duplicateRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
         powerNumberRegistration: duplicateNumber,
@@ -54,14 +60,23 @@ describe('Find duplicates in 100k registrations within expected range', () => {
           secret: env.RESET_SECRET,
         },
       });
+     
+    console.log(
+      `[timing] duplicateRegistrationsAndPaymentData: ${Date.now() - beforeDuplicate}ms`,
+    );
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Query for duplicate registrations
+    const beforeQuery = Date.now();
     const findDuplicatesResponse = await getRegistrations({
       programId: programIdOCW,
       filter: queryParams,
       accessToken,
     });
+     
+    console.log(`[timing] getRegistrations: ${Date.now() - beforeQuery}ms`);
     const elapsedTime = Date.now() - startTime;
+     
+    console.log(`[timing] total: ${elapsedTime}ms`);
     // Assert
     expect(elapsedTime).toBeLessThan(testTimeout);
     expect(findDuplicatesResponse.statusCode).toBe(HttpStatus.OK);
