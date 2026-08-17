@@ -15,6 +15,8 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+
 import {
   ChipVariant,
   ColoredChipComponent,
@@ -139,10 +141,25 @@ export class KoboImportExistingRegistrationsDialogComponent {
     if (errors?.length) {
       // We need to add a ID because the table expects it, without <app-query-table> throws a typescript error
       const detailedErrorsWithIndexedIds: ValidationErrorTableRow[] =
-        errors.map((error: ValidationError, index: number) => ({
-          ...error,
-          id: index,
-        }));
+        errors.map((error: ValidationError, index: number) => {
+          // I'm sorry about this ugly 'fix'. Truly. If this code were a person, it would apologize too.
+          // check AB#43075 for more context as to why we did this...
+          if (
+            error.column ===
+            GenericRegistrationAttributes.programFspConfigurationName.toString()
+          ) {
+            return {
+              ...error,
+              column: 'fsp',
+              id: index,
+            };
+          }
+
+          return {
+            ...error,
+            id: index,
+          };
+        });
 
       return detailedErrorsWithIndexedIds;
     }

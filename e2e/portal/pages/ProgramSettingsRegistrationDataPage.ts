@@ -190,8 +190,8 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
     expect(columnHeaders).toEqual(['Reference ID', 'Column', 'Error']);
     expect(rows).toEqual([
       'failure-import-with-failure',
-      'programFspConfigurationName',
-      'FspConfigurationName undefined not found in program. Allowed values: Safaricom',
+      'fsp',
+      'Fsp undefined not found in program. Allowed values: Safaricom',
     ]);
   }
 

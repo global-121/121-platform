@@ -433,7 +433,7 @@ describe('KoboSubmissionService', () => {
           {
             referenceId: successSubmissionUuid,
             column: 'programFspConfigurationName',
-            error: 'FspConfigurationName Invalid-FSP not found in program.',
+            error: 'Fsp Invalid-FSP not found in program.',
           },
         ],
       };

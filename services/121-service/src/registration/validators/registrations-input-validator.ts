@@ -470,7 +470,7 @@ export class RegistrationsInputValidator {
         index: i,
         value: programFspName,
         column: AdditionalAttributes.programFspConfigurationName,
-        error: `FspConfigurationName ${programFspName} not found in program. Allowed values: ${programFspConfigurations
+        error: `Fsp ${programFspName} not found in program. Allowed values: ${programFspConfigurations
           .map((fspConfig) => fspConfig.name)
           .join(', ')}`,
       };
