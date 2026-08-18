@@ -15,6 +15,8 @@ import { MessageQueuesService } from '@121-service/src/notifications/message-que
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import {
@@ -59,7 +61,15 @@ export class RegistrationsBulkService {
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     @Inject(getScopedRepositoryProviderName(NoteEntity))
     private readonly noteScopedRepository: ScopedRepository<NoteEntity>,
+    @Inject(getScopedRepositoryProviderName(TransactionEntity))
+    private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
   ) {}
+
+  // Only these target statuses can affect registrations with a payment pending approval
+  private static readonly statusesRequiringPendingApprovalCheck = [
+    RegistrationStatusEnum.declined,
+    RegistrationStatusEnum.paused,
+  ];
 
   public async updateRegistrationStatusOrDryRun({
     paginateQuery,
@@ -81,11 +91,27 @@ export class RegistrationsBulkService {
     const allowedCurrentStatuses =
       this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
 
-    const resultDto = await this.getBulkActionResult(
+    const bulkActionResult = await this.getBulkActionResult(
       paginateQuery,
       programId,
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses, registrationStatus),
     );
+
+    let pendingApprovalCount: number | undefined = undefined;
+    if (dryRun) {
+      pendingApprovalCount = await this.getPendingApprovalCountIfApplicable({
+        registrationStatus,
+        allowedCurrentStatuses,
+        paginateQuery,
+        programId,
+      });
+    }
+
+    const resultDto =
+      pendingApprovalCount === undefined
+        ? bulkActionResult
+        : { ...bulkActionResult, pendingApprovalCount };
+
     if (!dryRun) {
       this.applyRegistrationStatusUpdate({
         paginateQuery,
@@ -131,6 +157,7 @@ export class RegistrationsBulkService {
       programId,
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
     );
+
     if (!dryRun) {
       this.deleteBatch({
         paginateQuery,
@@ -500,6 +527,68 @@ export class RegistrationsBulkService {
       });
 
     return data.map((r) => r.referenceId);
+  }
+
+  // Only computed for status changes that can affect registrations with a payment pending approval
+  private async getPendingApprovalCountIfApplicable({
+    registrationStatus,
+    allowedCurrentStatuses,
+    paginateQuery,
+    programId,
+  }: {
+    registrationStatus: RegistrationStatusEnum;
+    allowedCurrentStatuses: RegistrationStatusEnum[];
+    paginateQuery: PaginateQuery;
+    programId: number;
+  }): Promise<number | undefined> {
+    if (
+      !RegistrationsBulkService.statusesRequiringPendingApprovalCheck.includes(
+        registrationStatus,
+      )
+    ) {
+      return undefined;
+    }
+
+    // Clone the query so mutating `.select` here does not affect the caller's later use of paginateQuery
+    const applicableReferenceIds =
+      await this.getReferenceIdsForWhichStatusChangeIsApplicable(
+        programId,
+        allowedCurrentStatuses,
+        registrationStatus,
+        { ...paginateQuery },
+      );
+
+    return await this.getPendingApprovalCount({
+      referenceIds: applicableReferenceIds,
+      programId,
+    });
+  }
+
+  private async getPendingApprovalCount({
+    referenceIds,
+    programId,
+  }: {
+    referenceIds: string[];
+    programId: number;
+  }): Promise<number> {
+    if (referenceIds.length === 0) {
+      return 0;
+    }
+
+    const result = await this.transactionScopedRepository
+      .createQueryBuilder('transaction')
+      .leftJoin('transaction.registration', 'registration')
+      .andWhere('registration."programId" = :programId', { programId })
+      .andWhere('registration."referenceId" IN (:...referenceIds)', {
+        referenceIds,
+      })
+      .andWhere('transaction.status = :status', {
+        status: TransactionStatusEnum.pendingApproval,
+      })
+      .select('COUNT(DISTINCT transaction."registrationId")', 'count')
+      .getRawOne<{ count: string }>();
+
+    return Number(result?.count ?? 0);
   }
 
   private async updateRegistrationStatusPerChunk({

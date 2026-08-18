@@ -6,13 +6,14 @@ interface QueryBuilderMock {
   leftJoin: () => QueryBuilderMock;
   getMany?: () => any;
   getRawMany?: () => any;
+  getRawOne?: () => any;
   distinct?: () => QueryBuilderMock;
   orderBy?: () => QueryBuilderMock;
 }
 
 export function generateMockCreateQueryBuilder(
-  dbQueryResult?: any[] | null,
-  options: { useGetMany?: boolean } = {},
+  dbQueryResult?: any,
+  options: { useGetMany?: boolean; useGetRawOne?: boolean } = {},
 ): QueryBuilderMock {
   const mock: QueryBuilderMock = {
     select: () => mock,
@@ -26,6 +27,8 @@ export function generateMockCreateQueryBuilder(
 
   if (options.useGetMany) {
     mock.getMany = () => dbQueryResult;
+  } else if (options.useGetRawOne) {
+    mock.getRawOne = () => dbQueryResult;
   } else {
     mock.getRawMany = () => dbQueryResult;
   }
