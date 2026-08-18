@@ -3,11 +3,13 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/test-helpers/createQueryBuilderMock.helper';
 
 describe('RegistrationBulkService', () => {
@@ -113,6 +115,10 @@ describe('RegistrationBulkService', () => {
     jest
       .spyOn(queueMessageService as any, 'addMessageToQueue')
       .mockImplementation();
+
+    transactionScopedRepository = unitRef.get(
+      getScopedRepositoryProviderName(TransactionEntity),
+    );
   });
 
   it('should be defined', () => {
