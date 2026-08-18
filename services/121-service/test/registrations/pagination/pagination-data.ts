@@ -27,43 +27,6 @@ export const programIdNedbank = 1;
 export const programIdCbe = 1;
 export const programIdMtn = 1;
 
-// @REVIEWER: I know... This thing is horrendous.
-// I'd rather throw in fakerjs and generate random data, but for now this is what we have to work with.
-export const getDefaultOCWRegistrations = ({ count }: { count: number }) => {
-  if (count < 1 || count > 10) {
-    throw new Error('Count must be between 1 and 10');
-  }
-
-  return Array.from({ length: count }).map((_, i) => {
-    const registration = {
-      referenceId: `63e62864557597e${i + 1}d`,
-      preferredLanguage: RegistrationPreferredLanguage.en,
-      paymentAmountMultiplier: 1,
-      fullName: [
-        'Emma Smith',
-        'Liam Brown',
-        'Noah Taylor',
-        'Ava Jones',
-        'Mia Davis',
-        'Luca White',
-        'Zoe Clark',
-        'Max Green',
-        'Ivy Adams',
-        'Finn Hall',
-      ][i],
-      phoneNumber: `1415523666${i + 1}`,
-      programFspConfigurationName: Fsps.intersolveVisa,
-      whatsappPhoneNumber: `1415523888${i + 1}`,
-      addressStreet: 'Teststraat',
-      addressHouseNumber: `${i + 1}`,
-      addressHouseNumberAddition: '',
-      addressPostalCode: `123${i + 1}AB`,
-      addressCity: 'Stad',
-    };
-    return registration;
-  });
-};
-
 export const registrationOCW1 = {
   referenceId: '63e62864557597e0d',
   preferredLanguage: RegistrationPreferredLanguage.en,

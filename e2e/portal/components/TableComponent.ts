@@ -125,18 +125,6 @@ class TableComponent {
     }
   }
 
-  // async getTextArrayFromColumnWithHeader({
-  //   columnHeader,
-  // }: {
-  //   columnHeader: string;
-  // }) {
-  //   const columnIndex = await this.getColumnIndexByHeaderText(columnHeader);
-  //   const textArray = await this.getTextArrayFromColumn(columnIndex);
-  //   console.log('textArray', textArray);
-
-  //   return textArray;
-  // }
-
   async getTextArrayFromColumn(column: number) {
     return await this.tableRows.evaluateAll(
       (rows, col) =>
