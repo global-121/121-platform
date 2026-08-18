@@ -28,23 +28,23 @@ export const getRegistrationUpdateDialogSubmitLabel = ({
     case RegistrationStatusEnum.included:
       return count === 1
         ? $localize`:@@registration-status-dialog-submit-button-labels-include:Include registration`
-        : $localize`:@@registration-status-dialog-submit-button-labels-include:Include registrations`;
+        : $localize`:@@registration-status-dialog-submit-button-labels-include-plural:Include registrations`;
     case RegistrationStatusEnum.declined:
       return count === 1
         ? $localize`:@@registration-status-dialog-submit-button-labels-decline:Decline registration`
-        : $localize`:@@registration-status-dialog-submit-button-labels-decline:Decline registrations`;
+        : $localize`:@@registration-status-dialog-submit-button-labels-decline-plural:Decline registrations`;
     case RegistrationStatusEnum.validated:
       return count === 1
         ? $localize`:@@registration-status-dialog-submit-button-labels-validate:Validate registration`
-        : $localize`:@@registration-status-dialog-submit-button-labels-validate:Validate registrations`;
+        : $localize`:@@registration-status-dialog-submit-button-labels-validate-plural:Validate registrations`;
     case RegistrationStatusEnum.deleted:
       return count === 1
         ? $localize`:@@registration-status-dialog-submit-button-labels-delete:Delete registration`
-        : $localize`:@@registration-status-dialog-submit-button-labels-delete:Delete registrations`;
+        : $localize`:@@registration-status-dialog-submit-button-labels-delete-plural:Delete registrations`;
     case RegistrationStatusEnum.paused:
       return count === 1
         ? $localize`:@@registration-status-dialog-submit-button-labels-pause:Pause registration`
-        : $localize`:@@registration-status-dialog-submit-button-labels-pause:Pause registrations`;
+        : $localize`:@@registration-status-dialog-submit-button-labels-pause-plural:Pause registrations`;
     default:
       return $localize`:@@generic-approve:Approve`;
   }

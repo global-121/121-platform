@@ -5,8 +5,8 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-// @REVIEWER: I know... This thing is horrendous.
-// I'd rather throw in fakerjs and generate random data, but for now this is what we have to work with.
+// I know... This thing is horrendous.
+// I'd rather throw in fakerjs and create a general registration-generation fn() but this is it for now.
 const registrations = Array.from({ length: 4 }).map((_, i) => ({
   referenceId: `63e62864557597e${i + 1}d`,
   preferredLanguage: RegistrationPreferredLanguage.en,
@@ -86,13 +86,13 @@ test('Pause registrations included in pending payments', async ({
     );
   });
 
-  await test.step('Validate payment table shows 2 registrations are paused', async () => {
+  await test.step('Validate payment table shows 2 registrations are declined', async () => {
     await page.goto(paymentUrl);
     await page.waitForURL((url) => url.pathname.startsWith(paymentUrl));
     await paymentPage.validatePaymentDetailsPageTitle();
 
-    // @REVIEWER: Unfortunatly, becasue there are no unique identifiers for the table rows (No reg. name, id, referenceNumber)
-    // we have to rely on the count of 'paused' statusses in the page. This is not ideal, but it works for now.
+    // NOTE: The payment table currently has no stable row identifiers (no registration name/id/referenceId),
+    // so this assertion relies on counting status chips on the page. This is not ideal, but it works for now.
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: 'Paused',
       count: 2,
@@ -161,8 +161,8 @@ test('Decline registrations included in pending payments', async ({
     await page.waitForURL((url) => url.pathname.startsWith(paymentUrl));
     await paymentPage.validatePaymentDetailsPageTitle();
 
-    // @REVIEWER: Unfortunatly, becasue there are no unique identifiers for the table rows (No reg. name, id, referenceNumber)
-    // we have to rely on the count of 'paused' statusses in the page. This is not ideal, but it works for now.
+    // NOTE: The payment table currently has no stable row identifiers (no registration name/id/referenceId),
+    // so this assertion relies on counting status chips on the page.
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: 'Declined',
       count: 2,

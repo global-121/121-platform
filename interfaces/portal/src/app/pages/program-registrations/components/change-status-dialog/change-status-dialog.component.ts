@@ -304,7 +304,6 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
   }
 
   onChangeStatusCancel() {
-    this.dialogVisible.set(false);
     this.changeStatusMutation.reset();
 
     // Manual reset the input that might already be given;
@@ -314,6 +313,7 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
   }
 
   private resetDialogState() {
+    this.dialogVisible.set(false);
     this.reason.set(undefined);
     this.reasonValidationErrorMessage.set(undefined);
     this.enableSendMessage.set(false);

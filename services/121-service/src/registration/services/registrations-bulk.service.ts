@@ -97,14 +97,15 @@ export class RegistrationsBulkService {
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses, registrationStatus),
     );
 
-    const pendingApprovalCount = await this.getPendingApprovalCountIfApplicable(
-      {
+    let pendingApprovalCount: number | undefined = undefined;
+    if (dryRun) {
+      pendingApprovalCount = await this.getPendingApprovalCountIfApplicable({
         registrationStatus,
         allowedCurrentStatuses,
         paginateQuery,
         programId,
-      },
-    );
+      });
+    }
 
     const resultDto =
       pendingApprovalCount === undefined

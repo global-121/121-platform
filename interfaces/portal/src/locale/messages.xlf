@@ -2673,17 +2673,32 @@
       <trans-unit id="registration-status-dialog-submit-button-labels-decline" datatype="html">
         <source>Decline registration</source>
       </trans-unit>
+      <trans-unit id="registration-status-dialog-submit-button-labels-decline-plural" datatype="html">
+        <source>Decline registrations</source>
+      </trans-unit>
       <trans-unit id="registration-status-dialog-submit-button-labels-delete" datatype="html">
         <source>Delete registration</source>
+      </trans-unit>
+      <trans-unit id="registration-status-dialog-submit-button-labels-delete-plural" datatype="html">
+        <source>Delete registrations</source>
       </trans-unit>
       <trans-unit id="registration-status-dialog-submit-button-labels-include" datatype="html">
         <source>Include registration</source>
       </trans-unit>
+      <trans-unit id="registration-status-dialog-submit-button-labels-include-plural" datatype="html">
+        <source>Include registrations</source>
+      </trans-unit>
       <trans-unit id="registration-status-dialog-submit-button-labels-pause" datatype="html">
         <source>Pause registration</source>
       </trans-unit>
+      <trans-unit id="registration-status-dialog-submit-button-labels-pause-plural" datatype="html">
+        <source>Pause registrations</source>
+      </trans-unit>
       <trans-unit id="registration-status-dialog-submit-button-labels-validate" datatype="html">
         <source>Validate registration</source>
+      </trans-unit>
+      <trans-unit id="registration-status-dialog-submit-button-labels-validate-plural" datatype="html">
+        <source>Validate registrations</source>
       </trans-unit>
       <trans-unit id="registration-status-included" datatype="html">
         <source>Included</source>
