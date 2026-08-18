@@ -5,19 +5,12 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-// I know... This thing is horrendous.
 // I'd rather throw in fakerjs and create a general registration-generation fn() but this is it for now.
 const registrations = Array.from({ length: 4 }).map((_, i) => ({
   referenceId: `63e62864557597e${i + 1}d`,
   preferredLanguage: RegistrationPreferredLanguage.en,
   paymentAmountMultiplier: 1,
-  fullName: [
-    'Emma Smith',
-    'Liam Brown',
-    'Noah Taylor',
-    'Ava Jones',
-    'Finn Hall',
-  ][i],
+  fullName: ['Emma Smith', 'Liam Brown', 'Noah Taylor', 'Ava Jones'][i],
   phoneNumber: `1415523666${i + 1}`,
   programFspConfigurationName: Fsps.intersolveVisa,
   whatsappPhoneNumber: `1415523888${i + 1}`,
