@@ -55,6 +55,7 @@ test('Do successful payment for Cbe fsp', async ({
       url.pathname.startsWith(`/en-GB/program/${programIdCbe}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
+    // @TODO: Does this really validate anything? I don't think checking if a H1 renders validates anything tbh
     await paymentPage.validatePaymentDetailsPageTitle();
   });
 

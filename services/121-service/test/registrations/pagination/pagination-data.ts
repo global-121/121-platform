@@ -27,7 +27,13 @@ export const programIdNedbank = 1;
 export const programIdCbe = 1;
 export const programIdMtn = 1;
 
+// @REVIEWER: I know... This thing is horrendous.
+// I'd rather throw in fakerjs and generate random data, but for now this is what we have to work with.
 export const getDefaultOCWRegistrations = ({ count }: { count: number }) => {
+  if (count < 1 || count > 10) {
+    throw new Error('Count must be between 1 and 10');
+  }
+
   return Array.from({ length: count }).map((_, i) => {
     const registration = {
       referenceId: `63e62864557597e${i + 1}d`,
