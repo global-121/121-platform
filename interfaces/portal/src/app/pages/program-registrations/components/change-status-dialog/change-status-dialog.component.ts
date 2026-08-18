@@ -35,7 +35,10 @@ import {
   REGISTRATION_STATUS_PENDING_APPROVAL_EXPLANATION,
   REGISTRATION_STATUS_VERB,
 } from '~/domains/registration/registration.helper';
-import { Registration } from '~/domains/registration/registration.model';
+import {
+  ChangeStatusResult,
+  Registration,
+} from '~/domains/registration/registration.model';
 import { ChangeStatusContentsWithCustomMessageComponent } from '~/pages/program-registrations/components/change-status-contents-with-custom-message/change-status-contents-with-custom-message.component';
 import { ChangeStatusContentsWithTemplatedMessageComponent } from '~/pages/program-registrations/components/change-status-contents-with-templated-message/change-status-contents-with-templated-message.component';
 import { ChangeStatusContentsWithoutMessageComponent } from '~/pages/program-registrations/components/change-status-contents-without-message/change-status-contents-without-message.component';
@@ -98,6 +101,11 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
 
   readonly reason = model<string | undefined>(undefined);
   readonly reasonValidationErrorMessage = signal<string | undefined>(undefined);
+
+  // Snapshot of the dry-run result so the warning dialog stays stable while the real mutation is in flight
+  readonly dryRunPreviewData = signal<ChangeStatusResult | undefined>(
+    undefined,
+  );
 
   readonly icon = computed(() => {
     const status = this.status();
@@ -223,41 +231,46 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
       invalidateCacheAgainAfterDelay: 500,
     },
     onSuccess: (data, variables) => {
-      // Registrations with a pending-approval payment also need explicit confirmation, not just non-applicable ones
-      const needsConfirmation =
-        data.nonApplicableCount > 0 || (data.pendingApprovalCount ?? 0) > 0;
-
-      if (!needsConfirmation) {
-        // case #1: the change can be applied to all registrations, without any pending-approval payments
-        if (variables.dryRun) {
-          this.changeStatusMutation.mutate({ dryRun: false });
-          return;
-        }
-        this.dialogVisible.set(false);
-        this.toastService.showToast({
-          summary: $localize`Changing statuses`,
-          detail: $localize`The status of ${data.applicableCount} registration(s) is being changed to "${this.statusLabel()}" successfully. The status change can take up to a minute to process.`,
-          severity: 'info',
-          showSpinner: true,
-        });
-        this.actionComplete.emit();
+      if (!variables.dryRun) {
+        this.onStatusChangeApplied({ data });
         return;
       }
 
-      if (data.applicableCount === 0) {
-        // case #2: the change can be applied to none of the registrations
-        this.dialogVisible.set(false);
-        this.dryRunFailureDialogVisible.set(true);
-        return;
-      }
-
-      // case #3: some registrations are non-applicable and/or have a payment pending approval
-      this.dialogVisible.set(false);
-      this.dryRunWarningDialog().show({
-        resetMutation: false,
-      });
+      this.handleDryRunResult({ data });
     },
   }));
+
+  private onStatusChangeApplied({ data }: { data: ChangeStatusResult }): void {
+    this.toastService.showToast({
+      summary: $localize`Changing statuses`,
+      detail: $localize`The status of ${data.applicableCount} registration(s) is being changed to "${this.statusLabel()}" successfully. The status change can take up to a minute to process.`,
+      severity: 'info',
+      showSpinner: true,
+    });
+
+    this.resetDialogState();
+    this.actionComplete.emit();
+  }
+
+  private handleDryRunResult({ data }: { data: ChangeStatusResult }): void {
+    const hasBlockingRegistrations =
+      data.nonApplicableCount > 0 || (data.pendingApprovalCount ?? 0) > 0;
+
+    if (!hasBlockingRegistrations) {
+      this.changeStatusMutation.mutate({ dryRun: false });
+      return;
+    }
+
+    this.dialogVisible.set(false);
+
+    if (data.applicableCount === 0) {
+      this.dryRunFailureDialogVisible.set(true);
+      return;
+    }
+
+    this.dryRunPreviewData.set(data);
+    this.dryRunWarningDialog().show({ resetMutation: false });
+  }
 
   triggerAction(
     actionData: ActionDataWithPaginateQuery<Registration>,
@@ -265,7 +278,7 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
   ) {
     this.actionData.set(actionData);
     this.status.set(status);
-
+    this.dryRunPreviewData.set(undefined);
     this.dialogVisible.set(true);
     this.enableSendMessage.set(false);
   }
@@ -297,9 +310,14 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
     // Manual reset the input that might already be given;
     // These steps are only necessary while they're not properly part of a FormGroup that can reset on close of the dialog
     // See AB#39194
+    this.resetDialogState();
+  }
+
+  private resetDialogState() {
     this.reason.set(undefined);
     this.reasonValidationErrorMessage.set(undefined);
     this.enableSendMessage.set(false);
     this.customMessage.set(undefined);
+    this.dryRunPreviewData.set(undefined);
   }
 }

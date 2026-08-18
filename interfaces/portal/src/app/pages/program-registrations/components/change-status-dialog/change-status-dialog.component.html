@@ -135,7 +135,7 @@
     dryRun: false,
   }"
 >
-  @let dryRunData = changeStatusMutation.data();
+  @let dryRunData = dryRunPreviewData();
 
   @if (dryRunData && (dryRunData.pendingApprovalCount ?? 0) > 0) {
     <p>
