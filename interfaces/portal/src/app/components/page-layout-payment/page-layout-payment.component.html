@@ -10,13 +10,16 @@
     <div class="flex items-center gap-x-4">
       <h1 class="me-auto">
         {{ paymentTitle() }}
-        <app-colored-chip-payment-approval-status
-          [isPaymentApproved]="
-            paymentAggregateData()?.isPaymentApproved ?? false
-          "
-          [approvalsGiven]="paymentAggregateData()?.approvalsGiven ?? 0"
-          [approvalsRequired]="paymentAggregateData()?.approvalsRequired ?? 0"
-        />
+
+        @if (paymentAggregateData()) {
+          <app-colored-chip-payment-approval-status
+            [isPaymentApproved]="
+              paymentAggregateData()?.isPaymentApproved ?? false
+            "
+            [approvalsGiven]="paymentAggregateData()?.approvalsGiven ?? 0"
+            [approvalsRequired]="paymentAggregateData()?.approvalsRequired ?? 0"
+          />
+        }
       </h1>
       @if (showApprovePaymentButton()) {
         <app-approve-payment

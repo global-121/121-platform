@@ -4,7 +4,10 @@
   [focusTrap]="true"
 >
   <ng-template #headless>
-    <div class="space-y-6 p-6 inline-[632px]">
+    <div
+      class="space-y-6 p-6 inline-[632px]"
+      [attr.data-testid]="dialogTestId()"
+    >
       <form
         (ngSubmit)="onProceed()"
         (keydown.control.enter)="onProceed()"
@@ -38,23 +41,24 @@
             />
           }
         </div>
+
         <div class="mbs-4 flex justify-end gap-4">
           <p-button
-            label="Cancel"
-            i18n-label="@@generic-cancel"
-            outlined
-            rounded
-            severity="contrast"
             [disabled]="mutation().isPending()"
             (click)="confirmDialog.onReject()"
+            i18n-label="@@generic-cancel"
+            severity="contrast"
+            label="Cancel"
+            outlined
+            rounded
           />
           <p-button
-            [label]="proceedLabel()"
-            rounded
+            [attr.data-testid]="submitButtonDataTestId()"
             [loading]="mutation().isPending()"
-            type="submit"
+            [label]="proceedLabel()"
             [icon]="proceedIcon()"
-            data-testid="form-dialog-proceed-button"
+            type="submit"
+            rounded
           />
         </div>
       </form>

@@ -30,6 +30,7 @@ export class ChangeStatusContentsWithTemplatedMessageComponent {
   readonly enableSendMessage = input.required<boolean>();
   readonly isMutating = input(false);
   readonly cancelChangeStatus = output();
+  readonly submitButtonText = input<string | undefined>();
 
   cancelClick() {
     this.cancelChangeStatus.emit();
