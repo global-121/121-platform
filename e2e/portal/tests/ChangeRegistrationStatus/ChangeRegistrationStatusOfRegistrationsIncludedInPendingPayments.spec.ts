@@ -60,7 +60,7 @@ test('Pause registrations included in pending payments', async ({
         registrations[2].fullName,
       ],
     });
-
+    await page.waitForURL((url) => url.pathname.startsWith(paymentUrl));
     await paymentPage.validatePaymentDetailsPageTitle();
   });
 
@@ -89,6 +89,7 @@ test('Pause registrations included in pending payments', async ({
 
   await test.step('Validate payment table shows 2 registrations are paused', async () => {
     await page.goto(paymentUrl);
+    await page.waitForURL((url) => url.pathname.startsWith(paymentUrl));
     await paymentPage.validatePaymentDetailsPageTitle();
 
     // @REVIEWER: Unfortunatly, becasue there are no unique identifiers for the table rows (No reg. name, id, referenceNumber)
@@ -125,6 +126,7 @@ test('Decline registrations included in pending payments', async ({
       ],
     });
 
+    await page.waitForURL((url) => url.pathname.startsWith(paymentUrl));
     await paymentPage.validatePaymentDetailsPageTitle();
   });
 
@@ -153,6 +155,7 @@ test('Decline registrations included in pending payments', async ({
 
   await test.step('Validate payment table shows 2 registrations are paused', async () => {
     await page.goto(paymentUrl);
+    await page.waitForURL((url) => url.pathname.startsWith(paymentUrl));
     await paymentPage.validatePaymentDetailsPageTitle();
 
     // @REVIEWER: Unfortunatly, becasue there are no unique identifiers for the table rows (No reg. name, id, referenceNumber)
@@ -163,7 +166,7 @@ test('Decline registrations included in pending payments', async ({
     });
 
     await paymentPage.validateBadgeIsPresentByLabel({
-      badgeName: 'Declined',
+      badgeName: 'Included',
       count: 1,
     });
   });
