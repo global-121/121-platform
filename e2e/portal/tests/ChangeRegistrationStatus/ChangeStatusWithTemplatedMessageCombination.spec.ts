@@ -34,7 +34,7 @@ test.describe('Change status of registration with and without templated message'
   }) => {
     await test.step('Change status of first selected registration and send templated message', async () => {
       await tableComponent.changeRegistrationStatusByNameWithOptions({
-        registrationName: registrationPV5.fullName,
+        registrationNames: [registrationPV5.fullName],
         status: 'Include',
         sendMessage: true,
         sendTemplatedMessage: true,
@@ -61,7 +61,7 @@ test.describe('Change status of registration with and without templated message'
     // Act
     await test.step('Change status of first selected registration without templated message', async () => {
       await tableComponent.changeRegistrationStatusByNameWithOptions({
-        registrationName: registrationPV6.fullName,
+        registrationNames: [registrationPV6.fullName],
         status: 'Include',
         sendMessage: false,
       });

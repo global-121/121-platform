@@ -27,7 +27,7 @@ test('Delete registration with status "Paused"', async ({
   // Act
   await test.step('Delete registration with status "Paused"', async () => {
     await tableComponent.changeRegistrationStatusByNameWithOptions({
-      registrationName: registrationPV5.fullName,
+      registrationNames: [registrationPV5.fullName],
       status: 'Delete',
     });
     await registrationsPage.validateToastMessageAndClose(toastMessage);

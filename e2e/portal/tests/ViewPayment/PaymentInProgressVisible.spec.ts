@@ -38,7 +38,6 @@ test('Show in progress banner and chip when payment is in progress', async ({
   await test.step('Validate payment in progress in Payment overview', async () => {
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: 'In progress',
-      isVisible: true,
       count: 1,
     });
   });
