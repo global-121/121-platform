@@ -27,7 +27,7 @@ test('Move PA(s) from status "Included" to "Paused"', async ({
   // Act
   await test.step('Change status of first selected registration to "Paused"', async () => {
     await tableComponent.changeRegistrationStatusByNameWithOptions({
-      registrationName: registrationPV5.fullName,
+      registrationNames: [registrationPV5.fullName],
       status: 'Pause',
     });
     await registrationsPage.validateToastMessageAndClose(toastMessage);

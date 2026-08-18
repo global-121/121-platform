@@ -27,7 +27,7 @@ test('Move PA(s) from status "New" to "Validated"', async ({
   // Act
   await test.step('Change status of first selected registration to "Validated"', async () => {
     await tableComponent.changeRegistrationStatusByNameWithOptions({
-      registrationName: registrationPV5.fullName,
+      registrationNames: [registrationPV5.fullName],
       status: 'Validate',
     });
     await registrationsPage.validateToastMessageAndClose(toastMessage);

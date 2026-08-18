@@ -109,12 +109,10 @@ test('Payment page should display correctly during all phases of payment with 2 
   await test.step('Validate payment-page in "Pending approval" state', async () => {
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: '0 of 2 approved',
-      isVisible: true,
       count: 1,
     });
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: pendingApprovalTransactionLabel,
-      isVisible: true,
       count: 8, // 1 per transaction
     });
 
@@ -167,12 +165,10 @@ test('Payment page should display correctly during all phases of payment with 2 
   await test.step('Validate payment-page in between 2 approvals', async () => {
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: '1 of 2 approved',
-      isVisible: true,
       count: 1,
     });
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: pendingApprovalTransactionLabel,
-      isVisible: true,
       count: 8, // 1 per transaction
     });
 
@@ -265,12 +261,10 @@ test('Payment page should display correctly during all phases of payment with 2 
     // Validate 1 approved badge for payment and 8 successful badges for transactions
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: approvedBadgeLabel,
-      isVisible: true,
       count: 1,
     });
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: successfulBadgeLabel,
-      isVisible: true,
       count: registrationsCount,
     });
 
