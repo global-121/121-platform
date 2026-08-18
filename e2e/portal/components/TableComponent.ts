@@ -63,8 +63,6 @@ class TableComponent {
     const headerCells = this.tableHeader.locator('th');
     const headerCount = await headerCells.count();
 
-    console.log('headerCells', headerCells);
-
     for (let i = 0; i < headerCount; i++) {
       const cellText = await headerCells.nth(i).textContent();
       if (cellText?.trim() === headerText) {
@@ -73,28 +71,6 @@ class TableComponent {
     }
 
     throw new Error(`Column with header text "${headerText}" not found`);
-  }
-
-  async getRowIndexByColumnValue(
-    columnIndex: number,
-    value: string,
-  ): Promise<number> {
-    const rowCount = await this.tableRows.count();
-
-    for (let i = 0; i < rowCount; i++) {
-      const cellText = await this.tableRows
-        .nth(i)
-        .locator('td')
-        .nth(columnIndex)
-        .textContent();
-      if (cellText?.trim() === value) {
-        return i;
-      }
-    }
-
-    throw new Error(
-      `Row with value "${value}" in column index "${columnIndex}" not found`,
-    );
   }
 
   async getCell(row: number, column: number) {
@@ -174,19 +150,6 @@ class TableComponent {
   async getTextArrayFromHeader() {
     const headerCells = await this.tableHeader.locator('th').allTextContents();
     return headerCells.map((text) => text.trim());
-  }
-
-  async getTextArrayFromRowWithMatchingColumnValue({
-    columnHeader,
-    value,
-  }: {
-    columnHeader: string;
-    value: string;
-  }) {
-    const columnIndex = await this.getColumnIndexByHeaderText(columnHeader);
-    const rowIndex = await this.getRowIndexByColumnValue(columnIndex, value);
-
-    return await this.getTextArrayFromRow(rowIndex);
   }
 
   async getTextArrayFromRow(rowIndex: number) {

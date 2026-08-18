@@ -36,7 +36,6 @@ test('Pause registrations included in pending payments', async ({
       ],
     });
 
-    // await page.waitForURL((url) => url.pathname.startsWith(paymentUrl));
     await paymentPage.validatePaymentDetailsPageTitle();
   });
 
@@ -65,20 +64,17 @@ test('Pause registrations included in pending payments', async ({
 
   await test.step('Validate payment table shows 2 registrations are paused', async () => {
     await page.goto(paymentUrl);
-    // await page.waitForURL((url) => url.pathname.startsWith(paymentUrl));
     await paymentPage.validatePaymentDetailsPageTitle();
 
     // @REVIEWER: Unfortunatly, becasue there are no unique identifiers for the table rows (No reg. name, id, referenceNumber)
     // we have to rely on the count of 'paused' statusses in the page. This is not ideal, but it works for now.
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: 'Paused',
-      isVisible: true,
       count: 2,
     });
 
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: 'Included',
-      isVisible: true,
       count: 1,
     });
   });

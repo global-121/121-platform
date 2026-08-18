@@ -158,11 +158,11 @@ class PaymentPage extends BasePage {
 
   async validateBadgeIsPresentByLabel({
     badgeName,
-    isVisible,
+    isVisible = true,
     count,
   }: {
     badgeName: string;
-    isVisible: boolean;
+    isVisible?: boolean;
     count?: number;
   }) {
     const badge = this.page.locator('app-colored-chip').getByLabel(badgeName);
