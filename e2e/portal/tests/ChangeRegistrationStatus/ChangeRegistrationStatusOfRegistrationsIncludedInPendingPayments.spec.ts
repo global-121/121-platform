@@ -7,7 +7,7 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 // @REVIEWER: I know... This thing is horrendous.
 // I'd rather throw in fakerjs and generate random data, but for now this is what we have to work with.
-const registrations = Array.from({ length: 10 }).map((_, i) => ({
+const registrations = Array.from({ length: 4 }).map((_, i) => ({
   referenceId: `63e62864557597e${i + 1}d`,
   preferredLanguage: RegistrationPreferredLanguage.en,
   paymentAmountMultiplier: 1,
@@ -16,11 +16,6 @@ const registrations = Array.from({ length: 10 }).map((_, i) => ({
     'Liam Brown',
     'Noah Taylor',
     'Ava Jones',
-    'Mia Davis',
-    'Luca White',
-    'Zoe Clark',
-    'Max Green',
-    'Ivy Adams',
     'Finn Hall',
   ][i],
   phoneNumber: `1415523666${i + 1}`,
@@ -85,6 +80,10 @@ test('Pause registrations included in pending payments', async ({
       proceedMessage: 'Would you like to proceed with 3 registration(s)?',
       submit: true,
     });
+
+    await registrationsPage.validateToastMessage(
+      `The status of 3 registration(s) is being changed to "Paused" successfully. The status change can take up to a minute to process.`,
+    );
   });
 
   await test.step('Validate payment table shows 2 registrations are paused', async () => {
@@ -151,6 +150,10 @@ test('Decline registrations included in pending payments', async ({
       proceedMessage: 'Would you like to proceed with 3 registration(s)?',
       submit: true,
     });
+
+    await registrationsPage.validateToastMessage(
+      `The status of 3 registration(s) is being changed to "Declined" successfully. The status change can take up to a minute to process.`,
+    );
   });
 
   await test.step('Validate payment table shows 2 registrations are paused', async () => {
