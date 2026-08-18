@@ -42,6 +42,7 @@ export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
   readonly isMutating = input(false);
   readonly cancelChangeStatus = output();
   readonly customMessageUpdated = output<string>();
+  readonly submitButtonText = input<string | undefined>();
 
   formGroup = new FormGroup({
     customMessage: new FormControl<string | undefined>(

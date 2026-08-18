@@ -9,12 +9,12 @@
     (click)="cancelClick.emit()"
   />
   <p-button
-    label="Approve"
-    i18n-label="@@generic-approve"
+    [label]="submitButtonText()"
     rounded
     [disabled]="isMutating()"
     [loading]="isMutating()"
     (click)="approveClick.emit($event)"
+    data-testid="change-status-submit-button"
     type="submit"
   />
 </div>

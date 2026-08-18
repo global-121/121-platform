@@ -71,6 +71,7 @@
           (confirmChangeStatus)="onFormSubmit()"
           [showAreYouSureCheckbox]="status() === RegistrationStatusEnum.deleted"
           [isMutating]="changeStatusMutation.isPending()"
+          [submitButtonText]="submitButtonText()"
         />
       } @else {
         @if (messageTemplateKey.isLoading()) {
@@ -100,6 +101,7 @@
               [previewRegistration]="actionData()?.previewItem"
               [isMutating]="changeStatusMutation.isPending()"
               (cancelChangeStatus)="onChangeStatusCancel()"
+              [submitButtonText]="submitButtonText()"
             />
           } @else {
             <app-change-status-contents-with-custom-message
@@ -109,6 +111,7 @@
               [isMutating]="changeStatusMutation.isPending()"
               (cancelChangeStatus)="onChangeStatusCancel()"
               (customMessageUpdated)="customMessage.set($event)"
+              [submitButtonText]="submitButtonText()"
             />
           }
         }
@@ -116,6 +119,7 @@
     </div>
   </form>
 </p-dialog>
+
 <app-form-dialog
   #dryRunWarningDialog
   header="Warning"
@@ -125,31 +129,34 @@
   acceptLabel="Proceed"
   i18n-acceptLabel="@@generic-proceed"
   [mutation]="changeStatusMutation"
+  [dialogTestId]="'change-status-dry-run-warning-dialog'"
+  [submitButtonDataTestId]="'change-status-dry-run-warning-dialog-submit'"
   [mutationData]="{
     dryRun: false,
   }"
 >
-  <b i18n
-    >There are
-    {{ changeStatusMutation.data()?.nonApplicableCount }}
-    registration(s) that don't support this action</b
-  >
-  <p class="pbs-2">
-    {{ changeStatusWarningMessage() }}
-  </p>
-  <p
-    class="pbs-2"
-    i18n
-  >
-    Registrations that do not support this action will remain in their current
-    status.
-  </p>
+  @let dryRunData = dryRunPreviewData();
+
+  @if (dryRunData && (dryRunData.pendingApprovalCount ?? 0) > 0) {
+    <p>
+      <strong i18n>
+        You're about to {{ statusVerb() | lowercase }}
+        {{ dryRunData.pendingApprovalCount }} registration(s) that are included
+        in a payment that's waiting for approval.
+      </strong>
+    </p>
+
+    @if (pendingApprovalExplanation(); as explanation) {
+      <p>{{ explanation }}</p>
+    }
+  }
+
   <p
     i18n
     class="pbs-2"
   >
     Would you like to proceed with
-    {{ changeStatusMutation.data()?.applicableCount }}
+    {{ dryRunData?.applicableCount }}
     registration(s)?
   </p>
 </app-form-dialog>
