@@ -28,7 +28,6 @@ export class AlfouadApiService {
     referenceNumber,
     countryCode,
     cityCode,
-    agentCode,
     deliveryCurrencyCode,
     deliveryAmount,
   }: AlfouadCreateTransactionParams): Promise<AlfouadApiCreateTransactionResponseDto> {
@@ -40,7 +39,7 @@ export class AlfouadApiService {
       ReferenceNumber: referenceNumber,
       CountryCode: countryCode,
       CityCode: cityCode,
-      AgentCode: agentCode,
+      AgentCode: 0,
       DeliveryCurrencyCode: deliveryCurrencyCode,
       DeliveryAmount: deliveryAmount,
     }
