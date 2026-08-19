@@ -29,8 +29,8 @@ test('Data should be updated according to selected columns and registrations', a
     // for more info: AB#37336
     await tableComponent.changeRegistrationStatusByNameWithOptions({
       registrationName: registrationPV6.fullName,
-      status: 'Delete',
       sendMessage: false,
+      status: 'Delete',
     });
     await registrationsPage.dismissToast();
 
