@@ -45,5 +45,13 @@ export const ALFOUAD_SETTINGS: FspSettingsDto = {
       name: FspConfigurationProperties.publicKeyAlfouad,
       isRequired: true,
     },
+    {
+      name: FspConfigurationProperties.senderFullNameAlfouad,
+      isRequired: true,
+    },
+    {
+      name: FspConfigurationProperties.senderPhoneNumberAlfouad,
+      isRequired: true,
+    },
   ],
 };
