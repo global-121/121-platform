@@ -22,6 +22,8 @@ const requestIdentity: AlfouadRequestIdentity = {
   username: 'Red Crescent',
   password: 'secret',
   publicKey: '<RSAParameters />',
+  senderFullName: 'Red Crescent',
+  senderPhoneNumber: '0900000000',
 };
 
 const createTransactionInput: AlfouadCreateTransactionParams = {

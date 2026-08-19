@@ -31,6 +31,8 @@ export class AlfouadService {
           FspConfigurationProperties.usernameAlfouad,
           FspConfigurationProperties.passwordAlfouad,
           FspConfigurationProperties.publicKeyAlfouad,
+          FspConfigurationProperties.senderFullNameAlfouad,
+          FspConfigurationProperties.senderPhoneNumberAlfouad,
         ],
       });
 
@@ -43,6 +45,8 @@ export class AlfouadService {
       username: valueOf(FspConfigurationProperties.usernameAlfouad),
       password: valueOf(FspConfigurationProperties.passwordAlfouad),
       publicKey: valueOf(FspConfigurationProperties.publicKeyAlfouad),
+      senderFullName: valueOf(FspConfigurationProperties.senderFullNameAlfouad),
+      senderPhoneNumber: valueOf(FspConfigurationProperties.senderPhoneNumberAlfouad),
     };
   }
 
