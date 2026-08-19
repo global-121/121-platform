@@ -101,12 +101,12 @@ class PaymentsPage extends BasePage {
     name,
     note,
     onlyStep1 = false,
-    names,
+    includeRegistrationsByNames,
   }: {
     name?: string;
     note?: string;
     onlyStep1?: boolean;
-    names?: string[];
+    includeRegistrationsByNames?: string[];
   }) {
     await this.createNewPaymentButton.click();
 
@@ -117,8 +117,8 @@ class PaymentsPage extends BasePage {
 
     await this.continueToRegistrationButton.click();
 
-    if (names) {
-      for (const registrationName of names) {
+    if (includeRegistrationsByNames) {
+      for (const registrationName of includeRegistrationsByNames) {
         await this.table.selectRowByName(registrationName);
       }
     } else {

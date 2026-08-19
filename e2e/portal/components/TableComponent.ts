@@ -418,7 +418,7 @@ class TableComponent {
     await checkbox.click();
   }
 
-  async changeRegistrationStatusByNameWithOptions({
+  async changeRegistrationStatusByNamesWithOptions({
     registrationNames,
     status,
     sendMessage = false,
