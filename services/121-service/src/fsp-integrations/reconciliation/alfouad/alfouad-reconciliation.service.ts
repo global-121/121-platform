@@ -24,11 +24,9 @@ export class AlfouadReconciliationService {
     const transactionIds =
       await this.transactionRepository.getWaitingTransactionIdsByFsp({
         fspName: Fsps.alfouad,
-        limit: 1000,
       });
 
     for (const transactionId of transactionIds) {
-      // Isolate per-transaction failures so a single unreconcilable transaction does not halt the batch.
       try {
         await this.reconcileTransaction(transactionId);
       } catch (error) {
