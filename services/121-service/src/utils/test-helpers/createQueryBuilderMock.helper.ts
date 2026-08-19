@@ -4,6 +4,7 @@ interface QueryBuilderMock {
   select: () => QueryBuilderMock;
   addSelect: () => QueryBuilderMock;
   leftJoin: () => QueryBuilderMock;
+  innerJoin: () => QueryBuilderMock;
   getMany?: () => any;
   getRawMany?: () => any;
   getRawOne?: () => any;
@@ -21,6 +22,7 @@ export function generateMockCreateQueryBuilder(
     where: () => mock,
     andWhere: () => mock,
     leftJoin: () => mock,
+    innerJoin: () => mock,
     distinct: () => mock,
     orderBy: () => mock,
   };

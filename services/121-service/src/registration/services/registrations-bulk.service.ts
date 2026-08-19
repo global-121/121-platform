@@ -15,7 +15,6 @@ import { MessageQueuesService } from '@121-service/src/notifications/message-que
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
-import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -61,8 +60,6 @@ export class RegistrationsBulkService {
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     @Inject(getScopedRepositoryProviderName(NoteEntity))
     private readonly noteScopedRepository: ScopedRepository<NoteEntity>,
-    @Inject(getScopedRepositoryProviderName(TransactionEntity))
-    private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
   ) {}
 
   // Only these target statuses can affect registrations with a payment pending approval
@@ -255,30 +252,43 @@ export class RegistrationsBulkService {
     programId: number,
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<BulkActionResultDto> {
-    // Set limit to 1 to optimize query for getting the meta data only
-    const paginateQueryLimit1 = { ...paginateQuery, limit: 1 };
-    const selectedRegistrations =
-      await this.registrationsPaginationService.getPaginate({
-        query: paginateQueryLimit1,
-        programId,
-        hasPersonalReadPermission: true,
-      });
+    const totalFilterCount = await this.getFilteredCount({
+      paginateQuery,
+      programId,
+    });
 
-    const applicableRegistrations =
-      await this.registrationsPaginationService.getPaginate({
-        query: paginateQueryLimit1,
-        programId,
-        hasPersonalReadPermission: true,
-        queryBuilder,
-      });
+    const applicableCount = await this.getFilteredCount({
+      paginateQuery,
+      programId,
+      queryBuilder,
+    });
 
     return {
-      totalFilterCount: selectedRegistrations.meta.totalItems ?? 0,
-      applicableCount: applicableRegistrations.meta.totalItems ?? 0,
-      nonApplicableCount:
-        (selectedRegistrations.meta.totalItems ?? 0) -
-        (applicableRegistrations.meta.totalItems ?? 0),
+      totalFilterCount,
+      applicableCount,
+      nonApplicableCount: totalFilterCount - applicableCount,
     };
+  }
+
+  // Set limit to 1 to optimize query for getting the meta data (i.e. totalItems) only
+  private async getFilteredCount({
+    paginateQuery,
+    programId,
+    queryBuilder,
+  }: {
+    paginateQuery: PaginateQuery;
+    programId: number;
+    queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>;
+  }): Promise<number> {
+    const paginateQueryLimit1 = { ...paginateQuery, limit: 1 };
+    const result = await this.registrationsPaginationService.getPaginate({
+      query: paginateQueryLimit1,
+      programId,
+      hasPersonalReadPermission: true,
+      queryBuilder,
+    });
+
+    return result.meta.totalItems ?? 0;
   }
 
   public getBaseQuery(): ScopedQueryBuilder<RegistrationViewEntity> {
@@ -549,46 +559,22 @@ export class RegistrationsBulkService {
       return undefined;
     }
 
-    // Clone the query so mutating `.select` here does not affect the caller's later use of paginateQuery
-    const applicableReferenceIds =
-      await this.getReferenceIdsForWhichStatusChangeIsApplicable(
-        programId,
-        allowedCurrentStatuses,
-        registrationStatus,
-        { ...paginateQuery },
-      );
+    // Join transactions onto the same applicability query so the count is computed in a single SQL query,
+    // instead of fetching all applicable referenceIds into memory and querying transactions separately
+    const pendingApprovalQueryBuilder = this.getStatusUpdateBaseQuery(
+      allowedCurrentStatuses,
+      registrationStatus,
+    )
+      .innerJoin('registration.transactions', 'transaction')
+      .andWhere('transaction.status = :transactionStatus', {
+        transactionStatus: TransactionStatusEnum.pendingApproval,
+      });
 
-    return await this.getPendingApprovalCount({
-      referenceIds: applicableReferenceIds,
+    return await this.getFilteredCount({
+      paginateQuery,
       programId,
+      queryBuilder: pendingApprovalQueryBuilder,
     });
-  }
-
-  private async getPendingApprovalCount({
-    referenceIds,
-    programId,
-  }: {
-    referenceIds: string[];
-    programId: number;
-  }): Promise<number> {
-    if (referenceIds.length === 0) {
-      return 0;
-    }
-
-    const result = await this.transactionScopedRepository
-      .createQueryBuilder('transaction')
-      .innerJoin('transaction.registration', 'registration')
-      .andWhere('registration."programId" = :programId', { programId })
-      .andWhere('registration."referenceId" = ANY(:referenceIds)', {
-        referenceIds,
-      })
-      .andWhere('transaction.status = :status', {
-        status: TransactionStatusEnum.pendingApproval,
-      })
-      .select('COUNT(DISTINCT transaction."registrationId")', 'count')
-      .getRawOne<{ count: string }>();
-
-    return Number(result?.count ?? 0);
   }
 
   private async updateRegistrationStatusPerChunk({

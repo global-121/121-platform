@@ -3,13 +3,11 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/test-helpers/createQueryBuilderMock.helper';
 
 describe('RegistrationBulkService', () => {
@@ -21,10 +19,18 @@ describe('RegistrationBulkService', () => {
 
   let registrationsBulkService: RegistrationsBulkService;
   let queueMessageService: MessageQueuesService;
-  let transactionScopedRepository: any;
+  let registrationsPaginationService: RegistrationsPaginationService;
 
   const registrationMock = {
     namePartnerOrganization: 'testname',
+  };
+
+  const defaultPaginateResult = {
+    data: [registrationMock],
+    meta: {
+      totalItems: 1,
+      totalPages: 1,
+    },
   };
 
   beforeEach(async () => {
@@ -78,26 +84,20 @@ describe('RegistrationBulkService', () => {
       .spyOn(registrationViewScopedRepository as any, 'createQueryBuilder')
       .mockImplementation(() => createQueryBuilder) as any;
 
-    const registrationsPaginationService = unitRef.get(
+    const registrationsPaginationServiceRef = unitRef.get(
       RegistrationsPaginationService,
     );
+    registrationsPaginationService = registrationsPaginationServiceRef;
 
     jest
-      .spyOn(registrationsPaginationService as any, 'getPaginate')
-      .mockImplementation(() => {
-        return {
-          data: [registrationMock],
-          meta: {
-            totalItems: 1,
-            totalPages: 1,
-          },
-        };
-      });
+      .spyOn(registrationsPaginationServiceRef as any, 'getPaginate')
+      .mockImplementation(() => defaultPaginateResult);
+
     queueMessageService = unitRef.get(MessageQueuesService);
 
     jest
       .spyOn(
-        registrationsPaginationService as any,
+        registrationsPaginationServiceRef as any,
         'getRegistrationViewsNoLimit',
       )
       .mockImplementation(() => {
@@ -113,10 +113,6 @@ describe('RegistrationBulkService', () => {
     jest
       .spyOn(queueMessageService as any, 'addMessageToQueue')
       .mockImplementation();
-
-    transactionScopedRepository = unitRef.get(
-      getScopedRepositoryProviderName(TransactionEntity),
-    );
   });
 
   it('should be defined', () => {
@@ -213,21 +209,22 @@ describe('RegistrationBulkService', () => {
 
       // Assert
       expect(result.pendingApprovalCount).toBeUndefined();
-      expect(
-        transactionScopedRepository.createQueryBuilder,
-      ).not.toHaveBeenCalled();
+      // Only the totalFilterCount and applicableCount queries should have run
+      expect(registrationsPaginationService.getPaginate).toHaveBeenCalledTimes(
+        2,
+      );
     });
 
     it('returns 0 when no applicable registrations have a payment pending approval', async () => {
       // Arrange
       jest
-        .spyOn(transactionScopedRepository, 'createQueryBuilder')
-        .mockImplementation(() =>
-          generateMockCreateQueryBuilder(
-            { count: '0' },
-            { useGetRawOne: true },
-          ),
-        );
+        .spyOn(registrationsPaginationService as any, 'getPaginate')
+        .mockImplementationOnce(() => defaultPaginateResult) // totalFilterCount
+        .mockImplementationOnce(() => defaultPaginateResult) // applicableCount
+        .mockImplementationOnce(() => ({
+          data: [],
+          meta: { totalItems: 0, totalPages: 1 },
+        })); // pendingApprovalCount
 
       // Act
       const result =
@@ -247,13 +244,13 @@ describe('RegistrationBulkService', () => {
     it('returns the count of applicable registrations that have a payment pending approval', async () => {
       // Arrange
       jest
-        .spyOn(transactionScopedRepository, 'createQueryBuilder')
-        .mockImplementation(() =>
-          generateMockCreateQueryBuilder(
-            { count: '2' },
-            { useGetRawOne: true },
-          ),
-        );
+        .spyOn(registrationsPaginationService as any, 'getPaginate')
+        .mockImplementationOnce(() => defaultPaginateResult) // totalFilterCount
+        .mockImplementationOnce(() => defaultPaginateResult) // applicableCount
+        .mockImplementationOnce(() => ({
+          data: [registrationMock, registrationMock],
+          meta: { totalItems: 2, totalPages: 1 },
+        })); // pendingApprovalCount
 
       // Act
       const result =
