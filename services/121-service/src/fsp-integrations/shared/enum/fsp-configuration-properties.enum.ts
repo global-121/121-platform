@@ -27,4 +27,6 @@ export enum FspConfigurationProperties {
   usernameAlfouad = 'usernameAlfouad',
   passwordAlfouad = 'passwordAlfouad',
   publicKeyAlfouad = 'publicKeyAlfouad',
+  senderFullNameAlfouad = 'senderFullNameAlfouad',
+  senderPhoneNumberAlfouad = 'senderPhoneNumberAlfouad',
 }
