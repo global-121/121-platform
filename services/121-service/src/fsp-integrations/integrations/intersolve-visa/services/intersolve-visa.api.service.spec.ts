@@ -98,7 +98,8 @@ describe('IntersolveVisaApiService - createPhysicalCard', () => {
 
     expect(mockHttpService.request).toHaveBeenCalledTimes(1);
     const callPayload = mockHttpService.request.mock.calls[0][0].payload;
-    expect(callPayload.address3).toBe('john@example.org');
+    expect(callPayload.cardAddress.address3).toBe('john@example.org');
+    expect(callPayload.pinAddress).not.toHaveProperty('address3');
   });
 
   it('does not include address3 in the request payload when emailAddress is undefined', async () => {
@@ -110,7 +111,8 @@ describe('IntersolveVisaApiService - createPhysicalCard', () => {
 
     expect(mockHttpService.request).toHaveBeenCalledTimes(1);
     const callPayload = mockHttpService.request.mock.calls[0][0].payload;
-    expect(callPayload).not.toHaveProperty('address3');
+    expect(callPayload.cardAddress).not.toHaveProperty('address3');
+    expect(callPayload.pinAddress).not.toHaveProperty('address3');
   });
 });
 
