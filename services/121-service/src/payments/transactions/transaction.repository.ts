@@ -65,7 +65,7 @@ export class TransactionRepository extends Repository<TransactionEntity> {
     limit,
   }: {
     fspName: Fsps;
-    limit: number;
+    limit?: number;
   }): Promise<number[]> {
     const transactions = await this.createQueryBuilder('transaction')
       .select('transaction.id', 'id')

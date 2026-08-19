@@ -41,7 +41,10 @@ export class TransactionJobsAlfouadService
       isRetry: transactionJob.isRetry,
     });
 
-    const referenceNumber = await this.generateReferenceNumber(transactionJob);
+    const referenceNumber = await this.generateReferenceNumber({
+      referenceId: transactionJob.referenceId,
+      transactionId: transactionJob.transactionId,
+    });
     const requestIdentity = await this.alfouadService.getAlfouadFspConfig({
       programFspConfigurationId: transactionJob.programFspConfigurationId,
     });
@@ -79,17 +82,21 @@ export class TransactionJobsAlfouadService
     });
   }
 
-  private async generateReferenceNumber(
-    transactionJob: AlfouadTransactionJobDto,
-  ): Promise<string> {
+  private async generateReferenceNumber({
+    referenceId,
+    transactionId,
+  }: {
+    referenceId: string;
+    transactionId: number;
+  }): Promise<string> {
     const failedTransactionAttempts =
       await this.transactionEventScopedRepository.countFailedTransactionAttempts(
-        transactionJob.transactionId,
+        transactionId,
       );
 
     return computeTransactionReference({
-      referenceId: transactionJob.referenceId,
-      transactionId: transactionJob.transactionId,
+      referenceId,
+      transactionId,
       failedTransactionAttempts,
     });
   }
