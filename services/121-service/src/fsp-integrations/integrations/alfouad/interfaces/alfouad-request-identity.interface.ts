@@ -4,4 +4,6 @@ export interface AlfouadRequestIdentity {
   readonly username: string;
   readonly password: string;
   readonly publicKey: string;
+  readonly senderFullName: string;
+  readonly senderPhoneNumber: string;
 }
