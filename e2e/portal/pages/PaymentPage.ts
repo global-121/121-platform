@@ -10,7 +10,7 @@ class PaymentPage extends BasePage {
   readonly importReconciliationDataButton: Locator;
   readonly chooseFileButton: Locator;
   readonly importFileButton: Locator;
-  readonly formDialogProceedButton: Locator;
+  readonly formDialogSubmitButton: Locator;
   readonly viewPaymentTitle: Locator;
   readonly paymentAmount: Locator;
   readonly retryFailedTransactionsButton: Locator;
@@ -39,8 +39,8 @@ class PaymentPage extends BasePage {
     this.importFileButton = this.page.getByRole('button', {
       name: 'Import file',
     });
-    this.formDialogProceedButton = this.page.getByTestId(
-      'form-dialog-proceed-button',
+    this.formDialogSubmitButton = this.page.getByTestId(
+      'form-dialog-submit-button',
     );
     this.viewPaymentTitle = this.page.getByRole('heading', {
       name: /Payment/,
@@ -52,6 +52,7 @@ class PaymentPage extends BasePage {
     this.firstDialogRetryTransactionButton = this.page.getByRole('button', {
       name: 'Retry transactions',
     });
+    // TODO: What is this button? Needs a better name or data-testid.
     this.secondDialogProceedButton = this.page.getByRole('button', {
       name: 'Proceed',
     });
@@ -78,18 +79,18 @@ class PaymentPage extends BasePage {
 
   async approvePayment() {
     await this.approvePaymentButton.click();
-    await this.formDialogProceedButton.click();
+    await this.formDialogSubmitButton.click();
   }
 
   async startPayment() {
     await this.startPaymentButton.click();
-    await this.formDialogProceedButton.click();
+    await this.formDialogSubmitButton.click();
   }
 
   async deletePayment() {
     await this.threeDotsMenuButton.click();
     await this.page.getByRole('menuitem', { name: 'Delete payment' }).click();
-    await this.formDialogProceedButton.click();
+    await this.formDialogSubmitButton.click();
   }
 
   async isDeletePaymentButtonVisible({ isVisible }: { isVisible: boolean }) {
