@@ -51,7 +51,7 @@ test('Move PA(s) from status "Completed" to "Included"', async ({
   });
 
   await test.step('Change status of registration to "Included"', async () => {
-    await tableComponent.changeRegistrationStatusByNameWithOptions({
+    await tableComponent.changeRegistrationStatusByNamesWithOptions({
       registrationNames: [registrationPvMaxPayment.fullName],
       status: 'Include',
     });

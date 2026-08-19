@@ -159,24 +159,17 @@ class PaymentPage extends BasePage {
 
   async validateBadgeIsPresentByLabel({
     badgeName,
-    isVisible = true,
     count,
   }: {
     badgeName: string;
-    isVisible?: boolean;
-    count?: number;
+    count: number;
   }) {
     const badge = this.page.locator('app-colored-chip').getByLabel(badgeName);
-    const allBadges = await badge.all();
-    const badgeCount = allBadges.length;
 
-    if (isVisible) {
-      for (const badgeElement of allBadges) {
-        await expect(badgeElement).toBeVisible();
-      }
-      expect(badgeCount).toBe(count);
-    } else {
-      await expect(badge).toBeHidden();
+    await expect(badge).toHaveCount(count);
+
+    for (const badgeElement of await badge.all()) {
+      await expect(badgeElement).toBeVisible();
     }
   }
 

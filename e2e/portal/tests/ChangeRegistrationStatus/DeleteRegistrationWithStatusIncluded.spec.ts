@@ -24,7 +24,7 @@ test('Delete registration with status "Included"', async ({
 }) => {
   // Act
   await test.step('Delete registration with status "Included"', async () => {
-    await tableComponent.changeRegistrationStatusByNameWithOptions({
+    await tableComponent.changeRegistrationStatusByNamesWithOptions({
       registrationNames: [registrationPV5.fullName],
       status: 'Delete',
     });

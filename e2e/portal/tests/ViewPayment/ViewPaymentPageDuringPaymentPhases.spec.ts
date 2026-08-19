@@ -205,7 +205,6 @@ test('Payment page should display correctly during all phases of payment with 2 
   await test.step('Validate payment-page in "Approved" state', async () => {
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: approvedBadgeLabel,
-      isVisible: true,
       count: 9, // 1 top of the chart + 8 transactions
     });
     await paymentPage.validateGraphStatus({

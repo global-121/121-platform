@@ -42,7 +42,7 @@ test('Pause registrations included in pending payments', async ({
   await test.step('Create a payment with 3 registrations', async () => {
     await page.goto(`/en-GB/program/${programIdOCW}/payments`);
     await paymentsPage.createPayment({
-      names: [
+      includeRegistrationsByNames: [
         registrations[0].fullName,
         registrations[1].fullName,
         registrations[2].fullName,
@@ -55,7 +55,7 @@ test('Pause registrations included in pending payments', async ({
   // Act
   await test.step('Pause 3 registrations, 2 included in a pending payment', async () => {
     await page.goto(`/en-GB/program/${programIdOCW}/registrations`);
-    await tableComponent.changeRegistrationStatusByNameWithOptions({
+    await tableComponent.changeRegistrationStatusByNamesWithOptions({
       registrationNames: [
         registrations[1].fullName,
         registrations[2].fullName,
@@ -79,7 +79,7 @@ test('Pause registrations included in pending payments', async ({
     );
   });
 
-  await test.step('Validate payment table shows 2 registrations are declined', async () => {
+  await test.step('Validate payment table shows 2 registrations are pauzed', async () => {
     await page.goto(paymentUrl);
     await page.waitForURL((url) => url.pathname.startsWith(paymentUrl));
     await paymentPage.validatePaymentDetailsPageTitle();
@@ -111,7 +111,7 @@ test('Decline registrations included in pending payments', async ({
   await test.step('Create a payment with 3 registrations', async () => {
     await page.goto(`/en-GB/program/${programIdOCW}/payments`);
     await paymentsPage.createPayment({
-      names: [
+      includeRegistrationsByNames: [
         registrations[0].fullName,
         registrations[1].fullName,
         registrations[2].fullName,
@@ -125,7 +125,7 @@ test('Decline registrations included in pending payments', async ({
   // Act
   await test.step('Decline 3 registrations, 2 included in a pending payment', async () => {
     await page.goto(`/en-GB/program/${programIdOCW}/registrations`);
-    await tableComponent.changeRegistrationStatusByNameWithOptions({
+    await tableComponent.changeRegistrationStatusByNamesWithOptions({
       registrationNames: [
         registrations[1].fullName,
         registrations[2].fullName,
@@ -149,7 +149,7 @@ test('Decline registrations included in pending payments', async ({
     );
   });
 
-  await test.step('Validate payment table shows 2 registrations are paused', async () => {
+  await test.step('Validate payment table shows 2 registrations are declined', async () => {
     await page.goto(paymentUrl);
     await page.waitForURL((url) => url.pathname.startsWith(paymentUrl));
     await paymentPage.validatePaymentDetailsPageTitle();
