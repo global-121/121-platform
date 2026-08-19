@@ -63,4 +63,8 @@ export const FspConfigurationPropertyVisibilityMap: Record<
     FspConfigurationPropertyVisibility.default,
   [FspConfigurationProperties.senderPhoneNumberAlfouad]:
     FspConfigurationPropertyVisibility.default,
+  [FspConfigurationProperties.senderFullNameAlfouad]:
+    FspConfigurationPropertyVisibility.default,
+  [FspConfigurationProperties.senderPhoneNumberAlfouad]:
+    FspConfigurationPropertyVisibility.default,
 };
