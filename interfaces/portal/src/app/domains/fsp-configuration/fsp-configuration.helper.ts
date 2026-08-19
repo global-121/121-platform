@@ -30,6 +30,11 @@ export const FSP_CONFIGURATION_PROPERTY_LABELS: Record<
   [FspConfigurationProperties.subscriptionKeyMtn]: $localize`Subscription key`,
   [FspConfigurationProperties.referenceIdMtn]: $localize`:@@attribute-label-referenceId:Reference ID`,
   [FspConfigurationProperties.apiKeyMtn]: $localize`API key`,
+  [FspConfigurationProperties.accountAlfouad]: $localize`Account`,
+  [FspConfigurationProperties.branchIdAlfouad]: $localize`Branch ID`,
+  [FspConfigurationProperties.usernameAlfouad]: $localize`Username`,
+  [FspConfigurationProperties.passwordAlfouad]: $localize`Password`,
+  [FspConfigurationProperties.publicKeyAlfouad]: $localize`Public key`,
 };
 
 export const FSP_IMAGE_URLS: Record<Fsps, string> = {

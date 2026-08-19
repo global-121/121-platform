@@ -30,6 +30,21 @@ export const airtelEnvVariablesSchema = {
   AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY: z.string().optional(),
 };
 
+//TODO: export when Alfouad is implemented
+const alfouadEnvVariablesSchema = {
+  ALFOUAD_MODE: FspModeSchema,
+
+  ALFOUAD_API_URL: z
+    .url()
+    .pipe(z.transform((url) => withoutTrailingSlash(url)))
+    .optional(),
+  ALFOUAD_ACCOUNT: z.string().optional(),
+  ALFOUAD_BRANCH_ID: z.string().optional(),
+  ALFOUAD_USERNAME: z.string().optional(),
+  ALFOUAD_PASSWORD: z.string().optional(),
+  ALFOUAD_PUBLIC_KEY: z.string().optional(),
+};
+
 export const commercialBankEthiopiaEnvVariablesSchema = {
   COMMERCIAL_BANK_ETHIOPIA_MODE: FspModeSchema,
 
@@ -190,6 +205,7 @@ export const safaricomEnvVariablesSchema = {
 
 const fspEnvVariablesSchema = {
   ...airtelEnvVariablesSchema,
+  ...alfouadEnvVariablesSchema,
   ...commercialBankEthiopiaEnvVariablesSchema,
   ...cooperativeBankOfOromiaEnvVariablesSchema,
   // No environment variables for Excel FSP.

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AirtelModule } from '@121-service/src/fsp-integrations/integrations/airtel/airtel.module';
+import { AlfouadModule } from '@121-service/src/fsp-integrations/integrations/alfouad/alfouad.module';
 import { CommercialBankEthiopiaModule } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
 import { CooperativeBankOfOromiaModule } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/cooperative-bank-of-oromia.module';
 import { ExcelModule } from '@121-service/src/fsp-integrations/integrations/excel/excel.module';
@@ -60,6 +61,7 @@ const transactionJobProcessors = [
     IntersolveVoucherModule,
     SafaricomModule,
     AirtelModule,
+    AlfouadModule,
     CooperativeBankOfOromiaModule,
     MtnModule,
     NedbankModule,
