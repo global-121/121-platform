@@ -69,7 +69,7 @@ export class AlfouadService {
     }
 
     throw new AlfouadApiError({
-      message: Message ?? 'Unknown error',
+      message: Message ?? JSON.stringify(response),
       errorCode: ErrorCode,
     });
   }
@@ -86,8 +86,6 @@ export class AlfouadService {
         referenceNumber,
         requestIdentity,
       });
-
-    //TODO: decide handling different states when implementing the service
 
     if (!transactionState) {
       throw new AlfouadApiError({
