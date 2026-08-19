@@ -27,10 +27,10 @@ test('Data should be updated according to selected columns and registrations', a
   await test.step('Select all registrations and open "Update registrations" dialog', async () => {
     // adding this extra step to ensure that deleted registrations are excluded from exports
     // for more info: AB#37336
-    await tableComponent.changeRegistrationStatusByNameWithOptions({
-      registrationName: registrationPV6.fullName,
-      sendMessage: false,
+    await tableComponent.changeRegistrationStatusByNamesWithOptions({
+      registrationNames: [registrationPV6.fullName],
       status: 'Delete',
+      sendMessage: false,
     });
     await registrationsPage.dismissToast();
 

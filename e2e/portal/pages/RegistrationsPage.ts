@@ -431,6 +431,27 @@ class RegistrationsPage extends BasePage {
       timeout: 10000,
     });
   }
+
+  async validateStatusChangeWarningModal({
+    warningMessage,
+    proceedMessage,
+    submit,
+  }: {
+    warningMessage: string;
+    proceedMessage: string;
+    submit?: boolean;
+  }) {
+    const modal = this.page.getByTestId('change-status-dry-run-warning-dialog');
+    await expect(modal).toBeVisible();
+    await expect(modal.getByText(warningMessage)).toBeVisible();
+    await expect(modal.getByText(proceedMessage)).toBeVisible();
+
+    if (submit) {
+      await modal
+        .getByTestId('change-status-dry-run-warning-dialog-submit')
+        .click();
+    }
+  }
 }
 
 export default RegistrationsPage;

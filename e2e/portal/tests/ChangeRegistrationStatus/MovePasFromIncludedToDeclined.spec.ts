@@ -26,8 +26,8 @@ test('Move PA(s) from status "Included" to "Declined"', async ({
 }) => {
   // Act
   await test.step('Change status of first selected registration to "Declined"', async () => {
-    await tableComponent.changeRegistrationStatusByNameWithOptions({
-      registrationName: registrationPV5.fullName,
+    await tableComponent.changeRegistrationStatusByNamesWithOptions({
+      registrationNames: [registrationPV5.fullName],
       status: 'Decline',
     });
     await registrationsPage.validateToastMessageAndClose(toastMessage);
