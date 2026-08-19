@@ -17,7 +17,6 @@ class TableComponent {
   readonly spinbuttonField: Locator;
   readonly searchBox: Locator;
   readonly checkbox: Locator;
-  readonly approveButton: Locator;
   readonly continueToPreviewButton: Locator;
   readonly sendMessageSwitch: Locator;
   readonly calendar: Locator;
@@ -46,7 +45,6 @@ class TableComponent {
     this.spinbuttonField = this.page.getByRole('spinbutton');
     this.searchBox = this.page.getByRole('searchbox');
     this.checkbox = this.page.getByRole('checkbox');
-    this.approveButton = this.page.getByRole('button', { name: 'Approve' });
     this.continueToPreviewButton = this.page.getByRole('button', {
       name: 'Continue to preview',
     });
@@ -465,7 +463,8 @@ class TableComponent {
         await this.continueToPreviewButton.click();
       }
     }
-    await this.approveButton.click();
+    const submitButton = this.page.getByTestId('change-status-submit-button');
+    await submitButton.click();
   }
 
   async validateAllRecordsCount(expectedCount: number) {
