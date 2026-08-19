@@ -577,9 +577,9 @@ export class RegistrationsBulkService {
 
     const result = await this.transactionScopedRepository
       .createQueryBuilder('transaction')
-      .leftJoin('transaction.registration', 'registration')
+      .innerJoin('transaction.registration', 'registration')
       .andWhere('registration."programId" = :programId', { programId })
-      .andWhere('registration."referenceId" IN (:...referenceIds)', {
+      .andWhere('registration."referenceId" = ANY(:referenceIds)', {
         referenceIds,
       })
       .andWhere('transaction.status = :status', {
