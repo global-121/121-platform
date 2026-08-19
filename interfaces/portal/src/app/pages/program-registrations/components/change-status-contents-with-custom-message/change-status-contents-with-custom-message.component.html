@@ -44,8 +44,8 @@
           (click)="previewData.set(undefined)"
         />
         <p-button
-          label="Approve"
-          i18n-label="@@generic-approve"
+          data-testid="change-status-submit-button"
+          [label]="submitButtonText()"
           rounded
           [disabled]="isMutating()"
           [loading]="isMutating()"
