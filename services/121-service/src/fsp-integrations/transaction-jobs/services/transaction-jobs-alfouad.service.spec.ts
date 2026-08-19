@@ -12,6 +12,8 @@ const requestIdentity: AlfouadRequestIdentity = {
   username: 'Red Crescent',
   password: 'secret',
   publicKey: '<RSAParameters />',
+  senderFullName: 'Red Crescent',
+  senderPhoneNumber: '0900000000',
 };
 
 const transactionJob: AlfouadTransactionJobDto = {
@@ -23,13 +25,8 @@ const transactionJob: AlfouadTransactionJobDto = {
   transferValue: 10000,
   programFspConfigurationId: 1,
   isRetry: false,
-  senderFullName: 'Red Crescent',
-  senderPhoneNumber: '0900000000',
   beneficiaryFullName: 'Test Beneficiary',
   beneficiaryPhoneNumber: '0911111111',
-  countryCode: 'SY',
-  cityCode: 'Damascus',
-  deliveryCurrencyCode: 'SYP',
 };
 
 describe('TransactionJobsAlfouadService', () => {

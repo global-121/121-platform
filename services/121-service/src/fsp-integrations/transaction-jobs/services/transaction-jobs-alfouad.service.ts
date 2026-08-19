@@ -12,6 +12,10 @@ import { TransactionEventCreationContext } from '@121-service/src/payments/trans
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 
+const ALFOUAD_COUNTRY_CODE = 'SY';
+const ALFOUAD_CITY_CODE = 'Damascus';
+const ALFOUAD_DELIVERY_CURRENCY_CODE = 'SYP';
+
 @Injectable()
 export class TransactionJobsAlfouadService
   implements TransactionJobService<AlfouadTransactionJobDto>
@@ -44,15 +48,14 @@ export class TransactionJobsAlfouadService
 
     try {
       await this.alfouadService.createTransaction({
-        senderFullName: transactionJob.senderFullName,
-        senderPhoneNumber: transactionJob.senderPhoneNumber,
+        senderFullName: requestIdentity.senderFullName,
+        senderPhoneNumber: requestIdentity.senderPhoneNumber,
         beneficiaryFullName: transactionJob.beneficiaryFullName,
         beneficiaryPhoneNumber: transactionJob.beneficiaryPhoneNumber,
         referenceNumber,
-        countryCode: transactionJob.countryCode,
-        cityCode: transactionJob.cityCode,
-        agentCode: transactionJob.agentCode,
-        deliveryCurrencyCode: transactionJob.deliveryCurrencyCode,
+        countryCode: ALFOUAD_COUNTRY_CODE,
+        cityCode: ALFOUAD_CITY_CODE,
+        deliveryCurrencyCode: ALFOUAD_DELIVERY_CURRENCY_CODE,
         deliveryAmount: transactionJob.transferValue,
         requestIdentity,
       });
