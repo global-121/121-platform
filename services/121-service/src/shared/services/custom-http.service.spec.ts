@@ -1,6 +1,8 @@
+import { HttpService } from '@nestjs/axios';
 import { HttpStatus } from '@nestjs/common';
 import fs from 'node:fs';
 import https from 'node:https';
+import { of } from 'rxjs';
 
 import { SensitiveValue } from '@121-service/src/shared/consts/sensitive-value.class';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
@@ -13,6 +15,62 @@ describe('CustomHttpService', () => {
 
   beforeEach(() => {
     service = new CustomHttpService({} as any);
+  });
+
+  describe('post data with SensitiveValue fields', () => {
+    let httpServicePostMock: jest.Mock;
+    let trackTraceMock: jest.Mock;
+
+    beforeEach(() => {
+      httpServicePostMock = jest
+        .fn()
+        .mockReturnValue(of({ status: 200, statusText: 'OK', data: {} }));
+      trackTraceMock = jest.fn();
+
+      service = new CustomHttpService({
+        post: httpServicePostMock,
+      } as unknown as HttpService);
+
+      service.defaultClient = {
+        trackTrace: trackTraceMock,
+        flush: jest.fn(),
+      } as any;
+    });
+
+    it('should send SensitiveValue fields unwrapped while redacting them in the log', async () => {
+      // Arrange
+      const payload = {
+        SenderFullName: new SensitiveValue('John Doe'),
+        ReferenceNumber: 'RC-TEST-1',
+      };
+
+      // Act
+      await service.post('https://example.com', payload);
+
+      // Assert
+      const sentPayload = httpServicePostMock.mock.calls[0][1];
+      expect(sentPayload).toEqual({
+        SenderFullName: 'John Doe',
+        ReferenceNumber: 'RC-TEST-1',
+      });
+
+      const loggedMessage = trackTraceMock.mock.calls[0][0].message;
+      expect(loggedMessage).not.toContain('John Doe');
+      expect(loggedMessage).toContain('**REDACTED**');
+    });
+
+    it('should send non-plain object payload unmodified', async () => {
+      // Arrange
+      const payload = new FormData();
+      payload.append('file', 'content');
+
+      // Act
+      await service.post('https://example.com', payload);
+
+      // Assert
+      const sentPayload = httpServicePostMock.mock.calls[0][1];
+      expect(sentPayload).toBe(payload);
+    });
   });
 
   describe('remove sensitive values from logging', () => {
@@ -120,27 +178,16 @@ describe('CustomHttpService', () => {
       expect(getTrackedPayload().name).toMatchInlineSnapshot(`"test-webhook"`);
     });
 
-    it('should redact SensitiveValue-wrapped fields', () => {
+    it('should not unwrap when data is not a plain object (e.g. an array)', () => {
       // Arrange
-      const payload = {
-        SenderFullName: new SensitiveValue('John Doe'),
-        BeneficiaryPhoneNumber: new SensitiveValue('0911111111'),
-        ReferenceNumber: 'RC-TEST-1',
-      };
+      const payload = ['John Doe', '0911111111'];
 
       // Act
       logWithPayload(payload);
 
       // Assert
-      expect(getTrackedPayload().SenderFullName).toMatchInlineSnapshot(
-        `"**REDACTED**"`,
-      );
-      expect(getTrackedPayload().BeneficiaryPhoneNumber).toMatchInlineSnapshot(
-        `"**REDACTED**"`,
-      );
-      expect(getTrackedPayload().ReferenceNumber).toMatchInlineSnapshot(
-        `"RC-TEST-1"`,
-      );
+      expect(getTrackedMessage()).toContain('John Doe');
+      expect(getTrackedMessage()).toContain('0911111111');
     });
   });
 

@@ -114,8 +114,12 @@ export class CustomHttpService {
     );
   }
 
-  private unwrapSensitiveValues(data) {
-    return cloneDeepWith(data, (value) => {
+  private unwrapSensitiveValues<T>(data: T): T {
+    if (!isPlainObject(data) && !Array.isArray(data)) {
+      return data;
+    }
+
+    return cloneDeepWith(data, (value: unknown) => {
       if (value instanceof SensitiveValue) {
         return value.value;
       }
@@ -128,9 +132,11 @@ export class CustomHttpService {
     payload: any,
     headers?: Headers,
   ): Promise<T> {
+    const unwrappedPayload = this.unwrapSensitiveValues(payload);
+
     return await lastValueFrom(
       this.httpService
-        .put(url, payload, {
+        .put(url, unwrappedPayload, {
           headers: this.createHeaders(headers),
         })
         .pipe(
@@ -152,9 +158,11 @@ export class CustomHttpService {
     payload: any,
     headers?: Headers,
   ): Promise<T> {
+    const unwrappedPayload = this.unwrapSensitiveValues(payload);
+
     return await lastValueFrom(
       this.httpService
-        .patch(url, payload, {
+        .patch(url, unwrappedPayload, {
           headers: this.createHeaders(headers),
         })
         .pipe(
@@ -213,7 +221,7 @@ export class CustomHttpService {
       headers: this.createHeaders(headers),
     };
     if (payload) {
-      params.data = payload; // If payload is null on a GET, axios will throw an error
+      params.data = this.unwrapSensitiveValues(payload); // If payload is null on a GET, axios will throw an error
     }
     if (httpsAgent) {
       params.httpsAgent = httpsAgent;
