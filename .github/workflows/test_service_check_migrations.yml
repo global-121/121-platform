@@ -7,6 +7,11 @@ on:
   merge_group:
     types: [checks_requested]
   pull_request:
+    types: # See: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request
+      - opened
+      - ready_for_review
+      - reopened
+      - synchronize
     paths:
       - .github/workflows/test_service_check_migrations.yml
       - .github/actions/build-service/action.yml
@@ -33,6 +38,7 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
 
     steps:
       - name: Check out repository code
