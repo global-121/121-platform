@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 
+import {
+  ALFOUAD_AGENT_CODE,
+  ALFOUAD_RELATIONSHIP,
+} from '@121-service/src/fsp-integrations/integrations/alfouad/alfouad.config';
 import { AlfouadApiCreateTransactionResponseDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-create-transaction-response.dto';
 import { AlfouadApiGetTransactionResponseDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-get-transaction-response.dto';
 import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
@@ -39,9 +43,10 @@ export class AlfouadApiService {
       ReferenceNumber: referenceNumber,
       CountryCode: countryCode,
       CityCode: cityCode,
-      AgentCode: 0,
+      AgentCode: ALFOUAD_AGENT_CODE,
       DeliveryCurrencyCode: deliveryCurrencyCode,
       DeliveryAmount: deliveryAmount,
+      RelationShip: ALFOUAD_RELATIONSHIP,
     }
 
     const response = await this.sendAuthenticatedRequest<AlfouadApiCreateTransactionResponseDto>(
