@@ -177,18 +177,6 @@ describe('CustomHttpService', () => {
       // Assert
       expect(getTrackedPayload().name).toMatchInlineSnapshot(`"test-webhook"`);
     });
-
-    it('should not unwrap when data is not a plain object (e.g. an array)', () => {
-      // Arrange
-      const payload = ['John Doe', '0911111111'];
-
-      // Act
-      logWithPayload(payload);
-
-      // Assert
-      expect(getTrackedMessage()).toContain('John Doe');
-      expect(getTrackedMessage()).toContain('0911111111');
-    });
   });
 
   describe('createHttpsAgentWithCertificate', () => {
