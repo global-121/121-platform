@@ -13,6 +13,7 @@ import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integration
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { AlfouadApiHelperService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.helper.service';
 import { AlfouadEncryptionService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.encryption.service';
+import { SENSITIVE_PROPERTIES } from '@121-service/src/shared/consts/sensitive-properties-symbol.const';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
@@ -47,7 +48,13 @@ export class AlfouadApiService {
       DeliveryCurrencyCode: deliveryCurrencyCode,
       DeliveryAmount: deliveryAmount,
       RelationShip: ALFOUAD_RELATIONSHIP,
-    }
+      [SENSITIVE_PROPERTIES]: [
+        'SenderFullName',
+        'SenderPhoneNumber',
+        'BeneficiaryFullName',
+        'BeneficiaryPhoneNumber',
+      ],
+    };
 
     const response = await this.sendAuthenticatedRequest<AlfouadApiCreateTransactionResponseDto>(
       {

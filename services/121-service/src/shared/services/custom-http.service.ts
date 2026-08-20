@@ -8,6 +8,7 @@ import https, { AgentOptions } from 'node:https';
 import { SecureContextOptions } from 'node:tls';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
 
+import { SENSITIVE_PROPERTIES } from '@121-service/src/shared/consts/sensitive-properties-symbol.const';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { maskValueKeepStart } from '@121-service/src/utils/mask-value.helper';
 
@@ -402,11 +403,19 @@ export class CustomHttpService {
       return data;
     }
 
-    const sensitiveProperties = [
+    const generalSensitiveProperties = [
       'password',
       'access_token',
       CookieNames.general,
       CookieNames.portal,
+    ];
+
+    const markedSensitiveProperties: string[] =
+      (data)[SENSITIVE_PROPERTIES] ?? [];
+
+    const sensitiveProperties = [
+      ...generalSensitiveProperties,
+      ...markedSensitiveProperties,
     ];
 
     const isSensitiveProperty = (key: string | number | undefined): boolean =>
