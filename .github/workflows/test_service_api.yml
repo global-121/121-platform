@@ -11,10 +11,10 @@ on:
     types: [checks_requested]
   pull_request:
     types: # See: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request
-    - opened
-    - ready_for_review
-    - reopened
-    - synchronize
+      - opened
+      - ready_for_review
+      - reopened
+      - synchronize
   push:
     branches:
       - main
