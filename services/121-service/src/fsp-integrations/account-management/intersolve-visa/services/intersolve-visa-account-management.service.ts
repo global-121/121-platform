@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { SyncContactInformationResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/sync-contact-information-response.dto';
 import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
 import { VisaCardOrderMapper } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/mappers/visa-card-order.mapper';
 import { IntersolveVisaCardOrderProcessorService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/services/intersolve-visa-card-order-processor.service';
@@ -433,57 +432,6 @@ export class IntersolveVisaAccountManagementService {
       registrationId: registration.id,
       contactInformation,
     });
-  }
-
-  public async syncContactInformationForAllCustomers({
-    limit,
-  }: {
-    limit?: number;
-  }): Promise<SyncContactInformationResponseDto> {
-    const syncTargets =
-      await this.intersolveVisaService.getRegistrationReferencesForAllCustomers(
-        { limit },
-      );
-
-    let syncedCustomers = 0;
-    const failedRegistrationIds: number[] = [];
-
-    for (const [index, target] of syncTargets.entries()) {
-      const { registrationId, referenceId, programId } = target;
-      console.log(
-        `Syncing contact information ${index + 1} out of ${syncTargets.length} (registrationId: ${registrationId})`,
-      );
-      try {
-        const contactInformation =
-          await this.registrationsService.getContactInformation({
-            referenceId,
-            programId,
-          });
-        await this.intersolveVisaDataSynchronizationService.syncData({
-          registrationId,
-          contactInformation,
-        });
-        syncedCustomers++;
-      } catch (error) {
-        failedRegistrationIds.push(registrationId);
-        console.error(
-          `Failed to sync contact information for registrationId ${registrationId}: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
-        );
-      }
-    }
-
-    if (
-      syncTargets.length > 0 &&
-      failedRegistrationIds.length === syncTargets.length
-    ) {
-      throw new Error(
-        `Failed to sync contact information for all ${syncTargets.length} Intersolve customers.`,
-      );
-    }
-
-    return { syncedCustomers };
   }
 
   private async throwIfCardDoesNotExistOrIsAlreadyLinked(
