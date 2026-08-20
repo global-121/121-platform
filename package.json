@@ -23,7 +23,7 @@
     "install:services": "cd services/ && docker compose --file=docker-compose.yml build",
     "install:portal": "npm install --prefix=interfaces/portal/",
     "install:e2e": "npm install --prefix=e2e/",
-    "install:local:all": "npm install && npx npm-run-all --npm-path npm --print-label --parallel install:portal install:local:mock-service install:e2e",
+    "install:local:all": "npm install && npx npm-run-all --npm-path npm --print-label --sequential install:portal install:local:mock-service install:e2e",
     "install:local:121-service": "npm install --prefix=services/121-service/",
     "install:local:mock-service": "npm install --prefix=services/mock-service/",
     "code:all": "code ./ && npx npm-run-all --npm-path npm --parallel code:121-service code:mock-service code:portal",
