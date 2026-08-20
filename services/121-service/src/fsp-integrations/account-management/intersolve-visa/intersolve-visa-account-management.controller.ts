@@ -25,8 +25,6 @@ import {
 
 import { CreateVisaCardOrderDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/create-visa-card-order.dto';
 import { CreateVisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/create-visa-card-order-response.dto';
-import { SyncContactInformationDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/sync-contact-information.dto';
-import { SyncContactInformationResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/sync-contact-information-response.dto';
 import { TokenCodeDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/token-code.dto';
 import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
 import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/services/intersolve-visa-account-management.service';
@@ -205,30 +203,6 @@ export class IntersolveVisaAccountManagementController {
     return await this.intersolveVisaAccountManagementService.getRegistrationAndSendContactInformationToIntersolve(
       referenceId,
       programId,
-    );
-  }
-
-  @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({
-    summary:
-      'Send Visa Customer Information of all Intersolve customers to Intersolve, optionally limited to a batch size',
-    description:
-      'For each Intersolve customer this calls the Intersolve Customer API (update phone number, update individual name, update address) and the Intersolve PaymentInstrument API (update contact information of the latest card).',
-  })
-  @ApiBody({ type: SyncContactInformationDto, required: false })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Customer data sent for all Intersolve customers (or the requested batch size)',
-    type: SyncContactInformationResponseDto,
-  })
-  @Post('fsps/intersolve-visa/contact-information')
-  @HttpCode(HttpStatus.OK)
-  public async syncContactInformationForAllCustomers(
-    @Body() body: SyncContactInformationDto,
-  ): Promise<SyncContactInformationResponseDto> {
-    return await this.intersolveVisaAccountManagementService.syncContactInformationForAllCustomers(
-      { limit: body.limit },
     );
   }
 

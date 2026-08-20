@@ -605,24 +605,6 @@ export class IntersolveVisaService {
     return count > 0;
   }
 
-  public async getRegistrationReferencesForAllCustomers({
-    limit,
-  }: {
-    limit?: number;
-  }): Promise<
-    { registrationId: number; referenceId: string; programId: number }[]
-  > {
-    const customers =
-      await this.intersolveVisaCustomerScopedRepository.findWithRegistration({
-        take: limit,
-      });
-    return customers.map((customer) => ({
-      registrationId: customer.registrationId,
-      referenceId: customer.registration.referenceId,
-      programId: customer.registration.programId,
-    }));
-  }
-
   private async getOrIssueToken({
     brandCode,
     holderId,

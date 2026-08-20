@@ -1200,12 +1200,6 @@
   },
   {
     "method": "post",
-    "path": "/api/fsps/intersolve-visa/contact-information",
-    "params": [],
-    "returnType": "SyncContactInformationResponseDto"
-  },
-  {
-    "method": "post",
     "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/on-site/link",
     "params": [
       "programId",
