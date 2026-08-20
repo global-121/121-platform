@@ -84,7 +84,6 @@ describe('Download Kobo image for a registration', () => {
       attributeName: 'photo',
       accessToken,
     });
-    console.log('Response:', response.body);
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
