@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
+import {
+  ALFOUAD_CITY_CODE,
+  ALFOUAD_COUNTRY_CODE,
+  ALFOUAD_DELIVERY_CURRENCY_CODE,
+} from '@121-service/src/fsp-integrations/integrations/alfouad/alfouad.config';
 import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/alfouad.service';
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
 import { computeTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
@@ -11,10 +16,6 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-
-const ALFOUAD_COUNTRY_CODE = 'SY';
-const ALFOUAD_CITY_CODE = 'Damascus';
-const ALFOUAD_DELIVERY_CURRENCY_CODE = 'SYP';
 
 @Injectable()
 export class TransactionJobsAlfouadService
