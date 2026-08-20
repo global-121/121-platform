@@ -643,7 +643,6 @@ export class IntersolveVisaApiService {
       address1: this.createAddressString(contactInformation),
       address2: null,
       address3: null,
-      address4: null,
       city: contactInformation.addressCity,
       country: 'NLD',
       region: null,
