@@ -1,0 +1,91 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+# Aggregates the `failed-tests-json` artifacts (produced by every run of the
+# "Test: E2E (Portal)" workflow) into a single flakiness report, and publishes
+# it to the dedicated `test-history` branch.
+
+name: 'Test: E2E Flaky-Tests Tracking'
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  e2eTestsPath: './e2e'
+  sourceWorkflow: 'test_e2e_portal.yml'
+  windowDays: '90'
+
+jobs:
+  aggregate-flaky-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '${{ env.e2eTestsPath }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.e2eTestsPath }}/package-lock.json'
+
+      - name: Install E2E-Tests code-dependencies
+        working-directory: ${{ env.e2eTestsPath }}
+        run: |
+          npm ci --ignore-scripts
+
+      - name: List recent "${{ env.sourceWorkflow }}" runs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh run list \
+            --repo "${{ github.repository }}" \
+            --workflow "${{ env.sourceWorkflow }}" \
+            --limit 200 \
+            --json databaseId,createdAt,url \
+            > runs.json
+
+      - name: Download flaky-test reports for each run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p downloads
+          for runId in $(jq -r '.[].databaseId' runs.json); do
+            gh run download "$runId" \
+              --repo "${{ github.repository }}" \
+              --name failed-tests-json \
+              --dir "downloads/$runId" \
+              || echo "No failed-tests-json artifact for run $runId (skipped)"
+          done
+
+      - name: Aggregate flaky-test reports
+        working-directory: ${{ env.e2eTestsPath }}
+        run: |
+          npm run ci:aggregate-flaky-tests -- \
+            ../runs.json \
+            ../downloads \
+            "$RUNNER_TEMP/flaky-tests.json" \
+            "${{ env.windowDays }}"
+
+      - name: Publish flaky-tests.json to the test-history branch
+        run: |
+          git fetch origin test-history:test-history || echo "test-history branch doesn't exist yet"
+          if git show-ref --verify --quiet refs/heads/test-history; then
+            git checkout test-history
+          else
+            git checkout --orphan test-history
+            git rm -rf . > /dev/null
+          fi
+
+          cp "$RUNNER_TEMP/flaky-tests.json" flaky-tests.json
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add flaky-tests.json
+          git commit -m 'chore: Update flaky-tests.json' --allow-empty
+          git push origin test-history
