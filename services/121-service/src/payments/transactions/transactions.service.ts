@@ -120,6 +120,38 @@ export class TransactionsService {
     }
   }
 
+  public async saveProgressUnlessTransactionFailed({
+    context,
+    description,
+    errorMessage,
+    newTransactionStatus,
+  }: {
+    context: TransactionEventCreationContext;
+    description: TransactionEventDescription;
+    errorMessage?: string;
+    newTransactionStatus:
+      | TransactionStatusEnum.waiting
+      | TransactionStatusEnum.error;
+  }): Promise<void> {
+    const wasTransactionStatusSet =
+      await this.transactionRepository.updateStatusUnlessIn({
+        transactionId: context.transactionId,
+        newTransactionStatus,
+        excludedStatuses: [
+          TransactionStatusEnum.error,
+        ],
+      });
+    if (!wasTransactionStatusSet) {
+      return;
+    }
+
+    await this.transactionEventsService.createEvent({
+      context,
+      description,
+      errorMessage,
+    });
+  }
+
   public async saveProgressBulk({
     newTransactionStatus,
     transactionIds,

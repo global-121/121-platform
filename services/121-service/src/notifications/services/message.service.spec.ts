@@ -191,6 +191,7 @@ describe('MessageService', () => {
         registrationId: testMessageJob.registrationId,
         messageContentType: testMessageJob.messageContentType,
         messageProcessType: testMessageJob.messageProcessType,
+        transactionId: mockTransactionId,
       });
 
       expect(
@@ -200,7 +201,6 @@ describe('MessageService', () => {
         intersolveVoucherService.updateTransactionProgressBasedOnInitialMessage,
       ).toHaveBeenCalledWith({
         errorMessage: undefined,
-        messageSid: testMessageID,
         newTransactionStatus: TransactionStatusEnum.waiting,
         programFspConfigurationId: mockProgramFspConfigurationId,
         transactionId: mockTransactionId,
@@ -244,6 +244,7 @@ describe('MessageService', () => {
         registrationId: testMessageJob.registrationId,
         messageContentType: testMessageJob.messageContentType,
         messageProcessType: testMessageJob.messageProcessType,
+        transactionId: mockTransactionId,
       });
 
       expect(
@@ -254,7 +255,6 @@ describe('MessageService', () => {
       ).toHaveBeenCalledWith({
         errorMessage: null,
         intersolveVoucherId: mockIntersolveVoucherId,
-        messageSid: testMessageID,
         newTransactionStatus: TransactionStatusEnum.success,
         transactionId: mockTransactionId,
       });

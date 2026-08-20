@@ -52,6 +52,7 @@ export class WhatsappService {
     messageProcessType,
     existingSidToUpdate,
     userId,
+    transactionId,
     firstAttempt = true,
   }: {
     message?: string;
@@ -63,6 +64,7 @@ export class WhatsappService {
     messageProcessType?: MessageProcessType;
     existingSidToUpdate?: string;
     userId: MessageSenderUserId;
+    transactionId?: number;
     firstAttempt?: boolean; // Controls retry logic for Twilio media errors (63021)
   }): Promise<string | undefined> {
     const payload = {
@@ -110,6 +112,7 @@ export class WhatsappService {
         message: messageToStore,
         userId,
         registrationId,
+        transactionId,
         mediaUrl,
         messageContentType,
         messageProcessType,
@@ -134,6 +137,7 @@ export class WhatsappService {
           messageProcessType,
           existingSidToUpdate,
           userId,
+          transactionId,
           firstAttempt,
         });
       }
@@ -154,6 +158,7 @@ export class WhatsappService {
         },
         userId,
         registrationId,
+        transactionId,
         mediaUrl,
         messageContentType,
         messageProcessType,
@@ -173,6 +178,7 @@ export class WhatsappService {
     message,
     userId,
     registrationId,
+    transactionId,
     mediaUrl,
     messageContentType,
     messageProcessType,
@@ -192,6 +198,7 @@ export class WhatsappService {
     >;
     userId: MessageSenderUserId;
     registrationId?: number;
+    transactionId?: number;
     mediaUrl?: string | null;
     messageContentType?: MessageContentType;
     messageProcessType?: MessageProcessType;
@@ -221,6 +228,8 @@ export class WhatsappService {
       twilioMessage.type = NotificationType.Whatsapp;
       twilioMessage.dateCreated = message.dateCreated;
       twilioMessage.registrationId = registrationId ?? null;
+      // Set at creation (instead of after the fact) so the Twilio status callback can never race ahead of this link
+      twilioMessage.transactionId = transactionId ?? null;
       twilioMessage.contentType =
         messageContentType ?? MessageContentType.custom;
       twilioMessage.processType = messageProcessType ?? null;

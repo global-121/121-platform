@@ -194,6 +194,7 @@ export class MessageService {
         messageContentType: messageJobDto.messageContentType,
         messageProcessType: messageJobDto.messageProcessType,
         userId: messageJobDto.userId,
+        transactionId: messageJobDto.customData?.transactionData?.transactionId,
       })
       .then(
         (response) => {
@@ -216,10 +217,6 @@ export class MessageService {
           userId: messageJobDto.userId!, // We know this is always defined for intersolve voucher messages
           programFspConfigurationId:
             messageJobDto.customData.transactionData.programFspConfigurationId!,
-          messageSid:
-            newTransactionStatus === TransactionStatusEnum.error
-              ? undefined
-              : messageSid, // else = 'waiting'
           errorMessage:
             newTransactionStatus === TransactionStatusEnum.error
               ? errorMessage
@@ -242,6 +239,7 @@ export class MessageService {
         registrationId: messageJobDto.registrationId,
         messageContentType: messageJobDto.messageContentType,
         messageProcessType: messageJobDto.messageProcessType,
+        transactionId: messageJobDto.customData?.transactionData?.transactionId,
         existingSidToUpdate: messageJobDto.customData?.existingMessageSid,
         userId: messageJobDto.userId,
       })
@@ -266,7 +264,6 @@ export class MessageService {
           transactionId: messageJobDto.customData.transactionData.transactionId,
           newTransactionStatus,
           errorMessage,
-          messageSid,
           intersolveVoucherId:
             messageJobDto.customData.transactionData.intersolveVoucherId!,
         },
