@@ -13,7 +13,7 @@ import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integration
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { AlfouadApiHelperService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.helper.service';
 import { AlfouadEncryptionService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.encryption.service';
-import { SENSITIVE_PROPERTIES } from '@121-service/src/shared/consts/sensitive-properties-symbol.const';
+import { SensitiveValue } from '@121-service/src/shared/consts/sensitive-value.class';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
@@ -37,10 +37,10 @@ export class AlfouadApiService {
     deliveryAmount,
   }: AlfouadCreateTransactionParams): Promise<AlfouadApiCreateTransactionResponseDto> {
     const payload = {
-      SenderFullName: senderFullName,
-      SenderPhoneNumber: senderPhoneNumber,
-      BeneficiaryFullName: beneficiaryFullName,
-      BeneficiaryPhoneNumber: beneficiaryPhoneNumber,
+      SenderFullName: new SensitiveValue(senderFullName),
+      SenderPhoneNumber: new SensitiveValue(senderPhoneNumber),
+      BeneficiaryFullName: new SensitiveValue(beneficiaryFullName),
+      BeneficiaryPhoneNumber: new SensitiveValue(beneficiaryPhoneNumber),
       ReferenceNumber: referenceNumber,
       CountryCode: countryCode,
       CityCode: cityCode,
@@ -48,12 +48,6 @@ export class AlfouadApiService {
       DeliveryCurrencyCode: deliveryCurrencyCode,
       DeliveryAmount: deliveryAmount,
       RelationShip: ALFOUAD_RELATIONSHIP,
-      [SENSITIVE_PROPERTIES]: [
-        'SenderFullName',
-        'SenderPhoneNumber',
-        'BeneficiaryFullName',
-        'BeneficiaryPhoneNumber',
-      ],
     };
 
     const response = await this.sendAuthenticatedRequest<AlfouadApiCreateTransactionResponseDto>(
