@@ -20,7 +20,11 @@
     "test:update-snapshots": "npm run test -- --update-snapshots",
     "test:update-snapshots:specific": "npm run test -- --update-snapshots --grep",
     "test:find-flaky": "npm run test -- --fail-on-flaky-tests --retries=0 --repeat-each 30 -x --trace retain-on-failure --reporter=html",
-    "test:keep-trace": "npm run test -- --retries=0 --trace on --reporter=html"
+    "test:keep-trace": "npm run test -- --retries=0 --trace on --reporter=html",
+    "test:scripts": "node --test scripts/",
+    "ci:extract-failed-tests": "node scripts/extract-failed-tests.mjs",
+    "ci:merge-failed-tests": "node scripts/merge-failed-tests.mjs",
+    "ci:aggregate-flaky-tests": "node scripts/aggregate-flaky-tests.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",

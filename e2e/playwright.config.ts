@@ -12,7 +12,7 @@ export default defineConfig({
   // eslint-disable-next-line n/no-process-env -- This environment variable `CI` is NOT used in the 121-service, thus not managed via the env.ts file.
   forbidOnly: !!process.env.CI, // Fail the build on CI if you accidentally left test.only in the source code.
   retries: 1,
-  reporter: [['list']],
+  reporter: [['list'], ['json', { outputFile: 'test-results/results.json' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   workers: 1,
   outputDir: './test-results',
