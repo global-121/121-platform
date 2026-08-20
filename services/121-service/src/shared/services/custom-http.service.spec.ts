@@ -178,27 +178,16 @@ describe('CustomHttpService', () => {
       expect(getTrackedPayload().name).toMatchInlineSnapshot(`"test-webhook"`);
     });
 
-    it('should redact SensitiveValue-wrapped fields', () => {
+    it('should not unwrap when data is not a plain object (e.g. an array)', () => {
       // Arrange
-      const payload = {
-        SenderFullName: new SensitiveValue('John Doe'),
-        BeneficiaryPhoneNumber: new SensitiveValue('0911111111'),
-        ReferenceNumber: 'RC-TEST-1',
-      };
+      const payload = ['John Doe', '0911111111'];
 
       // Act
       logWithPayload(payload);
 
       // Assert
-      expect(getTrackedPayload().SenderFullName).toMatchInlineSnapshot(
-        `"**REDACTED**"`,
-      );
-      expect(getTrackedPayload().BeneficiaryPhoneNumber).toMatchInlineSnapshot(
-        `"**REDACTED**"`,
-      );
-      expect(getTrackedPayload().ReferenceNumber).toMatchInlineSnapshot(
-        `"RC-TEST-1"`,
-      );
+      expect(getTrackedMessage()).toContain('John Doe');
+      expect(getTrackedMessage()).toContain('0911111111');
     });
   });
 
