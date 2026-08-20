@@ -177,6 +177,29 @@ describe('CustomHttpService', () => {
       // Assert
       expect(getTrackedPayload().name).toMatchInlineSnapshot(`"test-webhook"`);
     });
+
+    it('should redact SensitiveValue-wrapped fields', () => {
+      // Arrange
+      const payload = {
+        SenderFullName: new SensitiveValue('John Doe'),
+        BeneficiaryPhoneNumber: new SensitiveValue('0911111111'),
+        ReferenceNumber: 'RC-TEST-1',
+      };
+
+      // Act
+      logWithPayload(payload);
+
+      // Assert
+      expect(getTrackedPayload().SenderFullName).toMatchInlineSnapshot(
+        `"**REDACTED**"`,
+      );
+      expect(getTrackedPayload().BeneficiaryPhoneNumber).toMatchInlineSnapshot(
+        `"**REDACTED**"`,
+      );
+      expect(getTrackedPayload().ReferenceNumber).toMatchInlineSnapshot(
+        `"RC-TEST-1"`,
+      );
+    });
   });
 
   describe('createHttpsAgentWithCertificate', () => {
