@@ -8,6 +8,7 @@ import https, { AgentOptions } from 'node:https';
 import { SecureContextOptions } from 'node:tls';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
 
+import { SensitiveValue } from '@121-service/src/shared/consts/sensitive-value.class';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { maskValueKeepStart } from '@121-service/src/utils/mask-value.helper';
 
@@ -91,9 +92,11 @@ export class CustomHttpService {
     headers?: Headers,
     httpsAgent?: https.Agent,
   ): Promise<T> {
+    const unwrappedPayload = this.unwrapSensitiveValues(payload);
+
     return await lastValueFrom(
       this.httpService
-        .post(url, payload, {
+        .post(url, unwrappedPayload, {
           headers: this.createHeaders(headers),
           httpsAgent,
         })
@@ -109,6 +112,15 @@ export class CustomHttpService {
           }),
         ),
     );
+  }
+
+  private unwrapSensitiveValues(data) {
+    return cloneDeepWith(data, (value) => {
+      if (value instanceof SensitiveValue) {
+        return value.value;
+      }
+      return undefined;
+    });
   }
 
   public async put<T>(
@@ -418,6 +430,9 @@ export class CustomHttpService {
     return cloneDeepWith(
       data,
       (value: unknown, key: string | number | undefined) => {
+        if (value instanceof SensitiveValue) {
+          return '**REDACTED**';
+        }
         if (isSensitiveProperty(key)) {
           return '**REDACTED**';
         }
