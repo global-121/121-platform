@@ -1,4 +1,5 @@
 import { AIRTEL_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/airtel/airtel-env-variable-settings.const';
+import { ALFOUAD_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/alfouad/alfouad-env-variable-settings.const';
 import { COMMERCIAL_BANK_ETHIOPIA_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/commercial-bank-ethiopia/commercial-bank-ethiopia-env-variable-settings.const';
 import { COOPERATIVE_BANK_OF_OROMIA_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/cooperative-bank-of-oromia/cooperative-bank-of-oromia-env-variable-settings.const';
 import { EXCEL_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/excel/excel-env-variable-settings.const';
@@ -32,6 +33,7 @@ export type FspEnvVariableSettingsRecord = Record<
 // Please keep sorted for readability. (doing this with ESLint requires a custom rule)
 export const FSP_ENV_VARIABLE_SETTINGS: FspEnvVariableSettingsRecord = {
   [Fsps.airtel]: AIRTEL_ENV_VARIABLE_SETTINGS,
+  [Fsps.alfouad]: ALFOUAD_ENV_VARIABLE_SETTINGS,
   [Fsps.commercialBankEthiopia]: COMMERCIAL_BANK_ETHIOPIA_ENV_VARIABLE_SETTINGS,
   [Fsps.cooperativeBankOfOromia]:
     COOPERATIVE_BANK_OF_OROMIA_ENV_VARIABLE_SETTINGS,
@@ -49,6 +51,7 @@ export const FSP_ENV_VARIABLE_SETTINGS: FspEnvVariableSettingsRecord = {
 // are separate Fsps values but share one environment variable (AB#10288).
 export const FSP_MODES: Readonly<Record<Fsps, FspMode>> = {
   [Fsps.airtel]: AIRTEL_ENV_VARIABLE_SETTINGS.mode,
+  [Fsps.alfouad]: ALFOUAD_ENV_VARIABLE_SETTINGS.mode,
   [Fsps.commercialBankEthiopia]:
     COMMERCIAL_BANK_ETHIOPIA_ENV_VARIABLE_SETTINGS.mode,
   [Fsps.cooperativeBankOfOromia]:

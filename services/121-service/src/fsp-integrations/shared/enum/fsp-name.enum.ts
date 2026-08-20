@@ -10,4 +10,5 @@ export enum Fsps {
   nedbank = 'Nedbank',
   onafriq = 'Onafriq',
   mtn = 'MTN',
+  alfouad = 'AlFouad',
 }

@@ -35,6 +35,8 @@ export const FSP_CONFIGURATION_PROPERTY_LABELS: Record<
   [FspConfigurationProperties.usernameAlfouad]: $localize`Username`,
   [FspConfigurationProperties.passwordAlfouad]: $localize`Password`,
   [FspConfigurationProperties.publicKeyAlfouad]: $localize`Public key`,
+  [FspConfigurationProperties.senderFullNameAlfouad]: $localize`Sender full name`,
+  [FspConfigurationProperties.senderPhoneNumberAlfouad]: $localize`Sender phone number`,
 };
 
 export const FSP_IMAGE_URLS: Record<Fsps, string> = {
@@ -49,6 +51,7 @@ export const FSP_IMAGE_URLS: Record<Fsps, string> = {
   [Fsps.onafriq]: 'assets/fsps/onafriq.jpg',
   [Fsps.cooperativeBankOfOromia]: 'assets/fsps/cbo.png',
   [Fsps.mtn]: 'assets/fsps/mtn.png',
+  [Fsps.alfouad]: 'assets/fsps/alfouad.jpg',
 };
 
 const hasPendingFspConfiguration = ({
