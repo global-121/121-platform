@@ -186,7 +186,7 @@ describe('UserService', () => {
         programAssignments: undefined,
       };
 
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser as any);
 
       // Act & Assert
       await expect(
@@ -207,7 +207,7 @@ describe('UserService', () => {
         programAssignments: [],
       };
 
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser as any);
 
       // Act & Assert
       await expect(
@@ -236,7 +236,7 @@ describe('UserService', () => {
         ],
       };
 
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser as any);
 
       // Act
       const result = await service.findUserProgramAssignmentsOrThrow(userId);
@@ -1021,11 +1021,7 @@ describe('UserService', () => {
   });
 
   describe('getUsersInProgram', () => {
-    function createRawUser({
-      scope,
-    }: {
-      scope: string;
-    }): {
+    function createRawUser({ scope }: { scope: string }): {
       id: number;
       username: string;
       admin: boolean;

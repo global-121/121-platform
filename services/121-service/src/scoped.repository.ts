@@ -15,7 +15,6 @@ import {
   SelectQueryBuilder,
   UpdateResult,
 } from 'typeorm';
-import { FindReturnType } from 'typeorm/find-options/FindReturnType';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
@@ -108,7 +107,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
 
   public override async find<Options extends FindManyOptions<T>>(
     options?: Options,
-  ): Promise<FindReturnType<T, Options['select'], Options['relations']>[]> {
+  ): Promise<T[]> {
     if (!requestHasUser(this.request)) {
       return this.repository.find(options);
     }
@@ -122,9 +121,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
 
   public override async findAndCount<Options extends FindManyOptions<T>>(
     options?: Options,
-  ): Promise<
-    [FindReturnType<T, Options['select'], Options['relations']>[], number]
-  > {
+  ): Promise<[T[], number]> {
     if (!requestHasUser(this.request)) {
       return this.repository.findAndCount(options); // Pass undefined directly if no scope
     }
@@ -139,11 +136,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
 
   public override async findOne<Options extends FindOneOptions<T>>(
     options: Options,
-  ): Promise<FindReturnType<
-    T,
-    Options['select'],
-    Options['relations']
-  > | null> {
+  ): Promise<T | null> {
     if (!requestHasUser(this.request)) {
       return this.repository.findOne(options);
     }
@@ -158,7 +151,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
 
   public override async findOneOrFail<Options extends FindOneOptions<T>>(
     options: Options,
-  ): Promise<FindReturnType<T, Options['select'], Options['relations']>> {
+  ): Promise<T> {
     if (!requestHasUser(this.request)) {
       return this.repository.findOneOrFail(options);
     }

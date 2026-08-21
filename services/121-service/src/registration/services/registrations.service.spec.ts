@@ -425,7 +425,7 @@ describe('RegistrationsService', () => {
           id: 1,
           smallerRegistrationId: 1,
           largerRegistrationId: 2,
-        });
+        } as any);
 
       await service.createUniques({
         registrationIds: [1, 2],
