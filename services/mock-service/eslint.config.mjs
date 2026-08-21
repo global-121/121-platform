@@ -1,3 +1,4 @@
+import { fixupPluginRules } from '@eslint/compat';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintConfig121Platform from 'eslint-config-121-platform';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
@@ -33,7 +34,7 @@ export default defineConfig(
       eslintPluginRegexp.configs['flat/recommended'],
     ],
     plugins: {
-      'no-relative-import-paths': eslintPluginNoRelativePaths,
+      'no-relative-import-paths': fixupPluginRules(eslintPluginNoRelativePaths),
       regexp: eslintPluginRegexp,
     },
     rules: {

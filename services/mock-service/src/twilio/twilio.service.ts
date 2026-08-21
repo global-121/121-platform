@@ -196,17 +196,14 @@ export class TwilioService {
     }
 
     // 2. else, send (multiple) success status reponses
-    let statuses = [];
-    if (twilioMessagesCreateDto.To.includes('whatsapp')) {
-      statuses = [
-        TwilioStatus.queued,
-        TwilioStatus.sent,
-        TwilioStatus.delivered,
-        TwilioStatus.read,
-      ];
-    } else {
-      statuses = [TwilioStatus.queued, TwilioStatus.sent];
-    }
+    const statuses = twilioMessagesCreateDto.To.includes('whatsapp')
+      ? [
+          TwilioStatus.queued,
+          TwilioStatus.sent,
+          TwilioStatus.delivered,
+          TwilioStatus.read,
+        ]
+      : [TwilioStatus.queued, TwilioStatus.sent];
     this.sendMultipleSuccessStatusCallbacks({
       twilioMessagesCreateDto,
       messageSid,
