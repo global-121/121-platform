@@ -19,9 +19,18 @@ describe('RegistrationBulkService', () => {
 
   let registrationsBulkService: RegistrationsBulkService;
   let queueMessageService: MessageQueuesService;
+  let registrationsPaginationService: RegistrationsPaginationService;
 
   const registrationMock = {
     namePartnerOrganization: 'testname',
+  };
+
+  const defaultPaginateResult = {
+    data: [registrationMock],
+    meta: {
+      totalItems: 1,
+      totalPages: 1,
+    },
   };
 
   beforeEach(async () => {
@@ -75,26 +84,20 @@ describe('RegistrationBulkService', () => {
       .spyOn(registrationViewScopedRepository as any, 'createQueryBuilder')
       .mockImplementation(() => createQueryBuilder) as any;
 
-    const registrationsPaginationService = unitRef.get(
+    const registrationsPaginationServiceRef = unitRef.get(
       RegistrationsPaginationService,
     );
+    registrationsPaginationService = registrationsPaginationServiceRef;
 
     jest
-      .spyOn(registrationsPaginationService as any, 'getPaginate')
-      .mockImplementation(() => {
-        return {
-          data: [registrationMock],
-          meta: {
-            totalItems: 1,
-            totalPages: 1,
-          },
-        };
-      });
+      .spyOn(registrationsPaginationServiceRef as any, 'getPaginate')
+      .mockImplementation(() => defaultPaginateResult);
+
     queueMessageService = unitRef.get(MessageQueuesService);
 
     jest
       .spyOn(
-        registrationsPaginationService as any,
+        registrationsPaginationServiceRef as any,
         'getRegistrationViewsNoLimit',
       )
       .mockImplementation(() => {
@@ -182,6 +185,86 @@ describe('RegistrationBulkService', () => {
 
       // Assert
       expect(queueMessageService.addMessageJob).toHaveBeenCalled();
+    });
+  });
+
+  describe('pending approval count on status change dry run', () => {
+    const messageContentDetails = {
+      message: undefined,
+      messageTemplateKey: undefined,
+      messageContentType: undefined,
+    };
+
+    it('does not compute pendingApprovalCount for statuses outside declined/paused', async () => {
+      // Act
+      const result =
+        await registrationsBulkService.updateRegistrationStatusOrDryRun({
+          paginateQuery,
+          programId,
+          registrationStatus: RegistrationStatusEnum.included,
+          dryRun: true,
+          userId,
+          messageContentDetails,
+        });
+
+      // Assert
+      expect(result.pendingApprovalCount).toBeUndefined();
+      // Only the totalFilterCount and applicableCount queries should have run
+      expect(registrationsPaginationService.getPaginate).toHaveBeenCalledTimes(
+        2,
+      );
+    });
+
+    it('returns 0 when no applicable registrations have a payment pending approval', async () => {
+      // Arrange
+      jest
+        .spyOn(registrationsPaginationService as any, 'getPaginate')
+        .mockImplementationOnce(() => defaultPaginateResult) // totalFilterCount
+        .mockImplementationOnce(() => defaultPaginateResult) // applicableCount
+        .mockImplementationOnce(() => ({
+          data: [],
+          meta: { totalItems: 0, totalPages: 1 },
+        })); // pendingApprovalCount
+
+      // Act
+      const result =
+        await registrationsBulkService.updateRegistrationStatusOrDryRun({
+          paginateQuery,
+          programId,
+          registrationStatus: RegistrationStatusEnum.declined,
+          dryRun: true,
+          userId,
+          messageContentDetails,
+        });
+
+      // Assert
+      expect(result.pendingApprovalCount).toBe(0);
+    });
+
+    it('returns the count of applicable registrations that have a payment pending approval', async () => {
+      // Arrange
+      jest
+        .spyOn(registrationsPaginationService as any, 'getPaginate')
+        .mockImplementationOnce(() => defaultPaginateResult) // totalFilterCount
+        .mockImplementationOnce(() => defaultPaginateResult) // applicableCount
+        .mockImplementationOnce(() => ({
+          data: [registrationMock, registrationMock],
+          meta: { totalItems: 2, totalPages: 1 },
+        })); // pendingApprovalCount
+
+      // Act
+      const result =
+        await registrationsBulkService.updateRegistrationStatusOrDryRun({
+          paginateQuery,
+          programId,
+          registrationStatus: RegistrationStatusEnum.paused,
+          dryRun: true,
+          userId,
+          messageContentDetails,
+        });
+
+      // Assert
+      expect(result.pendingApprovalCount).toBe(2);
     });
   });
 });

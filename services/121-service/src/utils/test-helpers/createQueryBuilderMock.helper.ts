@@ -4,15 +4,17 @@ interface QueryBuilderMock {
   select: () => QueryBuilderMock;
   addSelect: () => QueryBuilderMock;
   leftJoin: () => QueryBuilderMock;
+  innerJoin: () => QueryBuilderMock;
   getMany?: () => any;
   getRawMany?: () => any;
+  getRawOne?: () => any;
   distinct?: () => QueryBuilderMock;
   orderBy?: () => QueryBuilderMock;
 }
 
 export function generateMockCreateQueryBuilder(
-  dbQueryResult?: any[] | null,
-  options: { useGetMany?: boolean } = {},
+  dbQueryResult?: any,
+  options: { useGetMany?: boolean; useGetRawOne?: boolean } = {},
 ): QueryBuilderMock {
   const mock: QueryBuilderMock = {
     select: () => mock,
@@ -20,12 +22,15 @@ export function generateMockCreateQueryBuilder(
     where: () => mock,
     andWhere: () => mock,
     leftJoin: () => mock,
+    innerJoin: () => mock,
     distinct: () => mock,
     orderBy: () => mock,
   };
 
   if (options.useGetMany) {
     mock.getMany = () => dbQueryResult;
+  } else if (options.useGetRawOne) {
+    mock.getRawOne = () => dbQueryResult;
   } else {
     mock.getRawMany = () => dbQueryResult;
   }
