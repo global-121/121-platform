@@ -56,7 +56,6 @@ export class RegistrationUtilsService {
           return await this.save(registration, saveRetriesCount, true);
         }
         if (saveRetriesCount >= 3) {
-          saveRetriesCount = 0;
           throw error;
         }
       }

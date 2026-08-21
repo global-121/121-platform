@@ -110,7 +110,7 @@ export class SoapService {
         rootElement = this.getChild(rootElement, subElementXMLIndex);
       }
     }
-    pathIndices.push(0);
+    pathIndices.push(subElementXMLIndex < 0 ? 0 : subElementXMLIndex);
     payload = this.setValue(payload, pathIndices, value);
     return payload;
   }

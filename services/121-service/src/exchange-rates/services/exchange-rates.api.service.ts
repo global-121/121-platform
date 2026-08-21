@@ -39,6 +39,7 @@ export class ExchangeRatesApiService {
     } catch (error) {
       throw new Error(
         `Failed to retrieve exchange rate for ${currency}: ${error}`,
+        { cause: error },
       );
     }
   }
