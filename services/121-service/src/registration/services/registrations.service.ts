@@ -499,7 +499,7 @@ export class RegistrationsService {
     }
 
     if (maxPaymentsMatchesPaymentCount) {
-      registrationToUpdate = await this.updateAttribute({
+      await this.updateAttribute({
         attribute: 'registrationStatus',
         value: RegistrationStatusEnum.completed,
         registration: registrationToUpdate,

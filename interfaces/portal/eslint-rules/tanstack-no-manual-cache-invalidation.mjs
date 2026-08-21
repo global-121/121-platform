@@ -30,7 +30,6 @@ export default {
   },
   meta: {
     docs: {
-      category: 'Best Practices',
       description:
         "Don't allow manual cache invalidation when using TanStack Query",
       recommended: false,

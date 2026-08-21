@@ -823,6 +823,7 @@ export class IntersolveVisaService {
               `${errorParentTokenCodes.length} IntersolveVisaApiErrors occurred while retrieving and updating wallets and cards, for parent tokenCodes: ${errorParentTokenCodes.join(
                 ', ',
               )}. Aborting.`,
+              { cause: error },
             );
           }
         } else {

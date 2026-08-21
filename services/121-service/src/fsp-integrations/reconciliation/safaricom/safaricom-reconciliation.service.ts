@@ -141,7 +141,7 @@ export class SafaricomReconciliationService {
     } catch (error) {
       // This should never happen. This way, if it happens, we receive an alert
       if (error instanceof NotFoundException) {
-        throw new Error(error.message);
+        throw new Error(error.message, { cause: error });
       }
 
       throw error;

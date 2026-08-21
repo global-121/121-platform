@@ -1,3 +1,4 @@
+import { fixupPluginRules } from '@eslint/compat';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintConfig121Platform from 'eslint-config-121-platform';
 import eslintPluginJest from 'eslint-plugin-jest';
@@ -51,7 +52,7 @@ export default defineConfig(
     files: ['**/*.ts'],
     extends: [tsEslint.configs.recommended, tsEslint.configs.stylistic],
     plugins: {
-      'no-relative-import-paths': eslintPluginNoRelativePaths,
+      'no-relative-import-paths': fixupPluginRules(eslintPluginNoRelativePaths),
     },
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'off',

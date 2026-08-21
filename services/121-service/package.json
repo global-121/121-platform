@@ -116,6 +116,8 @@
   "devDependencies": {
     "@automock/adapters.nestjs": "^2.1.0",
     "@automock/jest": "^2.1.2",
+    "@eslint/compat": "^2.1.0",
+    "@eslint/js": "^10.0.1",
     "@nestjs/cli": "^11.0.24",
     "@swc/cli": "^0.8.1",
     "@swc/core": "^1.15.47",
@@ -129,7 +131,7 @@
     "@types/sanitize-html": "^2.16.1",
     "@types/ssh2-sftp-client": "^9.0.6",
     "@types/supertest": "^7.2.1",
-    "eslint": "^9.39.4",
+    "eslint": "^10.0.1",
     "eslint-config-121-platform": "file:../../packages/eslint-config-121-platform/",
     "eslint-plugin-jest": "^29.16.0",
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
@@ -143,7 +145,7 @@
     "prettier": "^3.9.4",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.12",
-    "typescript-eslint": "^8.58.0"
+    "typescript-eslint": "^8.67.0"
   },
   "overrides": {
     "@nestjs/platform-express": {

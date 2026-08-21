@@ -42,6 +42,7 @@ export class AxiosCallsService {
     } catch (error) {
       throw new Error(
         `Error while extracting access token from cookies: ${error}`,
+        { cause: error },
       );
     }
   }

@@ -198,6 +198,7 @@ export class CronjobInitiateService {
       // We throw and don't catch so we get a 500 and a notification.
       throw new Error(
         `While running cronjob "${cronjobName}" an authentication error occurred: ${error.toString()}`,
+        { cause: error },
       );
     }
     // Not a network operation so no try/catch.
@@ -243,6 +244,7 @@ export class CronjobInitiateService {
     } catch (error) {
       throw new Error(
         `While running cronjob "${this.currentlyRunningCronjobName}" an error occurred during a request: ${error.toString()}`,
+        { cause: error },
       );
     }
     // We could move this to a separate function, but that makes each cronjob a
