@@ -49,10 +49,6 @@ updates:
           - '*'
     ignore:
       # Dependencies below are ordered alphabetically!
-      - dependency-name: '@eslint/js'
-        update-types: ['version-update:semver-major']
-      - dependency-name: 'eslint'
-        update-types: ['version-update:semver-major']
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
 
@@ -81,8 +77,6 @@ updates:
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
       - dependency-name: 'applicationinsights'
-        update-types: ['version-update:semver-major']
-      - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
       - dependency-name: 'jimp'
         update-types: ['version-update:semver-major']
@@ -114,8 +108,6 @@ updates:
     ignore:
       # Dependencies below are ordered alphabetically!
       - dependency-name: '@types/node'
-        update-types: ['version-update:semver-major']
-      - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
@@ -158,11 +150,7 @@ updates:
       # Dependencies below are ordered alphabetically!
       - dependency-name: '@angular*'
         update-types: ['version-update:semver-major']
-      - dependency-name: '@eslint/js'
-        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
-        update-types: ['version-update:semver-major']
-      - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
       - dependency-name: 'filesize'
         update-types: ['version-update:semver-major'] # See: https://www.npmjs.com/package/ngx-filesize
@@ -191,8 +179,6 @@ updates:
     ignore:
       # Dependencies below are ordered alphabetically!
       - dependency-name: '@types/node'
-        update-types: ['version-update:semver-major']
-      - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
