@@ -3,7 +3,7 @@ import { TestBed } from '@automock/jest';
 import { DoTransferParams } from '@121-service/src/fsp-integrations/integrations/safaricom/interfaces/do-transfer-params.interface';
 import { TransferResult } from '@121-service/src/fsp-integrations/integrations/safaricom/interfaces/transfer-result.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/safaricom/repositories/safaricom-transfer.scoped.repository';
-import { SafaricomService } from '@121-service/src/fsp-integrations/integrations/safaricom/safaricom.service';
+import { SafaricomService } from '@121-service/src/fsp-integrations/integrations/safaricom/services/safaricom.service';
 import { SafaricomApiService } from '@121-service/src/fsp-integrations/integrations/safaricom/services/safaricom.api.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 

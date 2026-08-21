@@ -5,7 +5,7 @@ import { SafaricomTransferEntity } from '@121-service/src/fsp-integrations/integ
 import { DuplicateOriginatorConversationIdError } from '@121-service/src/fsp-integrations/integrations/safaricom/errors/duplicate-originator-conversation-id.error';
 import { SafaricomApiError } from '@121-service/src/fsp-integrations/integrations/safaricom/errors/safaricom-api.error';
 import { SafaricomTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/safaricom/repositories/safaricom-transfer.scoped.repository';
-import { SafaricomService } from '@121-service/src/fsp-integrations/integrations/safaricom/safaricom.service';
+import { SafaricomService } from '@121-service/src/fsp-integrations/integrations/safaricom/services/safaricom.service';
 import { computeTransactionReference as computeTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
 import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
