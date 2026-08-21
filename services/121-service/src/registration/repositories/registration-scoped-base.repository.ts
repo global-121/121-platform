@@ -6,7 +6,6 @@ import {
   ObjectLiteral,
   Repository,
 } from 'typeorm';
-import { FindReturnType } from 'typeorm/find-options/FindReturnType';
 
 import {
   requestHasUser,
@@ -25,7 +24,7 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
 
   public async find<Options extends FindManyOptions<T>>(
     options?: Options,
-  ): Promise<FindReturnType<T, Options['select'], Options['relations']>[]> {
+  ): Promise<T[]> {
     if (!requestHasUser(this.request)) {
       return this.repository.find(options);
     }
@@ -39,11 +38,7 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
 
   public async findOne<Options extends FindOneOptions<T>>(
     options: Options,
-  ): Promise<FindReturnType<
-    T,
-    Options['select'],
-    Options['relations']
-  > | null> {
+  ): Promise<T | null> {
     if (!requestHasUser(this.request)) {
       return this.repository.findOne(options);
     }
@@ -57,7 +52,7 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
 
   public async findOneOrFail<Options extends FindOneOptions<T>>(
     options: Options,
-  ): Promise<FindReturnType<T, Options['select'], Options['relations']>> {
+  ): Promise<T> {
     if (!requestHasUser(this.request)) {
       return this.repository.findOneOrFail(options);
     }

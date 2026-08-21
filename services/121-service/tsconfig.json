@@ -27,7 +27,7 @@
     "resolveJsonModule": true,
     "paths": {
       "@121-service/*": ["./*"],
-      "typeorm/*": ["./node_modules/typeorm/*"] // Add explicit location of custom TypeORM fork
+      "typeorm/*": ["./node_modules/typeorm/*"] // Needed to resolve typeorm's deep imports (e.g. QueryDeepPartialEntity)
     }
   },
   "watchOptions": {

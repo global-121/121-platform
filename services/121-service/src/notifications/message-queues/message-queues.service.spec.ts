@@ -201,7 +201,7 @@ describe('MessageQueuesService', () => {
           isWhatsappTemplate: false,
           isSendMessageTemplate: true,
           id: 1,
-        }),
+        } as any),
       );
 
       // Arrange
