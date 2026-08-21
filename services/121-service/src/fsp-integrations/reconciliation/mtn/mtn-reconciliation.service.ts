@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
+import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.service';
 import { MtnTransferReconciliationJobDto } from '@121-service/src/fsp-integrations/reconciliation/mtn/dtos/mtn-transfer-reconciliation-job.dto';
 import { MTN_RECONCILIATION_MAX_TRANSACTIONS_PER_RUN } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.config';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';

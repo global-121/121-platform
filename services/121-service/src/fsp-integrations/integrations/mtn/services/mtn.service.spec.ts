@@ -3,7 +3,7 @@ import { TestBed } from '@automock/jest/dist/testbed-factory';
 import { env } from '@121-service/src/env';
 import { MtnMockReferenceId } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-mock-reference-id.enum';
 import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
-import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
+import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.service';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';

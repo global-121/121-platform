@@ -2,7 +2,7 @@ import { TestBed } from '@automock/jest';
 import { UpdateResult } from 'typeorm';
 
 import { SafaricomTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/safaricom/repositories/safaricom-transfer.scoped.repository';
-import { SafaricomService } from '@121-service/src/fsp-integrations/integrations/safaricom/safaricom.service';
+import { SafaricomService } from '@121-service/src/fsp-integrations/integrations/safaricom/services/safaricom.service';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsSafaricomService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-safaricom.service';
 import { SafaricomTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/safaricom-transaction-job.dto';
