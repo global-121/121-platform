@@ -45,6 +45,7 @@ export class IntersolveVoucherReconciliationService {
         if (errorVoucherIds.length >= errorCountToThrowOn) {
           throw new Error(
             `${errorVoucherIds.length} errors occurred while updating all balances ${activityDescription} for vouchers: ${errorVoucherIds.join(', ')}. Failing job to prevent excessive API calls.`,
+            { cause: error },
           );
         }
       }
