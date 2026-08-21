@@ -2,7 +2,11 @@
 #
 # git hook to run a command before actually committing when running `git commit`:
 #
-set -euo pipefail
+set -o errexit
+set -o nounset
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 
 ORANGE='\033[0;33m'
 NC='\033[0m' # No Color
