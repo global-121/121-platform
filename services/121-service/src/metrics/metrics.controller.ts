@@ -92,6 +92,13 @@ export class MetricsController {
     description:
       'Format to return the data in. Options are "json" and "xlsx". Defaults to "json" if not specified.',
   })
+  @ApiQuery({
+    name: 'language',
+    required: false,
+    type: 'string',
+    description:
+      'Language for translating export column values (e.g. dropdown labels). Uses ISO 639-1 two-letter code. Defaults to English if the language is not available.',
+  })
   // TODO: REFACTOR: split this endpoint up in one endpoint per ExportType
   @Get('programs/:programId/metrics/export-list/:exportType')
   @PaginatedSwaggerDocs(
@@ -117,6 +124,7 @@ export class MetricsController {
       type: exportType,
       userId,
       paginationQuery,
+      language: queryParams.language,
     });
     if (!result || !Array.isArray(result.data) || result.data.length === 0) {
       const errors = 'There is currently no data to export';
