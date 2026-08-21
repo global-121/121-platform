@@ -6,7 +6,7 @@ export const unknownArrayToCsvBlob = (data: unknown[]): Blob => {
   if (Array.isArray(data)) {
     data.forEach((item) => {
       if (typeof item === 'object' && item !== null) {
-        Object.keys(item as Record<string, unknown>).forEach((key) => {
+        Object.keys(item).forEach((key) => {
           columns.add(key);
         });
       }

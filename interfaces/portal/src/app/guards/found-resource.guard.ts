@@ -24,7 +24,7 @@ export const foundResourceGuard: (
     const programApiService = inject(ProgramApiService);
     const paymentApiService = inject(PaymentApiService);
 
-    let foundResource = false;
+    let foundResource;
 
     try {
       if (resourceType === 'registration') {

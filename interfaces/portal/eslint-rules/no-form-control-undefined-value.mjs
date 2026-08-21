@@ -48,7 +48,6 @@ export default {
   },
   meta: {
     docs: {
-      category: 'Possible Errors',
       description:
         'Disallow undefined as the first argument to FormControl constructor',
     },
