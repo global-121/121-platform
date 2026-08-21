@@ -99,18 +99,14 @@ export class SoapService {
     const mainElementXML = soapBodyXML['elements'][mainElementIndex];
     let rootElement = mainElementXML;
     const pathIndices: number[] = [0, bodyIndex, mainElementIndex];
-    let subElementXMLIndex = -1;
-    for (const subElementIndex in subElements) {
-      subElementXMLIndex = this.findSoapIndex(
-        rootElement,
-        subElements[subElementIndex],
-      );
+    for (const subElement of subElements) {
+      const subElementXMLIndex = this.findSoapIndex(rootElement, subElement);
       if (subElementXMLIndex >= 0) {
         pathIndices.push(subElementXMLIndex);
         rootElement = this.getChild(rootElement, subElementXMLIndex);
       }
     }
-    pathIndices.push(subElementXMLIndex < 0 ? 0 : subElementXMLIndex);
+    pathIndices.push(0);
     payload = this.setValue(payload, pathIndices, value);
     return payload;
   }
