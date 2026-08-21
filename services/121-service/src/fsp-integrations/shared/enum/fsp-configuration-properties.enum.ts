@@ -21,4 +21,12 @@ export enum FspConfigurationProperties {
   uniqueKeyOnafriq = 'uniqueKeyOnafriq',
   // Cooperative Bank of Oromia
   debitAccountNumber = 'debitAccountNumber',
+  // Al Fouad
+  accountAlfouad = 'accountAlfouad',
+  branchIdAlfouad = 'branchIdAlfouad',
+  usernameAlfouad = 'usernameAlfouad',
+  passwordAlfouad = 'passwordAlfouad',
+  publicKeyAlfouad = 'publicKeyAlfouad',
+  senderFullNameAlfouad = 'senderFullNameAlfouad',
+  senderPhoneNumberAlfouad = 'senderPhoneNumberAlfouad',
 }
