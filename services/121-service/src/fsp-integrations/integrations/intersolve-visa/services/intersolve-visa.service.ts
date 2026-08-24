@@ -890,7 +890,7 @@ export class IntersolveVisaService {
     });
 
     const latestChildWallet = this.getLatestChildWallet(customer);
-    if (latestChildWallet) {
+    if (latestChildWallet && latestChildWallet.isDebitCardCreated) {
       await this.intersolveVisaApiService.updatePhysicalCardContactInformation({
         tokenCode: latestChildWallet.tokenCode,
         contactInformation,
