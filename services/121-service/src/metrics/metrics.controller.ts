@@ -39,6 +39,7 @@ import { AssertIso8601Pipe } from '@121-service/src/pipes/assert-iso8601.pipe';
 import { AssertPositiveNumberPipe } from '@121-service/src/pipes/assert-positive-number.pipe';
 import { PaginateConfigRegistrationWithoutSort } from '@121-service/src/registration/const/filter-operation.const';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
+import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
@@ -92,6 +93,13 @@ export class MetricsController {
     description:
       'Format to return the data in. Options are "json" and "xlsx". Defaults to "json" if not specified.',
   })
+  @ApiQuery({
+    name: 'language',
+    required: false,
+    enum: UILanguage,
+    description:
+      'Language for export labels and values. Defaults to English if not specified or invalid.',
+  })
   // TODO: REFACTOR: split this endpoint up in one endpoint per ExportType
   @Get('programs/:programId/metrics/export-list/:exportType')
   @PaginatedSwaggerDocs(
@@ -104,9 +112,10 @@ export class MetricsController {
     @Param('exportType') exportType: WrapperType<ExportType>,
     @Query() queryParams: WrapperType<ExportDetailsQueryParamsDto>,
     @Paginate() paginationQuery: PaginateQuery,
-    @Query('format') format = 'json',
     @Req() req: ScopedUserRequest,
     @Res() res: Response,
+    @Query('format') format = 'json',
+    @Query('language') language: string = UILanguage.en,
   ): Promise<Response | void> {
     const userId = RequestHelper.getUserId(req);
     if (queryParams['search']) {
@@ -116,6 +125,8 @@ export class MetricsController {
       programId,
       type: exportType,
       userId,
+      language,
+      format,
       paginationQuery,
     });
     if (!result || !Array.isArray(result.data) || result.data.length === 0) {

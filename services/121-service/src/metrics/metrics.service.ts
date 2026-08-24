@@ -14,7 +14,12 @@ import {
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
 import { RegistrationCountByDate } from '@121-service/src/metrics/dto/registration-count-by-date.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
+import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
+import {
+  buildExportColumnHeaders,
+  localizeExportData,
+} from '@121-service/src/metrics/helpers/export-localization.helper';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -28,9 +33,11 @@ import { RegistrationViewScopedRepository } from '@121-service/src/registration/
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { RegistrationPreferredLanguageTranslation } from '@121-service/src/shared/types/registration-preferred-language-translation.type';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { dateSort } from '@121-service/src/utils/dateSort';
+import { resolveExportLanguage } from '@121-service/src/utils/language.helpers';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 const userPermissionMapByExportType = {
@@ -59,11 +66,15 @@ export class MetricsService {
     programId,
     type,
     userId,
+    language,
+    format,
     paginationQuery,
   }: {
     programId: number;
     userId: number;
     type: ExportType;
+    language?: string;
+    format?: string;
     paginationQuery?: PaginateQuery;
   }): Promise<FileDto> {
     const validExportType = [
@@ -106,17 +117,31 @@ export class MetricsService {
         }
         return this.getRegistrationsExport({
           programId,
+          language,
+          format,
           paginationQuery,
         });
       }
       case ExportType.unusedVouchers: {
-        return this.getUnusedVouchersExport(programId);
+        return this.getUnusedVouchersExport({
+          programId,
+          language,
+          format,
+        });
       }
       case ExportType.vouchersWithBalance: {
-        return this.getVouchersWithBalanceExport(programId);
+        return this.getVouchersWithBalanceExport({
+          programId,
+          language,
+          format,
+        });
       }
       case ExportType.intersolveVisaCardDetails: {
-        return this.getIntersolveVisaBalancesExport(programId);
+        return this.getIntersolveVisaBalancesExport({
+          programId,
+          language,
+          format,
+        });
       }
       default:
         throw new Error(`Unsupported export type: ${type}`);
@@ -125,27 +150,39 @@ export class MetricsService {
 
   private async getRegistrationsExport({
     programId,
+    language,
+    format,
     paginationQuery,
   }: {
     programId: number;
+    language?: string;
+    format?: string;
     paginationQuery: PaginateQuery;
   }): Promise<FileDto> {
-    const data = await this.getRegistrationsData({
+    const data = await this.localizeExportHeaders(
+      (await this.getRegistrationsData({
+        programId,
+        language,
+        paginationQuery,
+      })) as Record<string, unknown>[],
+      format ?? ExportFileFormat.json,
       programId,
-      paginationQuery,
-    });
-    const response = {
+      language,
+    );
+
+    return {
       fileName: ExportType.registrations,
       data,
     };
-    return response;
   }
 
   private async getRegistrationsData({
     programId,
+    language,
     paginationQuery,
   }: {
     programId: number;
+    language?: string;
     paginationQuery: PaginateQuery;
   }): Promise<object[]> {
     let rows: Record<string, unknown>[] =
@@ -160,12 +197,20 @@ export class MetricsService {
         delete row['registrationProgramId'];
       }
 
-      // If the label is multilingual, use the English string as the label.
-      if (typeof row['programFspConfigurationLabel'] === 'object') {
-        const preferredLanguage = RegistrationPreferredLanguage.en;
-        row['programFspConfigurationLabel'] = row[
+      // If the label is multilingual, use requested language or fallback to English.
+      if (
+        row['programFspConfigurationLabel'] !== null &&
+        typeof row['programFspConfigurationLabel'] === 'object'
+      ) {
+        const translations = row[
           'programFspConfigurationLabel'
-        ]?.[preferredLanguage] as string | undefined;
+        ] as RegistrationPreferredLanguageTranslation;
+        const resolvedLanguage = resolveExportLanguage(
+          language,
+        ) as RegistrationPreferredLanguage;
+        row['programFspConfigurationLabel'] =
+          translations[resolvedLanguage] ??
+          translations[RegistrationPreferredLanguage.en];
       }
     }
     rows = await this.replaceValueWithDropdownLabel({
@@ -241,28 +286,52 @@ export class MetricsService {
     return ordered;
   }
 
-  private async getUnusedVouchersExport(programId?: number): Promise<FileDto> {
-    const unusedVouchers =
-      await this.intersolveVoucherService.getUnusedVouchers(programId);
+  private async getUnusedVouchersExport({
+    programId,
+    language,
+    format,
+  }: {
+    programId?: number;
+    language?: string;
+    format?: string;
+  }): Promise<FileDto> {
+    const data = await this.localizeExportHeaders(
+      (await this.intersolveVoucherService.getUnusedVouchers(
+        programId,
+      )) as unknown as Record<string, unknown>[],
+      format ?? ExportFileFormat.json,
+      programId,
+      language,
+    );
 
-    const response = {
+    return {
       fileName: ExportType.unusedVouchers,
-      data: unusedVouchers,
+      data,
     };
-
-    return response;
   }
 
-  private async getVouchersWithBalanceExport(
-    programId: number,
-  ): Promise<FileDto> {
-    const vouchersWithBalance =
-      await this.intersolveVoucherService.getVouchersWithBalance(programId);
-    const response = {
+  private async getVouchersWithBalanceExport({
+    programId,
+    language,
+    format,
+  }: {
+    programId: number;
+    language?: string;
+    format?: string;
+  }): Promise<FileDto> {
+    const data = await this.localizeExportHeaders(
+      (await this.intersolveVoucherService.getVouchersWithBalance(
+        programId,
+      )) as unknown as Record<string, unknown>[],
+      format ?? ExportFileFormat.json,
+      programId,
+      language,
+    );
+
+    return {
       fileName: ExportType.vouchersWithBalance,
-      data: vouchersWithBalance,
+      data,
     };
-    return response;
   }
 
   public async getToCancelVouchers(): Promise<FileDto> {
@@ -354,10 +423,15 @@ export class MetricsService {
     };
   }
 
-  private async getIntersolveVisaBalancesExport(programId: number): Promise<{
-    fileName: ExportType;
-    data: ExportVisaCardDetails[];
-  }> {
+  private async getIntersolveVisaBalancesExport({
+    programId,
+    language,
+    format,
+  }: {
+    programId: number;
+    language?: string;
+    format?: string;
+  }): Promise<FileDto> {
     const rawDebitCardDetails =
       await this.registrationScopedRepository.getDebitCardsDetailsForExport(
         programId,
@@ -366,9 +440,16 @@ export class MetricsService {
     const mappedDebitCardDetails =
       this.mapIntersolveVisaBalancesDataToDto(rawDebitCardDetails);
 
+    const data = await this.localizeExportHeaders(
+      mappedDebitCardDetails as unknown as Record<string, unknown>[],
+      format ?? ExportFileFormat.json,
+      programId,
+      language,
+    );
+
     return {
       fileName: ExportType.intersolveVisaCardDetails,
-      data: mappedDebitCardDetails,
+      data,
     };
   }
 
@@ -517,5 +598,51 @@ export class MetricsService {
       res[month].approved += Number(statuses.approved.transferValue);
     }
     return res;
+  }
+
+  private async localizeExportHeaders(
+    data: Record<string, unknown>[],
+    format: string,
+    programId?: number,
+    language?: string,
+  ): Promise<Record<string, unknown>[]> {
+    // Only rename headers for spreadsheet exports; JSON responses keep machine-readable keys
+    if (format !== ExportFileFormat.xlsx) {
+      return data;
+    }
+    const customAttributeLabels = await this.getCustomAttributeLabels(programId);
+    const headerMapping = buildExportColumnHeaders({
+      customAttributeLabels,
+      language,
+    });
+    return localizeExportData(data, headerMapping);
+  }
+
+  private async getCustomAttributeLabels(
+    programId?: number,
+  ): Promise<
+    Record<string, RegistrationPreferredLanguageTranslation> | undefined
+  > {
+    if (!programId) {
+      return undefined;
+    }
+
+    const attributes =
+      await this.programRegistrationAttributeRepository.find({
+        where: { programId: Equal(programId) },
+      });
+
+    const labels: Record<string, RegistrationPreferredLanguageTranslation> =
+      {};
+    for (const attribute of attributes) {
+      if (attribute.label || attribute.koboLabel) {
+        labels[attribute.name] = {
+          ...(attribute.koboLabel ?? {}),
+          ...(attribute.label ?? {}),
+        };
+      }
+    }
+
+    return Object.keys(labels).length > 0 ? labels : undefined;
   }
 }

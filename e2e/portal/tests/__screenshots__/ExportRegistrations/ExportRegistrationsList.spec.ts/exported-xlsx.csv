@@ -1,2 +1,2 @@
-id,status,phoneNumber,paymentCount,duplicateStatus,maxPayments,name
+id,status,Phone Number,paymentCount,duplicateStatus,maxPayments,name
 2,included,14155235556,0,unique,,Gemma Houtenbos
