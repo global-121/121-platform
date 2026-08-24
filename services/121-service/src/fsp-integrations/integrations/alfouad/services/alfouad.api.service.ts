@@ -5,8 +5,8 @@ import {
   ALFOUAD_AGENT_CODE,
   ALFOUAD_RELATIONSHIP,
 } from '@121-service/src/fsp-integrations/integrations/alfouad/alfouad.config';
-import { AlfouadApiCreateTransactionResponseDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-create-transaction-response.dto';
-import { AlfouadApiGetTransactionResponseDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-get-transaction-response.dto';
+import { AlfouadApiCreateTransactionResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-create-transaction-response-body.dto';
+import { AlfouadApiGetTransactionResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-get-transaction-response-body.dto';
 import { AlfouadApiTransactionState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
 import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-params.interface';
@@ -50,7 +50,7 @@ export class AlfouadApiService {
       RelationShip: ALFOUAD_RELATIONSHIP,
     }
 
-    const response = await this.sendAuthenticatedRequest<AlfouadApiCreateTransactionResponseDto>(
+    const response = await this.sendAuthenticatedRequest<AlfouadApiCreateTransactionResponseBodyDto>(
       {
         method: 'POST',
         path: 'api/Transaction/TransactionCreate',
@@ -75,7 +75,7 @@ export class AlfouadApiService {
     referenceNumber: string;
     requestIdentity: AlfouadRequestIdentity;
   }): Promise<AlfouadApiTransactionState | undefined> {
-    const response = await this.sendAuthenticatedRequest<AlfouadApiGetTransactionResponseDto>(
+    const response = await this.sendAuthenticatedRequest<AlfouadApiGetTransactionResponseBodyDto>(
       {
         method: 'GET',
         path: `api/Transaction/TransactionByRef?ReferenceNumber=${encodeURIComponent(referenceNumber)}`,
@@ -126,9 +126,9 @@ export class AlfouadApiService {
       });
     }
 
-    if (!response || response.status < 200 || response.status >= 300) {
+    if (!response.data) {
       throw new AlfouadApiError({
-        message: `Request to ${path} failed (HTTP ${response?.status ?? 'unknown'}).`,
+        message: `No response received from Al Fouad API for ${path}.`,
       });
     }
 
@@ -149,9 +149,21 @@ export class AlfouadApiService {
     const headers = this.buildAuthHeaders({ requestIdentity });
     const url = this.buildRequestUrl(path);
 
-    return method === 'POST'
-      ? await this.httpService.post<AxiosResponse<T>>(url, payload, headers)
-      : await this.httpService.get<AxiosResponse<T>>(url, headers);
+    switch (method) {
+      case 'POST':
+        return await this.httpService.post<AxiosResponse<T>>(
+          url,
+          payload,
+          headers,
+        );
+      case 'GET':
+        return await this.httpService.get<AxiosResponse<T>>(url, headers);
+      default: {
+        throw new AlfouadApiError({
+          message: `Unsupported Al Fouad request method: ${method}`,
+        });
+      }
+    }
   }
 
   private buildAuthHeaders({

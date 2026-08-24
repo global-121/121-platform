@@ -9,6 +9,7 @@ graph LR
   ActivitiesModule-->UserModule
   AirtelModule-->QueuesRegistryModule
   AirtelModule-->RedisModule
+  AlfouadModule-->ProgramFspConfigurationsModule
   CommercialBankEthiopiaAccountManagementModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaAccountManagementModule-->ProgramModule
   CommercialBankEthiopiaAccountManagementModule-->RegistrationsModule

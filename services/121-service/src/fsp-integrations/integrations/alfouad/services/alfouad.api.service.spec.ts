@@ -92,22 +92,6 @@ describe('AlfouadApiService', () => {
       });
     });
 
-    it('should throw on a non-2xx HTTP status', async () => {
-      // Arrange
-      post.mockResolvedValue({
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        data: {},
-      });
-
-      // Act
-      const act = service.createTransaction(createTransactionInput);
-
-      // Assert
-      await expect(act).rejects.toThrow(
-        'Request to api/Transaction/TransactionCreate failed (HTTP 500)',
-      );
-    });
-
     it('should wrap errors thrown by the HTTP service', async () => {
       // Arrange
       post.mockRejectedValue(new Error('network down'));
@@ -155,6 +139,25 @@ describe('AlfouadApiService', () => {
 
       // Assert
       expect(result).toBeUndefined();
+    });
+
+    it('should throw when the response body is empty or malformed', async () => {
+      // Arrange
+      get.mockResolvedValue({
+        status: HttpStatus.OK,
+        data: undefined,
+      });
+
+      // Act
+      const act = service.getTransactionStateByRef({
+        referenceNumber: 'RC-TEST-1',
+        requestIdentity,
+      });
+
+      // Assert
+      await expect(act).rejects.toThrow(
+        'No response received from Al Fouad API for api/Transaction/TransactionByRef?ReferenceNumber=RC-TEST-1.',
+      );
     });
   });
 });

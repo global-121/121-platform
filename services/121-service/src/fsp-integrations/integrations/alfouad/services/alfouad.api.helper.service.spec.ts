@@ -52,15 +52,6 @@ describe('AlfouadApiHelperService', () => {
       // Assert
       expect(result.toString()).toBe('https://alfouad.example.org/');
     });
-
-    it('should throw when external and ALFOUAD_API_URL is not set', () => {
-      // Arrange
-      (env as any).ALFOUAD_MODE = FspMode.external;
-      (env as any).ALFOUAD_API_URL = undefined;
-
-      // Act & Assert
-      expect(() => service.getBaseUrl()).toThrow('ALFOUAD_API_URL is not set');
-    });
   });
 
   describe('Building the authorization token', () => {

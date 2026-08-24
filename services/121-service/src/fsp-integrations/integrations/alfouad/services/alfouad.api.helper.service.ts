@@ -10,12 +10,6 @@ export class AlfouadApiHelperService {
     if (env.ALFOUAD_MODE === FspMode.mock) {
       return new URL('api/fsp/alfouad/', env.MOCK_SERVICE_URL);
     }
-
-    if (!env.ALFOUAD_API_URL) {
-      throw new Error(
-        'ALFOUAD_API_URL is not set (required when ALFOUAD_MODE is EXTERNAL)',
-      );
-    }
   
     return new URL(`${env.ALFOUAD_API_URL!}/`);
   }
