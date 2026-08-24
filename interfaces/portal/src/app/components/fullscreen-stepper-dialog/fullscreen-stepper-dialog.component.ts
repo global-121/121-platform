@@ -33,10 +33,8 @@ import { FullscreenSpinnerComponent } from '~/components/fullscreen-spinner/full
     FullscreenSpinnerComponent,
     ButtonModule,
     NgClass,
-    // NotificationBannerComponent,
   ],
   templateUrl: './fullscreen-stepper-dialog.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FullscreenStepperDialogComponent implements OnInit, OnDestroy {
