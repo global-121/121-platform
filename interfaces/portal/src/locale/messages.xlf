@@ -842,6 +842,9 @@
       <trans-unit id="4392806189359216986" datatype="html">
         <source>Please note, this action can not be undone.</source>
       </trans-unit>
+      <trans-unit id="4397909886844463051" datatype="html">
+        <source>Number of distributions per registration</source>
+      </trans-unit>
       <trans-unit id="4404975094271849688" datatype="html">
         <source>No changes detected.</source>
       </trans-unit>
@@ -871,9 +874,6 @@
       </trans-unit>
       <trans-unit id="4548982880429289150" datatype="html">
         <source><x equiv-text="data.applicableCount" id="PH"/> transactions(s) are being retried. The status change can take up to a minute to process.</source>
-      </trans-unit>
-      <trans-unit id="4560183233589622481" datatype="html">
-        <source>Default transactions per registration</source>
       </trans-unit>
       <trans-unit id="4574346850927067014" datatype="html">
         <source>Status update</source>
@@ -1115,9 +1115,6 @@
       <trans-unit id="5533720489917693962" datatype="html">
         <source>You&apos;re about to download an Excel file with the FSP instructions for this payment.</source>
       </trans-unit>
-      <trans-unit id="5544945972793965092" datatype="html">
-        <source>The number of times a registration will receive transactions in the program by default.</source>
-      </trans-unit>
       <trans-unit id="5547837185378224000" datatype="html">
         <source>Integration required</source>
       </trans-unit>
@@ -1316,6 +1313,9 @@
       </trans-unit>
       <trans-unit id="6456009373504868195" datatype="html">
         <source>Please correct the errors in the form.</source>
+      </trans-unit>
+      <trans-unit id="6482027825383747695" datatype="html">
+        <source>The number of times a registration will receive distributions in the program by default.</source>
       </trans-unit>
       <trans-unit id="6502713313006518985" datatype="html">
         <source>Set up the payment&apos;s name.</source>
@@ -1667,6 +1667,9 @@
       </trans-unit>
       <trans-unit id="7924647147478852112" datatype="html">
         <source>Game over!</source>
+      </trans-unit>
+      <trans-unit id="7940449478357564231" datatype="html">
+        <source>You can update these details at any time in the program settings.</source>
       </trans-unit>
       <trans-unit id="795890916060309463" datatype="html">
         <source>Roles</source>

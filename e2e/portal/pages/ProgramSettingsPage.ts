@@ -123,7 +123,7 @@ class ProgramSettingsPage extends BasePage {
     expect(budgetData).toEqual({
       'Funds available': programData.fundsAvailable,
       '*Currency': programData.currency,
-      'Default transactions per registration':
+      'Number of distributions per registration':
         programData.defaultNumberOfTransactions,
       '*Fixed transfer value': programData.fixedTransferValue,
       'Financial service providers': programData.fsps?.join(''),

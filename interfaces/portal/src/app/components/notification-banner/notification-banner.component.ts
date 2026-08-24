@@ -11,7 +11,7 @@ import {
  */
 export interface NotificationBannerContent {
   title: string;
-  description: string;
+  description?: string;
   info?: string;
   icon?: NotificationBannerIcon;
 }
@@ -39,6 +39,7 @@ export type NotificationBannerIcon =
 export class NotificationBannerComponent {
   readonly content = input<NotificationBannerContent>();
   readonly color = input.required<NotificationBannerColor>();
+  readonly class = input<string>();
 
   readonly wrapperVariant = computed(() => {
     // Do not replace with something like `bg-${this.variant()}-100` as it would not work with tailwind's JIT compiler

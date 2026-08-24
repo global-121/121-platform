@@ -1,7 +1,7 @@
 @if (content()) {
   <div
     class="mbe-6 flex items-center rounded-2xl border p-4 inline-full"
-    [ngClass]="wrapperVariant()"
+    [ngClass]="[wrapperVariant(), class()]"
   >
     @if (content(); as content) {
       @if (iconVariant()) {
@@ -12,15 +12,17 @@
       }
       <div class="leading-tight">
         <strong>{{ content.title }}</strong>
-        <span>&nbsp;-&nbsp;</span>
-        <span class="text-black">{{ content.description }}</span>
+        @if (content.description) {
+          <span>&nbsp;-&nbsp;</span>
+          <span class="text-black">{{ content.description }}</span>
+        }
       </div>
     }
   </div>
 } @else {
   <div
     class="mbe-6 flex items-center rounded-2xl border p-4 inline-full"
-    [ngClass]="wrapperVariant()"
+    [ngClass]="[wrapperVariant(), class()]"
   >
     <ng-content></ng-content>
   </div>
