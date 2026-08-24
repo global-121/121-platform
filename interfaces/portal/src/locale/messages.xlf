@@ -116,6 +116,9 @@
       <trans-unit id="1504719396709458010" datatype="html">
         <source>Continue to registration</source>
       </trans-unit>
+      <trans-unit id="1525830536540578989" datatype="html">
+        <source>Please adjust your search or filter to find results.</source>
+      </trans-unit>
       <trans-unit id="1545261806462361427" datatype="html">
         <source>Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></source>
       </trans-unit>
@@ -133,6 +136,9 @@
       </trans-unit>
       <trans-unit id="1618485249885407092" datatype="html">
         <source>For more information about how to integrate this FSP see the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
+      </trans-unit>
+      <trans-unit id="1645193489541371451" datatype="html">
+        <source>No results found</source>
       </trans-unit>
       <trans-unit id="1647547699224335647" datatype="html">
         <source>Threshold amounts must be unique.</source>
@@ -386,9 +392,6 @@
       </trans-unit>
       <trans-unit id="2530685350362198190" datatype="html">
         <source>Voucher <x equiv-text="this.paymentId()" id="PH"/> on <x equiv-text="this.paymentDate()" id="PH_1"/></source>
-      </trans-unit>
-      <trans-unit id="2556148873952297722" datatype="html">
-        <source>You cannot assign yourself, and users can only be assigned to one step.</source>
       </trans-unit>
       <trans-unit id="2560790823235400386" datatype="html">
         <source>No debit cards found</source>
@@ -1551,9 +1554,6 @@
       <trans-unit id="7316654266676902247" datatype="html">
         <source>Your IP-address and some information about the device and web-browser you use to access the 121 Platform.</source>
       </trans-unit>
-      <trans-unit id="7327614050923667855" datatype="html">
-        <source>Only users with full program access can approve.</source>
-      </trans-unit>
       <trans-unit id="732965913930858930" datatype="html">
         <source>Edit file details</source>
       </trans-unit>
@@ -1949,9 +1949,6 @@
       </trans-unit>
       <trans-unit id="9126928390466272085" datatype="html">
         <source>The status of <x equiv-text="data.applicableCount" id="PH"/> registration(s) is being changed to &quot;<x equiv-text="this.statusLabel()" id="PH_1"/>&quot; successfully. The status change can take up to a minute to process.</source>
-      </trans-unit>
-      <trans-unit id="913139971007804116" datatype="html">
-        <source>No eligible users found.</source>
       </trans-unit>
       <trans-unit id="9163695541488660450" datatype="html">
         <source>Update reason</source>

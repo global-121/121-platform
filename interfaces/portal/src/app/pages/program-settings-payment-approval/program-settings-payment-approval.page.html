@@ -98,10 +98,10 @@
             (onChange)="onApproverSelectionChanged()"
           >
             <ng-template #empty>
-              <app-no-eligible-approvers-message />
+              <app-select-no-results-message />
             </ng-template>
             <ng-template #emptyfilter>
-              <app-no-eligible-approvers-message />
+              <app-select-no-results-message />
             </ng-template>
           </p-multiSelect>
           @if (isFirstStepInvalid()) {
@@ -145,10 +145,10 @@
                     (onChange)="onApproverSelectionChanged()"
                   >
                     <ng-template #empty>
-                      <app-no-eligible-approvers-message />
+                      <app-select-no-results-message />
                     </ng-template>
                     <ng-template #emptyfilter>
-                      <app-no-eligible-approvers-message />
+                      <app-select-no-results-message />
                     </ng-template>
                   </p-multiSelect>
                   @if (isAdditionalStepUsersInvalid($index)) {
