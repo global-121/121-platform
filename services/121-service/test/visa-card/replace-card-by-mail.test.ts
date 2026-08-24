@@ -13,6 +13,7 @@ import {
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
+import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
 import {
   patchProgramFspConfigurationProperty,
   updateProgramCardDistributionByMail,
@@ -73,13 +74,21 @@ describe('Replace Visa debit card by mail', () => {
       registrationVisa.referenceId,
       accessToken,
     );
-    await waitFor(3_000);
     const visaWalletResponse = await getVisaWalletsAndDetails(
       programIdVisa,
       registrationVisa.referenceId,
       accessToken,
     );
 
+    await waitForMessagesToComplete({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      accessToken,
+      expectedMessageAttribute: {
+        key: 'body',
+        values: [messageTemplateNlrcOcw?.replaceVisaCard?.message?.en],
+      },
+    });
     const messageReponse = await getMessageHistory(
       programIdVisa,
       registrationVisa.referenceId,
@@ -133,7 +142,6 @@ describe('Replace Visa debit card by mail', () => {
       registrationVisa.referenceId,
       accessToken,
     );
-    await waitFor(2_000);
     const visaWalletResponseAttempt1 = await getVisaWalletsAndDetails(
       programIdPv,
       registrationVisa.referenceId,
@@ -158,12 +166,21 @@ describe('Replace Visa debit card by mail', () => {
       registrationVisa.referenceId,
       accessToken,
     );
-    await waitFor(2_000);
     const visaWalletResponseAttempt2 = await getVisaWalletsAndDetails(
       programIdPv,
       registrationVisa.referenceId,
       accessToken,
     );
+
+    await waitForMessagesToComplete({
+      programId: programIdPv,
+      referenceIds: [registrationVisa.referenceId],
+      accessToken,
+      expectedMessageAttribute: {
+        key: 'body',
+        values: [messageTemplateNlrcPv?.replaceVisaCard?.message?.en],
+      },
+    });
     const messageReponseAttempt2 = await getMessageHistory(
       programIdPv,
       registrationVisa.referenceId,

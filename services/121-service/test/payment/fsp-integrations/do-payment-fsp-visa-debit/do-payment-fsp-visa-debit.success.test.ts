@@ -247,7 +247,6 @@ describe('Do successful payment with FSP Visa Debit', () => {
       registrationOCW4.referenceId,
       accessToken,
     );
-    await waitFor(2_000);
 
     const paymentResponse2 = await doPayment({
       programId: programIdVisa,
