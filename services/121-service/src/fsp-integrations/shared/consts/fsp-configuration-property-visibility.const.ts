@@ -54,13 +54,13 @@ export const FspConfigurationPropertyVisibilityMap: Record<
     FspConfigurationPropertyVisibility.secret,
   // Al Fouad properties
   [FspConfigurationProperties.accountAlfouad]:
-    FspConfigurationPropertyVisibility.default,
+    FspConfigurationPropertyVisibility.secret,
   [FspConfigurationProperties.branchIdAlfouad]:
     FspConfigurationPropertyVisibility.default,
   [FspConfigurationProperties.usernameAlfouad]:
-    FspConfigurationPropertyVisibility.default,
+    FspConfigurationPropertyVisibility.secret,
   [FspConfigurationProperties.senderFullNameAlfouad]:
-    FspConfigurationPropertyVisibility.default,
+    FspConfigurationPropertyVisibility.secret,
   [FspConfigurationProperties.senderPhoneNumberAlfouad]:
-    FspConfigurationPropertyVisibility.default,
+    FspConfigurationPropertyVisibility.secret,
 };

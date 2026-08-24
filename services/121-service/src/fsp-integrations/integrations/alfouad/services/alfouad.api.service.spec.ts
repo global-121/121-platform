@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
+import { AlfouadApiTransactionState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
 import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-params.interface';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { AlfouadApiHelperService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.helper.service';
@@ -73,7 +73,25 @@ describe('AlfouadApiService', () => {
     service = module.get<AlfouadApiService>(AlfouadApiService);
   });
 
-  describe('createTransaction', () => {
+  describe('Creating a transaction', () => {
+    it('should normalize the wire response into a camelCase result', async () => {
+      // Arrange
+      post.mockResolvedValue({
+        status: HttpStatus.OK,
+        data: { State: '1', Message: 'Success', ErrorCode: undefined },
+      });
+
+      // Act
+      const result = await service.createTransaction(createTransactionInput);
+
+      // Assert
+      expect(result).toEqual({
+        state: '1',
+        message: 'Success',
+        errorCode: undefined,
+      });
+    });
+
     it('should throw on a non-2xx HTTP status', async () => {
       // Arrange
       post.mockResolvedValue({
@@ -104,7 +122,7 @@ describe('AlfouadApiService', () => {
     });
   });
 
-  describe('getTransactionStateByRef', () => {
+  describe('Getting a transaction state by reference number', () => {
     it('should return the mapped state when found', async () => {
       // Arrange
       get.mockResolvedValue({
@@ -119,7 +137,7 @@ describe('AlfouadApiService', () => {
       });
 
       // Assert
-      expect(result).toBe(AlfouadApiTransactionStateEnum.approved);
+      expect(result).toBe(AlfouadApiTransactionState.approved);
     });
 
     it('should return undefined when the state is not a known lifecycle state', async () => {

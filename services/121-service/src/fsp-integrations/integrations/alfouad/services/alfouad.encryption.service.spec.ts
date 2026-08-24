@@ -6,7 +6,7 @@ const PUBLIC_KEY_XML =
 describe('AlfouadEncryptionService', () => {
   const service = new AlfouadEncryptionService();
 
-  describe('encrypt', () => {
+  describe('Encrypting data with the public key', () => {
     it('should return a Base64 ciphertext matching the key size', () => {
       const result = service.encrypt({
         data: 'FmtRc$$@2026',

@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/alfouad.service';
 import { AlfouadApiErrorCode } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-error-code.enum';
-import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
+import { AlfouadApiTransactionState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
 import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-params.interface';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { AlfouadApiService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.service';
+import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.service';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 const requestIdentity: AlfouadRequestIdentity = {
@@ -45,7 +46,10 @@ describe('AlfouadService', () => {
         AlfouadService,
         {
           provide: AlfouadApiService,
-          useValue: { createTransaction, getTransactionStateByRef },
+          useValue: {
+            createTransaction,
+            getTransactionStateByRef,
+          },
         },
         {
           provide: ProgramFspConfigurationRepository,
@@ -57,10 +61,10 @@ describe('AlfouadService', () => {
     service = module.get<AlfouadService>(AlfouadService);
   });
 
-  describe('createTransaction', () => {
+  describe('Creating a transaction', () => {
     it('should resolve when the transaction succeeds', async () => {
       // Arrange
-      createTransaction.mockResolvedValue({ State: '1', Message: 'Success' });
+      createTransaction.mockResolvedValue({ state: '1', message: 'Success' });
 
       // Act
       await service.createTransaction(createTransactionInput);
@@ -73,12 +77,12 @@ describe('AlfouadService', () => {
     it('should recover on a duplicate (822) when the transaction exists', async () => {
       // Arrange
       createTransaction.mockResolvedValue({
-        State: '0',
-        Message: 'duplicate Reference Number',
-        ErrorCode: AlfouadApiErrorCode.duplicateReferenceNumber,
+        state: '0',
+        message: 'duplicate Reference Number',
+        errorCode: AlfouadApiErrorCode.duplicateReferenceNumber,
       });
       getTransactionStateByRef.mockResolvedValue(
-        AlfouadApiTransactionStateEnum.pendingApproval,
+        AlfouadApiTransactionState.pendingApproval,
       );
 
       // Act
@@ -92,9 +96,9 @@ describe('AlfouadService', () => {
     it('should throw on a duplicate (822) when the transaction cannot be found', async () => {
       // Arrange
       createTransaction.mockResolvedValue({
-        State: '0',
-        Message: 'duplicate Reference Number',
-        ErrorCode: AlfouadApiErrorCode.duplicateReferenceNumber,
+        state: '0',
+        message: 'duplicate Reference Number',
+        errorCode: AlfouadApiErrorCode.duplicateReferenceNumber,
       });
       getTransactionStateByRef.mockResolvedValue(undefined);
 
@@ -109,9 +113,9 @@ describe('AlfouadService', () => {
     it('should rethrow errors that are not a duplicate (822)', async () => {
       // Arrange
       createTransaction.mockResolvedValue({
-        State: '0',
-        Message: 'account limit',
-        ErrorCode: '45',
+        state: '0',
+        message: 'account limit',
+        errorCode: '45',
       });
 
       // Act
@@ -120,6 +124,34 @@ describe('AlfouadService', () => {
       // Assert
       await expect(act).rejects.toThrow('account limit');
       expect(getTransactionStateByRef).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Mapping an Al Fouad state to a transaction status', () => {
+    it('should map paid to success', () => {
+      expect(
+        service.mapAlfouadStateToTransactionStatus({
+          alfouadState: AlfouadApiTransactionState.paid,
+        }),
+      ).toBe(TransactionStatusEnum.success);
+    });
+  
+    it.each([
+      AlfouadApiTransactionState.pendingApproval,
+      AlfouadApiTransactionState.approved,
+      AlfouadApiTransactionState.hold,
+    ])('should map state %s to waiting', (alfouadState) => {
+      expect(service.mapAlfouadStateToTransactionStatus({ alfouadState })).toBe(
+        TransactionStatusEnum.waiting,
+      );
+    });
+  
+    it('should map canceled to error', () => {
+      expect(
+        service.mapAlfouadStateToTransactionStatus({
+          alfouadState: AlfouadApiTransactionState.canceled,
+        }),
+      ).toBe(TransactionStatusEnum.error);
     });
   });
 });

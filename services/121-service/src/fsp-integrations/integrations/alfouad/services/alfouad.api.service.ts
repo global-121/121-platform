@@ -7,9 +7,10 @@ import {
 } from '@121-service/src/fsp-integrations/integrations/alfouad/alfouad.config';
 import { AlfouadApiCreateTransactionResponseDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-create-transaction-response.dto';
 import { AlfouadApiGetTransactionResponseDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-get-transaction-response.dto';
-import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
+import { AlfouadApiTransactionState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
 import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-params.interface';
+import { AlfouadCreateTransactionResult } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-result.interface';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { AlfouadApiHelperService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.helper.service';
 import { AlfouadEncryptionService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.encryption.service';
@@ -34,7 +35,7 @@ export class AlfouadApiService {
     cityCode,
     deliveryCurrencyCode,
     deliveryAmount,
-  }: AlfouadCreateTransactionParams): Promise<AlfouadApiCreateTransactionResponseDto> {
+  }: AlfouadCreateTransactionParams): Promise<AlfouadCreateTransactionResult> {
     const payload = {
       SenderFullName: senderFullName,
       SenderPhoneNumber: senderPhoneNumber,
@@ -58,7 +59,13 @@ export class AlfouadApiService {
       },
     );
 
-    return response.data;
+    const { State, Message, ErrorCode } = response.data;
+
+    return {
+      state: State,
+      message: Message,
+      errorCode: ErrorCode,
+    };
   }
 
   public async getTransactionStateByRef({
@@ -67,7 +74,7 @@ export class AlfouadApiService {
   }: {
     referenceNumber: string;
     requestIdentity: AlfouadRequestIdentity;
-  }): Promise<AlfouadApiTransactionStateEnum | undefined> {
+  }): Promise<AlfouadApiTransactionState | undefined> {
     const response = await this.sendAuthenticatedRequest<AlfouadApiGetTransactionResponseDto>(
       {
         method: 'GET',
@@ -83,14 +90,14 @@ export class AlfouadApiService {
 
   private parseTransactionState(
     state: string,
-  ): AlfouadApiTransactionStateEnum | undefined {
-    const validStates: string[] = Object.values(AlfouadApiTransactionStateEnum);
+  ): AlfouadApiTransactionState | undefined {
+    const validStates: string[] = Object.values(AlfouadApiTransactionState);
 
     if (!validStates.includes(state)) {
       return undefined;
     }
 
-    return state as AlfouadApiTransactionStateEnum;
+    return state as AlfouadApiTransactionState;
   }
 
   private async sendAuthenticatedRequest<T>({

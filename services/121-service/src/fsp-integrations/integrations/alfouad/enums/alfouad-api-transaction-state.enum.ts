@@ -1,4 +1,4 @@
-export enum AlfouadApiTransactionStateEnum {
+export enum AlfouadApiTransactionState {
   // Transaction created, awaiting approval by Al Fouad
   pendingApproval = '1',
   // Approved by Al Fouad, ready for payout

@@ -27,7 +27,7 @@ describe('AlfouadApiHelperService', () => {
     (env as any).ALFOUAD_API_URL = 'https://alfouad.example.org';
   });
 
-  describe('getBaseUrl', () => {
+  describe('Resolving the base URL', () => {
     it('should return the mock service URL when ALFOUAD_MODE is mock', () => {
       // Arrange
       (env as any).ALFOUAD_MODE = FspMode.mock;
@@ -63,7 +63,7 @@ describe('AlfouadApiHelperService', () => {
     });
   });
 
-  describe('buildAuthorizationToken', () => {
+  describe('Building the authorization token', () => {
     it('should Base64-encode the Authentication XML', () => {
       // Act
       const value = service.buildAuthorizationToken({
@@ -100,7 +100,7 @@ describe('AlfouadApiHelperService', () => {
     });
   });
 
-  describe('createRequestHeaders', () => {
+  describe('Creating request headers', () => {
     it('should set the Bearer token and JSON content-type headers', () => {
       // Act
       const headers = service.createRequestHeaders({
