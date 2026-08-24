@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/alfouad.service';
-import { mapAlfouadStateToTransactionStatus } from '@121-service/src/fsp-integrations/integrations/alfouad/helpers/map-alfouad-state-to-transaction-status.helper';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
+import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.service';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { computeTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -55,7 +54,7 @@ export class AlfouadReconciliationService {
       );
     }
 
-    const newTransactionStatus = mapAlfouadStateToTransactionStatus({
+    const newTransactionStatus = this.alfouadService.mapAlfouadStateToTransactionStatus({
       alfouadState: transactionState,
     });
 

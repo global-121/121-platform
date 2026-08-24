@@ -5,8 +5,8 @@ import {
   ALFOUAD_COUNTRY_CODE,
   ALFOUAD_DELIVERY_CURRENCY_CODE,
 } from '@121-service/src/fsp-integrations/integrations/alfouad/alfouad.config';
-import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/alfouad.service';
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
+import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.service';
 import { computeTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
 import { TransactionJobService } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/transaction-job-service.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
