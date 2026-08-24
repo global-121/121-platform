@@ -20,7 +20,8 @@ const duplicateHighNumber = 17;
 const queryParams = {
   'filter.duplicateStatus': 'duplicate',
 };
-const testTimeout = 3 * 60 * 1000; // 3 minutes
+const testTimeout = 10 * 60 * 1000; // Overall test timeout to prevent hanging
+const maximumQueryTime = 2 * 60 * 1000; // Performance assertion limit for the duplicates query
 const duplicateNumber =
   // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
   process.env.HIGH_DATA_VOLUME === 'true'
@@ -34,7 +35,6 @@ describe('Find duplicates in 100k registrations within expected range', () => {
 
   it('Should find duplicates within time threshold', async () => {
     // Arrange
-    const startTime = Date.now();
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
     // Upload registration
@@ -55,15 +55,19 @@ describe('Find duplicates in 100k registrations within expected range', () => {
         },
       });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
+    // Act - Start timer here to measure only the duplicates query performance
+    const startTime = performance.now();
     // Query for duplicate registrations
     const findDuplicatesResponse = await getRegistrations({
       programId: programIdOCW,
       filter: queryParams,
       accessToken,
     });
-    const elapsedTime = Date.now() - startTime;
+
+    const elapsedTime = performance.now() - startTime;
+
     // Assert
-    expect(elapsedTime).toBeLessThan(testTimeout);
+    expect(elapsedTime).toBeLessThan(maximumQueryTime);
     expect(findDuplicatesResponse.statusCode).toBe(HttpStatus.OK);
 
     const duplicatesFound = findDuplicatesResponse.body.meta.totalItems;
