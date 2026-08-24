@@ -771,6 +771,7 @@ describe('IntersolveVisaService', () => {
       const newerChildWallet = new IntersolveVisaChildWalletEntity();
       newerChildWallet.tokenCode = 'newer-token';
       newerChildWallet.created = new Date('2024-06-01T00:00:00Z');
+      newerChildWallet.isDebitCardCreated = true;
 
       jest
         .spyOn(customerRepo, 'findOneWithWalletsByRegistrationId')
@@ -807,6 +808,35 @@ describe('IntersolveVisaService', () => {
         tokenCode: 'newer-token',
         contactInformation,
       });
+    });
+
+    it('should not update physical card information for cards that are not created', async () => {
+      // Arrange
+      const olderChildWallet = new IntersolveVisaChildWalletEntity();
+      olderChildWallet.tokenCode = 'older-token';
+      olderChildWallet.created = new Date('2023-01-01T00:00:00Z');
+
+      const newerChildWallet = new IntersolveVisaChildWalletEntity();
+      newerChildWallet.tokenCode = 'newer-token';
+      newerChildWallet.created = new Date('2024-06-01T00:00:00Z');
+      newerChildWallet.isDebitCardCreated = false;
+
+      jest
+        .spyOn(customerRepo, 'findOneWithWalletsByRegistrationId')
+        .mockResolvedValue(
+          buildCustomerWithChildWallets([olderChildWallet, newerChildWallet]),
+        );
+
+      // Act
+      await service.sendUpdatedCustomerInformation({
+        registrationId,
+        contactInformation,
+      });
+
+      // Assert
+      expect(
+        apiService.updatePhysicalCardContactInformation,
+      ).not.toHaveBeenCalledWith();
     });
 
     it('should not forward the address to a card when the customer has no child wallet', async () => {
