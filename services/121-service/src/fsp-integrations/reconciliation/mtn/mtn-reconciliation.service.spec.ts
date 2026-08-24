@@ -2,7 +2,7 @@ import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
 
 import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
-import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
+import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.service';
 import { MtnReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
