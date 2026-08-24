@@ -12,12 +12,11 @@ const createSSLConfig = (): boolean | TlsOptions => {
   }
   // To make a secure connection to an "Azure Database for PostgreSQL flexible server" in local development:
   // - See: https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-networking-ssl-tls#configure-ssl-on-the-client
-  // - Download the 3 certificates mentioned (or extract them from an App Service instance) into the local `./cert`-folder,
+  // - Download the 2 certificates mentioned (or extract them from an App Service instance) into the local `./cert`-folder,
   // - Set: certsPath to: './cert'
   // - Disable the NODE_ENV check above, or set the ENV-variable to 'production' in the `services/.env`-file
   const certsPath = '/etc/ssl/certs';
   const azureConnectionCACertificates = [
-    readFileSync(`${certsPath}/DigiCert_Global_Root_CA.pem`).toString(),
     readFileSync(
       `${certsPath}/Microsoft_RSA_Root_Certificate_Authority_2017.pem`,
     ).toString(),
