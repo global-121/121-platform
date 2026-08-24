@@ -22,6 +22,7 @@ import {
   ScopedUserRequest,
   ScopedUserRequestWithUser,
 } from '@121-service/src/shared/scoped-user-request';
+import { FindReturnType } from '@121-service/src/shared/types/find-return.type';
 import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
 
 export class ScopedQueryBuilder<
@@ -105,9 +106,15 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
   // CUSTOM IMPLEMENTATION OF REPOSITORY METHODS ////////////////
   //////////////////////////////////////////////////////////////
 
+  // Two overload signatures below (matching the global FindReturnType augmentation on Repository)
+  // are required, else this override isn't structurally assignable to the merged base signature.
+  public override async find(options?: FindManyOptions<T>): Promise<T[]>;
   public override async find<Options extends FindManyOptions<T>>(
     options?: Options,
-  ): Promise<T[]> {
+  ): Promise<FindReturnType<T, Options['select'], Options['relations']>[]>;
+  public override async find<Options extends FindManyOptions<T>>(
+    options?: Options,
+  ): Promise<FindReturnType<T, Options['select'], Options['relations']>[]> {
     if (!requestHasUser(this.request)) {
       return this.repository.find(options);
     }
@@ -119,9 +126,19 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.repository.find(scopedOptions);
   }
 
+  public override async findAndCount(
+    options?: FindManyOptions<T>,
+  ): Promise<[T[], number]>;
   public override async findAndCount<Options extends FindManyOptions<T>>(
     options?: Options,
-  ): Promise<[T[], number]> {
+  ): Promise<
+    [FindReturnType<T, Options['select'], Options['relations']>[], number]
+  >;
+  public override async findAndCount<Options extends FindManyOptions<T>>(
+    options?: Options,
+  ): Promise<
+    [FindReturnType<T, Options['select'], Options['relations']>[], number]
+  > {
     if (!requestHasUser(this.request)) {
       return this.repository.findAndCount(options); // Pass undefined directly if no scope
     }
@@ -134,9 +151,17 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.repository.findAndCount(scopedOptions);
   }
 
+  public override async findOne(options: FindOneOptions<T>): Promise<T | null>;
   public override async findOne<Options extends FindOneOptions<T>>(
     options: Options,
-  ): Promise<T | null> {
+  ): Promise<FindReturnType<T, Options['select'], Options['relations']> | null>;
+  public override async findOne<Options extends FindOneOptions<T>>(
+    options: Options,
+  ): Promise<FindReturnType<
+    T,
+    Options['select'],
+    Options['relations']
+  > | null> {
     if (!requestHasUser(this.request)) {
       return this.repository.findOne(options);
     }
@@ -149,9 +174,13 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.repository.findOne(scopedOptions);
   }
 
+  public override async findOneOrFail(options: FindOneOptions<T>): Promise<T>;
   public override async findOneOrFail<Options extends FindOneOptions<T>>(
     options: Options,
-  ): Promise<T> {
+  ): Promise<FindReturnType<T, Options['select'], Options['relations']>>;
+  public override async findOneOrFail<Options extends FindOneOptions<T>>(
+    options: Options,
+  ): Promise<FindReturnType<T, Options['select'], Options['relations']>> {
     if (!requestHasUser(this.request)) {
       return this.repository.findOneOrFail(options);
     }

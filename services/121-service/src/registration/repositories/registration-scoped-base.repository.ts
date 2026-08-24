@@ -12,6 +12,7 @@ import {
   ScopedQueryBuilder,
 } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { FindReturnType } from '@121-service/src/shared/types/find-return.type';
 import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
 
 export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
@@ -24,7 +25,7 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
 
   public async find<Options extends FindManyOptions<T>>(
     options?: Options,
-  ): Promise<T[]> {
+  ): Promise<FindReturnType<T, Options['select'], Options['relations']>[]> {
     if (!requestHasUser(this.request)) {
       return this.repository.find(options);
     }
@@ -38,7 +39,11 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
 
   public async findOne<Options extends FindOneOptions<T>>(
     options: Options,
-  ): Promise<T | null> {
+  ): Promise<FindReturnType<
+    T,
+    Options['select'],
+    Options['relations']
+  > | null> {
     if (!requestHasUser(this.request)) {
       return this.repository.findOne(options);
     }
@@ -52,7 +57,7 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
 
   public async findOneOrFail<Options extends FindOneOptions<T>>(
     options: Options,
-  ): Promise<T> {
+  ): Promise<FindReturnType<T, Options['select'], Options['relations']>> {
     if (!requestHasUser(this.request)) {
       return this.repository.findOneOrFail(options);
     }

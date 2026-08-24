@@ -425,7 +425,7 @@ describe('RegistrationsService', () => {
           id: 1,
           smallerRegistrationId: 1,
           largerRegistrationId: 2,
-        } as any);
+        } as Awaited<ReturnType<UniqueRegistrationPairRepository['findOne']>>);
 
       await service.createUniques({
         registrationIds: [1, 2],
