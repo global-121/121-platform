@@ -17,7 +17,7 @@ const createSSLConfig = (): boolean | TlsOptions => {
   // - Disable the NODE_ENV check above, or set the ENV-variable to 'production' in the `services/.env`-file
   const certsPath = '/etc/ssl/certs';
   const azureConnectionCACertificates = [
-    readFileSync(`${certsPath}/DigiCert_Global_Root_CA.pem`).toString(),
+    readFileSync(`${certsPath}/azl_DigiCert_Global_Root_CA.pem`).toString(),
     readFileSync(
       `${certsPath}/Microsoft_RSA_Root_Certificate_Authority_2017.pem`,
     ).toString(),
