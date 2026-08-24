@@ -1,1 +1,3 @@
 logs
+flaky-integration-report.json
+flaky-playwright-report.json
