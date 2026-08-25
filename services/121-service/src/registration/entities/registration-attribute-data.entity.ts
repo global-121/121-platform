@@ -18,6 +18,13 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
   'registrationId',
   'programRegistrationAttributeId',
 ])
+// Any time we filter or sort on registration attributes like phone number or name, we use both of these columns.
+// So we have a composite index on both of these columns to improve performance.
+// We still need the individual index on value because we have a few places where we filter across programs and programRegistrationAttributeId cannot be used
+@Index('IDX_registration_attribute_data_attributeId_value', [
+  'programRegistrationAttributeId',
+  'value',
+])
 @Entity('registration_attribute_data')
 export class RegistrationAttributeDataEntity extends Base121Entity {
   @ManyToOne(
