@@ -12,6 +12,7 @@ enum AlfouadMockResponseState {
 enum AlfouadMockErrorCode {
   transactionNotFound = '821',
   duplicateReferenceNumber = '822',
+  // Mock-only code: Al Fouad returns a descriptive Message without a fixed code for general errors.
   businessError = '999',
 }
 
@@ -99,7 +100,7 @@ export class AlfouadMockService {
     if (!state) {
       return {
         State: AlfouadMockResponseState.failed,
-        Message: 'Transaction not found',
+        Message: 'No results were found.',
         ErrorCode: AlfouadMockErrorCode.transactionNotFound,
       };
     }

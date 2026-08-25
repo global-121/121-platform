@@ -108,7 +108,7 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     ],
   },
   {
-    name: SeedScript.alfouadProgram,
+    name: SeedScript.alFouadProgram,
     programs: [
       {
         program: 'program-alfouad.json',

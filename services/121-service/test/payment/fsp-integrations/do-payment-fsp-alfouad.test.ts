@@ -63,7 +63,7 @@ describe('Do payment with FSP: AlFouad', () => {
   let accessToken: string;
 
   beforeAll(async () => {
-    await resetDB({ seedScript: SeedScript.alfouadProgram });
+    await resetDB({ seedScript: SeedScript.alFouadProgram });
     accessToken = await getAccessToken();
   });
 
@@ -116,7 +116,6 @@ describe('Do payment with FSP: AlFouad', () => {
     });
     const transaction = getTransactionsResult.body.data[0];
 
-    // The mock reports the transaction as paid, so it should reach 'success'
     expect(transaction.status).toBe(TransactionStatusEnum.success);
     expect(transaction.errorMessage).toBe(null);
 
@@ -129,6 +128,7 @@ describe('Do payment with FSP: AlFouad', () => {
 
     // A second reconciliation run should not touch the completed transaction
     await runCronJobDoAlfouadReconciliation();
+
     const descriptionsAfterRerun = await getTransactionEventDescriptions({
       programId,
       transactionId: transaction.id,
