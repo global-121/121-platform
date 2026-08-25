@@ -25,7 +25,7 @@ class PaymentPage extends BasePage {
   readonly renamePaymentInput: Locator;
   readonly renamePaymentButton: Locator;
   readonly threeDotsMenuButton: Locator;
-  readonly succesfullyTransferredChip: Locator;
+  readonly succesfullyTransferredAmountChip: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -34,7 +34,7 @@ class PaymentPage extends BasePage {
     this.importReconciliationDataButton = this.page.getByRole('button', {
       name: 'Import reconciliation data',
     });
-    this.succesfullyTransferredChip = this.page
+    this.succesfullyTransferredAmountChip = this.page
       .locator('app-metric-tile', { hasText: 'Total amount' })
       .getByTestId('metric-tile-chip');
 
@@ -175,7 +175,8 @@ class PaymentPage extends BasePage {
     if (expectedAmount !== undefined) {
       await expect
         .poll(async () => {
-          const chipText = await this.succesfullyTransferredChip.textContent();
+          const chipText =
+            await this.succesfullyTransferredAmountChip.textContent();
           return chipText?.replace(/,/g, '');
         })
         .toContain(expectedAmount.toString());
