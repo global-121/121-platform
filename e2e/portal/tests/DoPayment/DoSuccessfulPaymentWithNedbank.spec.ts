@@ -44,11 +44,10 @@ test('Do successful payment for Nedbank fsp', async ({
   });
 
   await test.step('Validate payment card', async () => {
-    // In case of Nedbank, we need to wait for the payment to be processed
-    // before we can validate the payment card
-    // This way we can avoid reloading the page
-    await page.waitForTimeout(1000);
-    await paymentPage.waitForPaymentToComplete();
+    await paymentPage.waitForPaymentToComplete({
+      expectedAmount: defaultMaxTransferValue,
+    });
+
     await paymentPage.navigateToProgramPage('Payments');
     await paymentsPage.validatePaymentCard({
       paymentAmount: defaultMaxTransferValue,

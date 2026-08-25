@@ -6,7 +6,13 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+
+test.beforeEach(async ({ resetDBAndSeedRegistrations, page }) => {
+  const context = page.context();
+  const cdpSession = await context.newCDPSession(page);
+  // 4-6x CPU throttling is what worked well for my M1 Pro.
+  await cdpSession.send('Emulation.setCPUThrottlingRate', { rate: 6 });
+
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.safaricomProgram,
     registrations: registrationsSafaricom,
@@ -44,7 +50,10 @@ test('Do successful payment for Safaricom fsp', async ({
   });
 
   await test.step('Validate payment card', async () => {
-    await paymentPage.waitForPaymentToComplete();
+    await paymentPage.waitForPaymentToComplete({
+      expectedAmount: defaultMaxTransferValue,
+    });
+
     await paymentPage.navigateToProgramPage('Payments');
     await paymentsPage.validatePaymentCard({
       paymentAmount: defaultMaxTransferValue,

@@ -25,6 +25,7 @@ class PaymentPage extends BasePage {
   readonly renamePaymentInput: Locator;
   readonly renamePaymentButton: Locator;
   readonly threeDotsMenuButton: Locator;
+  readonly succesfullyTransferredChip: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -33,6 +34,9 @@ class PaymentPage extends BasePage {
     this.importReconciliationDataButton = this.page.getByRole('button', {
       name: 'Import reconciliation data',
     });
+    this.succesfullyTransferredChip = this.page.getByTestId(
+      'metric-tile-chip-successfully-transferred',
+    );
     this.chooseFileButton = this.page.getByRole('button', {
       name: 'Choose file',
     });
@@ -142,7 +146,9 @@ class PaymentPage extends BasePage {
     }
   }
 
-  async waitForPaymentToComplete() {
+  async waitForPaymentToComplete({
+    expectedAmount,
+  }: { expectedAmount?: number } = {}) {
     await this.page.waitForTimeout(500); // TODO for now needed to bridge in-progress gap between actions & queue.
     const approvedChip = this.page
       .locator('app-colored-chip')
@@ -154,6 +160,19 @@ class PaymentPage extends BasePage {
 
     await inProgressChip.waitFor({ state: 'hidden' });
     await approvedChip.waitFor({ state: 'visible' });
+
+    // Okay, so the method above isn't that robust. Because there is a inbetween state where the approved
+    // chip is visible, but the amount isn't updated yet. So we need to poll until the amount is updated.
+    // Then we can continue with the rest of the test.
+
+    if (expectedAmount) {
+      await expect
+        .poll(async () => {
+          const chipText = await this.succesfullyTransferredChip.textContent();
+          return chipText?.replace(/,/g, '');
+        })
+        .toContain(expectedAmount.toString());
+    }
   }
 
   async validateBadgeIsPresentByLabel({
