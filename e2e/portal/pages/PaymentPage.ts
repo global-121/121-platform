@@ -34,9 +34,8 @@ class PaymentPage extends BasePage {
     this.importReconciliationDataButton = this.page.getByRole('button', {
       name: 'Import reconciliation data',
     });
-    this.succesfullyTransferredAmountChip = this.page
-      .locator('app-metric-tile', { hasText: 'Total amount' })
-      .getByTestId('metric-tile-chip');
+    this.succesfullyTransferredAmountChip =
+      this.page.getByTestId('metric-tile-chip');
 
     this.chooseFileButton = this.page.getByRole('button', {
       name: 'Choose file',
@@ -164,7 +163,7 @@ class PaymentPage extends BasePage {
 
     /*
       The method utilized above isn't that robust.
-      Because there is a inbetween state where the approved chip is visible,
+      Because there is an inbetween state where the "Approved"-chip is visible,
       but the payment is still 'processing'. Since we can't use the <canvas />
       element to check the graph status, we need to check the amount that is
       displayed in the payment card on the payment page. When this chip shows the
