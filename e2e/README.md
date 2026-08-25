@@ -84,6 +84,16 @@ npm run test:find-flaky <substringMatchingFilename>
 
 This hunts for flaky tests by running each test 30 times, stops as soon as flakiness is detected, and keeps a trace of the failing run for debugging. It will also open the report after a failed run.
 
+Another great tip for finding difficult edge cases is [CPU throttling](https://charpeni.com/blog/how-to-easily-reproduce-a-flaky-test-in-playwright)
+
+```ts
+test.beforeEach(async ({page }) => {
+  const context = page.context();
+  const cdpSession = await context.newCDPSession(page);
+  await cdpSession.send('Emulation.setCPUThrottlingRate', { rate: 6 });
+)
+```
+
 ### Using the VS Code-extension
 
 Use the built-in runner of the VS Code-extension: [`#ms-playwright.playwright`](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright)

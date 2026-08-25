@@ -161,10 +161,14 @@ class PaymentPage extends BasePage {
     await inProgressChip.waitFor({ state: 'hidden' });
     await approvedChip.waitFor({ state: 'visible' });
 
-    // Okay, so the method above isn't that robust.
-    // Because there is a inbetween state where the approved chip is visible, but the payment is still 'processing'
-    // Since we can't use the <canvas /> element to check the graph status, we need to check the amount that is displayed in the payment card.
-    // When this thing shows the correct amount we can safely navigate away and assert the payment card in the overview
+    /*
+      The method utilized above isn't that robust.
+      Because there is a inbetween state where the approved chip is visible,
+      but the payment is still 'processing'. Since we can't use the <canvas />
+      element to check the graph status, we need to check the amount that is
+      displayed in the payment card. When this chip shows the correct amount
+      we can safely navigate away and assert the payment card in the overview
+    */
 
     if (expectedAmount) {
       await expect
