@@ -34,9 +34,10 @@ class PaymentPage extends BasePage {
     this.importReconciliationDataButton = this.page.getByRole('button', {
       name: 'Import reconciliation data',
     });
-    this.succesfullyTransferredChip = this.page.getByTestId(
-      'metric-tile-chip-successfully-transferred',
-    );
+    this.succesfullyTransferredChip = this.page
+      .locator('app-metric-tile', { hasText: 'Total amount' })
+      .getByTestId('metric-tile-chip');
+
     this.chooseFileButton = this.page.getByRole('button', {
       name: 'Choose file',
     });
@@ -171,7 +172,7 @@ class PaymentPage extends BasePage {
       the overview.
     */
 
-    if (expectedAmount) {
+    if (expectedAmount !== undefined) {
       await expect
         .poll(async () => {
           const chipText = await this.succesfullyTransferredChip.textContent();
