@@ -245,7 +245,6 @@ export default defineConfig(
             'pi\\-.*',
             'ng-invalid',
             'ng-dirty',
-            '121-.*',
           ],
         },
       ],
