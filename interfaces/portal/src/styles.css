@@ -174,10 +174,10 @@ svg-icon svg {
   .p-explainer-accordion {
     @apply bg-grey-100 rounded-lg p-3;
 
-    p-accordion-header {
+    .p-accordion-header {
       @apply flex cursor-pointer items-start justify-between;
 
-      > p {
+      p {
         @apply m-0 flex items-center gap-3 font-bold;
       }
 
@@ -188,22 +188,22 @@ svg-icon svg {
 
     ul {
       @apply mt-2.5 space-y-5;
-    }
 
-    li {
-      @apply relative pl-7.5;
+      li {
+        @apply relative ps-7.5;
 
-      &::before {
-        @apply text-purple absolute top-0.75 left-0 block h-5 w-5 rounded-full bg-purple-300 text-center text-xs leading-5 font-bold content-[attr(index)];
-      }
+        &::before {
+          @apply text-purple absolute inset-s-0 top-0.75 block h-5 w-5 rounded-full bg-purple-300 text-center text-xs leading-5 font-bold content-[attr(index)];
+        }
 
-      img {
-        @apply mt-3 -ml-7.5 min-w-[calc(100%+1.875rem)]; /* 1.875rem = 7.5 */
+        img {
+          @apply -ms-7.5 mt-3 min-w-[calc(100%+1.875rem)]; /* 1.875rem = 7.5 */
+        }
       }
     }
 
     .p-accordioncontent-content {
-      @apply bg-transparent p-0 pt-2 pl-6;
+      @apply bg-transparent p-0 ps-6 pt-2;
     }
   }
 
