@@ -167,6 +167,20 @@ export class CronjobController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
+      '[CRON] Reconcile AlFouad transactions by checking the latest status of each waiting transaction',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'AlFouad transaction update process started',
+  })
+  @Patch('fsps/alfouad')
+  public async cronDoAlfouadReconciliation(): Promise<void> {
+    return await this.cronjobExecutionService.cronDoAlfouadReconciliation();
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary:
       '[CRON] GET all exchange rates for all programs and store them in the database',
   })
   @ApiResponse({

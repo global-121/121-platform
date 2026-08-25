@@ -5,6 +5,7 @@ import { AlfouadApiHelperService } from '@121-service/src/fsp-integrations/integ
 import { AlfouadApiService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.service';
 import { AlfouadEncryptionService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.encryption.service';
 import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.service';
+import { TransactionEventsModule } from '@121-service/src/payments/transactions/transaction-events/transaction-events.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -12,6 +13,7 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
   imports: [
     HttpModule,
     ProgramFspConfigurationsModule,
+    TransactionEventsModule,
   ],
   providers: [
     AlfouadService,

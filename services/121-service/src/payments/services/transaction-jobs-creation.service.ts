@@ -4,6 +4,7 @@ import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-set
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { AirtelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/airtel-transaction-job.dto';
+import { AlfouadTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/alfouad-transaction-job.dto';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
 import { CooperativeBankOfOromiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/cooperative-bank-of-oromia-transaction-job.dto';
 import { ExcelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/excel-transaction-job.dto';
@@ -130,6 +131,14 @@ export class TransactionJobsCreationService {
         });
       case Fsps.mtn:
         return await this.createAndAddMtnTransactionJobs({
+          transactionJobDetails,
+          programId,
+          userId,
+          isRetry,
+          fspName,
+        });
+      case Fsps.alfouad:
+        return await this.createAndAddAlfouadTransactionJobs({
           transactionJobDetails,
           programId,
           userId,
@@ -648,6 +657,48 @@ export class TransactionJobsCreationService {
       },
     );
     await this.transactionQueuesService.addMtnTransactionJobs(mtnTransferJobs);
+  }
+
+  private async createAndAddAlfouadTransactionJobs({
+    transactionJobDetails,
+    programId,
+    userId,
+    isRetry,
+    fspName,
+  }: {
+    transactionJobDetails: TransactionJobDetails[];
+    programId: number;
+    userId: number;
+    isRetry: boolean;
+    fspName: Fsps;
+  }): Promise<void> {
+    const { registrationViews, sharedJobsByReferenceId } =
+      await this.createSharedJobs({
+        transactionJobDetails,
+        programId,
+        userId,
+        isRetry,
+        fspName,
+      });
+
+    const alfouadTransactionJobs: AlfouadTransactionJobDto[] =
+      registrationViews.map(
+        (registrationView): AlfouadTransactionJobDto => {
+          const base = sharedJobsByReferenceId.get(
+            registrationView.referenceId,
+          );
+          return {
+            ...base!,
+            registrationFullName: registrationView[FspAttributes.fullName]!,
+            registrationPhoneNumber:
+              registrationView[FspAttributes.phoneNumber]!,
+          };
+        },
+      );
+
+    await this.transactionQueuesService.addAlfouadTransactionJobs(
+      alfouadTransactionJobs,
+    );
   }
 
   /**

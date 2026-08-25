@@ -7,6 +7,7 @@ import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integr
 import { AlfouadApiService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.service';
 import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 const requestIdentity: AlfouadRequestIdentity = {
@@ -36,10 +37,12 @@ describe('AlfouadService', () => {
   let service: AlfouadService;
   let createTransaction: jest.Mock;
   let getTransactionStateByRef: jest.Mock;
+  let countFailedTransactionAttempts: jest.Mock;
 
   beforeEach(async () => {
     createTransaction = jest.fn();
     getTransactionStateByRef = jest.fn();
+    countFailedTransactionAttempts = jest.fn();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -54,6 +57,10 @@ describe('AlfouadService', () => {
         {
           provide: ProgramFspConfigurationRepository,
           useValue: {},
+        },
+        {
+          provide: TransactionEventsScopedRepository,
+          useValue: { countFailedTransactionAttempts },
         },
       ],
     }).compile();
@@ -124,6 +131,45 @@ describe('AlfouadService', () => {
       // Assert
       await expect(act).rejects.toThrow('account limit');
       expect(getTransactionStateByRef).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Generating a reference number', () => {
+    it('should compute the same reference for the same failed-attempt count', async () => {
+      // Arrange
+      countFailedTransactionAttempts.mockResolvedValue(0);
+
+      // Act
+      const first = await service.generateReferenceNumber({
+        referenceId: 'ref-1',
+        transactionId: 1,
+      });
+      const second = await service.generateReferenceNumber({
+        referenceId: 'ref-1',
+        transactionId: 1,
+      });
+
+      // Assert
+      expect(first).toBe(second);
+    });
+
+    it('should compute a different reference after a failed attempt', async () => {
+      // Arrange
+      countFailedTransactionAttempts.mockResolvedValueOnce(0);
+      countFailedTransactionAttempts.mockResolvedValueOnce(1);
+
+      // Act
+      const first = await service.generateReferenceNumber({
+        referenceId: 'ref-1',
+        transactionId: 1,
+      });
+      const second = await service.generateReferenceNumber({
+        referenceId: 'ref-1',
+        transactionId: 1,
+      });
+
+      // Assert
+      expect(first).not.toBe(second);
     });
   });
 

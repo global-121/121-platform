@@ -25,4 +25,6 @@ export enum TransactionEventDescription {
   cooperativeBankOfOromiaRequestSent = 'Cooperative Bank of Oromia payment request',
   mtnRequestSent = 'MTN payment request',
   mtnReconciliationProcessed = 'MTN payment distribution',
+  alfouadRequestSent = 'Al Fouad payment request',
+  alfouadReconciliationProcessed = 'Al Fouad payment distribution',
 }

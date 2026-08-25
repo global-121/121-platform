@@ -8,6 +8,7 @@ import { ExchangeRatesModule } from '@121-service/src/exchange-rates/exchange-ra
 import { CommercialBankEthiopiaAccountManagementModule } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia/commercial-bank-ethiopia-account-management.module';
 import { CooperativeBankOfOromiaAccountManagementModule } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/cooperative-bank-of-oromia-account-management.module';
 import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/intersolve-voucher.module';
+import { AlfouadReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/alfouad/alfouad-reconciliation.module';
 import { IntersolveVisaReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/intersolve-visa/intersolve-visa-reconciliation.module';
 import { IntersolveVoucherReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/intersolve-voucher/intersolve-voucher-reconciliation.module';
 import { MtnReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.module';
@@ -26,6 +27,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     NedbankReconciliationModule,
     OnafriqReconciliationModule,
     MtnReconciliationModule,
+    AlfouadReconciliationModule,
     ExchangeRatesModule,
     InstanceReportingModule,
   ],

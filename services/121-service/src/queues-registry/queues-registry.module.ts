@@ -82,6 +82,13 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
         duration: 1000, // per duration in milliseconds
       },
     }),
+    BullModule.registerQueue({
+      name: QueueNames.transactionJobsAlfouad,
+      limiter: {
+        max: 20,
+        duration: 1000, // per duration in ms
+      },
+    }),
 
     // Safaricom Callback Queues
     BullModule.registerQueue({
