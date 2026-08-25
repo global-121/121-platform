@@ -4,7 +4,10 @@
       value="0"
       [unstyled]="true"
     >
-      <p-accordion-header [unstyled]="true">
+      <p-accordion-header
+        [unstyled]="true"
+        class="p-accordion-header"
+      >
         <p>
           <span
             class="pi pi-question-circle"
@@ -16,15 +19,17 @@
         </p>
       </p-accordion-header>
 
-      <p-accordion-content id="p-accordion-content">
+      <p-accordion-content>
         <ul>
           @for (item of items(); track $index) {
             <li [attr.index]="$index + 1">
               <p>{{ item.content }}</p>
-              <img
-                src="{{ item.imageUrl }}"
-                alt=""
-              />
+              @if (item.imageUrl) {
+                <img
+                  src="{{ item.imageUrl }}"
+                  alt=""
+                />
+              }
             </li>
           }
         </ul>

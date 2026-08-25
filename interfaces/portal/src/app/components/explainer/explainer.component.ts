@@ -14,6 +14,6 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExplainerComponent {
-  readonly title = input<string>();
-  readonly items = input<{ content: string; imageUrl?: string }[]>();
+  readonly title = input.required<string>();
+  readonly items = input.required<{ content: string; imageUrl?: string }[]>();
 }
