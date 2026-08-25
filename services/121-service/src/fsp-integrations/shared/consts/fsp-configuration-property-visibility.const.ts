@@ -19,6 +19,10 @@ export const FspConfigurationPropertyVisibilityMap: Record<
     FspConfigurationPropertyVisibility.secret,
   [FspConfigurationProperties.uniqueKeyOnafriq]:
     FspConfigurationPropertyVisibility.secret,
+  [FspConfigurationProperties.passwordAlfouad]:
+    FspConfigurationPropertyVisibility.secret,
+  [FspConfigurationProperties.publicKeyAlfouad]:
+    FspConfigurationPropertyVisibility.secret,
   // Public properties
   [FspConfigurationProperties.cardDistributionByMail]:
     FspConfigurationPropertyVisibility.public,
@@ -48,4 +52,15 @@ export const FspConfigurationPropertyVisibilityMap: Record<
     FspConfigurationPropertyVisibility.secret,
   [FspConfigurationProperties.apiKeyMtn]:
     FspConfigurationPropertyVisibility.secret,
+  // Al Fouad properties
+  [FspConfigurationProperties.accountAlfouad]:
+    FspConfigurationPropertyVisibility.secret,
+  [FspConfigurationProperties.branchIdAlfouad]:
+    FspConfigurationPropertyVisibility.default,
+  [FspConfigurationProperties.usernameAlfouad]:
+    FspConfigurationPropertyVisibility.secret,
+  [FspConfigurationProperties.senderFullNameAlfouad]:
+    FspConfigurationPropertyVisibility.default,
+  [FspConfigurationProperties.senderPhoneNumberAlfouad]:
+    FspConfigurationPropertyVisibility.default,
 };

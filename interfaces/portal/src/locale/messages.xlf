@@ -354,6 +354,9 @@
       <trans-unit id="2399772485291907075" datatype="html">
         <source>Finance</source>
       </trans-unit>
+      <trans-unit id="2404856326903745435" datatype="html">
+        <source>Public key</source>
+      </trans-unit>
       <trans-unit id="2409672154570643758" datatype="html">
         <source>Display name</source>
       </trans-unit>
@@ -404,6 +407,9 @@
       </trans-unit>
       <trans-unit id="2648503122381983554" datatype="html">
         <source>Duplicated with:</source>
+      </trans-unit>
+      <trans-unit id="2659106966364585056" datatype="html">
+        <source>Sender full name</source>
       </trans-unit>
       <trans-unit id="2701527640285744987" datatype="html">
         <source>Rename payment</source>
@@ -710,6 +716,9 @@
       <trans-unit id="3908185208619176727" datatype="html">
         <source>An unexpected error occurred while linking the Visa card to the registration</source>
       </trans-unit>
+      <trans-unit id="3911453375291630600" datatype="html">
+        <source>Branch ID</source>
+      </trans-unit>
       <trans-unit id="3915966149686975421" datatype="html">
         <source>Optional</source>
       </trans-unit>
@@ -754,6 +763,9 @@
       </trans-unit>
       <trans-unit id="4045346346155035518" datatype="html">
         <source>Select role(s)</source>
+      </trans-unit>
+      <trans-unit id="4086606389696938932" datatype="html">
+        <source>Account</source>
       </trans-unit>
       <trans-unit id="4097796198739407763" datatype="html">
         <source>This identifier is stored for max. 90 days in our logs-storage.</source>
@@ -808,6 +820,9 @@
       </trans-unit>
       <trans-unit id="4249207548869932033" datatype="html">
         <source>Password reset successful</source>
+      </trans-unit>
+      <trans-unit id="4251717932939684100" datatype="html">
+        <source>Sender phone number</source>
       </trans-unit>
       <trans-unit id="4273825032754891897" datatype="html">
         <source>* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.west<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</source>

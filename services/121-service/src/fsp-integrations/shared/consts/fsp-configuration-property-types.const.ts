@@ -18,6 +18,13 @@ export const fspConfigurationPropertyTypes = {
   [FspConfigurationProperties.subscriptionKeyMtn]: 'string',
   [FspConfigurationProperties.referenceIdMtn]: 'string',
   [FspConfigurationProperties.apiKeyMtn]: 'string',
+  [FspConfigurationProperties.accountAlfouad]: 'string',
+  [FspConfigurationProperties.branchIdAlfouad]: 'string',
+  [FspConfigurationProperties.usernameAlfouad]: 'string',
+  [FspConfigurationProperties.passwordAlfouad]: 'string',
+  [FspConfigurationProperties.publicKeyAlfouad]: 'string',
+  [FspConfigurationProperties.senderFullNameAlfouad]: 'string',
+  [FspConfigurationProperties.senderPhoneNumberAlfouad]: 'string',
 } as const;
 
 // Map runtime type strings to actual TypeScript types

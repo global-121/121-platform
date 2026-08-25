@@ -9,6 +9,7 @@ graph LR
   ActivitiesModule-->UserModule
   AirtelModule-->QueuesRegistryModule
   AirtelModule-->RedisModule
+  AlfouadModule-->ProgramFspConfigurationsModule
   CommercialBankEthiopiaAccountManagementModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaAccountManagementModule-->ProgramModule
   CommercialBankEthiopiaAccountManagementModule-->RegistrationsModule
@@ -170,6 +171,7 @@ graph LR
   SafaricomReconciliationModule-->TransactionEventsModule
   SafaricomReconciliationModule-->TransactionsModule
   TransactionJobsModule-->AirtelModule
+  TransactionJobsModule-->AlfouadModule
   TransactionJobsModule-->CommercialBankEthiopiaModule
   TransactionJobsModule-->CooperativeBankOfOromiaModule
   TransactionJobsModule-->ExcelModule
