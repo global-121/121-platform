@@ -158,11 +158,6 @@ export class AlfouadApiService {
         );
       case 'GET':
         return await this.httpService.get<AxiosResponse<T>>(url, headers);
-      default: {
-        throw new AlfouadApiError({
-          message: `Unsupported Al Fouad request method: ${method}`,
-        });
-      }
     }
   }
 

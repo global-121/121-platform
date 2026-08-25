@@ -60,7 +60,7 @@ export const FspConfigurationPropertyVisibilityMap: Record<
   [FspConfigurationProperties.usernameAlfouad]:
     FspConfigurationPropertyVisibility.secret,
   [FspConfigurationProperties.senderFullNameAlfouad]:
-    FspConfigurationPropertyVisibility.secret,
+    FspConfigurationPropertyVisibility.default,
   [FspConfigurationProperties.senderPhoneNumberAlfouad]:
-    FspConfigurationPropertyVisibility.secret,
+    FspConfigurationPropertyVisibility.default,
 };
