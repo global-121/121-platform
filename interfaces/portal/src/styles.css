@@ -290,6 +290,10 @@ svg-icon svg {
     }
   }
 
+  .p-multiselect-header {
+    @apply border-b-grey-100 bg-grey-300/20 rounded-none border-t-0 border-b py-2;
+  }
+
   .p-datatable {
     .p-datatable-header {
       @apply px-0 pt-0 pb-4;
