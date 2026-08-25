@@ -3,7 +3,6 @@ import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/a
 import { TransactionJobsAlfouadService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-alfouad.service';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { AlfouadTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/alfouad-transaction-job.dto';
-import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 
 const requestIdentity: AlfouadRequestIdentity = {
@@ -33,29 +32,25 @@ describe('TransactionJobsAlfouadService', () => {
   let service: TransactionJobsAlfouadService;
   let alfouadService: jest.Mocked<AlfouadService>;
   let transactionJobsHelperService: jest.Mocked<TransactionJobsHelperService>;
-  let transactionEventScopedRepository: jest.Mocked<TransactionEventsScopedRepository>;
   let transactionsService: jest.Mocked<TransactionsService>;
 
   beforeEach(() => {
     alfouadService = {
       getAlfouadFspConfig: jest.fn().mockResolvedValue(requestIdentity),
+      generateReferenceNumber: jest.fn().mockResolvedValue('reference-number'),
       createTransaction: jest.fn(),
     } as any;
     transactionJobsHelperService = { logTransactionJobStart: jest.fn() } as any;
-    transactionEventScopedRepository = {
-      countFailedTransactionAttempts: jest.fn().mockResolvedValue(0),
-    } as any;
     transactionsService = { saveProgress: jest.fn() } as any;
 
     service = new TransactionJobsAlfouadService(
       alfouadService,
       transactionJobsHelperService,
-      transactionEventScopedRepository,
       transactionsService,
     );
   });
 
-  describe('processTransactionJob', () => {
+  describe('Processing a transaction job', () => {
     it('should send the transaction to Al Fouad', async () => {
       // Arrange
       alfouadService.createTransaction.mockResolvedValue(undefined);

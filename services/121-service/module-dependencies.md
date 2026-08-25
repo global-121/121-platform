@@ -10,6 +10,7 @@ graph LR
   AirtelModule-->QueuesRegistryModule
   AirtelModule-->RedisModule
   AlfouadModule-->ProgramFspConfigurationsModule
+  AlfouadModule-->TransactionEventsModule
   AlfouadReconciliationModule-->AlfouadModule
   AlfouadReconciliationModule-->TransactionEventsModule
   AlfouadReconciliationModule-->TransactionsModule

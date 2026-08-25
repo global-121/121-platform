@@ -19,10 +19,6 @@ export const ALFOUAD_SETTINGS: FspSettingsDto = {
       name: FspAttributes.phoneNumber,
       isRequired: true,
     },
-    {
-      name: FspAttributes.addressCity,
-      isRequired: true,
-    },
   ],
   configurationProperties: [
     {

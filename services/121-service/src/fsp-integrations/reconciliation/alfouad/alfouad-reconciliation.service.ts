@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
+import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.service';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
-import { computeTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -29,9 +29,13 @@ export class AlfouadReconciliationService {
       try {
         await this.reconcileTransaction(transactionId);
       } catch (error) {
+        if (!(error instanceof AlfouadApiError)) {
+          throw error;
+        }
+
         console.error(
           `Al Fouad reconciliation failed for transaction ${transactionId}:`,
-          error instanceof Error ? error.message : error,
+          error.message,
         );
       }
     }
@@ -49,9 +53,9 @@ export class AlfouadReconciliationService {
     });
 
     if (!transactionState) {
-      throw new Error(
-        `Al Fouad transaction not found for referenceNumber ${referenceNumber}`,
-      );
+      throw new AlfouadApiError({
+        message: `Al Fouad transaction not found for referenceNumber ${referenceNumber}`,
+      });
     }
 
     const newTransactionStatus = this.alfouadService.mapAlfouadStateToTransactionStatus({
@@ -82,15 +86,9 @@ export class AlfouadReconciliationService {
         transactionId,
       );
 
-    const failedTransactionAttempts =
-      await this.transactionEventScopedRepository.countFailedTransactionAttempts(
-        transactionId,
-      );
-
-    return computeTransactionReference({
+    return this.alfouadService.generateReferenceNumber({
       referenceId,
       transactionId,
-      failedTransactionAttempts,
     });
   }
 

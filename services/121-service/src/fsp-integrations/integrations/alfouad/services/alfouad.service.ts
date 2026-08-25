@@ -8,7 +8,9 @@ import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integration
 import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { AlfouadApiService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { computeTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 @Injectable()
@@ -16,6 +18,7 @@ export class AlfouadService {
   public constructor(
     private readonly alfouadApiService: AlfouadApiService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
   ) {}
 
   public async getAlfouadFspConfig({
@@ -106,6 +109,25 @@ export class AlfouadService {
     return this.alfouadApiService.getTransactionStateByRef({
       referenceNumber,
       requestIdentity,
+    });
+  }
+
+  public async generateReferenceNumber({
+    referenceId,
+    transactionId,
+  }: {
+    referenceId: string;
+    transactionId: number;
+  }): Promise<string> {
+    const failedTransactionAttempts =
+      await this.transactionEventScopedRepository.countFailedTransactionAttempts(
+        transactionId,
+      );
+
+    return computeTransactionReference({
+      referenceId,
+      transactionId,
+      failedTransactionAttempts,
     });
   }
 
