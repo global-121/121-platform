@@ -166,8 +166,9 @@ class PaymentPage extends BasePage {
       Because there is a inbetween state where the approved chip is visible,
       but the payment is still 'processing'. Since we can't use the <canvas />
       element to check the graph status, we need to check the amount that is
-      displayed in the payment card. When this chip shows the correct amount
-      we can safely navigate away and assert the payment card in the overview
+      displayed in the payment card on the payment page. When this chip shows the
+      correct amount we can safely navigate away and assert the payment card in
+      the overview.
     */
 
     if (expectedAmount) {
