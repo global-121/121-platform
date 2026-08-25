@@ -72,6 +72,9 @@
       [loading]="roles.isPending()"
       [disabled]="userIsUpdatingItself()"
     >
+      <ng-template #emptyfilter>
+        <app-select-no-results-message />
+      </ng-template>
     </p-multiSelect>
     @if (userIsUpdatingItself()) {
       <ng-container slot="details">
