@@ -37,6 +37,9 @@ export const alfouadEnvVariablesSchema = {
     .url()
     .pipe(z.transform((url) => withoutTrailingSlash(url)))
     .optional(),
+};
+
+const alfouadOptionalEnvVariablesSchema = {
   ALFOUAD_ACCOUNT: z.string().optional(),
   ALFOUAD_BRANCH_ID: z.string().optional(),
   ALFOUAD_USERNAME: z.string().optional(),
@@ -205,6 +208,7 @@ export const safaricomEnvVariablesSchema = {
 const fspEnvVariablesSchema = {
   ...airtelEnvVariablesSchema,
   ...alfouadEnvVariablesSchema,
+  ...alfouadOptionalEnvVariablesSchema,
   ...commercialBankEthiopiaEnvVariablesSchema,
   ...cooperativeBankOfOromiaEnvVariablesSchema,
   // No environment variables for Excel FSP.
