@@ -293,6 +293,11 @@ svg-icon svg {
   .p-select-header,
   .p-multiselect-header {
     @apply border-b-grey-300/50 bg-grey-300/20 rounded-none border-t-0 border-b py-2;
+
+    /* This is amazing.. Finally a way to hide all those horrible empty containers that Angular produces! */
+    &:not(:has(> *)) {
+      @apply hidden;
+    }
   }
 
   .p-datatable {
