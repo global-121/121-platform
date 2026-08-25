@@ -208,6 +208,11 @@ export class AddProgramTeamUserDialogComponent {
     },
   }));
 
+  noUsersFoundMessage = {
+    message: $localize`This 121 portal doesn't have users to be added. Add users on the Users page, then assign them to this program.`,
+    title: $localize`No users found.`,
+  };
+
   constructor() {
     effect(() => {
       const user = this.userToEdit();

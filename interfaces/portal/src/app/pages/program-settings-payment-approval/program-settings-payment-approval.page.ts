@@ -200,6 +200,11 @@ export class ProgramSettingsPaymentApprovalPageComponent implements ComponentCan
     });
   });
 
+  noEligibleUsersFoundMessage = {
+    message: $localize`Only users with full program access can approve. You cannot assign yourself, and users can only be assigned to one step.`,
+    title: $localize`No eligible users found.`,
+  };
+
   constructor() {
     effect(() => {
       const isEditing = this.isEditing();

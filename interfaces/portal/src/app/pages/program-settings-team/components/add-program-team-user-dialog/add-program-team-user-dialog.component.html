@@ -41,10 +41,8 @@
     >
       <ng-template #empty>
         <app-select-no-results-message
-          message="This 121 portal doesn't have users to be added. Add users on the Users page, then assign them to this program."
-          i18n-message
-          title="No users found."
-          i18n-title
+          [message]="noUsersFoundMessage.message"
+          [title]="noUsersFoundMessage.title"
         />
       </ng-template>
       <ng-template #emptyfilter>

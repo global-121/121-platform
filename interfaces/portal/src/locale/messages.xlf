@@ -1365,6 +1365,9 @@
       <trans-unit id="6582831988869863310" datatype="html">
         <source>You&apos;re about to edit the user <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ userToEdit()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> in your program team.</source>
       </trans-unit>
+      <trans-unit id="6586274919046710221" datatype="html">
+        <source>This 121 portal doesn&apos;t have users to be added. Add users on the Users page, then assign them to this program.</source>
+      </trans-unit>
       <trans-unit id="6622197825860768013" datatype="html">
         <source>There are issues in your Kobo form that are blocking the refresh. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
       </trans-unit>
@@ -1629,6 +1632,9 @@
       <trans-unit id="7703736032933423612" datatype="html">
         <source>Error while importing existing Kobo registrations</source>
       </trans-unit>
+      <trans-unit id="770997973507726467" datatype="html">
+        <source>No users found.</source>
+      </trans-unit>
       <trans-unit id="7720922626568764421" datatype="html">
         <source>Learn more in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/></source>
       </trans-unit>
@@ -1815,6 +1821,9 @@
       <trans-unit id="8390249546875631537" datatype="html">
         <source>Important Notice: The card balances available for download are not in real-time. The report includes the date and time of each card&apos;s last external update.</source>
       </trans-unit>
+      <trans-unit id="8407349224144000567" datatype="html">
+        <source>Only users with full program access can approve. You cannot assign yourself, and users can only be assigned to one step.</source>
+      </trans-unit>
       <trans-unit id="8409002705238592127" datatype="html">
         <source>Review summary and approve payment. The payment can only be started once all needed users approve the payment.</source>
       </trans-unit>
@@ -1949,6 +1958,9 @@
       </trans-unit>
       <trans-unit id="9126928390466272085" datatype="html">
         <source>The status of <x equiv-text="data.applicableCount" id="PH"/> registration(s) is being changed to &quot;<x equiv-text="this.statusLabel()" id="PH_1"/>&quot; successfully. The status change can take up to a minute to process.</source>
+      </trans-unit>
+      <trans-unit id="913139971007804116" datatype="html">
+        <source>No eligible users found.</source>
       </trans-unit>
       <trans-unit id="9163695541488660450" datatype="html">
         <source>Update reason</source>
