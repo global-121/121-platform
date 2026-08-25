@@ -1,8 +1,7 @@
 import { TestBed } from '@automock/jest';
 
-import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/alfouad.service';
-import { AlfouadApiTransactionStateEnum } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
-import { ALFOUAD_RECONCILIATION_CANCELED_MESSAGE } from '@121-service/src/fsp-integrations/reconciliation/alfouad/alfouad-reconciliation.config';
+import { AlfouadApiTransactionState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
+import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.service';
 import { AlfouadReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/alfouad/alfouad-reconciliation.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
@@ -76,7 +75,7 @@ describe('AlfouadReconciliationService', () => {
         transactionRepository.getWaitingTransactionIdsByFsp as jest.Mock
       ).mockResolvedValue([42, 43]);
       (alfouadService.getTransactionStateByRef as jest.Mock).mockResolvedValue(
-        AlfouadApiTransactionStateEnum.approved,
+        AlfouadApiTransactionState.approved,
       );
 
       // Act
@@ -92,7 +91,7 @@ describe('AlfouadReconciliationService', () => {
         transactionRepository.getWaitingTransactionIdsByFsp as jest.Mock
       ).mockResolvedValue([42]);
       (alfouadService.getTransactionStateByRef as jest.Mock).mockResolvedValue(
-        AlfouadApiTransactionStateEnum.paid,
+        AlfouadApiTransactionState.paid,
       );
 
       // Act
@@ -116,7 +115,7 @@ describe('AlfouadReconciliationService', () => {
         transactionRepository.getWaitingTransactionIdsByFsp as jest.Mock
       ).mockResolvedValue([42]);
       (alfouadService.getTransactionStateByRef as jest.Mock).mockResolvedValue(
-        AlfouadApiTransactionStateEnum.canceled,
+        AlfouadApiTransactionState.canceled,
       );
 
       // Act
@@ -130,14 +129,14 @@ describe('AlfouadReconciliationService', () => {
         description:
           TransactionEventDescription.alfouadReconciliationProcessed,
         newTransactionStatus: TransactionStatusEnum.error,
-        errorMessage: ALFOUAD_RECONCILIATION_CANCELED_MESSAGE,
+        errorMessage: 'The transaction was canceled at Al Fouad.',
       });
     });
 
     it.each([
-      AlfouadApiTransactionStateEnum.pendingApproval,
-      AlfouadApiTransactionStateEnum.approved,
-      AlfouadApiTransactionStateEnum.hold,
+      AlfouadApiTransactionState.pendingApproval,
+      AlfouadApiTransactionState.approved,
+      AlfouadApiTransactionState.hold,
     ])(
       'should leave the transaction on waiting for state %s',
       async (state) => {
@@ -166,7 +165,7 @@ describe('AlfouadReconciliationService', () => {
       ).mockResolvedValue([42, 43]);
       (alfouadService.getTransactionStateByRef as jest.Mock)
         .mockResolvedValueOnce(undefined) // 42: not found -> throws internally, caught
-        .mockResolvedValueOnce(AlfouadApiTransactionStateEnum.paid); // 43: processed
+        .mockResolvedValueOnce(AlfouadApiTransactionState.paid); // 43: processed
 
       // Act
       const count = await service.doAlfouadReconciliation();
