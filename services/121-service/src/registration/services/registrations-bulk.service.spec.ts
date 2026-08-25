@@ -188,15 +188,75 @@ describe('RegistrationBulkService', () => {
     });
   });
 
-  describe('pending approval count on status change dry run', () => {
+  describe('pending approval count on status change', () => {
     const messageContentDetails = {
       message: undefined,
       messageTemplateKey: undefined,
       messageContentType: undefined,
     };
 
-    it('does not compute pendingApprovalCount for statuses outside declined/paused', async () => {
-      // Act
+    it.each([
+      {
+        registrationStatus: RegistrationStatusEnum.declined,
+        pendingApprovalCount: 0,
+      },
+      {
+        registrationStatus: RegistrationStatusEnum.paused,
+        pendingApprovalCount: 2,
+      },
+    ])(
+      'returns $pendingApprovalCount pending approvals when changing status to $registrationStatus',
+      async ({ registrationStatus, pendingApprovalCount }) => {
+        jest
+          .spyOn(registrationsPaginationService as any, 'getPaginate')
+          .mockImplementationOnce(() => defaultPaginateResult)
+          .mockImplementationOnce(() => defaultPaginateResult)
+          .mockImplementationOnce(() => ({
+            data: Array.from(
+              { length: pendingApprovalCount },
+              () => registrationMock,
+            ),
+            meta: {
+              totalItems: pendingApprovalCount,
+              totalPages: 1,
+            },
+          }));
+
+        const result =
+          await registrationsBulkService.updateRegistrationStatusOrDryRun({
+            paginateQuery,
+            programId,
+            registrationStatus,
+            dryRun: true,
+            userId,
+            messageContentDetails,
+          });
+
+        expect(result.pendingApprovalCount).toBe(pendingApprovalCount);
+      },
+    );
+
+    it.each([RegistrationStatusEnum.declined, RegistrationStatusEnum.paused])(
+      'does not compute pendingApprovalCount when changing status to %s without a dry run',
+      async (registrationStatus) => {
+        const result =
+          await registrationsBulkService.updateRegistrationStatusOrDryRun({
+            paginateQuery,
+            programId,
+            registrationStatus,
+            dryRun: false,
+            userId,
+            messageContentDetails,
+          });
+
+        expect(result.pendingApprovalCount).toBeUndefined();
+        expect(
+          registrationsPaginationService.getPaginate,
+        ).toHaveBeenCalledTimes(2);
+      },
+    );
+
+    it('does not compute pendingApprovalCount during dry run for statuses not requiring the check', async () => {
       const result =
         await registrationsBulkService.updateRegistrationStatusOrDryRun({
           paginateQuery,
@@ -207,64 +267,7 @@ describe('RegistrationBulkService', () => {
           messageContentDetails,
         });
 
-      // Assert
       expect(result.pendingApprovalCount).toBeUndefined();
-      // Only the totalFilterCount and applicableCount queries should have run
-      expect(registrationsPaginationService.getPaginate).toHaveBeenCalledTimes(
-        2,
-      );
-    });
-
-    it('returns 0 when no applicable registrations have a payment pending approval', async () => {
-      // Arrange
-      jest
-        .spyOn(registrationsPaginationService as any, 'getPaginate')
-        .mockImplementationOnce(() => defaultPaginateResult) // totalFilterCount
-        .mockImplementationOnce(() => defaultPaginateResult) // applicableCount
-        .mockImplementationOnce(() => ({
-          data: [],
-          meta: { totalItems: 0, totalPages: 1 },
-        })); // pendingApprovalCount
-
-      // Act
-      const result =
-        await registrationsBulkService.updateRegistrationStatusOrDryRun({
-          paginateQuery,
-          programId,
-          registrationStatus: RegistrationStatusEnum.declined,
-          dryRun: true,
-          userId,
-          messageContentDetails,
-        });
-
-      // Assert
-      expect(result.pendingApprovalCount).toBe(0);
-    });
-
-    it('returns the count of applicable registrations that have a payment pending approval', async () => {
-      // Arrange
-      jest
-        .spyOn(registrationsPaginationService as any, 'getPaginate')
-        .mockImplementationOnce(() => defaultPaginateResult) // totalFilterCount
-        .mockImplementationOnce(() => defaultPaginateResult) // applicableCount
-        .mockImplementationOnce(() => ({
-          data: [registrationMock, registrationMock],
-          meta: { totalItems: 2, totalPages: 1 },
-        })); // pendingApprovalCount
-
-      // Act
-      const result =
-        await registrationsBulkService.updateRegistrationStatusOrDryRun({
-          paginateQuery,
-          programId,
-          registrationStatus: RegistrationStatusEnum.paused,
-          dryRun: true,
-          userId,
-          messageContentDetails,
-        });
-
-      // Assert
-      expect(result.pendingApprovalCount).toBe(2);
     });
   });
 });

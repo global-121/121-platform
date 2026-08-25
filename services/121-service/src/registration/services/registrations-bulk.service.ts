@@ -63,10 +63,10 @@ export class RegistrationsBulkService {
   ) {}
 
   // Only these target statuses can affect registrations with a payment pending approval
-  private static readonly statusesRequiringPendingApprovalCheck = [
+  private static readonly statusesRequiringPendingApprovalCheck = new Set([
     RegistrationStatusEnum.declined,
     RegistrationStatusEnum.paused,
-  ];
+  ]);
 
   public async updateRegistrationStatusOrDryRun({
     paginateQuery,
@@ -552,7 +552,7 @@ export class RegistrationsBulkService {
     programId: number;
   }): Promise<number | undefined> {
     if (
-      !RegistrationsBulkService.statusesRequiringPendingApprovalCheck.includes(
+      !RegistrationsBulkService.statusesRequiringPendingApprovalCheck.has(
         registrationStatus,
       )
     ) {
