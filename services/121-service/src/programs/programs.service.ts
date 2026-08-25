@@ -237,6 +237,8 @@ export class ProgramService {
       scope: undefined,
     });
 
+    await this.userService.assignAllAdminUsersToProgram(newProgram.id);
+
     return newProgram;
   }
 
