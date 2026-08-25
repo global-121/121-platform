@@ -43,6 +43,7 @@ export class TransactionJobsAlfouadService
       referenceId: transactionJob.referenceId,
       transactionId: transactionJob.transactionId,
     });
+
     const requestIdentity = await this.alfouadService.getAlfouadFspConfig({
       programFspConfigurationId: transactionJob.programFspConfigurationId,
     });
@@ -51,8 +52,8 @@ export class TransactionJobsAlfouadService
       await this.alfouadService.createTransaction({
         senderFullName: requestIdentity.senderFullName,
         senderPhoneNumber: requestIdentity.senderPhoneNumber,
-        beneficiaryFullName: transactionJob.beneficiaryFullName,
-        beneficiaryPhoneNumber: transactionJob.beneficiaryPhoneNumber,
+        beneficiaryFullName: transactionJob.registrationFullName,
+        beneficiaryPhoneNumber: transactionJob.registrationPhoneNumber,
         referenceNumber,
         countryCode: ALFOUAD_COUNTRY_CODE,
         cityCode: ALFOUAD_CITY_CODE,

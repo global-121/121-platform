@@ -689,8 +689,8 @@ export class TransactionJobsCreationService {
           );
           return {
             ...base!,
-            beneficiaryFullName: registrationView[FspAttributes.fullName]!,
-            beneficiaryPhoneNumber:
+            registrationFullName: registrationView[FspAttributes.fullName]!,
+            registrationPhoneNumber:
               registrationView[FspAttributes.phoneNumber]!,
           };
         },

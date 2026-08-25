@@ -24,8 +24,8 @@ const transactionJob: AlfouadTransactionJobDto = {
   transferValue: 10000,
   programFspConfigurationId: 1,
   isRetry: false,
-  beneficiaryFullName: 'Test Beneficiary',
-  beneficiaryPhoneNumber: '0911111111',
+  registrationFullName: 'Test Beneficiary',
+  registrationPhoneNumber: '0911111111',
 };
 
 describe('TransactionJobsAlfouadService', () => {
