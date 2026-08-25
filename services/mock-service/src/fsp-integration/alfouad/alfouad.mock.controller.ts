@@ -53,7 +53,6 @@ export class AlfouadMockController {
   }
 
   private assertAuthorized(authorization: string | undefined): void {
-    console.log('ALFOUAD DEBUG authorization header:', authorization);
     if (!authorization?.startsWith('Bearer ')) {
       throw new HttpException(
         { message: 'Invalid or missing Authorization header.' },
