@@ -1,0 +1,34 @@
+<div class="p-explainer-accordion">
+  <p-accordion value="0">
+    <p-accordion-panel
+      value="0"
+      [unstyled]="true"
+    >
+      <p-accordion-header [unstyled]="true">
+        <p>
+          <span
+            class="pi pi-question-circle"
+            aria-hidden="true"
+          ></span>
+          <span>
+            {{ title() }}
+          </span>
+        </p>
+      </p-accordion-header>
+
+      <p-accordion-content id="p-accordion-content">
+        <ul>
+          @for (item of items(); track $index) {
+            <li [attr.index]="$index + 1">
+              <p>{{ item.content }}</p>
+              <img
+                src="{{ item.imageUrl }}"
+                alt=""
+              />
+            </li>
+          }
+        </ul>
+      </p-accordion-content>
+    </p-accordion-panel>
+  </p-accordion>
+</div>
