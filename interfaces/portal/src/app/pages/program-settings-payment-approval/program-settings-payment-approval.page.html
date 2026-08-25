@@ -98,7 +98,12 @@
             (onChange)="onApproverSelectionChanged()"
           >
             <ng-template #empty>
-              <app-select-no-results-message />
+              <app-select-no-results-message
+                [message]="'Only users with full program access can approve. You cannot assign yourself, and users can only be assigned to one step.'"
+                i18n-message
+                [title]="'No eligible users found.'"
+                i18n-title
+              />
             </ng-template>
             <ng-template #emptyfilter>
               <app-select-no-results-message />
@@ -145,7 +150,12 @@
                     (onChange)="onApproverSelectionChanged()"
                   >
                     <ng-template #empty>
-                      <app-select-no-results-message />
+                      <app-select-no-results-message
+                        [message]="'Only users with full program access can approve. You cannot assign yourself, and users can only be assigned to one step.'"
+                        i18n-message
+                        [title]="'No eligible users found.'"
+                        i18n-title
+                      />
                     </ng-template>
                     <ng-template #emptyfilter>
                       <app-select-no-results-message />
