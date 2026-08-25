@@ -438,10 +438,7 @@ export class CustomHttpService {
     return cloneDeepWith(
       data,
       (value: unknown, key: string | number | undefined) => {
-        if (value instanceof SensitiveValue) {
-          return '**REDACTED**';
-        }
-        if (isSensitiveProperty(key)) {
+        if (value instanceof SensitiveValue || isSensitiveProperty(key)) {
           return '**REDACTED**';
         }
         if (isUsernameProperty(key) && typeof value === 'string') {
