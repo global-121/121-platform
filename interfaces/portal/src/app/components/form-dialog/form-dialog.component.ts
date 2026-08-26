@@ -44,7 +44,7 @@ export class FormDialogComponent<TMutationData = unknown> {
   readonly headerClass = input('');
   readonly headerIcon = input('pi pi-question');
 
-  // TODO: Why are these props called proceedX instead of submitX?
+  // Why are these props called proceedX instead of submitX?
   readonly proceedLabel = input($localize`:@@generic-proceed:Proceed`);
   readonly proceedIcon = input<string | undefined>(undefined);
 

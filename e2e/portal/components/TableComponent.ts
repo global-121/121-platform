@@ -418,16 +418,17 @@ class TableComponent {
     await checkbox.click();
   }
 
-  async changeRegistrationStatusByNameWithOptions({
-    registrationName,
+  async changeRegistrationStatusByNamesWithOptions({
+    registrationNames,
     status,
     sendMessage = false,
     sendCustomMessage = false,
     sendTemplatedMessage = false,
     customMessage,
   }: {
-    registrationName: string;
-    status: string;
+    registrationNames: string[];
+    status:
+      'Pause' | 'Decline' | 'Delete' | 'Include' | 'Validate' | 'Complete';
     sendMessage?: boolean;
     sendCustomMessage?: boolean;
     sendTemplatedMessage?: boolean;
@@ -436,7 +437,10 @@ class TableComponent {
     const statusButton = this.page.getByRole('button', { name: status });
     const reasonField = this.page.getByPlaceholder('Enter reason');
 
-    await this.selectRowByTextContent(registrationName);
+    for (const registrationName of registrationNames) {
+      await this.selectRowByTextContent(registrationName);
+    }
+
     await statusButton.click();
 
     // Check for delete confirmation
