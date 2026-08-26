@@ -60,8 +60,6 @@ export class RegistrationsBulkService {
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     @Inject(getScopedRepositoryProviderName(NoteEntity))
     private readonly noteScopedRepository: ScopedRepository<NoteEntity>,
-    @Inject(getScopedRepositoryProviderName(TransactionEntity))
-    private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
   ) {}
 
   // Only these target statuses can affect registrations with a payment pending approval
