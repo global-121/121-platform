@@ -172,7 +172,7 @@ export class AlfouadApiService {
       publicKeyXml: authIdentity.publicKey,
     });
 
-   const authorizationToken =
+    const authorizationToken =
       this.alfouadApiHelperService.buildAuthorizationToken({
         account: authIdentity.account,
         branchId: authIdentity.branchId,
