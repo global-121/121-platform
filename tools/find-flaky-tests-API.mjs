@@ -8,15 +8,20 @@
  * (`gh auth login`).
  *
  * Usage:
- *   node find-flaky-integration-tests.mjs [--workflow test_service_api.yml]
+ *   node find-flaky-tests-API.mjs [--workflow test_service_api.yml]
  *     [--limit 200] [--branch main] [--repo global-121/121-platform]
- *     [--output flaky-integration-report.json]
+ *     [--output report-flaky-tests-API.json]
  */
-import { execFile } from 'node:child_process';
 import { writeFile } from 'node:fs/promises';
-import { parseArgs, promisify } from 'node:util';
+import { parseArgs } from 'node:util';
 
-const execFileAsync = promisify(execFile);
+import {
+  ghJson,
+  ghText,
+  listCompletedRuns,
+  recordOccurrences,
+  runWithConcurrency,
+} from './find-flaky.utils.mjs';
 
 const { values: args } = parseArgs({
   options: {
@@ -25,7 +30,7 @@ const { values: args } = parseArgs({
     limit: { type: 'string', default: '200' },
     branch: { type: 'string' },
     concurrency: { type: 'string', default: '6' },
-    output: { type: 'string', default: 'flaky-integration-report.json' },
+    output: { type: 'string', default: 'report-flaky-tests-API.json' },
   },
 });
 
@@ -38,51 +43,23 @@ const shardJobNamePattern = /^test-shard \(/;
 const failFilePattern = /FAIL (\S+\.test\.ts)/;
 const failingTestPattern = /●\s+(.+)$/;
 
-async function ghJson(ghArgs) {
-  const { stdout } = await execFileAsync('gh', ghArgs);
-  return JSON.parse(stdout);
-}
-
-async function ghText(ghArgs) {
-  const { stdout } = await execFileAsync('gh', ghArgs);
-  return stdout;
-}
-
-async function listCompletedRuns() {
-  const listArgs = [
-    'run',
-    'list',
-    '--repo',
+async function listCompletedRunsForWorkflow() {
+  return listCompletedRuns({
     repo,
-    '--workflow',
     workflow,
-    '-L',
-    String(runLimit),
-    '--json',
-    'databaseId,conclusion,status,createdAt,headBranch,event,headSha,url',
-  ];
-  if (args.branch) {
-    listArgs.push('--branch', args.branch);
-  }
-
-  const runs = await ghJson(listArgs);
-  return runs.filter((run) => run.status === 'completed');
+    runLimit,
+    branch: args.branch,
+  });
 }
 
-async function getShardJobs(runId) {
-  const { jobs } = await ghJson([
-    'run',
-    'view',
-    String(runId),
-    '--repo',
-    repo,
-    '--json',
-    'jobs',
-  ]);
+async function getShardJobs({ runId }) {
+  const { jobs } = await ghJson({
+    ghArgs: ['run', 'view', String(runId), '--repo', repo, '--json', 'jobs'],
+  });
   return jobs.filter((job) => shardJobNamePattern.test(job.name));
 }
 
-function parseFailingTests(logText) {
+function parseFailingTests({ logText }) {
   const failingTests = new Set();
   let currentFile;
 
@@ -102,50 +79,38 @@ function parseFailingTests(logText) {
   return failingTests;
 }
 
-async function getFailingTestsForJob(jobId) {
+async function getFailingTestsForJob({ jobId }) {
   try {
-    const logText = await ghText([
-      'run',
-      'view',
-      '--repo',
-      repo,
-      '--job',
-      String(jobId),
-      '--log-failed',
-    ]);
-    return { failingTests: parseFailingTests(logText), logAvailable: true };
+    const logText = await ghText({
+      ghArgs: [
+        'run',
+        'view',
+        '--repo',
+        repo,
+        '--job',
+        String(jobId),
+        '--log-failed',
+      ],
+    });
+    return {
+      failingTests: parseFailingTests({ logText }),
+      logAvailable: true,
+    };
   } catch {
     // GitHub deletes Actions logs after a retention period; treat those as unknown.
     return { failingTests: new Set(), logAvailable: false };
   }
 }
 
-async function runWithConcurrency(items, worker, maxConcurrent) {
-  let nextIndex = 0;
-
-  async function runNext() {
-    const index = nextIndex++;
-    if (index >= items.length) {
-      return;
-    }
-    await worker(items[index]);
-    await runNext();
-  }
-
-  await Promise.all(
-    Array.from({ length: Math.min(maxConcurrent, items.length) }, runNext),
-  );
-}
-
-async function collectFailureOccurrences(runs) {
+async function collectFailureOccurrences({ runs }) {
   const occurrencesByTest = new Map();
   let scannedRunCount = 0;
   let expiredLogCount = 0;
 
-  await runWithConcurrency(
-    runs,
-    async (run) => {
-      const shardJobs = await getShardJobs(run.databaseId);
+  await runWithConcurrency({
+    items: runs,
+    worker: async (run) => {
+      const shardJobs = await getShardJobs({ runId: run.databaseId });
       if (shardJobs.length === 0) {
         return; // The path-filter step skipped this run entirely.
       }
@@ -156,29 +121,18 @@ async function collectFailureOccurrences(runs) {
       );
 
       for (const job of failedShardJobs) {
-        const { failingTests, logAvailable } = await getFailingTestsForJob(
-          job.databaseId,
-        );
+        const { failingTests, logAvailable } = await getFailingTestsForJob({
+          jobId: job.databaseId,
+        });
         if (!logAvailable) {
           expiredLogCount += 1;
           continue;
         }
-        for (const testId of failingTests) {
-          const occurrences = occurrencesByTest.get(testId) ?? [];
-          occurrences.push({
-            runId: run.databaseId,
-            headSha: run.headSha,
-            headBranch: run.headBranch,
-            event: run.event,
-            createdAt: run.createdAt,
-            url: run.url,
-          });
-          occurrencesByTest.set(testId, occurrences);
-        }
+        recordOccurrences({ occurrencesByTest, testIds: failingTests, run });
       }
     },
-    concurrency,
-  );
+    maxConcurrent: concurrency,
+  });
 
   return { occurrencesByTest, scannedRunCount, expiredLogCount };
 }
@@ -217,7 +171,7 @@ function buildReport({ occurrencesByTest, scannedRunCount, expiredLogCount }) {
   };
 }
 
-function printSummary(report) {
+function printSummary({ report }) {
   // report.tests is already ordered by flakiness score (most unpredictable first).
   const flakyTests = report.tests.filter(
     (test) => test.classification === 'flaky',
@@ -255,8 +209,8 @@ function printSummary(report) {
 }
 
 async function main() {
-  const runs = await listCompletedRuns();
-  const failureOccurrences = await collectFailureOccurrences(runs);
+  const runs = await listCompletedRunsForWorkflow();
+  const failureOccurrences = await collectFailureOccurrences({ runs });
 
   if (failureOccurrences.scannedRunCount === 0) {
     console.log('No completed runs found to analyze.');
@@ -266,7 +220,7 @@ async function main() {
   const report = buildReport(failureOccurrences);
   await writeFile(args.output, JSON.stringify(report, null, 2));
 
-  printSummary(report);
+  printSummary({ report });
   console.log(`\nFull report written to ${args.output}`);
 }
 
