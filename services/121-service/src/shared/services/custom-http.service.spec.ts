@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import https from 'node:https';
 import { of } from 'rxjs';
 
-import { SensitiveValue } from '@121-service/src/shared/consts/sensitive-value.class';
+import { SensitivePiiValue } from '@121-service/src/shared/consts/sensitive-pii-value.class';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -37,10 +37,10 @@ describe('CustomHttpService', () => {
       } as any;
     });
 
-    it('should send SensitiveValue fields unwrapped while redacting them in the log', async () => {
+    it('should send SensitiveValue fields unwrapped while masking them in the log', async () => {
       // Arrange
       const payload = {
-        SenderFullName: new SensitiveValue('John Doe'),
+        SenderFullName: new SensitivePiiValue('John Doe'),
         ReferenceNumber: 'RC-TEST-1',
       };
 
@@ -56,7 +56,7 @@ describe('CustomHttpService', () => {
 
       const loggedMessage = trackTraceMock.mock.calls[0][0].message;
       expect(loggedMessage).not.toContain('John Doe');
-      expect(loggedMessage).toContain('**REDACTED**');
+      expect(loggedMessage).toContain('*****Doe');
     });
 
     it('should send non-plain object payload unmodified', async () => {
