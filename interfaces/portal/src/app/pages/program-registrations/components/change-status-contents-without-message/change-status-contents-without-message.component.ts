@@ -37,6 +37,7 @@ export class ChangeStatusContentsWithoutMessageComponent {
   readonly isMutating = input(false);
   readonly cancelChangeStatus = output();
   readonly confirmChangeStatus = output();
+  readonly submitButtonText = input<string | undefined>();
 
   formGroup = new FormGroup({
     confirmAction: new FormControl(false, {

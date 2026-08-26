@@ -18,4 +18,5 @@ export class ChangeStatusSubmitButtonsComponent {
   readonly isMutating = input(false);
   readonly cancelClick = output();
   readonly approveClick = output<MouseEvent>();
+  readonly submitButtonText = input<string | undefined>();
 }
