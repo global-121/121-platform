@@ -95,7 +95,7 @@ export class CustomHttpService {
     headers?: Headers,
     httpsAgent?: https.Agent,
   ): Promise<T> {
-    const unwrappedPayload = this.unwrapSensitiveValues(payload);
+    const unwrappedPayload = this.unwrapSensitivePiiValues(payload);
 
     return await lastValueFrom(
       this.httpService
@@ -117,7 +117,7 @@ export class CustomHttpService {
     );
   }
 
-  private unwrapSensitiveValues<T>(data: T): T {
+  private unwrapSensitivePiiValues<T>(data: T): T {
     if (!isPlainObject(data) && !Array.isArray(data)) {
       return data;
     }
@@ -135,7 +135,7 @@ export class CustomHttpService {
     payload: any,
     headers?: Headers,
   ): Promise<T> {
-    const unwrappedPayload = this.unwrapSensitiveValues(payload);
+    const unwrappedPayload = this.unwrapSensitivePiiValues(payload);
 
     return await lastValueFrom(
       this.httpService
@@ -161,7 +161,7 @@ export class CustomHttpService {
     payload: any,
     headers?: Headers,
   ): Promise<T> {
-    const unwrappedPayload = this.unwrapSensitiveValues(payload);
+    const unwrappedPayload = this.unwrapSensitivePiiValues(payload);
 
     return await lastValueFrom(
       this.httpService
@@ -224,7 +224,7 @@ export class CustomHttpService {
       headers: this.createHeaders(headers),
     };
     if (payload) {
-      params.data = this.unwrapSensitiveValues(payload); // If payload is null on a GET, axios will throw an error
+      params.data = this.unwrapSensitivePiiValues(payload); // If payload is null on a GET, axios will throw an error
     }
     if (httpsAgent) {
       params.httpsAgent = httpsAgent;

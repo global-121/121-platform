@@ -37,7 +37,7 @@ describe('CustomHttpService', () => {
       } as any;
     });
 
-    it('should send SensitiveValue fields unwrapped while masking them in the log', async () => {
+    it('should send SensitivePiiValue fields unwrapped while masking them in the log', async () => {
       // Arrange
       const payload = {
         SenderFullName: new SensitivePiiValue('John Doe'),
