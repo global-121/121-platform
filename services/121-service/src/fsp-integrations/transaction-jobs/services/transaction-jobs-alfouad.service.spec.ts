@@ -1,16 +1,20 @@
-import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
+import { AlfouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-auth-identity.interface';
+import { AlfouadSenderInfo } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-sender-info.interface';
 import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.service';
 import { TransactionJobsAlfouadService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-alfouad.service';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { AlfouadTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/alfouad-transaction-job.dto';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 
-const requestIdentity: AlfouadRequestIdentity = {
+const authIdentity: AlfouadAuthIdentity = {
   account: '161010004501',
   branchId: '1',
   username: 'Red Crescent',
   password: 'secret',
   publicKey: '<RSAParameters />',
+};
+
+const senderInfo: AlfouadSenderInfo = {
   senderFullName: 'Red Crescent',
   senderPhoneNumber: '0900000000',
 };
@@ -36,7 +40,9 @@ describe('TransactionJobsAlfouadService', () => {
 
   beforeEach(() => {
     alfouadService = {
-      getAlfouadFspConfig: jest.fn().mockResolvedValue(requestIdentity),
+      getAlfouadFspConfig: jest
+        .fn()
+        .mockResolvedValue({ authIdentity, senderInfo }),
       generateReferenceNumber: jest.fn().mockResolvedValue('reference-number'),
       createTransaction: jest.fn(),
     } as any;

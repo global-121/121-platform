@@ -9,9 +9,9 @@ import { AlfouadApiCreateTransactionResponseBodyDto } from '@121-service/src/fsp
 import { AlfouadApiGetTransactionResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/alfouad/dtos/alfouad-api-get-transaction-response-body.dto';
 import { AlfouadApiTransactionState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
+import { AlfouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-auth-identity.interface';
 import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-params.interface';
 import { AlfouadCreateTransactionResult } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-result.interface';
-import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
 import { AlfouadApiHelperService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.helper.service';
 import { AlfouadEncryptionService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.encryption.service';
 import { SensitiveValue } from '@121-service/src/shared/consts/sensitive-value.class';
@@ -26,7 +26,7 @@ export class AlfouadApiService {
   ) {}
 
   public async createTransaction({
-    requestIdentity,
+    authIdentity,
     senderFullName,
     senderPhoneNumber,
     beneficiaryFullName,
@@ -56,7 +56,7 @@ export class AlfouadApiService {
         method: 'POST',
         path: 'api/Transaction/TransactionCreate',
         payload,
-        requestIdentity,
+        authIdentity,
       },
     );
 
@@ -71,16 +71,16 @@ export class AlfouadApiService {
 
   public async getTransactionStateByRef({
     referenceNumber,
-    requestIdentity,
+    authIdentity,
   }: {
     referenceNumber: string;
-    requestIdentity: AlfouadRequestIdentity;
+    authIdentity: AlfouadAuthIdentity;
   }): Promise<AlfouadApiTransactionState | undefined> {
     const response = await this.sendAuthenticatedRequest<AlfouadApiGetTransactionResponseBodyDto>(
       {
         method: 'GET',
         path: `api/Transaction/TransactionByRef?ReferenceNumber=${encodeURIComponent(referenceNumber)}`,
-        requestIdentity,
+        authIdentity,
       },
     );
 
@@ -105,12 +105,12 @@ export class AlfouadApiService {
     method,
     path,
     payload,
-    requestIdentity,
+    authIdentity,
   }: {
     method: 'GET' | 'POST';
     path: string;
     payload?: unknown;
-    requestIdentity: AlfouadRequestIdentity;
+    authIdentity: AlfouadAuthIdentity;
   }): Promise<AxiosResponse<T>> {
     let response: AxiosResponse<T>;
 
@@ -119,7 +119,7 @@ export class AlfouadApiService {
         method,
         path,
         payload,
-        requestIdentity,
+        authIdentity,
       });
     } catch (error) {
       throw new AlfouadApiError({
@@ -140,14 +140,14 @@ export class AlfouadApiService {
     method,
     path,
     payload,
-    requestIdentity,
+    authIdentity,
   }: {
     method: 'GET' | 'POST';
     path: string;
     payload?: unknown;
-    requestIdentity: AlfouadRequestIdentity;
+    authIdentity: AlfouadAuthIdentity;
   }): Promise<AxiosResponse<T>> {
-    const headers = this.buildAuthHeaders({ requestIdentity });
+    const headers = this.buildAuthHeaders({ authIdentity });
     const url = this.buildRequestUrl(path);
 
     switch (method) {
@@ -163,20 +163,20 @@ export class AlfouadApiService {
   }
 
   private buildAuthHeaders({
-    requestIdentity,
+    authIdentity,
   }: {
-    requestIdentity: AlfouadRequestIdentity;
+    authIdentity: AlfouadAuthIdentity;
   }): Headers {
     const encryptedPassword = this.alfouadEncryptionService.encrypt({
-      data: requestIdentity.password,
-      publicKeyXml: requestIdentity.publicKey,
+      data: authIdentity.password,
+      publicKeyXml: authIdentity.publicKey,
     });
 
    const authorizationToken =
       this.alfouadApiHelperService.buildAuthorizationToken({
-        account: requestIdentity.account,
-        branchId: requestIdentity.branchId,
-        username: requestIdentity.username,
+        account: authIdentity.account,
+        branchId: authIdentity.branchId,
+        username: authIdentity.username,
         encryptedPassword,
       });
 

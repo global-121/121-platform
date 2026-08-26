@@ -44,14 +44,15 @@ export class TransactionJobsAlfouadService
       transactionId: transactionJob.transactionId,
     });
 
-    const requestIdentity = await this.alfouadService.getAlfouadFspConfig({
-      programFspConfigurationId: transactionJob.programFspConfigurationId,
-    });
+    const { authIdentity, senderInfo } =
+      await this.alfouadService.getAlfouadFspConfig({
+        programFspConfigurationId: transactionJob.programFspConfigurationId,
+      });
 
     try {
       await this.alfouadService.createTransaction({
-        senderFullName: requestIdentity.senderFullName,
-        senderPhoneNumber: requestIdentity.senderPhoneNumber,
+        senderFullName: senderInfo.senderFullName,
+        senderPhoneNumber: senderInfo.senderPhoneNumber,
         beneficiaryFullName: transactionJob.registrationFullName,
         beneficiaryPhoneNumber: transactionJob.registrationPhoneNumber,
         referenceNumber,
@@ -59,7 +60,7 @@ export class TransactionJobsAlfouadService
         cityCode: ALFOUAD_CITY_CODE,
         deliveryCurrencyCode: ALFOUAD_DELIVERY_CURRENCY_CODE,
         deliveryAmount: transactionJob.transferValue,
-        requestIdentity,
+        authIdentity,
       });
     } catch (error) {
       if (error instanceof AlfouadApiError) {

@@ -4,8 +4,9 @@ import { AlfouadApiErrorCode } from '@121-service/src/fsp-integrations/integrati
 import { AlfouadApiResponseState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-response-state.enum';
 import { AlfouadApiTransactionState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
+import { AlfouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-auth-identity.interface';
 import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-params.interface';
-import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
+import { AlfouadSenderInfo } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-sender-info.interface';
 import { AlfouadApiService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { computeTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
@@ -25,7 +26,10 @@ export class AlfouadService {
     programFspConfigurationId,
   }: {
     programFspConfigurationId: number;
-  }): Promise<AlfouadRequestIdentity> {
+  }): Promise<{
+    authIdentity: AlfouadAuthIdentity;
+    senderInfo: AlfouadSenderInfo;
+  }> {
     const properties =
       await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
         programFspConfigurationId,
@@ -44,13 +48,21 @@ export class AlfouadService {
       properties.find((property) => property.name === name)?.value as string;
 
     return {
-      account: valueOf(FspConfigurationProperties.accountAlfouad),
-      branchId: valueOf(FspConfigurationProperties.branchIdAlfouad),
-      username: valueOf(FspConfigurationProperties.usernameAlfouad),
-      password: valueOf(FspConfigurationProperties.passwordAlfouad),
-      publicKey: valueOf(FspConfigurationProperties.publicKeyAlfouad),
-      senderFullName: valueOf(FspConfigurationProperties.senderFullNameAlfouad),
-      senderPhoneNumber: valueOf(FspConfigurationProperties.senderPhoneNumberAlfouad),
+      authIdentity: {
+        account: valueOf(FspConfigurationProperties.accountAlfouad),
+        branchId: valueOf(FspConfigurationProperties.branchIdAlfouad),
+        username: valueOf(FspConfigurationProperties.usernameAlfouad),
+        password: valueOf(FspConfigurationProperties.passwordAlfouad),
+        publicKey: valueOf(FspConfigurationProperties.publicKeyAlfouad),
+      },
+      senderInfo: {
+        senderFullName: valueOf(
+          FspConfigurationProperties.senderFullNameAlfouad,
+        ),
+        senderPhoneNumber: valueOf(
+          FspConfigurationProperties.senderPhoneNumberAlfouad,
+        ),
+      },
     };
   }
 
@@ -66,9 +78,12 @@ export class AlfouadService {
     }
 
     if (errorCode === AlfouadApiErrorCode.duplicateReferenceNumber) {
-      const { referenceNumber, requestIdentity } = params;
+      const { referenceNumber, authIdentity } = params;
 
-      await this.confirmDuplicateTransactionExists({ referenceNumber, requestIdentity });
+      await this.confirmDuplicateTransactionExists({
+        referenceNumber,
+        authIdentity,
+      });
       return;
     }
 
@@ -80,15 +95,15 @@ export class AlfouadService {
 
   private async confirmDuplicateTransactionExists({
     referenceNumber,
-    requestIdentity,
+    authIdentity,
   }: {
     referenceNumber: string;
-    requestIdentity: AlfouadRequestIdentity;
+    authIdentity: AlfouadAuthIdentity;
   }): Promise<void> {
     const transactionState =
       await this.alfouadApiService.getTransactionStateByRef({
         referenceNumber,
-        requestIdentity,
+        authIdentity,
       });
 
     if (!transactionState) {
@@ -101,14 +116,14 @@ export class AlfouadService {
 
   public async getTransactionStateByRef({
     referenceNumber,
-    requestIdentity,
+    authIdentity,
   }: {
     referenceNumber: string;
-    requestIdentity: AlfouadRequestIdentity;
+    authIdentity: AlfouadAuthIdentity;
   }): Promise<AlfouadApiTransactionState | undefined> {
     return this.alfouadApiService.getTransactionStateByRef({
       referenceNumber,
-      requestIdentity,
+      authIdentity,
     });
   }
 

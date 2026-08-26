@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
-import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
+import { AlfouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-auth-identity.interface';
 import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.service';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -45,11 +45,11 @@ export class AlfouadReconciliationService {
 
   private async reconcileTransaction(transactionId: number): Promise<void> {
     const referenceNumber = await this.recomputeReferenceNumber(transactionId);
-    const requestIdentity = await this.getRequestIdentity(transactionId);
+    const authIdentity = await this.getAuthIdentity(transactionId);
 
     const transactionState = await this.alfouadService.getTransactionStateByRef({
       referenceNumber,
-      requestIdentity,
+      authIdentity,
     });
 
     if (!transactionState) {
@@ -92,16 +92,18 @@ export class AlfouadReconciliationService {
     });
   }
 
-  private async getRequestIdentity(
+  private async getAuthIdentity(
     transactionId: number,
-  ): Promise<AlfouadRequestIdentity> {
+  ): Promise<AlfouadAuthIdentity> {
     const latestEvent =
       await this.transactionEventScopedRepository.findLatestEventByTransactionId(
         transactionId,
       );
 
-    return this.alfouadService.getAlfouadFspConfig({
+    const { authIdentity } = await this.alfouadService.getAlfouadFspConfig({
       programFspConfigurationId: latestEvent.programFspConfigurationId,
     });
+
+    return authIdentity;
   }
 }
