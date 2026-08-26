@@ -19,9 +19,18 @@ describe('RegistrationBulkService', () => {
 
   let registrationsBulkService: RegistrationsBulkService;
   let queueMessageService: MessageQueuesService;
+  let registrationsPaginationService: RegistrationsPaginationService;
 
   const registrationMock = {
     namePartnerOrganization: 'testname',
+  };
+
+  const defaultPaginateResult = {
+    data: [registrationMock],
+    meta: {
+      totalItems: 1,
+      totalPages: 1,
+    },
   };
 
   beforeEach(async () => {
@@ -75,26 +84,20 @@ describe('RegistrationBulkService', () => {
       .spyOn(registrationViewScopedRepository as any, 'createQueryBuilder')
       .mockImplementation(() => createQueryBuilder) as any;
 
-    const registrationsPaginationService = unitRef.get(
+    const registrationsPaginationServiceRef = unitRef.get(
       RegistrationsPaginationService,
     );
+    registrationsPaginationService = registrationsPaginationServiceRef;
 
     jest
-      .spyOn(registrationsPaginationService as any, 'getPaginate')
-      .mockImplementation(() => {
-        return {
-          data: [registrationMock],
-          meta: {
-            totalItems: 1,
-            totalPages: 1,
-          },
-        };
-      });
+      .spyOn(registrationsPaginationServiceRef as any, 'getPaginate')
+      .mockImplementation(() => defaultPaginateResult);
+
     queueMessageService = unitRef.get(MessageQueuesService);
 
     jest
       .spyOn(
-        registrationsPaginationService as any,
+        registrationsPaginationServiceRef as any,
         'getRegistrationViewsNoLimit',
       )
       .mockImplementation(() => {
@@ -182,6 +185,89 @@ describe('RegistrationBulkService', () => {
 
       // Assert
       expect(queueMessageService.addMessageJob).toHaveBeenCalled();
+    });
+  });
+
+  describe('pending approval count on status change', () => {
+    const messageContentDetails = {
+      message: undefined,
+      messageTemplateKey: undefined,
+      messageContentType: undefined,
+    };
+
+    it.each([
+      {
+        registrationStatus: RegistrationStatusEnum.declined,
+        pendingApprovalCount: 0,
+      },
+      {
+        registrationStatus: RegistrationStatusEnum.paused,
+        pendingApprovalCount: 2,
+      },
+    ])(
+      'returns $pendingApprovalCount pending approvals when changing status to $registrationStatus',
+      async ({ registrationStatus, pendingApprovalCount }) => {
+        jest
+          .spyOn(registrationsPaginationService as any, 'getPaginate')
+          .mockImplementationOnce(() => defaultPaginateResult)
+          .mockImplementationOnce(() => defaultPaginateResult)
+          .mockImplementationOnce(() => ({
+            data: Array.from(
+              { length: pendingApprovalCount },
+              () => registrationMock,
+            ),
+            meta: {
+              totalItems: pendingApprovalCount,
+              totalPages: 1,
+            },
+          }));
+
+        const result =
+          await registrationsBulkService.updateRegistrationStatusOrDryRun({
+            paginateQuery,
+            programId,
+            registrationStatus,
+            dryRun: true,
+            userId,
+            messageContentDetails,
+          });
+
+        expect(result.pendingApprovalCount).toBe(pendingApprovalCount);
+      },
+    );
+
+    it.each([RegistrationStatusEnum.declined, RegistrationStatusEnum.paused])(
+      'does not compute pendingApprovalCount when changing status to %s without a dry run',
+      async (registrationStatus) => {
+        const result =
+          await registrationsBulkService.updateRegistrationStatusOrDryRun({
+            paginateQuery,
+            programId,
+            registrationStatus,
+            dryRun: false,
+            userId,
+            messageContentDetails,
+          });
+
+        expect(result.pendingApprovalCount).toBeUndefined();
+        expect(
+          registrationsPaginationService.getPaginate,
+        ).toHaveBeenCalledTimes(2);
+      },
+    );
+
+    it('does not compute pendingApprovalCount during dry run for statuses not requiring the check', async () => {
+      const result =
+        await registrationsBulkService.updateRegistrationStatusOrDryRun({
+          paginateQuery,
+          programId,
+          registrationStatus: RegistrationStatusEnum.included,
+          dryRun: true,
+          userId,
+          messageContentDetails,
+        });
+
+      expect(result.pendingApprovalCount).toBeUndefined();
     });
   });
 });

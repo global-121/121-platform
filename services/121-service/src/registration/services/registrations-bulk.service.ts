@@ -15,6 +15,7 @@ import { MessageQueuesService } from '@121-service/src/notifications/message-que
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import {
@@ -61,6 +62,12 @@ export class RegistrationsBulkService {
     private readonly noteScopedRepository: ScopedRepository<NoteEntity>,
   ) {}
 
+  // Only these target statuses can affect registrations with a payment pending approval
+  private static readonly statusesRequiringPendingApprovalCheck = new Set([
+    RegistrationStatusEnum.declined,
+    RegistrationStatusEnum.paused,
+  ]);
+
   public async updateRegistrationStatusOrDryRun({
     paginateQuery,
     programId,
@@ -81,11 +88,27 @@ export class RegistrationsBulkService {
     const allowedCurrentStatuses =
       this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
 
-    const resultDto = await this.getBulkActionResult(
+    const bulkActionResult = await this.getBulkActionResult(
       paginateQuery,
       programId,
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses, registrationStatus),
     );
+
+    let pendingApprovalCount: number | undefined = undefined;
+    if (dryRun) {
+      pendingApprovalCount = await this.getPendingApprovalCountIfApplicable({
+        registrationStatus,
+        allowedCurrentStatuses,
+        paginateQuery,
+        programId,
+      });
+    }
+
+    const resultDto =
+      pendingApprovalCount === undefined
+        ? bulkActionResult
+        : { ...bulkActionResult, pendingApprovalCount };
+
     if (!dryRun) {
       this.applyRegistrationStatusUpdate({
         paginateQuery,
@@ -131,6 +154,7 @@ export class RegistrationsBulkService {
       programId,
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
     );
+
     if (!dryRun) {
       this.deleteBatch({
         paginateQuery,
@@ -228,30 +252,43 @@ export class RegistrationsBulkService {
     programId: number,
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<BulkActionResultDto> {
-    // Set limit to 1 to optimize query for getting the meta data only
-    const paginateQueryLimit1 = { ...paginateQuery, limit: 1 };
-    const selectedRegistrations =
-      await this.registrationsPaginationService.getPaginate({
-        query: paginateQueryLimit1,
-        programId,
-        hasPersonalReadPermission: true,
-      });
+    const totalFilterCount = await this.getFilteredCount({
+      paginateQuery,
+      programId,
+    });
 
-    const applicableRegistrations =
-      await this.registrationsPaginationService.getPaginate({
-        query: paginateQueryLimit1,
-        programId,
-        hasPersonalReadPermission: true,
-        queryBuilder,
-      });
+    const applicableCount = await this.getFilteredCount({
+      paginateQuery,
+      programId,
+      queryBuilder,
+    });
 
     return {
-      totalFilterCount: selectedRegistrations.meta.totalItems ?? 0,
-      applicableCount: applicableRegistrations.meta.totalItems ?? 0,
-      nonApplicableCount:
-        (selectedRegistrations.meta.totalItems ?? 0) -
-        (applicableRegistrations.meta.totalItems ?? 0),
+      totalFilterCount,
+      applicableCount,
+      nonApplicableCount: totalFilterCount - applicableCount,
     };
+  }
+
+  // Set limit to 1 to optimize query for getting the meta data (i.e. totalItems) only
+  private async getFilteredCount({
+    paginateQuery,
+    programId,
+    queryBuilder,
+  }: {
+    paginateQuery: PaginateQuery;
+    programId: number;
+    queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>;
+  }): Promise<number> {
+    const paginateQueryLimit1 = { ...paginateQuery, limit: 1 };
+    const result = await this.registrationsPaginationService.getPaginate({
+      query: paginateQueryLimit1,
+      programId,
+      hasPersonalReadPermission: true,
+      queryBuilder,
+    });
+
+    return result.meta.totalItems ?? 0;
   }
 
   public getBaseQuery(): ScopedQueryBuilder<RegistrationViewEntity> {
@@ -500,6 +537,44 @@ export class RegistrationsBulkService {
       });
 
     return data.map((r) => r.referenceId);
+  }
+
+  // Only computed for status changes that can affect registrations with a payment pending approval
+  private async getPendingApprovalCountIfApplicable({
+    registrationStatus,
+    allowedCurrentStatuses,
+    paginateQuery,
+    programId,
+  }: {
+    registrationStatus: RegistrationStatusEnum;
+    allowedCurrentStatuses: RegistrationStatusEnum[];
+    paginateQuery: PaginateQuery;
+    programId: number;
+  }): Promise<number | undefined> {
+    if (
+      !RegistrationsBulkService.statusesRequiringPendingApprovalCheck.has(
+        registrationStatus,
+      )
+    ) {
+      return undefined;
+    }
+
+    // Join transactions onto the same applicability query so the count is computed in a single SQL query,
+    // instead of fetching all applicable referenceIds into memory and querying transactions separately
+    const pendingApprovalQueryBuilder = this.getStatusUpdateBaseQuery(
+      allowedCurrentStatuses,
+      registrationStatus,
+    )
+      .innerJoin('registration.transactions', 'transaction')
+      .andWhere('transaction.status = :transactionStatus', {
+        transactionStatus: TransactionStatusEnum.pendingApproval,
+      });
+
+    return await this.getFilteredCount({
+      paginateQuery,
+      programId,
+      queryBuilder: pendingApprovalQueryBuilder,
+    });
   }
 
   private async updateRegistrationStatusPerChunk({

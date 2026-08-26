@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 
@@ -13,6 +13,9 @@ export class BulkActionResultDto {
 
   @ApiProperty({ example: 2 })
   public readonly nonApplicableCount: number;
+
+  @ApiPropertyOptional({ example: 1 })
+  public readonly pendingApprovalCount?: number;
 }
 
 export class BulkActionResultPaymentDto extends BulkActionResultDto {
