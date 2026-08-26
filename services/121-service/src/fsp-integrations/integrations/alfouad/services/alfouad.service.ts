@@ -4,7 +4,7 @@ import { AlfouadApiErrorCode } from '@121-service/src/fsp-integrations/integrati
 import { AlfouadApiResponseState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-response-state.enum';
 import { AlfouadApiTransactionState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
-import { AlfouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-auth-identity.interface';
+import { AlfouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-auth-identity.class';
 import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-params.interface';
 import { AlfouadSenderInfo } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-sender-info.interface';
 import { AlfouadApiService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.service';
@@ -48,13 +48,13 @@ export class AlfouadService {
       properties.find((property) => property.name === name)?.value as string;
 
     return {
-      authIdentity: {
+      authIdentity: new AlfouadAuthIdentity({
         account: valueOf(FspConfigurationProperties.accountAlfouad),
         branchId: valueOf(FspConfigurationProperties.branchIdAlfouad),
         username: valueOf(FspConfigurationProperties.usernameAlfouad),
         password: valueOf(FspConfigurationProperties.passwordAlfouad),
         publicKey: valueOf(FspConfigurationProperties.publicKeyAlfouad),
-      },
+      }),
       senderInfo: {
         senderFullName: valueOf(
           FspConfigurationProperties.senderFullNameAlfouad,

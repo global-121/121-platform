@@ -1,4 +1,4 @@
-import { AlfouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-auth-identity.interface';
+import { AlfouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-auth-identity.class';
 import { AlfouadSenderInfo } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-sender-info.interface';
 import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.service';
 import { TransactionJobsAlfouadService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-alfouad.service';
@@ -6,13 +6,13 @@ import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/
 import { AlfouadTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/alfouad-transaction-job.dto';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 
-const authIdentity: AlfouadAuthIdentity = {
+const authIdentity = new AlfouadAuthIdentity({
   account: '161010004501',
   branchId: '1',
   username: 'Red Crescent',
   password: 'secret',
   publicKey: '<RSAParameters />',
-};
+});
 
 const senderInfo: AlfouadSenderInfo = {
   senderFullName: 'Red Crescent',

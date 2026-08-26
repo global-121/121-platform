@@ -426,6 +426,7 @@ export class CustomHttpService {
     }
 
     const sensitiveProperties = [
+      'authorization',
       'password',
       'access_token',
       CookieNames.general,
@@ -433,7 +434,8 @@ export class CustomHttpService {
     ];
 
     const isSensitiveProperty = (key: string | number | undefined): boolean =>
-      typeof key === 'string' && sensitiveProperties.includes(key);
+      typeof key === 'string' &&
+      sensitiveProperties.includes(key.toLowerCase());
 
     const isUsernameProperty = (key: string | number | undefined): boolean =>
       key === 'username';

@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AlfouadApiTransactionState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
-import { AlfouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-auth-identity.interface';
+import { AlfouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-auth-identity.class';
 import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-params.interface';
 import { AlfouadApiHelperService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.helper.service';
 import { AlfouadApiService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.service';
@@ -16,13 +16,13 @@ jest.mock('@121-service/src/env', () => ({
 const baseUrl = new URL('https://alfouad.example.org/');
 const requestHeaders = new Headers({ Authorization: 'Bearer token' });
 
-const authIdentity: AlfouadAuthIdentity = {
+const authIdentity = new AlfouadAuthIdentity({
   account: '161010004501',
   branchId: '1',
   username: 'Red Crescent',
   password: 'secret',
   publicKey: '<RSAParameters />',
-};
+});
 
 const createTransactionInput: AlfouadCreateTransactionParams = {
   senderFullName: 'Test Sender',
