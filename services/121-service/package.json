@@ -56,6 +56,16 @@
     "node": ">=24",
     "npm": ">=11"
   },
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "version": ">=11"
+    },
+    "runtime": {
+      "name": "node",
+      "version": ">=24"
+    }
+  },
   "dependencies": {
     "@azure/identity": "^4.11.1",
     "@azure/storage-blob": "^12.33.0",

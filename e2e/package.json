@@ -45,5 +45,15 @@
   "engines": {
     "node": ">=24",
     "npm": ">=11"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "version": ">=11"
+    },
+    "runtime": {
+      "name": "node",
+      "version": ">=24"
+    }
   }
 }

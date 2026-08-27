@@ -26,6 +26,16 @@
     "node": ">=24",
     "npm": ">=11"
   },
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "version": ">=11"
+    },
+    "runtime": {
+      "name": "node",
+      "version": ">=24"
+    }
+  },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.2.1",

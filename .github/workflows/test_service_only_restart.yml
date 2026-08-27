@@ -47,7 +47,6 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v7
         with:
-          # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
           node-version-file: '${{ env.workingDirectory }}/.node-version'
           cache: 'npm'
           cache-dependency-path: '${{ env.workingDirectory }}/package-lock.json'
@@ -56,11 +55,6 @@ jobs:
         run: |
           cp ./services/.env.example services/.env
           grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
-
-      - name: Install
-        working-directory: ${{ env.workingDirectory }}
-        run: |
-          npm ci
 
       - name: Run Services with Docker
         run: |
