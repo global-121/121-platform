@@ -13,3 +13,6 @@ screenshots/
 
 # Generated assets / caches
 .eslintcache
+
+# Skills
+.agents/
