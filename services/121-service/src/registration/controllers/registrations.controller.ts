@@ -194,7 +194,7 @@ export class RegistrationsController {
   )
   public async patchRegistrations(
     @UploadedFile() csvFile: Express.Multer.File,
-    @AnyValidBody('reason') reason: string, // Registration can have dynamic attributes, so we cannot use whitelist
+    @Body('reason') reason: string,
     @Param('programId', ParseIntPipe) programId: number,
     @Req() req: ScopedUserRequest,
   ): Promise<void> {
