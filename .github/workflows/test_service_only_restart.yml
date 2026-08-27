@@ -56,6 +56,11 @@ jobs:
           cp ./services/.env.example services/.env
           grep -v "^#\|^$" services/.env.example >> "$GITHUB_ENV"
 
+      - name: Install
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          npm ci
+
       - name: Run Services with Docker
         run: |
           npm run start:services:ci:production
