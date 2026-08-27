@@ -1,8 +1,7 @@
-import { AlfouadRequestIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-request-identity.interface';
+import { AlfouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-auth-identity.interface';
+import { AlfouadSenderInfo } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-sender-info.interface';
 
-export interface AlfouadCreateTransactionParams {
-  readonly senderFullName: string;
-  readonly senderPhoneNumber: string;
+export interface AlfouadCreateTransactionParams extends AlfouadSenderInfo {
   readonly beneficiaryFullName: string;
   readonly beneficiaryPhoneNumber: string;
   readonly referenceNumber: string;
@@ -10,5 +9,5 @@ export interface AlfouadCreateTransactionParams {
   readonly cityCode: string;
   readonly deliveryCurrencyCode: string;
   readonly deliveryAmount: number;
-  readonly requestIdentity: AlfouadRequestIdentity;
+  readonly authIdentity: AlfouadAuthIdentity;
 }
