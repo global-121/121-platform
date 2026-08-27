@@ -1,7 +1,9 @@
+import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import {
   bulkUpdateRegistrationsCSV,
+  getRegistrationEvents,
   importRegistrationsCSV,
   searchRegistrationByReferenceId,
   waitForBulkRegistrationChanges,
@@ -147,6 +149,20 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
 
     expect(pa1AfterPatch).toMatchObject(dataThatStaysTheSamePa1);
     expect(pa2AfterPatch).toMatchObject(dataThatStaysTheSamePa2);
+
+    const eventsResponsePa1 = await getRegistrationEvents({
+      programId: programIdOcw,
+      accessToken,
+      referenceId: referenceId1,
+    });
+    const dataChangeEventsPa1 = eventsResponsePa1.body.data.filter(
+      (event: { type: string }) =>
+        event.type === RegistrationEventEnum.registrationDataChange,
+    );
+    expect(dataChangeEventsPa1.length).toBeGreaterThan(0);
+    for (const event of dataChangeEventsPa1) {
+      expect(event.reason).toBe('test-reason');
+    }
   });
 
   it('Should bulk update chosen FSP and validate changed records', async () => {
