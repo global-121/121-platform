@@ -1,4 +1,4 @@
-<div class="p-explainer-accordion">
+<div class="bg-grey-100 rounded-lg p-3">
   <p-accordion [value]="null">
     <p-accordion-panel
       value="0"
@@ -6,9 +6,9 @@
     >
       <p-accordion-header
         [unstyled]="true"
-        class="p-accordion-header"
+        class="flex cursor-pointer items-start justify-between [&>svg]:self-center"
       >
-        <p>
+        <p class="m-0 flex items-center gap-3 font-bold">
           <span
             class="pi pi-question-circle"
             aria-hidden="true"
@@ -19,14 +19,20 @@
         </p>
       </p-accordion-header>
 
-      <p-accordion-content>
-        <ul>
+      <p-accordion-content
+        class="[&_.p-accordioncontent-content]:bg-transparent [&_.p-accordioncontent-content]:p-0 [&_.p-accordioncontent-content]:ps-6 [&_.p-accordioncontent-content]:pbs-2"
+      >
+        <ul class="mbs-2.5 space-y-5">
           @for (item of items(); track $index) {
-            <li [attr.index]="$index + 1">
+            <li
+              [attr.index]="$index + 1"
+              class="before:text-purple relative ps-7.5 before:absolute before:inset-s-0 before:inset-bs-0.75 before:block before:rounded-full before:bg-purple-300 before:text-center before:text-xs/5 before:font-bold before:content-[attr(index)] before:block-5 before:inline-5"
+            >
               <p>{{ item.content }}</p>
               @if (item.imageUrl) {
                 <img
                   src="{{ item.imageUrl }}"
+                  class="-ms-7.5 mbs-3 min-inline-[calc(100%+1.875rem)]"
                   alt=""
                 />
               }
