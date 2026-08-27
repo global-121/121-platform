@@ -29,9 +29,9 @@
     "@types/multer": "^2.2.0",
     "@types/node": "^24.x",
     "@types/supertest": "^7.2.1",
-    "eslint": "^10.0.1",
+    "eslint": "^10.8.1",
     "eslint-config-121-platform": "file:../packages/eslint-config-121-platform/",
-    "prettier": "^3.9.4",
+    "prettier": "^3.9.6",
     "supertest": "^7.1.4",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.67.0"
