@@ -27,6 +27,7 @@ import { SelectModule } from 'primeng/select';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
+import { SelectNoResultsMessageComponent } from '~/components/select-empty-message/select-no-results-message.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { ProgramUserWithRolesLabel } from '~/domains/program/program.model';
 import { RoleApiService } from '~/domains/role/role.api.service';
@@ -53,6 +54,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     InputTextModule,
     ReactiveFormsModule,
     ManualLinkComponent,
+    SelectNoResultsMessageComponent,
   ],
 })
 export class AddProgramTeamUserDialogComponent {
@@ -205,6 +207,11 @@ export class AddProgramTeamUserDialogComponent {
       }
     },
   }));
+
+  noUsersFoundMessage = {
+    message: $localize`This 121 portal doesn't have users to be added. Add users on the Users page, then assign them to this program.`,
+    title: $localize`No users found.`,
+  };
 
   constructor() {
     effect(() => {

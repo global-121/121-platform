@@ -39,9 +39,9 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-program-settings/page-layout-program-settings.component';
+import { SelectNoResultsMessageComponent } from '~/components/select-empty-message/select-no-results-message.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
-import { NoEligibleApproversMessageComponent } from '~/pages/program-settings-payment-approval/components/no-eligible-approvers-message/no-eligible-approvers-message.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { Dto } from '~/utils/dto-type';
@@ -64,7 +64,7 @@ type ApprovalStepFormGroup = FormGroup<{
     MultiSelectModule,
     InputNumberModule,
     ReactiveFormsModule,
-    NoEligibleApproversMessageComponent,
+    SelectNoResultsMessageComponent,
   ],
   providers: [CurrencyPipe, ToastService],
   templateUrl: './program-settings-payment-approval.page.html',
@@ -199,6 +199,11 @@ export class ProgramSettingsPaymentApprovalPageComponent implements ComponentCan
       };
     });
   });
+
+  noEligibleUsersFoundMessage = {
+    message: $localize`Only users with full program access can approve. You cannot assign yourself, and users can only be assigned to one step.`,
+    title: $localize`No eligible users found.`,
+  };
 
   constructor() {
     effect(() => {

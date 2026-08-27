@@ -39,6 +39,15 @@
       i18n-placeholder="@@generic-type-or-select"
       [loading]="availableUsersIsLoading()"
     >
+      <ng-template #empty>
+        <app-select-no-results-message
+          [message]="noUsersFoundMessage.message"
+          [title]="noUsersFoundMessage.title"
+        />
+      </ng-template>
+      <ng-template #emptyfilter>
+        <app-select-no-results-message />
+      </ng-template>
     </p-select>
   </app-form-field-wrapper>
 
@@ -61,6 +70,9 @@
       [loading]="roles.isPending()"
       [disabled]="userIsUpdatingItself()"
     >
+      <ng-template #emptyfilter>
+        <app-select-no-results-message />
+      </ng-template>
     </p-multiSelect>
     @if (userIsUpdatingItself()) {
       <ng-container slot="details">

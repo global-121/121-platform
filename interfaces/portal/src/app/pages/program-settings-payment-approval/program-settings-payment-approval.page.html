@@ -98,10 +98,13 @@
             (onChange)="onApproverSelectionChanged()"
           >
             <ng-template #empty>
-              <app-no-eligible-approvers-message />
+              <app-select-no-results-message
+                [message]="noEligibleUsersFoundMessage.message"
+                [title]="noEligibleUsersFoundMessage.title"
+              />
             </ng-template>
             <ng-template #emptyfilter>
-              <app-no-eligible-approvers-message />
+              <app-select-no-results-message />
             </ng-template>
           </p-multiSelect>
           @if (isFirstStepInvalid()) {
@@ -145,10 +148,15 @@
                     (onChange)="onApproverSelectionChanged()"
                   >
                     <ng-template #empty>
-                      <app-no-eligible-approvers-message />
+                      <app-select-no-results-message
+                        [message]="'Only users with full program access can approve. You cannot assign yourself, and users can only be assigned to one step.'"
+                        i18n-message
+                        [title]="'No eligible users found.'"
+                        i18n-title
+                      />
                     </ng-template>
                     <ng-template #emptyfilter>
-                      <app-no-eligible-approvers-message />
+                      <app-select-no-results-message />
                     </ng-template>
                   </p-multiSelect>
                   @if (isAdditionalStepUsersInvalid($index)) {

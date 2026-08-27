@@ -176,8 +176,6 @@ svg-icon svg {
     When adding x amount of chips to the multiselect, the overlay will be
     positioned over the select itself obfuscating the multiselect. Also the 
     overflow will be hidden and the user won't be able to see the rest of the chips.
-    This is caused by PrimeNG being a very limited library and not having a
-    proper way to position the overlay, so we have to override it ourselves
   */
 
   .wrapped-chip-multiselect {
@@ -287,6 +285,19 @@ svg-icon svg {
     .p-toolbar-group-start {
       white-space: nowrap;
       overflow: hidden;
+    }
+  }
+
+  .p-select-header,
+  .p-multiselect-header {
+    @apply border-b-grey-300/50 bg-grey-300/20 rounded-none border-t-0 border-b py-2;
+
+    /* Angular fills unused projection slots with comment anchor nodes ().
+    Since comments count as children, :empty / :not(:empty) won't match, so we use :has(> *) to
+    detect real element children and hide the header otherwise. */
+
+    &:not(:has(> *)) {
+      @apply hidden;
     }
   }
 
