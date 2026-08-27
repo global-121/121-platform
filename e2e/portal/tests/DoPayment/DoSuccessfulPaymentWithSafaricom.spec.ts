@@ -6,6 +6,7 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
+
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.safaricomProgram,
@@ -44,7 +45,10 @@ test('Do successful payment for Safaricom fsp', async ({
   });
 
   await test.step('Validate payment card', async () => {
-    await paymentPage.waitForPaymentToComplete();
+    await paymentPage.waitForPaymentToComplete({
+      expectedAmount: defaultMaxTransferValue,
+    });
+
     await paymentPage.navigateToProgramPage('Payments');
     await paymentsPage.validatePaymentCard({
       paymentAmount: defaultMaxTransferValue,

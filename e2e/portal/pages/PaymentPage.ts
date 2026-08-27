@@ -25,6 +25,7 @@ class PaymentPage extends BasePage {
   readonly renamePaymentInput: Locator;
   readonly renamePaymentButton: Locator;
   readonly threeDotsMenuButton: Locator;
+  readonly succesfullyTransferredAmountChip: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -33,6 +34,9 @@ class PaymentPage extends BasePage {
     this.importReconciliationDataButton = this.page.getByRole('button', {
       name: 'Import reconciliation data',
     });
+    this.succesfullyTransferredAmountChip =
+      this.page.getByTestId('metric-tile-chip');
+
     this.chooseFileButton = this.page.getByRole('button', {
       name: 'Choose file',
     });
@@ -143,7 +147,9 @@ class PaymentPage extends BasePage {
     }
   }
 
-  async waitForPaymentToComplete() {
+  async waitForPaymentToComplete({
+    expectedAmount,
+  }: { expectedAmount?: number } = {}) {
     await this.page.waitForTimeout(500); // TODO for now needed to bridge in-progress gap between actions & queue.
     const approvedChip = this.page
       .locator('app-colored-chip')
@@ -155,6 +161,26 @@ class PaymentPage extends BasePage {
 
     await inProgressChip.waitFor({ state: 'hidden' });
     await approvedChip.waitFor({ state: 'visible' });
+
+    /*
+      The method utilized above isn't that robust.
+      Because there is an inbetween state where the "Approved"-chip is visible,
+      but the payment is still 'processing'. Since we can't use the <canvas />
+      element to check the graph status, we need to check the amount that is
+      displayed in the payment card on the payment page. When this chip shows the
+      correct amount we can safely navigate away and assert the payment card in
+      the overview.
+    */
+
+    if (expectedAmount !== undefined) {
+      await expect
+        .poll(async () => {
+          const chipText =
+            await this.succesfullyTransferredAmountChip.textContent();
+          return chipText?.replace(/,/g, '');
+        })
+        .toContain(expectedAmount.toString());
+    }
   }
 
   async validateBadgeIsPresentByLabel({

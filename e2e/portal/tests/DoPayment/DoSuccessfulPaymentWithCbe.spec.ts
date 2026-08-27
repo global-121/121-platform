@@ -60,7 +60,9 @@ test('Do successful payment for Cbe fsp', async ({
   });
 
   await test.step('Validate payment card', async () => {
-    await paymentPage.waitForPaymentToComplete();
+    await paymentPage.waitForPaymentToComplete({
+      expectedAmount: defaultMaxTransferValue,
+    });
     await paymentPage.navigateToProgramPage('Payments');
     await paymentsPage.validatePaymentCard({
       paymentAmount: defaultMaxTransferValue,
