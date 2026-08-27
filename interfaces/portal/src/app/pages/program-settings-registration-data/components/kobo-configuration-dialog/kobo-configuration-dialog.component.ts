@@ -64,7 +64,9 @@ export class KoboConfigurationDialogComponent {
   );
 
   readonly koboIntegrationErrorDialog =
-    viewChild.required<KoboIntegrationErrorDialogComponent>('koboErrorDialog');
+    viewChild.required<KoboIntegrationErrorDialogComponent>(
+      'koboIntegrationErrorDialog',
+    );
 
   readonly linkKoboDialog =
     viewChild.required<FormDialogComponent>('linkKoboDialog');
@@ -143,7 +145,7 @@ export class KoboConfigurationDialogComponent {
       };
       const errors = cause.error?.errors;
 
-      // If the error contains Kobo validation errors, we want to show them in the KoboErrorDialog.
+      // If the error contains Kobo validation errors, we want to show them in the KoboIntegrationErrorDialog.
       if (Array.isArray(errors) && errors.length > 0) {
         this.koboIntegrationErrors.set(errors);
         this.koboConfigurationDialog().hide();

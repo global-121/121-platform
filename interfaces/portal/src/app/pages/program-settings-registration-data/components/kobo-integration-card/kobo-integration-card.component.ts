@@ -53,8 +53,10 @@ export class KoboIntegrationCardComponent {
 
   readonly koboRefreshErrors = signal<KoboValidationError[]>([]);
 
-  readonly koboErrorDialog =
-    viewChild.required<KoboIntegrationErrorDialogComponent>('koboErrorDialog');
+  readonly koboIntegrationErrorDialog =
+    viewChild.required<KoboIntegrationErrorDialogComponent>(
+      'koboIntegrationErrorDialog',
+    );
 
   readonly koboConfigurationDialog =
     viewChild.required<KoboConfigurationDialogComponent>(
@@ -119,10 +121,10 @@ export class KoboIntegrationCardComponent {
       };
       const errors = cause.error?.errors;
 
-      // If the error contains Kobo validation errors, we want to show them in the KoboErrorDialog.
+      // If the error contains Kobo validation errors, we want to show them in the KoboIntegrationErrorDialog.
       if (Array.isArray(errors) && errors.length > 0) {
         this.koboRefreshErrors.set(errors);
-        this.koboErrorDialog().show();
+        this.koboIntegrationErrorDialog().show();
       }
 
       this.toastService.showToast({

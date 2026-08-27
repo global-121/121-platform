@@ -69,7 +69,9 @@ export class KoboImportExistingRegistrationsDialogComponent {
   readonly koboIntegrationErrors = signal<KoboValidationError[]>([]);
 
   readonly koboIntegrationErrorDialog =
-    viewChild.required<KoboIntegrationErrorDialogComponent>('koboErrorDialog');
+    viewChild.required<KoboIntegrationErrorDialogComponent>(
+      'koboIntegrationErrorDialog',
+    );
 
   readonly headerIcon = computed(() => {
     switch (this.importState()) {
