@@ -8,19 +8,18 @@
 >
   <p-card class="mbe-5">
     <div class="flex items-center gap-x-4">
-      <h1 class="me-auto">
-        {{ paymentTitle() }}
-
-        @if (paymentAggregateData()) {
-          <app-colored-chip-payment-approval-status
-            [isPaymentApproved]="
-              paymentAggregateData()?.isPaymentApproved ?? false
-            "
-            [approvalsGiven]="paymentAggregateData()?.approvalsGiven ?? 0"
-            [approvalsRequired]="paymentAggregateData()?.approvalsRequired ?? 0"
-          />
-        }
-      </h1>
+      <div class="me-auto flex gap-2">
+        <h1>
+          {{ paymentTitle() }}
+        </h1>
+        <app-colored-chip-payment-approval-status
+          [isPaymentApproved]="
+            paymentAggregateData()?.isPaymentApproved ?? false
+          "
+          [approvalsGiven]="paymentAggregateData()?.approvalsGiven ?? 0"
+          [approvalsRequired]="paymentAggregateData()?.approvalsRequired ?? 0"
+        />
+      </div>
       @if (showApprovePaymentButton()) {
         <app-approve-payment
           [programId]="programId()"
