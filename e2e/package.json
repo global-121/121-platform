@@ -38,7 +38,6 @@
   },
   "dependencies": {
     "date-fns": "^4.4.0",
-    "dotenv": "17.4.2",
     "playwright": "^1.61.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
