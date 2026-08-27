@@ -176,8 +176,6 @@ svg-icon svg {
     When adding x amount of chips to the multiselect, the overlay will be
     positioned over the select itself obfuscating the multiselect. Also the 
     overflow will be hidden and the user won't be able to see the rest of the chips.
-    This is caused by PrimeNG being a very limited library and not having a
-    proper way to position the overlay, so we have to override it ourselves
   */
 
   .wrapped-chip-multiselect {
@@ -294,24 +292,9 @@ svg-icon svg {
   .p-multiselect-header {
     @apply border-b-grey-300/50 bg-grey-300/20 rounded-none border-t-0 border-b py-2;
 
-    /*
-      The way Angular renders empty unused slots is not empty. They are filled with comment nodes.
-
-      Example:
-
-      <div class="p-multiselect-header" data-pc-section="header">
-        <!--container-->
-        <!--container-->
-        <!--container-->
-        <!--container-->
-      </div>
-
-      That's just... plain horrible.
-
-      Because the are rendered they can inherit styles from their parent (like padding, margin, etc).,
-      + they can not be targeted with ::empty or :not(:empty) because they are not empty. So we have
-      to use the :has() selector to check if there are any children and hide the header if there are none.
-    */
+    /* Angular fills unused projection slots with comment anchor nodes ().
+    Since comments count as children, :empty / :not(:empty) won't match, so we use :has(> *) to
+    detect real element children and hide the header otherwise. */
 
     &:not(:has(> *)) {
       @apply hidden;
