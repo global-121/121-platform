@@ -20,6 +20,8 @@ The 121 Platform is an open-source humanitarian aid platform built by the Nether
 - Configure database, API keys, and feature flags
 - Use proper environment-specific configurations
 
+**Agents must never read or modify `.env` files.** If a task appears to require an `.env` read or change, stop and ask the user to do it themselves.
+
 ### Install dependencies
 
 ```bash
