@@ -70,7 +70,7 @@ export const errorResponseSplitter = (
         ...error,
         id: index,
       }),
-    );
+    ) as DetailedImportError[];
     return errorResponse;
   }
 

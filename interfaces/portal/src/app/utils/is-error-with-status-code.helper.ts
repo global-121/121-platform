@@ -9,5 +9,4 @@ export const isErrorWithStatusCode = ({
 }) =>
   error instanceof Error &&
   error.cause instanceof HttpErrorResponse &&
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- `error.cause.status` is a `number`, but typed as `HttpStatusCode` enum.
-  error.cause.status === statusCode;
+  error.cause.status === (statusCode as number);

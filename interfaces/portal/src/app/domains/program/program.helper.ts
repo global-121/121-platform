@@ -79,7 +79,7 @@ export const mergeUILanguageForProgramLanguageAttributes = ({
         mergeExtendUILanguageTranslation({
           original: (originalProgram?.[key as keyof Program] ??
             {}) as UILanguageTranslation,
-          updated: updatedValue,
+          updated: updatedValue as UILanguageTranslation,
         });
     }
   }
