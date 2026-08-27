@@ -275,6 +275,15 @@ describe('CustomHttpService', () => {
         response: { status: HttpStatus.OK, statusText: 'OK', data: {} },
       },
       {
+        caseName: 'Authorization header value',
+        sensitiveValue: 'Bearer super-secret-token-value',
+        request: {
+          url: 'http://example.com/api',
+          payload: { Authorization: 'Bearer super-secret-token-value' },
+        },
+        response: { status: HttpStatus.OK, statusText: 'OK', data: {} },
+      },
+      {
         caseName: 'access_token value',
         sensitiveValue: 'eyJhbGciOiJSUzI1NiJ9.sensitive-token-value',
         request: {
