@@ -15,7 +15,12 @@ describe('maskValueKeepStart', () => {
       {
         value: 'secret',
         length: 8,
-        expected: 'secret',
+        expected: '******',
+      },
+      {
+        value: 'abc',
+        length: 3,
+        expected: '***',
       },
       {
         value: 'confidential',
@@ -88,7 +93,12 @@ describe('maskValueKeepEnd', () => {
       {
         value: 'secret',
         length: 8,
-        expected: 'secret',
+        expected: '******',
+      },
+      {
+        value: 'abc',
+        length: 3,
+        expected: '***',
       },
       {
         value: 'confidential',

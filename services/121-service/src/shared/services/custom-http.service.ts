@@ -8,9 +8,12 @@ import https, { AgentOptions } from 'node:https';
 import { SecureContextOptions } from 'node:tls';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
 
-import { SensitiveValue } from '@121-service/src/shared/consts/sensitive-value.class';
+import { SensitivePiiValue } from '@121-service/src/shared/consts/sensitive-pii-value.class';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
-import { maskValueKeepStart } from '@121-service/src/utils/mask-value.helper';
+import {
+  maskValueKeepEnd,
+  maskValueKeepStart,
+} from '@121-service/src/utils/mask-value.helper';
 
 class Request {
   public headers?: Headers;
@@ -92,7 +95,7 @@ export class CustomHttpService {
     headers?: Headers,
     httpsAgent?: https.Agent,
   ): Promise<T> {
-    const unwrappedPayload = this.unwrapSensitiveValues(payload);
+    const unwrappedPayload = this.unwrapSensitivePiiValues(payload);
 
     return await lastValueFrom(
       this.httpService
@@ -114,13 +117,13 @@ export class CustomHttpService {
     );
   }
 
-  private unwrapSensitiveValues<T>(data: T): T {
+  private unwrapSensitivePiiValues<T>(data: T): T {
     if (!isPlainObject(data) && !Array.isArray(data)) {
       return data;
     }
 
     return cloneDeepWith(data, (value: unknown) => {
-      if (value instanceof SensitiveValue) {
+      if (value instanceof SensitivePiiValue) {
         return value.value;
       }
       return undefined;
@@ -132,7 +135,7 @@ export class CustomHttpService {
     payload: any,
     headers?: Headers,
   ): Promise<T> {
-    const unwrappedPayload = this.unwrapSensitiveValues(payload);
+    const unwrappedPayload = this.unwrapSensitivePiiValues(payload);
 
     return await lastValueFrom(
       this.httpService
@@ -158,7 +161,7 @@ export class CustomHttpService {
     payload: any,
     headers?: Headers,
   ): Promise<T> {
-    const unwrappedPayload = this.unwrapSensitiveValues(payload);
+    const unwrappedPayload = this.unwrapSensitivePiiValues(payload);
 
     return await lastValueFrom(
       this.httpService
@@ -221,7 +224,7 @@ export class CustomHttpService {
       headers: this.createHeaders(headers),
     };
     if (payload) {
-      params.data = this.unwrapSensitiveValues(payload); // If payload is null on a GET, axios will throw an error
+      params.data = this.unwrapSensitivePiiValues(payload); // If payload is null on a GET, axios will throw an error
     }
     if (httpsAgent) {
       params.httpsAgent = httpsAgent;
@@ -438,8 +441,11 @@ export class CustomHttpService {
     return cloneDeepWith(
       data,
       (value: unknown, key: string | number | undefined) => {
-        if (value instanceof SensitiveValue || isSensitiveProperty(key)) {
+        if (isSensitiveProperty(key)) {
           return '**REDACTED**';
+        }
+        if (value instanceof SensitivePiiValue) {
+          return maskValueKeepEnd(String(value.value), 3);
         }
         if (isUsernameProperty(key) && typeof value === 'string') {
           return maskValueKeepStart(value, 3);

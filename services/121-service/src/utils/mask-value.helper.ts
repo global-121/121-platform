@@ -10,6 +10,11 @@ export function maskValueKeepStart(value: string, length = 0): string {
     return '';
   }
 
+  // Fully mask when the value is too short to reveal `length` characters without exposing all of it.
+  if (value.length <= length) {
+    return '*'.repeat(value.length);
+  }
+
   return value.substring(0, length).padEnd(value.length, '*');
 }
 
@@ -23,6 +28,11 @@ export function maskValueKeepStart(value: string, length = 0): string {
 export function maskValueKeepEnd(value: string, length = 0): string {
   if (!value) {
     return '';
+  }
+
+  // Fully mask when the value is too short to reveal `length` characters without exposing all of it.
+  if (value.length <= length) {
+    return '*'.repeat(value.length);
   }
 
   return value.substring(value.length - length).padStart(value.length, '*');
