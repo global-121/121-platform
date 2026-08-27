@@ -42,7 +42,7 @@ export default defineConfig(
   {
     name: 'Nest.js entry point (CommonJS) file',
     files: ['index.js'],
-    // This file is the entry point for the service, and needs to be CommonJS for now, to be able to load ts-node/register.
+    // This file is the entry point for the service, and needs to be CommonJS for now.
     extends: [eslintConfig121Platform.configs.legacyNode],
   },
   eslintConfig121Platform.configs.services,
