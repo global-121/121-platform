@@ -11,6 +11,20 @@ const createCsvFile = (csvContents: string, filename = 'test.csv') => {
   } as Express.Multer.File;
 };
 
+// Simulates Excel's default ".csv" export, which uses the OS ANSI code page
+// (Windows-1252) instead of UTF-8. Node's "latin1" encoding matches Windows-1252
+// for the accented-character range, so it can be used to build this fixture.
+const createWindowsAnsiCsvFile = (
+  csvContents: string,
+  filename = 'test.csv',
+) => {
+  const buffer = Buffer.from(csvContents, 'latin1');
+  return {
+    buffer,
+    originalname: filename,
+  } as Express.Multer.File;
+};
+
 describe('FileImportService', () => {
   let service: FileImportService;
 
@@ -28,6 +42,36 @@ describe('FileImportService', () => {
       const file = createCsvFile('a,b,c\n1,2,3');
       const result = await service.validateCsv(file);
       expect(result).toEqual([{ a: '1', b: '2', c: '3' }]);
+    });
+
+    it('should correctly decode accented characters from a plain UTF-8 file', async () => {
+      const file = createCsvFile('name\nDansou Noël');
+      const result = await service.validateCsv(file);
+      expect(result).toEqual([{ name: 'Dansou Noël' }]);
+    });
+
+    it('should throw a clear error when the file is not UTF-8 encoded (e.g. saved with Windows ANSI/Windows-1252)', async () => {
+      // Arrange
+      const file = createWindowsAnsiCsvFile('name\nDansou Noël');
+
+      // Act
+      let error: HttpException | any; // The any is unfortunately needed to prevent type errors
+      try {
+        await service.validateCsv(file);
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+      expect(error.response[0]).toContain('UTF-8');
+    });
+
+    it('should normalize decomposed accented characters (base letter + combining accent) to their precomposed form', async () => {
+      const decomposedNoel = 'Noe\u0308l'; // 'e' + combining diaeresis, instead of precomposed 'ë'
+      const file = createCsvFile(`name\nDansou ${decomposedNoel}`);
+      const result = await service.validateCsv(file);
+      expect(result).toEqual([{ name: 'Dansou Noël' }]);
     });
 
     it('should throw if file extension is not .csv', async () => {

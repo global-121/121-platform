@@ -24,7 +24,9 @@ export class DownloadService {
     const csvContents = file.join(';') + '\r\n';
 
     this.downloadFile({
-      file: new Blob([csvContents], { type: 'text/csv' }),
+      // BOM prefix: without it Excel opens ".csv" files using the OS ANSI code page
+      // instead of UTF-8, garbling accented characters.
+      file: new Blob(['\uFEFF', csvContents], { type: 'text/csv' }),
       filename: ExportService.toExportFileName(filename, 'csv'),
     });
   }
