@@ -15,7 +15,7 @@ describe('AxiosCallsService', () => {
 
     // Assert
     await expect(promiseGetAccessToken).rejects.toThrow(
-      "Error while extracting access token from cookies: TypeError: Cannot read properties of undefined (reading 'find')",
+      'Error while extracting access token from cookies.',
     );
   });
 });

@@ -819,11 +819,11 @@ export class IntersolveVisaService {
           );
 
           if (errorParentTokenCodes.length >= 10) {
+            // eslint-disable-next-line preserve-caught-error -- TODO: Decide later if we need the explicit cause-property; For now keep existing/expected behavior.
             throw new Error(
               `${errorParentTokenCodes.length} IntersolveVisaApiErrors occurred while retrieving and updating wallets and cards, for parent tokenCodes: ${errorParentTokenCodes.join(
                 ', ',
               )}. Aborting.`,
-              { cause: error },
             );
           }
         } else {

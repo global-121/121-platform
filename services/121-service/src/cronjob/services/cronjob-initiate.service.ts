@@ -208,7 +208,7 @@ export class CronjobInitiateService {
     } catch (error) {
       // We throw and don't catch so we get a 500 and a notification.
       throw new Error(
-        `While running cronjob "${cronjobName}" an authentication error occurred: ${error.toString()}`,
+        `While running cronjob "${cronjobName}" an authentication error occurred.`,
         { cause: error },
       );
     }
@@ -250,11 +250,10 @@ export class CronjobInitiateService {
         setTimeout(() => resolve(undefined), timeoutMs);
       });
       response = (await Promise.race([requestPromise, timeoutPromise])) as
-        | AxiosResponse
-        | undefined;
+        AxiosResponse | undefined;
     } catch (error) {
       throw new Error(
-        `While running cronjob "${this.currentlyRunningCronjobName}" an error occurred during a request: ${error.toString()}`,
+        `While running cronjob "${this.currentlyRunningCronjobName}" an error occurred during a request.`,
         { cause: error },
       );
     }

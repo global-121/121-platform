@@ -98,10 +98,11 @@ describe('Cronjob initiation', () => {
 
   it('should log a useful message when authentication fails', async () => {
     // Arrange
+    const mockError = new Error('could not get headers');
     const mockFn = jest
       .spyOn(cronjobInitiateService, 'getHeaders')
       .mockImplementation(() => {
-        throw new Error('could not get headers');
+        throw mockError;
       });
 
     const cronjobName = 'cronCancelByRefposIntersolve';
@@ -113,7 +114,8 @@ describe('Cronjob initiation', () => {
     // Necessary: see https://jestjs.io/docs/asynchronous
     await expect(cronPromise).rejects.toThrow(
       new Error(
-        `While running cronjob "${cronjobName}" an authentication error occurred: Error: could not get headers`,
+        `While running cronjob "${cronjobName}" an authentication error occurred.`,
+        { cause: mockError },
       ),
     );
 
@@ -123,10 +125,11 @@ describe('Cronjob initiation', () => {
 
   it('should log a useful message when a request fails', async () => {
     // Arrange
+    const mockError = new Error('patch request failed');
     const mockFn = jest
       .spyOn(cronjobInitiateService.httpService, 'patch')
       .mockImplementation(() => {
-        throw new Error('patch request failed');
+        throw mockError;
       });
 
     const cronjobName = 'cronRetrieveAndUpdatedUnusedIntersolveVouchers';
@@ -138,7 +141,8 @@ describe('Cronjob initiation', () => {
     // Necessary: see https://jestjs.io/docs/asynchronous
     await expect(cronPromise).rejects.toThrow(
       new Error(
-        `While running cronjob "${cronjobName}" an error occurred during a request: Error: patch request failed`,
+        `While running cronjob "${cronjobName}" an error occurred during a request.`,
+        { cause: mockError },
       ),
     );
 

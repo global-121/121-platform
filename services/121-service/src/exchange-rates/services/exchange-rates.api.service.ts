@@ -37,10 +37,9 @@ export class ExchangeRatesApiService {
       // Return rate and closeTime directly
       return { rate: data.average_bid, closeTime: data.close_time };
     } catch (error) {
-      throw new Error(
-        `Failed to retrieve exchange rate for ${currency}: ${error}`,
-        { cause: error },
-      );
+      throw new Error(`Failed to retrieve exchange rate for ${currency}`, {
+        cause: error,
+      });
     }
   }
 }
