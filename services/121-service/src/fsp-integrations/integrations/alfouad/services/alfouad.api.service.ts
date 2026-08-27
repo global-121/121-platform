@@ -17,8 +17,6 @@ import { AlfouadEncryptionService } from '@121-service/src/fsp-integrations/inte
 import { SensitivePiiValue } from '@121-service/src/shared/consts/sensitive-pii-value.class';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
-const ALFOUAD_SUCCESS_STATE = '1';
-
 @Injectable()
 export class AlfouadApiService {
   public constructor(
@@ -101,68 +99,6 @@ export class AlfouadApiService {
     }
 
     return state as AlfouadApiTransactionState;
-  }
-
-  public async getTransactionByRef({
-    referenceNumber,
-    requestIdentity,
-  }: {
-    referenceNumber: string;
-    requestIdentity: AlfouadRequestIdentity;
-  }): Promise<AlfouadGetTransactionResult | undefined> {
-    const response =
-      await this.sendAuthenticatedRequest<AlfouadApiGetTransactionResponseBodyDto>(
-        {
-          method: 'GET',
-          path: `api/Transaction/TransactionByRef?ReferenceNumber=${encodeURIComponent(referenceNumber)}`,
-          requestIdentity,
-        },
-      );
-
-    const body = response.data;
-    if (!body) {
-      throw new AlfouadApiError({
-        message: 'No response body received from Al Fouad API',
-      });
-    }
-
-    const state = this.parseTransactionState(body.State);
-    if (state === undefined) {
-      return state;
-    }
-
-    return { state, transactionUid: body.TransactionInfo?.TransactionUID };
-  }
-
-  private async recoverDuplicateTransfer({
-    referenceNumber,
-    requestIdentity,
-  }: {
-    referenceNumber: string;
-    requestIdentity: AlfouadRequestIdentity;
-  }): Promise<AlfouadCreateTransferResult> {
-    const existing = await this.getTransactionByRef({
-      referenceNumber,
-      requestIdentity,
-    });
-
-    if (!existing?.transactionUid) {
-      throw new AlfouadApiError({
-        message: `Duplicate ReferenceNumber ${referenceNumber} was reported but the transaction was not found`,
-        errorCode: AlfouadApiErrorCode.duplicateReferenceNumber,
-      });
-    }
-
-    return { transactionUid: existing.transactionUid };
-  }
-
-  private parseTransactionState(
-    state: string,
-  ): AlfouadApiTransactionStateEnum | undefined {
-    const validStates: string[] = Object.values(AlfouadApiTransactionStateEnum);
-    return validStates.includes(state)
-      ? (state as AlfouadApiTransactionStateEnum)
-      : undefined;
   }
 
   private async sendAuthenticatedRequest<T>({
