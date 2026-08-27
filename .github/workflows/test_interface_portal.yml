@@ -25,7 +25,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# This is needed for qlty to authenticate with OIDC
+# This is needed for Qlty to authenticate with OIDC
 # https://docs.qlty.sh/coverage/quickstart#github-actions
 permissions:
   contents: read

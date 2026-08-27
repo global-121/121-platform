@@ -54,7 +54,7 @@ jobs:
       - name: Set ENV-variables for test-environment
         run: |
           cp ./services/.env.example services/.env
-          grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
+          grep -v "^#\|^$" services/.env.example >> "$GITHUB_ENV"
 
       - name: Run Services with Docker
         run: |
