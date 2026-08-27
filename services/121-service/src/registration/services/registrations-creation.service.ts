@@ -237,8 +237,11 @@ export class RegistrationsCreationService {
     // Save registrations using .save to properly set registrationProgramId
     const savedRegistrations: RegistrationEntity[] = [];
     for await (const registration of registrations) {
-      const savedRegistration =
-        await this.registrationUtilsService.save(registration);
+      const savedRegistration = await this.registrationUtilsService.save(
+        registration,
+        undefined,
+        true,
+      );
       savedRegistrations.push(savedRegistration);
     }
 

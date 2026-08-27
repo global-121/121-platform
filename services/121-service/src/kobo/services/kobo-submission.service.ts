@@ -41,6 +41,14 @@ export class KoboSubmissionService {
     });
     this.assertKoboIntegrationExistsOrThrow(koboIntegration);
 
+    const alreadyExistingSubmissionUuids =
+      await this.koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids(
+        [koboWebhookIncomingSubmission._uuid],
+      );
+    if (alreadyExistingSubmissionUuids.has(koboWebhookIncomingSubmission._uuid)) {
+      return;
+    }
+
     await this.koboSubmissionHelperService.updateProgramToNewVersionIfApplicable(
       {
         currentVersion: koboIntegration.versionId,

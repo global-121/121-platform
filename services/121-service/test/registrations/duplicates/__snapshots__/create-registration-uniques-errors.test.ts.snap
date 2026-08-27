@@ -52,11 +52,11 @@ exports[`Unsuccessfully mark registrations as unique from each other should fail
     "target": {
       "reason": "default reason",
       "registrationIds": [
-        2,
+        1,
       ],
     },
     "value": [
-      2,
+      1,
     ],
   },
 ]

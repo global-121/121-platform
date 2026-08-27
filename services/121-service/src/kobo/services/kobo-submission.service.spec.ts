@@ -124,6 +124,10 @@ describe('KoboSubmissionService', () => {
     koboApiService = module.get(KoboApiService);
     registrationsCreationService = module.get(RegistrationsCreationService);
     koboSubmissionHelperService = module.get(KoboSubmissionHelperService);
+
+    koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids.mockResolvedValue(
+      new Set(),
+    );
   });
 
   describe('when processing a Kobo webhook call', () => {
@@ -176,6 +180,29 @@ describe('KoboSubmissionService', () => {
       expect(error.message).toMatchInlineSnapshot(
         `"Kobo integration not found for this program"`,
       );
+    });
+
+    it('should skip processing when a registration with the submission UUID already exists', async () => {
+      // Arrange
+      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
+      koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids.mockResolvedValue(
+        new Set([successSubmissionUuid]),
+      );
+
+      // Act
+      await service.processKoboWebhookCall(incomingWebhook);
+
+      // Assert
+      expect(
+        koboSubmissionHelperService.filterAlreadyExistingSubmissionUuids,
+      ).toHaveBeenCalledWith([successSubmissionUuid]);
+      expect(
+        koboSubmissionHelperService.updateProgramToNewVersionIfApplicable,
+      ).not.toHaveBeenCalled();
+      expect(koboApiService.getSubmission).not.toHaveBeenCalled();
+      expect(
+        registrationsCreationService.importRegistrations,
+      ).not.toHaveBeenCalled();
     });
   });
 
