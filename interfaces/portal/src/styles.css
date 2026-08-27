@@ -188,6 +188,10 @@ svg-icon svg {
         @apply flex flex-wrap;
       }
     }
+
+    .p-chip:has(.p-chip-remove-icon) {
+      @apply pr-[var(--p-chip-padding-x)];
+    }
   }
 
   .p-button {
@@ -336,7 +340,7 @@ svg-icon svg {
   }
 
   .p-chip {
-    --p-chip-padding-x: 1rem;
+    --p-chip-padding-x: 0.75rem;
 
     .p-chip-icon {
       color: inherit;
