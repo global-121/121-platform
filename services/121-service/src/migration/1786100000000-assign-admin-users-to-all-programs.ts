@@ -42,7 +42,7 @@ export class AssignAdminUsersToAllPrograms1786100000000
     `);
   }
 
-  public async down(): Promise<void> {
-    "not going to drop assignments, ain't nobody got time for that";
+  public async down(_: QueryRunner): Promise<void> {
+     console.log('Progress is the way');
   }
 }

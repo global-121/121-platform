@@ -14,13 +14,13 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import {
-    INTERFACE_NAME_HEADER,
-    InterfaceNames,
+  INTERFACE_NAME_HEADER,
+  InterfaceNames,
 } from '@121-service/src/shared/enum/interface-names.enum';
 import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
 import {
-    CreateProgramAssignmentDto,
-    UpdateProgramAssignmentDto,
+  CreateProgramAssignmentDto,
+  UpdateProgramAssignmentDto,
 } from '@121-service/src/user/dto/assign-aw-to-program.dto';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto';
@@ -31,13 +31,13 @@ import { GetUserReponseDto } from '@121-service/src/user/dto/get-user-response.d
 import { LoginResponseDto } from '@121-service/src/user/dto/login-response.dto';
 import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
 import {
-    UpdateUserDto,
-    UpdateUserPasswordDto,
+  UpdateUserDto,
+  UpdateUserPasswordDto,
 } from '@121-service/src/user/dto/update-user.dto';
 import { UpdateUserRoleDto } from '@121-service/src/user/dto/update-user-role.dto';
 import {
-    AssignmentResponseDTO,
-    UserRoleResponseDTO,
+  AssignmentResponseDTO,
+  UserRoleResponseDTO,
 } from '@121-service/src/user/dto/userrole-response.dto';
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
