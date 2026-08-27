@@ -1,1 +1,3 @@
 logs
+report-flaky-tests-API.json
+report-flaky-tests-E2E.json
