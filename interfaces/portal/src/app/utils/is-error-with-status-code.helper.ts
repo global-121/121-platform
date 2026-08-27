@@ -6,7 +6,13 @@ export const isErrorWithStatusCode = ({
 }: {
   error: unknown;
   statusCode: HttpStatusCode;
-}) =>
-  error instanceof Error &&
-  error.cause instanceof HttpErrorResponse &&
-  error.cause.status === (statusCode as number);
+}) => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- We want to enforce the use of HttpStatusCode, which is an enum(of numbers only), so we need to cast it explicitly.
+  const statusCodeNumber = statusCode as number;
+
+  return (
+    error instanceof Error &&
+    error.cause instanceof HttpErrorResponse &&
+    error.cause.status === statusCodeNumber
+  );
+};
