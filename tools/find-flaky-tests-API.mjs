@@ -96,8 +96,9 @@ async function getFailingTestsForJob({ jobId }) {
       failingTests: parseFailingTests({ logText }),
       logAvailable: true,
     };
-  } catch {
+  } catch (error) {
     // GitHub deletes Actions logs after a retention period; treat those as unknown.
+    console.warn(`Could not fetch logs for job ${jobId}:`, error?.message ?? error);
     return { failingTests: new Set(), logAvailable: false };
   }
 }

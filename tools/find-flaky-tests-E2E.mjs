@@ -126,8 +126,9 @@ async function getTestSummaryForJob({ jobId }) {
       ghArgs: ['run', 'view', '--repo', repo, '--job', String(jobId), '--log'],
     });
     return { ...parseTestSummary({ logText }), logAvailable: true };
-  } catch {
+  } catch (error) {
     // GitHub deletes Actions logs after a retention period; treat those as unknown.
+    console.warn(`Could not fetch logs for job ${jobId}:`, error?.message ?? error);
     return { failed: new Set(), flaky: new Set(), logAvailable: false };
   }
 }

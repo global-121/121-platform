@@ -3,13 +3,18 @@ import { promisify } from 'node:util';
 
 const execFileAsync = promisify(execFile);
 
+const GH_EXEC_OPTIONS = {
+  // `gh run view --log` can exceed execFile's default 1MB buffer.
+  maxBuffer: 50 * 1024 * 1024,
+};
+
 export async function ghJson({ ghArgs }) {
-  const { stdout } = await execFileAsync('gh', ghArgs);
+  const { stdout } = await execFileAsync('gh', ghArgs, GH_EXEC_OPTIONS);
   return JSON.parse(stdout);
 }
 
 export async function ghText({ ghArgs }) {
-  const { stdout } = await execFileAsync('gh', ghArgs);
+  const { stdout } = await execFileAsync('gh', ghArgs, GH_EXEC_OPTIONS);
   return stdout;
 }
 
