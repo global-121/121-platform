@@ -127,8 +127,8 @@
   [programId]="programId()"
 />
 
-<app-kobo-error-dialog
-  #koboErrorDialog
+<app-kobo-integration-error-dialog
+  #koboIntegrationErrorDialog
   [errors]="koboIntegrationErrors()"
   (tryAgain)="koboConfigurationDialog.show()"
 />

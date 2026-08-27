@@ -186,3 +186,9 @@
     }
   </section>
 </p-dialog>
+
+<app-kobo-integration-error-dialog
+  #koboIntegrationErrorDialog
+  [errors]="koboIntegrationErrors()"
+  [isKoboIntegrated]="true"
+/>

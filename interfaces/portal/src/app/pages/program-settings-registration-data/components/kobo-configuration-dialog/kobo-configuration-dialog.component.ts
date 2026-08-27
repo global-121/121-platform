@@ -26,8 +26,8 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { extractServerAndAssetIdFromUrl } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
-import { KoboErrorDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-error-dialog/kobo-error-dialog.component';
 import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
+import { KoboIntegrationErrorDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-integration-error-dialog/kobo-integration-error-dialog.component';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 @Component({
@@ -42,7 +42,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     Dialog,
     Button,
     PasswordModule,
-    KoboErrorDialogComponent,
+    KoboIntegrationErrorDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './kobo-configuration-dialog.component.html',
@@ -63,8 +63,10 @@ export class KoboConfigurationDialogComponent {
     'koboConfigurationDialog',
   );
 
-  readonly koboErrorDialog =
-    viewChild.required<KoboErrorDialogComponent>('koboErrorDialog');
+  readonly koboIntegrationErrorDialog =
+    viewChild.required<KoboIntegrationErrorDialogComponent>(
+      'koboIntegrationErrorDialog',
+    );
 
   readonly linkKoboDialog =
     viewChild.required<FormDialogComponent>('linkKoboDialog');
@@ -143,11 +145,11 @@ export class KoboConfigurationDialogComponent {
       };
       const errors = cause.error?.errors;
 
-      // If the error contains Kobo validation errors, we want to show them in the KoboErrorDialog.
+      // If the error contains Kobo validation errors, we want to show them in the KoboIntegrationErrorDialog.
       if (Array.isArray(errors) && errors.length > 0) {
         this.koboIntegrationErrors.set(errors);
         this.koboConfigurationDialog().hide();
-        this.koboErrorDialog().show();
+        this.koboIntegrationErrorDialog().show();
       }
 
       this.toastService.showToast({

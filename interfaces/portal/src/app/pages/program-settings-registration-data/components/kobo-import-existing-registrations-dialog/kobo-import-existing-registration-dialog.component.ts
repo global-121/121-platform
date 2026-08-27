@@ -6,6 +6,7 @@ import {
   input,
   model,
   signal,
+  viewChild,
 } from '@angular/core';
 
 import {
@@ -15,6 +16,7 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 
+import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 import {
@@ -29,6 +31,7 @@ import { QueryTableColumn } from '~/components/query-table/query-table.types';
 import { ImportExistingSubmissionsResultKey } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { DialogState } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registrations-dialog-state.enum';
+import { KoboIntegrationErrorDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-integration-error-dialog/kobo-integration-error-dialog.component';
 import { ToastService } from '~/services/toast.service';
 
 interface ValidationError {
@@ -49,6 +52,7 @@ interface ValidationErrorTableRow extends ValidationError {
     QueryTableComponent,
     FormErrorComponent,
     InfoTooltipComponent,
+    KoboIntegrationErrorDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './kobo-import-existing-registration-dialog.component.html',
@@ -61,6 +65,13 @@ export class KoboImportExistingRegistrationsDialogComponent {
   readonly importState = signal(DialogState.NotInitiated);
   readonly dialogVisible = model(false);
   readonly programId = input.required<number | string>();
+
+  readonly koboIntegrationErrors = signal<KoboValidationError[]>([]);
+
+  readonly koboIntegrationErrorDialog =
+    viewChild.required<KoboIntegrationErrorDialogComponent>(
+      'koboIntegrationErrorDialog',
+    );
 
   readonly headerIcon = computed(() => {
     switch (this.importState()) {
@@ -121,7 +132,19 @@ export class KoboImportExistingRegistrationsDialogComponent {
       if (response.numberOfSubmissionsOnForm === 0)
         this.importState.set(DialogState.ImportedWithoutSubmissions);
     },
-    onError: () => {
+    onError: (errorResponse: Error) => {
+      const cause = errorResponse.cause as {
+        error?: { errors?: KoboValidationError[] };
+      };
+      const errors = cause.error?.errors;
+
+      // If the error contains Kobo validation errors, we want to show them in the KoboErrorDialog.
+      if (Array.isArray(errors) && errors.length > 0) {
+        this.koboIntegrationErrors.set(errors);
+        this.closeDialog();
+        this.koboIntegrationErrorDialog().show();
+      }
+
       this.toastService.showToast({
         severity: 'error',
         detail: $localize`Error while importing existing Kobo registrations`,
