@@ -1,6 +1,6 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
 
-import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
+import type { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
