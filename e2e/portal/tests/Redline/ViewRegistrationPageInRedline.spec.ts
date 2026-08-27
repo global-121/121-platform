@@ -48,7 +48,7 @@ test('View search-result with single matched registration', async ({
   // Arrange
   const testRegistrations = [registrationWesteros1];
   const testPhoneNumber = registrationWesteros1.phoneNumber;
-  const testProgramRegistrationId = 2;
+  const testProgramRegistrationId = 1;
   await seedRegistrations(testRegistrations, programIdWesteros);
 
   // Act

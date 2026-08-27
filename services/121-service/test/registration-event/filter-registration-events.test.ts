@@ -13,6 +13,7 @@ import { getRegistrationEventsMonitoring } from '@121-service/test/helpers/progr
 import {
   createRegistrationUniques,
   getRegistrationEvents,
+  getRegistrationIdByReferenceId,
   importRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -174,10 +175,21 @@ describe('Get registration events', () => {
         'test',
         accessToken,
       );
-      // Mark pair as unique
+
+      // Mark pair as unique (fetch internal ids of the 2 imported registrations)
+      const registrationId1 = await getRegistrationIdByReferenceId({
+        referenceId: registrationVisa.referenceId,
+        programId: programIdOcw,
+        accessToken,
+      });
+      const registrationId2 = await getRegistrationIdByReferenceId({
+        referenceId: secondRegistration.referenceId,
+        programId: programIdOcw,
+        accessToken,
+      });
       await createRegistrationUniques({
         programId: programIdOcw,
-        registrationIds: [2, 4], // These are the ids of the 2 imported registrations
+        registrationIds: [registrationId1, registrationId2],
         accessToken,
         reason: 'test',
       });

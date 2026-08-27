@@ -25,12 +25,11 @@ export class RegistrationUtilsService {
   ): Promise<RegistrationEntity> {
     let saveRetriesCount = retryCount ? retryCount : 0;
     if (recalculateRegistrationProgramId) {
+      const programId = registration.program?.id ?? registration.programId;
       const query = this.registrationScopedRepository
         .createQueryBuilder('r')
         .select('r."registrationProgramId"')
-        .andWhere('r.programId = :programId', {
-          programId: registration.program.id,
-        })
+        .andWhere('r.programId = :programId', { programId })
         .andWhere('r.registrationProgramId is not null')
         .orderBy('r."registrationProgramId"', 'DESC')
         .limit(1);

@@ -218,7 +218,7 @@ describe('Process incoming Kobo submission via webhook', () => {
     );
   });
 
-  it('should reject a duplicate submission with the same referenceId', async () => {
+  it('should acknowledge a duplicate webhook for an already imported submission', async () => {
     // Arrange
     const submissionUuid = `${KoboMockSubmissionUuids.success}-duplicate`;
     const { programId, assetUid } = await setup('success-asset-duplicate');
@@ -235,10 +235,9 @@ describe('Process incoming Kobo submission via webhook', () => {
       koboVersion: KoboMockAssetUids.happyFlow,
     });
 
-    expect(secondResponse.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(secondResponse.body[0].error).toMatchInlineSnapshot(
-      `"referenceId already exists in database"`,
-    );
+    // Assert: the webhook acknowledges the duplicate without reprocessing,
+    // so Kobo marks the delivery as successful and does not keep retrying
+    expect(secondResponse.status).toBe(HttpStatus.OK);
 
     // Verify only one registration exists
     const searchResponse = await searchRegistrationByReferenceId(

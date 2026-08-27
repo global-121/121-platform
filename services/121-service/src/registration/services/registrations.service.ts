@@ -245,7 +245,7 @@ export class RegistrationsService {
     registration.program = await this.programRepository.findOneByOrFail({
       id: programId,
     });
-    await this.registrationUtilsService.save(registration);
+    await this.registrationUtilsService.save(registration, undefined, true);
     return this.setRegistrationStatus(
       postData.referenceId,
       RegistrationStatusEnum.new,
