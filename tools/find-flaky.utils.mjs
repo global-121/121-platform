@@ -18,7 +18,13 @@ export async function ghText({ ghArgs }) {
   return stdout;
 }
 
-export async function listCompletedRuns({ repo, workflow, runLimit, branch }) {
+export async function listCompletedRuns({
+  repo,
+  workflow,
+  runLimit,
+  branch,
+  mergeQueueOnly = false,
+}) {
   const listArgs = [
     'run',
     'list',
@@ -36,7 +42,17 @@ export async function listCompletedRuns({ repo, workflow, runLimit, branch }) {
   }
 
   const runs = await ghJson({ ghArgs: listArgs });
-  return runs.filter((run) => run.status === 'completed');
+  return runs.filter((run) => {
+    if (run.status !== 'completed') {
+      return false;
+    }
+
+    if (!mergeQueueOnly) {
+      return true;
+    }
+
+    return run.event === 'merge_group';
+  });
 }
 
 export async function runWithConcurrency({ items, worker, maxConcurrent }) {

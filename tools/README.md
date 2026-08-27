@@ -36,6 +36,7 @@ ranked summary of the flakiest tests they found.
 
 - Install the [GitHub CLI](https://cli.github.com)
 - Login with `gh auth login`
+- Add `--merge-queue-only` to only scan runs triggered by the merge queue (`merge_group` event).
 
 #### API workflow: `npm run find-flaky-tests-API`
 
@@ -47,6 +48,7 @@ broken).
 npm run find-flaky-tests-API -- \
   --workflow test_service_api.yml \
   --branch main \
+  --merge-queue-only \
   --limit 200 \
   --output report-flaky-tests-API.json
 ```
@@ -63,6 +65,7 @@ runs), so `--branch` usually is not useful here.
 ```shell
 npm run find-flaky-tests-E2E -- \
   --workflow test_e2e_portal.yml \
+  --merge-queue-only \
   --limit 200 \
   --output report-flaky-tests-E2E.json
 ```

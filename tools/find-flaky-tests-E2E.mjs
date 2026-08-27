@@ -23,6 +23,7 @@
  * Usage:
  *   node find-flaky-tests-E2E.mjs [--workflow test_e2e_portal.yml]
  *     [--limit 200] [--branch main] [--repo global-121/121-platform]
+ *     [--merge-queue-only]
  *     [--output report-flaky-tests-E2E.json]
  */
 import { writeFile } from 'node:fs/promises';
@@ -42,6 +43,7 @@ const { values: args } = parseArgs({
     workflow: { type: 'string', default: 'test_e2e_portal.yml' },
     limit: { type: 'string', default: '200' },
     branch: { type: 'string' },
+    'merge-queue-only': { type: 'boolean', default: false },
     concurrency: { type: 'string', default: '6' },
     output: { type: 'string', default: 'report-flaky-tests-E2E.json' },
   },
@@ -69,6 +71,7 @@ async function listCompletedRunsForWorkflow() {
     workflow,
     runLimit,
     branch: args.branch,
+    mergeQueueOnly: args['merge-queue-only'],
   });
 }
 
