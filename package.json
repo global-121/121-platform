@@ -71,7 +71,7 @@
   "devEngines": {
     "packageManager": {
       "name": "npm",
-      "version": ">=11"
+      "version": ">=10"
     },
     "runtime": {
       "name": "node",
