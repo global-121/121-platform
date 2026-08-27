@@ -294,7 +294,25 @@ svg-icon svg {
   .p-multiselect-header {
     @apply border-b-grey-300/50 bg-grey-300/20 rounded-none border-t-0 border-b py-2;
 
-    /* This is amazing.. Finally a way to hide all those horrible empty containers that Angular produces! */
+    /*
+      The way Angular renders empty unused slots is not empty. They are filled with comment nodes.
+
+      Example:
+
+      <div class="p-multiselect-header" data-pc-section="header">
+        <!--container-->
+        <!--container-->
+        <!--container-->
+        <!--container-->
+      </div>
+
+      That's just... plain horrible.
+
+      Because the are rendered they can inherit styles from their parent (like padding, margin, etc).,
+      + they can not be targeted with ::empty or :not(:empty) because they are not empty. So we have
+      to use the :has() selector to check if there are any children and hide the header if there are none.
+    */
+
     &:not(:has(> *)) {
       @apply hidden;
     }
