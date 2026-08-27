@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { ExportService } from '~/services/export.service';
+import { csvContentToBlob } from '~/utils/csv-helpers';
 
 @Injectable({
   providedIn: 'root',
@@ -24,9 +25,7 @@ export class DownloadService {
     const csvContents = file.join(';') + '\r\n';
 
     this.downloadFile({
-      // BOM prefix: without it Excel opens ".csv" files using the OS ANSI code page
-      // instead of UTF-8, garbling accented characters.
-      file: new Blob(['\uFEFF', csvContents], { type: 'text/csv' }),
+      file: csvContentToBlob({ csvContent: csvContents }),
       filename: ExportService.toExportFileName(filename, 'csv'),
     });
   }
