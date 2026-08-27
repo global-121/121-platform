@@ -45,12 +45,41 @@ export class FileImportService {
     return importRecords;
   }
 
+  // Excel saves ".csv" files using the OS ANSI code page (e.g. Windows-1252) unless
+  // the user explicitly picks "CSV UTF-8", which silently turns accented characters
+  // (e.g. é, ë, ô) into "�" if we assumed UTF-8 unconditionally. Rather than guess
+  // at the actual encoding (which risks silently writing wrong data), we reject
+  // non-UTF-8 files so the user can re-save and re-upload with the correct encoding.
+  private decodeCsvBuffer(buffer: Buffer): string {
+    let decoded: string;
+    try {
+      decoded = new TextDecoder('utf-8', { fatal: true }).decode(buffer);
+    } catch (error) {
+      // Checked via `name` instead of `instanceof TypeError`: TextDecoder's error
+      // isn't guaranteed to share a prototype chain with the local TypeError (e.g.
+      // it doesn't in this codebase's Jest setup), which makes instanceof unreliable.
+      const errorName = (error as { name?: string } | null | undefined)?.name;
+      if (errorName !== 'TypeError') {
+        throw error;
+      }
+      const errors = [
+        'File is not UTF-8 encoded. Special characters (é, ë, ô) may be corrupted. Save as CSV UTF-8 in Excel (File → Save As → CSV UTF-8 (Comma delimited)) and re-upload.',
+      ];
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+    // Accented characters can be encoded as a single precomposed code point or as a
+    // base letter plus a combining accent; both look identical but compare unequal.
+    // NFC normalizes to the precomposed form so e.g. matching on Full Name for FSP
+    // reconciliation isn't silently broken by the input's normalization form.
+    return decoded.normalize('NFC');
+  }
+
   private async csvBufferToArray(
     buffer: Buffer,
     separator: string,
   ): Promise<CsvContents> {
     const stream = new Readable();
-    stream.push(buffer.toString());
+    stream.push(this.decodeCsvBuffer(buffer));
     stream.push(null);
     const parsedData: CsvContents = [];
     return await new Promise((resolve, reject): void => {

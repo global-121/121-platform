@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { ExportService } from '~/services/export.service';
+import { csvContentToBlob } from '~/utils/csv-helpers';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,7 @@ export class DownloadService {
     const csvContents = file.join(';') + '\r\n';
 
     this.downloadFile({
-      file: new Blob([csvContents], { type: 'text/csv' }),
+      file: csvContentToBlob({ csvContent: csvContents }),
       filename: ExportService.toExportFileName(filename, 'csv'),
     });
   }
