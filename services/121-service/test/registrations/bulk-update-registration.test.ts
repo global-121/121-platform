@@ -156,8 +156,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       referenceId: referenceId1,
     });
     const dataChangeEventsPa1 = eventsResponsePa1.body.data.filter(
-      (event: { type: string }) =>
-        event.type === RegistrationEventEnum.registrationDataChange,
+      (event) => event.type === RegistrationEventEnum.registrationDataChange,
     );
     expect(dataChangeEventsPa1.length).toBeGreaterThan(0);
     for (const event of dataChangeEventsPa1) {
