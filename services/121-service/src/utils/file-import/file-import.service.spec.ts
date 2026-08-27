@@ -64,7 +64,9 @@ describe('FileImportService', () => {
 
       // Assert
       expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
-      expect(error.response[0]).toContain('UTF-8');
+      expect(error.response[0]).toBe(
+        'File is not UTF-8 encoded. Special characters (é, ë, ô) may be corrupted. Save as CSV UTF-8 in Excel (File → Save As → CSV UTF-8 (Comma delimited)) and re-upload.',
+      );
     });
 
     it('should normalize decomposed accented characters (base letter + combining accent) to their precomposed form', async () => {

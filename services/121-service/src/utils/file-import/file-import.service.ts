@@ -63,7 +63,7 @@ export class FileImportService {
         throw error;
       }
       const errors = [
-        'This file does not appear to be UTF-8 encoded, which can corrupt special characters (e.g. é, ë, ô). Please save it as "CSV UTF-8" (in Excel: File > Save As > CSV UTF-8 (Comma delimited)) and try again.',
+        'File is not UTF-8 encoded. Special characters (é, ë, ô) may be corrupted. Save as CSV UTF-8 in Excel (File → Save As → CSV UTF-8 (Comma delimited)) and re-upload.',
       ];
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
