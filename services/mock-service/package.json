@@ -9,7 +9,6 @@
     "directory": "services/mock-service"
   },
   "private": true,
-  "main": "index.js",
   "scripts": {
     "prepare": "npm install --prefix=../../packages/eslint-config-121-platform/",
     "lint": "eslint \"**/*.{ts,js,mjs}\" --cache",

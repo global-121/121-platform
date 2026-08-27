@@ -39,12 +39,6 @@ export default defineConfig(
     // These exceptions should be minimal, until all these config-files can be converted to be ESM.
     extends: [eslintConfig121Platform.configs.legacyNode],
   },
-  {
-    name: 'Nest.js entry point (CommonJS) file',
-    files: ['index.js'],
-    // This file is the entry point for the service, and needs to be CommonJS for now.
-    extends: [eslintConfig121Platform.configs.legacyNode],
-  },
   eslintConfig121Platform.configs.services,
   eslintConfig121Platform.configs.typescript, // Needs to be AFTER `*.configs.node`; It needs to override some rules!
   {
