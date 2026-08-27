@@ -44,13 +44,13 @@ const koboErrorDisplayTypeMap: Record<
 };
 
 @Component({
-  selector: 'app-kobo-error-dialog',
+  selector: 'app-kobo-integration-error-dialog',
   imports: [Dialog, Button, InfoTooltipComponent, Tag, TableModule],
-  templateUrl: './kobo-error-dialog.component.html',
+  templateUrl: './kobo-integration-error-dialog.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class KoboErrorDialogComponent {
+export class KoboIntegrationErrorDialogComponent {
   readonly errors = input<KoboValidationError[]>([]);
   readonly dialogVisible = model(false);
   readonly tryAgain = output();
