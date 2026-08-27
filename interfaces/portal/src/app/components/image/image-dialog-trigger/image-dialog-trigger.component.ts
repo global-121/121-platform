@@ -10,7 +10,10 @@ import { ButtonModule } from 'primeng/button';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
-import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import {
+  ChipVariant,
+  ColoredChipComponent,
+} from '~/components/colored-chip/colored-chip.component';
 import { ImageViewerService } from '~/components/image/services/image-viewer.service';
 import { isImageAvailable } from '~/components/image/utils/is-image-available';
 
@@ -42,7 +45,8 @@ export class ImageDialogTriggerComponent {
     label: this.isAvailable()
       ? $localize`:@@image-available:Available`
       : $localize`:@@image-not-available:Not available`,
-    variant: this.isAvailable() ? 'green' : 'red',
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- The Angular compiler does not recognize this correctly, so we need to assert it explicitly.
+    variant: (this.isAvailable() ? 'green' : 'red') as ChipVariant,
   }));
 
   readonly buttonProps = computed(() => ({
