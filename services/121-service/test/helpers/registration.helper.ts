@@ -1188,3 +1188,48 @@ export async function waitForRegistrationToHaveUpdatedPaymentCount({
 
   return registration;
 }
+
+export async function waitForRegistrationCount({
+  programId,
+  expectedCount,
+  accessToken,
+  sort,
+  maxWaitTimeMs = 10_000,
+  pollIntervalMs = 500,
+}: {
+  programId: number;
+  expectedCount: number;
+  accessToken: string;
+  sort?: { field: string; direction: 'ASC' | 'DESC' };
+  maxWaitTimeMs?: number;
+  pollIntervalMs?: number;
+}): Promise<MappedPaginatedRegistrationDto[]> {
+  const startTime = Date.now();
+
+  while (Date.now() - startTime < maxWaitTimeMs) {
+    const getRegistrationsResponse = await getRegistrations({
+      programId,
+      accessToken,
+      sort,
+    });
+    const registrations: MappedPaginatedRegistrationDto[] =
+      getRegistrationsResponse.body.data;
+
+    if (registrations.length === expectedCount) {
+      return registrations;
+    }
+
+    // An unexpected extra registration will never resolve itself, so fail fast instead of waiting out the timeout
+    if (registrations.length > expectedCount) {
+      throw new Error(
+        `Expected ${expectedCount} registrations in program ${programId}, but found ${registrations.length}`,
+      );
+    }
+
+    await waitFor(pollIntervalMs);
+  }
+
+  throw new Error(
+    `Timed out waiting for ${expectedCount} registrations in program ${programId}`,
+  );
+}
