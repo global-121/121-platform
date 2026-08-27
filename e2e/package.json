@@ -23,7 +23,6 @@
     "test:keep-trace": "npm run test -- --retries=0 --trace on --reporter=html"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.1",
     "@types/express": "^4.17.25",
     "@types/jest": "^30.0.0",
