@@ -68,37 +68,39 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   private async saveNewRegistration({
     registration,
     options,
-    attempt = 1,
   }: {
     registration: RegistrationEntity;
     options?: SaveOptions;
-    attempt?: number;
   }): Promise<RegistrationEntity> {
-    if (attempt > MAX_REGISTRATION_PROGRAM_ID_SAVE_ATTEMPTS) {
-      throw new Error(
-        `Failed to save a registration with a unique registrationProgramId after ${MAX_REGISTRATION_PROGRAM_ID_SAVE_ATTEMPTS} attempts.`,
-      );
-    }
-
-    registration.registrationProgramId =
-      await this.getNextRegistrationProgramId({
-        programId: registration.program?.id ?? registration.programId,
-      });
-
-    try {
-      return await this.repository.save(registration, options);
-    } catch (error) {
-      // Only retry the constraint that recalculating registrationProgramId can resolve, not any unrelated violation
-      if (this.isRegistrationProgramIdUniqueViolation(error)) {
-        return await this.saveNewRegistration({
-          registration,
-          options,
-          attempt: attempt + 1,
+    for (
+      let attempt = 1;
+      attempt <= MAX_REGISTRATION_PROGRAM_ID_SAVE_ATTEMPTS;
+      attempt++
+    ) {
+      registration.registrationProgramId =
+        await this.getNextRegistrationProgramId({
+          programId: registration.program?.id ?? registration.programId,
         });
-      } else {
-        throw error;
+
+      try {
+        return await this.repository.save(registration, options);
+      } catch (error) {
+        const isLastAttempt =
+          attempt === MAX_REGISTRATION_PROGRAM_ID_SAVE_ATTEMPTS;
+
+        // Only retry the constraint that recalculating registrationProgramId can resolve, not any unrelated violation
+        if (
+          !this.isRegistrationProgramIdUniqueViolation(error) ||
+          isLastAttempt
+        ) {
+          throw error;
+        }
       }
     }
+
+    throw new Error(
+      `Failed to save a registration with a unique registrationProgramId after ${MAX_REGISTRATION_PROGRAM_ID_SAVE_ATTEMPTS} attempts.`,
+    );
   }
 
   private isRegistrationProgramIdUniqueViolation(
