@@ -40,12 +40,10 @@ const getFileName = (filePath: string) =>
 
 // Arrange
 test.describe('Rename attachments on Program Level', () => {
-  test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-    // reset
+  test.beforeEach(async ({ basePage, resetDBAndSeedRegistrations }) => {
     await resetDBAndSeedRegistrations({
       seedScript: SeedScript.nlrcMultiple,
       skipSeedRegistrations: true,
-      navigateToPage: `/program/${programIdOCW}/monitoring/files`,
     });
     accessToken = await getAccessToken();
     // seed with attachments
@@ -57,6 +55,7 @@ test.describe('Rename attachments on Program Level', () => {
         accessToken,
       });
     }
+    await basePage.goto(`/program/${programIdOCW}/monitoring/files`);
   });
 
   test('Rename: Word, PDF, JPG and PNG attachments formats', async ({
