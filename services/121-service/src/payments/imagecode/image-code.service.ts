@@ -1,7 +1,7 @@
+import bwipjs from '@bwip-js/node';
 import { SANS_16_BLACK } from '@jimp/plugin-print/fonts';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import bwipjs from 'bwip-js';
 import { Jimp, JimpMime, loadFont } from 'jimp';
 import crypto from 'node:crypto';
 import { Equal, LessThan, Repository } from 'typeorm';
@@ -76,7 +76,10 @@ export class ImageCodeService {
       height: 15,
       includetext: false,
       backgroundcolor: 'FFFFFF',
-      padding: 10,
+      paddingtop: 10,
+      paddingleft: 10,
+      paddingright: 10,
+      paddingbottom: 10,
     });
   }
 
