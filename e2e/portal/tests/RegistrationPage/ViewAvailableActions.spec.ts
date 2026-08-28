@@ -151,6 +151,7 @@ test.describe('User actions', () => {
   // able to see the actions menu
   test('"View Only" user should see expected actions', async ({
     login,
+    loginPage,
     registrationActivityLogPage,
     page,
   }) => {
@@ -158,14 +159,23 @@ test.describe('User actions', () => {
       // Setup with admin user first
       await login();
       await registrationActivityLogPage.goto(registrationUrl);
-      // Logout as admin to add permissions to "viewOnlyUser"
-      await page.goto('/logout');
+      // Logout as admin to add permissions to "viewOnlyUser".
+      // We use the app's own "Logout" menu-action (like `LogOut.spec.ts` does)
+      // instead of navigating directly to `/logout`, since that URL is not an
+      // actual route: it is only reachable through the wildcard-route, which
+      // redirects straight back to the "programs"-page while still logged in
+      // as admin, without ever calling the app's logout-logic.
+      await registrationActivityLogPage.selectAccountOption('Logout');
       // Add UPDATE permission to "viewOnlyUser" so that the actions menu becomes visible
       await addPermissionToRole(DefaultUserRole.View, [
         PermissionEnum.RegistrationPersonalUPDATE,
       ]);
-      // Login as "viewOnlyUser" and navigate to registration activity log page
-      await login({
+      // Login as "viewOnlyUser". We're already on the login-page (and don't
+      // need to wait for the generic post-login redirect), as we explicitly
+      // navigate to- and assert on- the registration activity log page next.
+      await loginPage.login({
+        skipNavigateToLogin: true,
+        skipUrlCheck: true,
         username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
         password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
       });
@@ -173,6 +183,7 @@ test.describe('User actions', () => {
       await registrationActivityLogPage.goto(
         `/program/${programIdPV}/registrations/${registrationId}`,
       );
+      await expect(page.getByTestId('registration-title')).toBeVisible();
     });
 
     await test.step('Open action menu', async () => {
