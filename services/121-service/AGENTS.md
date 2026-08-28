@@ -223,7 +223,7 @@ npm run fix # Fix linting issues
 cd services/121-service
 docker exec 121-service  npm run test:unit:all # unit tests
 docker exec 121-service  npm run test:integration:base # integration tests
-docker exec 121-service npm run test:integration:all -t delete-program.test.ts # specific test file
+docker exec 121-service npm run test:integration:base -t delete-program.test.ts # specific test file
 ```
 
 ## Additional Resources
