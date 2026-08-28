@@ -75,7 +75,7 @@ export class TwilioMessageScopedRepository extends ScopedRepository<TwilioMessag
           programId: Equal(programId),
         },
       },
-      relations: ['user'],
+      relations: { user: true },
       order: { dateCreated: 'DESC' },
       select: {
         userId: true,

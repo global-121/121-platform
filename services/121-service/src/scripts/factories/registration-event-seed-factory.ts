@@ -45,7 +45,7 @@ export class RegistrationEventSeedFactory extends BaseSeedFactory<RegistrationEv
           ids: originalRegistrationIds,
         }),
       },
-      relations: ['attributes'],
+      relations: { attributes: true },
       order: { registrationId: 'ASC', id: 'ASC' },
     });
     if (events.length === 0) {

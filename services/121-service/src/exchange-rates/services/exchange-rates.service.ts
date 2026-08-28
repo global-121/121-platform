@@ -21,7 +21,7 @@ export class ExchangeRatesService {
 
   public async getAll(): Promise<GetExchangeRateDto[]> {
     return await this.exchangeRateRepository.find({
-      select: ['currency', 'euroExchangeRate', 'closeTime'],
+      select: { currency: true, euroExchangeRate: true, closeTime: true },
     });
   }
 

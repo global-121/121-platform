@@ -175,7 +175,7 @@ export class OnafriqReconciliationService {
     const onafriqTransactions =
       await this.onafriqTransactionScopedRepository.find({
         where,
-        relations: ['transaction'],
+        relations: { transaction: true },
       });
 
     const fspConfigs =

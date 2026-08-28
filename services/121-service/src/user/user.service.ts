@@ -102,7 +102,7 @@ export class UserService {
         userId: Equal(userId),
         programId: Equal(numericProgramId),
       },
-      relations: ['roles', 'roles.permissions'],
+      relations: { roles: { permissions: true } },
     });
     if (!programAssignment) {
       return false;
@@ -122,7 +122,7 @@ export class UserService {
 
   public async getUserRoles(): Promise<UserRoleResponseDTO[]> {
     const userRoles = await this.userRoleRepository.find({
-      relations: ['permissions'],
+      relations: { permissions: true },
     });
 
     return userRoles.map((userRole) => this.getUserRoleResponse(userRole));
@@ -155,12 +155,12 @@ export class UserService {
   ): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
       where: { id: Equal(userId) },
-      relations: [
-        'programAssignments',
-        'programAssignments.program',
-        'programAssignments.roles',
-        'programAssignments.roles.permissions',
-      ],
+      relations: {
+        programAssignments: {
+          program: true,
+          roles: { permissions: true },
+        },
+      },
     });
     if (
       !user ||
@@ -373,11 +373,9 @@ export class UserService {
   ): Promise<AssignmentResponseDTO> {
     const user = await this.userRepository.findOne({
       where: { id: Equal(userId) },
-      relations: [
-        'programAssignments',
-        'programAssignments.program',
-        'programAssignments.roles',
-      ],
+      relations: {
+        programAssignments: { program: true, roles: true },
+      },
     });
     if (!user) {
       const errors = { User: `user with userId ${userId} not found` };
@@ -500,11 +498,9 @@ export class UserService {
   }): Promise<AssignmentResponseDTO | void> {
     const user = await this.userRepository.findOne({
       where: { id: Equal(userId) },
-      relations: [
-        'programAssignments',
-        'programAssignments.program',
-        'programAssignments.roles',
-      ],
+      relations: {
+        programAssignments: { program: true, roles: true },
+      },
     });
     if (!user) {
       const errors = { User: ' not found' };
@@ -563,7 +559,7 @@ export class UserService {
   public async delete(userId: number): Promise<UserEntity> {
     const user = await this.userRepository.findOneOrFail({
       where: { id: Equal(userId) },
-      relations: ['programAssignments', 'programAssignments.roles'],
+      relations: { programAssignments: { roles: true } },
     });
 
     await this.assignmentRepository.remove(user.programAssignments);
@@ -584,11 +580,10 @@ export class UserService {
   public async findById(id: number): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
       where: { id: Equal(id) },
-      relations: [
-        'programAssignments',
-        'programAssignments.roles',
-        'registrations',
-      ],
+      relations: {
+        programAssignments: { roles: true },
+        registrations: true,
+      },
     });
 
     if (!user) {
@@ -622,11 +617,9 @@ export class UserService {
   ): Promise<UserRO> {
     const user = await this.userRepository.findOne({
       where: { username: Equal(username) },
-      relations: [
-        'programAssignments',
-        'programAssignments.roles',
-        'programAssignments.roles.permissions',
-      ],
+      relations: {
+        programAssignments: { roles: { permissions: true } },
+      },
     });
     if (!user) {
       const errors = `User not found'`;
@@ -713,12 +706,12 @@ export class UserService {
   private async buildPermissionsObject(userId: number): Promise<any> {
     const user = await this.userRepository.findOneOrFail({
       where: { id: Equal(userId) },
-      relations: [
-        'programAssignments',
-        'programAssignments.roles',
-        'programAssignments.roles.permissions',
-        'programAssignments.program',
-      ],
+      relations: {
+        programAssignments: {
+          roles: { permissions: true },
+          program: true,
+        },
+      },
     });
 
     const permissionsObject = {};
@@ -897,11 +890,9 @@ export class UserService {
   ): Promise<AssignmentResponseDTO> {
     const user = await this.userRepository.findOne({
       where: { id: Equal(userId) },
-      relations: [
-        'programAssignments',
-        'programAssignments.program',
-        'programAssignments.roles',
-      ],
+      relations: {
+        programAssignments: { program: true, roles: true },
+      },
     });
     if (!user) {
       const errors = { User: ' not found' };

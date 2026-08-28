@@ -28,7 +28,7 @@ export class NoteScopedRepository extends ScopedRepository<NoteEntity> {
           programId: Equal(programId),
         },
       },
-      relations: ['user'],
+      relations: { user: true },
       order: { created: 'DESC' },
     });
     return result;

@@ -4,6 +4,7 @@ import {
   DataSource,
   DeleteResult,
   Equal,
+  FindOptionsRelations,
   FindOptionsWhere,
   InsertResult,
   ObjectId,
@@ -192,10 +193,10 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
 
   public async getWithRelationsByReferenceId({
     referenceId,
-    relations = [],
+    relations = {},
   }: {
     referenceId: string;
-    relations: string[];
+    relations?: FindOptionsRelations<RegistrationEntity>;
   }) {
     return await this.getWithRelationsByReferenceIdAndProgramId({
       referenceId,
@@ -219,11 +220,11 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   public async getWithRelationsByReferenceIdAndProgramId({
     referenceId,
     programId,
-    relations = [],
+    relations = {},
   }: {
     referenceId: string;
     programId?: number;
-    relations?: string[];
+    relations?: FindOptionsRelations<RegistrationEntity>;
   }) {
     return await this.findOne({
       where: {

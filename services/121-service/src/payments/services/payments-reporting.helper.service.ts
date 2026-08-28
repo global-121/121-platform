@@ -86,7 +86,7 @@ export class PaymentsReportingHelperService {
   > {
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
-      relations: ['programFspConfigurations'],
+      relations: { programFspConfigurations: true },
     });
     let fields: {
       entityJoinedToTransaction: EntityClass<any>;
