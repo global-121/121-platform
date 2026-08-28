@@ -41,11 +41,6 @@ const getFileName = (filePath: string) =>
 // Arrange
 test.describe('Rename attachments on Program Level', () => {
   test.beforeEach(async ({ page, resetDBAndSeedRegistrations }) => {
-    // reset
-    // Note: we intentionally do not navigate to the files page here yet, so that the
-    // attachments below are seeded before the page's initial data fetch happens. Otherwise
-    // the page could load with 0 attachments and, since that query response is cached, never
-    // pick up the freshly seeded attachments, making the test flaky.
     await resetDBAndSeedRegistrations({
       seedScript: SeedScript.nlrcMultiple,
       skipSeedRegistrations: true,
