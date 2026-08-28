@@ -29,6 +29,9 @@ test('Delete payment button is not visible when payment has started', async ({
     );
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
+    await paymentPage.validateToastMessageAndClose(
+      'Payment started successfully.',
+    );
   });
 
   await test.step('Verify delete payment button is not visible', async () => {
