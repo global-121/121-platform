@@ -36,6 +36,7 @@ test('Payment chart should reflect transaction statuses', async ({
 
   await test.step('Chart displays all correct payment statuses', async () => {
     await page.goto(`/en-GB/program/${programIdOCW}/payments/1`);
+    await paymentPage.waitForPageLoad();
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.validateGraphStatus({
       approved: 0,
