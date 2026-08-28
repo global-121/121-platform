@@ -89,12 +89,15 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
   >(undefined);
   readonly dialogVisible = model(false);
   readonly dryRunFailureDialogVisible = model(false);
+  readonly duplicatesErrorDialogVisible = model(false);
   readonly enableSendMessage = model(false);
   readonly customMessage = model<string>();
   readonly status = signal<RegistrationStatusEnum | undefined>(undefined);
 
   readonly reason = model<string | undefined>(undefined);
   readonly reasonValidationErrorMessage = signal<string | undefined>(undefined);
+
+  readonly duplicateCount = signal(0);
 
   readonly icon = computed(() => {
     const status = this.status();
@@ -133,6 +136,7 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
         return $localize`:@@change-status-default-warning:This action can not be applied to registrations you have selected.`;
     }
   });
+
   readonly canSendMessage = computed(() => {
     const status = this.status();
     if (!status) {
@@ -214,8 +218,19 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
     },
     onSuccess: (data, variables) => {
       if (data.nonApplicableCount === 0) {
-        // case #1: the change can be applied to all registrations
         if (variables.dryRun) {
+          if (
+            this.status() === RegistrationStatusEnum.included &&
+            data.duplicateCount > 0
+          ) {
+            // case #1.5: block change if there are duplicate registrations
+            this.showDuplicatesErrorDialog({
+              duplicateCount: data.duplicateCount,
+            });
+            return;
+          }
+
+          // case #1: the change can be applied to all registrations
           this.changeStatusMutation.mutate({ dryRun: false });
           return;
         }
@@ -287,5 +302,12 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
     this.reasonValidationErrorMessage.set(undefined);
     this.enableSendMessage.set(false);
     this.customMessage.set(undefined);
+  }
+
+  showDuplicatesErrorDialog({ duplicateCount }: { duplicateCount: number }) {
+    this.dialogVisible.set(false);
+    this.changeStatusMutation.reset();
+    this.duplicateCount.set(duplicateCount);
+    this.duplicatesErrorDialogVisible.set(true);
   }
 }
