@@ -227,15 +227,21 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
       'required-attributes-table',
     );
 
-    const columnHeaders = await requiredFieldsTable.getTextArrayFromHeader();
-    const dataColumnNames = await requiredFieldsTable.tableRows
-      .locator('td:nth-child(2)')
-      .allInnerTexts();
+    // The required fields table is driven by queries (FSP configurations, program,
+    // program attributes) that can briefly render stale cached data right after a
+    // preceding mutation (e.g. changing FSPs or toggling scope) invalidates them, before
+    // the background refetch resolves. Retry until the table reflects the fresh data.
+    await expect(async () => {
+      const columnHeaders = await requiredFieldsTable.getTextArrayFromHeader();
+      const dataColumnNames = await requiredFieldsTable.tableRows
+        .locator('td:nth-child(2)')
+        .allInnerTexts();
 
-    const trimmedDataColumnNames = dataColumnNames.map((row) => row.trim());
+      const trimmedDataColumnNames = dataColumnNames.map((row) => row.trim());
 
-    expect(columnHeaders).toEqual(['Field', 'Data column name']);
-    expect(trimmedDataColumnNames).toEqual(requiredDataColumnNames);
+      expect(columnHeaders).toEqual(['Field', 'Data column name']);
+      expect(trimmedDataColumnNames).toEqual(requiredDataColumnNames);
+    }).toPass({ timeout: 5_000 });
   }
 
   async validateKoboRequiredFieldsTableNotVisible() {
