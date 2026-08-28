@@ -170,12 +170,13 @@ test.describe('User actions', () => {
       await addPermissionToRole(DefaultUserRole.View, [
         PermissionEnum.RegistrationPersonalUPDATE,
       ]);
-      // Login as "viewOnlyUser". We're already on the login-page (and don't
-      // need to wait for the generic post-login redirect), as we explicitly
-      // navigate to- and assert on- the registration activity log page next.
+      // Login as "viewOnlyUser". We're already on the login-page after
+      // logging out, so we skip navigating to it again, but we still wait
+      // for the post-login redirect to complete before navigating away -
+      // otherwise the subsequent `goto` below could interrupt the in-flight
+      // login request/redirect, leaving the browser unauthenticated.
       await loginPage.login({
         skipNavigateToLogin: true,
-        skipUrlCheck: true,
         username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
         password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
       });
