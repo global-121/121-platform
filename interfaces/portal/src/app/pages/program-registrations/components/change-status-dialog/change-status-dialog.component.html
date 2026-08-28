@@ -184,3 +184,35 @@
     />
   </div>
 </p-dialog>
+
+<p-dialog
+  [(visible)]="duplicatesErrorDialogVisible"
+  modal="true"
+  [closeOnEscape]="false"
+>
+  <ng-template pTemplate="header">
+    <h3 class="text-red-700">
+      <i class="pi pi-exclamation-triangle me-2"></i>
+      <ng-container i18n="@@generic-error">Error</ng-container>
+    </h3>
+  </ng-template>
+  <b i18n
+    >There are {{ duplicateCount() }} registration(s) that don't support this
+    action.</b
+  >
+  <p i18n>
+    The action "include" can only be applied to unique registrations. Duplicate
+    registrations cannot be included.
+  </p>
+  <p i18n>
+    Select unique registrations and/or resolve duplicates and try again.
+  </p>
+  <div class="mbs-6 flex justify-end gap-x-2">
+    <p-button
+      label="Close"
+      i18n-label
+      rounded
+      (click)="duplicatesErrorDialogVisible.set(false)"
+    />
+  </div>
+</p-dialog>

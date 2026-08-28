@@ -284,6 +284,15 @@ export class CreatePaymentComponent {
       }
 
       if (dryRun) {
+        if (result.duplicateCount > 0) {
+          this.toastService.showToast({
+            severity: 'error',
+            detail: $localize`Payment creation not possible because duplicate registrations were found.`,
+          });
+          this.createPaymentMutation.reset();
+          return;
+        }
+
         this.dryRunResult.set(result);
         this.currentStep.set(3);
         return;

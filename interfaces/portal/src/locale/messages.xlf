@@ -411,6 +411,9 @@
       <trans-unit id="2717935367210661025" datatype="html">
         <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>). Note: <x equiv-text="event.attributes.note" id="PH_3"/></source>
       </trans-unit>
+      <trans-unit id="2733926303398918070" datatype="html">
+        <source>There are <x equiv-text="{{ duplicateCount() }}" id="INTERPOLATION"/> registration(s) that don&apos;t support this action.</source>
+      </trans-unit>
       <trans-unit id="2756397788360043544" datatype="html">
         <source>Remaining budget</source>
       </trans-unit>
@@ -1178,6 +1181,9 @@
       <trans-unit id="5719725512817410618" datatype="html">
         <source>Select a user</source>
       </trans-unit>
+      <trans-unit id="572067953962029982" datatype="html">
+        <source>The action &quot;include&quot; can only be applied to unique registrations. Duplicate registrations cannot be included.</source>
+      </trans-unit>
       <trans-unit id="5731103713915660185" datatype="html">
         <source>Add general information to define your program details.</source>
       </trans-unit>
@@ -1587,6 +1593,9 @@
       <trans-unit id="7509825160805284263" datatype="html">
         <source>Personal information: IP-address.</source>
       </trans-unit>
+      <trans-unit id="7524559928368864759" datatype="html">
+        <source>Select unique registrations and/or resolve duplicates and try again.</source>
+      </trans-unit>
       <trans-unit id="7541862285009254523" datatype="html">
         <source>This will download an Excel file showing all refunded debit cards.</source>
       </trans-unit>
@@ -1649,6 +1658,9 @@
       </trans-unit>
       <trans-unit id="7814604735706675498" datatype="html">
         <source>Cards ordered</source>
+      </trans-unit>
+      <trans-unit id="7819314041543176992" datatype="html">
+        <source>Close</source>
       </trans-unit>
       <trans-unit id="7848450150740100683" datatype="html">
         <source>Failed to update financial service providers.</source>
@@ -1733,6 +1745,9 @@
       </trans-unit>
       <trans-unit id="8153112678957419197" datatype="html">
         <source>Error while integrating Kobo form</source>
+      </trans-unit>
+      <trans-unit id="8153320507825894844" datatype="html">
+        <source>Payment creation not possible because duplicate registrations were found.</source>
       </trans-unit>
       <trans-unit id="8158073155076214675" datatype="html">
         <source>Important Notice: The unused vouchers available for download are not in real-time. The report includes the date and time of each voucher&apos;s last external update.</source>
