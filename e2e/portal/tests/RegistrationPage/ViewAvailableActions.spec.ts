@@ -168,7 +168,7 @@ test.describe('User actions', () => {
       ]);
       // Login as "viewOnlyUser" before checking which actions are available.
       await loginPage.login({
-        skipNavigateToLogin: true,
+        skipNavigateToLogin: false,
         skipUrlCheck: false,
         username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
         password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
