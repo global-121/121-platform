@@ -99,7 +99,7 @@
     "pg": "^8.22.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "sanitize-html": "^2.17.5",
+    "sanitize-html": "^2.17.7",
     "ssh2-sftp-client": "^12.1.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
