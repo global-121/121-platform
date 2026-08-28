@@ -1,4 +1,4 @@
-# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+¡# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
 name: 'Test Mock-Service: Code'
 
@@ -11,6 +11,7 @@ on:
       - '.github/workflows/test_mock-service_code.yml'
       - '.github/actions/build-service/action.yml'
       - 'services/mock-service/**'
+      - '!**.md'
   push:
     branches:
       - 'release/*'
@@ -19,6 +20,7 @@ on:
       - '.github/workflows/test_mock-service_code.yml'
       - '.github/actions/build-service/action.yml'
       - 'services/mock-service/**'
+      - '!**.md'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
