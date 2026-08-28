@@ -1,4 +1,4 @@
-¡# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
 name: 'Test Mock-Service: Code'
 
