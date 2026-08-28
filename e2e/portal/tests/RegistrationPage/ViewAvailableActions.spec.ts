@@ -159,24 +159,17 @@ test.describe('User actions', () => {
       // Setup with admin user first
       await login();
       await registrationActivityLogPage.goto(registrationUrl);
-      // Logout as admin to add permissions to "viewOnlyUser".
-      // We use the app's own "Logout" menu-action (like `LogOut.spec.ts` does)
-      // instead of navigating directly to `/logout`, since that URL is not an
-      // actual route: it is only reachable through the wildcard-route, which
-      // redirects straight back to the "programs"-page while still logged in
-      // as admin, without ever calling the app's logout-logic.
-      await registrationActivityLogPage.selectAccountOption('Logout');
+      // Log out before the view-only user starts from the login page.
+      await page.goto('/logout');
+      await page.waitForURL((url) => url.pathname.startsWith('/en-GB/login'));
       // Add UPDATE permission to "viewOnlyUser" so that the actions menu becomes visible
       await addPermissionToRole(DefaultUserRole.View, [
         PermissionEnum.RegistrationPersonalUPDATE,
       ]);
-      // Login as "viewOnlyUser". We're already on the login-page after
-      // logging out, so we skip navigating to it again, but we still wait
-      // for the post-login redirect to complete before navigating away -
-      // otherwise the subsequent `goto` below could interrupt the in-flight
-      // login request/redirect, leaving the browser unauthenticated.
+      // Login as "viewOnlyUser" before checking which actions are available.
       await loginPage.login({
         skipNavigateToLogin: true,
+        skipUrlCheck: false,
         username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
         password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
       });
