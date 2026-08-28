@@ -103,7 +103,6 @@ test('View available actions for a "view only" user', async ({
 
     await loginPage.login({
       skipNavigateToLogin: true,
-      skipUrlCheck: true,
       username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
       password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
     });
