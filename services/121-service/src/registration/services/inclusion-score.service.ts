@@ -7,7 +7,6 @@ import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/en
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
-import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
 @Injectable()
@@ -17,7 +16,6 @@ export class InclusionScoreService {
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    private readonly registrationUtilsService: RegistrationUtilsService,
     private readonly registrationDataService: RegistrationDataService,
   ) {}
 
@@ -50,7 +48,7 @@ export class InclusionScoreService {
         Number(factorElements[0]) * Number(factorValue);
     }
     registration.paymentAmountMultiplier = paymentAmountMultiplier;
-    return await this.registrationUtilsService.save(registration);
+    return await this.registrationScopedRepository.save(registration);
   }
 
   public async calculateInclusionScore(referenceId: string): Promise<void> {
@@ -72,7 +70,7 @@ export class InclusionScoreService {
 
     registration.inclusionScore = score;
 
-    await this.registrationUtilsService.save(registration);
+    await this.registrationScopedRepository.save(registration);
   }
 
   private async createQuestionAnswerListPrefilled(

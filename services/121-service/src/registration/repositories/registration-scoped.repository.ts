@@ -7,6 +7,7 @@ import {
   FindOptionsWhere,
   InsertResult,
   ObjectId,
+  QueryFailedError,
   RemoveOptions,
   SaveOptions,
   UpdateResult,
@@ -15,12 +16,18 @@ import { type QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialE
 
 import { ExportVisaCardDetailsRawData } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
-import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import {
+  REGISTRATION_PROGRAM_UNIQUE_CONSTRAINT,
+  RegistrationEntity,
+} from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { GetDuplicatesResult } from '@121-service/src/registration/interfaces/get-duplicates-result.interface';
 import { RegistrationScopedBaseRepository } from '@121-service/src/registration/repositories/registration-scoped-base.repository';
+import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+
+const MAX_REGISTRATION_PROGRAM_ID_SAVE_ATTEMPTS = 3;
 
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class RegistrationScopedRepository extends RegistrationScopedBaseRepository<RegistrationEntity> {
@@ -35,6 +42,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   ///////////////////////////////////////////////////////////////
   // COPIED IMPLEMENTATION OF REPOSITORY METHODS ////////////////
   //////////////////////////////////////////////////////////////
+  // Arrays are intentionally not supported: registrationProgramId assignment relies on saving one registration at a time
   public async save(
     entity: RegistrationEntity,
     options: SaveOptions & { reload: false },
@@ -44,18 +52,82 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     options?: SaveOptions,
   ): Promise<RegistrationEntity>;
   public async save(
-    entities: RegistrationEntity[],
-    options: SaveOptions & { reload: false },
-  ): Promise<RegistrationEntity[]>;
-  public async save(
-    entities: RegistrationEntity[],
+    entity: RegistrationEntity,
     options?: SaveOptions,
-  ): Promise<RegistrationEntity[]>;
-  public async save(
-    entityOrEntities: RegistrationEntity | RegistrationEntity[],
-    options?: SaveOptions,
-  ): Promise<RegistrationEntity | RegistrationEntity[]> {
-    return this.repository.save(entityOrEntities as any, options);
+  ): Promise<RegistrationEntity> {
+    if (entity.id) {
+      return this.repository.save(entity, options);
+    }
+
+    return this.saveNewRegistration({
+      registration: entity,
+      options,
+    });
+  }
+
+  private async saveNewRegistration({
+    registration,
+    options,
+  }: {
+    registration: RegistrationEntity;
+    options?: SaveOptions;
+  }): Promise<RegistrationEntity> {
+    for (
+      let attempt = 1;
+      attempt <= MAX_REGISTRATION_PROGRAM_ID_SAVE_ATTEMPTS;
+      attempt++
+    ) {
+      registration.registrationProgramId =
+        await this.getNextRegistrationProgramId({
+          programId: registration.program?.id ?? registration.programId,
+        });
+
+      try {
+        return await this.repository.save(registration, options);
+      } catch (error) {
+        const isLastAttempt =
+          attempt === MAX_REGISTRATION_PROGRAM_ID_SAVE_ATTEMPTS;
+
+        // Only retry the constraint that recalculating registrationProgramId can resolve, not any unrelated violation
+        if (
+          !this.isRegistrationProgramIdUniqueViolation(error) ||
+          isLastAttempt
+        ) {
+          throw error;
+        }
+      }
+    }
+
+    throw new Error(
+      `Failed to save a registration with a unique registrationProgramId after ${MAX_REGISTRATION_PROGRAM_ID_SAVE_ATTEMPTS} attempts.`,
+    );
+  }
+
+  private isRegistrationProgramIdUniqueViolation(
+    error: unknown,
+  ): error is QueryFailedError & { code: string; constraint: string } {
+    return (
+      error instanceof QueryFailedError &&
+      'code' in error &&
+      error.code === PostgresStatusCodes.UNIQUE_VIOLATION &&
+      'constraint' in error &&
+      error.constraint === REGISTRATION_PROGRAM_UNIQUE_CONSTRAINT
+    );
+  }
+
+  private async getNextRegistrationProgramId({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<number> {
+    // Deliberately unscoped: registrationProgramId must be unique across all scopes within a program
+    const result = await this.repository
+      .createQueryBuilder('r')
+      .select('MAX(r."registrationProgramId")', 'max')
+      .andWhere('r.programId = :programId', { programId })
+      .getRawOne<{ max: number | null }>();
+
+    return (result?.max ?? 0) + 1;
   }
 
   public async insert(
