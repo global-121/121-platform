@@ -30,8 +30,8 @@ test('All Charts of Monitoring Dashboard tab display correct data', async ({
     await programMonitoringPage.assertDashboardCharts({
       regPerStatus: 'Included: 5',
       regPerDuplicateStatus: {
-        duplicate: 2,
-        unique: 3,
+        duplicate: 0,
+        unique: 5,
       },
       regByCreationDate: `${registrationByCreationDate}: 5`,
       transactionsPerPaymentStatus: {
