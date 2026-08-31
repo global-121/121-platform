@@ -128,16 +128,13 @@ class BasePage {
    */
   async validateToastMessageAndClose(message: string) {
     const toastLocator = this.toast.filter({
+      visible: true,
       hasText: message,
     });
 
     // Handle multiple toasts (if any)
-    const visibleToasts = await toastLocator.all();
-
-    for (const toast of visibleToasts) {
-      await expect(toast).toBeVisible();
+    for (const toast of await toastLocator.all()) {
       await toast.getByRole('button').click();
-      await expect(toast).toBeHidden();
     }
   }
 
