@@ -159,7 +159,9 @@ test('Payment page should display correctly during all phases of payment with 2 
 
   await test.step('1st Approve payment by admin', async () => {
     await paymentPage.approvePayment();
-    await paymentPage.validateToastMessage('Payment approved successfully.');
+    await paymentPage.validateToastMessageAndClose(
+      'Payment approved successfully.',
+    );
   });
 
   await test.step('Validate payment-page in between 2 approvals', async () => {
@@ -199,7 +201,9 @@ test('Payment page should display correctly during all phases of payment with 2 
     await paymentPage.waitForPageLoad();
 
     await paymentPage.approvePayment();
-    await paymentPage.validateToastMessage('Payment approved successfully.');
+    await paymentPage.validateToastMessageAndClose(
+      'Payment approved successfully.',
+    );
   });
 
   await test.step('Validate payment-page in "Approved" state', async () => {
@@ -242,7 +246,9 @@ test('Payment page should display correctly during all phases of payment with 2 
     await paymentPage.waitForPageLoad();
 
     await paymentPage.startPayment();
-    await paymentPage.validateToastMessage('Payment started successfully.');
+    await paymentPage.validateToastMessageAndClose(
+      'Payment started successfully.',
+    );
     await paymentPage.waitForPaymentToComplete();
   });
 

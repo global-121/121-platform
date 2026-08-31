@@ -17,6 +17,6 @@ test('[Admin] Reset users password', async ({ usersPage }) => {
       env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
     );
     // Assert
-    await usersPage.validateToastMessage('Password reset');
+    await usersPage.validateToastMessageAndClose('Password reset');
   });
 });

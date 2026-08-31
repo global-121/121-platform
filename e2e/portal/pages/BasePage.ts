@@ -122,16 +122,8 @@ class BasePage {
     await this.page.getByRole('menuitem', { name: option }).click();
   }
 
-  async validateToastMessage(message: string) {
-    await expect(this.toast).toBeVisible();
-    expect(await this.toast.textContent()).toContain(message);
-    await expect(this.toast).toBeHidden({
-      timeout: 6_000, // by default, toasts are visible for 5s, adding some buffer time to account for the fade out animation
-    });
-  }
-
   // To speed tests up we can validate the toast message and close it
-  // without waiting for the toast to disappear after 6 seconds
+  // without waiting for the toast to disappear by itself (this takes 5 seconds)
   async validateToastMessageAndClose(message: string) {
     await expect(this.toast.first()).toBeVisible({ timeout: 5_000 });
     expect(await this.toast.first().textContent()).toContain(message);

@@ -39,7 +39,7 @@ test('Send custom message', async ({
     await registrationsPage.validateMessagePresent(customMessagePreview);
     await registrationsPage.sendMessage();
 
-    await registrationsPage.validateToastMessage(sendingMessageToast);
+    await registrationsPage.validateToastMessageAndClose(sendingMessageToast);
     await registrationsPage.goToRegistrationByName({
       registrationName: registrationFullName,
     });

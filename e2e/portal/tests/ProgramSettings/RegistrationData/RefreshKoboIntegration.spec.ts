@@ -140,7 +140,7 @@ test('Refresh Kobo integration - unsuccessful with error payload', async ({
   });
 
   await test.step('Validate error dialog for Kobo integration failure', async () => {
-    await programSettingsRegistrationDataPage.validateToastMessage(
+    await programSettingsRegistrationDataPage.validateToastMessageAndClose(
       'Integration update unsuccessful. Please try again.',
     );
 

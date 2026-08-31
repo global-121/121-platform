@@ -36,7 +36,7 @@ test('Send templated message', async ({
     );
     await registrationsPage.sendMessage();
 
-    await registrationsPage.validateToastMessage(sendingMessageToast);
+    await registrationsPage.validateToastMessageAndClose(sendingMessageToast);
     // Validate English message
     await registrationsPage.goToRegistrationByName({
       registrationName: 'Jack Strong',

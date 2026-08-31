@@ -74,7 +74,7 @@ test('Pause registrations included in pending payments', async ({
       submit: true,
     });
 
-    await registrationsPage.validateToastMessage(
+    await registrationsPage.validateToastMessageAndClose(
       `The status of 3 registration(s) is being changed to "Paused" successfully. The status change can take up to a minute to process.`,
     );
   });
@@ -144,7 +144,7 @@ test('Decline registrations included in pending payments', async ({
       submit: true,
     });
 
-    await registrationsPage.validateToastMessage(
+    await registrationsPage.validateToastMessageAndClose(
       `The status of 3 registration(s) is being changed to "Declined" successfully. The status change can take up to a minute to process.`,
     );
   });

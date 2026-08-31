@@ -39,7 +39,7 @@ test('Add Kobo integration with invalid details and validate error message', asy
   });
 
   await test.step('Validate error dialog for Kobo integration failure', async () => {
-    await programSettingsRegistrationDataPage.validateToastMessage(
+    await programSettingsRegistrationDataPage.validateToastMessageAndClose(
       'Error while integrating Kobo form',
     );
 
