@@ -9,7 +9,7 @@ import {
 
 interface ExplainerItem {
   content: string;
-  image: { url: string; alt: string };
+  image?: { url: string; alt: string };
 }
 
 @Component({

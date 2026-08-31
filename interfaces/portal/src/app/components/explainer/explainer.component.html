@@ -22,17 +22,17 @@
       <p-accordion-content
         class="[&_.p-accordioncontent-content]:bg-transparent [&_.p-accordioncontent-content]:p-0 [&_.p-accordioncontent-content]:ps-6 [&_.p-accordioncontent-content]:pbs-2"
       >
-        <ul class="mbs-2.5 space-y-5">
+        <ul class="my-2.5 space-y-2.5 [counter-reset:item]">
           @for (item of items(); track $index) {
             <li
-              [attr.data-index]="$index + 1"
-              class="before:text-purple relative ps-7.5 before:absolute before:inset-s-0 before:inset-bs-0.75 before:block before:rounded-full before:bg-purple-300 before:text-center before:text-xs/5 before:font-bold before:content-[attr(data-index)] before:block-5 before:inline-5"
+              class="before:text-purple relative ps-7.5 before:absolute before:inset-s-0 before:inset-bs-0.75 before:block before:rounded-full before:bg-purple-300 before:text-center before:text-xs/5 before:font-bold before:content-[counter(item)] before:[counter-increment:item] before:block-5 before:inline-5"
             >
               <p>{{ item.content }}</p>
-              @if (item.image.url) {
+
+              @if (item.image) {
                 <img
                   [src]="item.image.url"
-                  class="-ms-7.5 mbs-3 min-inline-[calc(100%+1.875rem)]"
+                  class="my-3.5 -ms-7.5 min-inline-[calc(100%+1.875rem)]"
                   [alt]="item.image.alt"
                 />
               }
