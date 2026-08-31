@@ -221,20 +221,12 @@ class PaymentPage extends BasePage {
     successful: number;
     failed: number;
   }) {
-    await this.page.waitForTimeout(1000); // Wait for the graph to be updated after the loader is hidden
-    const graph = await this.page.locator('canvas').getAttribute('aria-label');
-    if (graph) {
-      const graphText = graph
-        .replace('Payment status chart.', '')
-        .replace(/\s+/g, ' ')
-        .trim();
-
-      expect(graphText).toContain(
+    await expect(this.page.locator('canvas')).toHaveAttribute(
+      'aria-label',
+      expect.stringContaining(
         `Approved: ${approved}, Processing: ${processing}, Successful: ${successful}, Failed: ${failed}`,
-      );
-    } else {
-      throw new Error('Graph attribute is null');
-    }
+      ),
+    );
   }
 
   async validateTransferValues({ amount }: { amount: number }) {
