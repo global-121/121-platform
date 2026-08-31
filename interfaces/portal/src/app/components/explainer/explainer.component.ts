@@ -7,6 +7,11 @@ import {
   AccordionPanel,
 } from 'primeng/accordion';
 
+interface ExplainerItem {
+  content: string;
+  image: { url: string; alt: string };
+}
+
 @Component({
   selector: 'app-explainer',
   imports: [Accordion, AccordionPanel, AccordionHeader, AccordionContent],
@@ -15,5 +20,5 @@ import {
 })
 export class ExplainerComponent {
   readonly title = input.required<string>();
-  readonly items = input.required<{ content: string; imageUrl?: string }[]>();
+  readonly items = input.required<ExplainerItem[]>();
 }

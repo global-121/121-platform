@@ -25,15 +25,15 @@
         <ul class="mbs-2.5 space-y-5">
           @for (item of items(); track $index) {
             <li
-              [attr.index]="$index + 1"
-              class="before:text-purple relative ps-7.5 before:absolute before:inset-s-0 before:inset-bs-0.75 before:block before:rounded-full before:bg-purple-300 before:text-center before:text-xs/5 before:font-bold before:content-[attr(index)] before:block-5 before:inline-5"
+              [attr.data-index]="$index + 1"
+              class="before:text-purple relative ps-7.5 before:absolute before:inset-s-0 before:inset-bs-0.75 before:block before:rounded-full before:bg-purple-300 before:text-center before:text-xs/5 before:font-bold before:content-[attr(data-index)] before:block-5 before:inline-5"
             >
               <p>{{ item.content }}</p>
-              @if (item.imageUrl) {
+              @if (item.image.url) {
                 <img
-                  src="{{ item.imageUrl }}"
+                  src="{{ item.image.url }}"
                   class="-ms-7.5 mbs-3 min-inline-[calc(100%+1.875rem)]"
-                  alt=""
+                  alt="{{ item.image.alt }}"
                 />
               }
             </li>
