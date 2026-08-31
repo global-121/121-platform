@@ -17,26 +17,89 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Delete payment button is not visible when payment has started', async ({
+test('Payment can be deleted when payment is not approved', async ({
   page,
   paymentPage,
   paymentsPage,
 }) => {
-  await test.step('Create payment and process it to completion', async () => {
+  await test.step('Create payment', async () => {
+    await paymentsPage.createPayment({});
+    await paymentPage.validateToastMessageAndClose('Payment created');
+    await page.waitForURL((url) =>
+      url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
+    );
+  });
+
+  await test.step('Verify delete payment button', async () => {
+    await paymentPage.isDeletePaymentButtonVisible({ isVisible: true });
+  });
+});
+
+test('Payment can be deleted when payment is not started', async ({
+  page,
+  paymentPage,
+  paymentsPage,
+}) => {
+  await test.step('Create payment and approve', async () => {
+    await paymentsPage.createPayment({});
+    await paymentPage.validateToastMessageAndClose('Payment created');
+    await page.waitForURL((url) =>
+      url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
+    );
+  });
+
+  await test.step('Approve payment', async () => {
+    await paymentPage.approvePayment();
+    await paymentPage.validateToastMessageAndClose(
+      'Payment approved successfully',
+    );
+    await paymentPage.validateBadgeIsPresentByLabel({
+      badgeName: 'Approved',
+      count: 1,
+    });
+    await paymentPage.validateButtonVisibility({
+      isVisible: true,
+      button: 'start',
+    });
+  });
+
+  await test.step('Verify delete payment button', async () => {
+    await paymentPage.isDeletePaymentButtonVisible({ isVisible: true });
+  });
+});
+
+test('Payment cannot be deleted when payment has started', async ({
+  page,
+  paymentPage,
+  paymentsPage,
+}) => {
+  await test.step('Create payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
-    await paymentPage.approvePayment();
-    await paymentPage.startPayment();
   });
 
-  await test.step('Verify delete payment button is not visible', async () => {
+  await test.step('Approve payment', async () => {
+    await paymentPage.approvePayment();
+    await paymentPage.validateToastMessageAndClose(
+      'Payment approved successfully',
+    );
+  });
+
+  await test.step('Start payment', async () => {
+    await paymentPage.startPayment();
+    await paymentPage.validateToastMessageAndClose(
+      'Payment started successfully',
+    );
+  });
+
+  await test.step('Verify delete payment button', async () => {
     await paymentPage.isDeletePaymentButtonVisible({ isVisible: false });
   });
 });
 
-test('Delete payment navigates back to payments overview and shows empty state', async ({
+test('Deleting payment navigates back to payments overview and shows empty state', async ({
   page,
   paymentPage,
   paymentsPage,
