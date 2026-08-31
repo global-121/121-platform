@@ -1,4 +1,4 @@
-import { NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -20,6 +20,10 @@ import { AppRoutes } from '~/app.routes';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
+import {
+  NotificationBannerComponent,
+  NotificationBannerIcon,
+} from '~/components/notification-banner/notification-banner.component';
 import {
   ProgramBudgetFormGroup,
   ProgramFormBudgetComponent,
@@ -55,6 +59,8 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     ProgramFormBudgetComponent,
     ManualLinkComponent,
     ColoredChipComponent,
+    NotificationBannerComponent,
+    NgTemplateOutlet,
   ],
   providers: [ToastService],
   templateUrl: './create-program-dialog.component.html',
@@ -235,6 +241,11 @@ export class CreateProgramDialogComponent {
       });
     },
   }));
+
+  notificationBannerContent = {
+    title: $localize`You can update these details at any time in the program settings.`,
+    icon: 'alert' as NotificationBannerIcon,
+  };
 
   goBack() {
     const currentStep = this.currentStep();

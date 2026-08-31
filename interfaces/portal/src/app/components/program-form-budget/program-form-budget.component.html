@@ -30,7 +30,7 @@
     </app-form-field-wrapper>
   </div>
   <app-form-field-wrapper
-    label="Default transactions per registration"
+    label="Number of distributions per registration"
     i18n-label
     [errorMessage]="formFieldErrors()('distributionDuration')"
     [labelTooltip]="PROGRAM_FORM_TOOLTIPS.distributionDuration"
@@ -39,7 +39,7 @@
       pInputText
       type="number"
       formControlName="distributionDuration"
-      placeholder="Default transactions per registration"
+      placeholder="Number of distributions per registration"
       i18n-placeholder
     />
   </app-form-field-wrapper>

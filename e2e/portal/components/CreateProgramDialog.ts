@@ -89,7 +89,7 @@ class CreateProgramDialog extends BasePage {
       .getByRole('option', { name: currency, exact: true })
       .click();
     await this.page
-      .getByLabel('Default transactions per registration')
+      .getByLabel('Number of distributions per registration')
       .fill(defaultNumberOfTransactions);
     await this.page
       .getByLabel('*Fixed transfer value')

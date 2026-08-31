@@ -129,7 +129,7 @@ test('Edit Program Information', async ({ programSettingsPage }) => {
     );
     await programSettingsPage.selectCurrency(budgetInfo.currency);
     await programSettingsPage.editInformationFieldByLabel(
-      'Default transactions per registration',
+      'Number of distributions per registration',
       budgetInfo.defaultTransferValue,
     );
     await programSettingsPage.editInformationFieldByLabel(
@@ -148,7 +148,7 @@ test('Edit Program Information', async ({ programSettingsPage }) => {
       expect(budgetData).toEqual({
         'Funds available': budgetInfo.fundsAvailable,
         '*Currency': budgetInfo.currency,
-        'Default transactions per registration':
+        'Number of distributions per registration':
           budgetInfo.defaultTransferValue,
         '*Fixed transfer value': budgetInfo.fixedTransferValue,
         'Financial service providers': budgetInfo.fsps?.join(''),

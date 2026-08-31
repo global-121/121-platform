@@ -69,6 +69,7 @@
         (trackEvent)="handleTrackEvent($event)"
       />
     </p-card>
+    <ng-container *ngTemplateOutlet="notification"></ng-container>
   </ng-template>
   <ng-template #step>
     <p-card>
@@ -91,6 +92,7 @@
         (trackEvent)="handleTrackEvent($event)"
       />
     </p-card>
+    <ng-container *ngTemplateOutlet="notification"></ng-container>
   </ng-template>
   <ng-template #step>
     <p-card>
@@ -106,6 +108,7 @@
         (trackEvent)="handleTrackEvent($event)"
       />
     </p-card>
+    <ng-container *ngTemplateOutlet="notification"></ng-container>
   </ng-template>
   <ng-template #illustration>
     <img
@@ -119,3 +122,10 @@
     />
   </ng-template>
 </app-fullscreen-stepper-dialog>
+
+<ng-template #notification>
+  <app-notification-banner
+    [content]="notificationBannerContent"
+    [color]="'blue'"
+  />
+</ng-template>
