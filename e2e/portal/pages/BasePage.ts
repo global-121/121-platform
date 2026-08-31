@@ -128,7 +128,6 @@ class BasePage {
    */
   async validateToastMessageAndClose(message: string) {
     const toastLocator = this.toast.filter({
-      visible: true,
       hasText: message,
     });
 
