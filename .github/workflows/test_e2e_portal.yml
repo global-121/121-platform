@@ -75,17 +75,58 @@ jobs:
       - name: Install E2E-Tests code-dependencies
         working-directory: ${{ env.e2eTestsPath }}
         run: |
-          npm ci
+          npm ci --ignore-scripts
 
       - name: Lint E2E-Tests code
         working-directory: ${{ env.e2eTestsPath }}
         run: 'npm run lint'
 
+  prepare-tests:
+    needs: 
+      - path-filter
+    runs-on: ubuntu-latest
+    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: '${{ env.e2eTestsPath }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.e2eTestsPath }}/package-lock.json'
+
+      - name: Install E2E-Tests code-dependencies
+        working-directory: ${{ env.e2eTestsPath }}
+        run: |
+          npm ci --ignore-scripts
+
+      - name: Install E2E-Tests runtime-dependencies
+        working-directory: ${{ env.e2eTestsPath }}
+        run: |
+          npx playwright install chromium --with-deps --no-shell
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp services/.env.example services/.env
+
+      - name: Prepare Portal
+        working-directory: ./interfaces/portal
+        run: |
+          npm ci --ignore-scripts
+          cp .env.example .env
+
+      - name: Prepare Services with Docker
+        working-directory: services
+        run: |
+          docker --log-level='warn' compose --file=docker-compose.yml build --quiet-pull
+
   test-shard-e2e:
     runs-on: ubuntu-latest
     needs:
       - path-filter
-      - lint-code
+      - prepare-tests
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
     strategy:
       fail-fast: false
@@ -115,8 +156,9 @@ jobs:
           cp services/.env.example services/.env
 
       - name: Run Services with Docker
+        working-directory: services
         run: |
-          npm run start:services:ci:production
+          docker --log-level='warn' compose --file=docker-compose.yml up --no-build --no-recreate --detach --wait --wait-timeout 300
 
       - name: Run Portal
         working-directory: ./interfaces/portal
@@ -125,7 +167,7 @@ jobs:
           NG_URL_121_SERVICE_API: http://localhost:3000/api
           NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: false
         run: |
-          npm ci
+          npm ci --ignore-scripts
           cp .env.example .env
           npm run start:debug-production > run-portal-logs.txt 2>&1 &
 
