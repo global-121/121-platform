@@ -1,5 +1,3 @@
-import { expect } from '@playwright/test';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdPV,
@@ -22,7 +20,9 @@ test('Registration table should clear row selections when filter criteria change
 }) => {
   await test.step('should clear single row selection when applying a filter', async () => {
     await tableComponent.selectRowByName('Jan Janssen');
-    expect(await tableComponent.getSelectedRowsCount()).toBe(1);
+    await tableComponent.validateAndWaitForSelectedRowsCount({
+      expectedCount: 1,
+    });
     await tableComponent.filterColumnByText({
       columnName: 'Name',
       filterText: 'Jan',

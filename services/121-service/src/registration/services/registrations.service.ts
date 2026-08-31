@@ -38,7 +38,6 @@ import { ValidationRegistrationConfig } from '@121-service/src/registration/inte
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
-import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { UniqueRegistrationPairRepository } from '@121-service/src/registration/repositories/unique-registration-pair.repository';
@@ -68,7 +67,6 @@ export class RegistrationsService {
     private readonly registrationDataService: RegistrationDataService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly userService: UserService,
-    private readonly registrationUtilsService: RegistrationUtilsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationEventsService: RegistrationEventsService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
@@ -245,7 +243,7 @@ export class RegistrationsService {
     registration.program = await this.programRepository.findOneByOrFail({
       id: programId,
     });
-    await this.registrationUtilsService.save(registration, undefined, true);
+    await this.registrationScopedRepository.save(registration);
     return this.setRegistrationStatus(
       postData.referenceId,
       RegistrationStatusEnum.new,
@@ -572,7 +570,7 @@ export class RegistrationsService {
         });
     }
     const savedRegistration: RegistrationEntity =
-      await this.registrationUtilsService.save(registration);
+      await this.registrationScopedRepository.save(registration);
     const calculatedRegistration =
       await this.inclusionScoreService.calculatePaymentAmountMultiplier(
         program,

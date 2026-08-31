@@ -151,6 +151,7 @@ test.describe('User actions', () => {
   // able to see the actions menu
   test('"View Only" user should see expected actions', async ({
     login,
+    loginPage,
     registrationActivityLogPage,
     page,
   }) => {
@@ -158,14 +159,17 @@ test.describe('User actions', () => {
       // Setup with admin user first
       await login();
       await registrationActivityLogPage.goto(registrationUrl);
-      // Logout as admin to add permissions to "viewOnlyUser"
+      // Log out before the view-only user starts from the login page.
       await page.goto('/logout');
+      await page.waitForURL((url) => url.pathname.startsWith('/en-GB/login'));
       // Add UPDATE permission to "viewOnlyUser" so that the actions menu becomes visible
       await addPermissionToRole(DefaultUserRole.View, [
         PermissionEnum.RegistrationPersonalUPDATE,
       ]);
-      // Login as "viewOnlyUser" and navigate to registration activity log page
-      await login({
+      // Login as "viewOnlyUser" before checking which actions are available.
+      await loginPage.login({
+        skipNavigateToLogin: false,
+        skipUrlCheck: false,
         username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
         password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
       });
@@ -173,6 +177,7 @@ test.describe('User actions', () => {
       await registrationActivityLogPage.goto(
         `/program/${programIdPV}/registrations/${registrationId}`,
       );
+      await expect(page.getByTestId('registration-title')).toBeVisible();
     });
 
     await test.step('Open action menu', async () => {

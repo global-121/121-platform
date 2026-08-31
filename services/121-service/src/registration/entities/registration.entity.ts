@@ -37,7 +37,13 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
-@Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
+export const REGISTRATION_PROGRAM_UNIQUE_CONSTRAINT =
+  'registrationProgramUnique';
+
+@Unique(REGISTRATION_PROGRAM_UNIQUE_CONSTRAINT, [
+  'programId',
+  'registrationProgramId',
+])
 @Check(`"referenceId" NOT IN (${ReferenceIdConstraints})`)
 @Entity('registration')
 export class RegistrationEntity extends Base121Entity {

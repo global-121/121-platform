@@ -26,7 +26,7 @@ import { ValidationRegistrationConfig } from '@121-service/src/registration/inte
 import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
-import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { QueueRegistrationUpdateService } from '@121-service/src/registration/services/queue-registrations-update.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
@@ -53,7 +53,7 @@ export class RegistrationsCreationService {
     private readonly programService: ProgramService,
     private readonly fileImportService: FileImportService,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
-    private readonly registrationUtilsService: RegistrationUtilsService,
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly queueRegistrationUpdateService: QueueRegistrationUpdateService,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -237,11 +237,8 @@ export class RegistrationsCreationService {
     // Save registrations using .save to properly set registrationProgramId
     const savedRegistrations: RegistrationEntity[] = [];
     for await (const registration of registrations) {
-      const savedRegistration = await this.registrationUtilsService.save(
-        registration,
-        undefined,
-        true,
-      );
+      const savedRegistration =
+        await this.registrationScopedRepository.save(registration);
       savedRegistrations.push(savedRegistration);
     }
 
