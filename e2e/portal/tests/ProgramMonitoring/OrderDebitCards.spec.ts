@@ -68,6 +68,9 @@ test('Should be able to order debit cards when card distribution by mail is disa
     });
     await cardDistributionSwitch.click();
     await fspSettingsPage.saveReconfigurationButton.click();
+    await fspSettingsPage.validateToastMessageAndClose(
+      'Success FSP "Visa debit card" integrated successfully.',
+    );
   });
 
   await test.step("Navigate to monitoring's 'Debit Cards' tab and Order cards", async () => {
