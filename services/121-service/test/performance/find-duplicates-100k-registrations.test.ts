@@ -35,17 +35,6 @@ const totalRegistrations = Math.pow(2, duplicateNumber);
 const queryParams = {
   'filter.duplicateStatus': 'duplicate',
 };
-<<<<<<< HEAD
-const testTimeout = 10 * 60 * 1000; // Overall test timeout to prevent hanging
-const maximumQueryTime = 10 * 1000; // Performance assertion limit for the duplicates query
-const duplicateNumber =
-  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
-  process.env.HIGH_DATA_VOLUME === 'true'
-    ? duplicateHighNumber
-    : duplicateLowNumber;
-const totalRegistrations = Math.pow(2, duplicateNumber);
-=======
->>>>>>> b4e740d97 (Reverting)
 
 jest.setTimeout(testTimeout);
 
