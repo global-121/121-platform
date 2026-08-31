@@ -18,25 +18,27 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
+// eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
+const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
+
+// Timing configuration
+const testTimeout = 90 * 60 * 1000; // 90 minutes
+const maximumPaginatedEventsResponseTime = 2 * 1000; // Performance assertion limit for one paginated page of events
+const maximumAllEventsExportTime = 10 * 1000; // Performance assertion limit for fetching all events
+
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131k registrations
-const testTimeout = 5_400_000; // 90 minutes
-const duplicateNumber =
-  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
-  process.env.HIGH_DATA_VOLUME === 'true'
-    ? duplicateHighNumber
-    : duplicateLowNumber;
+const duplicateNumber = isHighDataVolume
+  ? duplicateHighNumber
+  : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
-describe('Get paginated registrations events', () => {
-  let accessToken: string;
 
+describe('Get paginated registrations events', () => {
   it('Should get registration events for 100k registrations within acceptable time', async () => {
-    /////////////
-    // Arrange //
-    /////////////
+    // Arrange
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
-    accessToken = await getAccessToken();
+    const accessToken = await getAccessToken();
 
     // Import 1 registration
     const importRegistrationResponse = await importRegistrations(
@@ -45,6 +47,7 @@ describe('Get paginated registrations events', () => {
       accessToken,
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
+
     // Make data change for registration
     await updateRegistration(
       programIdOCW,
@@ -56,6 +59,7 @@ describe('Get paginated registrations events', () => {
       'test',
       accessToken,
     );
+
     // Multiply registration > including registration-events
     const multiplyRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
@@ -69,7 +73,7 @@ describe('Get paginated registrations events', () => {
     expect(multiplyRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Get one page of events to test the duration of the api response
-    const getEventsStartTime = Date.now();
+    const getEventsStartTime = performance.now();
     const paginatedEventsResponse = await getRegistrationEventsMonitoring({
       programId: programIdOCW,
       accessToken,
@@ -80,15 +84,16 @@ describe('Get paginated registrations events', () => {
         'filter.registrationProgramId': '2', // This is random filter to reduce result set, it seems likely that some registrationProgramIds are 2
       },
     });
-    const getEventsElapsedTime = Date.now() - getEventsStartTime;
+    const getEventsElapsedTime = performance.now() - getEventsStartTime;
 
-    const twoSeconds = 2 * 1000;
-    expect(getEventsElapsedTime).toBeLessThan(twoSeconds);
+    expect(getEventsElapsedTime).toBeLessThan(
+      maximumPaginatedEventsResponseTime,
+    );
 
     expect(paginatedEventsResponse.statusCode).toBe(HttpStatus.OK);
 
     // Get all events for export
-    const getAllEventsStartTime = Date.now();
+    const getAllEventsStartTime = performance.now();
     const allEventsResponse = await getRegistrationEvents({
       programId: programIdOCW,
       accessToken,
@@ -97,9 +102,8 @@ describe('Get paginated registrations events', () => {
     const nrOfRegistrations = Math.pow(2, duplicateNumber);
     const expectedEvents = nrOfRegistrations * 2; // Each registration has 2 events (status/data change)
     expect(allEvents.length).toBe(expectedEvents);
-    const getAllEventsElapsedTime = Date.now() - getAllEventsStartTime;
+    const getAllEventsElapsedTime = performance.now() - getAllEventsStartTime;
 
-    const tenSeconds = 10 * 1000;
-    expect(getAllEventsElapsedTime).toBeLessThan(tenSeconds);
+    expect(getAllEventsElapsedTime).toBeLessThan(maximumAllEventsExportTime);
   });
 });

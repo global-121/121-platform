@@ -18,26 +18,30 @@ import {
 import { getPaymentResults } from '@121-service/test/performance/helpers/performance.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
+// eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
+const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
+
+// Timing configuration
+const testTimeout = 90 * 60 * 1000; // 90 minutes
+const maxRetryDurationMs = 80 * 60 * 1000; // 80 minutes
+
+// Performance test configuration
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 15; // cronjob duplicate number should be 2^15 = 32768
 const passRate = 50; // 50%
-const maxRetryDurationMs = 4_800_000; // 80 minutes
 const amount = 25;
-const testTimeout = 5_400_000; // 90 minutes
-const duplicateNumber =
-  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
-  process.env.HIGH_DATA_VOLUME === 'true'
-    ? duplicateHighNumber
-    : duplicateLowNumber;
+const duplicateNumber = isHighDataVolume
+  ? duplicateHighNumber
+  : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
+
 describe('Measure performance during payment', () => {
-  let accessToken: string;
   it('Setup and do payment', async () => {
     // Arrange
-    const startTime = Date.now();
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
-    accessToken = await getAccessToken();
+    const accessToken = await getAccessToken();
+
     // Upload registration
     const importRegistrationResponse = await seedRegistrationsWithStatus(
       [registrationVisa],
@@ -46,6 +50,7 @@ describe('Measure performance during payment', () => {
       RegistrationStatusEnum.included,
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.ACCEPTED);
+
     // Duplicate registration
     const duplicateRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
@@ -56,6 +61,7 @@ describe('Measure performance during payment', () => {
         },
       });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
+
     // Do payment
     const doPaymentResponse = await doPayment({
       programId: programIdOCW,
@@ -64,6 +70,7 @@ describe('Measure performance during payment', () => {
       accessToken,
     });
     expect(doPaymentResponse.statusCode).toBe(HttpStatus.CREATED);
+
     // Assert
     // Check payment results have at least 50% success rate within 60 minutes
     const paymentResults = await getPaymentResults({
@@ -75,6 +82,7 @@ describe('Measure performance during payment', () => {
       maxRetryDurationMs,
       verbose: true,
     });
+
     // When payment is still ongoing get export list and send bulk message
     // Get export list
     const getExportListResponse = await exportRegistrations(
@@ -83,6 +91,7 @@ describe('Measure performance during payment', () => {
       accessToken,
     );
     expect(getExportListResponse.statusCode).toBe(HttpStatus.OK);
+
     // Send bulk message
     const bulkMessageResponse = await sendMessage(
       accessToken,
@@ -90,9 +99,8 @@ describe('Measure performance during payment', () => {
       [],
       'Your voucher can be picked up at the location',
     );
+
     expect(bulkMessageResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     expect(paymentResults.success).toBe(true);
-    const elapsedTime = Date.now() - startTime;
-    expect(elapsedTime).toBeLessThan(testTimeout);
   });
 });

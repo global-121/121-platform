@@ -14,14 +14,6 @@ import {
 } from '@121-service/test/performance/interfaces/registration-status.interface';
 import { StatusOverviewItem } from '@121-service/test/performance/interfaces/status-overview.interface';
 
-export function calculateMilliseconds({
-  minutes,
-}: {
-  minutes: number;
-}): number {
-  return minutes * 60 * 1000;
-}
-
 export async function getPaymentResults({
   programId,
   paymentId,
@@ -32,14 +24,14 @@ export async function getPaymentResults({
   delayBetweenAttemptsMs = 5_000, // 5 seconds default
   verbose = true,
 }: PaymentResultsParams): Promise<PaymentResultsResult> {
-  const startTime = Date.now();
+  const startTime = performance.now();
   const totalPayments = Math.pow(2, totalAmountPowerOfTwo);
   let attempts = 0;
   let successfulPaymentsPercentage = 0;
   let successfulPaymentsCount = 0;
   let lastResponse: any;
 
-  while (Date.now() - startTime < maxRetryDurationMs) {
+  while (performance.now() - startTime < maxRetryDurationMs) {
     attempts++;
 
     const { response, successCount, shouldContinue } =
@@ -81,7 +73,7 @@ export async function getPaymentResults({
         totalPayments,
         successfulPaymentsPercentage,
         attempts,
-        Date.now() - startTime,
+        performance.now() - startTime,
         lastResponse,
       );
     }
@@ -89,7 +81,7 @@ export async function getPaymentResults({
     await waitFor(delayBetweenAttemptsMs);
   }
 
-  const elapsedTimeMs = Date.now() - startTime;
+  const elapsedTimeMs = performance.now() - startTime;
 
   if (verbose) {
     console.log(
@@ -115,7 +107,7 @@ export async function updateRegistrationStatusAndLog({
   delayBetweenAttemptsMs = 3_000, // 3 seconds default
   verbose = true,
 }: RegistrationStatusParams): Promise<RegistrationStatusResult> {
-  const startTime = Date.now();
+  const startTime = performance.now();
 
   // Update registration status
   const responseStatusChange = await updateRegistrationStatus(
@@ -129,7 +121,7 @@ export async function updateRegistrationStatusAndLog({
       success: false,
       response: responseStatusChange,
       attempts: 1,
-      elapsedTimeMs: Date.now() - startTime,
+      elapsedTimeMs: performance.now() - startTime,
     };
   }
 
@@ -157,7 +149,7 @@ export async function updateRegistrationStatusAndLog({
   const expectedCount = toNumber(responseBody.applicableCount);
 
   // Wait for counts to match
-  while (Date.now() - startTime < maxRetryDurationMs) {
+  while (performance.now() - startTime < maxRetryDurationMs) {
     attempts++;
 
     registrationCount = await getRegistrationCountForStatus(
@@ -195,7 +187,7 @@ export async function updateRegistrationStatusAndLog({
     success,
     response: responseStatusChange,
     attempts,
-    elapsedTimeMs: Date.now() - startTime,
+    elapsedTimeMs: performance.now() - startTime,
   };
 }
 

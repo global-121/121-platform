@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
+import { performance } from 'node:perf_hooks';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
@@ -11,17 +12,21 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
-const csvFilePath =
-  './test-registration-data/test-registrations-westeros-1000.csv';
-const testTimeout = 600_000; // 10 minutes
-
 // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
 const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
+
+// Timing configuration
+const testTimeout = 10 * 60 * 1000; // Overall test timeout to prevent hanging
+const maximumImportTime = isHighDataVolume ? 60 * 1000 : 5 * 1000; // Performance assertion limit for import operation
+
+// Performance test configuration
+const csvFilePath =
+  './test-registration-data/test-registrations-westeros-1000.csv';
 const registrationCount = isHighDataVolume ? 1000 : 10;
 
 jest.setTimeout(testTimeout);
+
 describe(`Import ${registrationCount} registrations`, () => {
-  let accessToken: string;
   let tempCsvPath: string | null = null;
 
   afterAll(() => {
@@ -34,7 +39,7 @@ describe(`Import ${registrationCount} registrations`, () => {
   it(`Should import ${registrationCount} registrations with successful status`, async () => {
     // Arrange
     await resetDB({ seedScript: SeedScript.testMultiple });
-    accessToken = await getAccessToken();
+    const accessToken = await getAccessToken();
 
     let importPath = csvFilePath;
 
@@ -54,13 +59,17 @@ describe(`Import ${registrationCount} registrations`, () => {
       importPath = tempCsvPath;
     }
 
-    // Assert
-    // Import registrations
+    // Act
+    const startTime = performance.now();
     const registrationImportResponse = await importRegistrationsCSV(
       programIdPV,
       importPath,
       accessToken,
     );
+    const elapsedTime = performance.now() - startTime;
+
+    // Assert
     expect(registrationImportResponse.statusCode).toBe(HttpStatus.CREATED);
+    expect(elapsedTime).toBeLessThan(maximumImportTime);
   });
 });

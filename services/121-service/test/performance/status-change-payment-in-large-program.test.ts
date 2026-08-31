@@ -25,27 +25,31 @@ import {
 } from '@121-service/test/performance/helpers/performance.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
+// eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
+const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
+
+// Timing configuration
+const maxRetryDurationMs = 20 * 60 * 1000; // 20 minutes
+const testTimeout = 30 * 60 * 1000; // 30 minutes
+const delayBetweenAttemptsMs = 5000; // 5 seconds
+const maximumProgramLoadTime = 200; // 200 ms = 0.2 seconds
+
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 15; // cronjob duplicate number should be 2^15 = 32768
 const passRate = 10; // 10%
-const maxRetryDurationMs = 1_200_000; // 20 minutes
-const delayBetweenAttemptsMs = 5000; // 5 seconds
 const amount = 25;
-const testTimeout = 18_000_000; // 30 minutes
-const duplicateNumber =
-  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
-  process.env.HIGH_DATA_VOLUME === 'true'
-    ? duplicateHighNumber
-    : duplicateLowNumber;
+const duplicateNumber = isHighDataVolume
+  ? duplicateHighNumber
+  : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
-describe('Status Change Payment In Large Program', () => {
-  let accessToken: string;
 
+describe('Status Change Payment In Large Program', () => {
   it('Should create program with many attributes update registration status and do payment', async () => {
     // Arrange
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
-    accessToken = await getAccessToken();
+    const accessToken = await getAccessToken();
+
     // Add 50 attributes to generate bigger load
     for (let i = 0; i < 50; i++) {
       const programRegistrationAttribute: ProgramRegistrationAttributeDto = {
@@ -77,6 +81,7 @@ describe('Status Change Payment In Large Program', () => {
         HttpStatus.CREATED,
       );
     }
+
     // Upload registration
     const importRegistrationResponse = await importRegistrations(
       programIdOCW,
@@ -84,6 +89,7 @@ describe('Status Change Payment In Large Program', () => {
       accessToken,
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
+
     // Duplicate registration between 20k - 50k
     const duplicateRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
@@ -96,12 +102,13 @@ describe('Status Change Payment In Large Program', () => {
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Assert
-    // Get program with registrations and validate load time is less than 300ms
+    // Get program with registrations and validate load time
     const startTime = performance.now();
     const getProgramResponse = await getProgram(programIdOCW, accessToken);
     const elapsedTime = performance.now() - startTime;
     expect(getProgramResponse.statusCode).toBe(HttpStatus.OK);
-    expect(elapsedTime).toBeLessThan(200); // 200 ms = 0.2 seconds
+    expect(elapsedTime).toBeLessThan(maximumProgramLoadTime);
+
     // Change status of all PAs to included
     await updateRegistrationStatusAndLog({
       programId: programIdOCW,
@@ -109,6 +116,7 @@ describe('Status Change Payment In Large Program', () => {
       status: 'included',
       maxRetryDurationMs,
     });
+
     // Do the payment with dryRun first
     const paymentDryRunResponse = await doPayment({
       programId: programIdOCW,
@@ -118,6 +126,7 @@ describe('Status Change Payment In Large Program', () => {
       filter: { dryRun: 'true' },
     });
     expect(paymentDryRunResponse.statusCode).toBe(HttpStatus.OK);
+
     // Do payment
     const doPaymentResponse = await doPayment({
       programId: programIdOCW,
@@ -126,8 +135,9 @@ describe('Status Change Payment In Large Program', () => {
       accessToken,
     });
     expect(doPaymentResponse.statusCode).toBe(HttpStatus.CREATED);
+
     // Monitor that 10% of payments is successful and then stop the test
-    await getPaymentResults({
+    const paymentResults = await getPaymentResults({
       programId: programIdOCW,
       paymentId: doPaymentResponse.body.id,
       accessToken,
@@ -137,5 +147,6 @@ describe('Status Change Payment In Large Program', () => {
       delayBetweenAttemptsMs,
       verbose: true,
     });
+    expect(paymentResults.success).toBe(true);
   });
 });

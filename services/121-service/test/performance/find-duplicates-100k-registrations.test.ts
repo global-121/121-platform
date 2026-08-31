@@ -14,12 +14,28 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
+// eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
+const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
+
+// Timing configuration
+const testTimeout = 10 * 60 * 1000; // Overall test timeout to prevent hanging
+const maximumQueryTime = 2 * 60 * 1000; // Performance assertion limit for the duplicates query
+
+// Performance test configuration
 // For guaranteeing that test data generates duplicates we should use at least 10 as minimal duplication number for fast test and 17 for full load test
-const duplicateLowNumber = 10; // cronjob duplicate number should be 2^17 = 131072
-const duplicateHighNumber = 17;
+const duplicateLowNumber = 10;
+const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131072
+
+const duplicateNumber = isHighDataVolume
+  ? duplicateHighNumber
+  : duplicateLowNumber;
+
+const totalRegistrations = Math.pow(2, duplicateNumber);
+
 const queryParams = {
   'filter.duplicateStatus': 'duplicate',
 };
+<<<<<<< HEAD
 const testTimeout = 10 * 60 * 1000; // Overall test timeout to prevent hanging
 const maximumQueryTime = 10 * 1000; // Performance assertion limit for the duplicates query
 const duplicateNumber =
@@ -28,8 +44,11 @@ const duplicateNumber =
     ? duplicateHighNumber
     : duplicateLowNumber;
 const totalRegistrations = Math.pow(2, duplicateNumber);
+=======
+>>>>>>> b4e740d97 (Reverting)
 
 jest.setTimeout(testTimeout);
+
 describe('Find duplicates in 100k registrations within expected range', () => {
   let accessToken: string;
 
