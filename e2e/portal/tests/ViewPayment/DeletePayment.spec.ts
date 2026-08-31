@@ -75,6 +75,7 @@ test('Payment cannot be deleted when payment has started', async ({
 }) => {
   await test.step('Create payment', async () => {
     await paymentsPage.createPayment({});
+    await paymentPage.validateToastMessageAndClose('Payment created');
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
@@ -106,6 +107,7 @@ test('Deleting payment navigates back to payments overview and shows empty state
 }) => {
   await test.step('Create payment', async () => {
     await paymentsPage.createPayment({});
+    await paymentPage.validateToastMessageAndClose('Payment created');
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
