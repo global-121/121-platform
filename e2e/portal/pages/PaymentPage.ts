@@ -199,9 +199,9 @@ class PaymentPage extends BasePage {
     }
   }
 
-  async validatePaymentDetailsPageTitle(title?: string) {
-    const viewPaymentTitle = await this.viewPaymentTitle.textContent();
-    expect(viewPaymentTitle).toContain(title ?? 'Payment');
+  async validatePaymentDetailsPageTitle(title = 'Payment') {
+    await expect(this.viewPaymentTitle).toBeVisible();
+    await expect(this.viewPaymentTitle).toContainText(title);
   }
 
   async selectPaymentExportOption({ option }: { option: string }) {
