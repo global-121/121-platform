@@ -142,6 +142,18 @@ class BasePage {
     }
   }
 
+  /**
+   * Validate a message is visible without dismissing, for when dismissing the toast is not possible because of some other modal/popup/overlay.
+   * @see validateToastMessageAndClose for the _*preferred*_ way to validate toast messages
+   */
+  async validateToastMessageIsVisibleOnly(message: string) {
+    const toastLocator = this.toast.filter({
+      visible: true,
+      hasText: message,
+    });
+    await expect(toastLocator).toBeVisible();
+  }
+
   async waitForPageLoad() {
     await this.page.waitForLoadState('networkidle');
     await this.page.waitForLoadState('domcontentloaded');
