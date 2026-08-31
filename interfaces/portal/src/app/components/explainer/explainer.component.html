@@ -31,9 +31,9 @@
               <p>{{ item.content }}</p>
               @if (item.image.url) {
                 <img
-                  src="{{ item.image.url }}"
+                  [src]="item.image.url"
                   class="-ms-7.5 mbs-3 min-inline-[calc(100%+1.875rem)]"
-                  alt="{{ item.image.alt }}"
+                  [alt]="item.image.alt"
                 />
               }
             </li>
