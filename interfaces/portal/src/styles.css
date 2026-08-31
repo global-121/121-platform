@@ -190,7 +190,7 @@ svg-icon svg {
     }
 
     .p-chip:has(.p-chip-remove-icon) {
-      @apply pr-[var(--p-chip-padding-x)];
+      @apply pe-(--p-chip-padding-x);
     }
   }
 
