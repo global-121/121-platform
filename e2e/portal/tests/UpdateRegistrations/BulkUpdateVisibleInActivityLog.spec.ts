@@ -32,7 +32,7 @@ test('Data should be updated according to selected columns and registrations', a
       status: 'Delete',
       sendMessage: false,
     });
-    await registrationsPage.dismissToast();
+    await registrationsPage.validateToastMessageAndClose('Changing statuses');
 
     await registrationsPage.selectAllRegistrations();
     await registrationsPage.clickAndSelectImportOption(

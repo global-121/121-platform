@@ -98,12 +98,12 @@ test('Payment page should display correctly during all phases of payment with 2 
 }) => {
   await test.step('Create payment', async () => {
     await paymentsPage.createPayment({});
+    await paymentsPage.validateToastMessageAndClose('Payment created');
     await page.waitForURL((url) =>
       url.pathname.startsWith(
         `/en-GB/program/${programIdOCW}/payments/${paymentId}`,
       ),
     );
-    await paymentPage.dismissToast();
   });
 
   await test.step('Validate payment-page in "Pending approval" state', async () => {

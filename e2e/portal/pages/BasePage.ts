@@ -146,11 +146,6 @@ class BasePage {
     }
   }
 
-  async dismissToast() {
-    await this.toast.getByRole('button').click();
-    await expect(this.toast).toBeHidden();
-  }
-
   async waitForPageLoad() {
     await this.page.waitForLoadState('networkidle');
     await this.page.waitForLoadState('domcontentloaded');
