@@ -122,27 +122,23 @@ class BasePage {
     await this.page.getByRole('menuitem', { name: option }).click();
   }
 
-  // To speed tests up we can validate the toast message and close it
-  // without waiting for the toast to disappear by itself (this takes 5 seconds)
+  /**
+   * We validate the toast message and close it, to speed up the tests.
+   * We don't need to wait for the toast to disappear by itself (this takes 5 seconds)
+   */
   async validateToastMessageAndClose(message: string) {
-    await expect(this.toast.first()).toBeVisible({ timeout: 5_000 });
-    expect(await this.toast.first().textContent()).toContain(message);
-    await this.dismissToastIfVisible(message);
-  }
+    const toastLocator = this.toast.filter({
+      visible: true,
+      hasText: message,
+    });
 
-  async dismissToastIfVisible(message?: string) {
-    let toastLocator = this.toast;
-    if (message) {
-      toastLocator = this.toast.filter({ hasText: message });
-    }
-    // Handle multiple toasts, only dismiss the first visible one matching the filter
+    // Handle multiple toasts (if any)
     const visibleToasts = await toastLocator.all();
+
     for (const toast of visibleToasts) {
-      if (await toast.isVisible()) {
-        await toast.getByRole('button').click();
-        await expect(toast).toBeHidden();
-        break;
-      }
+      await expect(toast).toBeVisible();
+      await toast.getByRole('button').click();
+      await expect(toast).toBeHidden();
     }
   }
 
