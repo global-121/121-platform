@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
-import { Card } from 'primeng/card';
 
 import { CardGridComponent } from '~/components/card-grid/card-grid.component';
-import { ExplainerComponent } from '~/components/explainer/explainer.component';
 import { AppInfoCardComponent } from '~/components/info-card/info-card.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { CreateProgramDialogComponent } from '~/pages/programs-overview/components/create-program-dialog/create-program-dialog.component';
@@ -21,8 +19,6 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
     CreateProgramDialogComponent,
     CardGridComponent,
     AppInfoCardComponent,
-    ExplainerComponent,
-    Card,
   ],
   templateUrl: './programs-overview.page.html',
   styles: ``,
