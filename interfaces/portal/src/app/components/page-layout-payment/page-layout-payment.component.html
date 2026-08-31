@@ -8,9 +8,10 @@
 >
   <p-card class="mbe-5">
     <div class="flex items-center gap-x-4">
-      <h1 class="me-auto">
-        {{ paymentTitle() }}
-
+      <div class="me-auto flex gap-2">
+        <h1>
+          {{ paymentTitle() }}
+        </h1>
         @if (paymentAggregateData()) {
           <app-colored-chip-payment-approval-status
             [isPaymentApproved]="
@@ -20,7 +21,7 @@
             [approvalsRequired]="paymentAggregateData()?.approvalsRequired ?? 0"
           />
         }
-      </h1>
+      </div>
       @if (showApprovePaymentButton()) {
         <app-approve-payment
           [programId]="programId()"
