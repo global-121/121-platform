@@ -19,14 +19,12 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { isHighDataVolume } from '@121-service/test/performance/helpers/high-data-volume.helper';
 import {
   getPaymentResults,
   updateRegistrationStatusAndLog,
 } from '@121-service/test/performance/helpers/performance.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
-
-// eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
-const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
 
 // Timing configuration
 const maxRetryDurationMs = 1_200_000; // 20 minutes
@@ -38,6 +36,7 @@ const duplicateLowNumber = 5;
 const duplicateHighNumber = 15; // cronjob duplicate number should be 2^15 = 32768
 const passRate = 10; // 10%
 const amount = 25;
+
 const duplicateNumber = isHighDataVolume
   ? duplicateHighNumber
   : duplicateLowNumber;

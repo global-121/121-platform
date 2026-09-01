@@ -16,13 +16,11 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { isHighDataVolume } from '@121-service/test/performance/helpers/high-data-volume.helper';
 import {
   programIdSafaricom,
   registrationSafaricom,
 } from '@121-service/test/registrations/pagination/pagination-data';
-
-// eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
-const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
 
 // Timing configuration
 const testTimeout = 5_400_000; // 90 minutes

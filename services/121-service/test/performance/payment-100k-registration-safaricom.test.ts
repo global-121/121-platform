@@ -14,14 +14,12 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { isHighDataVolume } from '@121-service/test/performance/helpers/high-data-volume.helper';
 import { getPaymentResults } from '@121-service/test/performance/helpers/performance.helper';
 import {
   programIdSafaricom,
   registrationSafaricom,
 } from '@121-service/test/registrations/pagination/pagination-data';
-
-// eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
-const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
 
 // Timing configuration
 const testTimeout = 5_400_000; // 90 minutes
@@ -34,12 +32,12 @@ const delayBetweenAttemptsMs = 5_000; // 5 seconds
 // Safaricom is one of the payment providers which uses callbacks and therefore also has heavier/more complex
 // The other FSPs are simpler or similar to Safaricom so we decided to not test them
 
+const passRate = 10; // 10%
+const transferValue = 25;
+
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131072
 
-const passRate = 10; // 10%
-
-const transferValue = 25;
 const duplicateNumber = isHighDataVolume
   ? duplicateHighNumber
   : duplicateLowNumber;
