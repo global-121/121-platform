@@ -23,8 +23,8 @@ const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
 
 // Timing configuration
 const testTimeout = 5_400_000; // 90 minutes
-const maximumPaginatedEventsResponseTime = 2_000; // Performance assertion limit for one paginated page of events
-const maximumAllEventsExportTime = 10_000; // Performance assertion limit for fetching all events
+const maximumPaginatedEventsResponseTime = 2_000; // Performance assertion limit for one paginated page of events, 2 seconds
+const maximumAllEventsExportTime = 10_000; // Performance assertion limit for fetching all events, 10 seconds
 
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131k registrations

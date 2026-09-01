@@ -26,9 +26,9 @@ const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
 
 // Timing configuration
 const testTimeout = 5_400_000; // 90 minutes
-const maximumPaginatedTransactionsResponseTime = 2_000; // Performance assertion limit for one paginated page of transactions
-const maximumAllTransactionsResponseTime = 120_000; // Performance assertion limit for fetching all transactions
-const maximumRetryPaymentResponseTime = 240_000; // Performance assertion limit for the retry payment request
+const maximumPaginatedTransactionsResponseTime = 2_000; // Performance assertion limit for one paginated page of transactions, 2 seconds
+const maximumAllTransactionsResponseTime = 120_000; // Performance assertion limit for fetching all transactions, 2 minutes
+const maximumRetryPaymentResponseTime = 240_000; // Performance assertion limit for the retry payment request, 4 minutes
 
 // Performance test configuration
 const duplicateLowNumber = 5;

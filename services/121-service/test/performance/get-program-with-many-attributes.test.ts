@@ -20,8 +20,8 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 // Timing configuration
-const testTimeout = 30_000; // Overall test timeout to prevent hanging
-const maximumProgramLoadTime = 200; // Performance assertion limit for loading the program
+const testTimeout = 30_000; // Overall test timeout to prevent hanging, 30 seconds
+const maximumProgramLoadTime = 200; // Performance assertion limit for loading the program, 200 ms
 
 // Performance test configuration
 const duplicateNumber = 5; // cronjob duplicate number should be 2^5 = 32

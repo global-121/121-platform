@@ -17,7 +17,7 @@ const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
 
 // Timing configuration
 const testTimeout = 600_000; // Overall test timeout to prevent hanging, 10 minutes
-const maximumImportTime = isHighDataVolume ? 480_000 : 5_000; // Performance assertion limit for import operation
+const maximumImportTime = isHighDataVolume ? 480_000 : 5_000; // Performance assertion limit for import operation, 8 minutes / 5 seconds
 
 // Performance test configuration
 const csvFilePath =

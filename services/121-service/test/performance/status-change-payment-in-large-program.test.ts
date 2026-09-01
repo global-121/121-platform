@@ -31,7 +31,7 @@ const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
 // Timing configuration
 const maxRetryDurationMs = 1_200_000; // 20 minutes
 const testTimeout = 1_800_000; // 30 minutes
-const delayBetweenAttemptsMs = 5000; // 5 seconds
+const delayBetweenAttemptsMs = 5_000; // 5 seconds
 const maximumProgramLoadTime = 200; // 200 ms = 0.2 seconds
 
 const duplicateLowNumber = 5;

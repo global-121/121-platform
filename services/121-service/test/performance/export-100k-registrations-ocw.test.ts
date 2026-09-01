@@ -18,8 +18,8 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
 
 // Timing configuration
-const testTimeout = 300_000; // Overall test timeout to prevent hanging
-const maximumExportTime = 120_000; // Performance assertion limit for export operation
+const testTimeout = 300_000; // Overall test timeout to prevent hanging, 5 minutes
+const maximumExportTime = 120_000; // Performance assertion limit for export operation, 2 minutes
 
 // Performance test configuration
 const duplicateLowNumber = 5;
