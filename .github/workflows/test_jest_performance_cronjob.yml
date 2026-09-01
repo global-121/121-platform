@@ -7,34 +7,12 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 env:
   workingDirectory: services/121-service
   EXTERNAL_121_SERVICE_URL: http://localhost:3000
 
 jobs:
-  path-filter:
-    runs-on: ubuntu-latest
-    outputs:
-      should_skip: ${{ steps.filter.outputs.should_skip }}
-    steps:
-      - uses: actions/checkout@v7
-        if: github.event_name == 'pull_request'
-        with:
-          filter: blob:none
-          fetch-depth: 0
-      - uses: leavesster/pull-request-path-filter@v0.2
-        if: github.event_name == 'pull_request'
-        id: 'filter'
-        with:
-          paths: |
-            - .github/workflows/test_service_api.yml
-            - .github/actions/build-service/action.yml
-            - services/.env.example
-            - services/121-service/**
-            - services/mock-service/**
-            - '!**.md'
   generate-test-files:
     runs-on: ubuntu-latest
     outputs:
@@ -51,14 +29,24 @@ jobs:
       - name: Set up test files per shard
         id: discover
         run: |
+          # 90 min timeout, 131k registrations (2^17), IntersolveVisa has the most complex FSP logic and most API calls
           LONG_TEST_1="payment-100k-registration-intersolve-visa.test.ts"
+
+          # 90 min timeout, 32k registrations (2^15), measures system performance while a payment is running (export + bulk message during payment)
           LONG_TEST_2="performance-during-payment.test.ts"
-          # Isolated in its own shard so it doesn't inherit resource pressure from export-100k-registrations-ocw
+
+          # 10 min timeout, 131k registrations (2^17), duplicates query is CPU/memory-intensive; isolated so it doesn't inherit resource pressure from other tests
           LONG_TEST_3="find-duplicates-100k-registrations.test.ts"
+
+          # 10 min timeout, imports 1000 registrations via CSV, relatively quick but still slow enough to warrant its own shard
           LONG_TEST_4="import-1000-registrations.test.ts"
-          # Resource-heavy, see LONG_TEST_3 comment
+
+          # 5 min timeout, exports 131k registrations (2^17), resource-heavy export operation that destabilizes other tests running alongside it
           LONG_TEST_5="export-100k-registrations-ocw.test.ts"
+
+          # 90 min timeout, 131k registrations (2^17), Safaricom uses callbacks making it heavier/more complex than simpler FSPs
           LONG_TEST_6="payment-100k-registration-safaricom.test.ts"
+
           SHARD1_FILES=$(find services/121-service/test/performance -name '*.test.ts' ! -name "$LONG_TEST_1" ! -name "$LONG_TEST_2" ! -name "$LONG_TEST_3" ! -name "$LONG_TEST_4" ! -name "$LONG_TEST_5" ! -name "$LONG_TEST_6" -print0 | xargs -0 -n1 basename | sort | xargs | tr ' ' ',')
           {
             echo "shard1_files=$SHARD1_FILES"
@@ -72,8 +60,7 @@ jobs:
 
   performance-test-shard:
     runs-on: ubuntu-latest
-    needs: [path-filter, generate-test-files]
-    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
+    needs: [generate-test-files]
     strategy:
       fail-fast: false
       matrix:
