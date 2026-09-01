@@ -16,7 +16,10 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     navigateToPage: `/program/${programIdOCW}/payments`,
   });
 
-  await resetDuplicateRegistrations(4);
+  await resetDuplicateRegistrations({
+    mockPowerNumberRegistrations: 4,
+    skipIntroduceDuplicates: true,
+  });
 });
 
 test('Payment chart should reflect transaction statuses', async ({
