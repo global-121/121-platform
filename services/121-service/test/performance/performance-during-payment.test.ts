@@ -22,6 +22,7 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 // Timing configuration
 const testTimeout = 5_400_000; // 90 minutes
 const maxRetryDurationMs = 4_800_000; // 80 minutes
+const delayBetweenAttemptsMs = 30_000; // 30 seconds
 
 // Performance test configuration
 const duplicateLowNumber = 5;
@@ -78,6 +79,7 @@ describe('Measure performance during payment', () => {
       totalAmountPowerOfTwo: duplicateNumber,
       passRate,
       maxRetryDurationMs,
+      delayBetweenAttemptsMs,
       verbose: true,
     });
 
