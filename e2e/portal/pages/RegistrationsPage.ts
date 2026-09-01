@@ -354,7 +354,7 @@ class RegistrationsPage extends BasePage {
     const filePath = await this.downloadFile(() =>
       this.exportCSVButton.click(),
     );
-    await this.validateToastMessageAndClose('Exporting');
+    await this.validateToastMessageIsVisibleOnly('Exporting');
     await this.validateExportedFile({
       filePath,
       expectedRowCount,
@@ -397,6 +397,8 @@ class RegistrationsPage extends BasePage {
       .check();
 
     await this.importFileButton.click();
+    // Wait for the upload to complete
+    await this.page.waitForLoadState('networkidle');
   }
 
   async assertImportTemplateForPvProgram() {
