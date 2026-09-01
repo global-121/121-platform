@@ -26,9 +26,10 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 // Timing configuration
-const maxRetryDurationMs = 1_200_000; // 20 minutes
+const maxRetryDurationMs = 600_000; // 10 minutes, for the status change
+const maxPaymentRetryDurationMs = 900_000; // 15 minutes, to reach the pass rate
 const testTimeout = 1_800_000; // 30 minutes
-const delayBetweenAttemptsMs = 5_000; // 5 seconds
+const delayBetweenAttemptsMs = 15_000; // 15 seconds
 const maximumProgramLoadTime = 200; // 200 ms = 0.2 seconds
 
 const duplicateLowNumber = 5;
@@ -88,7 +89,7 @@ describe('Status Change Payment In Large Program', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
 
-    // Duplicate registration between 20k - 50k
+    // Duplicate registration to 2^15 = 32k (high data volume) or 2^5 = 32 (local)
     const duplicateRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
         powerNumberRegistration: duplicateNumber,
@@ -113,6 +114,7 @@ describe('Status Change Payment In Large Program', () => {
       accessToken,
       status: 'included',
       maxRetryDurationMs,
+      delayBetweenAttemptsMs,
     });
 
     // Do the payment with dryRun first
@@ -141,7 +143,7 @@ describe('Status Change Payment In Large Program', () => {
       accessToken,
       totalAmountPowerOfTwo: duplicateNumber,
       passRate,
-      maxRetryDurationMs,
+      maxRetryDurationMs: maxPaymentRetryDurationMs,
       delayBetweenAttemptsMs,
       verbose: true,
     });
