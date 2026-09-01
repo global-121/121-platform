@@ -8,10 +8,17 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
+const registrations = [
+  registrationsPV[1],
+  registrationsPV[2],
+  { ...registrationsPV[2], referenceId: 'testreferenceid' },
+  registrationsPV[3],
+];
+
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
-    registrations: registrationsPV,
+    registrations,
     programId: programIdPV,
     navigateToPage: `/program/${programIdPV}/registrations`,
   });
@@ -21,8 +28,8 @@ test('Ignore duplicates', async ({
   registrationsPage,
   registrationActivityLogPage,
 }) => {
-  const duplicateRegistrationA = registrationsPV[1]; // 'Jan Janssen'
-  const duplicateRegistrationB = registrationsPV[2]; // 'Joost Herlembach'
+  const duplicateRegistrationA = registrations[1]; // 'Jan Janssen'
+  const duplicateRegistrationB = registrations[2]; // 'Joost Herlembach'
 
   await test.step('Wait for registrations to load', async () => {
     const allRegistrationsCount = registrationsPV.length;

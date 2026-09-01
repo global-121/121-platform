@@ -9,10 +9,17 @@ import {
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
 
+const registrations = [
+  registrationsPV[1],
+  registrationsPV[2],
+  { ...registrationsPV[2], referenceId: 'testreferenceid' },
+  registrationsPV[3],
+];
+
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
-    registrations: registrationsPV,
+    registrations,
     programId: programIdPV,
     navigateToPage: `/program/${programIdPV}/registrations`,
   });
@@ -23,9 +30,9 @@ test('Validate that "Duplicate" banner is displayed in overview of duplicated re
   registrationActivityLogPage,
   page,
 }) => {
-  const duplicateRegistrationA = registrationsPV[1]; // 'Jan Janssen'
-  const duplicateRegistrationB = registrationsPV[2]; // 'Joost Herlembach'
-  const uniqueRegistration = registrationsPV[0]; // 'Gemma Houtenbos'
+  const duplicateRegistrationA = registrations[1]; // 'Jan Janssen'
+  const duplicateRegistrationB = registrations[2]; // 'Joost Herlembach'
+  const uniqueRegistration = registrations[0]; // 'Gemma Houtenbos'
 
   await test.step('Wait for registrations to load', async () => {
     const allRegistrationsCount = registrationsPV.length;

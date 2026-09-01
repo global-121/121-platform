@@ -6,10 +6,17 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
+const registrations = [
+  registrationsPV[1],
+  registrationsPV[2],
+  { ...registrationsPV[2], referenceId: 'testreferenceid' },
+  registrationsPV[3],
+];
+
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
-    registrations: registrationsPV,
+    registrations,
     programId: programIdPV,
     navigateToPage: `/program/${programIdPV}/registrations`,
   });
