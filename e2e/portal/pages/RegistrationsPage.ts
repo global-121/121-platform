@@ -229,23 +229,15 @@ class RegistrationsPage extends BasePage {
   }: {
     registrationName: string;
   }) {
-    await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForLoadState('networkidle');
-    const rowCount = await this.table.tableRows.count();
-    for (let i = 0; i <= rowCount; i++) {
-      const fullName = await this.table.getCell(i, 2);
-      const fullNameText = (await fullName.textContent())?.trim();
-      const isRequestedFullName = fullNameText?.includes(registrationName);
+    await this.table.waitForLoaded();
 
-      if (
-        (registrationName && isRequestedFullName) ||
-        (!registrationName && !isRequestedFullName)
-      ) {
-        await fullName.getByRole('link').click();
-        return;
-      }
-    }
-    throw new Error('Registration not found');
+    const registrationLink = this.table.table.getByRole('link', {
+      name: registrationName,
+      exact: true,
+    });
+
+    await expect(registrationLink).toHaveCount(1);
+    await registrationLink.click();
   }
 
   async performActionOnRegistrationByName({
@@ -255,23 +247,18 @@ class RegistrationsPage extends BasePage {
     registrationName: string;
     action: string;
   }) {
-    await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForLoadState('networkidle');
-    const rowCount = await this.table.tableRows.count();
-    for (let i = 0; i <= rowCount; i++) {
-      const fullName = await this.table.getCell(i, 2);
-      const fullNameText = (await fullName.textContent())?.trim();
-      const isRequestedFullName = fullNameText?.includes(registrationName);
+    await this.table.waitForLoaded();
 
-      if (
-        (registrationName && isRequestedFullName) ||
-        (!registrationName && !isRequestedFullName)
-      ) {
-        await this.performActionWithRightClick(action, i);
-        return;
-      }
-    }
-    throw new Error('Registration not found');
+    const registrationRow = this.table.tableRows.filter({
+      has: this.page.getByRole('link', {
+        name: registrationName,
+        exact: true,
+      }),
+    });
+
+    await expect(registrationRow).toHaveCount(1);
+
+    await this.performActionWithRightClick(action, registrationRow);
   }
 
   async cancelSendMessageBulkAction() {

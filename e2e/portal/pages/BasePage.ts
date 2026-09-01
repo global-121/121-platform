@@ -104,9 +104,21 @@ class BasePage {
     await this.accountDropdown.click();
   }
 
-  async performActionWithRightClick(action: string, row = 0) {
-    await this.table.tableRows.nth(row).click({ button: 'right' });
-    await this.page.getByLabel(action).click();
+  async performActionWithRightClick(action: string, row: number | Locator = 0) {
+    let rowLocator: Locator;
+
+    if (typeof row === 'number') {
+      rowLocator = this.table.tableRows.nth(row);
+    } else {
+      rowLocator = row;
+    }
+
+    await expect(rowLocator).toHaveCount(1);
+    await rowLocator.click({ button: 'right' });
+
+    const actionMenuItem = this.page.getByLabel(action);
+    await expect(actionMenuItem).toBeVisible();
+    await actionMenuItem.click();
 
     if (
       action !== 'Message' &&
