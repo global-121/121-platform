@@ -22,9 +22,9 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
 
 // Timing configuration
-const testTimeout = 90 * 60 * 1000; // 90 minutes
-const maximumPaginatedEventsResponseTime = 2 * 1000; // Performance assertion limit for one paginated page of events
-const maximumAllEventsExportTime = 10 * 1000; // Performance assertion limit for fetching all events
+const testTimeout = 5_400_000; // 90 minutes
+const maximumPaginatedEventsResponseTime = 2_000; // Performance assertion limit for one paginated page of events
+const maximumAllEventsExportTime = 10_000; // Performance assertion limit for fetching all events
 
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131k registrations

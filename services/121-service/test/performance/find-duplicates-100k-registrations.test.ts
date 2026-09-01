@@ -18,8 +18,8 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
 
 // Timing configuration
-const testTimeout = 10 * 60 * 1000; // Overall test timeout to prevent hanging
-const maximumQueryTime = 2 * 60 * 1000; // Performance assertion limit for the duplicates query
+const testTimeout = 600_000; // Overall test timeout to prevent hanging
+const maximumQueryTime = 120_000; // Performance assertion limit for the duplicates query
 
 // Performance test configuration
 // For guaranteeing that test data generates duplicates we should use at least 10 as minimal duplication number for fast test and 17 for full load test

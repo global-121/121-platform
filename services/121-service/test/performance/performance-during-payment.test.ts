@@ -22,8 +22,8 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
 
 // Timing configuration
-const testTimeout = 90 * 60 * 1000; // 90 minutes
-const maxRetryDurationMs = 80 * 60 * 1000; // 80 minutes
+const testTimeout = 5_400_000; // 90 minutes
+const maxRetryDurationMs = 4_800_000; // 80 minutes
 
 // Performance test configuration
 const duplicateLowNumber = 5;

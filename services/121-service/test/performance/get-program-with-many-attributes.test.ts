@@ -20,7 +20,7 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 // Timing configuration
-const testTimeout = 30 * 1000; // Overall test timeout to prevent hanging
+const testTimeout = 30_000; // Overall test timeout to prevent hanging
 const maximumProgramLoadTime = 200; // Performance assertion limit for loading the program
 
 // Performance test configuration

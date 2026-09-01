@@ -24,10 +24,10 @@ import {
 const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
 
 // Timing configuration
-const testTimeout = 90 * 60 * 1000; // 90 minutes
-const maxWaitTimeMs = 4 * 60 * 1000; // 4 minutes
-const maxRetryDurationMs = 80 * 60 * 1000; // 80 minutes
-const delayBetweenAttemptsMs = 5 * 1000; // 5 seconds
+const testTimeout = 5_400_000; // 90 minutes
+const maxWaitTimeMs = 240_000; // 4 minutes
+const maxRetryDurationMs = 4_800_000; // 80 minutes
+const delayBetweenAttemptsMs = 5_000; // 5 seconds
 
 // For now we decided to test only Safaricom and IntersolveVisa
 // The reasoning behind this is that IntersolveVisa has the most complex logic and most API calls

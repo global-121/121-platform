@@ -16,8 +16,8 @@ import { programIdPV } from '@121-service/test/registrations/pagination/paginati
 const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
 
 // Timing configuration
-const testTimeout = 10 * 60 * 1000; // Overall test timeout to prevent hanging, 10 minutes
-const maximumImportTime = isHighDataVolume ? 8 * 60 * 1000 : 5 * 1000; // Performance assertion limit for import operation
+const testTimeout = 600_000; // Overall test timeout to prevent hanging, 10 minutes
+const maximumImportTime = isHighDataVolume ? 480_000 : 5_000; // Performance assertion limit for import operation
 
 // Performance test configuration
 const csvFilePath =
