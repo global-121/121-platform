@@ -2,7 +2,6 @@ import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { performance } from 'node:perf_hooks';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';

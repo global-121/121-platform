@@ -1,5 +1,4 @@
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
-import { performance } from 'node:perf_hooks';
 
 import { env } from '@121-service/src/env';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
