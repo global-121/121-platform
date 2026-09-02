@@ -14,7 +14,10 @@ import { ProgramRegistrationAttributesService } from '@121-service/src/program-r
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
-import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  GenericRegistrationAttributes,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 describe('KoboService', () => {
@@ -359,6 +362,16 @@ describe('KoboService', () => {
           name: 'fsp', // This should be filtered out
           type: RegistrationAttributeTypes.text,
           label: { en: 'Financial Service Provider' },
+        },
+        {
+          name: GenericRegistrationAttributes.scope, // This should be filtered out as it maps to the entity-level registration.scope column
+          type: RegistrationAttributeTypes.text,
+          label: { en: 'Scope' },
+        },
+        {
+          name: GenericRegistrationAttributes.maxPayments, // This should be filtered out as a generic registration attribute
+          type: RegistrationAttributeTypes.numeric,
+          label: { en: 'Maximum payments' },
         },
       ];
 
