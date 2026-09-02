@@ -200,6 +200,18 @@ export const registrationsPV = [
   registrationPV8,
 ];
 
+export const registrationsPVWithOneDuplicate = [
+  registrationPV5,
+  registrationPV6,
+  { ...registrationPV6, referenceId: '11111', fullName: 'First Duplicate' },
+  registrationPV8,
+];
+
+export const registrationsPVWithTwoDuplicates = [
+  ...registrationsPVWithOneDuplicate,
+  { ...registrationPV6, referenceId: '22222', fullName: 'Second Duplicate' },
+];
+
 export const registrationsVoucher = [registrationPV5, registrationPV6];
 
 export const registrationPvScoped = {
