@@ -1,6 +1,8 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} */
+/** @type {import('jest').Config} */
+const { typescriptOptions, esmNodeModuleOptions } =
+  require('./swc-jest-options').default;
+
 module.exports = {
-  preset: 'ts-jest',
   rootDir: '.',
   testMatch: ['<rootDir>/test/**/*.test.ts'],
   setupFilesAfterEnv: ['jest-extended/all'],
@@ -12,10 +14,10 @@ module.exports = {
   },
   moduleFileExtensions: ['js', 'ts'],
   transform: {
-    '^.+\\.ts?$': ['ts-jest', { tsconfig: '<rootDir>/test/tsconfig.json' }],
+    '^.+\\.ts$': ['@swc/jest', typescriptOptions],
     'node_modules/(@t3-oss|uuid|openid-client|oauth4webapi|jose)/.+[.]js$': [
-      'ts-jest',
-      { useESM: true },
+      '@swc/jest',
+      esmNodeModuleOptions,
     ],
   },
   transformIgnorePatterns: [

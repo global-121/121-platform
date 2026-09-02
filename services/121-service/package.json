@@ -118,7 +118,8 @@
     "@automock/jest": "^2.1.2",
     "@nestjs/cli": "^11.0.24",
     "@swc/cli": "^0.8.1",
-    "@swc/core": "^1.15.47",
+    "@swc/core": "^1.16.1",
+    "@swc/jest": "^0.2.39",
     "@types/cookie-parser": "^1.4.10",
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.25",
@@ -142,7 +143,6 @@
     "nyc": "^18.0.0",
     "prettier": "^3.9.4",
     "supertest": "^7.2.2",
-    "ts-jest": "^29.4.12",
     "typescript-eslint": "^8.58.0"
   },
   "overrides": {
