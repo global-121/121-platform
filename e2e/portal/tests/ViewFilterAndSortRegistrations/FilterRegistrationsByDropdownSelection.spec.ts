@@ -2,7 +2,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdPV,
-  registrationsPV,
+  registrationsPVWithOneDuplicate,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
@@ -13,7 +13,7 @@ const toastMessage =
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
-    registrations: registrationsPV,
+    registrations: registrationsPVWithOneDuplicate,
     programId: programIdPV,
     seedWithStatus: RegistrationStatusEnum.included,
     navigateToPage: `/program/${programIdPV}/registrations`,
@@ -37,7 +37,7 @@ test('Filter registrations by dropdown selection', async ({
 
   await test.step('Update status and filter by "Paused" status', async () => {
     await tableComponent.changeRegistrationStatusByNamesWithOptions({
-      registrationNames: [registrationsPV[0].fullName],
+      registrationNames: [registrationsPVWithOneDuplicate[0].fullName],
       status: 'Pause',
     });
     await registrations.validateToastMessageAndClose(toastMessage);
