@@ -6,6 +6,10 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 
 import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
 import {
+  ImportExistingRecordsResultKey,
+  RECORD_RESULT_LABELS,
+} from '~/domains/activityinfo/activityinfo.helpers';
+import {
   VISA_CARD_ORDER_STATUS_LABELS,
   VISA_CARD_STATUS_LABELS,
 } from '~/domains/fsp-account-management/intersolve-visa.helper';
@@ -137,6 +141,19 @@ export const getChipDataBySubmissionsKey = (
       [ImportExistingSubmissionsResultKey.numberOfSubmissionsFailed]: 'red',
       [ImportExistingSubmissionsResultKey.numberOfSubmissionsImported]: 'green',
       [ImportExistingSubmissionsResultKey.numberOfSubmissionsSkipped]: 'orange',
+    },
+  });
+
+export const getChipDataByRecordsKey = (
+  status?: ImportExistingRecordsResultKey | null,
+): ChipData =>
+  mapValueToChipData({
+    value: status,
+    labels: RECORD_RESULT_LABELS,
+    chipVariants: {
+      [ImportExistingRecordsResultKey.numberOfRecordsFailed]: 'red',
+      [ImportExistingRecordsResultKey.numberOfRecordsImported]: 'green',
+      [ImportExistingRecordsResultKey.numberOfRecordsSkipped]: 'orange',
     },
   });
 

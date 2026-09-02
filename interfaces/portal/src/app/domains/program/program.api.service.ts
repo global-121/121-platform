@@ -293,6 +293,7 @@ export class ProgramApiService extends DomainApiService {
     return (
       this.translatableStringService.translate(attribute.label) ??
       this.translatableStringService.translate(attribute.koboLabel) ??
+      this.translatableStringService.translate(attribute.activityInfoLabel) ??
       undefined
     );
   }

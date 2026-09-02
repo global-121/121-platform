@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, OneToOne, Relation } from 'typeorm';
 
+import { ActivityInfoEntity } from '@121-service/src/activityinfo/entities/activityinfo.entity';
 import { Base121Entity } from '@121-service/src/base.entity';
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
@@ -122,4 +123,11 @@ export class ProgramEntity extends Base121Entity {
 
   @OneToOne(() => KoboEntity, (kobo) => kobo.program, { onDelete: 'SET NULL' })
   public kobo: Relation<KoboEntity>;
+
+  @OneToOne(
+    () => ActivityInfoEntity,
+    (activityInfo) => activityInfo.program,
+    { onDelete: 'SET NULL' },
+  )
+  public activityInfo: Relation<ActivityInfoEntity>;
 }

@@ -23,6 +23,9 @@
       <trans-unit id="1071721880474488785" datatype="html">
         <source>Import</source>
       </trans-unit>
+      <trans-unit id="1076637583904346897" datatype="html">
+        <source>There are issues in your ActivityInfo form that are blocking the refresh. Fix the errors below in ActivityInfo, then try again.</source>
+      </trans-unit>
       <trans-unit id="1087779437885680611" datatype="html">
         <source>Card successfully closed</source>
       </trans-unit>
@@ -32,11 +35,14 @@
       <trans-unit id="1131264372756277854" datatype="html">
         <source>Payments</source>
       </trans-unit>
+      <trans-unit id="1150875780951417115" datatype="html">
+        <source>You&apos;re about to link this program with this ActivityInfo form:</source>
+      </trans-unit>
       <trans-unit id="1160840788795450422" datatype="html">
         <source>At least one column must be selected</source>
       </trans-unit>
       <trans-unit id="11993744433894410" datatype="html">
-        <source>Last updated: <x ctype="x-time" equiv-text="&lt;time data-testid=&quot;kobo-integration-last-updated&quot; [attr.datetime]=&quot;koboIntegration.data()?.updated | date: &apos;short&apos;&quot; &gt;" id="START_TAG_TIME"/><x equiv-text="{{ koboIntegration.data()?.updated | date: &apos;short&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time &gt;" id="CLOSE_TAG_TIME"/></source>
+        <source>Last updated: <x ctype="x-time" equiv-text="&lt;time data-testid=&quot;activityinfo-integration-last-updated&quot; [attr.datetime]=&quot; activityInfoIntegration.data()?.updated | date: &apos;short&apos; &quot; &gt;" id="START_TAG_TIME"/><x equiv-text="{{ activityInfoIntegration.data()?.updated | date: &apos;short&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time &gt;" id="CLOSE_TAG_TIME"/></source>
       </trans-unit>
       <trans-unit id="1221596867309460035" datatype="html">
         <source>New Password</source>
@@ -76,6 +82,9 @@
       </trans-unit>
       <trans-unit id="13418093194122890" datatype="html">
         <source>Duplicate program</source>
+      </trans-unit>
+      <trans-unit id="1347680784285763112" datatype="html">
+        <source>These are the errors related to your ActivityInfo form settings.</source>
       </trans-unit>
       <trans-unit id="13613170635045985" datatype="html">
         <source>Drag and drop file here<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>or</source>
@@ -216,6 +225,9 @@
       <trans-unit id="1873935802798572654" datatype="html">
         <source>Tip: Press Command / Ctrl + Enter to submit.</source>
       </trans-unit>
+      <trans-unit id="1877755740964403125" datatype="html">
+        <source>We couldn&apos;t read a form ID from this URL. Copy the full URL from the form&apos;s page in ActivityInfo.</source>
+      </trans-unit>
       <trans-unit id="1890300073702152532" datatype="html">
         <source>E-mail</source>
       </trans-unit>
@@ -227,6 +239,9 @@
       </trans-unit>
       <trans-unit id="1941641831210864467" datatype="html">
         <source>Replace visa card</source>
+      </trans-unit>
+      <trans-unit id="1942636539519960213" datatype="html">
+        <source>There is a maximum of 1000 records per import. If you have more records to import, please split them into multiple files. The import takes about 1 minute per 100 records.</source>
       </trans-unit>
       <trans-unit id="1953762348939012822" datatype="html">
         <source>Revert to default</source>
@@ -266,6 +281,9 @@
       </trans-unit>
       <trans-unit id="2185398424871178341" datatype="html">
         <source>Addressee (name of the recipient of the package)</source>
+      </trans-unit>
+      <trans-unit id="2190497725717717563" datatype="html">
+        <source>These fields are expected by 121 but are missing from your ActivityInfo form. Add a field with a matching code before trying again.</source>
       </trans-unit>
       <trans-unit id="2200382670798092138" datatype="html">
         <source>Add to payment</source>
@@ -405,6 +423,9 @@
       <trans-unit id="2583667945049138476" datatype="html">
         <source>Unsupported language</source>
       </trans-unit>
+      <trans-unit id="2587104263804846312" datatype="html">
+        <source>ActivityInfo form refresh errors</source>
+      </trans-unit>
       <trans-unit id="2614607010577950577" datatype="html">
         <source>Overview</source>
       </trans-unit>
@@ -432,6 +453,9 @@
       <trans-unit id="2779521124294512411" datatype="html">
         <source>Custom messages are <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>not automatically translated<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> to the registration&apos;s preferred language.</source>
       </trans-unit>
+      <trans-unit id="2782541111236849920" datatype="html">
+        <source><x equiv-text="this.importExistingRecords.data()?.numberOfRecordsOnForm ?? 0" id="count"/> total record(s)</source>
+      </trans-unit>
       <trans-unit id="2786315343832067060" datatype="html">
         <source>Deduplication indicators saved successfully.</source>
       </trans-unit>
@@ -442,7 +466,7 @@
         <source>Registration Status</source>
       </trans-unit>
       <trans-unit id="2796653095673932200" datatype="html">
-        <source><x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ koboFormName() }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> was linked successfully to your program.</source>
+        <source><x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ activityInfoFormName() }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> was linked successfully to your program.</source>
       </trans-unit>
       <trans-unit id="2800411489772677471" datatype="html">
         <source>Fill up all 19 digits to link card</source>
@@ -498,11 +522,20 @@
       <trans-unit id="3003940161121195414" datatype="html">
         <source>Update information</source>
       </trans-unit>
+      <trans-unit id="3004033083085383284" datatype="html">
+        <source>For more information about how to integrate ActivityInfo see <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/></source>
+      </trans-unit>
       <trans-unit id="3005732335203491098" datatype="html">
         <source>The confirm password must be equal to the new password.</source>
       </trans-unit>
       <trans-unit id="3033425005384068594" datatype="html">
         <source>Budget details saved successfully.</source>
+      </trans-unit>
+      <trans-unit id="3039782689109259269" datatype="html">
+        <source>Link with ActivityInfo</source>
+      </trans-unit>
+      <trans-unit id="3039929961428811541" datatype="html">
+        <source>ActivityInfo form URL</source>
       </trans-unit>
       <trans-unit id="3046019795799616878" datatype="html">
         <source>Registrations with the status “included”.</source>
@@ -668,6 +701,9 @@
       </trans-unit>
       <trans-unit id="3757859142679780974" datatype="html">
         <source>Kobo form ”<x equiv-text="this.koboIntegration.data()?.name" id="PH"/>” does not have existing registrations. New registrations will be synced to the program automatically.</source>
+      </trans-unit>
+      <trans-unit id="3781733569549468335" datatype="html">
+        <source>No records found</source>
       </trans-unit>
       <trans-unit id="37959892232763790" datatype="html">
         <source>Welcome to <x equiv-text="{{ program.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
@@ -881,6 +917,12 @@
       <trans-unit id="4493197211213914613" datatype="html">
         <source>Ordered On</source>
       </trans-unit>
+      <trans-unit id="4497067449622481917" datatype="html">
+        <source>ActivityInfo form integration errors</source>
+      </trans-unit>
+      <trans-unit id="4497278013052119302" datatype="html">
+        <source>There are issues in your ActivityInfo form that are blocking the integration. Fix the errors below in ActivityInfo, then try again.</source>
+      </trans-unit>
       <trans-unit id="4513666009026562086" datatype="html">
         <source>Import existing reg.</source>
       </trans-unit>
@@ -943,6 +985,9 @@
       </trans-unit>
       <trans-unit id="4775550080689015987" datatype="html">
         <source>Reason</source>
+      </trans-unit>
+      <trans-unit id="4779814769168036485" datatype="html">
+        <source>ActivityInfo form linked successfully</source>
       </trans-unit>
       <trans-unit id="4782986825591367550" datatype="html">
         <source>Use <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>@<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/> to add personalized fields.</source>
@@ -1112,6 +1157,9 @@
       <trans-unit id="5438647545299330818" datatype="html">
         <source>Enter a valid scope. No spaces are allowed.</source>
       </trans-unit>
+      <trans-unit id="5452240527415039352" datatype="html">
+        <source>Records that have been added to the program already are skipped to avoid duplications.</source>
+      </trans-unit>
       <trans-unit id="5452570589103987928" datatype="html">
         <source>Payment status chart.</source>
       </trans-unit>
@@ -1159,6 +1207,9 @@
       </trans-unit>
       <trans-unit id="5595826100350402634" datatype="html">
         <source>Use the arrow keys or W A S D to play the game</source>
+      </trans-unit>
+      <trans-unit id="5638516694850253182" datatype="html">
+        <source>Import existing records from your ActivityInfo form.</source>
       </trans-unit>
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
@@ -1228,6 +1279,9 @@
       </trans-unit>
       <trans-unit id="5951235042771324221" datatype="html">
         <source>&quot;<x equiv-text="text" id="PH"/>&quot; copied to clipboard</source>
+      </trans-unit>
+      <trans-unit id="5958383265336351945" datatype="html">
+        <source>ActivityInfo</source>
       </trans-unit>
       <trans-unit id="5963256347991946436" datatype="html">
         <source>These users would have to approve payment if the total amount is above the decided value.</source>
@@ -1401,6 +1455,9 @@
       <trans-unit id="6710855517991446782" datatype="html">
         <source>121 does not support this language currently.</source>
       </trans-unit>
+      <trans-unit id="6717229637295438349" datatype="html">
+        <source>ActivityInfo form successfully integrated.</source>
+      </trans-unit>
       <trans-unit id="6722480348579256749" datatype="html">
         <source>Payment approved successfully.</source>
       </trans-unit>
@@ -1436,6 +1493,9 @@
       </trans-unit>
       <trans-unit id="6909842392958829581" datatype="html">
         <source><x equiv-text="{{ statusVerb() }}" id="INTERPOLATION"/> registration(s)</source>
+      </trans-unit>
+      <trans-unit id="6924098175799965457" datatype="html">
+        <source>You do not have permission to configure ActivityInfo integration</source>
       </trans-unit>
       <trans-unit id="6954699489555837710" datatype="html">
         <source>Read our Privacy notice</source>
@@ -1671,6 +1731,9 @@
       <trans-unit id="7814604735706675498" datatype="html">
         <source>Cards ordered</source>
       </trans-unit>
+      <trans-unit id="7818170862528546191" datatype="html">
+        <source>Error while integrating ActivityInfo form</source>
+      </trans-unit>
       <trans-unit id="7848450150740100683" datatype="html">
         <source>Failed to update financial service providers.</source>
       </trans-unit>
@@ -1703,6 +1766,9 @@
       </trans-unit>
       <trans-unit id="796736218174025913" datatype="html">
         <source>Note successfully added.</source>
+      </trans-unit>
+      <trans-unit id="7991312070792799469" datatype="html">
+        <source>Successfully imported records from ActivityInfo form</source>
       </trans-unit>
       <trans-unit id="8004775102395278439" datatype="html">
         <source>FSP</source>
@@ -1824,6 +1890,9 @@
       <trans-unit id="8390249546875631537" datatype="html">
         <source>Important Notice: The card balances available for download are not in real-time. The report includes the date and time of each card&apos;s last external update.</source>
       </trans-unit>
+      <trans-unit id="840267156307878695" datatype="html">
+        <source>ActivityInfo form ”<x equiv-text="this.activityInfoIntegration.data()?.name" id="PH"/>” does not have any records yet.</source>
+      </trans-unit>
       <trans-unit id="8407349224144000567" datatype="html">
         <source>Only users with full program access can approve. You cannot assign yourself, and users can only be assigned to one step.</source>
       </trans-unit>
@@ -1883,6 +1952,12 @@
       </trans-unit>
       <trans-unit id="8751327662526303646" datatype="html">
         <source>Scan the barcode in the back of the card you are handing over to the registration with a scanner, or manually fill in the 19 digit serial number found below the barcode.</source>
+      </trans-unit>
+      <trans-unit id="8758275338074513959" datatype="html">
+        <source>Error while importing existing ActivityInfo records</source>
+      </trans-unit>
+      <trans-unit id="8774742336445188670" datatype="html">
+        <source>Give every field in your ActivityInfo form a code: 121 uses the code to name the registration attribute, and shows the field label in the Portal. The form language must be English (EN).</source>
       </trans-unit>
       <trans-unit id="8800018640518842840" datatype="html">
         <source>The card number you entered is already linked to the current registration.</source>
@@ -2419,6 +2494,13 @@
       <trans-unit id="inProgressChipTooltip" datatype="html">
         <source>The payment will be in progress while the transactions in the table below are loading.</source>
       </trans-unit>
+      <trans-unit id="integrate-activityinfo-form-api-key-explanation" datatype="html">
+        <source>Copy a personal API token from your ActivityInfo account settings.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> The token must have access to the database that contains this form.</source>
+      </trans-unit>
+      <trans-unit id="integrate-activityinfo-form-url-explanation" datatype="html">
+        <source>The full URL from the form&apos;s page in ActivityInfo, i.e: https://www.activityinfo.org/app#form/XXXXXX/table</source>
+        <note priority="1" from="description">Do NOT translate the URL!</note>
+      </trans-unit>
       <trans-unit id="integrate-kobo-form-api-key-explanation" datatype="html">
         <source>Copy the API key from the Kobo account settings (top right) &gt; security.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Make sure to click &apos;display&apos; next to the API Key before copying.</source>
       </trans-unit>
@@ -2663,6 +2745,15 @@
       </trans-unit>
       <trans-unit id="query-table-manage-table" datatype="html">
         <source>Manage table</source>
+      </trans-unit>
+      <trans-unit id="record-result-failed" datatype="html">
+        <source>Records failed</source>
+      </trans-unit>
+      <trans-unit id="record-result-imported" datatype="html">
+        <source>Imported successfully</source>
+      </trans-unit>
+      <trans-unit id="record-result-skipped" datatype="html">
+        <source>Records skipped</source>
       </trans-unit>
       <trans-unit id="registration-created" datatype="html">
         <source>Registration created</source>

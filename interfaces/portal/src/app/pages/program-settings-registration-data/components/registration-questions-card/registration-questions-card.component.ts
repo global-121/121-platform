@@ -243,6 +243,7 @@ export class RegistrationQuestionsCardComponent {
     return (
       attribute.label?.[language as unknown as UILanguage] ??
       attribute.koboLabel?.[language as unknown as UILanguage] ??
+      attribute.activityInfoLabel?.[language as unknown as UILanguage] ??
       undefined
     );
   }
