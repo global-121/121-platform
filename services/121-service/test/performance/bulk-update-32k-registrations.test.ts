@@ -16,25 +16,29 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { isHighDataVolume } from '@121-service/test/performance/helpers/high-data-volume.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
+// Timing configuration
+const testTimeout = 120_000; // 120 seconds
+const maximumUpdateTime = 20_000; // 20 seconds
+
+// Performance test configuration
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 15; // cronjob duplicate number should be 2^15 = 32768
-const testTimeout = 120_000; // 120 seconds
-const duplicateNumber =
-  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
-  process.env.HIGH_DATA_VOLUME === 'true'
-    ? duplicateHighNumber
-    : duplicateLowNumber;
+
+const duplicateNumber = isHighDataVolume
+  ? duplicateHighNumber
+  : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
-describe('Bulk update 32k registrations', () => {
-  let accessToken: string;
 
+describe('Bulk update 32k registrations', () => {
   it('Should import 32k registrations within time threshold', async () => {
     // Arrange
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
-    accessToken = await getAccessToken();
+    const accessToken = await getAccessToken();
+
     // Upload registration
     const importRegistrationResponse = await importRegistrations(
       programIdOCW,
@@ -42,6 +46,7 @@ describe('Bulk update 32k registrations', () => {
       accessToken,
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
+
     // Duplicate registration to be 32k
     const duplicateRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
@@ -52,6 +57,7 @@ describe('Bulk update 32k registrations', () => {
         },
       });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
+
     // export registrations
     const exportRegistrationsResponse = await exportRegistrations(
       programIdOCW,
@@ -59,6 +65,7 @@ describe('Bulk update 32k registrations', () => {
       accessToken,
     );
     expect(exportRegistrationsResponse.statusCode).toBe(HttpStatus.OK);
+
     // change preferredLanguage to Arabic
     const responseObj = exportRegistrationsResponse.body;
     const registrations = responseObj.data;
@@ -68,19 +75,24 @@ describe('Bulk update 32k registrations', () => {
     const csvFile = jsonToCsv(registrations);
     const tempFilePath = path.join(__dirname, 'registrations.csv');
     fs.writeFileSync(tempFilePath, csvFile);
+
     // batch update registrations and check if it takes less than X ms
-    const startTime = Date.now();
+    const startTime = performance.now();
+
     const bulkUpdate = await bulkUpdateRegistrationsCSV(
       programIdOCW,
       tempFilePath,
       accessToken,
       'bulk update',
     );
-    const elapsedTime = Date.now() - startTime;
+
+    const elapsedTime = performance.now() - startTime;
+
     // clean up temp file
     fs.unlinkSync(tempFilePath);
+
     // Assert
-    expect(elapsedTime).toBeLessThan(20_000); // 20000 ms = 20 seconds
+    expect(elapsedTime).toBeLessThan(maximumUpdateTime);
     expect(bulkUpdate.statusCode).toBe(HttpStatus.OK);
   });
 });

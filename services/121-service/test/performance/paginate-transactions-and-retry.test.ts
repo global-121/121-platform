@@ -16,31 +16,37 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { isHighDataVolume } from '@121-service/test/performance/helpers/high-data-volume.helper';
 import {
   programIdSafaricom,
   registrationSafaricom,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
+// Timing configuration
+const testTimeout = 5_400_000; // 90 minutes
+const maximumPaginatedTransactionsResponseTime = 2_000; // Performance assertion limit for one paginated page of transactions, 2 seconds
+const maximumAllTransactionsResponseTime = 120_000; // Performance assertion limit for fetching all transactions, 2 minutes
+const maximumRetryPaymentResponseTime = 240_000; // Performance assertion limit for the retry payment request, 4 minutes
+
+// Performance test configuration
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131072
-const testTimeout = 5_400_000; // 90 minutes
-const duplicateNumber =
-  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
-  process.env.HIGH_DATA_VOLUME === 'true'
-    ? duplicateHighNumber
-    : duplicateLowNumber;
+
+const duplicateNumber = isHighDataVolume
+  ? duplicateHighNumber
+  : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
-describe('Retry payment for 100k registrations with Safaricom within expected range and successful rate threshold', () => {
-  let accessToken: string;
 
+describe('Retry payment for 100k registrations with Safaricom within expected range and successful rate threshold', () => {
   it('get transactions with filter and for export and retry', async () => {
     const registration = { ...registrationSafaricom };
     registration.phoneNumber = '254000000000'; // Fail number to force retry
 
     // Arrange
     await resetDB({ seedScript: SeedScript.safaricomProgram });
-    accessToken = await getAccessToken();
+    const accessToken = await getAccessToken();
+
     // Upload registration
     const paymentId = await seedPaidRegistrations({
       registrations: [registration],
@@ -59,6 +65,7 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
       'test reason',
       accessToken,
     );
+
     // Duplicate registrations
     const mockResponse = await duplicateRegistrationsAndPaymentData({
       powerNumberRegistration: duplicateNumber,
@@ -71,7 +78,7 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
     expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Get one page of transaction to test the duration of the api response
-    const getTransactionsStartTime = Date.now();
+    const getTransactionsStartTime = performance.now();
     const paginatedTransactionsResponse =
       await getTransactionsByPaymentIdPaginated({
         programId: programIdSafaricom,
@@ -84,17 +91,20 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
           'filter.registrationReferenceId': '2', // This is random filter to reduce result set, it seems likely that referenceIds contain '2'
         },
       });
-    const getTransactionsElapsedTime = Date.now() - getTransactionsStartTime;
+    const getTransactionsElapsedTime =
+      performance.now() - getTransactionsStartTime;
 
-    const twoSeconds = 2 * 1000;
-    expect(getTransactionsElapsedTime).toBeLessThan(twoSeconds);
+    expect(getTransactionsElapsedTime).toBeLessThan(
+      maximumPaginatedTransactionsResponseTime,
+    );
 
     expect(paginatedTransactionsResponse.statusCode).toBe(HttpStatus.OK);
 
     // Get all transactions to simulate export
     // TODO AB#39419: the exports are not using this paginated endpoint yet, this needs to be addressed
     const supportedNumberOrRegistrations = 100_000; // Adjust based on expected supported number
-    const getAllTransactionsStartTime = Date.now();
+    const getAllTransactionsStartTime = performance.now();
+
     const allTransactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdSafaricom,
       accessToken,
@@ -106,13 +116,14 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
       Math.min(supportedNumberOrRegistrations, Math.pow(2, duplicateNumber)),
     );
     const getAllTransactionsElapsedTime =
-      Date.now() - getAllTransactionsStartTime;
+      performance.now() - getAllTransactionsStartTime;
 
-    const twoMinutes = 2 * 60 * 1000;
-    expect(getAllTransactionsElapsedTime).toBeLessThan(twoMinutes);
+    expect(getAllTransactionsElapsedTime).toBeLessThan(
+      maximumAllTransactionsResponseTime,
+    );
 
     // Retry payment
-    const patchRetryRequestStartTime = Date.now();
+    const patchRetryRequestStartTime = performance.now();
     const retryPaymentResponse = await retryPayment({
       programId: programIdSafaricom,
       paymentId,
@@ -122,9 +133,11 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
 
     const totalTransactions = Math.pow(2, duplicateNumber);
     const patchRetryRequestElapsedTime =
-      Date.now() - patchRetryRequestStartTime;
-    const fourMinutes = 4 * 60 * 1000;
-    expect(patchRetryRequestElapsedTime).toBeLessThan(fourMinutes);
+      performance.now() - patchRetryRequestStartTime;
+
+    expect(patchRetryRequestElapsedTime).toBeLessThan(
+      maximumRetryPaymentResponseTime,
+    );
     expect(retryPaymentResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     expect(retryPaymentResponse.body.applicableCount).toBe(totalTransactions);
   });

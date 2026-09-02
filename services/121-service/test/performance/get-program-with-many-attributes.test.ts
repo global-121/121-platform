@@ -1,5 +1,4 @@
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
-import { performance } from 'node:perf_hooks';
 
 import { env } from '@121-service/src/env';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
@@ -20,16 +19,21 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
+// Timing configuration
+const testTimeout = 30_000; // Overall test timeout to prevent hanging, 30 seconds
+const maximumProgramLoadTime = 200; // Performance assertion limit for loading the program, 200 ms
+
+// Performance test configuration
 const duplicateNumber = 5; // cronjob duplicate number should be 2^5 = 32
 
-// 30 seconds is jest global timeout and this test should be able to complete within that time
-describe('Get program with many attributes within time threshold of 30 seconds', () => {
-  let accessToken: string;
+jest.setTimeout(testTimeout);
 
+describe('Get program with many attributes within time threshold of 30 seconds', () => {
   it('Should get program with many attributes within time threshold', async () => {
     // Arrange
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
-    accessToken = await getAccessToken();
+    const accessToken = await getAccessToken();
+
     // Add 50 attributes
     for (let i = 0; i < 50; i++) {
       const programRegistrationAttribute: ProgramRegistrationAttributeDto = {
@@ -68,6 +72,7 @@ describe('Get program with many attributes within time threshold of 30 seconds',
       accessToken,
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
+
     // Duplicate registrations
     const duplicateRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
@@ -80,11 +85,13 @@ describe('Get program with many attributes within time threshold of 30 seconds',
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Assert
-    // Get program with registrations and validate load time is less than 200ms
+    // Get program with registrations and validate load time
     const startTime = performance.now();
+
     const getProgramResponse = await getProgram(programIdOCW, accessToken);
     const elapsedTime = performance.now() - startTime;
+
     expect(getProgramResponse.statusCode).toBe(HttpStatus.OK);
-    expect(elapsedTime).toBeLessThan(200); // 200 ms = 0.2 seconds
+    expect(elapsedTime).toBeLessThan(maximumProgramLoadTime);
   });
 });
