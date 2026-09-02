@@ -1,8 +1,9 @@
 import { defineConfig } from '@playwright/test';
-import dotenv from 'dotenv';
 import path from 'node:path';
+// eslint-disable-next-line n/no-unsupported-features/node-builtins -- The specific Node.js version in use supports this already.
+import { loadEnvFile } from 'node:process';
 
-dotenv.config({ path: path.resolve(__dirname, '../services/.env') });
+loadEnvFile(path.resolve(__dirname, '../services/.env'));
 
 export default defineConfig({
   tsconfig: './tsconfig.json',
