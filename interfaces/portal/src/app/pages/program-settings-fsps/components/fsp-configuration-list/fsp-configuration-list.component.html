@@ -23,11 +23,13 @@
   }
 
   @if (notAllFspsIntegrated()) {
-    <app-notification-banner
-      [color]="'orange'"
-      [content]="integrationRequiredBannerContent"
-      data-testid="fsp-integration-required-banner"
-    />
+    <div class="mbe-6">
+      <app-notification-banner
+        [color]="'orange'"
+        [content]="integrationRequiredBannerContent"
+        data-testid="fsp-integration-required-banner"
+      />
+    </div>
   }
 
   @if (fspConfigurations.isPending()) {

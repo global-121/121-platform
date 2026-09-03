@@ -1,63 +1,65 @@
 @if (duplicates.isPending() || (duplicates.data() ?? []).length > 0) {
-  <app-notification-banner
-    [color]="duplicates.isPending() ? 'blue' : 'red'"
-    data-testid="duplicates-banner"
-  >
-    <svg-icon
-      src="assets/duplicates.svg"
-      class="me-2 block-7 inline-7"
-    ></svg-icon>
-    @if (duplicates.isPending()) {
-      <strong
-        i18n
-        class="me-auto"
-        >Loading duplicate information...</strong
-      >
-      <i class="pi pi-spinner animate-spin self-center text-xl"></i>
-    } @else {
-      <strong
-        i18n
-        class="me-2"
-        >Duplicated with:</strong
-      >
-      <ul class="me-auto">
-        @for (duplicate of duplicates.data(); track $index) {
-          <li class="ms-6 list-disc text-black">
-            <a
-              [routerLink]="registrationLink(duplicate.registrationId)"
-              class="underline hover:no-underline focus:no-underline"
-              target="_blank"
-            >
-              <ng-container i18n>Reg. #</ng-container
-              >{{ duplicate.registrationProgramId }} -
-              @if (duplicate.isInScope) {
-                {{ duplicate.name }}
-              } @else {
-                <ng-container
-                  >(<span i18n="@@attribute-label-scope">Scope</span> -
-                  {{ duplicate.scope }})</ng-container
-                >
-              }
-              <span class="pi pi-external-link ms-1"></span>
-            </a>
-            @let matchingFieldNames =
-              translatableStringService.commaSeparatedList({
-                values: duplicate.attributeNames,
-              });
-            <span
-              i18n
-              class="ms-1"
-            >
-              (matching fields: {{ matchingFieldNames }})
-            </span>
-          </li>
-        }
-      </ul>
-      <i
-        class="pi pi-info-circle cursor-help self-center text-xl text-black"
-        pTooltip="To handle duplications you can edit the personal information or decline the registration."
-        i18n-pTooltip
-      ></i>
-    }
-  </app-notification-banner>
+  <div class="mbe-6">
+    <app-notification-banner
+      [color]="duplicates.isPending() ? 'blue' : 'red'"
+      data-testid="duplicates-banner"
+    >
+      <svg-icon
+        src="assets/duplicates.svg"
+        class="me-2 block-7 inline-7"
+      ></svg-icon>
+      @if (duplicates.isPending()) {
+        <strong
+          i18n
+          class="me-auto"
+          >Loading duplicate information...</strong
+        >
+        <i class="pi pi-spinner animate-spin self-center text-xl"></i>
+      } @else {
+        <strong
+          i18n
+          class="me-2"
+          >Duplicated with:</strong
+        >
+        <ul class="me-auto">
+          @for (duplicate of duplicates.data(); track $index) {
+            <li class="ms-6 list-disc text-black">
+              <a
+                [routerLink]="registrationLink(duplicate.registrationId)"
+                class="underline hover:no-underline focus:no-underline"
+                target="_blank"
+              >
+                <ng-container i18n>Reg. #</ng-container
+                >{{ duplicate.registrationProgramId }} -
+                @if (duplicate.isInScope) {
+                  {{ duplicate.name }}
+                } @else {
+                  <ng-container
+                    >(<span i18n="@@attribute-label-scope">Scope</span> -
+                    {{ duplicate.scope }})</ng-container
+                  >
+                }
+                <span class="pi pi-external-link ms-1"></span>
+              </a>
+              @let matchingFieldNames =
+                translatableStringService.commaSeparatedList({
+                  values: duplicate.attributeNames,
+                });
+              <span
+                i18n
+                class="ms-1"
+              >
+                (matching fields: {{ matchingFieldNames }})
+              </span>
+            </li>
+          }
+        </ul>
+        <i
+          class="pi pi-info-circle cursor-help self-center text-xl text-black"
+          pTooltip="To handle duplications you can edit the personal information or decline the registration."
+          i18n-pTooltip
+        ></i>
+      }
+    </app-notification-banner>
+  </div>
 }

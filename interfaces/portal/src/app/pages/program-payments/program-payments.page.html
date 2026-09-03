@@ -16,11 +16,13 @@
   </div>
 
   @if (paymentStatus.data()?.inProgress) {
-    <app-notification-banner
-      [color]="'orange'"
-      data-testid="payment-in-progress-banner"
-      [content]="paymentInProgressBannerContent"
-    />
+    <div class="mbe-6">
+      <app-notification-banner
+        [color]="'orange'"
+        data-testid="payment-in-progress-banner"
+        [content]="paymentInProgressBannerContent"
+      />
+    </div>
   }
 
   @if (paymentsSorted()?.length === 0) {

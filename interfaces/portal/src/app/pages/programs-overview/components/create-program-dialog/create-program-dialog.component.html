@@ -124,8 +124,10 @@
 </app-fullscreen-stepper-dialog>
 
 <ng-template #notification>
-  <app-notification-banner
-    [content]="notificationBannerContent"
-    [color]="'blue'"
-  />
+  <div class="mbs-4">
+    <app-notification-banner
+      [content]="notificationBannerContent"
+      [color]="'blue'"
+    />
+  </div>
 </ng-template>
