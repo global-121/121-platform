@@ -40,9 +40,9 @@ export class AxiosCallsService {
         .split(';')[0];
       return accessToken;
     } catch (error) {
-      throw new Error(
-        `Error while extracting access token from cookies: ${error}`,
-      );
+      throw new Error(`Error while extracting access token from cookies.`, {
+        cause: error,
+      });
     }
   }
 }

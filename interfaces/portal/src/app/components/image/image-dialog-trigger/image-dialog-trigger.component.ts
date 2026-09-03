@@ -45,6 +45,7 @@ export class ImageDialogTriggerComponent {
     label: this.isAvailable()
       ? $localize`:@@image-available:Available`
       : $localize`:@@image-not-available:Not available`,
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- The Angular compiler does not recognize this correctly, so we need to assert it explicitly.
     variant: (this.isAvailable() ? 'green' : 'red') as ChipVariant,
   }));
 

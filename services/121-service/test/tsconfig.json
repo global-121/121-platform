@@ -2,14 +2,14 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "allowJs": false,
+    "baseUrl": "./",
     "checkJs": false,
+    "paths": {
+      "@121-service/*": ["../*"]
+    },
     "types": ["node", "jest", "supertest", "Multer"]
   },
   "files": ["../node_modules/jest-extended/types/index.d.ts"],
   "exclude": ["../node_modules", "../dist", "../src/**/*"],
-  "include": ["**/*.ts"],
-  "baseUrl": "./",
-  "paths": {
-    "@121-service/*": ["../*"]
-  }
+  "include": ["**/*.ts"]
 }

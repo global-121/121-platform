@@ -48,11 +48,11 @@ export class RemoveSelectForValidation1707311790028 implements MigrationInterfac
       const name = newPermission as PermissionEnum;
       const permission = new PermissionEntity();
       permission.name = name;
-      let permissionEntity = await permissionsRepository.findOne({
+      const permissionEntity = await permissionsRepository.findOne({
         where: { name: Equal(name) },
       });
       if (!permissionEntity) {
-        permissionEntity = await permissionsRepository.save(permission);
+        await permissionsRepository.save(permission);
       }
 
       // Commenting out because this was causing issues with new entities and legacy migrations

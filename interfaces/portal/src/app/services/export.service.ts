@@ -211,7 +211,9 @@ export class ExportService {
               statusCode: HttpStatusCode.NotFound,
             })
           ) {
-            throw new Error($localize`There is currently no data to export`);
+            throw new Error($localize`There is currently no data to export`, {
+              cause: error,
+            });
           }
           throw error;
         }

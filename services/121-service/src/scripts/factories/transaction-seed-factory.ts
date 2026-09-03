@@ -83,8 +83,7 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
     const findBatchSize = 100000;
     let offset = 0;
     let totalProcessed = 0;
-    let hasMore = true;
-    while (hasMore) {
+    while (true) {
       // Fetch a batch of transactions (excluding the initial one)
       const transactionBatch = await transactionRepo.find({
         where: { payment: { programId: Equal(programId) } },
@@ -98,7 +97,6 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
           ? transactionBatch.filter((t) => t.id !== initialTransaction.id)
           : transactionBatch;
       if (filteredBatch.length === 0) {
-        hasMore = false;
         break;
       }
       const eventsData: DeepPartial<TransactionEventEntity>[] = [];

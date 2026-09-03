@@ -26,6 +26,7 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v7
+
       - name: Set up test files per shard
         id: discover
         run: |
@@ -56,7 +57,7 @@ jobs:
             echo "long_test_4=$LONG_TEST_4"
             echo "long_test_5=$LONG_TEST_5"
             echo "long_test_6=$LONG_TEST_6"
-          } >> $GITHUB_OUTPUT
+          } >> "$GITHUB_OUTPUT"
 
   performance-test-shard:
     runs-on: ubuntu-latest
@@ -85,10 +86,17 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v7
 
+      - name: Set up Node.js version
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: '${{ env.workingDirectory }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.workingDirectory }}/package-lock.json'
+
       - name: Set ENV-variables for test-environment
         run: |
           cp ./services/.env.example services/.env
-          grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
+          grep -v "^#\|^$" services/.env.example >> "$GITHUB_ENV"
 
       - name: Run Services with Docker
         run: |
@@ -111,18 +119,19 @@ jobs:
 
   performance-test-shard-resolution:
     runs-on: ubuntu-slim
-    needs: [performance-test-shard]
+    needs:
+      - performance-test-shard
     if: always()
     steps:
       - name: Check test results - FAILURE
         if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
         run: |
-          echo "Performance tests have failed." >> $GITHUB_STEP_SUMMARY
-          echo "Test results: ${{ toJson(needs.*.result) }}" >> $GITHUB_STEP_SUMMARY
+          echo "Performance tests have failed." >> "$GITHUB_STEP_SUMMARY"
+          echo "Test results: ${{ toJson(needs.*.result) }}" >> "$GITHUB_STEP_SUMMARY"
           exit 1
 
       - name: Check test results - SUCCESS
         if: ${{ !(contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')) }}
         run: |
-          echo "All performance tests have successfully passed." >> $GITHUB_STEP_SUMMARY
-          echo "Test results: ${{ toJson(needs.*.result) }}" >> $GITHUB_STEP_SUMMARY
+          echo "All performance tests have successfully passed." >> "$GITHUB_STEP_SUMMARY"
+          echo "Test results: ${{ toJson(needs.*.result) }}" >> "$GITHUB_STEP_SUMMARY"

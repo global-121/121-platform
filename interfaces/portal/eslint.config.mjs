@@ -1,3 +1,4 @@
+import { fixupPluginRules } from '@eslint/compat';
 import eslint from '@eslint/js';
 import pluginQuery from '@tanstack/eslint-plugin-query';
 import angularEslint from 'angular-eslint';
@@ -72,7 +73,7 @@ export default defineConfig(
       eslintSortClassMembers.configs['flat/recommended'],
     ],
     plugins: {
-      'no-relative-import-paths': eslintPluginNoRelativePaths,
+      'no-relative-import-paths': fixupPluginRules(eslintPluginNoRelativePaths),
       perfectionist: eslintPluginPerfectionist,
       regexp: eslintPluginRegexp,
     },

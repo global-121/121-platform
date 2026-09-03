@@ -1,5 +1,7 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
 
+import type { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
+
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Pipe({
@@ -9,7 +11,7 @@ export class TranslatableStringPipe implements PipeTransform {
   private translatableStringService = inject(TranslatableStringService);
 
   transform(
-    value: null | Record<string, string> | string | undefined,
+    value: null | string | UILanguageTranslation | undefined,
     defaultValue = '',
   ): string {
     const extractedValue = this.translatableStringService.translate(value);

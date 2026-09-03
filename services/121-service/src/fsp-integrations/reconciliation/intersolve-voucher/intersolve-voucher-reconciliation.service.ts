@@ -43,6 +43,7 @@ export class IntersolveVoucherReconciliationService {
       } catch (error) {
         errorVoucherIds.push(voucher.id);
         if (errorVoucherIds.length >= errorCountToThrowOn) {
+          // eslint-disable-next-line preserve-caught-error -- TODO: Decide later if we need the explicit cause-property; For now keep existing/expected behavior.
           throw new Error(
             `${errorVoucherIds.length} errors occurred while updating all balances ${activityDescription} for vouchers: ${errorVoucherIds.join(', ')}. Failing job to prevent excessive API calls.`,
           );
