@@ -65,7 +65,7 @@
     }
   },
   "dependencies": {
-    "@azure/identity": "^4.11.1",
+    "@azure/identity": "^4.13.2",
     "@azure/storage-blob": "^12.33.0",
     "@bwip-js/node": "^4.11.2",
     "@jimp/plugin-print": "^1.6.1",
