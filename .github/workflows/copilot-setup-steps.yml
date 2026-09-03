@@ -70,3 +70,24 @@ jobs:
           grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
           cp interfaces/portal/.env.example interfaces/portal/.env
           grep -v "^#\|^$" interfaces/portal/.env >> $GITHUB_ENV
+
+      - name: Start Services with Docker (in the background)
+        run: |
+          npm run start:services:ci
+
+      - name: Build & serve the Portal (in the background)
+        env:
+          NG_PRODUCTION: true
+          NG_URL_121_SERVICE_API: http://localhost:3000/api
+          NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: false
+        run: |
+          nohup npm run start:portal:e2e > portal.log 2>&1 &
+
+      - name: Install E2E-Tests browser (Chromium)
+        working-directory: './e2e'
+        run: |
+          npx playwright install chromium --with-deps --no-shell
+
+      - name: Wait for all services to be ready
+        run: |
+          npm run wait:services

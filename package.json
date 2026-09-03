@@ -50,6 +50,7 @@
     "fix:portal": "npm run fix --prefix=interfaces/portal/",
     "fix:e2e": "npm run fix --prefix=e2e/",
     "fix:all": "npx npm-run-all --npm-path npm --parallel fix:prettier fix:121-service fix:mock-service fix:portal fix:e2e",
+    "wait:services": "node tools/wait-for-services.mjs",
     "tool:download-logs": "npm run download-logs --prefix=tools/",
     "tool:check-versions": "npm run check-versions --prefix=tools/",
     "prepare": "husky"
