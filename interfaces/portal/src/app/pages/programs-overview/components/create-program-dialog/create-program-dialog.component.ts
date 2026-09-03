@@ -47,6 +47,7 @@ import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { TrackingEvent, TrackingService } from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 @Component({
   selector: 'app-create-program-dialog',
@@ -69,6 +70,8 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
 })
 export class CreateProgramDialogComponent {
   private createProgramTracker: CreateNewProgramTracker | undefined;
+
+  readonly ColorVariant = ColorVariant;
 
   readonly router = inject(Router);
   readonly authService = inject(AuthService);
@@ -242,9 +245,12 @@ export class CreateProgramDialogComponent {
     },
   }));
 
-  notificationBannerContent = {
-    title: $localize`You can update these details at any time in the program settings.`,
-    icon: 'alert' as NotificationBannerIcon,
+  notificationBannerProps = {
+    color: ColorVariant.Blue,
+    content: {
+      title: $localize`You can update these details at any time in the program settings.`,
+      icon: 'alert' as NotificationBannerIcon,
+    },
   };
 
   goBack() {

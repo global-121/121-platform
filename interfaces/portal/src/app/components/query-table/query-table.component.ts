@@ -49,6 +49,7 @@ import {
   TrackingCategory,
   TrackingService,
 } from '~/services/tracking.service';
+import { ColorVariant } from '~/utils/color-variant.enum';
 import { Locale } from '~/utils/locale';
 
 /* eslint-disable sort-class-members/sort-class-members -- Disabling this rule in this file because the class members are grouped logically */
@@ -141,6 +142,8 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly paginatorDropdownAppendTo = input<'body' | 'self' | HTMLElement>(
     'self',
   );
+
+  readonly ColorVariant = ColorVariant;
 
   /**
    * DISPLAY

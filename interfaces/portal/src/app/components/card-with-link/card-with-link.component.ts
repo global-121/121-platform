@@ -10,12 +10,10 @@ import { RouterLink } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { CardModule } from 'primeng/card';
 
-import {
-  ChipVariant,
-  ColoredChipComponent,
-} from '~/components/colored-chip/colored-chip.component';
+import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 @Component({
   selector: 'app-card-with-link',
@@ -39,7 +37,7 @@ export class CardWithLinkComponent {
 
   readonly title = input.required<string>();
   readonly titleColoredChipLabel = input<string>();
-  readonly titleColoredChipColor = input<ChipVariant>('grey');
+  readonly titleColoredChipColor = input(ColorVariant.Grey);
   readonly titleHeadingLevel = input<'2' | '3'>('2');
 
   readonly image = input<string>();

@@ -686,7 +686,7 @@
         <source>Enable scope</source>
       </trans-unit>
       <trans-unit id="3851949706407638075" datatype="html">
-        <source>The system will create registrations with the status <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;&apos;blue&apos;&quot; label=&quot;&apos;New&apos;&quot; i18n-label /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;&apos;blue&apos;&quot; label=&quot;&apos;New&apos;&quot; i18n-label /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/></source>
+        <source>The system will create registrations with the status <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;ColorVariant.Blue&quot; label=&quot;&apos;New&apos;&quot; i18n-label /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;ColorVariant.Blue&quot; label=&quot;&apos;New&apos;&quot; i18n-label /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/></source>
       </trans-unit>
       <trans-unit id="3854227369866764893" datatype="html">
         <source>Registrations per duplicate status</source>

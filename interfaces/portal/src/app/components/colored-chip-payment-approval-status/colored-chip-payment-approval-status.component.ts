@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 @Component({
   selector: 'app-colored-chip-payment-approval-status',
@@ -29,9 +30,9 @@ export class ColoredChipPaymentApprovalStatusComponent {
 
   readonly variant = computed(() => {
     if (this.isPaymentApproved()) {
-      return 'purple';
+      return ColorVariant.Purple;
     }
 
-    return 'orange';
+    return ColorVariant.Orange;
   });
 }

@@ -133,7 +133,7 @@
               @if (approvalStep.approved) {
                 <app-colored-chip
                   [label]="approvalStep.approvedBy!"
-                  variant="grey"
+                  [variant]="ColorVariant.Grey"
                 />
               } @else {
                 @for (
@@ -143,7 +143,7 @@
                 ) {
                   <app-colored-chip
                     [label]="approver"
-                    variant="grey"
+                    [variant]="ColorVariant.Grey"
                   />
                   @if (!lastElement) {
                     <span
@@ -167,7 +167,7 @@
       metricLabel="Total registrations"
       i18n-metricLabel
       [chipIcon]="isPaymentInProgress() ? 'pi pi-spinner' : undefined"
-      [chipVariant]="isPaymentInProgress() ? 'orange' : undefined"
+      [chipVariant]="isPaymentInProgress() ? ColorVariant.Orange : undefined"
       [chipLabel]="chipLabel()"
       i18n-chipLabel="@@inProgressChipLabel"
       [chipTooltip]="chipTooltip()"
@@ -181,7 +181,7 @@
       i18n-metricLabel
       [chipLabel]="successfulPaymentsAmount()"
       chipIcon="pi pi-check-circle"
-      chipVariant="green"
+      [chipVariant]="ColorVariant.Green"
       chipTooltip="Amount of money successfully transferred."
       i18n-chipTooltip
       metricTooltip="The total payment amount is calculated by summing up the transfer values of each included registration added to the payment."

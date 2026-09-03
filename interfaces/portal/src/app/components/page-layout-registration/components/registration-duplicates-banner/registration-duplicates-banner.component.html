@@ -1,7 +1,7 @@
 @if (duplicates.isPending() || (duplicates.data() ?? []).length > 0) {
   <div class="mbe-6">
     <app-notification-banner
-      [color]="duplicates.isPending() ? 'blue' : 'red'"
+      [color]="duplicates.isPending() ? ColorVariant.Blue : ColorVariant.Red"
       data-testid="duplicates-banner"
     >
       <svg-icon
