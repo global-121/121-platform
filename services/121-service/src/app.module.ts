@@ -8,6 +8,7 @@ import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
 import { ActivitiesModule } from '@121-service/src/activities/activities.module';
+import { ActivityInfoModule } from '@121-service/src/activityinfo/activityinfo.module';
 import { AuthModule } from '@121-service/src/auth/auth.module';
 import { THROTTLING_LIMIT_GENERIC } from '@121-service/src/config';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
@@ -107,6 +108,7 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
     RegistrationsUpdateJobsModule,
     IntersolveVisaAccountManagementModule,
     KoboModule,
+    ActivityInfoModule,
   ],
   controllers: [TestController],
   providers: [

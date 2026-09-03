@@ -29,5 +29,5 @@ export type Attribute = Dto<AttributeFrom121Service>;
 
 export type AttributeWithTranslatedLabel = { label: string } & Omit<
   Attribute,
-  'koboLabel' | 'label'
+  'activityInfoLabel' | 'koboLabel' | 'label'
 >;

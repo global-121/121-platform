@@ -30,6 +30,7 @@ export class Attribute {
   public isRequired?: boolean;
   public label?: UILanguageTranslation | null;
   public koboLabel?: UILanguageTranslation | null;
+  public activityInfoLabel?: UILanguageTranslation | null;
   public options?: QuestionOption[] | null;
   public pattern?: string | null;
 }

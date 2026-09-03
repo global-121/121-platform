@@ -5,6 +5,8 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 export interface ProgramRegistrationAttribute {
+  activityInfoFieldId?: string | null;
+  activityInfoLabel?: RegistrationPreferredLanguageTranslation | null;
   duplicateCheck?: boolean;
   editableInPortal?: boolean;
   includeInTransactionExport?: boolean;
