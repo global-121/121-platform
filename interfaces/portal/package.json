@@ -55,7 +55,7 @@
     "@azure/msal-browser": "3.28.0",
     "@microsoft/applicationinsights-web": "^3.4.3",
     "@panzoom/panzoom": "^4.6.2",
-    "@primeuix/themes": "^3.0.0",
+    "@primeuix/themes": "2.0.3",
     "@tanstack/angular-query-experimental": "^5.102.4",
     "angular-mentions": "^1.5.0",
     "angular-svg-icon": "^19.1.1",
