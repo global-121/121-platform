@@ -440,17 +440,38 @@ export class UserService {
     return response;
   }
 
-  public async assignAllAdminUsersToProgram(programId: number): Promise<void> {
+  public async assignUsersToNewProgram({
+    programId,
+    creatingUserId,
+    creatingUserIsAdmin,
+  }: {
+    programId: number;
+    creatingUserId: number;
+    creatingUserIsAdmin: boolean;
+  }): Promise<void> {
     const adminUsers = await this.userRepository.find({
       where: { admin: Equal(true) },
     });
 
     for (const adminUser of adminUsers) {
+      if (adminUser.id === creatingUserId) {
+        continue;
+      }
+
       await this.assignAidworkerToProgram(programId, adminUser.id, {
         roles: [DefaultUserRole.Admin],
         scope: undefined,
       });
     }
+
+    const creatingUserRole = creatingUserIsAdmin
+      ? DefaultUserRole.Admin
+      : DefaultUserRole.ProgramAdmin;
+
+    await this.assignAidworkerToProgram(programId, creatingUserId, {
+      roles: [creatingUserRole],
+      scope: undefined,
+    });
   }
 
   private async checkNoApproverOrThrow({

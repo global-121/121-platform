@@ -24,7 +24,6 @@ import { ProgramAttachmentsService } from '@121-service/src/programs/program-att
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
 
 type ThresholdIdByOldId = Map<number | null, number | null>;
@@ -230,14 +229,11 @@ export class ProgramService {
       await queryRunner.release();
     }
 
-    const role = isAdmin ? DefaultUserRole.Admin : DefaultUserRole.ProgramAdmin;
-
-    await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
-      roles: [role],
-      scope: undefined,
+    await this.userService.assignUsersToNewProgram({
+      programId: newProgram.id,
+      creatingUserId: userId,
+      creatingUserIsAdmin: isAdmin,
     });
-
-    await this.userService.assignAllAdminUsersToProgram(newProgram.id);
 
     return newProgram;
   }
