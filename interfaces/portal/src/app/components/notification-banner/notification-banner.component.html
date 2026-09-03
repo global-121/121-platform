@@ -1,7 +1,7 @@
 @if (content()) {
   <div
-    class="mbe-6 flex items-center rounded-2xl border p-4 inline-full"
-    [ngClass]="[wrapperColorVariantClass(), wrapperClass()]"
+    class="flex items-center rounded-2xl border p-4 inline-full"
+    [ngClass]="wrapperColorVariantClass()"
   >
     @if (content(); as content) {
       @if (iconVariant()) {
@@ -21,9 +21,11 @@
   </div>
 } @else {
   <div
-    class="mbe-6 flex items-center rounded-2xl border p-4 inline-full"
-    [ngClass]="[wrapperColorVariantClass(), wrapperClass()]"
+    class="flex items-center rounded-2xl border p-4 inline-full"
+    [ngClass]="wrapperColorVariantClass()"
   >
     <ng-content></ng-content>
   </div>
 }
+
+<!-- mbe-6  -->

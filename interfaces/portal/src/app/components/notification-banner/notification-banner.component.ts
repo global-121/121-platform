@@ -37,7 +37,6 @@ export type NotificationBannerIcon =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationBannerComponent {
-  readonly wrapperClass = input('');
   readonly content = input<NotificationBannerContent>();
   readonly color = input.required<NotificationBannerColor>();
 
