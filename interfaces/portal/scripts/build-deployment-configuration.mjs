@@ -90,23 +90,26 @@ if (shouldBeEnabled(process.env.USE_IN_TWILIO_FLEX_IFRAME)) {
 }
 
 // Optional: AWS Connect
-if (shouldBeEnabled(process.env.USE_IN_AWS_CONNECT_IFRAME)) {
+if (process.env.AWS_CONNECT_IFRAME_URL) {
   console.info('✅ Allow loading the Portal in an iframe on AWS Connect');
+
+  const awsConnectUrl = new URL(process.env.AWS_CONNECT_IFRAME_URL);
 
   let frameAncestors = contentSecurityPolicy.get('frame-ancestors') ?? [];
   contentSecurityPolicy.set('frame-ancestors', [
     ...frameAncestors,
-    'https://nlrc-poc.my.connect.aws',
+    awsConnectUrl.origin,
   ]);
 }
 
-// Depending on: Using "Azure Entra SSO" AND "Twilio Flex"
+// Depending on: Using "Azure Entra SSO" AND ("Twilio Flex" OR "AWS Connect")
 if (
   shouldBeEnabled(process.env.USE_SSO_AZURE_ENTRA) &&
-  shouldBeEnabled(process.env.USE_IN_TWILIO_FLEX_IFRAME)
+  (shouldBeEnabled(process.env.USE_IN_TWILIO_FLEX_IFRAME) ||
+    process.env.AWS_CONNECT_IFRAME_URL)
 ) {
   console.info(
-    '✅ Allow control of pop-ups for SSO when the Portal is in an iframe on Twilio Flex',
+    '✅ Allow control of pop-ups for SSO when the Portal is in an iframe on Twilio Flex or AWS Connect',
   );
 
   swaConfig.globalHeaders['Cross-Origin-Opener-Policy'] = 'unsafe-none';
