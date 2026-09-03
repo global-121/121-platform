@@ -14,40 +14,42 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { isHighDataVolume } from '@121-service/test/performance/helpers/high-data-volume.helper';
 import { getPaymentResults } from '@121-service/test/performance/helpers/performance.helper';
 import {
   programIdSafaricom,
   registrationSafaricom,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
+// Timing configuration
+const testTimeout = 5_400_000; // 90 minutes
+const maxWaitTimeMs = 240_000; // 4 minutes
+const maxRetryDurationMs = 4_800_000; // 80 minutes
+const delayBetweenAttemptsMs = 5_000; // 5 seconds
+
 // For now we decided to test only Safaricom and IntersolveVisa
 // The reasoning behind this is that IntersolveVisa has the most complex logic and most API calls
 // Safaricom is one of the payment providers which uses callbacks and therefore also has heavier/more complex
 // The other FSPs are simpler or similar to Safaricom so we decided to not test them
 
+const passRate = 10; // 10%
+const transferValue = 25;
+
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131072
-const maxWaitTimeMs = 240_000; // 4 minutes
-const passRate = 10; // 10%
-const maxRetryDurationMs = 4_800_000; // 80 minutes
-const delayBetweenAttemptsMs = 5_000; // 5 seconds
-const transferValue = 25;
-const testTimeout = 5_400_000; // 90 minutes
-const duplicateNumber =
-  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
-  process.env.HIGH_DATA_VOLUME === 'true'
-    ? duplicateHighNumber
-    : duplicateLowNumber;
+
+const duplicateNumber = isHighDataVolume
+  ? duplicateHighNumber
+  : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
-describe('Do payment for 100k registrations with Safaricom within expected range and successful rate threshold', () => {
-  let accessToken: string;
 
+describe('Do payment for 100k registrations with Safaricom within expected range and successful rate threshold', () => {
   it('Setup and do payment', async () => {
     // Arrange
-    const startTime = Date.now();
     await resetDB({ seedScript: SeedScript.safaricomProgram });
-    accessToken = await getAccessToken();
+    const accessToken = await getAccessToken();
+
     // Upload registration
     const importRegistrationResponse = await importRegistrations(
       programIdSafaricom,
@@ -55,6 +57,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
       accessToken,
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
+
     // Change status of this registration to 'included'
     const changeStatusResponse = await changeRegistrationStatus({
       programId: programIdSafaricom,
@@ -62,6 +65,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
       accessToken,
     });
     expect(changeStatusResponse.statusCode).toBe(HttpStatus.ACCEPTED);
+
     // Wait for status change to be processed
     await waitForStatusChangeToComplete({
       programId: programIdSafaricom,
@@ -70,6 +74,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
       maxWaitTimeMs,
       accessToken,
     });
+
     // Duplicate registration to be more than 100k
     const duplicateRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
@@ -89,6 +94,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
       accessToken,
     });
     expect(doPaymentResponse.statusCode).toBe(HttpStatus.CREATED);
+
     // Assert
     // Check payment results have at least 10% success rate within 80 minutes
     const paymentResults = await getPaymentResults({
@@ -102,7 +108,5 @@ describe('Do payment for 100k registrations with Safaricom within expected range
       verbose: true,
     });
     expect(paymentResults.success).toBe(true);
-    const elapsedTime = Date.now() - startTime;
-    expect(elapsedTime).toBeLessThan(testTimeout);
   });
 });

@@ -9,19 +9,21 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { isHighDataVolume } from '@121-service/test/performance/helpers/high-data-volume.helper';
 import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
+// Timing configuration
+const testTimeout = 600_000; // Overall test timeout to prevent hanging, 10 minutes
+const maximumImportTime = isHighDataVolume ? 480_000 : 5_000; // Performance assertion limit for import operation, 8 minutes / 5 seconds
+
+// Performance test configuration
 const csvFilePath =
   './test-registration-data/test-registrations-westeros-1000.csv';
-const testTimeout = 600_000; // 10 minutes
-
-// eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
-const isHighDataVolume = process.env.HIGH_DATA_VOLUME === 'true';
 const registrationCount = isHighDataVolume ? 1000 : 10;
 
 jest.setTimeout(testTimeout);
+
 describe(`Import ${registrationCount} registrations`, () => {
-  let accessToken: string;
   let tempCsvPath: string | null = null;
 
   afterAll(() => {
@@ -34,7 +36,7 @@ describe(`Import ${registrationCount} registrations`, () => {
   it(`Should import ${registrationCount} registrations with successful status`, async () => {
     // Arrange
     await resetDB({ seedScript: SeedScript.testMultiple });
-    accessToken = await getAccessToken();
+    const accessToken = await getAccessToken();
 
     let importPath = csvFilePath;
 
@@ -54,13 +56,17 @@ describe(`Import ${registrationCount} registrations`, () => {
       importPath = tempCsvPath;
     }
 
-    // Assert
-    // Import registrations
+    // Act
+    const startTime = performance.now();
     const registrationImportResponse = await importRegistrationsCSV(
       programIdPV,
       importPath,
       accessToken,
     );
+    const elapsedTime = performance.now() - startTime;
+
+    // Assert
     expect(registrationImportResponse.statusCode).toBe(HttpStatus.CREATED);
+    expect(elapsedTime).toBeLessThan(maximumImportTime);
   });
 });

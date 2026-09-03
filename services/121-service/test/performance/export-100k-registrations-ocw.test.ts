@@ -12,27 +12,28 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { calculateMilliseconds } from '@121-service/test/performance/helpers/performance.helper';
+import { isHighDataVolume } from '@121-service/test/performance/helpers/high-data-volume.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
+// Timing configuration
+const testTimeout = 300_000; // Overall test timeout to prevent hanging, 5 minutes
+const maximumExportTime = 120_000; // Performance assertion limit for export operation, 2 minutes
+
+// Performance test configuration
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131072
-const testTimeout = calculateMilliseconds({ minutes: 5 }); // Overall test timeout to prevent hanging
-const maximumExportTime = calculateMilliseconds({ minutes: 2.5 }); // Performance assertion limit for export operation
-const duplicateNumber =
-  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
-  process.env.HIGH_DATA_VOLUME === 'true'
-    ? duplicateHighNumber
-    : duplicateLowNumber;
+
+const duplicateNumber = isHighDataVolume
+  ? duplicateHighNumber
+  : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
-
-let accessToken: string;
 
 it('Export 100K+ registrations', async () => {
   // Arrange
   await resetDB({ seedScript: SeedScript.nlrcMultiple });
-  accessToken = await getAccessToken();
+  const accessToken = await getAccessToken();
+
   // Upload registration
   const importRegistrationResponse = await importRegistrations(
     programIdOCW,
@@ -55,6 +56,7 @@ it('Export 100K+ registrations', async () => {
 
   // Act - Start timer here to measure only export performance
   const startTime = performance.now();
+
   // Export registrations
   const exportResponse = await exportAllRegistrations(
     programIdOCW,
@@ -70,6 +72,7 @@ it('Export 100K+ registrations', async () => {
   expect(exportResponse.body.data.length).toBeGreaterThan(
     expectedMinimumNumberOfRegistrations,
   );
+
   const elapsedTime = performance.now() - startTime;
   expect(elapsedTime).toBeLessThan(maximumExportTime);
 });
