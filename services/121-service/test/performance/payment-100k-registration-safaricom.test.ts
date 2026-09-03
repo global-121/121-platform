@@ -83,6 +83,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
         body: {
           secret: env.RESET_SECRET,
         },
+        skipIntroduceDuplicates: true,
       });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
