@@ -13,13 +13,13 @@ module.exports = {
   moduleFileExtensions: ['js', 'ts'],
   transform: {
     '^.+\\.ts?$': ['ts-jest', { tsconfig: '<rootDir>/test/tsconfig.json' }],
-    'node_modules/(@t3-oss|uuid|openid-client|oauth4webapi|jose)/.+[.]js$': [
+    'node_modules/(@t3-oss|uuid|openid-client|oauth4webapi|jose|sanitize-html|htmlparser2|entities|domhandler|domutils|domelementtype|dom-serializer)/.+[.]js$': [
       'ts-jest',
       { useESM: true },
     ],
   },
   transformIgnorePatterns: [
-    'node_modules/(?!@t3-oss|uuid|openid-client|oauth4webapi|jose)',
+    'node_modules/(?!@t3-oss|uuid|openid-client|oauth4webapi|jose|sanitize-html|htmlparser2|entities|domhandler|domutils|domelementtype|dom-serializer)',
   ],
   testTimeout: 30_000,
   randomize: true,
