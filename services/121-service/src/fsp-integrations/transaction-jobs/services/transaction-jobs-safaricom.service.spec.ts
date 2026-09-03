@@ -44,7 +44,7 @@ describe('TransactionJobsSafaricomService', () => {
     jest.spyOn(transactionsService, 'saveProgress').mockImplementation();
     jest
       .spyOn(safaricomTransferScopedRepository, 'findOne')
-      .mockResolvedValue(undefined);
+      .mockResolvedValue(null);
     jest
       .spyOn(safaricomTransferScopedRepository, 'update')
       .mockResolvedValue({} as UpdateResult);

@@ -104,7 +104,11 @@ describe('PaymentsReportingService - getTransactions', () => {
       RegistrationViewsMapper,
       'replaceDropdownValuesWithEnglishLabel',
     );
-    jest.spyOn(paymentRepository, 'findOne').mockResolvedValue({});
+    jest
+      .spyOn(paymentRepository, 'findOne')
+      .mockResolvedValue(
+        {} as Awaited<ReturnType<PaymentRepository['findOne']>>,
+      );
     jest.spyOn(programRepository, 'findOneOrFail').mockResolvedValue({
       enableScope: true,
     } as any);

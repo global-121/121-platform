@@ -6,13 +6,13 @@ import {
   ObjectLiteral,
   Repository,
 } from 'typeorm';
-import { FindReturnType } from 'typeorm/find-options/FindReturnType';
 
 import {
   requestHasUser,
   ScopedQueryBuilder,
 } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { FindReturnType } from '@121-service/src/shared/types/find-return.type';
 import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
 
 export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {

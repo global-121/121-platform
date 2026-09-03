@@ -198,10 +198,11 @@ describe('MessageQueuesService', () => {
           programId: 2,
           created: new Date(),
           updated: new Date(),
+          contentSid: null,
           isWhatsappTemplate: false,
           isSendMessageTemplate: true,
           id: 1,
-        }),
+        } as Awaited<ReturnType<Repository<MessageTemplateEntity>['findOne']>>),
       );
 
       // Arrange
