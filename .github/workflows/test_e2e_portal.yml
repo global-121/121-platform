@@ -88,7 +88,8 @@ jobs:
       - lint-code
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
     strategy:
-      fail-fast: false
+      # ONLY on the merge-queue, cancel test-runs that will not 'help' the PR get merged; Preventing (some) useless runs.
+      fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
         shard: ['1', '2', '3', '4', '5', '6']
         shardCount: ['6']
