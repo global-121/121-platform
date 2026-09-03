@@ -59,7 +59,7 @@ export class ImportReconciliationDataComponent {
 
   downloadReconciliationTemplatesMutation = injectMutation(() => ({
     mutationFn: () =>
-      this.queryClient.fetchQuery(
+      this.queryClient.query(
         this.paymentApiService.getReconciliationDataTemplates(this.programId)(),
       ),
     onSuccess: (templates) => {

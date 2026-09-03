@@ -79,7 +79,7 @@ export class MessagingService {
       return sendMessageData.customMessage;
     }
 
-    const templates = await this.queryClient.fetchQuery(
+    const templates = await this.queryClient.query(
       this.notificationApiService.getMessageTemplates(programId)(),
     );
 
@@ -103,7 +103,7 @@ export class MessagingService {
       return '';
     }
 
-    const placeholders = await this.queryClient.fetchQuery(
+    const placeholders = await this.queryClient.query(
       this.getMessagePlaceholders(programId)(),
     );
 
@@ -135,7 +135,7 @@ export class MessagingService {
     type?: string;
     programId: Signal<number | string>;
   }) {
-    const templates = await this.queryClient.fetchQuery(
+    const templates = await this.queryClient.query(
       this.notificationApiService.getMessageTemplates(programId)(),
     );
     return templates.find((template) => template.type === type);
@@ -148,7 +148,7 @@ export class MessagingService {
     status: RegistrationStatusEnum;
     programId: Signal<number | string>;
   }): Promise<string | undefined> {
-    const templates = await this.queryClient.fetchQuery(
+    const templates = await this.queryClient.query(
       this.notificationApiService.getMessageTemplates(programId)(),
     );
     return templates.find((template) => template.type === status.toLowerCase())

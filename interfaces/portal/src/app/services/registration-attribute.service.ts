@@ -227,7 +227,7 @@ export class RegistrationAttributeService {
     program: Program,
     registration?: Registration,
   ): Promise<NormalizedRegistrationAttribute[]> {
-    const programAttributes = await this.queryClient.fetchQuery(
+    const programAttributes = await this.queryClient.query(
       this.programApiService.getProgramAttributes({
         programId: signal(program.id),
         includeProgramRegistrationAttributes: true,
@@ -283,14 +283,14 @@ export class RegistrationAttributeService {
           RegistrationAttributeTypes.text,
         ],
         queryFn: async () => {
-          const program = await this.queryClient.fetchQuery(
+          const program = await this.queryClient.query(
             this.programApiService.getProgram(programId)(),
           );
 
           let registration: Registration | undefined;
 
           if (registrationId) {
-            registration = await this.queryClient.fetchQuery(
+            registration = await this.queryClient.query(
               this.registrationApiService.getRegistrationById(
                 programId,
                 registrationId,

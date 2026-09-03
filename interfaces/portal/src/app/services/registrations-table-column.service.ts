@@ -76,11 +76,11 @@ export class RegistrationsTableColumnService {
       queryOptions<QueryTableColumn<Registration>[]>({
         queryKey: ['RegistrationsTableColumns', programId().toString()],
         queryFn: async () => {
-          const program = await this.queryClient.fetchQuery(
+          const program = await this.queryClient.query(
             this.programApiService.getProgram(programId)(),
           );
 
-          const registrationAttributes = await this.queryClient.fetchQuery(
+          const registrationAttributes = await this.queryClient.query(
             this.registrationAttributeService.getRegistrationAttributes(
               signal({
                 programId,

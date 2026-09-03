@@ -67,7 +67,7 @@ describe('AuthService - hasDeprecatedPermissions', () => {
       getCurrent: vi.fn().mockName('UserApiService.getCurrent'),
     } as unknown as UserApiService);
     mockQueryClient = vi.mocked({
-      fetchQuery: vi.fn().mockName('QueryClient.fetchQuery'),
+      query: vi.fn().mockName('QueryClient.query'),
     } as unknown as QueryClient);
 
     // eslint-disable-next-line @typescript-eslint/no-deprecated -- Did not manage to get test working otherwise
@@ -180,7 +180,7 @@ describe('AuthService - permission checks', () => {
       getCurrent: vi.fn().mockName('UserApiService.getCurrent'),
     } as unknown as UserApiService);
     mockQueryClient = vi.mocked({
-      fetchQuery: vi.fn().mockName('QueryClient.fetchQuery'),
+      query: vi.fn().mockName('QueryClient.query'),
     } as unknown as QueryClient);
 
     // eslint-disable-next-line @typescript-eslint/no-deprecated -- Did not manage to get test working otherwise

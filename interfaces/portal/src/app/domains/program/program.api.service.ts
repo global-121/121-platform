@@ -483,7 +483,7 @@ export class ProgramApiService extends DomainApiService {
         queryFn: async () => {
           const programs = await Promise.all(
             programIds.map((programId) =>
-              this.queryClient.fetchQuery<Program>(
+              this.queryClient.query<Program>(
                 this.getProgram(signal(programId))(),
               ),
             ),

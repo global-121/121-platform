@@ -152,7 +152,7 @@ export class MsalAuthStrategy implements IAuthStrategy {
 
   async refreshUserAndNavigate(nextPageUrl: string) {
     try {
-      const currentUser = await this.queryClient.fetchQuery(
+      const currentUser = await this.queryClient.query(
         this.userApiService.getCurrent()(),
       );
       setUserInLocalStorage(currentUser.user);
