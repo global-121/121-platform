@@ -100,10 +100,7 @@ describe('PaymentsReportingService - getTransactions', () => {
     jest.spyOn<any, any>(service, 'getTransactions');
     jest.spyOn(paymentsHelperService, 'getSelectForExport');
     jest.spyOn(programRegistrationAttributeRepository, 'getDropdownAttributes');
-    jest.spyOn(
-      RegistrationViewsMapper,
-      'replaceDropdownValuesWithEnglishLabel',
-    );
+    jest.spyOn(RegistrationViewsMapper, 'replaceDropdownValuesWithLabel');
     jest.spyOn(paymentRepository, 'findOne').mockResolvedValue({});
     jest.spyOn(programRepository, 'findOneOrFail').mockResolvedValue({
       enableScope: true,
@@ -218,7 +215,7 @@ describe('PaymentsReportingService - getTransactions', () => {
         programRegistrationAttributeRepository.getDropdownAttributes as jest.Mock
       ).mockResolvedValue(dropdownAttributes);
       (
-        RegistrationViewsMapper.replaceDropdownValuesWithEnglishLabel as jest.Mock
+        RegistrationViewsMapper.replaceDropdownValuesWithLabel as jest.Mock
       ).mockReturnValue(replacedRows);
 
       (
