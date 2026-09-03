@@ -5,15 +5,22 @@ import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-cod
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import programCbe from '@121-service/src/seed-data/program/program-cbe.json';
 import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import {
   getProgram,
   postProgram,
 } from '@121-service/test/helpers/program.helper';
 import {
+  getAllUsersByProgramId,
+  updateUser,
+} from '@121-service/test/helpers/user.helper';
+import {
   cleanProgramForAssertions,
+  createUser,
   getAccessToken,
   logoutUser,
   resetDB,
+  setUserPassword,
 } from '@121-service/test/helpers/utility.helper';
 
 describe('Create program', () => {
@@ -243,6 +250,73 @@ describe('Create program', () => {
 
     // A new program should not have been created
     expect(getProgramResponse.statusCode).toBe(HttpStatus.NOT_FOUND);
+  });
+
+  it('should assign existing admin users to a newly created program, even when the creator is not an admin', async () => {
+    // Arrange: create an organization-admin (non-admin) user who will create the program
+    const organizationAdminUsername = 'org-admin-creator@example.org';
+    const organizationAdminPassword = 'org-admin-creator-password';
+
+    await createUser({
+      username: organizationAdminUsername,
+      displayName: 'Org Admin Creator',
+      adminAccessToken: accessToken,
+    });
+    const { id: organizationAdminUserId } = await setUserPassword({
+      username: organizationAdminUsername,
+      newPassword: organizationAdminPassword,
+      adminAccessToken: accessToken,
+    });
+    await updateUser({
+      userId: organizationAdminUserId,
+      isOrganizationAdmin: true,
+      accessToken,
+    });
+
+    const organizationAdminAccessToken = await getAccessToken(
+      organizationAdminUsername,
+      organizationAdminPassword,
+    );
+
+    const minimalProgram = {
+      titlePortal: { en: 'Program created by organization admin' },
+      currency: CurrencyCode.EUR,
+    };
+
+    // Act
+    const createProgramResponse = await postProgram(
+      minimalProgram,
+      organizationAdminAccessToken,
+    );
+
+    // Assert
+    expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
+    const programId = createProgramResponse.body.id;
+
+    const programUsersResponse = await getAllUsersByProgramId({
+      accessToken,
+      programId,
+    });
+    const programUsers: {
+      username: string;
+      roles: { role: string }[];
+    }[] = programUsersResponse.body;
+
+    const seedAdmin = programUsers.find(
+      (user) => user.username === env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+    );
+    expect(seedAdmin).toBeDefined();
+    expect(seedAdmin?.roles.map((role) => role.role)).toContain(
+      DefaultUserRole.Admin,
+    );
+
+    const creator = programUsers.find(
+      (user) => user.username === organizationAdminUsername,
+    );
+    expect(creator).toBeDefined();
+    expect(creator?.roles.map((role) => role.role)).toContain(
+      DefaultUserRole.ProgramAdmin,
+    );
   });
 
   it.each([

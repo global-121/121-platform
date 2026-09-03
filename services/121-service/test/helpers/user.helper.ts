@@ -78,3 +78,23 @@ export async function getCurrentUser({
 }): Promise<request.Response> {
   return await getServer().get('/users/current').set('Cookie', [accessToken]);
 }
+
+export async function updateUser({
+  userId,
+  isOrganizationAdmin,
+  displayName,
+  accessToken,
+}: {
+  userId: number;
+  isOrganizationAdmin?: boolean;
+  displayName?: string;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .patch(`/users/${userId}`)
+    .set('Cookie', [accessToken])
+    .send({
+      isOrganizationAdmin,
+      displayName,
+    });
+}
