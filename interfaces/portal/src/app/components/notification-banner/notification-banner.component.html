@@ -1,8 +1,8 @@
-@if (content()) {
-  <div
-    class="flex items-center rounded-2xl border p-4 inline-full"
-    [ngClass]="wrapperColorVariantClass()"
-  >
+<div
+  class="flex items-center rounded-2xl border p-4 inline-full"
+  [ngClass]="wrapperColorVariantClass()"
+>
+  @if (content()) {
     @if (content(); as content) {
       @if (iconVariant()) {
         <span
@@ -18,14 +18,7 @@
         }
       </div>
     }
-  </div>
-} @else {
-  <div
-    class="flex items-center rounded-2xl border p-4 inline-full"
-    [ngClass]="wrapperColorVariantClass()"
-  >
+  } @else {
     <ng-content></ng-content>
-  </div>
-}
-
-<!-- mbe-6  -->
+  }
+</div>
