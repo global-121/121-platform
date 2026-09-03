@@ -47,7 +47,7 @@ export class ImportRegistrationsComponent {
 
   downloadImportRegistrationsTemplateMutation = injectMutation(() => ({
     mutationFn: () =>
-      this.queryClient.fetchQuery(
+      this.queryClient.query(
         this.registrationApiService.getImportTemplate(this.programId)(),
       ),
     onSuccess: (csvContents) => {

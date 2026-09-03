@@ -3,8 +3,8 @@ import { inject, Injectable, Signal } from '@angular/core';
 
 import {
   CreateMutationOptions,
-  FetchQueryOptions,
   QueryClient,
+  QueryExecuteOptions,
 } from '@tanstack/angular-query-experimental';
 import { addDays } from 'date-fns';
 
@@ -104,7 +104,7 @@ export class ExportService {
       mutationFn: async () => {
         this.showStartExportToast(toastService);
 
-        return await this.queryClient.fetchQuery(
+        return await this.queryClient.query(
           this.programApiService.getCbeAccountsReport(programId)(),
         );
       },
@@ -121,7 +121,7 @@ export class ExportService {
     return {
       mutationFn: async () => {
         this.showStartExportToast(toastService);
-        return await this.queryClient.fetchQuery(
+        return await this.queryClient.query(
           this.programApiService.getCooperativeBankOfOromiaAccountsReport(
             programId,
           )(),
@@ -175,7 +175,7 @@ export class ExportService {
           format,
         });
 
-        let query: FetchQueryOptions<Blob>;
+        let query: QueryExecuteOptions<Blob>;
 
         switch (type) {
           case 'payments':
@@ -199,7 +199,7 @@ export class ExportService {
         }
 
         try {
-          const file = await this.queryClient.fetchQuery(query);
+          const file = await this.queryClient.query(query);
           return {
             file,
             filename: ExportService.toExportFileName(filename ?? type, format),
@@ -234,7 +234,7 @@ export class ExportService {
       mutationFn: async ({ paymentId }) => {
         this.showStartExportToast(toastService);
 
-        const exportResult = await this.queryClient.fetchQuery(
+        const exportResult = await this.queryClient.query(
           this.paymentApiService.exportFspInstructions({
             programId,
             paymentId,
@@ -266,7 +266,7 @@ export class ExportService {
       mutationFn: async () => {
         this.showStartExportToast(toastService);
 
-        return await this.queryClient.fetchQuery(
+        return await this.queryClient.query(
           this.intersolveVisaApiService.getRefundedDebitCards(programId)(),
         );
       },

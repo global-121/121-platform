@@ -28,7 +28,7 @@ export const foundResourceGuard: (
 
     try {
       if (resourceType === 'registration') {
-        const registration = await queryClient.fetchQuery(
+        const registration = await queryClient.query(
           registrationApiService.getRegistrationById(
             signal(route.params.programId),
             signal(route.params.registrationId),
@@ -37,7 +37,7 @@ export const foundResourceGuard: (
 
         foundResource = !!registration;
       } else if (resourceType === 'payment') {
-        const payments = await queryClient.fetchQuery({
+        const payments = await queryClient.query({
           ...paymentApiService.getPaymentAggregationsSummaries(
             signal(route.params.programId),
           )(),
@@ -49,7 +49,7 @@ export const foundResourceGuard: (
             payment.paymentId === parseInt(route.params.paymentId as string),
         );
       } else {
-        const program = await queryClient.fetchQuery(
+        const program = await queryClient.query(
           programApiService.getProgram(signal(route.params.programId))(),
         );
 

@@ -325,7 +325,7 @@ export class AuthService {
 
   public async refreshUserPermissions() {
     const updatedUserPermissions = (
-      await this.queryClient.fetchQuery(this.userApiService.getCurrent()())
+      await this.queryClient.query(this.userApiService.getCurrent()())
     ).user.permissions;
 
     setUserInLocalStorage({
