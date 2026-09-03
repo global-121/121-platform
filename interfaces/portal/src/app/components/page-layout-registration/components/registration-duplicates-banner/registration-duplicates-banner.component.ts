@@ -14,6 +14,7 @@ import { NotificationBannerComponent } from '~/components/notification-banner/no
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { registrationLink } from '~/domains/registration/registration.helper';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 @Component({
   selector: 'app-registration-duplicates-banner',
@@ -34,6 +35,8 @@ export class RegistrationDuplicatesBannerComponent {
 
   readonly programId = input.required<string>();
   readonly registrationReferenceId = input<string>();
+
+  readonly ColorVariant = ColorVariant;
 
   duplicates = injectQuery(() => ({
     ...this.registrationApiService.getDuplicates({

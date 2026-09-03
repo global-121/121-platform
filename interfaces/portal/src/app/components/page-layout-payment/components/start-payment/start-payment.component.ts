@@ -18,6 +18,7 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 @Component({
   selector: 'app-start-payment',
@@ -65,7 +66,7 @@ export class StartPaymentComponent {
       label: $localize`Total registrations`,
       type: 'text',
       chipLabel: this.transactionCount(),
-      chipVariant: 'blue',
+      chipVariant: ColorVariant.Blue,
     },
     {
       label: $localize`Total amount`,

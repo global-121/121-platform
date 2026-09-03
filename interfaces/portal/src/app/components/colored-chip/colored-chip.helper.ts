@@ -4,7 +4,6 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
-import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
 import {
   VISA_CARD_ORDER_STATUS_LABELS,
   VISA_CARD_STATUS_LABELS,
@@ -23,10 +22,11 @@ import {
   REGISTRATION_STATUS_LABELS,
 } from '~/domains/registration/registration.helper';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 export interface ChipData {
   chipLabel: string;
-  chipVariant: ChipVariant;
+  chipVariant: ColorVariant;
 }
 
 const mapValueToChipData = <Enum extends string>({
@@ -36,11 +36,11 @@ const mapValueToChipData = <Enum extends string>({
 }: {
   value: Enum | null | undefined;
   labels: Record<NonNullable<Enum>, string>;
-  chipVariants: Record<NonNullable<Enum>, ChipVariant>;
+  chipVariants: Record<NonNullable<Enum>, ColorVariant>;
 }): ChipData => {
   if (!value) {
     return {
-      chipVariant: 'grey',
+      chipVariant: ColorVariant.Grey,
       chipLabel: $localize`:@@generic-not-available:Not available`,
     };
   }
@@ -58,13 +58,13 @@ export const getChipDataByRegistrationStatus = (
     value: status,
     labels: REGISTRATION_STATUS_LABELS,
     chipVariants: {
-      [RegistrationStatusEnum.included]: 'green',
-      [RegistrationStatusEnum.new]: 'blue',
-      [RegistrationStatusEnum.validated]: 'yellow',
-      [RegistrationStatusEnum.declined]: 'red',
-      [RegistrationStatusEnum.completed]: 'purple',
-      [RegistrationStatusEnum.deleted]: 'red',
-      [RegistrationStatusEnum.paused]: 'orange',
+      [RegistrationStatusEnum.included]: ColorVariant.Green,
+      [RegistrationStatusEnum.new]: ColorVariant.Blue,
+      [RegistrationStatusEnum.validated]: ColorVariant.Yellow,
+      [RegistrationStatusEnum.declined]: ColorVariant.Red,
+      [RegistrationStatusEnum.completed]: ColorVariant.Purple,
+      [RegistrationStatusEnum.deleted]: ColorVariant.Red,
+      [RegistrationStatusEnum.paused]: ColorVariant.Orange,
     },
   });
 
@@ -75,11 +75,11 @@ export const getChipDataByTransactionStatus = (
     value: status,
     labels: TRANSACTION_STATUS_LABELS,
     chipVariants: {
-      [TransactionStatusEnum.pendingApproval]: 'orange',
-      [TransactionStatusEnum.approved]: 'purple',
-      [TransactionStatusEnum.waiting]: 'blue',
-      [TransactionStatusEnum.error]: 'red',
-      [TransactionStatusEnum.success]: 'green',
+      [TransactionStatusEnum.pendingApproval]: ColorVariant.Orange,
+      [TransactionStatusEnum.approved]: ColorVariant.Purple,
+      [TransactionStatusEnum.waiting]: ColorVariant.Blue,
+      [TransactionStatusEnum.error]: ColorVariant.Red,
+      [TransactionStatusEnum.success]: ColorVariant.Green,
     },
   });
 
@@ -88,11 +88,11 @@ export const getChipDataByTwilioMessageStatus = (status: string): ChipData =>
     value: convertTwilioMessageStatusToMessageStatus(status),
     labels: MESSAGE_STATUS_LABELS,
     chipVariants: {
-      [MessageStatus.delivered]: 'green',
-      [MessageStatus.read]: 'green',
-      [MessageStatus.failed]: 'red',
-      [MessageStatus.sent]: 'blue',
-      [MessageStatus.unknown]: 'blue',
+      [MessageStatus.delivered]: ColorVariant.Green,
+      [MessageStatus.read]: ColorVariant.Green,
+      [MessageStatus.failed]: ColorVariant.Red,
+      [MessageStatus.sent]: ColorVariant.Blue,
+      [MessageStatus.unknown]: ColorVariant.Blue,
     },
   });
 
@@ -103,15 +103,15 @@ export const getChipDataByVisaCardStatus = (
     value: status,
     labels: VISA_CARD_STATUS_LABELS,
     chipVariants: {
-      [VisaCard121Status.Unknown]: 'grey',
-      [VisaCard121Status.Active]: 'green',
-      [VisaCard121Status.Issued]: 'blue',
-      [VisaCard121Status.Substituted]: 'red',
-      [VisaCard121Status.Blocked]: 'grey',
-      [VisaCard121Status.Closed]: 'grey',
-      [VisaCard121Status.SuspectedFraud]: 'red',
-      [VisaCard121Status.CardDataMissing]: 'orange',
-      [VisaCard121Status.Paused]: 'orange',
+      [VisaCard121Status.Unknown]: ColorVariant.Grey,
+      [VisaCard121Status.Active]: ColorVariant.Green,
+      [VisaCard121Status.Issued]: ColorVariant.Blue,
+      [VisaCard121Status.Substituted]: ColorVariant.Red,
+      [VisaCard121Status.Blocked]: ColorVariant.Grey,
+      [VisaCard121Status.Closed]: ColorVariant.Grey,
+      [VisaCard121Status.SuspectedFraud]: ColorVariant.Red,
+      [VisaCard121Status.CardDataMissing]: ColorVariant.Orange,
+      [VisaCard121Status.Paused]: ColorVariant.Orange,
     },
   });
 
@@ -122,8 +122,8 @@ export const getChipDataByDuplicateStatus = (
     value: status,
     labels: DUPLICATE_STATUS_LABELS,
     chipVariants: {
-      [DuplicateStatus.unique]: 'green',
-      [DuplicateStatus.duplicate]: 'red',
+      [DuplicateStatus.unique]: ColorVariant.Green,
+      [DuplicateStatus.duplicate]: ColorVariant.Red,
     },
   });
 
@@ -134,9 +134,12 @@ export const getChipDataBySubmissionsKey = (
     value: status,
     labels: SUBMISSION_RESULT_LABELS,
     chipVariants: {
-      [ImportExistingSubmissionsResultKey.numberOfSubmissionsFailed]: 'red',
-      [ImportExistingSubmissionsResultKey.numberOfSubmissionsImported]: 'green',
-      [ImportExistingSubmissionsResultKey.numberOfSubmissionsSkipped]: 'orange',
+      [ImportExistingSubmissionsResultKey.numberOfSubmissionsFailed]:
+        ColorVariant.Red,
+      [ImportExistingSubmissionsResultKey.numberOfSubmissionsImported]:
+        ColorVariant.Green,
+      [ImportExistingSubmissionsResultKey.numberOfSubmissionsSkipped]:
+        ColorVariant.Orange,
     },
   });
 
@@ -147,7 +150,7 @@ export const getChipDataByVisaCardOrderStatus = (
     value: status,
     labels: VISA_CARD_ORDER_STATUS_LABELS,
     chipVariants: {
-      [VisaCardOrderStatus.Processing]: 'yellow',
-      [VisaCardOrderStatus.Completed]: 'green',
+      [VisaCardOrderStatus.Processing]: ColorVariant.Yellow,
+      [VisaCardOrderStatus.Completed]: ColorVariant.Green,
     },
   });

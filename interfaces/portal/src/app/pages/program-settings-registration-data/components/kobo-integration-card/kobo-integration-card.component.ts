@@ -29,6 +29,7 @@ import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-
 import { KoboIntegrationErrorDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-integration-error-dialog/kobo-integration-error-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 @Component({
   selector: 'app-kobo-integration-card',
@@ -52,6 +53,7 @@ export class KoboIntegrationCardComponent {
   private readonly toastService = inject(ToastService);
 
   readonly koboRefreshErrors = signal<KoboValidationError[]>([]);
+  readonly ColorVariant = ColorVariant;
 
   readonly koboIntegrationErrorDialog =
     viewChild.required<KoboIntegrationErrorDialogComponent>(

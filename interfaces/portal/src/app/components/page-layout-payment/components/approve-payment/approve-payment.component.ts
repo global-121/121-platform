@@ -26,6 +26,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 type ApprovePaymentFormGroup =
   (typeof ApprovePaymentComponent)['prototype']['formGroup'];
@@ -90,7 +91,7 @@ export class ApprovePaymentComponent {
       label: $localize`Approvals`,
       type: 'text',
       chipLabel: this.approvedBadgeLabel(),
-      chipVariant: 'orange',
+      chipVariant: ColorVariant.Orange,
     },
     {
       label: $localize`Financial Service Provider(s)`,
@@ -101,7 +102,7 @@ export class ApprovePaymentComponent {
       label: $localize`Total registrations`,
       type: 'text',
       chipLabel: this.transactionCount(),
-      chipVariant: 'blue',
+      chipVariant: ColorVariant.Blue,
     },
     {
       label: $localize`Total amount`,
