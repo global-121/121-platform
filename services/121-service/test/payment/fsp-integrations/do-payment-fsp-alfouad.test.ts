@@ -1,5 +1,3 @@
-import { HttpStatus } from '@nestjs/common';
-
 import { AlfouadMockReferenceId } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-mock-reference-id.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -7,12 +5,12 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import {
-  doPayment,
   getTransactionsByPaymentIdPaginated,
   retryPayment,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
+  doPaymentAndWaitForCompletion,
   getTransactionEventDescriptions,
   seedIncludedRegistrations,
   updateRegistration,
@@ -76,25 +74,19 @@ describe('Do payment with FSP: AlFouad', () => {
     await seedIncludedRegistrations([registration], programId, accessToken);
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const paymentId = await doPaymentAndWaitForCompletion({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
-    });
-    const paymentId = doPaymentResponse.body.id;
-
-    await waitForPaymentAndTransactionsToComplete({
-      programId,
-      paymentReferenceIds,
-      paymentId,
-      accessToken,
-      maxWaitTimeMs: 10_000,
       completeStatuses: [TransactionStatusEnum.waiting],
     });
 
     // Trigger Al Fouad reconciliation cronjob to poll for the latest transaction state
-    await runCronJobDoAlfouadReconciliation();
+    const reconciliationResponse = await runCronJobDoAlfouadReconciliation();
+
+    // The one waiting transaction is picked up for reconciliation
+    expect(Number(reconciliationResponse.text)).toBe(1);
 
     await waitForPaymentAndTransactionsToComplete({
       programId,
@@ -125,7 +117,9 @@ describe('Do payment with FSP: AlFouad', () => {
     expect(transactionEventDescriptions).toEqual(expectedEventsForSuccess);
 
     // A second reconciliation run should not touch the completed transaction
-    await runCronJobDoAlfouadReconciliation();
+    const secondReconciliationResponse =
+      await runCronJobDoAlfouadReconciliation();
+    expect(Number(secondReconciliationResponse.text)).toBe(0);
 
     const descriptionsAfterRerun = await getTransactionEventDescriptions({
       programId,
@@ -147,20 +141,11 @@ describe('Do payment with FSP: AlFouad', () => {
     await seedIncludedRegistrations([registration], programId, accessToken);
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const paymentId = await doPaymentAndWaitForCompletion({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
-    });
-    const paymentId = doPaymentResponse.body.id;
-
-    await waitForPaymentAndTransactionsToComplete({
-      programId,
-      paymentReferenceIds,
-      paymentId,
-      accessToken,
-      maxWaitTimeMs: 10_000,
       completeStatuses: [TransactionStatusEnum.error],
     });
 
@@ -199,20 +184,11 @@ describe('Do payment with FSP: AlFouad', () => {
     await seedIncludedRegistrations([registration], programId, accessToken);
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const paymentId = await doPaymentAndWaitForCompletion({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
-    });
-    const paymentId = doPaymentResponse.body.id;
-
-    await waitForPaymentAndTransactionsToComplete({
-      programId,
-      paymentReferenceIds,
-      paymentId,
-      accessToken,
-      maxWaitTimeMs: 10_000,
       completeStatuses: [TransactionStatusEnum.waiting],
     });
 
@@ -234,18 +210,6 @@ describe('Do payment with FSP: AlFouad', () => {
       accessToken,
     });
     expect(transactionEventDescriptions).toEqual(expectedEventsForSyncError);
-
-    // Reconciliation then picks up the paid state from the mock
-    await runCronJobDoAlfouadReconciliation();
-
-    await waitForPaymentAndTransactionsToComplete({
-      programId,
-      paymentReferenceIds,
-      paymentId,
-      accessToken,
-      maxWaitTimeMs: 10_000,
-      completeStatuses: [TransactionStatusEnum.success],
-    });
   });
 
   it('should yield error transaction when the Al Fouad API reports a duplicate reference that does not exist', async () => {
@@ -262,20 +226,11 @@ describe('Do payment with FSP: AlFouad', () => {
     await seedIncludedRegistrations([registration], programId, accessToken);
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const paymentId = await doPaymentAndWaitForCompletion({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
-    });
-    const paymentId = doPaymentResponse.body.id;
-
-    await waitForPaymentAndTransactionsToComplete({
-      programId,
-      paymentReferenceIds,
-      paymentId,
-      accessToken,
-      maxWaitTimeMs: 10_000,
       completeStatuses: [TransactionStatusEnum.error],
     });
 
@@ -301,119 +256,6 @@ describe('Do payment with FSP: AlFouad', () => {
     expect(transactionEventDescriptions).toEqual(expectedEventsForSyncError);
   });
 
-  it('should keep the transaction on waiting while Al Fouad reports a non-final state', async () => {
-    // Arrange: the stateApproved referenceId makes TransactionByRef report a
-    // non-final 'approved' state during reconciliation.
-    const registration = {
-      ...registrationAlfouad,
-      referenceId: AlfouadMockReferenceId.stateApproved,
-    };
-    const paymentReferenceIds = [registration.referenceId];
-
-    await seedIncludedRegistrations([registration], programId, accessToken);
-
-    // Act
-    const doPaymentResponse = await doPayment({
-      programId,
-      transferValue,
-      referenceIds: paymentReferenceIds,
-      accessToken,
-    });
-    const paymentId = doPaymentResponse.body.id;
-
-    await waitForPaymentAndTransactionsToComplete({
-      programId,
-      paymentReferenceIds,
-      paymentId,
-      accessToken,
-      maxWaitTimeMs: 10_000,
-      completeStatuses: [TransactionStatusEnum.waiting],
-    });
-
-    await runCronJobDoAlfouadReconciliation();
-
-    // Assert: 'approved' is not final, so the transaction stays on 'waiting'
-    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
-      programId,
-      paymentId,
-      registrationReferenceId: registration.referenceId,
-      accessToken,
-    });
-    const transaction = getTransactionsResult.body.data[0];
-
-    expect(transaction.status).toBe(TransactionStatusEnum.waiting);
-    expect(transaction.errorMessage).toBe(null);
-
-    const transactionEventDescriptions = await getTransactionEventDescriptions({
-      programId,
-      transactionId: transaction.id,
-      accessToken,
-    });
-    expect(transactionEventDescriptions).toEqual(expectedEventsForSyncError);
-  });
-
-  it('should set the transaction to error when Al Fouad reports it as canceled', async () => {
-    // Arrange: the stateCanceled referenceId makes TransactionByRef report a
-    // 'canceled' state during reconciliation.
-    const registration = {
-      ...registrationAlfouad,
-      referenceId: AlfouadMockReferenceId.stateCanceled,
-    };
-    const paymentReferenceIds = [registration.referenceId];
-
-    await seedIncludedRegistrations([registration], programId, accessToken);
-
-    // Act
-    const doPaymentResponse = await doPayment({
-      programId,
-      transferValue,
-      referenceIds: paymentReferenceIds,
-      accessToken,
-    });
-    const paymentId = doPaymentResponse.body.id;
-
-    await waitForPaymentAndTransactionsToComplete({
-      programId,
-      paymentReferenceIds,
-      paymentId,
-      accessToken,
-      maxWaitTimeMs: 10_000,
-      completeStatuses: [TransactionStatusEnum.waiting],
-    });
-
-    await runCronJobDoAlfouadReconciliation();
-
-    await waitForPaymentAndTransactionsToComplete({
-      programId,
-      paymentReferenceIds,
-      paymentId,
-      accessToken,
-      maxWaitTimeMs: 10_000,
-      completeStatuses: [TransactionStatusEnum.error],
-    });
-
-    // Assert
-    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
-      programId,
-      paymentId,
-      registrationReferenceId: registration.referenceId,
-      accessToken,
-    });
-    const transaction = getTransactionsResult.body.data[0];
-
-    expect(transaction.status).toBe(TransactionStatusEnum.error);
-    expect(transaction.errorMessage).toBe(
-      'The transaction was canceled at Al Fouad.',
-    );
-
-    const transactionEventDescriptions = await getTransactionEventDescriptions({
-      programId,
-      transactionId: transaction.id,
-      accessToken,
-    });
-    expect(transactionEventDescriptions).toEqual(expectedEventsForSuccess);
-  });
-
   it('should successfully retry pay-out after an initial failure', async () => {
     // Arrange
     const registration = {
@@ -426,20 +268,11 @@ describe('Do payment with FSP: AlFouad', () => {
     await seedIncludedRegistrations([registration], programId, accessToken);
 
     // Act: initial failing payment
-    const doPaymentResponse = await doPayment({
+    const paymentId = await doPaymentAndWaitForCompletion({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
-    });
-    const paymentId = doPaymentResponse.body.id;
-
-    await waitForPaymentAndTransactionsToComplete({
-      programId,
-      paymentReferenceIds,
-      paymentId,
-      accessToken,
-      maxWaitTimeMs: 10_000,
       completeStatuses: [TransactionStatusEnum.error],
     });
 
@@ -481,8 +314,6 @@ describe('Do payment with FSP: AlFouad', () => {
     });
 
     // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-
     const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,

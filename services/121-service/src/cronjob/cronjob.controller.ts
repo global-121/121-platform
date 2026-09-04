@@ -171,10 +171,10 @@ export class CronjobController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'AlFouad transaction update process started',
+    description: 'Number of AlFouad transactions reconciled',
   })
   @Patch('fsps/alfouad')
-  public async cronDoAlfouadReconciliation(): Promise<void> {
+  public async cronDoAlfouadReconciliation(): Promise<number | undefined> {
     return await this.cronjobExecutionService.cronDoAlfouadReconciliation();
   }
 
