@@ -76,7 +76,7 @@ export class SplitVoucherPermissions1764944177810 implements MigrationInterface 
     // Loop over all existing roles, if it has the closest permission, also add the new permission
     const userRoleRepository = manager.getRepository(UserRoleEntity);
     const userRoles = await userRoleRepository.find({
-      relations: ['permissions'],
+      relations: { permissions: true },
     });
     for (const role of userRoles) {
       const permissions = role.permissions.map((p) => p.name as PermissionEnum);

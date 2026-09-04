@@ -303,7 +303,7 @@ export class ProgramService {
 
     const sourceConfigurations = await fspConfigurationRepository.find({
       where: { programId: Equal(sourceProgramId) },
-      relations: ['properties'],
+      relations: { properties: true },
     });
 
     for (const sourceConfiguration of sourceConfigurations) {
@@ -372,7 +372,7 @@ export class ProgramService {
     );
     const sourceAssignments = await assignmentRepository.find({
       where: { programId: Equal(sourceProgramId) },
-      relations: ['roles'],
+      relations: { roles: true },
     });
     const targetAssignments = await assignmentRepository.find({
       where: { programId: Equal(targetProgramId) },

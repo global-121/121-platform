@@ -37,7 +37,13 @@ const newDate = new Date('2024-02-02T00:00:00Z');
 const spentThisMonth = 50;
 const maxBalanceInCents = 15000;
 
-let customer = new IntersolveVisaCustomerEntity();
+// intersolveVisaParentWallet is optional on the entity; these fixtures represent it as loaded (or explicitly absent).
+type CustomerWithLoadedParentWallet = IntersolveVisaCustomerEntity & {
+  intersolveVisaParentWallet: IntersolveVisaParentWalletEntity | undefined;
+};
+
+let customer =
+  new IntersolveVisaCustomerEntity() as CustomerWithLoadedParentWallet;
 customer.intersolveVisaParentWallet = parentWallet;
 
 describe('IntersolveVisaService', () => {
@@ -229,7 +235,8 @@ describe('IntersolveVisaService', () => {
       parentWallet.intersolveVisaChildWallets = [childWallet];
 
       // Mock parent wallet update
-      const customerWithParentWallet = new IntersolveVisaCustomerEntity();
+      const customerWithParentWallet =
+        new IntersolveVisaCustomerEntity() as CustomerWithLoadedParentWallet;
       customerWithParentWallet.intersolveVisaParentWallet = parentWallet;
 
       jest
@@ -275,7 +282,8 @@ describe('IntersolveVisaService', () => {
       parentWallet.tokenCode = 'token';
       parentWallet.intersolveVisaChildWallets = [];
 
-      const customerWithParentWallet = new IntersolveVisaCustomerEntity();
+      const customerWithParentWallet =
+        new IntersolveVisaCustomerEntity() as CustomerWithLoadedParentWallet;
       customerWithParentWallet.intersolveVisaParentWallet = parentWallet;
 
       jest
@@ -304,7 +312,8 @@ describe('IntersolveVisaService', () => {
 
     it('should calculate amount if customer has no parent wallet', async () => {
       // Arrange
-      const customerWithoutParentWallet = new IntersolveVisaCustomerEntity();
+      const customerWithoutParentWallet =
+        new IntersolveVisaCustomerEntity() as CustomerWithLoadedParentWallet;
       customerWithoutParentWallet.intersolveVisaParentWallet = undefined;
 
       jest
@@ -659,7 +668,8 @@ describe('IntersolveVisaService', () => {
       parentWalletWithCard.tokenCode = 'parent-token';
       parentWalletWithCard.intersolveVisaChildWallets = [childWalletToReplace];
 
-      const customerWithCard = new IntersolveVisaCustomerEntity();
+      const customerWithCard =
+        new IntersolveVisaCustomerEntity() as CustomerWithLoadedParentWallet;
       customerWithCard.holderId = 'holder-1';
       customerWithCard.intersolveVisaParentWallet = parentWalletWithCard;
 
@@ -731,12 +741,13 @@ describe('IntersolveVisaService', () => {
 
     const buildCustomerWithChildWallets = (
       childWallets: IntersolveVisaChildWalletEntity[],
-    ): IntersolveVisaCustomerEntity => {
+    ): CustomerWithLoadedParentWallet => {
       const parentWalletWithCards = new IntersolveVisaParentWalletEntity();
       parentWalletWithCards.tokenCode = 'parent-token';
       parentWalletWithCards.intersolveVisaChildWallets = childWallets;
 
-      const customerWithCards = new IntersolveVisaCustomerEntity();
+      const customerWithCards =
+        new IntersolveVisaCustomerEntity() as CustomerWithLoadedParentWallet;
       customerWithCards.holderId = 'holder-1';
       customerWithCards.intersolveVisaParentWallet = parentWalletWithCards;
       return customerWithCards;

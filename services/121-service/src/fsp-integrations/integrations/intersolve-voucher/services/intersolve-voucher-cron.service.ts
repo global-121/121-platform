@@ -70,7 +70,7 @@ export class IntersolveVoucherCronService {
       where: {
         fspName: Equal(Fsps.intersolveVoucherWhatsapp),
       },
-      select: ['id'],
+      select: { id: true },
     });
 
     if (!configId) {
@@ -157,7 +157,7 @@ export class IntersolveVoucherCronService {
         const referenceId = unsentIntersolveVoucher.referenceId;
         const registration = await this.registrationRepository.findOneOrFail({
           where: { referenceId: Equal(referenceId) },
-          relations: ['program'],
+          relations: { program: true },
         });
 
         const fromNumber =

@@ -61,7 +61,7 @@ export class RegistrationAttributeDataEntity extends Base121Entity {
     const repo = AppDataSource.getRepository(RegistrationAttributeDataEntity);
     const dataWithRelations = await repo.findOneOrFail({
       where: { id: Equal(this.id) },
-      relations: ['programRegistrationAttribute'],
+      relations: { programRegistrationAttribute: true },
     });
     if (dataWithRelations.programRegistrationAttribute) {
       return dataWithRelations.programRegistrationAttribute.name;

@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, FindOneOptions, In, Repository } from 'typeorm';
+import { Equal, FindOneOptions, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
@@ -80,11 +80,11 @@ export class RegistrationsService {
 
   public async getRegistrationOrThrow({
     referenceId,
-    relations = [],
+    relations = {},
     programId,
   }: {
     referenceId: string;
-    relations?: (keyof RegistrationEntity)[];
+    relations?: FindOptionsRelations<RegistrationEntity>;
     programId?: number;
   }): Promise<RegistrationEntity> {
     if (!referenceId) {
@@ -257,7 +257,7 @@ export class RegistrationsService {
     const registrationBeforeUpdate =
       await this.registrationViewScopedRepository.findOneOrFail({
         where: { referenceId: Equal(referenceId) },
-        select: ['id', 'status'],
+        select: { id: true, status: true },
       });
     await this.registrationScopedRepository.updateUnscoped(
       { referenceId },
@@ -266,7 +266,7 @@ export class RegistrationsService {
     const registrationAfterUpdate =
       await this.registrationViewScopedRepository.findOneOrFail({
         where: { referenceId: Equal(referenceId) },
-        select: ['id', 'status'],
+        select: { id: true, status: true },
       });
     await this.registrationEventsService.createFromRegistrationViews(
       registrationBeforeUpdate,
@@ -350,7 +350,7 @@ export class RegistrationsService {
   private async findProgramOrThrow(programId: number): Promise<ProgramEntity> {
     const program = await this.programRepository.findOne({
       where: { id: Equal(programId) },
-      relations: ['programRegistrationAttributes'],
+      relations: { programRegistrationAttributes: true },
     });
     if (!program) {
       const errors = 'Program not found.';
@@ -440,7 +440,7 @@ export class RegistrationsService {
 
     let registrationToUpdate = await this.getRegistrationOrThrow({
       referenceId,
-      relations: ['program'],
+      relations: { program: true },
       programId,
     });
     const program = registrationToUpdate.program;
@@ -595,7 +595,7 @@ export class RegistrationsService {
 
     return this.getRegistrationOrThrow({
       referenceId: savedRegistration.referenceId,
-      relations: ['program'],
+      relations: { program: true },
     });
   }
 
@@ -784,7 +784,7 @@ export class RegistrationsService {
         id: In(registrationIds),
         programId: Equal(programId),
       },
-      select: ['id'],
+      select: { id: true },
     });
 
     if (registrations.length !== registrationIds.length) {

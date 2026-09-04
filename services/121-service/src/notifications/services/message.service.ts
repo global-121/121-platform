@@ -297,7 +297,7 @@ export class MessageService {
 
     const registration = await this.registrationRepository.findOneOrFail({
       where: { id: Equal(registrationId) },
-      relations: ['program'],
+      relations: { program: true },
     });
     const language = registration.preferredLanguage || this.fallbackLanguage;
     const contentSid = await this.getTemplateContentSidOrFallback({

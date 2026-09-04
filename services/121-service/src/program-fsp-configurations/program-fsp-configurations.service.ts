@@ -41,7 +41,7 @@ export class ProgramFspConfigurationsService {
     const programFspConfigurations =
       await this.programFspConfigurationRepository.find({
         where: { programId: Equal(programId) },
-        relations: ['properties'],
+        relations: { properties: true },
       });
 
     return ProgramFspConfigurationMapper.mapEntitiesToDtos(
@@ -253,7 +253,7 @@ export class ProgramFspConfigurationsService {
         name: Equal(name),
         programId: Equal(programId),
       },
-      relations: ['registrations'], //TODO: Should this module know about registrations?
+      relations: { registrations: true }, //TODO: Should this module know about registrations?
     });
     if (!config) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);

@@ -507,7 +507,7 @@ export class IntersolveVoucherService {
         referenceId: Equal(referenceId),
         programId: Equal(programId),
       },
-      relations: ['images', 'images.voucher'],
+      relations: { images: { voucher: true } },
     });
     if (!registration) {
       throw new HttpException(

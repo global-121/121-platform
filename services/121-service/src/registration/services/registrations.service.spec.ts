@@ -221,7 +221,7 @@ describe('RegistrationsService', () => {
           id: In(registrationIds),
           programId: Equal(programId),
         },
-        select: ['id'],
+        select: { id: true },
       });
 
       expect(uniqueRegistrationPairRepository.store).toHaveBeenCalledWith({
@@ -258,7 +258,7 @@ describe('RegistrationsService', () => {
           id: In(registrationIds),
           programId: Equal(programId),
         },
-        select: ['id'],
+        select: { id: true },
       });
 
       expect(uniqueRegistrationPairRepository.store).toHaveBeenCalledTimes(3);
@@ -304,7 +304,7 @@ describe('RegistrationsService', () => {
           id: In(registrationIds),
           programId: Equal(programId),
         },
-        select: ['id'],
+        select: { id: true },
       });
 
       // There should be 6 calls to store (n*(n-1)/2 for n = 4)

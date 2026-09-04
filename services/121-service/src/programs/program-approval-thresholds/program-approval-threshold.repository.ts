@@ -27,7 +27,7 @@ export class ProgramApprovalThresholdRepository extends Repository<ProgramApprov
         programId: Equal(programId),
         thresholdAmount: LessThanOrEqual(totalPaymentAmount),
       },
-      relations: ['approverAssignments'],
+      relations: { approverAssignments: true },
       order: { thresholdAmount: 'ASC' },
     });
   }

@@ -83,7 +83,10 @@ export class RegistrationsInputValidator {
 
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
-      relations: ['programFspConfigurations', 'programRegistrationAttributes'],
+      relations: {
+        programFspConfigurations: true,
+        programRegistrationAttributes: true,
+      },
     });
 
     const languageMapping = this.createLanguageMapping(

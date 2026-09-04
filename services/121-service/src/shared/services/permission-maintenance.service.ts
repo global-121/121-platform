@@ -35,7 +35,7 @@ export class PermissionMaintenanceService {
     );
     const adminRole = await this.userRoleRepository.findOne({
       where: { role: Equal(DefaultUserRole.Admin) },
-      relations: ['permissions'],
+      relations: { permissions: true },
     });
 
     if (!adminRole) {

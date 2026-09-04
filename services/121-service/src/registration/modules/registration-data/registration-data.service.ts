@@ -123,7 +123,7 @@ export class RegistrationDataService {
     }
 
     return await this.registrationScopedRepository.findOneOrFail({
-      relations: ['data'],
+      relations: { data: true },
       where: {
         id: Equal(registration.id),
       },
