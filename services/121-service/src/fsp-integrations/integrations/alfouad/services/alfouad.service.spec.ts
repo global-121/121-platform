@@ -1,14 +1,32 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { env } from '@121-service/src/env';
 import { AlfouadApiErrorCode } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-error-code.enum';
 import { AlfouadApiTransactionState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
+import { AlfouadMockReferenceId } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-mock-reference-id.enum';
 import { AlfouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-auth-identity.interface';
 import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-params.interface';
 import { AlfouadApiService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.service';
 import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.service';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+
+jest.mock('@121-service/src/env', () => ({
+  env: {
+    ALFOUAD_MODE: 'MOCK',
+    UUID_NAMESPACE: '00000000-0000-5000-8000-000000000000',
+  },
+}));
+
+jest.mock('@121-service/src/ormconfig', () => ({
+  ormConfig: {},
+}));
+
+jest.mock('@121-service/src/appdatasource', () => ({
+  AppDataSource: {},
+}));
 
 const authIdentity: AlfouadAuthIdentity = {
   account: '161010004501',
@@ -133,6 +151,10 @@ describe('AlfouadService', () => {
   });
 
   describe('Generating a reference number', () => {
+    beforeEach(() => {
+      (env as { ALFOUAD_MODE: FspMode }).ALFOUAD_MODE = FspMode.mock;
+    });
+
     it('should compute the same reference for the same failed-attempt count', async () => {
       // Arrange
       countFailedTransactionAttempts.mockResolvedValue(0);
@@ -169,6 +191,35 @@ describe('AlfouadService', () => {
       // Assert
       expect(first).not.toBe(second);
     });
+
+    it('should pass a mock referenceId through unchanged in mock mode', async () => {
+      // Arrange
+      countFailedTransactionAttempts.mockResolvedValue(0);
+
+      // Act
+      const result = await service.generateReferenceNumber({
+        referenceId: AlfouadMockReferenceId.stateApproved,
+        transactionId: 1,
+      });
+
+      // Assert
+      expect(result).toBe(AlfouadMockReferenceId.stateApproved);
+    });
+
+    it('should not pass a mock referenceId through when not in mock mode', async () => {
+      // Arrange
+      (env as { ALFOUAD_MODE: FspMode }).ALFOUAD_MODE = FspMode.external;
+      countFailedTransactionAttempts.mockResolvedValue(0);
+
+      // Act
+      const result = await service.generateReferenceNumber({
+        referenceId: AlfouadMockReferenceId.stateApproved,
+        transactionId: 1,
+      });
+
+      // Assert
+      expect(result).not.toBe(AlfouadMockReferenceId.stateApproved);
+    });
   });
 
   describe('Mapping an Al Fouad state to a transaction status', () => {
@@ -196,6 +247,40 @@ describe('AlfouadService', () => {
           alfouadState: AlfouadApiTransactionState.canceled,
         }),
       ).toBe(TransactionStatusEnum.error);
+    });
+  });
+
+  describe('Mapping an Al Fouad state to a final transaction status', () => {
+    it('should map a paid state to success', () => {
+      expect(
+        service.mapAlfouadStateToFinalTransactionStatus({
+          alfouadState: AlfouadApiTransactionState.paid,
+        }),
+      ).toEqual({
+        newTransactionStatus: TransactionStatusEnum.success,
+        errorMessage: undefined,
+      });
+    });
+
+    it.each([
+      AlfouadApiTransactionState.pendingApproval,
+      AlfouadApiTransactionState.approved,
+      AlfouadApiTransactionState.hold,
+    ])('should return undefined for the non-final state %s', (alfouadState) => {
+      expect(
+        service.mapAlfouadStateToFinalTransactionStatus({ alfouadState }),
+      ).toBeUndefined();
+    });
+
+    it('should map a canceled state to error with a cancellation message', () => {
+      expect(
+        service.mapAlfouadStateToFinalTransactionStatus({
+          alfouadState: AlfouadApiTransactionState.canceled,
+        }),
+      ).toEqual({
+        newTransactionStatus: TransactionStatusEnum.error,
+        errorMessage: 'The transaction was canceled at Al Fouad.',
+      });
     });
   });
 });
