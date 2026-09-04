@@ -18,6 +18,7 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 export const fspQuestionName = 'fsp';
@@ -319,9 +320,16 @@ export class KoboService {
       return attr.name !== fspQuestionName;
     };
 
+    // Filter out 'scope' as its value is stored on the entity-level registration.scope column,
+    // not as a program registration attribute
+    const isNotScope = ({ name }: { name: string }) => {
+      return name.toLowerCase() !== GenericRegistrationAttributes.scope;
+    };
+
     const attributesToUpsert = programRegistrationAttributes
       .filter(isNotRegistrationViewAttribute)
-      .filter(isNotFsp);
+      .filter(isNotFsp)
+      .filter(isNotScope);
 
     await this.programRegistrationAttributesService.upsertProgramRegistrationAttributes(
       {
