@@ -480,7 +480,7 @@ describe('Do payment', () => {
           [NedbankVoucherStatus.REFUNDED]: TransactionStatusEnum.error,
         };
         const registrations: ImportRegistrationsDto[] = [];
-        let phoneCounter = 0;
+        let phoneCounter = 10;
         for (const status in nedbanVoucherStatusToTransactionStatus) {
           const registration = {
             ...registrationNedbank,
