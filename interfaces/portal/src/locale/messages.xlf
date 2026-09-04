@@ -107,6 +107,9 @@
       <trans-unit id="1467442682545650796" datatype="html">
         <source>Reg. # <x equiv-text="event.registrationProgramId.toString()" id="PH"/></source>
       </trans-unit>
+      <trans-unit id="1478156471032913670" datatype="html">
+        <source>Message preview</source>
+      </trans-unit>
       <trans-unit id="1485624035618673724" datatype="html">
         <source>Import reconciliation data</source>
       </trans-unit>
@@ -518,9 +521,6 @@
       </trans-unit>
       <trans-unit id="3069764081921374374" datatype="html">
         <source>Kobo form successfully integrated.</source>
-      </trans-unit>
-      <trans-unit id="3082094200535618477" datatype="html">
-        <source>Message preview</source>
       </trans-unit>
       <trans-unit id="3086423071988594984" datatype="html">
         <source>Assign scope*</source>

@@ -39,7 +39,7 @@ test('Duplicate and delete Excel FSP', async ({
     });
     await fspSettingsPage.configureExcelFsp({});
     await fspSettingsPage.saveReconfigurationButton.click();
-    await fspSettingsPage.validateToastMessage(
+    await fspSettingsPage.validateToastMessageAndClose(
       'Success FSP "Excel Payment Instructions" integrated successfully.',
     );
   });
@@ -53,7 +53,7 @@ test('Duplicate and delete Excel FSP', async ({
       withName: 'Excel Payment Instructions 2',
     });
     await fspSettingsPage.integrateFspButton.click();
-    await fspSettingsPage.validateToastMessage(
+    await fspSettingsPage.validateToastMessageAndClose(
       'Success FSP "Excel Payment Instructions 2" integrated successfully.',
     );
     await fspSettingsPage.validateProgramFspCards({

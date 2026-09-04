@@ -47,7 +47,7 @@ class PaymentPage extends BasePage {
       'form-dialog-submit-button',
     );
     this.viewPaymentTitle = this.page.getByRole('heading', {
-      name: /Payment/,
+      level: 1,
     });
     this.paymentAmount = this.page.getByTestId('metric-tile-component');
     this.retryFailedTransactionsButton = this.page.getByRole('button', {
@@ -199,9 +199,9 @@ class PaymentPage extends BasePage {
     }
   }
 
-  async validatePaymentDetailsPageTitle() {
-    const viewPaymentTitle = await this.viewPaymentTitle.textContent();
-    expect(viewPaymentTitle).toContain('Payment');
+  async validatePaymentDetailsPageTitle(title = 'Payment') {
+    await expect(this.viewPaymentTitle).toBeVisible();
+    await expect(this.viewPaymentTitle).toContainText(title);
   }
 
   async selectPaymentExportOption({ option }: { option: string }) {

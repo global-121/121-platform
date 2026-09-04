@@ -5,7 +5,13 @@
   </p>
 
   <p>
-    <strong i18n> Message: </strong>
+    <label
+      i18n
+      for="customMessage"
+      class="font-semibold"
+    >
+      Message:
+    </label>
     <app-info-tooltip
       message="Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone."
       i18n-message
@@ -21,6 +27,7 @@
 
   <div>
     <textarea
+      id="customMessage"
       rows="5"
       pTextarea
       [(ngModel)]="customMessageInternalModel"

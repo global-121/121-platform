@@ -79,7 +79,7 @@ test('Should be able to order debit cards when card distribution by mail is disa
     );
     await programMonitoringPage.selectTab({ tabName: 'Debit Cards' });
     await programMonitoringPage.orderCards(orderDebitCardOrder);
-    await programMonitoringPage.validateToastMessage(
+    await programMonitoringPage.validateToastMessageAndClose(
       'Order started. Check the table for progress.',
     );
 

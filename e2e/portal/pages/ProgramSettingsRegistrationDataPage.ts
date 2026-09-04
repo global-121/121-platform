@@ -38,7 +38,7 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
     this.initiateImportButton = this.page.getByRole('button', {
       name: 'Import registrations',
     });
-    this.closeImportDialog = this.page.getByRole('button', {
+    this.closeImportDialog = this.importDialog.getByRole('button', {
       name: 'Close',
     });
     this.languageTabs = this.page.getByTestId('language-tab');
