@@ -41,7 +41,9 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     navigateToPage: `/program/${programIdOCW}/payments`,
   });
   // Seed duplicate registrations to have more transactions in the payment and better validate the badges on the payment page during the test
-  await resetDuplicateRegistrations(duplicateNumberOfRegistrations);
+  await resetDuplicateRegistrations({
+    mockPowerNumberRegistrations: duplicateNumberOfRegistrations,
+  });
   // Configure approval thresholds so both levels apply to payment amount (25)
   // Default seed creates level 2 at amount 100, but fixedTransferValue is 25
   const accessToken = await getAccessToken();
