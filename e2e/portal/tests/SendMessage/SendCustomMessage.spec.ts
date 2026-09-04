@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test';
+
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdPV,
@@ -6,46 +8,59 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  await resetDBAndSeedRegistrations({
-    seedScript: SeedScript.nlrcMultiple,
-    registrations: registrationsPV,
-    programId: programIdPV,
-    navigateToPage: `/program/${programIdPV}/registrations`,
+test.describe('Send custom message', () => {
+  test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+    await resetDBAndSeedRegistrations({
+      seedScript: SeedScript.nlrcMultiple,
+      registrations: registrationsPV,
+      programId: programIdPV,
+      navigateToPage: `/program/${programIdPV}/registrations`,
+    });
   });
-});
 
-test('Send custom message', async ({
-  registrationsPage,
-  registrationActivityLogPage,
-}) => {
-  await test.step('Send custom message', async () => {
-    const registrationFullName =
-      await registrationsPage.getFirstRegistrationNameFromTable();
-    if (!registrationFullName) {
-      throw new Error('Registration full name is undefined');
-    }
-    const customMessageText =
-      'This is {{fullName}} custom message from the Red Cross.';
-    const customMessagePreview = `This is ${registrationFullName} custom message from the Red Cross.`;
-    const sendingMessageToast =
-      'Closing this notification will not cancel message sending.';
+  test('Send custom message', async ({
+    page,
+    registrationsPage,
+    registrationActivityLogPage,
+  }) => {
+    const registrationFullName = 'Jack Strong';
+    const customMessageContent =
+      'This is a custom message from the Red Cross for: {{fullName}}';
+    const customMessageResult = `This is a custom message from the Red Cross for: ${registrationFullName}`;
 
-    await registrationsPage.selectAllRegistrations();
-    await registrationsPage.selectBulkAction('Message');
-    await registrationsPage.selectCustomMessage();
-    await registrationsPage.typeCustomMessage(customMessageText);
-    await registrationsPage.clickContinueToPreview();
-    await registrationsPage.validateMessagePresent(customMessagePreview);
-    await registrationsPage.sendMessage();
-
-    await registrationsPage.validateToastMessageAndClose(sendingMessageToast);
-    await registrationsPage.goToRegistrationByName({
-      registrationName: registrationFullName,
+    await test.step('Select registration', async () => {
+      await registrationsPage.selectAllRegistrations();
+      await registrationsPage.selectBulkAction('Message');
     });
 
-    await registrationActivityLogPage.validateLastMessageSent(
-      customMessagePreview,
-    );
+    await test.step('Send message', async () => {
+      await registrationsPage.selectCustomMessage();
+      await registrationsPage.typeCustomMessage(customMessageContent);
+      await registrationsPage.clickContinueToPreview();
+      await registrationsPage.validateMessagePreview(customMessageResult);
+      await registrationsPage.sendMessage();
+      await registrationsPage.validateToastMessageAndClose(
+        'Closing this notification will not cancel message sending.',
+      );
+      await page.waitForTimeout(900); // Sending the message takes time
+    });
+
+    await test.step('Verify message', async () => {
+      // Prepare a clean slate from any previous tries/actions on the page
+      await registrationActivityLogPage.resetTableStateStorage();
+
+      await registrationsPage.goto(`/program/${programIdPV}/registrations`);
+
+      await registrationsPage.goToRegistrationByName({
+        registrationName: registrationFullName,
+      });
+      await expect(registrationActivityLogPage.registrationTitle).toContainText(
+        registrationFullName,
+      );
+
+      await registrationActivityLogPage.validateLastMessageSent(
+        customMessageResult,
+      );
+    });
   });
 });

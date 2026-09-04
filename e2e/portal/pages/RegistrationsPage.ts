@@ -65,7 +65,7 @@ class RegistrationsPage extends BasePage {
   }
 
   async typeCustomMessage(message: string) {
-    await this.page.fill('textarea', message);
+    await this.page.getByLabel('Message:').fill(message);
   }
 
   async selectTemplatedMessage(messageTemplate: string) {
@@ -79,14 +79,8 @@ class RegistrationsPage extends BasePage {
       .click();
   }
 
-  async validateMessagePresent(message: string) {
-    await this.page.waitForTimeout(200);
-    await expect(this.page.locator('textarea')).toHaveAttribute('readonly');
-    const textboxValue = await this.page.$eval(
-      'textarea',
-      (textarea) => textarea.value,
-    );
-    expect(textboxValue).toContain(message);
+  async validateMessagePreview(message: string) {
+    await expect(this.page.getByLabel('Message preview')).toHaveValue(message);
   }
 
   async sendMessage() {
@@ -104,7 +98,7 @@ class RegistrationsPage extends BasePage {
       expect(
         await this.manageTableSidebar.getByRole('checkbox').count(),
       ).toBeGreaterThan(0);
-    }).toPass({ timeout: 5000 });
+    }).toPass({ timeout: 5_000 });
   }
 
   async configureTableColumns({
