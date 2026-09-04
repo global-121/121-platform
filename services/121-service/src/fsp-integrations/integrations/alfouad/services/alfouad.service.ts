@@ -180,4 +180,27 @@ export class AlfouadService {
         return TransactionStatusEnum.error;
     }
   }
+
+  public mapAlfouadStateToFinalTransactionStatus({
+    alfouadState,
+  }: {
+    alfouadState: AlfouadApiTransactionState;
+  }): { newTransactionStatus: TransactionStatusEnum; errorMessage?: string } | undefined {
+    const newTransactionStatus = this.mapAlfouadStateToTransactionStatus({
+      alfouadState,
+    });
+
+    // Pending / Approved / Hold: leave the transaction on 'waiting'.
+    if (newTransactionStatus === TransactionStatusEnum.waiting) {
+      return;
+    }
+
+    return {
+      newTransactionStatus,
+      errorMessage:
+        newTransactionStatus === TransactionStatusEnum.error
+          ? 'The transaction was canceled at Al Fouad.'
+          : undefined,
+    };
+  }
 }

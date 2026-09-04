@@ -249,4 +249,38 @@ describe('AlfouadService', () => {
       ).toBe(TransactionStatusEnum.error);
     });
   });
+
+  describe('Mapping an Al Fouad state to a final transaction status', () => {
+    it('should map a paid state to success', () => {
+      expect(
+        service.mapAlfouadStateToFinalTransactionStatus({
+          alfouadState: AlfouadApiTransactionState.paid,
+        }),
+      ).toEqual({
+        newTransactionStatus: TransactionStatusEnum.success,
+        errorMessage: undefined,
+      });
+    });
+
+    it.each([
+      AlfouadApiTransactionState.pendingApproval,
+      AlfouadApiTransactionState.approved,
+      AlfouadApiTransactionState.hold,
+    ])('should return undefined for the non-final state %s', (alfouadState) => {
+      expect(
+        service.mapAlfouadStateToFinalTransactionStatus({ alfouadState }),
+      ).toBeUndefined();
+    });
+
+    it('should map a canceled state to error with a cancellation message', () => {
+      expect(
+        service.mapAlfouadStateToFinalTransactionStatus({
+          alfouadState: AlfouadApiTransactionState.canceled,
+        }),
+      ).toEqual({
+        newTransactionStatus: TransactionStatusEnum.error,
+        errorMessage: 'The transaction was canceled at Al Fouad.',
+      });
+    });
+  });
 });

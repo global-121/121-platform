@@ -30,6 +30,10 @@ describe('AlfouadReconciliationService', () => {
   let transactionEventsScopedRepository: jest.Mocked<TransactionEventsScopedRepository>;
 
   const transactionId = 42;
+  const successStatus = {
+    newTransactionStatus: TransactionStatusEnum.success,
+    errorMessage: undefined,
+  };
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(
@@ -44,23 +48,26 @@ describe('AlfouadReconciliationService', () => {
       TransactionEventsScopedRepository,
     );
 
-    (
-      transactionRepository.getWaitingTransactionIdsByFsp as jest.Mock
-    ).mockResolvedValue([transactionId]);
-    (
-      transactionRepository.getReferenceIdByTransactionIdOrThrow as jest.Mock
-    ).mockResolvedValue('registration-reference-id');
-    (alfouadService.generateReferenceNumber as jest.Mock).mockResolvedValue(
+    transactionRepository.getWaitingTransactionIdsByFsp.mockResolvedValue([
+      transactionId,
+    ]);
+    transactionRepository.getReferenceIdByTransactionIdOrThrow.mockResolvedValue(
+      'registration-reference-id',
+    );
+    alfouadService.generateReferenceNumber.mockResolvedValue(
       'recomputed-reference-number',
     );
-    (
-      transactionEventsScopedRepository.findLatestEventByTransactionId as jest.Mock
-    ).mockResolvedValue({ programFspConfigurationId: 1 });
-    (alfouadService.getAlfouadFspConfig as jest.Mock).mockResolvedValue({
+    transactionEventsScopedRepository.findLatestEventByTransactionId.mockResolvedValue(
+      { programFspConfigurationId: 1 } as any,
+    );
+    alfouadService.getAlfouadFspConfig.mockResolvedValue({
       authIdentity: {} as AlfouadAuthIdentity,
-    });
-    (alfouadService.getTransactionStateByRef as jest.Mock).mockResolvedValue(
+    } as any);
+    alfouadService.getTransactionStateByRef.mockResolvedValue(
       AlfouadApiTransactionState.paid,
+    );
+    alfouadService.mapAlfouadStateToFinalTransactionStatus.mockReturnValue(
+      successStatus,
     );
   });
 
@@ -70,9 +77,7 @@ describe('AlfouadReconciliationService', () => {
 
   it('should not reconcile anything when there are no waiting transactions', async () => {
     // Arrange
-    (
-      transactionRepository.getWaitingTransactionIdsByFsp as jest.Mock
-    ).mockResolvedValue([]);
+    transactionRepository.getWaitingTransactionIdsByFsp.mockResolvedValue([]);
 
     // Act
     const count = await alfouadReconciliationService.doAlfouadReconciliation();
@@ -81,12 +86,7 @@ describe('AlfouadReconciliationService', () => {
     expect(count).toBe(0);
   });
 
-  it('should save progress with status success when Al Fouad reports a final paid state', async () => {
-    // Arrange
-    (
-      alfouadService.mapAlfouadStateToTransactionStatus as jest.Mock
-    ).mockReturnValue(TransactionStatusEnum.success);
-
+  it('should save progress when Al Fouad reports a final state', async () => {
     // Act
     await alfouadReconciliationService.doAlfouadReconciliation();
 
@@ -96,42 +96,15 @@ describe('AlfouadReconciliationService', () => {
     ).toHaveBeenCalledWith({
       transactionId,
       description: TransactionEventDescription.alfouadReconciliationProcessed,
-      newTransactionStatus: TransactionStatusEnum.success,
-      errorMessage: undefined,
-    });
-  });
-
-  it('should save progress with status error and a cancellation message when Al Fouad reports a canceled state', async () => {
-    // Arrange
-    (alfouadService.getTransactionStateByRef as jest.Mock).mockResolvedValue(
-      AlfouadApiTransactionState.canceled,
-    );
-    (
-      alfouadService.mapAlfouadStateToTransactionStatus as jest.Mock
-    ).mockReturnValue(TransactionStatusEnum.error);
-
-    // Act
-    await alfouadReconciliationService.doAlfouadReconciliation();
-
-    // Assert
-    expect(
-      transactionsService.saveProgressFromExternalSource,
-    ).toHaveBeenCalledWith({
-      transactionId,
-      description: TransactionEventDescription.alfouadReconciliationProcessed,
-      newTransactionStatus: TransactionStatusEnum.error,
-      errorMessage: 'The transaction was canceled at Al Fouad.',
+      ...successStatus,
     });
   });
 
   it('should keep the transaction on waiting when Al Fouad reports a non-final state', async () => {
     // Arrange
-    (alfouadService.getTransactionStateByRef as jest.Mock).mockResolvedValue(
-      AlfouadApiTransactionState.approved,
+    alfouadService.mapAlfouadStateToFinalTransactionStatus.mockReturnValue(
+      undefined,
     );
-    (
-      alfouadService.mapAlfouadStateToTransactionStatus as jest.Mock
-    ).mockReturnValue(TransactionStatusEnum.waiting);
 
     // Act
     await alfouadReconciliationService.doAlfouadReconciliation();
@@ -145,15 +118,13 @@ describe('AlfouadReconciliationService', () => {
   it('should continue with the next transaction when a transaction is not found at Al Fouad', async () => {
     // Arrange
     const otherTransactionId = 43;
-    (
-      transactionRepository.getWaitingTransactionIdsByFsp as jest.Mock
-    ).mockResolvedValue([transactionId, otherTransactionId]);
-    (alfouadService.getTransactionStateByRef as jest.Mock)
-      .mockResolvedValueOnce(null)
+    transactionRepository.getWaitingTransactionIdsByFsp.mockResolvedValue([
+      transactionId,
+      otherTransactionId,
+    ]);
+    alfouadService.getTransactionStateByRef
+      .mockResolvedValueOnce(undefined)
       .mockResolvedValueOnce(AlfouadApiTransactionState.paid);
-    (
-      alfouadService.mapAlfouadStateToTransactionStatus as jest.Mock
-    ).mockReturnValue(TransactionStatusEnum.success);
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
     // Act
@@ -168,20 +139,20 @@ describe('AlfouadReconciliationService', () => {
     ).toHaveBeenCalledWith({
       transactionId: otherTransactionId,
       description: TransactionEventDescription.alfouadReconciliationProcessed,
-      newTransactionStatus: TransactionStatusEnum.success,
-      errorMessage: undefined,
+      ...successStatus,
     });
   });
 
   it('should rethrow unexpected errors and abort the batch', async () => {
     // Arrange: a second waiting transaction makes the abort observable
-    (
-      transactionRepository.getWaitingTransactionIdsByFsp as jest.Mock
-    ).mockResolvedValue([transactionId, 43]);
+    transactionRepository.getWaitingTransactionIdsByFsp.mockResolvedValue([
+      transactionId,
+      43,
+    ]);
     const unexpectedError = new Error('database unavailable');
-    (
-      transactionRepository.getReferenceIdByTransactionIdOrThrow as jest.Mock
-    ).mockRejectedValue(unexpectedError);
+    transactionRepository.getReferenceIdByTransactionIdOrThrow.mockRejectedValue(
+      unexpectedError,
+    );
 
     // Act & Assert
     await expect(
