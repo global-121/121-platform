@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { AlfouadMockReferenceId } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-mock-reference-id.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -25,13 +26,10 @@ import {
 const programId = 1;
 const transferValue = 100;
 
-// Phone numbers drive scenarios in the Al Fouad mock service.
 const defaultPhoneNumber = '963955000001';
 const phoneNumberFailBusinessError = '963000000001';
 const phoneNumberFailDuplicateExisting = '963000000002';
 const phoneNumberFailDuplicateMissing = '963000000003';
-const phoneNumberStateApproved = '963000000011';
-const phoneNumberStateCanceled = '963000000013';
 
 const registrationAlfouad = {
   referenceId: 'registration-alfouad-1',
@@ -251,11 +249,13 @@ describe('Do payment with FSP: AlFouad', () => {
   });
 
   it('should yield error transaction when the Al Fouad API reports a duplicate reference that does not exist', async () => {
-    // Arrange
+    // Arrange: the phone triggers a duplicate (822) at create time, and the
+    // stateNotFound referenceId makes the follow-up TransactionByRef report the
+    // transaction as missing.
     const registration = {
       ...registrationAlfouad,
       phoneNumber: phoneNumberFailDuplicateMissing, // Triggers failDuplicateMissing in the mock service
-      referenceId: 'alfouad-duplicate-missing',
+      referenceId: AlfouadMockReferenceId.stateNotFound,
     };
     const paymentReferenceIds = [registration.referenceId];
 
@@ -302,11 +302,11 @@ describe('Do payment with FSP: AlFouad', () => {
   });
 
   it('should keep the transaction on waiting while Al Fouad reports a non-final state', async () => {
-    // Arrange
+    // Arrange: the stateApproved referenceId makes TransactionByRef report a
+    // non-final 'approved' state during reconciliation.
     const registration = {
       ...registrationAlfouad,
-      phoneNumber: phoneNumberStateApproved, // Triggers state 'approved' in the mock service
-      referenceId: 'alfouad-still-waiting',
+      referenceId: AlfouadMockReferenceId.stateApproved,
     };
     const paymentReferenceIds = [registration.referenceId];
 
@@ -353,11 +353,11 @@ describe('Do payment with FSP: AlFouad', () => {
   });
 
   it('should set the transaction to error when Al Fouad reports it as canceled', async () => {
-    // Arrange
+    // Arrange: the stateCanceled referenceId makes TransactionByRef report a
+    // 'canceled' state during reconciliation.
     const registration = {
       ...registrationAlfouad,
-      phoneNumber: phoneNumberStateCanceled, // Triggers state 'canceled' in the mock service
-      referenceId: 'alfouad-canceled',
+      referenceId: AlfouadMockReferenceId.stateCanceled,
     };
     const paymentReferenceIds = [registration.referenceId];
 

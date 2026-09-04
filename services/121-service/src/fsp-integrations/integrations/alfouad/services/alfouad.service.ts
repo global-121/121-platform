@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
 
+import { env } from '@121-service/src/env';
 import { AlfouadApiErrorCode } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-error-code.enum';
 import { AlfouadApiResponseState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-response-state.enum';
 import { AlfouadApiTransactionState } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-api-transaction-state.enum';
+import { AlfouadMockReferenceId } from '@121-service/src/fsp-integrations/integrations/alfouad/enums/alfouad-mock-reference-id.enum';
 import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/alfouad/errors/alfouad-api.error';
 import { AlfouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-auth-identity.interface';
 import { AlfouadCreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-create-transaction-params.interface';
 import { AlfouadSenderInfo } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-sender-info.interface';
 import { AlfouadApiService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.api.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { computeTransactionReference } from '@121-service/src/fsp-integrations/shared/helpers/generate-transaction-reference.helper';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
@@ -134,6 +137,10 @@ export class AlfouadService {
     referenceId: string;
     transactionId: number;
   }): Promise<string> {
+    if (this.shouldPassMockReferenceIdThrough(referenceId)) {
+      return referenceId;
+    }
+
     const failedTransactionAttempts =
       await this.transactionEventScopedRepository.countFailedTransactionAttempts(
         transactionId,
@@ -144,6 +151,15 @@ export class AlfouadService {
       transactionId,
       failedTransactionAttempts,
     });
+  }
+
+  private shouldPassMockReferenceIdThrough(referenceId: string): boolean {
+    if (env.ALFOUAD_MODE !== FspMode.mock) {
+      return false;
+    }
+
+    const mockReferenceIds = Object.values(AlfouadMockReferenceId) as string[];
+    return mockReferenceIds.includes(referenceId);
   }
 
   public mapAlfouadStateToTransactionStatus({

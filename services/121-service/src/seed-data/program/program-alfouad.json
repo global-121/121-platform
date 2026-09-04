@@ -44,19 +44,6 @@
       "type": "tel",
       "options": null,
       "showInPeopleAffectedTable": false
-    },
-    {
-      "name": "addressCity",
-      "isRequired": true,
-      "label": {
-        "en": "City"
-      },
-      "type": "text",
-      "options": null,
-      "includeInTransactionExport": true,
-      "scoring": {},
-      "editableInPortal": true,
-      "showInPeopleAffectedTable": false
     }
   ],
   "fullnameNamingConvention": ["fullName"],
@@ -69,23 +56,23 @@
       "properties": [
         {
           "name": "accountAlfouad",
-          "value": "161010004501"
+          "value": "ALFOUAD_ACCOUNT"
         },
         {
           "name": "branchIdAlfouad",
-          "value": "1"
+          "value": "ALFOUAD_BRANCH_ID"
         },
         {
           "name": "usernameAlfouad",
-          "value": "Red Crescent"
+          "value": "ALFOUAD_USERNAME"
         },
         {
           "name": "passwordAlfouad",
-          "value": "mock-password"
+          "value": "ALFOUAD_PASSWORD"
         },
         {
           "name": "publicKeyAlfouad",
-          "value": "<RSAParameters><Modulus>rux2BF2n8tf9jU3FxqGl3v+ShaMAvqIuYqnny8ce+69mqrng5TOSPGWWJp9l1C+x5CZHwiId3iqq0VHJear5YW7bOld+4HPRlky19Y3jXqkf1Ew3C7g5TBzqvalx6M/b2QraP0Qcfz1Q6yamlQVlhUC69ucaGjceDnfI38BkKDE=</Modulus><Exponent>AQAB</Exponent></RSAParameters>"
+          "value": "ALFOUAD_PUBLIC_KEY"
         },
         {
           "name": "senderFullNameAlfouad",
