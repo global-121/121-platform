@@ -127,7 +127,6 @@ updates:
       angular:
         patterns:
           - '@angular*'
-          - 'primeng'
           - 'typescript'
           - 'zone.js'
           - '*eslint*'
@@ -140,7 +139,6 @@ updates:
           - '*'
         exclude-patterns: # Make sure to exclude all of the groups defined above
           - '@angular*'
-          - 'primeng'
           - 'typescript'
           - 'zone.js'
           - '@azure/msal*'
@@ -156,8 +154,8 @@ updates:
         update-types: ['version-update:semver-major'] # See: https://www.npmjs.com/package/ngx-filesize
       - dependency-name: 'ngx-matomo-client'
         update-types: ['version-update:semver-major'] # Major versions tied to major-Angular-versions
-      - dependency-name: 'primeng'
-        update-types: ['version-update:semver-major'] # Major versions tied to major-Angular-versions
+      - dependency-name: '*prime*'
+        update-types: ['version-update:semver-major'] # Next major version has incompatible license; See: AB#43123
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major'] # Major versions tied to major-Angular-versions
 
