@@ -231,6 +231,9 @@
       <trans-unit id="1941641831210864467" datatype="html">
         <source>Replace visa card</source>
       </trans-unit>
+      <trans-unit id="1947325177477051364" datatype="html">
+        <source>Kobo form summary tab location</source>
+      </trans-unit>
       <trans-unit id="1953762348939012822" datatype="html">
         <source>Revert to default</source>
       </trans-unit>
@@ -266,6 +269,9 @@
       </trans-unit>
       <trans-unit id="2161871078253886554" datatype="html">
         <source>Unknown user</source>
+      </trans-unit>
+      <trans-unit id="2177679280185760299" datatype="html">
+        <source>Question settings cog icon in kobo</source>
       </trans-unit>
       <trans-unit id="2185398424871178341" datatype="html">
         <source>Addressee (name of the recipient of the package)</source>
@@ -470,6 +476,9 @@
       </trans-unit>
       <trans-unit id="2877620758967462039" datatype="html">
         <source>When you want the payment to start, click approve and start payment or instruct the designated user to do so.</source>
+      </trans-unit>
+      <trans-unit id="2892716641858969594" datatype="html">
+        <source>Go to the security section</source>
       </trans-unit>
       <trans-unit id="2904462051420457381" datatype="html">
         <source>House number</source>
@@ -713,6 +722,9 @@
       <trans-unit id="3894950702316166331" datatype="html">
         <source>Loading...</source>
       </trans-unit>
+      <trans-unit id="3895553659437884532" datatype="html">
+        <source>Copying the URL from the browser&apos;s address bar</source>
+      </trans-unit>
       <trans-unit id="3900182075447065445" datatype="html">
         <source>*Please make sure registration data is available for all used personalized fields.</source>
       </trans-unit>
@@ -833,6 +845,9 @@
       <trans-unit id="4275051684912699373" datatype="html">
         <source>Amount sent per payment</source>
       </trans-unit>
+      <trans-unit id="4278463314713456915" datatype="html">
+        <source>In kobo, click your account icon (top right) and go to account settings</source>
+      </trans-unit>
       <trans-unit id="428968768517674095" datatype="html">
         <source>Would you like to proceed with <x equiv-text="{{ dryRunData?.applicableCount }}" id="INTERPOLATION"/> registration(s)?</source>
       </trans-unit>
@@ -853,6 +868,9 @@
       </trans-unit>
       <trans-unit id="4377773974394044597" datatype="html">
         <source>Export a CSV for the <x equiv-text="this.actionData()?.count" id="PH"/> selected registration(s). Select the columns you want to update.</source>
+      </trans-unit>
+      <trans-unit id="4386539374719464192" datatype="html">
+        <source>In kobo, when creating or editing the form, locate the question you want to change the data column name of and click on the settings (the cog icon)</source>
       </trans-unit>
       <trans-unit id="4388879716045736175" datatype="html">
         <source>Note</source>
@@ -898,6 +916,9 @@
       </trans-unit>
       <trans-unit id="4578833766272403833" datatype="html">
         <source>Cover letter code</source>
+      </trans-unit>
+      <trans-unit id="4580971846969755689" datatype="html">
+        <source>You will then find the data column name in the &apos;Question Options&apos;</source>
       </trans-unit>
       <trans-unit id="4594242528552515311" datatype="html">
         <source>The data in this report is based on data that is imported every night from Cooperative Bank of Oromia. If you changed data today this will not be reflected in the report.</source>
@@ -953,14 +974,23 @@
       <trans-unit id="4803523554231687262" datatype="html">
         <source>Delete payment</source>
       </trans-unit>
+      <trans-unit id="4810095011665882114" datatype="html">
+        <source>Exit the settings and continue to the next question. This will not affect the way the questions are displayed in the form.</source>
+      </trans-unit>
       <trans-unit id="4814285799071780083" datatype="html">
         <source>Remove</source>
       </trans-unit>
       <trans-unit id="4821724891066824263" datatype="html">
         <source>You&apos;re about to remove the &quot;<x equiv-text="{{ fspConfigurationLabel() }}" id="INTERPOLATION"/>&quot; FSP configuration from your program. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
       </trans-unit>
+      <trans-unit id="482703440923141060" datatype="html">
+        <source>Kobo account settings menu</source>
+      </trans-unit>
       <trans-unit id="4870684362400415992" datatype="html">
         <source>Duplication fields</source>
+      </trans-unit>
+      <trans-unit id="4877635077865836116" datatype="html">
+        <source>Copy the URL from your browser&apos;s address bar</source>
       </trans-unit>
       <trans-unit id="4890152856739224001" datatype="html">
         <source>Optionally pass a start date and/or an end date to filter the payments. The export is limited to 100,000 records. Adapt your dates if needed.</source>
@@ -1395,6 +1425,9 @@
       <trans-unit id="6693349469471580292" datatype="html">
         <source>Delete file</source>
       </trans-unit>
+      <trans-unit id="6696946129798447214" datatype="html">
+        <source>Kobo account security section</source>
+      </trans-unit>
       <trans-unit id="6704198793956298786" datatype="html">
         <source>Coopbank verification report</source>
       </trans-unit>
@@ -1427,6 +1460,9 @@
       </trans-unit>
       <trans-unit id="6821230510150972530" datatype="html">
         <source>Choose the fields you want to use as duplication indicators. Go for unique identifiers like phone numbers, bank account numbers, or ID numbers. If any of these fields match across two or more registrations, those registrations will be marked as duplicates.</source>
+      </trans-unit>
+      <trans-unit id="6846931882472220376" datatype="html">
+        <source>Where do I find data column names?</source>
       </trans-unit>
       <trans-unit id="6885844978916799621" datatype="html">
         <source>Budget</source>
@@ -1487,6 +1523,9 @@
       </trans-unit>
       <trans-unit id="7022921536845926478" datatype="html">
         <source>Payment reference prefix</source>
+      </trans-unit>
+      <trans-unit id="7033563286301633778" datatype="html">
+        <source>Click &apos;display&apos; next to the api key field</source>
       </trans-unit>
       <trans-unit id="706820993579364519" datatype="html">
         <source>Where we get personal information from</source>
@@ -1557,11 +1596,17 @@
       <trans-unit id="7316654266676902247" datatype="html">
         <source>Your IP-address and some information about the device and web-browser you use to access the 121 Platform.</source>
       </trans-unit>
+      <trans-unit id="7323037145419806466" datatype="html">
+        <source>Copy the revealed key</source>
+      </trans-unit>
       <trans-unit id="732965913930858930" datatype="html">
         <source>Edit file details</source>
       </trans-unit>
       <trans-unit id="7364054681305096413" datatype="html">
         <source>There are no registrations in this program yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Learn more about importing registrations in your program in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
+      </trans-unit>
+      <trans-unit id="7375041371433374887" datatype="html">
+        <source>Where do I find this?</source>
       </trans-unit>
       <trans-unit id="7377270311230371336" datatype="html">
         <source>Order cards</source>
@@ -1797,6 +1842,9 @@
       <trans-unit id="8301535046747035390" datatype="html">
         <source>Full name</source>
       </trans-unit>
+      <trans-unit id="8308037802677044636" datatype="html">
+        <source>Data column name field in question options</source>
+      </trans-unit>
       <trans-unit id="8315909063441814502" datatype="html">
         <source>Changing statuses</source>
       </trans-unit>
@@ -1817,6 +1865,9 @@
       </trans-unit>
       <trans-unit id="8385553553362590495" datatype="html">
         <source>If you have any questions regarding your privacy and the 121 Platform, feel free to contact us at: <x ctype="x-a" equiv-text="&lt;a [href]=&quot;&apos;mailto:&apos; + privacyOfficerEmail&quot;&gt;" id="START_LINK"/><x equiv-text="{{ privacyOfficerEmail }}" id="INTERPOLATION"/><x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></source>
+      </trans-unit>
+      <trans-unit id="8385665200345638963" datatype="html">
+        <source>Copying the revealed API key</source>
       </trans-unit>
       <trans-unit id="8386352594791941612" datatype="html">
         <source>Debit account number</source>
@@ -1932,6 +1983,9 @@
       <trans-unit id="8995474184079201011" datatype="html">
         <source>Use a clear name so users can easily recognize the file.</source>
       </trans-unit>
+      <trans-unit id="9000816474056005568" datatype="html">
+        <source>Display button next to the API key field</source>
+      </trans-unit>
       <trans-unit id="9015320956537592957" datatype="html">
         <source>Program not found. Please check the URL and try again.</source>
       </trans-unit>
@@ -1943,6 +1997,9 @@
       </trans-unit>
       <trans-unit id="9047634939215362248" datatype="html">
         <source>Registrations selected:</source>
+      </trans-unit>
+      <trans-unit id="9047898290178268407" datatype="html">
+        <source>Replace the data column name from the question to the required name from the table</source>
       </trans-unit>
       <trans-unit id="9063819144679824048" datatype="html">
         <source>People included</source>
@@ -1971,6 +2028,9 @@
       <trans-unit id="9202925211917001608" datatype="html">
         <source>Columns to export</source>
       </trans-unit>
+      <trans-unit id="9209582953134366034" datatype="html">
+        <source>Open your form in kobo, then click &apos;summary&apos; in the top tab bar</source>
+      </trans-unit>
       <trans-unit id="9211474991659273932" datatype="html">
         <source>Create new program</source>
       </trans-unit>
@@ -1982,6 +2042,9 @@
       </trans-unit>
       <trans-unit id="935187492052582731" datatype="html">
         <source>Submit</source>
+      </trans-unit>
+      <trans-unit id="958505185210366652" datatype="html">
+        <source>Replacing the data column name with the required name</source>
       </trans-unit>
       <trans-unit id="976904059902830801" datatype="html">
         <source>Change reason</source>
@@ -2418,9 +2481,6 @@
       </trans-unit>
       <trans-unit id="inProgressChipTooltip" datatype="html">
         <source>The payment will be in progress while the transactions in the table below are loading.</source>
-      </trans-unit>
-      <trans-unit id="integrate-kobo-form-api-key-explanation" datatype="html">
-        <source>Copy the API key from the Kobo account settings (top right) &gt; security.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Make sure to click &apos;display&apos; next to the API Key before copying.</source>
       </trans-unit>
       <trans-unit id="integrate-kobo-form-url-explanation" datatype="html">
         <source>The full URL from the form&apos;s page in KoboToolbox, i.e: https://kobo.ifrc.org/#/forms/XXXXXX/summary</source>

@@ -145,7 +145,7 @@ export class RequiredAttributesComponent {
     title: $localize`Where do I find data column names?`,
     items: [
       {
-        content: $localize`In kobo, when creating or editing the form, locate the question you want to change the data column name of and click on the settings (the cog icon) `,
+        content: $localize`In kobo, when creating or editing the form, locate the question you want to change the data column name of and click on the settings (the cog icon)`,
         image: {
           url: 'assets/images/explainers/kobo/kobo-data-column-names-field.png',
           alt: $localize`Question settings cog icon in kobo`,

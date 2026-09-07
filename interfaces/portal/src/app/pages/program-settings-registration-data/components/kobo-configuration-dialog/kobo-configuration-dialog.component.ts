@@ -230,7 +230,7 @@ export class KoboConfigurationDialogComponent {
   };
 
   readonly koboExplainers: Record<
-    string,
+    'apiKey' | 'formUrl',
     { title: string; items: ExplainerItem[] }
   > = {
     formUrl: {
