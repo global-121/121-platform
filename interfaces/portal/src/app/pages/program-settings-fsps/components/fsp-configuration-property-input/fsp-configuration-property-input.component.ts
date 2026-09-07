@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,7 +6,7 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { InputTextModule } from 'primeng/inputtext';
@@ -23,7 +24,7 @@ import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 
 @Component({
-  selector: 'app-fsp-configuration-property-form-field',
+  selector: 'app-fsp-configuration-property-input',
   imports: [
     FormFieldWrapperComponent,
     ReactiveFormsModule,
@@ -31,11 +32,12 @@ import { FspConfigurationService } from '~/services/fsp-configuration.service';
     SelectModule,
     InputTextModule,
     ToggleSwitchModule,
+    NgTemplateOutlet,
   ],
-  templateUrl: './fsp-configuration-property-form-field.component.html',
+  templateUrl: './fsp-configuration-property-input.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FspConfigurationPropertyFormFieldComponent {
+export class FspConfigurationPropertyInputComponent {
   readonly FspConfigurationPropertyInputType =
     FspConfigurationPropertyInputType;
 
@@ -45,6 +47,8 @@ export class FspConfigurationPropertyFormFieldComponent {
 
   readonly fspConfigurationService = inject(FspConfigurationService);
   readonly programApiService = inject(ProgramApiService);
+
+  readonly useDefaultFormFieldWrapper = input(true);
 
   programAttributes = injectQuery(
     this.programApiService.getProgramAttributes({
@@ -79,6 +83,12 @@ export class FspConfigurationPropertyFormFieldComponent {
 
   readonly fieldType = computed(() =>
     this.fspConfigurationService.getPropertyFieldType(this.fspFormField().name),
+  );
+
+  // ngTemplateOutlet creates a separate embedded view, so formControlName can't find
+  // the ControlContainer; bind the control instance directly instead.
+  readonly formControl = computed(
+    () => this.formGroup().get(this.fspFormField().name) as FormControl,
   );
 
   // We can't use the generic function here because of how ReactiveForms don't play well with signals,
