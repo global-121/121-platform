@@ -57,7 +57,7 @@
   "dependencies": {
     "@azure/identity": "^4.13.2",
     "@azure/storage-blob": "^12.33.0",
-    "@bwip-js/node": "^4.11.2",
+    "@bwip-js/node": "^4.11.4",
     "@jimp/plugin-print": "^1.6.1",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/bull": "^11.0.5",
