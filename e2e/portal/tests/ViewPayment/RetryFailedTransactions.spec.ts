@@ -24,7 +24,9 @@ test.beforeEach(
     await paymentsPage.createPayment({});
     await page.waitForURL((url) => url.pathname.startsWith(paymentPageUrl));
     await paymentPage.approvePayment();
+    await paymentPage.validateToastMessageAndClose('Payment approved');
     await paymentPage.startPayment();
+    await paymentPage.validateToastMessageAndClose('Payment started');
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentDetailsPageTitle();
   },
