@@ -1,13 +1,17 @@
-<p
-  i18n
-  class="mbe-2 font-semibold"
->
-  Message preview
+<p class="mbe-2">
+  <label
+    for="messagePreview"
+    i18n
+    class="font-semibold"
+  >
+    Message preview
+  </label>
 </p>
 <textarea
+  id="messagePreview"
   rows="5"
   pTextarea
   [value]="messageText()"
-  [attr.readonly]="true"
+  [readonly]="true"
   class="bg-grey-50 text-black inline-full"
 ></textarea>

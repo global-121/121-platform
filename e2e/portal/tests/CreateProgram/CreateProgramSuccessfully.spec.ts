@@ -60,7 +60,7 @@ test('Create program successfully', async ({
       await page.waitForURL((url) =>
         url.pathname.startsWith(`/en-GB/program/${newProgramId}/settings`),
       );
-      await programOverviewPage.validateToastMessage(
+      await programOverviewPage.validateToastMessageAndClose(
         'Program successfully created.',
       );
     });
@@ -90,7 +90,7 @@ test('Duplicate program successfully', async ({
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${newProgramId}/settings`),
     );
-    await programOverviewPage.validateToastMessage(
+    await programOverviewPage.validateToastMessageAndClose(
       'Program successfully duplicated.',
     );
   });
@@ -147,7 +147,7 @@ test('Create program validation checks on each step', async ({
 
   await test.step('Should successfully proceed without filling in step 3', async () => {
     await createProgramDialog.submitButton.click();
-    await programOverviewPage.validateToastMessage(
+    await programOverviewPage.validateToastMessageAndClose(
       'Program successfully created.',
     );
   });

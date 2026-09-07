@@ -140,12 +140,16 @@ import { test } from '@121-e2e/portal/fixtures/fixture';
 Declare the fixtures you need as parameters in your test function. Playwright will automatically provide them:
 
 ```typescript
-test('Do successful payment for CBE FSP', async ({
+test('Do successful payment for FSP: CBE', async ({
   page,
   paymentPage,
   paymentsPage,
 }) => {
-  await paymentSetup.paymentsPage.createPayment({});
+  await paymentsPage.createPayment({});
+  await page.waitForURL((url) =>
+    url.pathname.endsWith(`/program/${programIdCbe}/payments/1`),
+  );
+  await paymentPage.approvePayment();
 });
 ```
 

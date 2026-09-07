@@ -41,7 +41,7 @@ test('Assign successfully roles to a user ', async ({ programTeamPage }) => {
       userEmail: userFullEmail,
       role: userRole,
     });
-    await programTeamPage.validateToastMessage('User added');
+    await programTeamPage.validateToastMessageAndClose('User added');
     await programTeamPage.validateAssignedTeamMembers(expectedAssignedUsers);
   });
 });

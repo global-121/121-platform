@@ -104,9 +104,21 @@ class BasePage {
     await this.accountDropdown.click();
   }
 
-  async performActionWithRightClick(action: string, row = 0) {
-    await this.table.tableRows.nth(row).click({ button: 'right' });
-    await this.page.getByLabel(action).click();
+  async performActionWithRightClick(action: string, row: number | Locator = 0) {
+    let rowLocator: Locator;
+
+    if (typeof row === 'number') {
+      rowLocator = this.table.tableRows.nth(row);
+    } else {
+      rowLocator = row;
+    }
+
+    await expect(rowLocator).toHaveCount(1);
+    await rowLocator.click({ button: 'right' });
+
+    const actionMenuItem = this.page.getByLabel(action);
+    await expect(actionMenuItem).toBeVisible();
+    await actionMenuItem.click();
 
     if (
       action !== 'Message' &&
@@ -122,41 +134,32 @@ class BasePage {
     await this.page.getByRole('menuitem', { name: option }).click();
   }
 
-  async validateToastMessage(message: string) {
-    await expect(this.toast).toBeVisible();
-    expect(await this.toast.textContent()).toContain(message);
-    await expect(this.toast).toBeHidden({
-      timeout: 6_000, // by default, toasts are visible for 5s, adding some buffer time to account for the fade out animation
-    });
-  }
-
-  // To speed tests up we can validate the toast message and close it
-  // without waiting for the toast to disappear after 6 seconds
+  /**
+   * We validate the toast message and close it, to speed up the tests.
+   * We don't need to wait for the toast to disappear by itself (this takes 5 seconds)
+   */
   async validateToastMessageAndClose(message: string) {
-    await expect(this.toast.first()).toBeVisible({ timeout: 5_000 });
-    expect(await this.toast.first().textContent()).toContain(message);
-    await this.dismissToastIfVisible(message);
-  }
+    const toastLocator = this.toast.filter({
+      visible: true,
+      hasText: message,
+    });
 
-  async dismissToastIfVisible(message?: string) {
-    let toastLocator = this.toast;
-    if (message) {
-      toastLocator = this.toast.filter({ hasText: message });
-    }
-    // Handle multiple toasts, only dismiss the first visible one matching the filter
-    const visibleToasts = await toastLocator.all();
-    for (const toast of visibleToasts) {
-      if (await toast.isVisible()) {
-        await toast.getByRole('button').click();
-        await expect(toast).toBeHidden();
-        break;
-      }
+    // Handle multiple toasts (if any)
+    for (const toast of await toastLocator.all()) {
+      await toast.getByRole('button').click();
     }
   }
 
-  async dismissToast() {
-    await this.toast.getByRole('button').click();
-    await expect(this.toast).toBeHidden();
+  /**
+   * Validate a message is visible without dismissing, for when dismissing the toast is not possible because of some other modal/popup/overlay.
+   * @see validateToastMessageAndClose for the _*preferred*_ way to validate toast messages
+   */
+  async validateToastMessageIsVisibleOnly(message: string) {
+    const toastLocator = this.toast.filter({
+      visible: true,
+      hasText: message,
+    });
+    await expect(toastLocator).toBeVisible();
   }
 
   async waitForPageLoad() {

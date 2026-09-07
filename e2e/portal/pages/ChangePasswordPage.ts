@@ -39,7 +39,9 @@ class ChangePasswordPage extends BasePage {
   }
 
   async assertChangePasswordSuccessPopUp() {
-    await this.validateToastMessage('Your password was successfully changed.');
+    await this.validateToastMessageAndClose(
+      'Your password was successfully changed.',
+    );
   }
 }
 

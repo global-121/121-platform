@@ -5,6 +5,7 @@ import DataListComponent from '../components/DataListComponent';
 import BasePage from './BasePage';
 
 abstract class RegistrationBasePage extends BasePage {
+  readonly registrationTitle: Locator;
   readonly duplicateChip: Locator;
   readonly duplicatesBanner: Locator;
 
@@ -12,12 +13,12 @@ abstract class RegistrationBasePage extends BasePage {
     super(page);
     this.duplicateChip = this.page.getByTestId('duplicate-chip');
     this.duplicatesBanner = this.page.getByTestId('duplicates-banner');
+    this.registrationTitle = this.page.getByTestId('registration-title');
   }
 
   async getRegistrationTitle(): Promise<string> {
-    const titleElement = this.page.getByTestId('registration-title');
-    await titleElement.waitFor();
-    return (await titleElement.textContent())?.trim() ?? '';
+    await this.registrationTitle.waitFor();
+    return (await this.registrationTitle.textContent())?.trim() ?? '';
   }
 
   async getRegistrationSummaryList(): Promise<Record<string, string>> {

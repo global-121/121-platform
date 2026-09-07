@@ -84,7 +84,7 @@ class UsersPage extends BasePage {
     fullName: string;
     email: string;
   }) {
-    await this.validateToastMessage('User added');
+    await this.validateToastMessageAndClose('User added');
     await this.validateRowTextContent({
       email,
       textContent: `${fullName} ${email}`,

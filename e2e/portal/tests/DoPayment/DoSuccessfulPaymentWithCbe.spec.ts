@@ -19,7 +19,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Do successful payment for Cbe fsp', async ({
+test('Do successful payment for FSP: CBE', async ({
   page,
   paymentPage,
   paymentsPage,
@@ -32,13 +32,12 @@ test('Do successful payment for Cbe fsp', async ({
   }, 0);
 
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment({});
+    await paymentsPage.createPayment({ name: 'CBE Payment' });
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdCbe}/payments/1`),
     );
-    // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentDetailsPageTitle();
+    await paymentPage.validatePaymentDetailsPageTitle('CBE Payment');
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
 
@@ -54,9 +53,7 @@ test('Do successful payment for Cbe fsp', async ({
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdCbe}/payments/1`),
     );
-    // Assert payment overview page by payment date/ title
-    // @TODO: Does this really validate anything? I don't think checking if a H1 renders validates anything tbh
-    await paymentPage.validatePaymentDetailsPageTitle();
+    await paymentPage.validatePaymentDetailsPageTitle('CBE Payment');
   });
 
   await test.step('Validate payment card', async () => {

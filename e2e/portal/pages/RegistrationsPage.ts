@@ -65,7 +65,7 @@ class RegistrationsPage extends BasePage {
   }
 
   async typeCustomMessage(message: string) {
-    await this.page.fill('textarea', message);
+    await this.page.getByLabel('Message:').fill(message);
   }
 
   async selectTemplatedMessage(messageTemplate: string) {
@@ -79,14 +79,8 @@ class RegistrationsPage extends BasePage {
       .click();
   }
 
-  async validateMessagePresent(message: string) {
-    await this.page.waitForTimeout(200);
-    await expect(this.page.locator('textarea')).toHaveAttribute('readonly');
-    const textboxValue = await this.page.$eval(
-      'textarea',
-      (textarea) => textarea.value,
-    );
-    expect(textboxValue).toContain(message);
+  async validateMessagePreview(message: string) {
+    await expect(this.page.getByLabel('Message preview')).toHaveValue(message);
   }
 
   async sendMessage() {
@@ -104,7 +98,7 @@ class RegistrationsPage extends BasePage {
       expect(
         await this.manageTableSidebar.getByRole('checkbox').count(),
       ).toBeGreaterThan(0);
-    }).toPass({ timeout: 5000 });
+    }).toPass({ timeout: 5_000 });
   }
 
   async configureTableColumns({
@@ -229,23 +223,15 @@ class RegistrationsPage extends BasePage {
   }: {
     registrationName: string;
   }) {
-    await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForLoadState('networkidle');
-    const rowCount = await this.table.tableRows.count();
-    for (let i = 0; i <= rowCount; i++) {
-      const fullName = await this.table.getCell(i, 2);
-      const fullNameText = (await fullName.textContent())?.trim();
-      const isRequestedFullName = fullNameText?.includes(registrationName);
+    await this.table.waitForLoaded();
 
-      if (
-        (registrationName && isRequestedFullName) ||
-        (!registrationName && !isRequestedFullName)
-      ) {
-        await fullName.getByRole('link').click();
-        return;
-      }
-    }
-    throw new Error('Registration not found');
+    const registrationLink = this.table.table.getByRole('link', {
+      name: registrationName,
+      exact: true,
+    });
+
+    await expect(registrationLink).toHaveCount(1);
+    await registrationLink.click();
   }
 
   async performActionOnRegistrationByName({
@@ -255,23 +241,18 @@ class RegistrationsPage extends BasePage {
     registrationName: string;
     action: string;
   }) {
-    await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForLoadState('networkidle');
-    const rowCount = await this.table.tableRows.count();
-    for (let i = 0; i <= rowCount; i++) {
-      const fullName = await this.table.getCell(i, 2);
-      const fullNameText = (await fullName.textContent())?.trim();
-      const isRequestedFullName = fullNameText?.includes(registrationName);
+    await this.table.waitForLoaded();
 
-      if (
-        (registrationName && isRequestedFullName) ||
-        (!registrationName && !isRequestedFullName)
-      ) {
-        await this.performActionWithRightClick(action, i);
-        return;
-      }
-    }
-    throw new Error('Registration not found');
+    const registrationRow = this.table.tableRows.filter({
+      has: this.page.getByRole('link', {
+        name: registrationName,
+        exact: true,
+      }),
+    });
+
+    await expect(registrationRow).toHaveCount(1);
+
+    await this.performActionWithRightClick(action, registrationRow);
   }
 
   async cancelSendMessageBulkAction() {
@@ -354,7 +335,7 @@ class RegistrationsPage extends BasePage {
     const filePath = await this.downloadFile(() =>
       this.exportCSVButton.click(),
     );
-    await this.validateToastMessageAndClose('Exporting');
+    await this.validateToastMessageIsVisibleOnly('Exporting');
     await this.validateExportedFile({
       filePath,
       expectedRowCount,
@@ -397,6 +378,8 @@ class RegistrationsPage extends BasePage {
       .check();
 
     await this.importFileButton.click();
+    // Wait for the upload to complete
+    await this.page.waitForLoadState('networkidle');
   }
 
   async assertImportTemplateForPvProgram() {

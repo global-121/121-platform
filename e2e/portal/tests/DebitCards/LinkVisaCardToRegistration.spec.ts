@@ -129,17 +129,20 @@ test.describe('Link Visa card to registration', () => {
         'Visa card linked successfully',
       );
 
-      // The behaviour of the page right now is that FE does not refresh immediately and the page should be refreshed to get new and old card numbers
-      // I think this should not work like that
-      // await page.reload();
-      const currentDebitCardDataList =
-        await registrationDebitCardPage.getCurrentDebitCardDataList();
-      const substituteDebitCardDataList =
-        await registrationDebitCardPage.getSubstituteDebitCardDataList();
-      expect(currentDebitCardDataList['Serial number']).toBe(newVisaCardNumber);
-      expect(substituteDebitCardDataList['Serial number']).toBe(
-        visaCardNumberDashed,
-      );
+      // The information in the page will update automatically, eventually
+      await expect(async () => {
+        const currentDebitCardDataList =
+          await registrationDebitCardPage.getCurrentDebitCardDataList();
+        const substituteDebitCardDataList =
+          await registrationDebitCardPage.getSubstituteDebitCardDataList();
+
+        expect(currentDebitCardDataList['Serial number']).toBe(
+          newVisaCardNumber,
+        );
+        expect(substituteDebitCardDataList['Serial number']).toBe(
+          visaCardNumberDashed,
+        );
+      }).toPass({ timeout: 3_000 });
     });
   });
 

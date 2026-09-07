@@ -23,8 +23,9 @@ test('Create payment with a custom name', async ({
   const customName = 'My custom payment';
 
   await paymentsPage.createPayment({ name: customName });
+  await paymentPage.validateToastMessageAndClose('Payment created.');
   await page.waitForURL((url) =>
     url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
   );
-  await paymentPage.validateToastMessageAndClose('Payment created.');
+  await paymentPage.validatePaymentDetailsPageTitle(customName);
 });

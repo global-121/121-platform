@@ -47,7 +47,7 @@ test('Users should be removable from "program team"', async ({
     await programTeamPage.removeUserFromTeam({
       userEmail: userToRemove,
     });
-    await programTeamPage.validateToastMessage('User removed');
+    await programTeamPage.validateToastMessageAndClose('User removed');
     await programTeamPage.validateAssignedTeamMembers(
       expectedFinalAssignedUsers,
     );
