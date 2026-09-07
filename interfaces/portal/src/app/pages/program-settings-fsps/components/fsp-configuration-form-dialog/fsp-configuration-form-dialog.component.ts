@@ -23,7 +23,8 @@ import { ManualLinkComponent } from '~/components/manual-link/manual-link.compon
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { FspConfigurationPropertyFormFieldComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-property-form-field/fsp-configuration-property-form-field.component';
+import { ExcelFspDialogContentComponent } from '~/pages/program-settings-fsps/components/excel-fsp-dialog-content/excel-fsp-dialog-content.component';
+import { FspConfigurationPropertyInputComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-property-input/fsp-configuration-property-input.component';
 import {
   FspConfigurationFormGroup,
   FspConfigurationService,
@@ -35,9 +36,10 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   selector: 'app-fsp-configuration-form-dialog',
   imports: [
     FormDialogComponent,
-    FspConfigurationPropertyFormFieldComponent,
+    ExcelFspDialogContentComponent,
     ReactiveFormsModule,
     ManualLinkComponent,
+    FspConfigurationPropertyInputComponent,
   ],
   templateUrl: './fsp-configuration-form-dialog.component.html',
   styles: ``,
@@ -62,11 +64,14 @@ export class FspConfigurationFormDialogComponent {
   // This is defaulted to Excel to avoid undefined errors before show() is called
   // It could default to anything really, as show() will always be called first
   readonly fspSetting = signal(FSP_SETTINGS[Fsps.excel]);
+
   // If this is undefined, it is because we are adding a new FSP configuration
   // (not reconfiguring one)
   readonly existingFspConfiguration = signal<FspConfiguration | undefined>(
     undefined,
   );
+
+  readonly isExcelFsp = computed(() => this.fspSetting().name === Fsps.excel);
 
   readonly fspLabel = computed(
     () =>

@@ -1,0 +1,59 @@
+<ng-container [formGroup]="formGroup()">
+  @let displayName = fspFormFieldByName().get('displayName');
+  @let columnToMatch = fspFormFieldByName().get('columnToMatch');
+  @let columnsToExportField = fspFormFieldByName().get('columnsToExport');
+
+  @if (displayName) {
+    <app-form-field-wrapper
+      [label]="'IK BEN EEN LABEL YO'"
+      [labelTooltip]="'dashdusadsahu'"
+      [errorMessage]="
+        isControlInvalidAndTouched(displayName.control) &&
+        requiredErrorMessage()
+      "
+    >
+      <app-fsp-configuration-property-input
+        [useDefaultFormFieldWrapper]="false"
+        [fspFormField]="displayName.field"
+        [programId]="programId()"
+        [formGroup]="formGroup()"
+      />
+    </app-form-field-wrapper>
+  }
+
+  @if (columnToMatch) {
+    <app-form-field-wrapper
+      [label]="'IK BEN EEN LABEL YO'"
+      [labelTooltip]="'dashdusadsahu'"
+      [errorMessage]="
+        isControlInvalidAndTouched(columnToMatch.control) &&
+        requiredErrorMessage()
+      "
+    >
+      <app-fsp-configuration-property-input
+        [useDefaultFormFieldWrapper]="false"
+        [fspFormField]="columnToMatch.field"
+        [programId]="programId()"
+        [formGroup]="formGroup()"
+      />
+    </app-form-field-wrapper>
+  }
+
+  @if (columnsToExportField) {
+    <app-form-field-wrapper
+      [label]="'IK BEN EEN LABEL YO'"
+      [labelTooltip]="'dashdusadsahu'"
+      [errorMessage]="
+        isControlInvalidAndTouched(columnsToExportField.control) &&
+        requiredErrorMessage()
+      "
+    >
+      <app-fsp-configuration-property-input
+        [fspFormField]="columnsToExportField.field"
+        [useDefaultFormFieldWrapper]="false"
+        [programId]="programId()"
+        [formGroup]="formGroup()"
+      />
+    </app-form-field-wrapper>
+  }
+</ng-container>
