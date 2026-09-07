@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  model,
+} from '@angular/core';
 
 import {
   Accordion,
@@ -7,9 +12,9 @@ import {
   AccordionPanel,
 } from 'primeng/accordion';
 
-interface ExplainerItem {
+export interface ExplainerItem {
   content: string;
-  image?: { url: string; alt: string };
+  image?: { url: string; alt: string; maxWidth?: string };
 }
 
 @Component({
@@ -21,4 +26,5 @@ interface ExplainerItem {
 export class ExplainerComponent {
   readonly title = input.required<string>();
   readonly items = input.required<ExplainerItem[]>();
+  readonly expanded = model<boolean>(false);
 }

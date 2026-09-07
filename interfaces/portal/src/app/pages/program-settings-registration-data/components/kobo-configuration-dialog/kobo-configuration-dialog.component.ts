@@ -21,6 +21,10 @@ import { PasswordModule } from 'primeng/password';
 
 import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 
+import {
+  ExplainerComponent,
+  ExplainerItem,
+} from '~/components/explainer/explainer.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
@@ -43,6 +47,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     Button,
     PasswordModule,
     KoboIntegrationErrorDialogComponent,
+    ExplainerComponent,
   ],
   providers: [ToastService],
   templateUrl: './kobo-configuration-dialog.component.html',
@@ -52,6 +57,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
 export class KoboConfigurationDialogComponent {
   readonly programId = input.required<number | string>();
   readonly koboIntegrationErrors = signal<KoboValidationError[]>([]);
+  readonly openExplainer = signal<'apiKey' | 'formUrl' | null>(null);
 
   private readonly koboApiService = inject(KoboApiService);
   private readonly toastService = inject(ToastService);
@@ -211,6 +217,75 @@ export class KoboConfigurationDialogComponent {
         .get('fullKoboFormUrl')
         ?.setErrors({ invalid: true });
     }
+  };
+
+  onExplainerExpandedChange = ({
+    key,
+    expanded,
+  }: {
+    key: 'apiKey' | 'formUrl';
+    expanded: boolean;
+  }) => {
+    this.openExplainer.set(expanded ? key : null);
+  };
+
+  readonly koboExplainers: Record<
+    string,
+    { title: string; items: ExplainerItem[] }
+  > = {
+    formUrl: {
+      title: $localize`Where do I find this?`,
+      items: [
+        {
+          content: $localize`Open your form in kobo, then click 'summary' in the top tab bar`,
+          image: {
+            url: 'assets/images/explainers/kobo/kobo-url-location.png',
+            alt: $localize`Kobo form summary tab location`,
+          },
+        },
+        {
+          content: $localize`Copy the URL from your browser's address bar`,
+          image: {
+            url: 'assets/images/explainers/kobo/kobo-url-copy.png',
+            alt: $localize`Copying the URL from the browser's address bar`,
+          },
+        },
+      ],
+    },
+    apiKey: {
+      title: $localize`Where do I find this?`,
+      items: [
+        {
+          content: $localize`In kobo, click your account icon (top right) and go to account settings`,
+          image: {
+            url: 'assets/images/explainers/kobo/kobo-api-key-account-settings.png',
+            alt: $localize`Kobo account settings menu`,
+          },
+        },
+        {
+          content: $localize`Go to the security section`,
+          image: {
+            url: 'assets/images/explainers/kobo/kobo-api-key-security-section.png',
+            alt: $localize`Kobo account security section`,
+            maxWidth: '167px',
+          },
+        },
+        {
+          content: $localize`Click 'display' next to the api key field`,
+          image: {
+            url: 'assets/images/explainers/kobo/kobo-api-key-key.png',
+            alt: $localize`Display button next to the API key field`,
+          },
+        },
+        {
+          content: $localize`Copy the revealed key`,
+          image: {
+            url: 'assets/images/explainers/kobo/kobo-abi-key-copy.png',
+            alt: $localize`Copying the revealed API key`,
+          },
+        },
+      ],
+    },
   };
 
   handleImportExistingRegistrationsClick() {

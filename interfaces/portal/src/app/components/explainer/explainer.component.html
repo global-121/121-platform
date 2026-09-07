@@ -1,5 +1,8 @@
 <div class="bg-grey-100 rounded-lg p-3">
-  <p-accordion [value]="null">
+  <p-accordion
+    [value]="expanded() ? '0' : null"
+    (valueChange)="expanded.set($event === '0')"
+  >
     <p-accordion-panel
       value="0"
       [unstyled]="true"
@@ -30,11 +33,13 @@
               <p>{{ item.content }}</p>
 
               @if (item.image) {
-                <img
-                  [src]="item.image.url"
-                  class="my-3.5 -ms-7.5 min-inline-[calc(100%+1.875rem)]"
-                  [alt]="item.image.alt"
-                />
+                <div [style.max-width]="item.image.maxWidth ?? '100%'">
+                  <img
+                    [src]="item.image.url"
+                    class="my-3.5 -ms-7.5 min-inline-[calc(100%+1.875rem)]"
+                    [alt]="item.image.alt"
+                  />
+                </div>
               }
             </li>
           }
