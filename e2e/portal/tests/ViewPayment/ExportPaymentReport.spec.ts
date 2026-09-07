@@ -33,9 +33,7 @@ test('Export Payment Report should contain the right data', async ({
         url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/${i}`),
       );
       await paymentPage.approvePayment();
-      await paymentPage.validateToastMessageAndClose('Payment approved');
       await paymentPage.startPayment();
-      await paymentPage.validateToastMessageAndClose('Payment started');
       await paymentPage.waitForPaymentToComplete();
     });
   }

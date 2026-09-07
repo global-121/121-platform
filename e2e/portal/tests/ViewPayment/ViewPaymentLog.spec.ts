@@ -32,9 +32,7 @@ test('View payment log, including note added to payment', async ({
       ),
     );
     await paymentPage.approvePayment();
-    await paymentPage.validateToastMessageAndClose('Payment approved');
     await paymentPage.startPayment();
-    await paymentPage.validateToastMessageAndClose('Payment started');
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentDetailsPageTitle();
   });

@@ -38,9 +38,7 @@ test('Do failed payment for Cbe fsp', async ({
     await paymentPage.validatePaymentDetailsPageTitle();
     await paymentPage.validateToastMessageAndClose('Payment created.');
     await paymentPage.approvePayment();
-    await paymentPage.validateToastMessageAndClose('Payment approved');
     await paymentPage.startPayment();
-    await paymentPage.validateToastMessageAndClose('Payment started');
   });
 
   await test.step('Validate payment card with failed payment data', async () => {

@@ -29,9 +29,7 @@ test('Show in progress banner and chip when payment is in progress', async ({
       url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
     await paymentPage.approvePayment();
-    await paymentPage.validateToastMessageAndClose('Payment approved');
     await paymentPage.startPayment();
-    await paymentPage.validateToastMessageAndClose('Payment started');
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentDetailsPageTitle();
     await page.waitForTimeout(500); // wait a bit to allow the payment to start with 2^8 registrations

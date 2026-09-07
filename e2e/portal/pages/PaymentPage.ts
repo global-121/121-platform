@@ -230,16 +230,13 @@ class PaymentPage extends BasePage {
   }
 
   async validateTransferValues({ amount }: { amount: number }) {
-    // The displayed amount can briefly still reflect the previous (stale) value
-    // right after the loader is hidden, before the graph finishes updating.
-    // Retry until it reflects the fresh value instead of relying on a fixed wait.
-    await expect(async () => {
-      const paymentAmount = this.paymentAmount.getByText('€');
-      const paymentAmountText = await paymentAmount.textContent();
-      const normalizedPaymentAmountText = paymentAmountText?.replace(/,/g, '');
+    await this.page.waitForTimeout(1000); // Wait for the graph to be updated after the loader is hidden
 
-      expect(normalizedPaymentAmountText).toContain(amount.toString());
-    }).toPass({ timeout: 5_000 });
+    const paymentAmount = this.paymentAmount.getByText('€');
+    const paymentAmountText = await paymentAmount.textContent();
+    const normalizedPaymentAmountText = paymentAmountText?.replace(/,/g, '');
+
+    expect(normalizedPaymentAmountText).toContain(amount.toString());
   }
 
   async validateRetryFailedTransactionsButtonToBeVisible() {

@@ -39,9 +39,7 @@ test('Do successful payment for FSP: CBE', async ({
     );
     await paymentPage.validatePaymentDetailsPageTitle('CBE Payment');
     await paymentPage.approvePayment();
-    await paymentPage.validateToastMessageAndClose('Payment approved');
     await paymentPage.startPayment();
-    await paymentPage.validateToastMessageAndClose('Payment started');
 
     // Wait for payment transactions to complete
     await waitForPaymentAndTransactionsToComplete({

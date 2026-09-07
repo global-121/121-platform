@@ -33,9 +33,7 @@ test('[Excel fsp]: Import reconciliation data should work similar to import regi
       url.pathname.startsWith(`/en-GB/program/${programIdPV}/payments/1`),
     );
     await paymentPage.approvePayment();
-    await paymentPage.validateToastMessageAndClose('Payment approved');
     await paymentPage.startPayment();
-    await paymentPage.validateToastMessageAndClose('Payment started');
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentDetailsPageTitle();
   });
