@@ -28,7 +28,15 @@ export default defineConfig({
     actionTimeout: 20_000,
     launchOptions: {
       downloadsPath: 'resources/downloads',
-      args: ['--window-size=1920,1024'],
+      args: [
+        // '--window-workspace=1', // Specify on which monitor the browser will appear (0=primary monitor, 1=extra monitor)
+        // '--window-position=0,0', // Specify/force the position of the browser window (x,y) in pixels from top-left
+        '--window-size=1920,1024', // Specify/force the size of the browser window (width,height) in pixels
+        // '--start-maximized', // Alternative to window-size
+      ],
+    },
+    contextOptions: {
+      // reducedMotion: 'reduce', // Uncomment to disable animations/transitions (to find out if those are the cause of flakiness.) ONLY USE FOR DEBUGGING, DO NOT COMMIT THIS CHANGE!
     },
     viewport: null,
     ignoreHTTPSErrors: true,
