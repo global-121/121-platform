@@ -189,7 +189,7 @@ export class UserController {
   @ApiOperation({
     summary:
       'Search, across all programs, for users who are already part of a program or who can be added to a program, based on their username or a substring of their username.' +
-      'Is **NOT** limited to the provided `programId`;' +
+      ' Is **NOT** limited to the provided `programId`;' +
       "The `programId` used to check for the requesting user's permissions only.",
   })
   @ApiQuery({ name: 'username', required: true, type: 'string' })

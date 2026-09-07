@@ -54,7 +54,7 @@ export class PhoneNumberPaymentOnafriq1758014323364 implements MigrationInterfac
     }
   }
 
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    'only up';
+  public down(_queryRunner: QueryRunner): Promise<void> {
+    return Promise.resolve();
   }
 }

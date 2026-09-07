@@ -134,13 +134,13 @@ if (process.env.MATOMO_CONNECTION_STRING) {
     process.env.MATOMO_CONNECTION_STRING,
   );
 
-  if (matomoConnectionInfo && matomoConnectionInfo.api) {
+  if (matomoConnectionInfo.api) {
     const matomoApiOrigin = new URL(matomoConnectionInfo.api).origin;
     let connectSrc = contentSecurityPolicy.get('connect-src') ?? [];
     contentSecurityPolicy.set('connect-src', [...connectSrc, matomoApiOrigin]);
   }
 
-  if (matomoConnectionInfo && matomoConnectionInfo.sdk) {
+  if (matomoConnectionInfo.sdk) {
     const matomoSdkOrigin = new URL(matomoConnectionInfo.sdk).origin;
     let scriptSrc = contentSecurityPolicy.get('script-src') ?? [];
     contentSecurityPolicy.set('script-src', [...scriptSrc, matomoSdkOrigin]);

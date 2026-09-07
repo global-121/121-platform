@@ -12,7 +12,7 @@ export class AddMaxToSpendPerMonthInCentsFspConfigProp1769430310109 implements M
     `);
   }
 
-  public async down(): Promise<void> {
-    'we never do down migrations';
+  public down(_queryRunner: QueryRunner): Promise<void> {
+    return Promise.resolve();
   }
 }

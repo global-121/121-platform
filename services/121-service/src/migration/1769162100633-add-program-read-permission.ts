@@ -22,7 +22,7 @@ export class AddProgramReadPermission1769162100633 implements MigrationInterface
     `);
   }
 
-  public async down(): Promise<void> {
-    "not going to drop permissions, ain't nobody got time for that";
+  public down(_queryRunner: QueryRunner): Promise<void> {
+    return Promise.resolve();
   }
 }

@@ -40,13 +40,11 @@ test('Filter registrations by Date selection', async ({ tableComponent }) => {
     const diffDate = new Date(currentDate);
     diffDate.setDate(diffDayNum);
     const diffFormattedDate = `${diffDate.getFullYear()}-${diffDate.getMonth()}-${diffDayNum}`;
-    if (diffFormattedDate !== undefined) {
-      await tableComponent.filterColumnByDate({
-        columnName: 'Registration created',
-        day: diffFormattedDate,
-        filterMode: 'Date is',
-      });
-    }
+    await tableComponent.filterColumnByDate({
+      columnName: 'Registration created',
+      day: diffFormattedDate,
+      filterMode: 'Date is',
+    });
     await tableComponent.assertEmptyTableState();
     await tableComponent.clearAllFilters();
   });

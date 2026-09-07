@@ -142,9 +142,7 @@ class ProgramMonitoring extends BasePage {
       const cashDisbursedInLastPayment = this.cashDisbursedTile.getByLabel(
         `+ ${lastPaymentAmount}`,
       );
-      await expect(cashDisbursedInLastPayment).toContainText(
-        lastPaymentAmount ?? '',
-      );
+      await expect(cashDisbursedInLastPayment).toContainText(lastPaymentAmount);
     }
     if (newRegistrations) {
       await expect(newPeopleRegisteredChip).toHaveText(
@@ -390,7 +388,7 @@ class ProgramMonitoring extends BasePage {
       .getByRole('tab')
       .allTextContents();
 
-    await expect(debitCardsTabsContent).not.toContain('Debit Cards');
+    expect(debitCardsTabsContent).not.toContain('Debit Cards');
   }
 
   async expectCardOrdersTableToContainOrder({
