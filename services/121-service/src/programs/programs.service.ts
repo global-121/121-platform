@@ -57,7 +57,7 @@ export class ProgramService {
       );
     }
 
-    const relations = ['programFspConfigurations'];
+    const relations = { programFspConfigurations: true };
 
     const program = await this.programRepository.findOne({
       where: { id: Equal(programId) },

@@ -288,7 +288,7 @@ export class RegistrationsPaginationService {
   ): Promise<string[]> {
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
-      select: ['fullnameNamingConvention'],
+      select: { fullnameNamingConvention: true },
     });
     if (program.fullnameNamingConvention)
       return JSON.parse(JSON.stringify(program.fullnameNamingConvention));

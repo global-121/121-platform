@@ -600,7 +600,9 @@ export class MockSeedFactoryService {
   private async getProgramIdsThatHaveAtLeastOneRegistration(): Promise<
     number[]
   > {
-    const allProgramIds = await this.programRepository.find({ select: ['id'] });
+    const allProgramIds = await this.programRepository.find({
+      select: { id: true },
+    });
     const programIdsWithRegistrations: number[] = [];
     for (const program of allProgramIds) {
       const registrationCount = await this.registrationRepository.count({

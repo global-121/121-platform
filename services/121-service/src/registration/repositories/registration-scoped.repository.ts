@@ -7,7 +7,6 @@ import {
   FindOptionsRelations,
   FindOptionsWhere,
   InsertResult,
-  ObjectId,
   QueryFailedError,
   RemoveOptions,
   SaveOptions,
@@ -162,9 +161,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       | number
       | number[]
       | Date
-      | Date[]
-      | ObjectId
-      | ObjectId[],
+      | Date[],
   ): Promise<DeleteResult> {
     // TODO: This is not scoped yet, for now is doesn't matter as
     // we don't use update anywhere yet in a way where it should be scoped
@@ -180,8 +177,6 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       | number[]
       | Date
       | Date[]
-      | ObjectId
-      | ObjectId[]
       | FindOptionsWhere<RegistrationEntity>,
     partialEntity: QueryDeepPartialEntity<RegistrationEntity>,
   ): Promise<UpdateResult> {
