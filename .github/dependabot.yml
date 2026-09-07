@@ -148,13 +148,17 @@ updates:
       # Dependencies below are ordered alphabetically!
       - dependency-name: '@angular*'
         update-types: ['version-update:semver-major']
+      - dependency-name: '@primeuix/themes'
+        update-types: ['version-update:semver-major'] # Next major version has incompatible license; See: AB#43123
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
       - dependency-name: 'filesize'
         update-types: ['version-update:semver-major'] # See: https://www.npmjs.com/package/ngx-filesize
       - dependency-name: 'ngx-matomo-client'
         update-types: ['version-update:semver-major'] # Major versions tied to major-Angular-versions
-      - dependency-name: '*prime*'
+      - dependency-name: 'primeicons'
+        update-types: ['version-update:semver-major'] # Next major version has incompatible license; See: AB#43123
+      - dependency-name: 'primeng'
         update-types: ['version-update:semver-major'] # Next major version has incompatible license; See: AB#43123
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major'] # Major versions tied to major-Angular-versions
