@@ -1,5 +1,7 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
+import { randomInt } from 'node:crypto';
+import { setTimeout } from 'node:timers/promises';
 import {
   DataSource,
   DeleteResult,
@@ -95,6 +97,8 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
           isLastAttempt
         ) {
           throw error;
+        } else {
+          await setTimeout(randomInt(1, 21)); // Some jitter to reduce the chance of retries colliding on registrationProgramId
         }
       }
     }
