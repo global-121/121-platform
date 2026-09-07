@@ -172,7 +172,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
       where: {
         id: Equal(programFspConfigurationId),
       },
-      relations: ['properties'],
+      relations: { properties: true },
     });
 
     return configuration ? configuration.properties : [];

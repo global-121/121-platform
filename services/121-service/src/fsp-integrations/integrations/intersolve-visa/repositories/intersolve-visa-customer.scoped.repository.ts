@@ -18,20 +18,18 @@ export class IntersolveVisaCustomerScopedRepository extends ScopedRepository<Int
 
   public async findOneWithWalletsByRegistrationId(registrationId: number) {
     return await this.findOne({
-      relations: [
-        'intersolveVisaParentWallet',
-        'intersolveVisaParentWallet.intersolveVisaChildWallets',
-      ],
+      relations: {
+        intersolveVisaParentWallet: { intersolveVisaChildWallets: true },
+      },
       where: { registrationId: Equal(registrationId) },
     });
   }
 
   public async findWithWallets() {
     return await this.find({
-      relations: [
-        'intersolveVisaParentWallet',
-        'intersolveVisaParentWallet.intersolveVisaChildWallets',
-      ],
+      relations: {
+        intersolveVisaParentWallet: { intersolveVisaChildWallets: true },
+      },
     });
   }
 

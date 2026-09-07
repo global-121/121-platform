@@ -327,7 +327,7 @@ export class MessageIncomingService {
     const registrationIds = registrations.map((c) => c.id);
     const registrationWithVouchers = await this.registrationRepository.find({
       where: { id: In(registrationIds) },
-      relations: ['images', 'images.voucher'],
+      relations: { images: { voucher: true } },
     });
 
     const filteredRegistrations: RegistrationEntity[] = [];
@@ -338,14 +338,14 @@ export class MessageIncomingService {
           registration.id,
         );
 
-      registration.images = registration.images.filter(
+      const images = registration.images.filter(
         (image) =>
           !image.voucher.send &&
           image.voucher.paymentId &&
           lastThreePaymentIds.includes(image.voucher.paymentId),
       );
-      if (registration.images.length > 0) {
-        filteredRegistrations.push(registration);
+      if (images.length > 0) {
+        filteredRegistrations.push({ ...registration, images });
       }
     }
     return filteredRegistrations;
@@ -388,7 +388,7 @@ export class MessageIncomingService {
         where: {
           username: Like('admin@%'),
         },
-        select: ['id'],
+        select: { id: true },
         order: {
           id: 'ASC',
         },

@@ -142,7 +142,7 @@ export class ProgramRegistrationAttributesService {
   ): Promise<Attribute[]> {
     const hasMaxPayments = await this.programRepository.findOne({
       where: { id: Equal(programId) },
-      select: ['enableMaxPayments'],
+      select: { enableMaxPayments: true },
     });
     const defaultAttributes: Attribute[] = [
       {

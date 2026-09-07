@@ -19,7 +19,7 @@ export class NedbankReconciliationService {
 
   public async doNedbankReconciliation(): Promise<number> {
     const voucherReferences = await this.nedbankVoucherScopedRepository.find({
-      select: ['orderCreateReference', 'transactionId'],
+      select: { orderCreateReference: true, transactionId: true },
       where: [
         { status: IsNull() },
         {

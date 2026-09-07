@@ -52,7 +52,6 @@ export class IntersolveVisaAccountManagementService {
     const registration = await this.registrationsService.getRegistrationOrThrow(
       {
         referenceId,
-        relations: [],
         programId,
       },
     );
@@ -75,7 +74,6 @@ export class IntersolveVisaAccountManagementService {
     const registration = await this.registrationsService.getRegistrationOrThrow(
       {
         referenceId,
-        relations: [],
         programId,
       },
     );
@@ -371,7 +369,7 @@ export class IntersolveVisaAccountManagementService {
             },
           },
         },
-        relations: ['intersolveVisaParentWallet'],
+        relations: { intersolveVisaParentWallet: true },
       },
     );
     if (!wallet) {

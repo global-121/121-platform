@@ -600,7 +600,7 @@ export class RegistrationsBulkService {
     const registrationsAfterUpdate =
       await this.registrationViewScopedRepository.find({
         where: { id: In(filteredRegistrationsIds) },
-        select: ['id', 'status'],
+        select: { id: true, status: true },
         order: {
           id: 'ASC',
         },

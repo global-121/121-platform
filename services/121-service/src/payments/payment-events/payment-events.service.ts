@@ -21,7 +21,7 @@ export class PaymentEventsService {
     const paymentEventEntities = await this.paymentEventRepository.find({
       where: { paymentId: Equal(paymentId) },
       order: { created: 'DESC' },
-      relations: ['user', 'attributes'],
+      relations: { user: true, attributes: true },
     });
 
     return PaymentEventsMapper.mapToPaymentEventsDto(paymentEventEntities);

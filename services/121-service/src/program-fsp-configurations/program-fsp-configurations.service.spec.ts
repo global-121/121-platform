@@ -158,7 +158,7 @@ describe('ProgramFspConfigurationsService', () => {
 
       expect(mockProgramFspConfigurationRepository.find).toHaveBeenCalledWith({
         where: { programId: Equal(programId) },
-        relations: ['properties'],
+        relations: { properties: true },
       });
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBe(1);
@@ -415,7 +415,7 @@ describe('ProgramFspConfigurationsService', () => {
           name: Equal(configName),
           programId: Equal(programId),
         },
-        relations: ['registrations'],
+        relations: { registrations: true },
       });
       expect(mockProgramFspConfigurationRepository.delete).toHaveBeenCalledWith(
         {

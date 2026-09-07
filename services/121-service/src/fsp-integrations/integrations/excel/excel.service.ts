@@ -72,7 +72,7 @@ export class ExcelService {
 
     const programWithAttributes = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
-      relations: ['programRegistrationAttributes'],
+      relations: { programRegistrationAttributes: true },
     });
     // Default to using all program registration attributes names if columnsToExport is not specified
     // So generic fields must be specified in the programFspConfiguration

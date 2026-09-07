@@ -217,7 +217,8 @@ export class IntersolveVisaService {
     createCustomerReference: string;
     contactInformation: ContactInformation;
   }): Promise<IntersolveVisaCustomerEntity> {
-    let intersolveVisaCustomer =
+    // Widened because a freshly created customer legitimately has no parent wallet loaded yet.
+    let intersolveVisaCustomer: IntersolveVisaCustomerEntity | null =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         registrationId,
       );
@@ -416,7 +417,7 @@ export class IntersolveVisaService {
     const updatedParentWallet =
       await this.intersolveVisaParentWalletScopedRepository.findOneOrFail({
         where: { id: Equal(intersolveVisaParentWallet.id) },
-        relations: ['intersolveVisaChildWallets'],
+        relations: { intersolveVisaChildWallets: true },
       });
     return updatedParentWallet;
   }

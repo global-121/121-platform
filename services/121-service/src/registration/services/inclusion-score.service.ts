@@ -29,7 +29,7 @@ export class InclusionScoreService {
 
     const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: Equal(referenceId) },
-      relations: ['data'],
+      relations: { data: true },
     });
     const formulaParts = program.paymentAmountMultiplierFormula
       .replace(/\s/g, '')
@@ -54,14 +54,14 @@ export class InclusionScoreService {
   public async calculateInclusionScore(referenceId: string): Promise<void> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: Equal(referenceId) },
-      relations: ['program'],
+      relations: { program: true },
     });
 
     const scoreList = await this.createQuestionAnswerListPrefilled(referenceId);
 
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(registration.program.id) },
-      relations: ['programRegistrationAttributes'],
+      relations: { programRegistrationAttributes: true },
     });
     const score = this.calculateScoreAllProgramAttributes(
       program.programRegistrationAttributes,
@@ -78,7 +78,7 @@ export class InclusionScoreService {
   ): Promise<object> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: Equal(referenceId) },
-      relations: ['data', 'data.programRegistrationAttribute'],
+      relations: { data: { programRegistrationAttribute: true } },
     });
     const scoreList = {};
     for (const entry of registration.data) {
