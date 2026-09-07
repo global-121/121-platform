@@ -237,7 +237,7 @@ export class KoboConfigurationDialogComponent {
       title: $localize`Where do I find this?`,
       items: [
         {
-          content: $localize`Open your form in kobo, then click 'summary' in the top tab bar`,
+          content: $localize`Open your form in KoboToolbox, then click 'summary' in the top tab bar`,
           image: {
             url: 'assets/images/explainers/kobo/kobo-url-location.png',
             alt: $localize`Kobo form summary tab location`,
@@ -256,7 +256,7 @@ export class KoboConfigurationDialogComponent {
       title: $localize`Where do I find this?`,
       items: [
         {
-          content: $localize`In kobo, click your account icon (top right) and go to account settings`,
+          content: $localize`In KoboToolbox, click your account icon (top right) and go to account settings`,
           image: {
             url: 'assets/images/explainers/kobo/kobo-api-key-account-settings.png',
             alt: $localize`Kobo account settings menu`,
@@ -271,17 +271,17 @@ export class KoboConfigurationDialogComponent {
           },
         },
         {
-          content: $localize`Click 'display' next to the api key field`,
+          content: $localize`Click 'display' next to the 'API Key' field`,
           image: {
             url: 'assets/images/explainers/kobo/kobo-api-key-key.png',
-            alt: $localize`Display button next to the API key field`,
+            alt: $localize`Position of the button next to the 'API Key' field`,
           },
         },
         {
-          content: $localize`Copy the revealed key`,
+          content: $localize`Copy the revealed value`,
           image: {
-            url: 'assets/images/explainers/kobo/kobo-abi-key-copy.png',
-            alt: $localize`Copying the revealed API key`,
+            url: 'assets/images/explainers/kobo/kobo-api-key-copy.png',
+            alt: $localize`Copying revealed value`,
           },
         },
       ],

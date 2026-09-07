@@ -270,9 +270,6 @@
       <trans-unit id="2161871078253886554" datatype="html">
         <source>Unknown user</source>
       </trans-unit>
-      <trans-unit id="2177679280185760299" datatype="html">
-        <source>Question settings cog icon in kobo</source>
-      </trans-unit>
       <trans-unit id="2185398424871178341" datatype="html">
         <source>Addressee (name of the recipient of the package)</source>
       </trans-unit>
@@ -678,6 +675,9 @@
       <trans-unit id="3757859142679780974" datatype="html">
         <source>Kobo form ”<x equiv-text="this.koboIntegration.data()?.name" id="PH"/>” does not have existing registrations. New registrations will be synced to the program automatically.</source>
       </trans-unit>
+      <trans-unit id="3777758117264757443" datatype="html">
+        <source>Click &apos;display&apos; next to the &apos;API Key&apos; field</source>
+      </trans-unit>
       <trans-unit id="37959892232763790" datatype="html">
         <source>Welcome to <x equiv-text="{{ program.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
       </trans-unit>
@@ -779,6 +779,9 @@
       <trans-unit id="4045346346155035518" datatype="html">
         <source>Select role(s)</source>
       </trans-unit>
+      <trans-unit id="4046645409215886143" datatype="html">
+        <source>Position of the button next to the &apos;API Key&apos; field</source>
+      </trans-unit>
       <trans-unit id="4086606389696938932" datatype="html">
         <source>Account</source>
       </trans-unit>
@@ -787,6 +790,9 @@
       </trans-unit>
       <trans-unit id="4099904598600212843" datatype="html">
         <source>Subscription key</source>
+      </trans-unit>
+      <trans-unit id="4115849892665941110" datatype="html">
+        <source>Copying revealed value</source>
       </trans-unit>
       <trans-unit id="4135275683761793881" datatype="html">
         <source><x equiv-text="this.importExistingSubmissions.data()?.numberOfSubmissionsOnForm ?? 0" id="count"/> total submission(s)</source>
@@ -845,9 +851,6 @@
       <trans-unit id="4275051684912699373" datatype="html">
         <source>Amount sent per payment</source>
       </trans-unit>
-      <trans-unit id="4278463314713456915" datatype="html">
-        <source>In kobo, click your account icon (top right) and go to account settings</source>
-      </trans-unit>
       <trans-unit id="428968768517674095" datatype="html">
         <source>Would you like to proceed with <x equiv-text="{{ dryRunData?.applicableCount }}" id="INTERPOLATION"/> registration(s)?</source>
       </trans-unit>
@@ -868,9 +871,6 @@
       </trans-unit>
       <trans-unit id="4377773974394044597" datatype="html">
         <source>Export a CSV for the <x equiv-text="this.actionData()?.count" id="PH"/> selected registration(s). Select the columns you want to update.</source>
-      </trans-unit>
-      <trans-unit id="4386539374719464192" datatype="html">
-        <source>In kobo, when creating or editing the form, locate the question you want to change the data column name of and click on the settings (the cog icon)</source>
       </trans-unit>
       <trans-unit id="4388879716045736175" datatype="html">
         <source>Note</source>
@@ -1021,6 +1021,9 @@
       </trans-unit>
       <trans-unit id="4972704594467578361" datatype="html">
         <source>You&apos;re about to remove <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> (<x equiv-text="{{ selectedUser()?.allRolesLabel }}" id="INTERPOLATION_1"/>) from your team.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>They will not have access to the program anymore.</source>
+      </trans-unit>
+      <trans-unit id="4978155302783580001" datatype="html">
+        <source>In KoboToolbox, when creating or editing the form, locate the question you want to change the data column name of and click on the settings (the cog icon)</source>
       </trans-unit>
       <trans-unit id="4983372178316388330" datatype="html">
         <source>Reconfigure</source>
@@ -1232,6 +1235,9 @@
       <trans-unit id="5758338325877529724" datatype="html">
         <source>The position of the serial number, below the barcode on the back of the card. Highlighted in red.</source>
       </trans-unit>
+      <trans-unit id="5760112994194374275" datatype="html">
+        <source>Copy the revealed value</source>
+      </trans-unit>
       <trans-unit id="5785603167347646403" datatype="html">
         <source>File name change successful</source>
       </trans-unit>
@@ -1401,6 +1407,9 @@
       <trans-unit id="6622197825860768013" datatype="html">
         <source>There are issues in your Kobo form that are blocking the refresh. Fix the errors below in Kobo, then save, redeploy, and try again.</source>
       </trans-unit>
+      <trans-unit id="6623993089282881631" datatype="html">
+        <source>In KoboToolbox, click your account icon (top right) and go to account settings</source>
+      </trans-unit>
       <trans-unit id="6627551976444260400" datatype="html">
         <source>or</source>
       </trans-unit>
@@ -1460,6 +1469,9 @@
       </trans-unit>
       <trans-unit id="6821230510150972530" datatype="html">
         <source>Choose the fields you want to use as duplication indicators. Go for unique identifiers like phone numbers, bank account numbers, or ID numbers. If any of these fields match across two or more registrations, those registrations will be marked as duplicates.</source>
+      </trans-unit>
+      <trans-unit id="6824449389004001261" datatype="html">
+        <source>Location of the &apos;Data Column Name&apos; field in &apos;Question Options&apos;</source>
       </trans-unit>
       <trans-unit id="6846931882472220376" datatype="html">
         <source>Where do I find data column names?</source>
@@ -1523,9 +1535,6 @@
       </trans-unit>
       <trans-unit id="7022921536845926478" datatype="html">
         <source>Payment reference prefix</source>
-      </trans-unit>
-      <trans-unit id="7033563286301633778" datatype="html">
-        <source>Click &apos;display&apos; next to the api key field</source>
       </trans-unit>
       <trans-unit id="706820993579364519" datatype="html">
         <source>Where we get personal information from</source>
@@ -1595,9 +1604,6 @@
       </trans-unit>
       <trans-unit id="7316654266676902247" datatype="html">
         <source>Your IP-address and some information about the device and web-browser you use to access the 121 Platform.</source>
-      </trans-unit>
-      <trans-unit id="7323037145419806466" datatype="html">
-        <source>Copy the revealed key</source>
       </trans-unit>
       <trans-unit id="732965913930858930" datatype="html">
         <source>Edit file details</source>
@@ -1761,6 +1767,9 @@
       <trans-unit id="8060388914130154528" datatype="html">
         <source>The new password must be different from the current password.</source>
       </trans-unit>
+      <trans-unit id="8063525527604925562" datatype="html">
+        <source>Open your form in KoboToolbox, then click &apos;summary&apos; in the top tab bar</source>
+      </trans-unit>
       <trans-unit id="8066608938393600549" datatype="html">
         <source>Message</source>
       </trans-unit>
@@ -1842,9 +1851,6 @@
       <trans-unit id="8301535046747035390" datatype="html">
         <source>Full name</source>
       </trans-unit>
-      <trans-unit id="8308037802677044636" datatype="html">
-        <source>Data column name field in question options</source>
-      </trans-unit>
       <trans-unit id="8315909063441814502" datatype="html">
         <source>Changing statuses</source>
       </trans-unit>
@@ -1865,9 +1871,6 @@
       </trans-unit>
       <trans-unit id="8385553553362590495" datatype="html">
         <source>If you have any questions regarding your privacy and the 121 Platform, feel free to contact us at: <x ctype="x-a" equiv-text="&lt;a [href]=&quot;&apos;mailto:&apos; + privacyOfficerEmail&quot;&gt;" id="START_LINK"/><x equiv-text="{{ privacyOfficerEmail }}" id="INTERPOLATION"/><x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></source>
-      </trans-unit>
-      <trans-unit id="8385665200345638963" datatype="html">
-        <source>Copying the revealed API key</source>
       </trans-unit>
       <trans-unit id="8386352594791941612" datatype="html">
         <source>Debit account number</source>
@@ -1956,6 +1959,9 @@
       <trans-unit id="8900867446691163282" datatype="html">
         <source>You&apos;re about to pause debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>.</source>
       </trans-unit>
+      <trans-unit id="8912714711203532526" datatype="html">
+        <source>Location of question settings button (cog icon) in KoboToolbox</source>
+      </trans-unit>
       <trans-unit id="891683010392787907" datatype="html">
         <source>If the number is correct but this error persists, try a different card and inform your supervisor.</source>
       </trans-unit>
@@ -1982,9 +1988,6 @@
       </trans-unit>
       <trans-unit id="8995474184079201011" datatype="html">
         <source>Use a clear name so users can easily recognize the file.</source>
-      </trans-unit>
-      <trans-unit id="9000816474056005568" datatype="html">
-        <source>Display button next to the API key field</source>
       </trans-unit>
       <trans-unit id="9015320956537592957" datatype="html">
         <source>Program not found. Please check the URL and try again.</source>
@@ -2027,9 +2030,6 @@
       </trans-unit>
       <trans-unit id="9202925211917001608" datatype="html">
         <source>Columns to export</source>
-      </trans-unit>
-      <trans-unit id="9209582953134366034" datatype="html">
-        <source>Open your form in kobo, then click &apos;summary&apos; in the top tab bar</source>
       </trans-unit>
       <trans-unit id="9211474991659273932" datatype="html">
         <source>Create new program</source>

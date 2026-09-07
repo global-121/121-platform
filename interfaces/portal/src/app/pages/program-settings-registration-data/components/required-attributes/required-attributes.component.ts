@@ -145,17 +145,17 @@ export class RequiredAttributesComponent {
     title: $localize`Where do I find data column names?`,
     items: [
       {
-        content: $localize`In kobo, when creating or editing the form, locate the question you want to change the data column name of and click on the settings (the cog icon)`,
+        content: $localize`In KoboToolbox, when creating or editing the form, locate the question you want to change the data column name of and click on the settings (the cog icon)`,
         image: {
           url: 'assets/images/explainers/kobo/kobo-data-column-names-field.png',
-          alt: $localize`Question settings cog icon in kobo`,
+          alt: $localize`Location of question settings button (cog icon) in KoboToolbox`,
         },
       },
       {
         content: $localize`You will then find the data column name in the 'Question Options'`,
         image: {
           url: 'assets/images/explainers/kobo/kobo-data-column-names-question-options.png',
-          alt: $localize`Data column name field in question options`,
+          alt: $localize`Location of the 'Data Column Name' field in 'Question Options'`,
         },
       },
       {
