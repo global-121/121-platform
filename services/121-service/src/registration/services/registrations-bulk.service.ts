@@ -304,7 +304,7 @@ export class RegistrationsBulkService {
         query: { ...duplicateQuery, limit: 1 },
         programId,
         hasPersonalReadPermission: true,
-        queryBuilder: queryBuilder.clone(),
+        queryBuilder,
       });
     return duplicateResult.meta.totalItems ?? 0;
   }
