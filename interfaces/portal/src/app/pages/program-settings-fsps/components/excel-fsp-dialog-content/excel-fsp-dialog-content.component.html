@@ -5,8 +5,8 @@
 
   @if (displayName) {
     <app-form-field-wrapper
-      [label]="'IK BEN EEN LABEL YO'"
-      [labelTooltip]="'dashdusadsahu'"
+      label="'Display name'"
+      i18n-label
       [errorMessage]="
         isControlInvalidAndTouched(displayName.control) &&
         requiredErrorMessage()
@@ -23,8 +23,8 @@
 
   @if (columnToMatch) {
     <app-form-field-wrapper
-      [label]="'IK BEN EEN LABEL YO'"
-      [labelTooltip]="'dashdusadsahu'"
+      label="'Field for identifying registrations'"
+      i18n-label
       [errorMessage]="
         isControlInvalidAndTouched(columnToMatch.control) &&
         requiredErrorMessage()
@@ -41,8 +41,8 @@
 
   @if (columnsToExportField) {
     <app-form-field-wrapper
-      [label]="'IK BEN EEN LABEL YO'"
-      [labelTooltip]="'dashdusadsahu'"
+      label="'Fields to export registrations'"
+      i18n-label
       [errorMessage]="
         isControlInvalidAndTouched(columnsToExportField.control) &&
         requiredErrorMessage()

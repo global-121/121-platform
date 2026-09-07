@@ -420,6 +420,9 @@
       <trans-unit id="2701527640285744987" datatype="html">
         <source>Rename payment</source>
       </trans-unit>
+      <trans-unit id="2704474988774331906" datatype="html">
+        <source>&apos;Display name&apos;</source>
+      </trans-unit>
       <trans-unit id="2717935367210661025" datatype="html">
         <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>). Note: <x equiv-text="event.attributes.note" id="PH_3"/></source>
       </trans-unit>
@@ -446,6 +449,9 @@
       </trans-unit>
       <trans-unit id="2796653095673932200" datatype="html">
         <source><x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ koboFormName() }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> was linked successfully to your program.</source>
+      </trans-unit>
+      <trans-unit id="2797617125295079350" datatype="html">
+        <source>&apos;Field for identifying registrations&apos;</source>
       </trans-unit>
       <trans-unit id="2800411489772677471" datatype="html">
         <source>Fill up all 19 digits to link card</source>
@@ -820,6 +826,9 @@
       </trans-unit>
       <trans-unit id="4231630870580628223" datatype="html">
         <source>Solution</source>
+      </trans-unit>
+      <trans-unit id="4234566113158148368" datatype="html">
+        <source>&apos;Fields to export registrations&apos;</source>
       </trans-unit>
       <trans-unit id="4249207548869932033" datatype="html">
         <source>Password reset successful</source>
