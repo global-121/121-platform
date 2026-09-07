@@ -1157,6 +1157,9 @@
       <trans-unit id="5485741466952031761" datatype="html">
         <source>We couldn&apos;t find any information linked to this person&apos;s phone number in the programs you have access to on the 121 Platform.</source>
       </trans-unit>
+      <trans-unit id="5493925311905255309" datatype="html">
+        <source>Import registration data to select columns</source>
+      </trans-unit>
       <trans-unit id="5512472017654585017" datatype="html">
         <source>Payment creation did not return a payment reference. Please stay on this screen and refresh the payments list before trying again.</source>
       </trans-unit>

@@ -15,22 +15,11 @@
     <app-manual-link />.
   </p>
 
-  @switch (fspSetting().name) {
-    @case ('Excel') {
-      <app-excel-fsp-dialog-content
-        [programId]="programId()"
-        [formGroup]="formGroup()"
-        [fspFormFields]="fspFormFields()"
-      />
-    }
-    @default {
-      @for (fspFormField of fspFormFields(); track fspFormField.name) {
-        <app-fsp-configuration-property-input
-          [programId]="programId()"
-          [formGroup]="formGroup()"
-          [fspFormField]="fspFormField"
-        />
-      }
-    }
+  @for (fspFormField of fspFormFields(); track fspFormField.name) {
+    <app-fsp-configuration-property-form-field
+      [programId]="programId()"
+      [formGroup]="formGroup()"
+      [fspFormField]="fspFormField"
+    />
   }
 </app-form-dialog>

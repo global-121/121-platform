@@ -1,25 +1,19 @@
-@if (useDefaultFormFieldWrapper()) {
-  <app-form-field-wrapper
-    [label]="label()"
-    [labelTooltip]="labelTooltip()"
-    [errorMessage]="
-      formControl().invalid && formControl().touched && errorMessage()
-    "
-  >
-    <ng-container *ngTemplateOutlet="formFieldInput"></ng-container>
-  </app-form-field-wrapper>
-} @else {
-  <ng-container *ngTemplateOutlet="formFieldInput"></ng-container>
-}
-
-<ng-template #formFieldInput>
+@let formControl = formGroup().get(fspFormField().name);
+<app-form-field-wrapper
+  [label]="label()"
+  [labelTooltip]="labelTooltip()"
+  [errorMessage]="
+    formControl?.invalid && formControl?.touched && errorMessage()
+  "
+  [formGroup]="formGroup()"
+>
   @if (
     fieldType() === FspConfigurationPropertyInputType.selectAttributeMultiple
   ) {
     <p-multiselect
       [attr.data-testid]="`fsp-configuration-field-${fspFormField().name}`"
       [options]="programAttributes.data()"
-      [formControl]="formControl()"
+      [formControlName]="fspFormField().name"
       [optionLabel]="'label'"
       [optionValue]="'name'"
       placeholder="Select 1 or more"
@@ -33,7 +27,7 @@
     <p-select
       [attr.data-testid]="`fsp-configuration-field-${fspFormField().name}`"
       [options]="programAttributes.data()"
-      [formControl]="formControl()"
+      [formControlName]="fspFormField().name"
       [optionLabel]="'label'"
       [optionValue]="'name'"
       placeholder="Select 1"
@@ -44,23 +38,36 @@
   } @else if (fieldType() === FspConfigurationPropertyInputType.toggleSwitch) {
     <p-toggle-switch
       [attr.data-testid]="`fsp-configuration-field-${fspFormField().name}`"
-      [formControl]="formControl()"
+      [formControlName]="fspFormField().name"
     />
   } @else if (fieldType() === FspConfigurationPropertyInputType.numberInput) {
     <input
       [attr.data-testid]="`fsp-configuration-field-${fspFormField().name}`"
       pInputText
       type="number"
-      [formControl]="formControl()"
+      [formControlName]="fspFormField().name"
       autocomplete="off"
     />
   } @else {
     <input
       [attr.data-testid]="`fsp-configuration-field-${fspFormField().name}`"
       pInputText
-      [formControl]="formControl()"
+      [formControlName]="fspFormField().name"
       [placeholder]="inputTextPlaceholder()"
       autocomplete="off"
     />
   }
-</ng-template>
+  <ng-container slot="details">
+    @if (
+      fieldType() === FspConfigurationPropertyInputType.selectAttribute ||
+      fieldType() === FspConfigurationPropertyInputType.selectAttributeMultiple
+    ) {
+      <p
+        i18n
+        class="text-grey-500 txt-system-s mbs-1"
+      >
+        Import registration data to select columns
+      </p>
+    }
+  </ng-container>
+</app-form-field-wrapper>
