@@ -420,9 +420,6 @@
       <trans-unit id="2701527640285744987" datatype="html">
         <source>Rename payment</source>
       </trans-unit>
-      <trans-unit id="2704474988774331906" datatype="html">
-        <source>&apos;Display name&apos;</source>
-      </trans-unit>
       <trans-unit id="2717935367210661025" datatype="html">
         <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>). Note: <x equiv-text="event.attributes.note" id="PH_3"/></source>
       </trans-unit>
@@ -449,9 +446,6 @@
       </trans-unit>
       <trans-unit id="2796653095673932200" datatype="html">
         <source><x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ koboFormName() }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> was linked successfully to your program.</source>
-      </trans-unit>
-      <trans-unit id="2797617125295079350" datatype="html">
-        <source>&apos;Field for identifying registrations&apos;</source>
       </trans-unit>
       <trans-unit id="2800411489772677471" datatype="html">
         <source>Fill up all 19 digits to link card</source>
@@ -543,6 +537,9 @@
       <trans-unit id="3164665420660802024" datatype="html">
         <source>Learn more in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
       </trans-unit>
+      <trans-unit id="3170749132598914492" datatype="html">
+        <source>Unique identifier field</source>
+      </trans-unit>
       <trans-unit id="3176639329668271224" datatype="html">
         <source>Link card</source>
       </trans-unit>
@@ -602,6 +599,9 @@
       </trans-unit>
       <trans-unit id="3460608979438095670" datatype="html">
         <source>Retry failed transaction</source>
+      </trans-unit>
+      <trans-unit id="3482063941252803611" datatype="html">
+        <source>FSP export fields (optional)</source>
       </trans-unit>
       <trans-unit id="349264413670639690" datatype="html">
         <source>Choose message</source>
@@ -826,9 +826,6 @@
       </trans-unit>
       <trans-unit id="4231630870580628223" datatype="html">
         <source>Solution</source>
-      </trans-unit>
-      <trans-unit id="4234566113158148368" datatype="html">
-        <source>&apos;Fields to export registrations&apos;</source>
       </trans-unit>
       <trans-unit id="4249207548869932033" datatype="html">
         <source>Password reset successful</source>
@@ -1434,6 +1431,9 @@
       <trans-unit id="6821230510150972530" datatype="html">
         <source>Choose the fields you want to use as duplication indicators. Go for unique identifiers like phone numbers, bank account numbers, or ID numbers. If any of these fields match across two or more registrations, those registrations will be marked as duplicates.</source>
       </trans-unit>
+      <trans-unit id="6822416971424318047" datatype="html">
+        <source>Select a unique identifier - phone number, ID number, or Red Cross registration number - to be used during reconciliation to update the transaction status for each registration.</source>
+      </trans-unit>
       <trans-unit id="6885844978916799621" datatype="html">
         <source>Budget</source>
       </trans-unit>
@@ -1454,6 +1454,9 @@
       </trans-unit>
       <trans-unit id="6967846885075875243" datatype="html">
         <source>Form requirements</source>
+      </trans-unit>
+      <trans-unit id="6984090257911587817" datatype="html">
+        <source>Select the fields to include in the payment report you send to your FSP.</source>
       </trans-unit>
       <trans-unit id="6987397690071959130" datatype="html">
         <source>Old card:</source>

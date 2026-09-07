@@ -5,33 +5,41 @@
 >
   <ng-template #headless>
     <div
-      class="space-y-6 p-6 inline-[632px]"
+      class="inline-[632px]"
       [attr.data-testid]="dialogTestId()"
     >
+      <!-- Header section with title and close button -->
+
+      <div class="flex items-center px-5 block-16 inline-full">
+        <h3 [class]="headerClass()">
+          <i class="me-2 {{ headerIcon() }}"></i>
+          {{ header() }}
+        </h3>
+
+        <p-button
+          [autofocus]="true"
+          ariaLabel="Close"
+          i18n-ariaLabel="@@generic-close"
+          title="Close"
+          i18n-title="@@generic-close"
+          class="ms-auto -me-5 self-start p-4"
+          severity="contrast"
+          text
+          [unstyled]="true"
+          (click)="confirmDialog.onReject()"
+        >
+          <span class="pi pi-times cursor-pointer"></span>
+        </p-button>
+      </div>
+
+      <!-- Form with submit/cancel buttons -->
+
       <form
         (ngSubmit)="onProceed()"
         (keydown.control.enter)="onProceed()"
         (keydown.meta.enter)="onProceed()"
       >
-        <div class="flex items-center inline-full">
-          <h3 [class]="headerClass()">
-            <i class="me-2 {{ headerIcon() }}"></i>
-            {{ header() }}
-          </h3>
-          <p-button
-            [autofocus]="true"
-            ariaLabel="Close"
-            i18n-ariaLabel="@@generic-close"
-            title="Close"
-            i18n-title="@@generic-close"
-            icon="pi pi-times"
-            class="ms-auto"
-            severity="contrast"
-            text
-            (click)="confirmDialog.onReject()"
-          />
-        </div>
-        <div class="flex grow flex-col gap-2 py-4 inline-full">
+        <div class="flex grow flex-col px-5 inline-full">
           <ng-content></ng-content>
           @if (mutation().isError()) {
             <app-form-error
@@ -42,7 +50,7 @@
           }
         </div>
 
-        <div class="mbs-4 flex justify-end gap-4">
+        <div class="flex justify-end gap-3 p-5">
           <p-button
             [disabled]="mutation().isPending()"
             (click)="confirmDialog.onReject()"
