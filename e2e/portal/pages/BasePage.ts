@@ -144,6 +144,8 @@ class BasePage {
       hasText: message,
     });
 
+    await expect(toastLocator).toBeVisible();
+
     // Handle multiple toasts (if any)
     for (const toast of await toastLocator.all()) {
       await toast.getByRole('button').click();
