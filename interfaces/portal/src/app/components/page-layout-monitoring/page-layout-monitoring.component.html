@@ -11,7 +11,7 @@
       [pending]="metrics.isPending()"
       [chipLabel]="(metrics.data()?.newPeople ?? 0) + ' new'"
       chipIcon="pi pi-file-edit"
-      chipVariant="blue"
+      [chipVariant]="ColorVariant.Blue"
       chipTooltip="Registrations with the status “new”."
       i18n-chipTooltip
       [metricValue]="metrics.data()?.registeredPeople | number"
@@ -35,7 +35,7 @@
       class="[grid-area:metric3]"
       [pending]="metrics.isPending()"
       [chipLabel]="(payments.data()?.length ?? 0) + ' payment(s) done'"
-      chipVariant="purple"
+      [chipVariant]="ColorVariant.Purple"
       chipTooltip="Amount of payments done in the program so far."
       i18n-chipTooltip
       [metricValue]="
@@ -62,7 +62,7 @@
       chipIcon="pi pi-money-bill"
       chipTooltip="Cash distributed in the last payment."
       i18n-chipTooltip
-      chipVariant="blue"
+      [chipVariant]="ColorVariant.Blue"
       [metricValue]="
         metrics.data()?.cashDisbursed
           | currency: program.data()?.currency : 'symbol-narrow' : '1.0-0'

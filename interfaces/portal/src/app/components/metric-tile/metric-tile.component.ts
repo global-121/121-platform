@@ -3,12 +3,10 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
 
-import {
-  ChipVariant,
-  ColoredChipComponent,
-} from '~/components/colored-chip/colored-chip.component';
+import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 @Component({
   selector: 'app-metric-tile',
@@ -30,7 +28,7 @@ export class MetricTileComponent {
   readonly metricValue = input<null | number | string>();
   readonly metricTooltip = input<string>();
 
-  readonly chipVariant = input<ChipVariant>();
+  readonly chipVariant = input<ColorVariant>();
   readonly chipLabel = input<string>();
   readonly chipIcon = input<string>();
   readonly chipTooltip = input<string>();

@@ -19,10 +19,7 @@ import { DialogModule } from 'primeng/dialog';
 import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
-import {
-  ChipVariant,
-  ColoredChipComponent,
-} from '~/components/colored-chip/colored-chip.component';
+import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { getChipDataBySubmissionsKey } from '~/components/colored-chip/colored-chip.helper';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
@@ -33,6 +30,7 @@ import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { DialogState } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registrations-dialog-state.enum';
 import { KoboIntegrationErrorDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-integration-error-dialog/kobo-integration-error-dialog.component';
 import { ToastService } from '~/services/toast.service';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 interface ValidationError {
   referenceId: string;
@@ -67,6 +65,7 @@ export class KoboImportExistingRegistrationsDialogComponent {
   readonly programId = input.required<number | string>();
 
   readonly koboIntegrationErrors = signal<KoboValidationError[]>([]);
+  readonly ColorVariant = ColorVariant;
 
   readonly koboIntegrationErrorDialog =
     viewChild.required<KoboIntegrationErrorDialogComponent>(
@@ -226,7 +225,7 @@ export class KoboImportExistingRegistrationsDialogComponent {
 
   getChipVariantBySubmissionKey(
     importExistingSubmissionsResultKey: ImportExistingSubmissionsResultKey,
-  ): ChipVariant {
+  ): ColorVariant {
     return getChipDataBySubmissionsKey(importExistingSubmissionsResultKey)
       .chipVariant;
   }

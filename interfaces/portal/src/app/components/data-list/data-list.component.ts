@@ -21,21 +21,19 @@ import { TagModule } from 'primeng/tag';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { getRandomInt } from '@121-service/src/utils/random-value.helper';
 
-import {
-  ChipVariant,
-  ColoredChipComponent,
-} from '~/components/colored-chip/colored-chip.component';
+import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { ImageDialogTriggerComponent } from '~/components/image/image-dialog-trigger/image-dialog-trigger.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 export type DataListItem = {
   label: string | UILanguageTranslation;
   tooltip?: string;
   loading?: boolean;
   chipLabel?: string;
-  chipVariant?: ChipVariant;
+  chipVariant?: ColorVariant;
   fullWidth?: boolean;
   icon?: string;
   detailAction?: {

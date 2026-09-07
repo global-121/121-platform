@@ -6,6 +6,8 @@ import {
   input,
 } from '@angular/core';
 
+import { ColorVariant } from '~/utils/color-variant.enum';
+
 /**
  * `title`, `description`, and `info` must be translated strings.
  */
@@ -15,16 +17,6 @@ export interface NotificationBannerContent {
   info?: string;
   icon?: NotificationBannerIcon;
 }
-
-export type NotificationBannerColor =
-  | 'blue'
-  | 'contrast'
-  | 'green'
-  | 'grey'
-  | 'orange'
-  | 'purple'
-  | 'red'
-  | 'yellow';
 
 export type NotificationBannerIcon =
   'alert' | 'check' | 'info' | 'spinner' | 'warning';
@@ -38,27 +30,27 @@ export type NotificationBannerIcon =
 })
 export class NotificationBannerComponent {
   readonly content = input<NotificationBannerContent>();
-  readonly color = input.required<NotificationBannerColor>();
+  readonly color = input.required<ColorVariant>();
 
   readonly wrapperColorVariantClass = computed(() => {
     // Do not replace with something like `bg-${this.variant()}-100` as it would not work with tailwind's JIT compiler
     // https://tailwindcss.com/docs/just-in-time-mode
     switch (this.color()) {
-      case 'blue':
+      case ColorVariant.Blue:
         return `border-blue-500 bg-blue-100 text-blue-700`;
-      case 'green':
+      case ColorVariant.Green:
         return `border-green-500 bg-green-100 text-green-700`;
-      case 'purple':
+      case ColorVariant.Purple:
         return `border-purple-500 bg-purple-100 text-purple-900`;
-      case 'red':
+      case ColorVariant.Red:
         return `border-red-500 bg-red-100 text-red-700`;
-      case 'orange':
+      case ColorVariant.Orange:
         return `border-orange-500 bg-orange-100 text-orange-700`;
-      case 'yellow':
+      case ColorVariant.Yellow:
         return `border-yellow-500 bg-yellow-100 text-yellow-700`;
-      case 'grey':
+      case ColorVariant.Grey:
         return `border-grey-500 bg-grey-100 text-grey-700`;
-      case 'contrast':
+      case ColorVariant.Contrast:
         return `border-grey-50 bg-grey-50 text-grey-900`;
       default:
         return '';

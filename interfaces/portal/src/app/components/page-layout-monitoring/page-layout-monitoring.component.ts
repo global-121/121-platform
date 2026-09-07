@@ -24,6 +24,7 @@ import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { ColorVariant } from '~/utils/color-variant.enum';
 import { Locale } from '~/utils/locale';
 
 @Component({
@@ -52,6 +53,8 @@ export class PageLayoutMonitoringComponent {
   readonly programApiService = inject(ProgramApiService);
   readonly paymentApiService = inject(PaymentApiService);
   readonly translatableStringService = inject(TranslatableStringService);
+
+  readonly ColorVariant = ColorVariant;
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
   metrics = injectQuery(() => ({

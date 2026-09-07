@@ -23,6 +23,7 @@ import { injectFspConfigurations } from '~/domains/fsp-configuration/fsp-configu
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { FspConfigurationCardComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-card/fsp-configuration-card.component';
 import { AuthService } from '~/services/auth.service';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 @Component({
   selector: 'app-fsp-configuration-list',
@@ -57,6 +58,8 @@ export class FspConfigurationListComponent {
       this.fspConfigurations.data()?.map((programFsp) => programFsp.fspName) ??
       [],
   );
+
+  readonly ColorVariant = ColorVariant;
 
   readonly integrationRequiredBannerContent = {
     title: $localize`Integration required`,

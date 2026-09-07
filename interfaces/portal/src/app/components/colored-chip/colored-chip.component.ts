@@ -8,15 +8,7 @@ import {
 import { ChipModule } from 'primeng/chip';
 import { TooltipModule } from 'primeng/tooltip';
 
-export type ChipVariant =
-  | 'blue'
-  | 'contrast'
-  | 'green'
-  | 'grey'
-  | 'orange'
-  | 'purple'
-  | 'red'
-  | 'yellow';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 @Component({
   selector: 'app-colored-chip',
@@ -26,7 +18,7 @@ export type ChipVariant =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColoredChipComponent {
-  readonly variant = input.required<ChipVariant>();
+  readonly variant = input.required<ColorVariant>();
   readonly label = input.required<string>();
   readonly icon = input<string>();
   readonly tooltip = input<string>();
@@ -49,21 +41,21 @@ export class ColoredChipComponent {
     // https://tailwindcss.com/docs/just-in-time-mode
     const variant = this.variant();
     switch (variant) {
-      case 'blue':
+      case ColorVariant.Blue:
         return `${classString} bg-blue-100 text-blue-700`;
-      case 'green':
+      case ColorVariant.Green:
         return `${classString} bg-green-100 text-green-700`;
-      case 'purple':
+      case ColorVariant.Purple:
         return `${classString} bg-purple-100 text-purple-900`;
-      case 'red':
+      case ColorVariant.Red:
         return `${classString} bg-red-100 text-red-700`;
-      case 'orange':
+      case ColorVariant.Orange:
         return `${classString} bg-orange-100 text-orange-700`;
-      case 'yellow':
+      case ColorVariant.Yellow:
         return `${classString} bg-yellow-100 text-yellow-700`;
-      case 'grey':
+      case ColorVariant.Grey:
         return `${classString} bg-grey-100 text-grey-700`;
-      case 'contrast':
+      case ColorVariant.Contrast:
         return `${classString} bg-grey-50 text-grey-900`;
       default:
         variant satisfies never;

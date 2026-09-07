@@ -22,10 +22,7 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
-import {
-  ChipVariant,
-  ColoredChipComponent,
-} from '~/components/colored-chip/colored-chip.component';
+import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.helper';
@@ -34,6 +31,7 @@ import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 @Component({
   selector: 'app-fsp-configuration-card',
@@ -78,16 +76,19 @@ export class FspConfigurationCardComponent {
     () => $localize`Remove` + ` "${this.fspConfigurationLabel()}"`,
   );
 
-  readonly coloredChipProps = computed<{ label: string; variant: ChipVariant }>(
-    () => {
-      return {
-        label: this.configurationPending()
-          ? $localize`Integration required`
-          : $localize`Integrated`,
-        variant: this.configurationPending() ? 'red' : 'green',
-      };
-    },
-  );
+  readonly coloredChipProps = computed<{
+    label: string;
+    variant: ColorVariant;
+  }>(() => {
+    return {
+      label: this.configurationPending()
+        ? $localize`Integration required`
+        : $localize`Integrated`,
+      variant: this.configurationPending()
+        ? ColorVariant.Red
+        : ColorVariant.Green,
+    };
+  });
 
   programAttributes = injectQuery(
     this.programApiService.getProgramAttributes({

@@ -19,6 +19,7 @@ import { CreatePaymentComponent } from '~/pages/program-payments/components/crea
 import { ExportPaymentsComponent } from '~/pages/program-payments/components/export-payments/export-payments.component';
 import { PaymentSummaryCardComponent } from '~/pages/program-payments/components/payment-summary-card/payment-summary-card.component';
 import { AuthService } from '~/services/auth.service';
+import { ColorVariant } from '~/utils/color-variant.enum';
 
 @Component({
   selector: 'app-program-payments',
@@ -41,6 +42,8 @@ export class ProgramPaymentsPageComponent {
 
   private authService = inject(AuthService);
   private paymentApiService = inject(PaymentApiService);
+
+  readonly ColorVariant = ColorVariant;
 
   payments = injectQuery(
     this.paymentApiService.getPaymentAggregationsSummaries(this.programId),

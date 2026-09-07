@@ -54,6 +54,7 @@ import { AuthService } from '~/services/auth.service';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { ColorVariant } from '~/utils/color-variant.enum';
 import { generateFieldErrors } from '~/utils/form-validation';
 import { Locale } from '~/utils/locale';
 
@@ -107,10 +108,12 @@ export class PageLayoutPaymentComponent {
   readonly paymentApiService = inject(PaymentApiService);
   readonly programApiService = inject(ProgramApiService);
   readonly translatableStringService = inject(TranslatableStringService);
-  readonly TransactionStatusEnum = TransactionStatusEnum;
-  private readonly router = inject(Router);
-
   private authService = inject(AuthService);
+
+  readonly TransactionStatusEnum = TransactionStatusEnum;
+  readonly ColorVariant = ColorVariant;
+
+  private readonly router = inject(Router);
 
   readonly deletePaymentDialog = viewChild.required<FormDialogComponent>(
     'deletePaymentDialog',
@@ -473,14 +476,14 @@ export class PageLayoutPaymentComponent {
 
   readonly statusBadgeColor = computed(() => {
     if (!this.paymentAggregate.isSuccess()) {
-      return 'blue';
+      return ColorVariant.Blue;
     }
 
     if (this.isPaymentApproved()) {
-      return 'purple';
+      return ColorVariant.Purple;
     }
 
-    return 'orange';
+    return ColorVariant.Orange;
   });
 
   readonly isPaymentInProgress = computed<boolean | undefined>(

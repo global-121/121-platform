@@ -40,7 +40,7 @@
           @for (relation of duplicatedProgramRelations; track relation) {
             <li>
               <app-colored-chip
-                variant="blue"
+                [variant]="ColorVariant.Blue"
                 [label]="relation"
               />
             </li>
@@ -126,8 +126,8 @@
 <ng-template #notification>
   <div class="mbs-4">
     <app-notification-banner
-      [content]="notificationBannerContent"
-      [color]="'blue'"
+      [content]="notificationBannerProps.content"
+      [color]="notificationBannerProps.color"
     />
   </div>
 </ng-template>
