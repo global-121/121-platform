@@ -6,6 +6,8 @@ test.describe('View Privacy Notice', () => {
   test('when logged-out', async ({ page }) => {
     // Arrange
     await page.goto('/logout'); // Make sure we're not logged in
+    // Actually logging-out takes at least 1 second...
+    await page.waitForURL((url) => url.pathname.startsWith('/en-GB/login'));
     // Act
     await page.goto('/en-GB/privacy');
 
