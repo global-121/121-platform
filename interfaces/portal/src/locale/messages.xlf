@@ -213,6 +213,9 @@
       <trans-unit id="1867309401161150879" datatype="html">
         <source>The data of the 121 Platform is hosted in a Microsoft Azure-environment of The Netherlands Red Cross.</source>
       </trans-unit>
+      <trans-unit id="1871323850349727893" datatype="html">
+        <source>Location of KoboToolbox form summary tab</source>
+      </trans-unit>
       <trans-unit id="1872549287181572098" datatype="html">
         <source>Import existing registrations from your Kobo form.</source>
       </trans-unit>
@@ -230,9 +233,6 @@
       </trans-unit>
       <trans-unit id="1941641831210864467" datatype="html">
         <source>Replace visa card</source>
-      </trans-unit>
-      <trans-unit id="1947325177477051364" datatype="html">
-        <source>Kobo form summary tab location</source>
       </trans-unit>
       <trans-unit id="1953762348939012822" datatype="html">
         <source>Revert to default</source>

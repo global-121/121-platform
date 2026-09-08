@@ -240,7 +240,7 @@ export class KoboConfigurationDialogComponent {
           content: $localize`Open your form in KoboToolbox, then click 'summary' in the top tab bar`,
           image: {
             url: 'assets/images/explainers/kobo/kobo-url-location.png',
-            alt: $localize`Kobo form summary tab location`,
+            alt: $localize`Location of KoboToolbox form summary tab`,
           },
         },
         {
