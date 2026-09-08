@@ -71,6 +71,7 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
       body: {
         secret: env.RESET_SECRET,
       },
+      skipIntroduceDuplicates: true,
     });
     expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
 
