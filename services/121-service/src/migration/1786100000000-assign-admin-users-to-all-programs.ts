@@ -2,9 +2,10 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { env } from '@121-service/src/env';
 
-export class AssignAdminUsersToAllPrograms1786100000000
-  implements MigrationInterface
-{
+export class AssignAdminUsersToAllPrograms1786100000000 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'AssignAdminUsersToAllPrograms1786100000000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -79,9 +80,5 @@ export class AssignAdminUsersToAllPrograms1786100000000
             AND existing_role."userRoleId" = admin_role."id"
         );
     `);
-  }
-
-  public async down(_: QueryRunner): Promise<void> {
-     console.log('Progress is the way');
   }
 }

@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class ProgramFspConfigMissingSequence1750777175366 implements MigrationInterface {
+export class ProgramFspConfigMissingSequence1750777175366 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
       `select
@@ -25,9 +28,5 @@ export class ProgramFspConfigMissingSequence1750777175366 implements MigrationIn
           "121-service".program_fsp_configuration pfc )
       );`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    console.log('We only move forward, there is no going back!');
   }
 }

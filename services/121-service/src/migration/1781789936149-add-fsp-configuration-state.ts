@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddFspConfigurationState1781789936149 implements MigrationInterface {
+export class AddFspConfigurationState1781789936149 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'AddFspConfigurationState1781789936149';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -13,9 +16,5 @@ export class AddFspConfigurationState1781789936149 implements MigrationInterface
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_fsp_configuration" ALTER COLUMN "state" SET NOT NULL`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    console.log('Do we go down? No, the only way is up');
   }
 }

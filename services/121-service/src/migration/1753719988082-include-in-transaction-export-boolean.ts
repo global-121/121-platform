@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class IncludeInTransactionExportBoolean1753719988082 implements MigrationInterface {
+export class IncludeInTransactionExportBoolean1753719988082 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'IncludeInTransactionExportBoolean1753719988082';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -26,9 +29,5 @@ export class IncludeInTransactionExportBoolean1753719988082 implements Migration
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_registration_attribute" DROP COLUMN "export"`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    console.log('We only move forward, there is no going back!');
   }
 }

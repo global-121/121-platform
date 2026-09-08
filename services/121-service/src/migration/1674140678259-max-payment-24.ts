@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class maxPayment241674140678259 implements MigrationInterface {
+export class maxPayment241674140678259 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'maxPayment241674140678259';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -23,9 +26,5 @@ export class maxPayment241674140678259 implements MigrationInterface {
         )
         AND "maxPayments" is null
         `);
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 }

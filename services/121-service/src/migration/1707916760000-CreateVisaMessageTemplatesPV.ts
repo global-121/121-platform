@@ -3,7 +3,10 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 
-export class CreateVisaMessageTemplatesPV1707916760000 implements MigrationInterface {
+export class CreateVisaMessageTemplatesPV1707916760000 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Commit transaction because the tables are needed before the insert
     await queryRunner.commitTransaction();
@@ -95,8 +98,5 @@ export class CreateVisaMessageTemplatesPV1707916760000 implements MigrationInter
         }
       }
     }
-  }
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // Nothing to do
   }
 }

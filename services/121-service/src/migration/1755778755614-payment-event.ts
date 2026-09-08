@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class PaymentEvent1755778755614 implements MigrationInterface {
+export class PaymentEvent1755778755614 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'PaymentEvent1755778755614';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -51,9 +54,5 @@ export class PaymentEvent1755778755614 implements MigrationInterface {
         [payment.created, payment.userId, payment.paymentId],
       );
     }
-  }
-
-  public async down(_: QueryRunner): Promise<void> {
-    // No down migration
   }
 }

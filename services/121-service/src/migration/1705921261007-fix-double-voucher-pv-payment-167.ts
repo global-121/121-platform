@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class FixDoubleVoucherPvPayment1671705921261007 implements MigrationInterface {
+export class FixDoubleVoucherPvPayment1671705921261007 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   public async up(_queryRunner: QueryRunner): Promise<void> {
     // The code in this migration should be removed after it has run
     // console.time('FixDoubleVoucherPvPayment1671705921261007');
@@ -103,9 +106,5 @@ export class FixDoubleVoucherPvPayment1671705921261007 implements MigrationInter
     //           AND t.created = latest_transactions.max_created;`);
     // }
     // console.timeEnd('FixDoubleVoucherPvPayment1671705921261007');
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 }

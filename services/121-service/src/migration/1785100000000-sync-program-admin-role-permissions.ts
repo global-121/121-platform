@@ -1,8 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class SyncProgramAdminRolePermissions1785100000000
-  implements MigrationInterface
-{
+export class SyncProgramAdminRolePermissions1785100000000 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'SyncProgramAdminRolePermissions1785100000000';
 
   private readonly role = 'program-admin';
@@ -80,10 +81,7 @@ export class SyncProgramAdminRolePermissions1785100000000
 
   private async removePermissionsNotInTargetSet(
     queryRunner: QueryRunner,
-    {
-      role,
-      targetPermissions,
-    }: { role: string; targetPermissions: string[] },
+    { role, targetPermissions }: { role: string; targetPermissions: string[] },
   ): Promise<void> {
     await queryRunner.query(
       `
@@ -96,9 +94,5 @@ export class SyncProgramAdminRolePermissions1785100000000
       `,
       [role, targetPermissions],
     );
-  }
-
-  public async down(): Promise<void> {
-    throw new Error('Down migrations are not required.');
   }
 }

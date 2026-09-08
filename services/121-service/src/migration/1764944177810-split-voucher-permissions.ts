@@ -4,7 +4,10 @@ import { PermissionEntity } from '@121-service/src/user/entities/permissions.ent
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-export class SplitVoucherPermissions1764944177810 implements MigrationInterface {
+export class SplitVoucherPermissions1764944177810 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'SplitVoucherPermissions1764944177810';
   closestPermissionName = 'payment:voucher.read';
 
@@ -46,10 +49,6 @@ export class SplitVoucherPermissions1764944177810 implements MigrationInterface 
       `DELETE FROM "121-service".permission WHERE "id" = $1`,
       [closestPermissionId],
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 
   private async addNewPermission({

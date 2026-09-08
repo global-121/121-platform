@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveTryWhatsapp1778578837068 implements MigrationInterface {
+export class RemoveTryWhatsapp1778578837068 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'RemoveTryWhatsapp1778578837068';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -10,9 +13,5 @@ export class RemoveTryWhatsapp1778578837068 implements MigrationInterface {
     await queryRunner.query(
       `DROP TABLE IF EXISTS "121-service"."try_whatsapp"`,
     );
-  }
-
-  public async down(_: QueryRunner): Promise<void> {
-    console.log('No way down, only forward');
   }
 }

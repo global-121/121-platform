@@ -17,7 +17,10 @@ const healthAreaQuestion = {
   export: ['all-people-affected', 'included'],
 };
 
-export class UpdateVodacash1710258612887 implements MigrationInterface {
+export class UpdateVodacash1710258612887 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'UpdateVodacash1710258612887';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -44,9 +47,5 @@ export class UpdateVodacash1710258612887 implements MigrationInterface {
         );
       }
     }
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 }

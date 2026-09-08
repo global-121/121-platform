@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveUnusedFspsFromFspTable1721399866166 implements MigrationInterface {
+export class RemoveUnusedFspsFromFspTable1721399866166 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'RemoveUnusedFspsFromFspTable1721399866166';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -74,9 +77,5 @@ export class RemoveUnusedFspsFromFspTable1721399866166 implements MigrationInter
       await queryRunner.rollbackTransaction();
       throw err;
     }
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 }

@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RegistrationEventView1765196346573 implements MigrationInterface {
+export class RegistrationEventView1765196346573 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'RegistrationEventView1765196346573';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -56,9 +59,5 @@ export class RegistrationEventView1765196346573 implements MigrationInterface {
       FROM "121-service"."registration_event"
       WHERE "type" = 'ignoredDuplicate'`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // no down
   }
 }

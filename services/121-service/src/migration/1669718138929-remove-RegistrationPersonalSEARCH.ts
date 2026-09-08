@@ -1,16 +1,15 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class removeRegistrationPersonalSEARCH1669718138929 implements MigrationInterface {
+export class removeRegistrationPersonalSEARCH1669718138929 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.commitTransaction();
     // Commenting out because this was causing issues with new entities and legacy migrations
     // and the migration is likely not needed anymore.
     // await this.migrateData(queryRunner.manager);
     await queryRunner.startTransaction();
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 
   // private async migrateData(manager: EntityManager): Promise<void> {

@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class SeparateRetryPermission1767868951564 implements MigrationInterface {
+export class SeparateRetryPermission1767868951564 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'SeparateRetryPermission1767868951564';
   closestPermissionName = 'payment.update';
 
@@ -16,10 +19,6 @@ export class SeparateRetryPermission1767868951564 implements MigrationInterface 
       this.closestPermissionName,
       'payment.start',
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 }
 

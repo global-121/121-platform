@@ -6,7 +6,10 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 // Show console logs only for NLRC, as they have a lot of transactions and we want to monitor the progress there during release
 // Not for other environments to prevent unnecessary log noise when creating a new instance or resetting locally
 const showConsoleTime = env.ENV_NAME === 'NLRC';
-export class TransactionEvents1760532935192 implements MigrationInterface {
+export class TransactionEvents1760532935192 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'TransactionEvents1760532935192';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -311,10 +314,6 @@ export class TransactionEvents1760532935192 implements MigrationInterface {
       console.timeEnd('Migration TransactionEvents');
     }
     // throw new Error('Stop migration for testing');
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // only up
   }
 
   private async fillTransactionTable(queryRunner: QueryRunner) {

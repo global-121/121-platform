@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddProgramTeamManagerRole1782222063061 implements MigrationInterface {
+export class AddProgramTeamManagerRole1782222063061 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'AddProgramTeamManagerRole1782222063061';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -92,9 +95,5 @@ export class AddProgramTeamManagerRole1782222063061 implements MigrationInterfac
     `,
       [role, permissionName],
     );
-  }
-
-  public async down(): Promise<void> {
-    throw new Error('Down migrations are not required.');
   }
 }

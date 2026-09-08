@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class DeleteSpecificPermissions1713509783878 implements MigrationInterface {
+export class DeleteSpecificPermissions1713509783878 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'DeleteSpecificPermissions1713509783878';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -22,9 +25,5 @@ export class DeleteSpecificPermissions1713509783878 implements MigrationInterfac
          WHERE "id" IN (${permissionIds.join(', ')})`,
       );
     }
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 }

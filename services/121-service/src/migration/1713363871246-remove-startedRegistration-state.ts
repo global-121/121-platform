@@ -2,7 +2,10 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 const registrationStatus = 'startedRegistration';
 
-export class RemoveStartedRegistrationState1713363871246 implements MigrationInterface {
+export class RemoveStartedRegistrationState1713363871246 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'RemoveStartedRegistrationState1713363871246';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -29,9 +32,5 @@ export class RemoveStartedRegistrationState1713363871246 implements MigrationInt
     );
 
     await queryRunner.startTransaction();
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 }

@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class ProgramRegistrationAttributeRefactor1729605362361 implements MigrationInterface {
+export class ProgramRegistrationAttributeRefactor1729605362361 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'ProgramRegistrationAttributeRefactor1729605362361';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -606,9 +609,5 @@ export class ProgramRegistrationAttributeRefactor1729605362361 implements Migrat
     await queryRunner.query(
       `DROP TABLE "121-service"."program_financial_service_providers_financial_service_provider" cascade`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    console.log('Not implemented');
   }
 }

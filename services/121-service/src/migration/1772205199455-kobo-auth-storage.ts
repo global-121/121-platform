@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class KoboAuthStorage1772205199455 implements MigrationInterface {
+export class KoboAuthStorage1772205199455 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'KoboAuthStorage1772205199455';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -22,9 +25,5 @@ export class KoboAuthStorage1772205199455 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."kobo" ALTER COLUMN "webhookAuthPassword" SET NOT NULL`,
     );
-  }
-
-  public async down(_: QueryRunner): Promise<void> {
-    console.log('Never going to give you up, never going to migrate down');
   }
 }

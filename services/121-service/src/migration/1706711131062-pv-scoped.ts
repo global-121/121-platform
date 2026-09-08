@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class PvScoped1706711131062 implements MigrationInterface {
+export class PvScoped1706711131062 implements Omit<MigrationInterface, 'down'> {
   // comment out after use, as this will fail locally as 'district' is not in seed data
   public async up(_queryRunner: QueryRunner): Promise<void> {
     // const instances = await queryRunner.query(`
@@ -189,9 +189,5 @@ export class PvScoped1706711131062 implements MigrationInterface {
     //           `);
     //   }
     // }
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    //empty
   }
 }

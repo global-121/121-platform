@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddPaymentUpdatePermission1762185324519 implements MigrationInterface {
+export class AddPaymentUpdatePermission1762185324519 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Add the new permission if it doesn't exist
     await queryRunner.query(`
@@ -36,9 +39,5 @@ export class AddPaymentUpdatePermission1762185324519 implements MigrationInterfa
           WHERE urp."userRoleId" = ur.id AND urp."permissionId" = p.id
         );
     `);
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No need to remove the permission on down migration
   }
 }

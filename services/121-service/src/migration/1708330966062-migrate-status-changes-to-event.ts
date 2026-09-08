@@ -5,7 +5,10 @@ import { RegistrationEventAttributeEntity } from '@121-service/src/registration-
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { RegistrationEventAttributeKeyEnum } from '@121-service/src/registration-events/enum/registration-event-attribute-key.enum';
 
-export class MigrateStatusChangesToEvent1708330966062 implements MigrationInterface {
+export class MigrateStatusChangesToEvent1708330966062 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'MigrateStatusChangesToEvent1708330966062';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -17,10 +20,6 @@ export class MigrateStatusChangesToEvent1708330966062 implements MigrationInterf
     await queryRunner.query(
       'DROP table "121-service"."registration_status_change"',
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 
   private async migrateStatusChanges(queryRunner: QueryRunner): Promise<void> {

@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddScopeToProgramAttachment1774000000000 implements MigrationInterface {
+export class AddScopeToProgramAttachment1774000000000 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'AddScopeToProgramAttachment1774000000000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -17,9 +20,5 @@ export class AddScopeToProgramAttachment1774000000000 implements MigrationInterf
     await queryRunner.query(
       `CREATE INDEX "IDX_program_attachment_programId_scope" ON "121-service"."program_attachment" ("programId", "scope")`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    //we don't go down
   }
 }

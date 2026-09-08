@@ -2,7 +2,10 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { env } from '@121-service/src/env';
 
-export class PhoneNumberPaymentOnafriq1758014323364 implements MigrationInterface {
+export class PhoneNumberPaymentOnafriq1758014323364 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   public async up(queryRunner: QueryRunner): Promise<void> {
     if (env.ENV_NAME !== 'DRC') {
       // To test locally change condition
@@ -52,9 +55,5 @@ export class PhoneNumberPaymentOnafriq1758014323364 implements MigrationInterfac
         [newProgramRegistrationAttributeId, program.id],
       );
     }
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    'only up';
   }
 }

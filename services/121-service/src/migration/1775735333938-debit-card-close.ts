@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class DebitCardClose1775735333938 implements MigrationInterface {
+export class DebitCardClose1775735333938 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'DebitCardClose1775735333938';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -20,9 +23,5 @@ export class DebitCardClose1775735333938 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."intersolve_visa_wallet_closure" ADD CONSTRAINT "FK_211d0fbad2e3b228f13ebd8c88e" FOREIGN KEY ("intersolveVisaChildWalletId") REFERENCES "121-service"."intersolve_visa_child_wallet"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
-  }
-
-  public async down(_: QueryRunner): Promise<void> {
-    console.log('never down');
   }
 }

@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RenameRegisteredToNew1750762936357 implements MigrationInterface {
+export class RenameRegisteredToNew1750762936357 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // update registration.registrationStatus
     await queryRunner.query(
@@ -37,9 +40,5 @@ export class RenameRegisteredToNew1750762936357 implements MigrationInterface {
       `DELETE FROM "121-service".message_template
         WHERE "type" = 'registered' AND "isSendMessageTemplate" = false;`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // We agreed not to implement the down migration for these kind of database migrations
   }
 }

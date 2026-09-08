@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RegistrationEventsRename1754324726374 implements MigrationInterface {
+export class RegistrationEventsRename1754324726374 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'RegistrationEventsRename1754324726374';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -77,9 +80,5 @@ export class RegistrationEventsRename1754324726374 implements MigrationInterface
     await queryRunner.query(
       `SELECT setval('121-service.registration_event_attribute_id_seq', (SELECT MAX(id) FROM "121-service"."registration_event_attribute")+ 1)`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    console.log('We only move forward and never look back!');
   }
 }

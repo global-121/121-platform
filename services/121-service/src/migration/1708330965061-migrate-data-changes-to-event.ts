@@ -5,7 +5,10 @@ import { RegistrationEventAttributeEntity } from '@121-service/src/registration-
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { RegistrationEventAttributeKeyEnum } from '@121-service/src/registration-events/enum/registration-event-attribute-key.enum';
 
-export class MigrateDataChangesToEvent1708330965061 implements MigrationInterface {
+export class MigrateDataChangesToEvent1708330965061 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'MigrateDataChangesToEvent1708330965061';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -14,10 +17,6 @@ export class MigrateDataChangesToEvent1708330965061 implements MigrationInterfac
     await this.migrateData(queryRunner);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 
   private async migrateData(queryRunner: QueryRunner): Promise<void> {

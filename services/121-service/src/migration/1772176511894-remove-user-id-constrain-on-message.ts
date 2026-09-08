@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveUserIdConstrainOnMessage1772176511894 implements MigrationInterface {
+export class RemoveUserIdConstrainOnMessage1772176511894 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'RemoveUserIdConstrainOnMessage1772176511894';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -22,9 +25,5 @@ export class RemoveUserIdConstrainOnMessage1772176511894 implements MigrationInt
     await queryRunner.query(
       `ALTER TABLE "121-service"."whatsapp_pending_message" ADD CONSTRAINT "FK_c4e5540ec65a668f0c155df88e9" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
-  }
-
-  public async down(_: QueryRunner): Promise<void> {
-    console.log('Nothing to see here.');
   }
 }

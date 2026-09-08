@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Kobo1765989007478 implements MigrationInterface {
+export class Kobo1765989007478 implements Omit<MigrationInterface, 'down'> {
   name = 'Kobo1765989007478';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -19,9 +19,5 @@ export class Kobo1765989007478 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_registration_attribute" ALTER COLUMN "editableInPortal" SET DEFAULT true`,
     );
-  }
-
-  public async down(_: QueryRunner): Promise<void> {
-    console.log('Always keep moving forward!');
   }
 }

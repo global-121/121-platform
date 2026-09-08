@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveAllowEmptyPhoneNumber1786008918000 implements MigrationInterface {
+export class RemoveAllowEmptyPhoneNumber1786008918000 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'RemoveAllowEmptyPhoneNumber1786008918000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -14,9 +17,5 @@ export class RemoveAllowEmptyPhoneNumber1786008918000 implements MigrationInterf
     await queryRunner.query(
       `ALTER TABLE "121-service"."program" DROP COLUMN "allowEmptyPhoneNumber"`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    console.log('we do not revert');
   }
 }

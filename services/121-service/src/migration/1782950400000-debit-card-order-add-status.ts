@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class DebitCardOrderAddStatus1782950400000 implements MigrationInterface {
+export class DebitCardOrderAddStatus1782950400000 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
       ALTER TABLE "121-service"."intersolve_visa_card_order"
@@ -16,9 +19,5 @@ export class DebitCardOrderAddStatus1782950400000 implements MigrationInterface 
       ALTER TABLE "121-service"."intersolve_visa_card_order"
       ALTER COLUMN "status" SET NOT NULL
     `);
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // Intentionally left empty — we never run down migrations.
   }
 }

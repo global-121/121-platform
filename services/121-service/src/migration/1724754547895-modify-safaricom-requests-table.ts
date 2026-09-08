@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class ModifySafaricomRequestsTable1724754547895 implements MigrationInterface {
+export class ModifySafaricomRequestsTable1724754547895 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'ModifySafaricomRequestsTable1724754547895';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -96,9 +99,5 @@ export class ModifySafaricomRequestsTable1724754547895 implements MigrationInter
     await queryRunner.query(
       `ALTER TABLE "121-service"."safaricom_request" RENAME TO "safaricom_transfer"`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 }

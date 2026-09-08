@@ -1,7 +1,10 @@
 import fs from 'node:fs';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class MergeLvvPv1702982630555 implements MigrationInterface {
+export class MergeLvvPv1702982630555 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const instances = await queryRunner.query(`
       select
@@ -332,9 +335,5 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       )}'
       WHERE id = 2
     `);
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 }

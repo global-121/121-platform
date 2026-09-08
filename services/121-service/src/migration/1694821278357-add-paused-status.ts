@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class addPausedStatus1694821278357 implements MigrationInterface {
+export class addPausedStatus1694821278357 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Commit transaction because the tables are needed before the insert
     await queryRunner.commitTransaction();
@@ -9,10 +12,6 @@ export class addPausedStatus1694821278357 implements MigrationInterface {
     // await this.migrateData(queryRunner.manager);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 
   // private async migrateData(manager: EntityManager): Promise<void> {

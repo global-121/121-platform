@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class ActionsToPaymentLock1761826950389 implements MigrationInterface {
+export class ActionsToPaymentLock1761826950389 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'ActionsToPaymentLock1761826950389';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -9,9 +12,5 @@ export class ActionsToPaymentLock1761826950389 implements MigrationInterface {
     );
     // drop actions table
     await queryRunner.query(`DROP TABLE "121-service"."action"`);
-  }
-
-  public async down(_: QueryRunner): Promise<void> {
-    // No down migration
   }
 }

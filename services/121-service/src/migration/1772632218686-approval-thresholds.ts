@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class ApprovalThresholds1772632218686 implements MigrationInterface {
+export class ApprovalThresholds1772632218686 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'ApprovalThresholds1772632218686';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -130,9 +133,5 @@ export class ApprovalThresholds1772632218686 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."payment_approval" DROP COLUMN "approverId"`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // Do we go down? No.. We don't go down..
   }
 }

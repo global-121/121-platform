@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddAdminRoleProgramPermissions1781683200000 implements MigrationInterface {
+export class AddAdminRoleProgramPermissions1781683200000 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Define all permissions to add
     const permissions = [
@@ -46,9 +49,5 @@ export class AddAdminRoleProgramPermissions1781683200000 implements MigrationInt
         [permissionName],
       );
     }
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    throw new Error('Down migrations are not required.');
   }
 }

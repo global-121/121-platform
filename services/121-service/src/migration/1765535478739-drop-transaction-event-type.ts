@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class DropTransactionEventType1765535478739 implements MigrationInterface {
+export class DropTransactionEventType1765535478739 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'DropTransactionEventType1765535478739';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -10,9 +13,5 @@ export class DropTransactionEventType1765535478739 implements MigrationInterface
     await queryRunner.query(
       `ALTER TABLE "121-service"."transaction_event" DROP COLUMN "type"`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // no down
   }
 }

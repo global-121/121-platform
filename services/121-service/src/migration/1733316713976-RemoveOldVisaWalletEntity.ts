@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveOldVisaWalletEntity1733316713976 implements MigrationInterface {
+export class RemoveOldVisaWalletEntity1733316713976 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'RemoveOldVisaWalletEntity1733316713976';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -8,9 +11,5 @@ export class RemoveOldVisaWalletEntity1733316713976 implements MigrationInterfac
     await queryRunner.query(
       `DROP TABLE IF EXISTS "121-service"."intersolve_visa_wallet"`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // Down migration is not needed
   }
 }

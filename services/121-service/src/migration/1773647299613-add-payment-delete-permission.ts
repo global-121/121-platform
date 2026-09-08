@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddPaymentDeletePermission1773647299613 implements MigrationInterface {
+export class AddPaymentDeletePermission1773647299613 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'AddPaymentDeletePermission1773647299613';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -30,9 +33,5 @@ export class AddPaymentDeletePermission1773647299613 implements MigrationInterfa
             AND urp_existing."permissionId" = p_delete.id
         );
     `);
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 }

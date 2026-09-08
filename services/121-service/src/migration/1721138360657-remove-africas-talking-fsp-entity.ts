@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class DeleteAfricasTalkingNotificationEntity17211383860657 implements MigrationInterface {
+export class DeleteAfricasTalkingNotificationEntity17211383860657 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'DeleteAfricasTalkingNotificationEntity17211383860657';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -8,9 +11,5 @@ export class DeleteAfricasTalkingNotificationEntity17211383860657 implements Mig
     await queryRunner.query(
       `DROP TABLE IF EXISTS "121-service"."at_notification"`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 }

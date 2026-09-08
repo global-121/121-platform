@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class DropColumnFspDisplayNamePortalFromFsp1710149342264 implements MigrationInterface {
+export class DropColumnFspDisplayNamePortalFromFsp1710149342264 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'DropColumnFspDisplayNamePortalFromFsp1710149342264';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -28,9 +31,5 @@ export class DropColumnFspDisplayNamePortalFromFsp1710149342264 implements Migra
       LEFT JOIN "121-service"."financial_service_provider" "fsp" ON "fsp"."id"="registration"."fspId"  LEFT JOIN "121-service"."latest_message" "latestMessage" ON "latestMessage"."registrationId"="registration"."id"
       LEFT JOIN "121-service"."twilio_message" "message" ON "message"."id"="latestMessage"."messageId" ORDER BY "registration"."registrationProgramId" ASC`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // Down migration not implemented
   }
 }

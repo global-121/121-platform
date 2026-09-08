@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RenameFinancialServiceProviderToFsp1749809825697 implements MigrationInterface {
+export class RenameFinancialServiceProviderToFsp1749809825697 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'RenameFinancialServiceProviderToFsp1749809825697';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -203,10 +206,6 @@ export class RenameFinancialServiceProviderToFsp1749809825697 implements Migrati
       'event',
       'type',
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // We agreed not to implement the down migration for these kind of database migrations
   }
 
   public async replaceFinancialServiceProviderInColumn(

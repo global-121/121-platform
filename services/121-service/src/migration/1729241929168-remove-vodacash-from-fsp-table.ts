@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveVodacashFromFspTable1729241929168 implements MigrationInterface {
+export class RemoveVodacashFromFspTable1729241929168 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'RemoveVodacashFromFspTable1729241929168';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -59,9 +62,5 @@ export class RemoveVodacashFromFspTable1729241929168 implements MigrationInterfa
       await queryRunner.rollbackTransaction();
       throw err;
     }
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 }

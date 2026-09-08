@@ -1,6 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Approvers1766058193913 implements MigrationInterface {
+export class Approvers1766058193913 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'Approvers1766058193913';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -31,10 +34,6 @@ export class Approvers1766058193913 implements MigrationInterface {
     await this.migrateApprovers(queryRunner);
     await this.migratePaymentApprovals(queryRunner);
     await this.migrateAttributesOfApprovedPaymentEvents(queryRunner);
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // no down
   }
 
   private async migrateApprovers(queryRunner: QueryRunner) {

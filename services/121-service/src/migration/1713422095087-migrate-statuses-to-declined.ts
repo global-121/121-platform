@@ -11,7 +11,10 @@ interface Registration {
   registrationStatus: string;
 }
 
-export class MigrateStatusesToDeclined1713422095087 implements MigrationInterface {
+export class MigrateStatusesToDeclined1713422095087 implements Omit<
+  MigrationInterface,
+  'down'
+> {
   name = 'MigrateStatusesToDeclined1713422095087';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -25,10 +28,6 @@ export class MigrateStatusesToDeclined1713422095087 implements MigrationInterfac
         SET "registrationStatus" = 'declined'
         WHERE "registrationStatus" IN ('inclusionEnded', 'rejected', 'noLongerEligible')`,
     );
-  }
-
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // No down migration
   }
 
   // Function to save event for each registration status change
