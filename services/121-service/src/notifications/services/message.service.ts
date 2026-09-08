@@ -363,7 +363,7 @@ export class MessageService {
     preferredLanguage: string,
   ): Promise<{ message: string | null; contentSid: string | null }> {
     const messageTemplates = await this.messageTemplateRepo.findBy({
-      program: { id: programId },
+      programId: Equal(programId),
       type: messageTemplateKey,
     });
 
