@@ -84,7 +84,7 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
     });
     expect(doPaymentResponse.statusCode).toBe(HttpStatus.CREATED);
     // Wait long enough so that jobs are added to the queue but not finished processing
-    await waitFor(2_000);
+    await waitFor(2_200);
     // Kill 121 service to simulate crash during queue processing
     void kill121Service().catch(() => {
       // Ignore error of the service being killed that causes: 'Error: socket hang up'
