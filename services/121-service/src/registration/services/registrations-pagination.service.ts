@@ -137,9 +137,9 @@ export class RegistrationsPaginationService {
     }
 
     if (hasPersonalReadPermission) {
-      paginateConfigCopy.relations = ['data'];
+      paginateConfigCopy.relations = { data: true };
     } else {
-      paginateConfigCopy.relations = [];
+      paginateConfigCopy.relations = {};
       paginateConfigCopy.searchableColumns = [];
     }
 

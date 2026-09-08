@@ -316,9 +316,11 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
       (relation) => relation.propertyName,
     );
     for (const relation of relations) {
-      const relationType =
-        metadata.findRelationWithPropertyPath(relation)?.type;
-      if (relationType === RegistrationEntity) {
+      const relationMetadata = metadata.findRelationWithPropertyPath(relation);
+      if (
+        relationMetadata?.type === RegistrationEntity ||
+        relationMetadata?.inverseEntityMetadata?.target === RegistrationEntity
+      ) {
         return relation;
       }
     }
