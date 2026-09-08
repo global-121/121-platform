@@ -259,14 +259,14 @@ export class KoboConfigurationDialogComponent {
           content: $localize`In KoboToolbox, click your account icon (top right) and go to account settings`,
           image: {
             url: 'assets/images/explainers/kobo/kobo-api-key-account-settings.png',
-            alt: $localize`Kobo account settings menu`,
+            alt: $localize`KoboToolbox account settings menu`,
           },
         },
         {
           content: $localize`Go to the security section`,
           image: {
             url: 'assets/images/explainers/kobo/kobo-api-key-security-section.png',
-            alt: $localize`Kobo account security section`,
+            alt: $localize`KoboToolbox account security section`,
             maxWidth: '167px',
           },
         },

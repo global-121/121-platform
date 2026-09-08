@@ -872,6 +872,9 @@
       <trans-unit id="4377773974394044597" datatype="html">
         <source>Export a CSV for the <x equiv-text="this.actionData()?.count" id="PH"/> selected registration(s). Select the columns you want to update.</source>
       </trans-unit>
+      <trans-unit id="4384073389334234587" datatype="html">
+        <source>KoboToolbox account security section</source>
+      </trans-unit>
       <trans-unit id="4388879716045736175" datatype="html">
         <source>Note</source>
       </trans-unit>
@@ -982,9 +985,6 @@
       </trans-unit>
       <trans-unit id="4821724891066824263" datatype="html">
         <source>You&apos;re about to remove the &quot;<x equiv-text="{{ fspConfigurationLabel() }}" id="INTERPOLATION"/>&quot; FSP configuration from your program. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
-      </trans-unit>
-      <trans-unit id="482703440923141060" datatype="html">
-        <source>Kobo account settings menu</source>
       </trans-unit>
       <trans-unit id="4870684362400415992" datatype="html">
         <source>Duplication fields</source>
@@ -1304,6 +1304,9 @@
       <trans-unit id="6186007479370342072" datatype="html">
         <source>Request a password reset</source>
       </trans-unit>
+      <trans-unit id="6205851746813309628" datatype="html">
+        <source>KoboToolbox account settings menu</source>
+      </trans-unit>
       <trans-unit id="6238291467288576076" datatype="html">
         <source>Contains</source>
       </trans-unit>
@@ -1433,9 +1436,6 @@
       </trans-unit>
       <trans-unit id="6693349469471580292" datatype="html">
         <source>Delete file</source>
-      </trans-unit>
-      <trans-unit id="6696946129798447214" datatype="html">
-        <source>Kobo account security section</source>
       </trans-unit>
       <trans-unit id="6704198793956298786" datatype="html">
         <source>Coopbank verification report</source>
