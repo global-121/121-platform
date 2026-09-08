@@ -32,7 +32,9 @@ test('Table should reflect the actual transfer values sent to the PAs in this pa
       url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
     await paymentPage.approvePayment();
+    await paymentPage.validateToastMessageAndClose('Payment approved');
     await paymentPage.startPayment();
+    await paymentPage.validateToastMessageAndClose('Payment started');
 
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentDetailsPageTitle();

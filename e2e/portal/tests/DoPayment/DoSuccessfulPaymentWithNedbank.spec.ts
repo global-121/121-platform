@@ -36,7 +36,9 @@ test('Do successful payment for Nedbank fsp', async ({
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentDetailsPageTitle();
     await paymentPage.approvePayment();
+    await paymentPage.validateToastMessageAndClose('Payment approved');
     await paymentPage.startPayment();
+    await paymentPage.validateToastMessageAndClose('Payment started');
 
     // Run CRON job to process payment
     await page.waitForTimeout(500); // wait a bit to allow the payment to start before running the CRON job
