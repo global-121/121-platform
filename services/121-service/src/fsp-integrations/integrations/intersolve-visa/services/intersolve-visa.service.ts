@@ -83,6 +83,7 @@ export class IntersolveVisaService {
 
     const intersolveVisaChildWallets = await this.getChildWalletsOrCreateOne({
       intersolveVisaParentWallet,
+      holderId: intersolveVisaCustomer.holderId,
       brandCode,
     });
 
@@ -308,9 +309,11 @@ export class IntersolveVisaService {
 
   private async getChildWalletsOrCreateOne({
     intersolveVisaParentWallet,
+    holderId,
     brandCode,
   }: {
     intersolveVisaParentWallet: IntersolveVisaParentWalletEntity;
+    holderId: string;
     brandCode: string;
   }): Promise<IntersolveVisaChildWalletEntity[]> {
     // Check if at least one child wallet exists
@@ -322,10 +325,7 @@ export class IntersolveVisaService {
     const issueTokenResult = await this.intersolveVisaApiService.issueToken({
       brandCode,
       activate: false, // Child Wallets are always created deactivated
-      reference:
-        env.INTERSOLVE_MODE === FspMode.mock
-          ? intersolveVisaParentWallet.intersolveVisaCustomer.holderId
-          : undefined,
+      reference: env.INTERSOLVE_MODE === FspMode.mock ? holderId : undefined,
     });
 
     // Store child wallet
