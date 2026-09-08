@@ -13,6 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { dash } from 'radashi';
 
+import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -62,7 +63,7 @@ export class FspConfigurationFormDialogComponent {
 
   // This is defaulted to Excel to avoid undefined errors before show() is called
   // It could default to anything really, as show() will always be called first
-  readonly fspSetting = signal({} as FspSettingsDto);
+  readonly fspSetting = signal(FSP_SETTINGS[Fsps.excel]);
 
   // If this is undefined, it is because we are adding a new FSP configuration
   // (not reconfiguring one)

@@ -76,8 +76,8 @@
         <app-form-field-wrapper
           label="Select users for the first approval step"
           i18n-label
-          tooltip="First approval step must be set for all payments regardless of the total payment amount."
-          i18n-tooltip
+          labelTooltip="First approval step must be set for all payments regardless of the total payment amount."
+          i18n-labelTooltip
         >
           <p-multiSelect
             [inputId]="'first-step-users'"
@@ -170,8 +170,8 @@
                 <app-form-field-wrapper
                   label="If payment total exceeds"
                   i18n-label
-                  tooltip="These users would have to approve payment if the total amount is above the decided value."
-                  i18n-tooltip
+                  labelTooltip="These users would have to approve payment if the total amount is above the decided value."
+                  i18n-labelTooltip
                 >
                   <p-inputNumber
                     [min]="1"
