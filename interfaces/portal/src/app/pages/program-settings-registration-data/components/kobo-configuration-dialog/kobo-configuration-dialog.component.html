@@ -47,6 +47,7 @@
       <app-explainer
         [title]="koboExplainers.formUrl.title"
         [items]="koboExplainers.formUrl.items"
+        [trackingEventAction]="'KoboToolbox form URL'"
         [expanded]="openExplainer() === 'formUrl'"
         (expandedChange)="
           onExplainerExpandedChange({ key: 'formUrl', expanded: $event })
@@ -70,6 +71,7 @@
     <app-explainer
       [title]="koboExplainers.apiKey.title"
       [items]="koboExplainers.apiKey.items"
+      [trackingEventAction]="'KoboToolbox API key'"
       [expanded]="openExplainer() === 'apiKey'"
       (expandedChange)="
         onExplainerExpandedChange({ key: 'apiKey', expanded: $event })

@@ -71,8 +71,9 @@ export enum TrackingAction {
   createNewProgramStep3Error = 'errors: createNewProgram Step 3',
   createNewProgramStep3TotalTimeSpent = 'time: createNewProgram Step 3',
   createNewProgramTotalTimeSpent = 'time: createNewProgram Total Time',
-  formValidationError = 'errors: Form Validation',
+  explainerOpened = 'open: Explainer',
 
+  formValidationError = 'errors: Form Validation',
   hoverInformationIcon = 'hover: Information Icon',
 
   programSettingsBasicInfoSaveButtonClick = 'click: Program Settings info Save Button',
