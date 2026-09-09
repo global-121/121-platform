@@ -15,11 +15,19 @@
     <app-manual-link />.
   </p>
 
-  @for (fspFormField of fspFormFields(); track fspFormField.name) {
-    <app-fsp-configuration-property-form-field
+  @if (isExcelFsp()) {
+    <app-excel-fsp-dialog-content
       [programId]="programId()"
       [formGroup]="formGroup()"
-      [fspFormField]="fspFormField"
+      [fspFormFields]="fspFormFields()"
     />
+  } @else {
+    @for (fspFormField of fspFormFields(); track fspFormField.name) {
+      <app-fsp-configuration-property-input
+        [programId]="programId()"
+        [formGroup]="formGroup()"
+        [fspFormField]="fspFormField"
+      />
+    }
   }
 </app-form-dialog>

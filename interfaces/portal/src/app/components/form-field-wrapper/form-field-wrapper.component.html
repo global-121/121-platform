@@ -1,6 +1,6 @@
 <div
   [attr.data-testid]="dataTestId()"
-  class="mbe-2.5"
+  class="mbe-2"
 >
   <label
     class="block [&_.p-datepicker]:inline-full [&_input]:inline-full [&_textarea]:inline-full"
@@ -18,9 +18,15 @@
             class="ms-1"
           ></app-info-tooltip>
         }
-        <ng-content select="[slot='label-extra']"></ng-content>
       </span>
     </strong>
+
+    <!-- Additional label text -->
+    <div
+      class="text-grey-700 hide-when-empty -mbs-1 text-sm/tight! *:mbe-2.5 *:block"
+    >
+      <ng-content select="[slot='label-extra']"></ng-content>
+    </div>
     <ng-content></ng-content>
     <app-form-error [error]="errorMessage()" />
   </label>

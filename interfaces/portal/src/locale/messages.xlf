@@ -537,6 +537,9 @@
       <trans-unit id="3164665420660802024" datatype="html">
         <source>Learn more in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
       </trans-unit>
+      <trans-unit id="3170749132598914492" datatype="html">
+        <source>Unique identifier field</source>
+      </trans-unit>
       <trans-unit id="3176639329668271224" datatype="html">
         <source>Link card</source>
       </trans-unit>
@@ -596,6 +599,9 @@
       </trans-unit>
       <trans-unit id="3460608979438095670" datatype="html">
         <source>Retry failed transaction</source>
+      </trans-unit>
+      <trans-unit id="3482063941252803611" datatype="html">
+        <source>FSP export fields (optional)</source>
       </trans-unit>
       <trans-unit id="349264413670639690" datatype="html">
         <source>Choose message</source>
@@ -1127,9 +1133,6 @@
       <trans-unit id="5485741466952031761" datatype="html">
         <source>We couldn&apos;t find any information linked to this person&apos;s phone number in the programs you have access to on the 121 Platform.</source>
       </trans-unit>
-      <trans-unit id="5493925311905255309" datatype="html">
-        <source>Import registration data to select columns</source>
-      </trans-unit>
       <trans-unit id="5512472017654585017" datatype="html">
         <source>Payment creation did not return a payment reference. Please stay on this screen and refresh the payments list before trying again.</source>
       </trans-unit>
@@ -1428,6 +1431,9 @@
       <trans-unit id="6821230510150972530" datatype="html">
         <source>Choose the fields you want to use as duplication indicators. Go for unique identifiers like phone numbers, bank account numbers, or ID numbers. If any of these fields match across two or more registrations, those registrations will be marked as duplicates.</source>
       </trans-unit>
+      <trans-unit id="6822416971424318047" datatype="html">
+        <source>Select a unique identifier - phone number, ID number, or Red Cross registration number - to be used during reconciliation to update the transaction status for each registration.</source>
+      </trans-unit>
       <trans-unit id="6885844978916799621" datatype="html">
         <source>Budget</source>
       </trans-unit>
@@ -1448,6 +1454,9 @@
       </trans-unit>
       <trans-unit id="6967846885075875243" datatype="html">
         <source>Form requirements</source>
+      </trans-unit>
+      <trans-unit id="6984090257911587817" datatype="html">
+        <source>Select the fields to include in the payment report you send to your FSP.</source>
       </trans-unit>
       <trans-unit id="6987397690071959130" datatype="html">
         <source>Old card:</source>

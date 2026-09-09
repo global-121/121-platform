@@ -1,0 +1,73 @@
+<ng-container [formGroup]="formGroup()">
+  @let displayName = fspFormFieldByName().get('displayName');
+  @let columnToMatch = fspFormFieldByName().get('columnToMatch');
+  @let columnsToExportField = fspFormFieldByName().get('columnsToExport');
+
+  @if (displayName) {
+    <app-form-field-wrapper
+      label="Display name"
+      i18n-label
+      [errorMessage]="
+        isControlInvalidAndTouched(displayName.control) &&
+        requiredErrorMessage()
+      "
+    >
+      <app-fsp-configuration-property-input
+        [useDefaultFormFieldWrapper]="false"
+        [fspFormField]="displayName.field"
+        [programId]="programId()"
+        [formGroup]="formGroup()"
+      />
+    </app-form-field-wrapper>
+  }
+
+  @if (columnToMatch) {
+    <app-form-field-wrapper
+      label="Unique identifier field"
+      i18n-label
+      [errorMessage]="
+        isControlInvalidAndTouched(columnToMatch.control) &&
+        requiredErrorMessage()
+      "
+    >
+      <ng-container slot="label-extra">
+        <span i18n>
+          Select a unique identifier - phone number, ID number, or Red Cross
+          registration number - to be used during reconciliation to update the
+          transaction status for each registration.
+        </span>
+      </ng-container>
+
+      <app-fsp-configuration-property-input
+        [useDefaultFormFieldWrapper]="false"
+        [fspFormField]="columnToMatch.field"
+        [programId]="programId()"
+        [formGroup]="formGroup()"
+      />
+    </app-form-field-wrapper>
+  }
+
+  @if (columnsToExportField) {
+    <app-form-field-wrapper
+      label="FSP export fields (optional)"
+      i18n-label
+      [errorMessage]="
+        isControlInvalidAndTouched(columnsToExportField.control) &&
+        requiredErrorMessage()
+      "
+    >
+      <ng-container slot="label-extra">
+        <span i18n>
+          Select the fields to include in the payment report you send to your
+          FSP.
+        </span>
+      </ng-container>
+      <app-fsp-configuration-property-input
+        [fspFormField]="columnsToExportField.field"
+        [useDefaultFormFieldWrapper]="false"
+        [programId]="programId()"
+        [formGroup]="formGroup()"
+      />
+    </app-form-field-wrapper>
+  }
+</ng-container>

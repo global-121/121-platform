@@ -50,6 +50,12 @@
   font-weight: 700;
 }
 
+@utility hide-when-empty {
+  &:not(:has(> *)) {
+    @apply hidden;
+  }
+}
+
 html {
   font-size: 0.875rem; /* 14px, respects browser font-size preferences */
 }

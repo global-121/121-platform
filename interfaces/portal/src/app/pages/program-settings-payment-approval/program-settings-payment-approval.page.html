@@ -76,13 +76,9 @@
         <app-form-field-wrapper
           label="Select users for the first approval step"
           i18n-label
+          labelTooltip="First approval step must be set for all payments regardless of the total payment amount."
+          i18n-labelTooltip
         >
-          <ng-container slot="label-extra">
-            <app-info-tooltip
-              message="First approval step must be set for all payments regardless of the total payment amount."
-              i18n-message
-            />
-          </ng-container>
           <p-multiSelect
             [inputId]="'first-step-users'"
             [options]="availableApproversForFirstStep()"
@@ -174,13 +170,9 @@
                 <app-form-field-wrapper
                   label="If payment total exceeds"
                   i18n-label
+                  labelTooltip="These users would have to approve payment if the total amount is above the decided value."
+                  i18n-labelTooltip
                 >
-                  <ng-container slot="label-extra">
-                    <app-info-tooltip
-                      message="These users would have to approve payment if the total amount is above the decided value."
-                      i18n-message
-                    />
-                  </ng-container>
                   <p-inputNumber
                     [min]="1"
                     mode="currency"
