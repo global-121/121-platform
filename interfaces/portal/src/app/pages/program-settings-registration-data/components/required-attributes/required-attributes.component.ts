@@ -8,13 +8,16 @@ import {
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { AccordionModule } from 'primeng/accordion';
-import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
-import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  DefaultRegistrationDataAttributeNames,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 
+import { CopyToClipboardButtonComponent } from '~/components/copy-to-clipboard-button/copy-to-clipboard.component';
 import {
   ExplainerComponent,
   ExplainerItem,
@@ -33,11 +36,11 @@ import {
   selector: 'app-required-attributes',
   imports: [
     TableModule,
-    Button,
-    InfoTooltipComponent,
     AccordionModule,
     FspTagsComponent,
     ExplainerComponent,
+    CopyToClipboardButtonComponent,
+    InfoTooltipComponent,
   ],
   providers: [ToastService],
   templateUrl: './required-attributes.component.html',
@@ -48,7 +51,6 @@ export class RequiredAttributesComponent {
   readonly programId = input.required<number | string>();
   readonly isKoboIntegrated = input.required<boolean>();
 
-  private readonly toastService = inject(ToastService);
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
   readonly fspConfigurationService = inject(FspConfigurationService);
   readonly programApiService = inject(ProgramApiService);
@@ -181,10 +183,43 @@ export class RequiredAttributesComponent {
     ],
   };
 
-  copyToClipboard(text: string) {
-    void navigator.clipboard.writeText(text);
-    this.toastService.showToast({
-      detail: $localize`"${text}" copied to clipboard`,
-    });
+  getRecommendedFspAttributeType() {
+    if (this.programFspNames().length === 1) {
+      return $localize`Hidden`;
+    } else {
+      return $localize`Select Many`;
+    }
+  }
+
+  getTranslatedRecommendedAttributeType(attribute: {
+    type: RegistrationAttributeTypes;
+    name: string;
+  }) {
+    if (attribute.name === 'fsp') {
+      return this.getRecommendedFspAttributeType();
+    }
+
+    if (attribute.name === 'scope') {
+      return $localize`Hidden`;
+    }
+
+    switch (attribute.type) {
+      case RegistrationAttributeTypes.dropdown:
+        return $localize`Select One`;
+      case RegistrationAttributeTypes.tel:
+      case RegistrationAttributeTypes.numeric:
+      case RegistrationAttributeTypes.numericNullable:
+        return $localize`Number`;
+      case RegistrationAttributeTypes.text:
+        return $localize`Text`;
+      case RegistrationAttributeTypes.date:
+        return $localize`Date`;
+      case RegistrationAttributeTypes.multiSelect:
+        return $localize`Select Many`;
+      case RegistrationAttributeTypes.boolean:
+        return $localize`Checkbox`;
+      case RegistrationAttributeTypes.koboImage:
+        return $localize`Photo`;
+    }
   }
 }

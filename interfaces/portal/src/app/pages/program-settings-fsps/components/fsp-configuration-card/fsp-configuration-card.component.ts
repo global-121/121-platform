@@ -23,6 +23,7 @@ import { FspConfigurationStates } from '@121-service/src/program-fsp-configurati
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import { CopyToClipboardButtonComponent } from '~/components/copy-to-clipboard-button/copy-to-clipboard.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.helper';
@@ -42,6 +43,7 @@ import { ColorVariant } from '~/utils/color-variant.enum';
     AccordionModule,
     ColoredChipComponent,
     FormDialogComponent,
+    CopyToClipboardButtonComponent,
   ],
   templateUrl: './fsp-configuration-card.component.html',
   styles: ``,
@@ -186,11 +188,4 @@ export class FspConfigurationCardComponent {
       });
     },
   }));
-
-  copyToClipboard(text: string) {
-    void navigator.clipboard.writeText(text);
-    this.toastService.showToast({
-      detail: $localize`"${text}" copied to clipboard`,
-    });
-  }
 }

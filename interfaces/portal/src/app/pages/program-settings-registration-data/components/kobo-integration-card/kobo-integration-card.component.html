@@ -43,11 +43,19 @@
         </p>
       </div>
     }
-
-    @if (!isKoboIntegrated()) {
-      <p i18n>Click to link</p>
-    }
   </ng-container>
+
+  @if (!isKoboIntegrated()) {
+    <ng-container card-action>
+      <p-button
+        (onClick)="handleCardClicked()"
+        label="Link form"
+        i18n-label
+        icon="pi pi-link"
+        rounded
+      />
+    </ng-container>
+  }
 </app-card-with-link>
 
 <!-- DIALOGS -->
