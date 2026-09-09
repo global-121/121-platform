@@ -3,7 +3,7 @@ import { expect } from '@playwright/test';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdPV,
-  registrationsPV,
+  registrationsPVWithOneDuplicate,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
@@ -11,7 +11,7 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
-    registrations: registrationsPV,
+    registrations: registrationsPVWithOneDuplicate,
     programId: programIdPV,
     navigateToPage: `/program/${programIdPV}/registrations`,
   });
@@ -22,10 +22,10 @@ test('After the data change of duplicate registration, both registrations get un
   registrationActivityLogPage,
   registrationPersonalInformationPage,
 }) => {
-  const duplicateRegistration = registrationsPV[1]; // 'Jan Janssen'
+  const duplicateRegistration = registrationsPVWithOneDuplicate[1]; // 'Jan Janssen'
 
   await test.step('Wait for registrations to load', async () => {
-    const allRegistrationsCount = registrationsPV.length;
+    const allRegistrationsCount = registrationsPVWithOneDuplicate.length;
     await registrationsPage.waitForLoaded(allRegistrationsCount);
   });
 

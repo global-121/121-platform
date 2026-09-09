@@ -36,6 +36,7 @@ describe('(Un)Block visa debit card', () => {
     const testRegistration = {
       ...registrationVisa,
       referenceId: 'test-registration-visa--block-card',
+      phoneNumber: '14155238811',
       whatsappPhoneNumber: noWhatsappSetup,
     };
     await seedPaidRegistrations({
@@ -96,6 +97,7 @@ describe('(Un)Block visa debit card', () => {
     const testRegistration = {
       ...registrationVisa,
       referenceId: 'test-registration-visa--unblock-card',
+      phoneNumber: '14155238812',
       whatsappPhoneNumber: noWhatsappSetup,
     };
     await seedPaidRegistrations({

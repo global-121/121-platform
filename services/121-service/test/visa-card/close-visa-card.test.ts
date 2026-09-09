@@ -35,6 +35,7 @@ describe('Close visa debit card', () => {
     const testRegistration = {
       ...registrationVisa,
       referenceId: 'test-registration-visa--close-card',
+      phoneNumber: '14155238801',
       whatsappPhoneNumber: null,
     };
     await seedPaidRegistrations({
@@ -107,6 +108,7 @@ describe('Close visa debit card', () => {
     const testRegistration = {
       ...registrationVisa,
       referenceId: 'test-registration-visa--close-card-then-delete',
+      phoneNumber: '14155238802',
       whatsappPhoneNumber: null,
     };
     await seedPaidRegistrations({
@@ -164,6 +166,7 @@ describe('Close visa debit card', () => {
     const testRegistration = {
       ...registrationVisa,
       referenceId: 'test-registration-visa--close-card-fail',
+      phoneNumber: '14155238803',
       fullName: 'mock-fail-close-card',
       whatsappPhoneNumber: null,
     };

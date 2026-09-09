@@ -58,6 +58,7 @@ describe('Measure performance during payment', () => {
         body: {
           secret: env.RESET_SECRET,
         },
+        skipIntroduceDuplicates: true,
       });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 

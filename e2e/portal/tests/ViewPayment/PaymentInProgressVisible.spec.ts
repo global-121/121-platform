@@ -15,7 +15,10 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     navigateToPage: `/program/${programIdOCW}/payments`,
   });
 
-  await resetDuplicateRegistrations(8);
+  await resetDuplicateRegistrations({
+    mockPowerNumberRegistrations: 8,
+    skipIntroduceDuplicates: true,
+  });
 });
 
 test('Show in progress banner and chip when payment is in progress', async ({

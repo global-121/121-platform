@@ -269,44 +269,43 @@ describe('Payment in progress', () => {
 
     it('should only retry a payment once', async () => {
       // Arrange
-      // update whatsapp numbers to ensure failed transaction
-      for (const registration of registrationsPV) {
-        await updateRegistration(
-          programIdPV,
-          registration.referenceId,
-          {
-            whatsappPhoneNumber: '15005550001',
-            programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
-          },
-          'test',
-          accessToken,
-        );
-      }
+      // update whatsapp number of one registration to ensure failed transaction
+      // Only updating one registration to avoid duplicate detection (both would get the same whatsappPhoneNumber)
+      const retryRegistration = registrationsPV[0];
+      await updateRegistration(
+        programIdPV,
+        retryRegistration.referenceId,
+        {
+          whatsappPhoneNumber: '15005550001',
+          programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
+        },
+        'test',
+        accessToken,
+      );
 
+      const retryReferenceIds = [retryRegistration.referenceId];
       const paymentId = await doPaymentAndWaitForCompletion({
         programId: programIdPV,
         transferValue,
         accessToken,
-        referenceIds: registrationReferenceIdsPV,
+        referenceIds: retryReferenceIds,
         completeStatuses: [
           TransactionStatusEnum.error,
           TransactionStatusEnum.success,
         ],
       });
 
-      // Change programFspConfigurationName back so it the retry is successful
-      for (const registration of registrationsPV) {
-        await updateRegistration(
-          programIdPV,
-          registration.referenceId,
-          {
-            programFspConfigurationName:
-              registration.programFspConfigurationName,
-          },
-          'test',
-          accessToken,
-        );
-      }
+      // Change programFspConfigurationName back so the retry is successful
+      await updateRegistration(
+        programIdPV,
+        retryRegistration.referenceId,
+        {
+          programFspConfigurationName:
+            retryRegistration.programFspConfigurationName,
+        },
+        'test',
+        accessToken,
+      );
 
       // Act
       const retryPaymentPromises: ReturnType<typeof retryPayment>[] = [];
@@ -316,7 +315,7 @@ describe('Payment in progress', () => {
             programId: programIdPV,
             paymentId,
             accessToken,
-            referenceIds: registrationReferenceIdsPV,
+            referenceIds: retryReferenceIds,
           }),
         );
       }
@@ -330,7 +329,7 @@ describe('Payment in progress', () => {
 
       await waitForPaymentAndTransactionsToComplete({
         programId: programIdPV,
-        paymentReferenceIds: registrationReferenceIdsPV,
+        paymentReferenceIds: retryReferenceIds,
         accessToken,
         maxWaitTimeMs: 30_000,
         paymentId,

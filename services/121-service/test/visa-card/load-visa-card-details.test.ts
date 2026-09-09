@@ -38,14 +38,18 @@ describe('Load Visa debit cards and details', () => {
 
   it('should successfully show a Visa Debit card', async () => {
     const registrations = [registrationVisa];
+    let phoneCounter = 1;
     for (const status of Object.values(IntersolveVisaCardStatus)) {
+      const uniquePhone = `1415523${String(8900 + phoneCounter).padStart(4, '0')}`;
       const copyRegistration = {
         ...registrationVisa,
         lastName: `mock-fail-get-card-${status}`,
         referenceId: `${registrationVisa.referenceId}-${status}`,
-        whatsappPhoneNumber: registrationVisa.phoneNumber,
+        phoneNumber: uniquePhone,
+        whatsappPhoneNumber: uniquePhone,
       };
       registrations.push(copyRegistration);
+      phoneCounter++;
     }
     const referenceIds = registrations.map(
       (registration) => registration.referenceId,

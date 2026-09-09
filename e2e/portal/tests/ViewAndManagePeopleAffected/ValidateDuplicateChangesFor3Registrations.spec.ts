@@ -4,25 +4,18 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdPV,
-  registrationsPV,
+  registrationsPVWithTwoDuplicates,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-const duplicateRegistration = registrationsPV[1]; // 'Jan Janssen'
-// making sure we have 3 duplicate registrations
-const extraDuplicate = {
-  ...duplicateRegistration,
-  referenceId: '11111',
-  fullName: 'Mr. Extra Duplicate',
-};
+const duplicateRegistration = registrationsPVWithTwoDuplicates[1]; // 'Jan Janssen'
 
-const seededRegistrations = [...registrationsPV, extraDuplicate];
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     seedWithStatus: RegistrationStatusEnum.included,
-    registrations: seededRegistrations,
+    registrations: registrationsPVWithTwoDuplicates,
     programId: programIdPV,
     navigateToPage: `/program/${programIdPV}/registrations`,
   });
@@ -34,7 +27,7 @@ test('After the data change of 1 out of 3 duplicates, only 1 registration gets u
   registrationPersonalInformationPage,
 }) => {
   await test.step('Wait for registrations to load', async () => {
-    const allRegistrationsCount = seededRegistrations.length;
+    const allRegistrationsCount = registrationsPVWithTwoDuplicates.length;
     await registrationsPage.waitForLoaded(allRegistrationsCount);
   });
 

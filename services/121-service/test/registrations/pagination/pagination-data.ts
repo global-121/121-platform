@@ -62,9 +62,9 @@ export const registrationOCW3 = {
   preferredLanguage: RegistrationPreferredLanguage.nl,
   paymentAmountMultiplier: 2,
   fullName: 'Sophia Johnson',
-  phoneNumber: '14155236666',
+  phoneNumber: '14155236667',
   programFspConfigurationName: Fsps.intersolveVisa,
-  whatsappPhoneNumber: '14155236666',
+  whatsappPhoneNumber: '14155236667',
   addressStreet: 'DifferentStreet',
   addressHouseNumber: '3',
   addressHouseNumberAddition: 'B',
@@ -102,9 +102,9 @@ export const registrationOCW6Fail = {
   preferredLanguage: RegistrationPreferredLanguage.nl,
   paymentAmountMultiplier: 3,
   fullName: 'Test mock-fail-create-customer',
-  phoneNumber: '14155235555',
+  phoneNumber: '14155235559',
   programFspConfigurationName: Fsps.intersolveVisa,
-  whatsappPhoneNumber: '14155235555',
+  whatsappPhoneNumber: '14155235559',
   addressStreet: 'AnotherStreet',
   addressHouseNumber: '4',
   addressHouseNumberAddition: 'C',
@@ -152,9 +152,9 @@ export const registrationPV7 = {
   preferredLanguage: RegistrationPreferredLanguage.nl,
   paymentAmountMultiplier: 1,
   fullName: 'Joost Herlembach',
-  phoneNumber: '14155235551',
+  phoneNumber: '14155235552',
   programFspConfigurationName: Fsps.intersolveVisa,
-  whatsappPhoneNumber: '14155235551',
+  whatsappPhoneNumber: '14155235552',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
   addressHouseNumberAddition: '',
@@ -198,6 +198,18 @@ export const registrationsPV = [
   registrationPV6,
   registrationPV7,
   registrationPV8,
+];
+
+export const registrationsPVWithOneDuplicate = [
+  registrationPV5,
+  registrationPV6,
+  { ...registrationPV6, referenceId: '11111', fullName: 'First Duplicate' },
+  registrationPV8,
+];
+
+export const registrationsPVWithTwoDuplicates = [
+  ...registrationsPVWithOneDuplicate,
+  { ...registrationPV6, referenceId: '22222', fullName: 'Second Duplicate' },
 ];
 
 export const registrationsVoucher = [registrationPV5, registrationPV6];
@@ -266,7 +278,7 @@ export const registrationWesteros3 = {
   knowsNothing: false,
   phoneNumber: '14155235556',
   programFspConfigurationName: 'gringotts',
-  whatsappPhoneNumber: '14155235555',
+  whatsappPhoneNumber: '14155235556',
   motto: 'A lanister always pays his debts',
 };
 
