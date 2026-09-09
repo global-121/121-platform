@@ -14,6 +14,7 @@ import {
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
+import { Button } from 'primeng/button';
 
 import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -39,6 +40,7 @@ import { ColorVariant } from '~/utils/color-variant.enum';
     KoboConfigurationDialogComponent,
     KoboImportExistingRegistrationsDialogComponent,
     KoboIntegrationErrorDialogComponent,
+    Button,
   ],
   templateUrl: './kobo-integration-card.component.html',
   styles: ``,
