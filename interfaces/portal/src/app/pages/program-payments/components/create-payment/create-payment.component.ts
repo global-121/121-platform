@@ -284,6 +284,14 @@ export class CreatePaymentComponent {
       }
 
       if (dryRun) {
+        if (result.duplicateCount > 0) {
+          this.toastService.showToast({
+            severity: 'error',
+            detail: $localize`One or more of your selected registrations are duplicate. Resolve or remove them to continue.`,
+          });
+          this.createPaymentMutation.reset();
+          return;
+        }
         this.dryRunResult.set(result);
         this.currentStep.set(3);
         return;
