@@ -84,6 +84,7 @@ export class FileImportService {
     const parsedData: CsvContents = [];
     return await new Promise((resolve, reject): void => {
       stream
+        .on('error', (error): void => reject(error))
         .pipe(csv({ separator }))
         .on('error', (error): void => reject(error))
         .on('data', (rowData) => {
