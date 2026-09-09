@@ -33,46 +33,61 @@
         class="mbs-4"
       >
         <ng-template #header>
-          <tr>
-            <th
-              i18n
-              class="txt-body-s text-grey-700 px-2 py-1.5 font-semibold uppercase"
-            >
-              Field
-            </th>
-            <th
-              i18n
-              class="txt-body-s text-grey-700 px-2 py-1.5 font-semibold uppercase"
-            >
-              Data column name
-            </th>
+          <tr
+            class="[&>th]:txt-body-s [&>th]:text-grey-700 [&>th]:px-2 [&>th]:py-1.5 [&>th]:font-semibold [&>th]:uppercase"
+          >
+            <th i18n>Field</th>
+            <th i18n>Recommended type</th>
+            <th i18n>Data column name</th>
           </tr>
         </ng-template>
         <ng-template
           #body
           let-attribute
         >
-          <tr>
+          <tr class="txt-body-s align-top font-bold [&>td]:inline-1/3">
             <td class="px-2">
               {{ attribute.label }}
               @if (attribute.infoTooltip) {
                 <app-info-tooltip [message]="attribute.infoTooltip()" />
               }
             </td>
-            <td class="px-2">
-              {{ attribute.name }}
 
-              <p-button
-                (click)="copyToClipboard(attribute.name)"
-                i18n-ariaLabel="@@generic-copy-to-clipboard"
-                ariaLabel="Copy to clipboard"
-                title="Copy to clipboard"
-                i18n-title="@@generic-copy-to-clipboard"
-                icon="pi pi-copy"
-                class="hover:text-purple hover:cursor-pointer"
-                [unstyled]="true"
-                size="small"
-              />
+            <td>
+              {{ getTranslatedRecommendedAttributeType(attribute) }}
+
+              @if (attribute.name === 'fsp') {
+                <p
+                  i18n
+                  class="text-grey-700 mbs-2 font-normal"
+                >
+                  Ask this in the form. Answer options must match these values
+                  exactly.
+                </p>
+              }
+            </td>
+
+            <td class="px-2">
+              <div>
+                {{ attribute.name }}
+                <app-copy-to-clipboard-button [copyThis]="attribute.name" />
+
+                @if (attribute.name === 'fsp') {
+                  <div class="mbs-2 space-y-2 [&>ul]:space-y-1">
+                    <div
+                      i18n
+                      class="text-grey-700 font-normal"
+                    >
+                      Answer values:
+                    </div>
+                    <ul>
+                      @for (name of programFspNames(); track name) {
+                        <li>{{ name }}</li>
+                      }
+                    </ul>
+                  </div>
+                }
+              </div>
             </td>
           </tr>
         </ng-template>
