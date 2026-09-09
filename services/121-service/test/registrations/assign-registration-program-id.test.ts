@@ -61,13 +61,17 @@ describe('Assign registrationProgramId', () => {
     );
 
     // Act
-    await Promise.all(
+    const responses = await Promise.all(
       registrationBatches.map((registrations) =>
         importRegistrations(programIdPV, registrations, accessToken),
       ),
     );
 
     // Assert
+    for (const response of responses) {
+      expect(response.statusCode).toBe(HttpStatus.CREATED);
+    }
+
     const registrations = await waitForRegistrationCount({
       programId: programIdPV,
       expectedCount: numberOfConcurrentRegistrations,
