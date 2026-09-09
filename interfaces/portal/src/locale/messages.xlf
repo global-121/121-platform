@@ -1683,9 +1683,6 @@
       <trans-unit id="7814604735706675498" datatype="html">
         <source>Cards ordered</source>
       </trans-unit>
-      <trans-unit id="7819314041543176992" datatype="html">
-        <source>Close</source>
-      </trans-unit>
       <trans-unit id="7848450150740100683" datatype="html">
         <source>Failed to update financial service providers.</source>
       </trans-unit>
