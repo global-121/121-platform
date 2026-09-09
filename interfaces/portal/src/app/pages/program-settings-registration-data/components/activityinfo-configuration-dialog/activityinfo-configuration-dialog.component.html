@@ -1,0 +1,138 @@
+<app-form-dialog
+  #activityInfoConfigurationDialog
+  header="Link with ActivityInfo"
+  i18n-header
+  headerIcon="pi pi-link"
+  [formGroup]="activityInfoConfigurationFormGroup"
+  [mutation]="activityInfoConfigurationMutation"
+  [mutationData]="undefined"
+  proceedLabel="Continue"
+  i18n-proceedLabel
+>
+  <!-- WRAPPED IN DIV TO MITIGATE SPACING FROM PARENT  -->
+  <div class="mbe-2">
+    <p i18n>
+      For more information about how to integrate ActivityInfo see
+      <app-manual-link />
+    </p>
+    <p i18n>
+      Give every field in your ActivityInfo form a code: 121 uses the code to
+      name the registration attribute, and shows the field label in the Portal.
+      The form language must be English (EN).
+    </p>
+  </div>
+
+  <app-form-field-wrapper
+    label="ActivityInfo form URL"
+    i18n-label
+    [errorMessage]="
+      activityInfoConfigurationFormFieldErrors()('fullActivityInfoFormUrl')
+    "
+  >
+    <small
+      i18n="
+        Do NOT translate the URL!@@integrate-activityinfo-form-url-explanation"
+      class="text-grey-700 mbe-2 block text-sm"
+    >
+      The full URL from the form's page in ActivityInfo, i.e:
+      https://www.activityinfo.org/app#form/XXXXXX/table
+    </small>
+
+    <input
+      pInputText
+      type="url"
+      inputmode="url"
+      formControlName="fullActivityInfoFormUrl"
+      (input)="onFormUrlUpdate($event)"
+    />
+  </app-form-field-wrapper>
+  <app-form-field-wrapper
+    label="API key"
+    i18n-label
+    [errorMessage]="activityInfoConfigurationFormFieldErrors()('token')"
+  >
+    <small
+      i18n="@@integrate-activityinfo-form-api-key-explanation"
+      class="text-grey-700 mbe-2 block text-sm"
+    >
+      Copy a personal API token from your ActivityInfo account settings.<br />
+      The token must have access to the database that contains this form.
+    </small>
+
+    <p-password
+      formControlName="token"
+      [toggleMask]="true"
+      autocomplete="off"
+      [feedback]="false"
+    />
+  </app-form-field-wrapper>
+</app-form-dialog>
+
+<app-form-dialog
+  #linkActivityInfoDialog
+  header="Link with ActivityInfo"
+  i18n-header
+  headerIcon="pi pi-link"
+  [mutation]="linkActivityInfoMutation"
+  [mutationData]="undefined"
+  proceedLabel="Continue"
+  i18n-proceedLabel="@@generic-continue"
+>
+  @if (!!activityInfoFormName()) {
+    <p i18n>You're about to link this program with this ActivityInfo form:</p>
+    <div class="bg-grey-100 p-2">
+      <p>
+        <strong>{{ activityInfoFormName() }}</strong>
+      </p>
+    </div>
+  } @else {
+    <p>{{ activityInfoConfigurationMutation.data()?.message }}</p>
+  }
+</app-form-dialog>
+
+<p-dialog
+  [modal]="true"
+  [closeOnEscape]="false"
+  [(visible)]="activityInfoSuccessfullyLinkedDialogVisible"
+  styleClass="max-inline-[90vw] sm:min-inline-160"
+  [attr.data-testid]="'activityinfo-successfully-linked-dialog'"
+>
+  <ng-template #header>
+    <h3>
+      <i class="pi pi-check me-2"></i>
+      <ng-container i18n>ActivityInfo form linked successfully</ng-container>
+    </h3>
+  </ng-template>
+
+  <p i18n>
+    <strong>{{ activityInfoFormName() }}</strong>
+    was linked successfully to your program.
+  </p>
+
+  <div class="mbs-4 flex justify-end gap-4">
+    <p-button
+      label="Import existing registrations"
+      i18n-label
+      outlined
+      rounded
+      (click)="handleImportExistingRecordsClick()"
+    />
+    <p-button
+      [rounded]="true"
+      label="Close"
+      i18n-label="@@generic-close"
+      (click)="activityInfoSuccessfullyLinkedDialogVisible.set(false)"
+    />
+  </div>
+</p-dialog>
+
+<app-activityinfo-import-existing-records-dialog
+  #activityInfoImportExistingDialog
+  [programId]="programId()"
+/>
+
+<app-activityinfo-integration-error-dialog
+  #activityInfoIntegrationErrorDialog
+  [errors]="activityInfoIntegrationErrors()"
+  (tryAgain)="activityInfoConfigurationDialog.show()"
+/>

@@ -7,6 +7,10 @@ graph LR
   ActivitiesModule-->RegistrationEventsModule
   ActivitiesModule-->TransactionsModule
   ActivitiesModule-->UserModule
+  ActivityInfoModule-->ProgramFspConfigurationsModule
+  ActivityInfoModule-->ProgramModule
+  ActivityInfoModule-->ProgramRegistrationAttributesModule
+  ActivityInfoModule-->RegistrationsModule
   AirtelModule-->QueuesRegistryModule
   AirtelModule-->RedisModule
   AlfouadModule-->ProgramFspConfigurationsModule

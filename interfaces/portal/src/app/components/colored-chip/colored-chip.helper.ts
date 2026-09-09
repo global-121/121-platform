@@ -5,6 +5,10 @@ import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-st
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import {
+  ImportExistingRecordsResultKey,
+  RECORD_RESULT_LABELS,
+} from '~/domains/activityinfo/activityinfo.helpers';
+import {
   VISA_CARD_ORDER_STATUS_LABELS,
   VISA_CARD_STATUS_LABELS,
 } from '~/domains/fsp-account-management/intersolve-visa.helper';
@@ -140,6 +144,19 @@ export const getChipDataBySubmissionsKey = (
         ColorVariant.Green,
       [ImportExistingSubmissionsResultKey.numberOfSubmissionsSkipped]:
         ColorVariant.Orange,
+    },
+  });
+
+export const getChipDataByRecordsKey = (
+  status?: ImportExistingRecordsResultKey | null,
+): ChipData =>
+  mapValueToChipData({
+    value: status,
+    labels: RECORD_RESULT_LABELS,
+    chipVariants: {
+      [ImportExistingRecordsResultKey.numberOfRecordsFailed]: 'red',
+      [ImportExistingRecordsResultKey.numberOfRecordsImported]: 'green',
+      [ImportExistingRecordsResultKey.numberOfRecordsSkipped]: 'orange',
     },
   });
 

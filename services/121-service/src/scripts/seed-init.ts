@@ -98,6 +98,8 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.ProgramFspConfigDELETE,
           PermissionEnum.ProgramFspConfigREAD,
           PermissionEnum.ProgramFspConfigUPDATE,
+          PermissionEnum.ProgramActivityInfoREAD,
+          PermissionEnum.ProgramActivityInfoUPDATE,
           PermissionEnum.ProgramKoboREAD,
           PermissionEnum.ProgramKoboUPDATE,
           PermissionEnum.ProgramMetricsREAD,

@@ -1295,5 +1295,38 @@
       "referenceId",
       "attributeName"
     ]
+  },
+  {
+    "method": "put",
+    "path": "/api/programs/{programId}/activityinfo",
+    "params": [
+      "programId",
+      "dryRun"
+    ],
+    "returnType": "ActivityInfoIntegrationResultDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/activityinfo",
+    "params": [
+      "programId"
+    ],
+    "returnType": "ActivityInfoResponseDto"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/activityinfo",
+    "params": [
+      "programId"
+    ],
+    "returnType": "ActivityInfoIntegrationResultDto"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/activityinfo/records",
+    "params": [
+      "programId"
+    ],
+    "returnType": "ImportExistingRecordsResultDto"
   }
 ]

@@ -1,0 +1,188 @@
+<p-dialog
+  [(visible)]="dialogVisible"
+  [style]="{ width: dialogWidth() }"
+  (onHide)="resetDialogState()"
+  [draggable]="false"
+  appendTo="body"
+  #confirmDialog
+  [modal]="true"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-2">
+      <h3>
+        <i [class]="headerIcon()"></i>
+        {{ dialogTitle() }}
+      </h3>
+    </div>
+  </ng-template>
+
+  <section data-testid="import-existing-activityinfo-records-dialog">
+    @if (importState() === DialogState.NotInitiated) {
+      <div>
+        <p i18n>Import existing records from your ActivityInfo form.</p>
+        <p i18n>
+          The system will create registrations with the status
+          <!-- This is a one off label for this view -->
+          <app-colored-chip
+            [variant]="'blue'"
+            label="'New'"
+            i18n-label
+          />
+        </p>
+        <p
+          i18n
+          class="mbs-2"
+        >
+          There is a maximum of 1000 records per import. If you have more
+          records to import, please split them into multiple files. The import
+          takes about 1 minute per 100 records.
+        </p>
+      </div>
+
+      <app-form-error [error]="singleErrorMessage()" />
+
+      <div class="mbs-5 flex justify-end gap-4">
+        <p-button
+          (click)="dialogVisible.set(false)"
+          severity="secondary"
+          [rounded]="true"
+          label="Cancel"
+          i18n-label="@@generic-cancel"
+        />
+        <p-button
+          [loading]="importExistingRecords.isPending()"
+          (click)="importExistingRecords.mutate()"
+          label="Import registrations"
+          i18n-label
+          [rounded]="true"
+        />
+      </div>
+    }
+
+    @if (importState() === DialogState.ImportedWithoutRecords) {
+      <p>{{ noExistingRecordsTranslation() }}</p>
+
+      <div class="mbs-5 flex justify-end gap-4">
+        <p-button
+          (click)="closeDialog()"
+          [rounded]="true"
+          label="Close"
+          i18n-label="@@generic-close"
+        />
+      </div>
+    }
+
+    @if (
+      importState() === DialogState.ImportedWithoutErrors ||
+      importState() === DialogState.ImportedWithErrors
+    ) {
+      <div>
+        <p>
+          <span i18n>Successfully imported records from ActivityInfo form</span
+          >&nbsp;
+          <span>”{{ activityInfoIntegration.data()?.name }}”</span>
+        </p>
+
+        <div class="mbs-4 space-y-2">
+          <p class="font-bold">
+            {{ totalRecordsTranslation() }}
+          </p>
+
+          @if (importExistingRecords.data()?.numberOfRecordsSkipped !== 0) {
+            <div class="flex items-center gap-1">
+              <app-colored-chip
+                [label]="`${getChipLabelByRecordKey(importExistingRecordsResultKey.numberOfRecordsSkipped)}: ${importExistingRecords.data()?.numberOfRecordsSkipped ?? 0}`"
+                [variant]="
+                  getChipVariantByRecordKey(
+                    importExistingRecordsResultKey.numberOfRecordsSkipped
+                  )
+                "
+                [icon]="'pi pi-fast-forward'"
+                class="block"
+                i18n-icon
+              />
+              <app-info-tooltip
+                i18n-tooltip
+                message="Records that have been added to the program already are skipped to avoid duplications."
+                i18n-message
+              />
+            </div>
+          }
+
+          @if (importExistingRecords.data()?.numberOfRecordsImported !== 0) {
+            <app-colored-chip
+              [label]="`${getChipLabelByRecordKey(importExistingRecordsResultKey.numberOfRecordsImported)}: ${importExistingRecords.data()?.numberOfRecordsImported ?? 0}`"
+              [variant]="
+                getChipVariantByRecordKey(
+                  importExistingRecordsResultKey.numberOfRecordsImported
+                )
+              "
+              [icon]="'pi pi-check'"
+              class="block"
+              i18n-icon
+            />
+          }
+        </div>
+      </div>
+    }
+
+    @if (importState() === DialogState.ImportedWithoutErrors) {
+      <div class="mbs-5 flex justify-end gap-4">
+        <p-button
+          label="Close"
+          i18n-label="@@generic-close"
+          (click)="closeDialog()"
+          [rounded]="true"
+        />
+      </div>
+    }
+
+    @if (importState() === DialogState.ImportedWithErrors) {
+      <div>
+        <div class="mbs-4 space-y-2">
+          <app-colored-chip
+            [label]="`${getChipLabelByRecordKey(importExistingRecordsResultKey.numberOfRecordsFailed)}: ${importExistingRecords.data()?.numberOfRecordsFailed ?? 0}`"
+            [variant]="
+              getChipVariantByRecordKey(
+                importExistingRecordsResultKey.numberOfRecordsFailed
+              )
+            "
+            [icon]="'pi pi-exclamation-triangle'"
+            class="block"
+          />
+
+          <app-form-error
+            [error]="'Below are the errors corresponding to the failed records. Correct the records in the ActivityInfo form and try again.'"
+          />
+        </div>
+
+        <app-query-table
+          [items]="detailedErrors() ?? []"
+          [columns]="detailedErrorsColumns()"
+          [initialSortField]="'referenceId'"
+          [isPending]="false"
+          [dataTestId]="'activityinfo-import-existing-records-dialog-errors-table'"
+          [paginatorDropdownAppendTo]="'body'"
+          [scrollHeight]="'400px'"
+          [scrollable]="true"
+        >
+        </app-query-table>
+
+        <div class="mbs-5 flex justify-end gap-4">
+          <p-button
+            (click)="resetDialogState()"
+            label="Try again"
+            [rounded]="true"
+            i18n-label
+          />
+        </div>
+      </div>
+    }
+  </section>
+</p-dialog>
+
+<app-activityinfo-integration-error-dialog
+  #activityInfoIntegrationErrorDialog
+  [errors]="activityInfoIntegrationErrors()"
+  [isActivityInfoIntegrated]="true"
+/>

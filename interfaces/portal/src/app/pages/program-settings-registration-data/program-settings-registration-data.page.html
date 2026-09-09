@@ -15,20 +15,27 @@
       </p>
     </div>
 
-    <app-kobo-integration-card
-      [programId]="programId()"
-      class="inline-1/2"
-    ></app-kobo-integration-card>
+    <div class="flex flex-wrap gap-4">
+      <app-kobo-integration-card
+        [programId]="programId()"
+        class="inline-1/2"
+      ></app-kobo-integration-card>
 
-    @if (!koboIntegration.isPending()) {
+      <app-activityinfo-integration-card
+        [programId]="programId()"
+        class="inline-1/2"
+      ></app-activityinfo-integration-card>
+    </div>
+
+    @if (!isRegistrationToolIntegrationPending()) {
       <app-required-attributes
         [programId]="programId()"
-        [isKoboIntegrated]="isKoboIntegrated()"
+        [isKoboIntegrated]="isAnyRegistrationToolIntegrated()"
       ></app-required-attributes>
     }
   </p-card>
 
-  @if (isKoboIntegrated()) {
+  @if (isAnyRegistrationToolIntegrated()) {
     <app-registration-questions-card
       [programId]="programId()"
     ></app-registration-questions-card>

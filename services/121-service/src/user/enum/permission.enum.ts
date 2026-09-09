@@ -47,6 +47,10 @@ export enum PermissionEnum {
   ProgramKoboREAD = 'program:kobo.read',
   ProgramKoboUPDATE = 'program:kobo.update',
 
+  // ActivityInfo
+  ProgramActivityInfoREAD = 'program:activityinfo.read',
+  ProgramActivityInfoUPDATE = 'program:activityinfo.update',
+
   // Payment(s)
   PaymentREAD = 'payment.read',
   PaymentCREATE = 'payment.create',

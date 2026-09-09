@@ -394,6 +394,10 @@ export class ProgramRegistrationAttributesService {
     programRegistrationAttribute.name = attribute.name;
     programRegistrationAttribute.label = attribute.label ?? null;
     programRegistrationAttribute.koboLabel = attribute.koboLabel ?? null;
+    programRegistrationAttribute.activityInfoLabel =
+      attribute.activityInfoLabel ?? null;
+    programRegistrationAttribute.activityInfoFieldId =
+      attribute.activityInfoFieldId ?? null;
     programRegistrationAttribute.type = attribute.type;
     programRegistrationAttribute.options = attribute.options ?? null;
     programRegistrationAttribute.scoring = attribute.scoring ?? {};

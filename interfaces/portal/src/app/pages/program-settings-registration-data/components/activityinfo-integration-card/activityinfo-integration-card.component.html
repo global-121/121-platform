@@ -1,0 +1,71 @@
+<app-card-with-link
+  [image]="'assets/registration-data/activityinfo.svg'"
+  [titleColoredChipLabel]="titleColoredChipLabel()"
+  [menuItems]="isActivityInfoIntegrated() ? writableMenuItems() : []"
+  [attr.data-testid]="'activityinfo-integration-card'"
+  [enableLink]="!isActivityInfoIntegrated()"
+  [titleColoredChipColor]="'green'"
+  title="ActivityInfo"
+  titleHeadingLevel="3"
+  i18n-title
+  (cardClicked)="handleCardClicked()"
+>
+  <ng-container card-subtitle>
+    @if (isActivityInfoIntegrated()) {
+      <div class="flex items-end justify-between">
+        @if (externalFormUrl(); as formUrl) {
+          <a
+            [href]="formUrl"
+            rel="'external'"
+            target="_blank"
+            title="Opens in a new window"
+            i18n-title="@@generic-opens-in-new-window"
+          >
+            <span class="underline">{{
+              activityInfoIntegration.data()?.name ?? formUrl
+            }}</span>
+            <span
+              aria-hidden="true"
+              class="p-button-icon pi pi-external-link relative inset-bs-0.25 ms-1.5 text-xs"
+            ></span>
+          </a>
+        }
+        <p
+          i18n
+          class="text-grey-700 text-end text-sm"
+        >
+          Last updated:
+          <time
+            data-testid="activityinfo-integration-last-updated"
+            [attr.datetime]="
+              activityInfoIntegration.data()?.updated | date: 'short'
+            "
+            >{{ activityInfoIntegration.data()?.updated | date: 'short' }}</time
+          >
+        </p>
+      </div>
+    }
+
+    @if (!isActivityInfoIntegrated()) {
+      <p i18n>Click to link</p>
+    }
+  </ng-container>
+</app-card-with-link>
+
+<!-- DIALOGS -->
+
+<app-activityinfo-configuration-dialog
+  #activityInfoConfigurationDialog
+  [programId]="programId()"
+/>
+
+<app-activityinfo-import-existing-records-dialog
+  #activityInfoImportExistingDialog
+  [programId]="programId()"
+/>
+
+<app-activityinfo-integration-error-dialog
+  #activityInfoIntegrationErrorDialog
+  [errors]="activityInfoRefreshErrors()"
+  [isActivityInfoIntegrated]="isActivityInfoIntegrated()"
+/>

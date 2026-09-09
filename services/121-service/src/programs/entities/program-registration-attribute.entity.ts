@@ -27,6 +27,15 @@ export class ProgramRegistrationAttributeEntity extends Base121Entity {
   @Column('json', { nullable: true })
   public koboLabel: RegistrationPreferredLanguageTranslation | null;
 
+  @Column('json', { nullable: true })
+  public activityInfoLabel: RegistrationPreferredLanguageTranslation | null;
+
+  // The immutable id of the ActivityInfo field this attribute was imported
+  // from. 121 keys the mapping on this id rather than on the field code or
+  // label, so renaming either in ActivityInfo keeps the integration intact.
+  @Column({ type: 'character varying', nullable: true })
+  public activityInfoFieldId: string | null;
+
   @Column({ type: 'character varying' })
   public type: RegistrationAttributeTypes;
 
