@@ -417,6 +417,9 @@
       <trans-unit id="2569677772635471712" datatype="html">
         <source>The card number you entered is already linked to another registration.</source>
       </trans-unit>
+      <trans-unit id="2573938693180340150" datatype="html">
+        <source>You must select at least one FSP before linking a registration form.</source>
+      </trans-unit>
       <trans-unit id="2583667945049138476" datatype="html">
         <source>Unsupported language</source>
       </trans-unit>
@@ -1027,6 +1030,9 @@
       </trans-unit>
       <trans-unit id="4902817035128594900" datatype="html">
         <source>Description</source>
+      </trans-unit>
+      <trans-unit id="4927319423170891829" datatype="html">
+        <source>Pending FSP selection</source>
       </trans-unit>
       <trans-unit id="4941441939532394435" datatype="html">
         <source>This field needs to be at least <x equiv-text="min" id="PH"/>.</source>
@@ -1760,6 +1766,9 @@
       </trans-unit>
       <trans-unit id="7814604735706675498" datatype="html">
         <source>Cards ordered</source>
+      </trans-unit>
+      <trans-unit id="7819314041543176992" datatype="html">
+        <source>Close</source>
       </trans-unit>
       <trans-unit id="7848450150740100683" datatype="html">
         <source>Failed to update financial service providers.</source>
