@@ -111,7 +111,7 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     name: SeedScript.alFouadProgram,
     programs: [
       {
-        program: 'program-alfouad.json',
+        program: 'program-al-fouad.json',
         messageTemplate: messageTemplateGeneric,
       },
     ],

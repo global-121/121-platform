@@ -9,18 +9,18 @@ graph LR
   ActivitiesModule-->UserModule
   AirtelModule-->QueuesRegistryModule
   AirtelModule-->RedisModule
-  AlfouadModule-->ProgramFspConfigurationsModule
-  AlfouadModule-->TransactionEventsModule
-  AlfouadReconciliationModule-->AlfouadModule
-  AlfouadReconciliationModule-->TransactionEventsModule
-  AlfouadReconciliationModule-->TransactionsModule
+  AlFouadModule-->ProgramFspConfigurationsModule
+  AlFouadModule-->TransactionEventsModule
+  AlFouadReconciliationModule-->AlFouadModule
+  AlFouadReconciliationModule-->TransactionEventsModule
+  AlFouadReconciliationModule-->TransactionsModule
   CommercialBankEthiopiaAccountManagementModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaAccountManagementModule-->ProgramModule
   CommercialBankEthiopiaAccountManagementModule-->RegistrationsModule
   CooperativeBankOfOromiaAccountManagementModule-->CooperativeBankOfOromiaModule
   CooperativeBankOfOromiaAccountManagementModule-->ProgramModule
   CooperativeBankOfOromiaAccountManagementModule-->RegistrationsModule
-  CronjobModule-->AlfouadReconciliationModule
+  CronjobModule-->AlFouadReconciliationModule
   CronjobModule-->CommercialBankEthiopiaAccountManagementModule
   CronjobModule-->CooperativeBankOfOromiaAccountManagementModule
   CronjobModule-->ExchangeRatesModule
@@ -176,7 +176,7 @@ graph LR
   SafaricomReconciliationModule-->TransactionEventsModule
   SafaricomReconciliationModule-->TransactionsModule
   TransactionJobsModule-->AirtelModule
-  TransactionJobsModule-->AlfouadModule
+  TransactionJobsModule-->AlFouadModule
   TransactionJobsModule-->CommercialBankEthiopiaModule
   TransactionJobsModule-->CooperativeBankOfOromiaModule
   TransactionJobsModule-->ExcelModule

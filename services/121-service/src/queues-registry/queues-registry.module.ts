@@ -83,7 +83,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: QueueNames.transactionJobsAlfouad,
+      name: QueueNames.transactionJobsAlFouad,
       limiter: {
         max: 20,
         duration: 1000, // per duration in ms
