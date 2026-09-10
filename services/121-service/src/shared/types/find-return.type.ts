@@ -1,6 +1,10 @@
-import { FindManyOptions, FindOneOptions, ObjectLiteral } from 'typeorm'; // stock typeorm types, used as-is
-import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations'; // stock typeorm type, used as-is
-import { FindOptionsSelect } from 'typeorm/find-options/FindOptionsSelect'; // stock typeorm type, used as-is
+import {
+  FindManyOptions,
+  FindOneOptions,
+  FindOptionsRelations,
+  FindOptionsSelect,
+  ObjectLiteral,
+} from 'typeorm'; // stock typeorm types, used as-is
 
 // Strong return typing for `find*` results, derived from the `select` / `relations` options.
 //
@@ -9,11 +13,9 @@ import { FindOptionsSelect } from 'typeorm/find-options/FindOptionsSelect'; // s
 // ("feat: find APIs more accurate return types"), which was closed and never merged into stock
 // typeorm. It builds on these stock typeorm pieces:
 //   - FindOptionsSelect / FindOptionsRelations / ObjectLiteral — imported above, used as-is.
-//   - FindOptionsSelectByString / FindOptionsRelationByString (deprecated in stock) — inlined as
-//     `(keyof Entity)[]` / `string[]`, their exact stock definitions; marked `[stock]` below.
 //
 // It looks more verbose than PR #10082 only cosmetically: the `R & keyof …` intersections satisfy our
-// stricter tsconfig index-access checks, plus the inlined `[stock]` aliases and Prettier wrapping — the type logic is identical.
+// stricter tsconfig index-access checks, plus Prettier wrapping — the type logic is identical.
 //
 // Applied globally below via TypeScript declaration merging (see the `declare module 'typeorm'`
 // block at the bottom of this file) instead of a custom Repository subclass, so EVERY
@@ -49,25 +51,17 @@ type SelectValueAt<
         : Entity[R]
       : Entity[R];
 
-// Resolves the shape produced by a `select` option, covering both array and object notation.
+// Resolves the shape produced by a `select` option's object notation.
 type PickSelect<
   Entity extends ObjectLiteral,
-  Select extends FindOptionsSelect<Entity> | (keyof Entity)[] | undefined, // [stock] (keyof Entity)[] is the inlined stock FindOptionsSelectByString<Entity>
-> = Select extends (keyof Entity)[]
-  ? {
-      [
-        R in Select extends (keyof Entity)[] ? Select[number] : never
-      ]: Entity[R & keyof Entity]; // [ours] index-access widening (`& keyof Entity`) for our tsconfig
-    }
-  : {
-      [
-        R in Select extends (keyof Entity)[] ? never : TruthyKeys<Select>
-      ]: SelectValueAt<
-        Entity,
-        R & keyof Entity,
-        Select & FindOptionsSelect<Entity>
-      >;
-    };
+  Select extends FindOptionsSelect<Entity> | undefined,
+> = {
+  [R in TruthyKeys<NonNullable<Select>>]: SelectValueAt<
+    Entity,
+    R & keyof Entity,
+    Select & FindOptionsSelect<Entity>
+  >;
+};
 
 // The resolved type of Entity key R when eagerly loaded via `relations` object notation.
 // Recurses into FindReturnType when Relation narrows a nested object, or an array of them.
@@ -91,11 +85,9 @@ type RelationValueAt<
 // Resolves the shape produced by a `relations` option's object notation (eagerly loaded relations).
 type PickRelations<
   Entity extends ObjectLiteral,
-  Relation extends FindOptionsRelations<Entity> | string[] | undefined, // [stock] string[] is the inlined stock FindOptionsRelationByString
+  Relation extends FindOptionsRelations<Entity> | undefined,
 > = {
-  [
-    R in Relation extends string[] ? never : TruthyKeys<Relation>
-  ]: RelationValueAt<
+  [R in TruthyKeys<NonNullable<Relation>>]: RelationValueAt<
     Entity,
     R & keyof Entity,
     Relation & FindOptionsRelations<Entity>
@@ -105,8 +97,8 @@ type PickRelations<
 // Public entry point: narrows Entity down to only the fields covered by Select and/or Relation.
 export type FindReturnType<
   Entity extends ObjectLiteral,
-  Select extends FindOptionsSelect<Entity> | (keyof Entity)[] | undefined,
-  Relation extends FindOptionsRelations<Entity> | string[] | undefined,
+  Select extends FindOptionsSelect<Entity> | undefined,
+  Relation extends FindOptionsRelations<Entity> | undefined,
 > = keyof Select extends never
   ? keyof Relation extends never
     ? Entity

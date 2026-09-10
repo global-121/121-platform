@@ -242,6 +242,7 @@ export class RegistrationsBulkService {
       bulksize: bulkSize,
       usedPlaceholders,
       userId,
+      programId,
     }).catch((error) => {
       this.azureLogService.logError(error, true);
     });
@@ -513,6 +514,7 @@ export class RegistrationsBulkService {
         bulksize: registrationChunk.length,
         usedPlaceholders,
         messageContentDetails,
+        programId,
       });
     }
   }
@@ -715,6 +717,7 @@ export class RegistrationsBulkService {
     bulksize,
     usedPlaceholders,
     userId,
+    programId,
   }: {
     registrations: Awaited<
       ReturnType<RegistrationsPaginationService['getPaginate']>
@@ -723,6 +726,7 @@ export class RegistrationsBulkService {
     bulksize: number;
     usedPlaceholders: string[];
     userId: MessageSenderUserId;
+    programId: number;
   }): Promise<void> {
     for (const registration of registrations) {
       const placeholderData = {};
@@ -732,7 +736,7 @@ export class RegistrationsBulkService {
       await this.queueMessageService.addMessageJob({
         registrationId: registration.id,
         referenceId: registration.referenceId,
-        programId: registration.programId,
+        programId,
         preferredLanguage: registration.preferredLanguage,
         phoneNumber:
           registration[DefaultRegistrationDataAttributeNames.phoneNumber],

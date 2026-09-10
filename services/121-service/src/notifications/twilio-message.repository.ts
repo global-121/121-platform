@@ -78,11 +78,14 @@ export class TwilioMessageScopedRepository extends ScopedRepository<TwilioMessag
       relations: { user: true },
       order: { dateCreated: 'DESC' },
       select: {
+        id: true,
         userId: true,
         user: {
+          id: true,
           username: true,
         },
         created: true,
+        dateCreated: true,
         to: true,
         body: true,
         status: true,

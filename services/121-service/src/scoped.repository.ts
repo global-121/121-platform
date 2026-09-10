@@ -7,7 +7,6 @@ import {
   FindOneOptions,
   FindOptionsWhere,
   InsertResult,
-  ObjectId,
   ObjectLiteral,
   RemoveOptions,
   Repository,
@@ -274,9 +273,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
       | number
       | number[]
       | Date
-      | Date[]
-      | ObjectId
-      | ObjectId[],
+      | Date[],
   ): Promise<DeleteResult> {
     // TODO: This is not scoped yet, for now is doesn't matter as
     // we don't use update anywhere yet in a way where it should be scoped
@@ -294,8 +291,6 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
       | number[]
       | Date
       | Date[]
-      | ObjectId
-      | ObjectId[]
       | FindOptionsWhere<T>,
     partialEntity: QueryDeepPartialEntity<T>,
   ): Promise<UpdateResult> {
@@ -321,9 +316,11 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
       (relation) => relation.propertyName,
     );
     for (const relation of relations) {
-      const relationType =
-        metadata.findRelationWithPropertyPath(relation)?.type;
-      if (relationType === RegistrationEntity) {
+      const relationMetadata = metadata.findRelationWithPropertyPath(relation);
+      if (
+        relationMetadata?.type === RegistrationEntity ||
+        relationMetadata?.inverseEntityMetadata?.target === RegistrationEntity
+      ) {
         return relation;
       }
     }
