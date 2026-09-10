@@ -39,7 +39,7 @@ import { AuthService } from '~/services/auth.service';
 import { RegistrationsTableColumnService } from '~/services/registrations-table-column.service';
 import { ToastService } from '~/services/toast.service';
 import {
-  InfoTooltipName,
+  InfoTooltipTrackingName,
   TrackingAction,
   TrackingCategory,
   TrackingEvent,
@@ -200,7 +200,7 @@ export class ProgramSettingsBasicInformationComponent {
         fullWidth: true,
         type: 'number',
         tooltip: PROGRAM_FORM_TOOLTIPS.targetRegistrations,
-        tooltipTrackingName: InfoTooltipName.programTargetRegistrations,
+        tooltipTrackingName: InfoTooltipTrackingName.programTargetRegistrations,
       },
       {
         label: $localize`Enable validation`,
@@ -208,7 +208,7 @@ export class ProgramSettingsBasicInformationComponent {
         fullWidth: true,
         type: 'boolean',
         tooltip: PROGRAM_FORM_TOOLTIPS.validationProcess,
-        tooltipTrackingName: InfoTooltipName.programValidationProcess,
+        tooltipTrackingName: InfoTooltipTrackingName.programValidationProcess,
       },
       {
         label: $localize`Enable scope`,
@@ -216,7 +216,7 @@ export class ProgramSettingsBasicInformationComponent {
         fullWidth: true,
         type: 'boolean',
         tooltip: PROGRAM_FORM_TOOLTIPS.enableScope,
-        tooltipTrackingName: InfoTooltipName.programEnableScope,
+        tooltipTrackingName: InfoTooltipTrackingName.programEnableScope,
       },
     ];
 

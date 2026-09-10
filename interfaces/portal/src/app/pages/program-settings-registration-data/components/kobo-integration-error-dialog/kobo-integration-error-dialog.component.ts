@@ -16,7 +16,7 @@ import { KoboValidationErrorType } from '@121-service/src/kobo/enum/kobo-validat
 import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
-import { InfoTooltipName } from '~/services/tracking.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 
 enum KoboErrorDisplayType {
   formSetting = 'formSetting',
@@ -52,7 +52,7 @@ const koboErrorDisplayTypeMap: Record<
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KoboIntegrationErrorDialogComponent {
-  readonly InfoTooltipName = InfoTooltipName;
+  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
 
   readonly errors = input<KoboValidationError[]>([]);
   readonly dialogVisible = model(false);

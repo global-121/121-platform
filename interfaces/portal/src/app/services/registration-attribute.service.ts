@@ -37,7 +37,7 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
 import { Registration } from '~/domains/registration/registration.model';
 import { AuthService } from '~/services/auth.service';
 import { GetRegistrationPreferredLanguageNameService } from '~/services/get-registration-preferrred-language-name.service';
-import { InfoTooltipName } from '~/services/tracking.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Locale } from '~/utils/locale';
 
@@ -70,7 +70,7 @@ export interface NormalizedRegistrationAttribute {
   name: GenericRegistrationAttributes | string;
   label: string | UILanguageTranslation;
   editInfo?: string;
-  editInfoTrackingName?: InfoTooltipName;
+  editInfoTrackingName?: InfoTooltipTrackingName;
   isRequired: boolean;
   isEditable: boolean;
   pattern?: string;
@@ -333,7 +333,8 @@ export class RegistrationAttributeService {
               name: 'name',
               label: $localize`:@@registration-full-name:Name`,
               editInfo: $localize`:@@registration-full-name-edit-info:This field is dynamically generated based on the other name fields available below: ${allNameFields}:allNameFields:`,
-              editInfoTrackingName: InfoTooltipName.attributeEditInfoFullName,
+              editInfoTrackingName:
+                InfoTooltipTrackingName.attributeEditInfoFullName,
               value: registration?.name,
               type: RegistrationAttributeTypes.text,
               isEditable: false,

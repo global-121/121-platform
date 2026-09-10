@@ -25,7 +25,7 @@
             class="ms-1"
             message="These fields are expected by 121 but are missing from your Kobo form. Add them before redeploying."
             i18n-message
-            [trackingName]="InfoTooltipName.koboMissingRequiredFields"
+            [trackingName]="InfoTooltipTrackingName.koboMissingRequiredFields"
           />
         </h4>
       </div>
@@ -59,7 +59,7 @@
             class="ms-1"
             message="These are the errors related to your Kobo form settings."
             i18n-message
-            [trackingName]="InfoTooltipName.koboFormSettingErrors"
+            [trackingName]="InfoTooltipTrackingName.koboFormSettingErrors"
           />
         </h4>
       </div>
@@ -75,7 +75,9 @@
               <app-info-tooltip
                 class="ms-1"
                 message="{{ error.info }}"
-                [trackingName]="InfoTooltipName.koboFormSettingErrorInfo"
+                [trackingName]="
+                  InfoTooltipTrackingName.koboFormSettingErrorInfo
+                "
               />
             }
           </li>
@@ -141,7 +143,9 @@
                 <app-info-tooltip
                   class="ms-1"
                   message="{{ error.info }}"
-                  [trackingName]="InfoTooltipName.koboConfigurationErrorInfo"
+                  [trackingName]="
+                    InfoTooltipTrackingName.koboConfigurationErrorInfo
+                  "
                 />
               }
             </td>

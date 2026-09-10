@@ -3,7 +3,7 @@ import {
   GenericRegistrationAttributes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 
-import { InfoTooltipName } from '~/services/tracking.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 
 export const ATTRIBUTE_LABELS: Record<GenericRegistrationAttributes, string> = {
   referenceId: $localize`:@@attribute-label-referenceId:Reference ID`,
@@ -40,20 +40,21 @@ export const DEFAULT_ATTRIBUTE_EDIT_INFO: Partial<
 };
 
 export const DEFAULT_ATTRIBUTE_EDIT_INFO_TRACKING_NAMES: Partial<
-  Record<DefaultRegistrationDataAttributeNames, InfoTooltipName>
+  Record<DefaultRegistrationDataAttributeNames, InfoTooltipTrackingName>
 > = {
-  phoneNumber: InfoTooltipName.attributeEditInfoPhoneNumber,
+  phoneNumber: InfoTooltipTrackingName.attributeEditInfoPhoneNumber,
 };
 
 export const ATTRIBUTE_EDIT_INFO_TRACKING_NAMES: Partial<
-  Record<GenericRegistrationAttributes, InfoTooltipName>
+  Record<GenericRegistrationAttributes, InfoTooltipTrackingName>
 > = {
-  inclusionScore: InfoTooltipName.attributeEditInfoInclusionScore,
-  maxPayments: InfoTooltipName.attributeEditInfoMaxPayments,
-  paymentCountRemaining: InfoTooltipName.attributeEditInfoPaymentCountRemaining,
+  inclusionScore: InfoTooltipTrackingName.attributeEditInfoInclusionScore,
+  maxPayments: InfoTooltipTrackingName.attributeEditInfoMaxPayments,
+  paymentCountRemaining:
+    InfoTooltipTrackingName.attributeEditInfoPaymentCountRemaining,
   paymentAmountMultiplier:
-    InfoTooltipName.attributeEditInfoPaymentAmountMultiplier,
-  scope: InfoTooltipName.attributeEditInfoScope,
+    InfoTooltipTrackingName.attributeEditInfoPaymentAmountMultiplier,
+  scope: InfoTooltipTrackingName.attributeEditInfoScope,
 };
 
 export const isGenericAttribute = (

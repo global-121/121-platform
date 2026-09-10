@@ -89,35 +89,43 @@ export enum TrackingAction {
   toggleProgramValidation = 'toggle: Use Program Validation',
 }
 
-export enum InfoTooltipName {
-  attributeEditInfoFullName = 'Registration Full Name Edit Info',
-  attributeEditInfoInclusionScore = 'Inclusion Score Edit Info',
-  attributeEditInfoMaxPayments = 'Max Payments Edit Info',
-  attributeEditInfoPaymentAmountMultiplier = 'Payment Amount Multiplier Edit Info',
-  attributeEditInfoPaymentCountRemaining = 'Payment Count Remaining Edit Info',
-  attributeEditInfoPhoneNumber = 'Phone Number Edit Info',
-  attributeEditInfoScope = 'Scope Edit Info',
+export enum InfoTooltipTrackingName {
+  attributeEditInfoFullName = 'Edit Attributes: Name Info',
+  attributeEditInfoInclusionScore = 'Edit Attributes: Inclusion Score Info',
+  attributeEditInfoMaxPayments = 'Edit Attributes: Max Payments Info',
+  attributeEditInfoPaymentAmountMultiplier = 'Edit Attributes: Payment Amount Multiplier Info',
+  attributeEditInfoPaymentCountRemaining = 'Edit Attributes: Payment Count Remaining Info',
+  attributeEditInfoPhoneNumber = 'Edit Attributes: Phone Number Info',
+  attributeEditInfoScope = 'Edit Attributes: Scope Info',
+
   customMessageCharacterLimit = 'Message: Custom Message Character Limit',
   fspConfigurationSensitiveProperty = 'Fsp Configuration: Sensitive Property',
+
   koboConfigurationErrorInfo = 'Kobo: Configuration Error Info',
   koboFormSettingErrorInfo = 'Kobo: Form Setting Error Info',
   koboFormSettingErrors = 'Kobo: Form Setting Errors',
   koboImportSkippedSubmissions = 'Kobo: Import Skipped Submissions',
   koboMissingRequiredFields = 'Kobo: Missing Required Fields',
+
+  monitoringBaseTransferValue = 'Monitoring: Base Transfer Value',
   monitoringIncludedRegistrations = 'Monitoring: Included Registrations',
   monitoringTotalRegistrations = 'Monitoring: Total Registrations',
+
   paymentApprovalAdditionalStepThreshold = 'Payment: Approval Additional Step Threshold',
   paymentApprovalFirstStepRequired = 'Payment: Approval First Step',
   paymentApprovalThresholdColumn = 'Payment: Approval Threshold',
   paymentName = 'Payment: Name',
   paymentTotalAmountCalculation = 'Payment: Total Amount',
+
   programCurrency = 'Program: Currency',
-  programDistributionDuration = 'Program: Distribution per registration',
+  programDistributionDuration = 'Program: Distribution per Registration',
   programEnableScope = 'Program: Enable Scope',
   programTargetRegistrations = 'Program: Target Registrations',
   programValidationProcess = 'Program: Use validation Process',
+
   registrationQuestionDataColumnName = 'Registration Questions: Data Column Name',
   registrationQuestionLabel = 'Registration Questions: Label',
+
   requiredAttributeFspInfo = 'Kobo Required Attribute: Fsp Info',
   requiredAttributeScopeInfo = 'Kobo Required Attribute: Scope Info',
   unsupportedLanguageWarning = 'Registration Questions: Unsupported Language Warning',

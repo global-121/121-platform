@@ -20,7 +20,9 @@
       i18n-metricLabel
       metricTooltip="Total registrations excluding rejected and deleted registrations."
       i18n-metricTooltip
-      [metricTooltipTrackingName]="InfoTooltipName.monitoringTotalRegistrations"
+      [metricTooltipTrackingName]="
+        InfoTooltipTrackingName.monitoringTotalRegistrations
+      "
     />
     <app-metric-tile
       class="[grid-area:metric2]"
@@ -32,7 +34,7 @@
       metricTooltip="Registrations with the status “included”."
       i18n-metricTooltip
       [metricTooltipTrackingName]="
-        InfoTooltipName.monitoringIncludedRegistrations
+        InfoTooltipTrackingName.monitoringIncludedRegistrations
       "
     />
     <app-metric-tile
