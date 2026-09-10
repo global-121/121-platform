@@ -1,0 +1,88 @@
+{
+  "validation": false,
+  "location": "Syria",
+  "ngo": "SARC",
+  "titlePortal": {
+    "en": "Al Fouad program"
+  },
+  "description": {
+    "en": "Test program using Al Fouad FSP"
+  },
+  "startDate": "2023-05-16T12:00:00.000Z",
+  "endDate": "2028-05-16T12:00:00.000Z",
+  "currency": "SYP",
+  "distributionFrequency": "month",
+  "distributionDuration": 6,
+  "fixedTransferValue": 100,
+  "paymentAmountMultiplierFormula": null,
+  "targetNrRegistrations": 2850,
+  "tryWhatsAppFirst": false,
+  "programRegistrationAttributes": [
+    {
+      "name": "fullName",
+      "label": {
+        "en": "Full Name"
+      },
+      "type": "text",
+      "pattern": null,
+      "options": null,
+      "includeInTransactionExport": true,
+      "scoring": {},
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "phoneNumber",
+      "isRequired": true,
+      "label": {
+        "en": "Phone Number"
+      },
+      "placeholder": {
+        "en": "+963900000000"
+      },
+      "includeInTransactionExport": true,
+      "type": "tel",
+      "options": null,
+      "showInPeopleAffectedTable": false
+    }
+  ],
+  "fullnameNamingConvention": ["fullName"],
+  "languages": ["en"],
+  "enableMaxPayments": true,
+  "enableScope": false,
+  "programFspConfigurations": [
+    {
+      "fsp": "AlFouad",
+      "properties": [
+        {
+          "name": "accountAlfouad",
+          "value": "ALFOUAD_ACCOUNT"
+        },
+        {
+          "name": "branchIdAlfouad",
+          "value": "ALFOUAD_BRANCH_ID"
+        },
+        {
+          "name": "usernameAlfouad",
+          "value": "ALFOUAD_USERNAME"
+        },
+        {
+          "name": "passwordAlfouad",
+          "value": "ALFOUAD_PASSWORD"
+        },
+        {
+          "name": "publicKeyAlfouad",
+          "value": "ALFOUAD_PUBLIC_KEY"
+        },
+        {
+          "name": "senderFullNameAlfouad",
+          "value": "Red Crescent"
+        },
+        {
+          "name": "senderPhoneNumberAlfouad",
+          "value": "963900000000"
+        }
+      ]
+    }
+  ]
+}

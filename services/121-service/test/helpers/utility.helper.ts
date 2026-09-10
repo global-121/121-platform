@@ -182,6 +182,13 @@ export async function runCronJobDoMtnReconciliation(): Promise<request.Response>
     .set('Cookie', [accessToken]);
 }
 
+export async function runCronJobDoAlfouadReconciliation(): Promise<request.Response> {
+  const accessToken = await getAccessToken();
+  return await getServer()
+    .patch('/cronjobs/fsps/alfouad')
+    .set('Cookie', [accessToken]);
+}
+
 export async function updatePermissionsOfRole(
   userRoleId: number,
   roleToUpdate: UpdateUserRoleDto,

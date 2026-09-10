@@ -4,7 +4,6 @@ import { AlfouadApiError } from '@121-service/src/fsp-integrations/integrations/
 import { AlfouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/alfouad/interfaces/alfouad-auth-identity.interface';
 import { AlfouadService } from '@121-service/src/fsp-integrations/integrations/alfouad/services/alfouad.service';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
@@ -58,23 +57,20 @@ export class AlfouadReconciliationService {
       });
     }
 
-    const newTransactionStatus = this.alfouadService.mapAlfouadStateToTransactionStatus({
-      alfouadState: transactionState,
-    });
+    const finalTransactionStatus =
+      this.alfouadService.mapAlfouadStateToFinalTransactionStatus({
+        alfouadState: transactionState,
+      });
 
-    // Pending / Approved / Hold: leave the transaction on 'waiting'.
-    if (newTransactionStatus === TransactionStatusEnum.waiting) {
+    if (!finalTransactionStatus) {
       return;
     }
 
     await this.transactionsService.saveProgressFromExternalSource({
       transactionId,
       description: TransactionEventDescription.alfouadReconciliationProcessed,
-      newTransactionStatus,
-      errorMessage:
-        newTransactionStatus === TransactionStatusEnum.error
-          ? 'The transaction was canceled at Al Fouad.'
-          : undefined,
+      newTransactionStatus: finalTransactionStatus.newTransactionStatus,
+      errorMessage: finalTransactionStatus.errorMessage,
     });
   }
 

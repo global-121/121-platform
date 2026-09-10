@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { EmailMockModule } from '@mock-service/src/email/email.mock.module';
 import { ExchangeRatesMockModule } from '@mock-service/src/exchange-rates/exchange-rates-mock.module';
 import { AirtelMockModule } from '@mock-service/src/fsp-integration/airtel/airtel.mock.module';
+import { AlfouadMockModule } from '@mock-service/src/fsp-integration/alfouad/alfouad.mock.module';
 import { CommercialBankEthiopiaMockModule } from '@mock-service/src/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.mock.module';
 import { CooperativeBankOfOromiaMockModule } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/cooperative-bank-of-oromia.mock.module';
 import { IntersolveVisaMockModule } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa.mock.module';
@@ -22,6 +23,7 @@ import { TwilioModule } from '@mock-service/src/twilio/twilio.module';
     SafaricomMockModule,
     OnafriqMockModule,
     AirtelMockModule,
+    AlfouadMockModule,
     CooperativeBankOfOromiaMockModule,
     ResetModule,
     IntersolveVisaMockModule,
