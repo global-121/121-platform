@@ -23,6 +23,7 @@ module.exports = {
   ],
   testTimeout: 30_000,
   detectOpenHandles: true,
+  errorOnDeprecated: true,
   logHeapUsage: true,
   randomize: true,
   verbose: true,
