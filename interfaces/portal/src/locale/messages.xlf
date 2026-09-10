@@ -243,6 +243,9 @@
       <trans-unit id="19569847887954644" datatype="html">
         <source>Included registrations</source>
       </trans-unit>
+      <trans-unit id="1989930177949251804" datatype="html">
+        <source>Your registration form must include the following required fields based on the program&apos;s FSPs:</source>
+      </trans-unit>
       <trans-unit id="2012659005494284050" datatype="html">
         <source>Forgot your password?</source>
       </trans-unit>
@@ -1138,6 +1141,9 @@
       </trans-unit>
       <trans-unit id="5357145550757146604" datatype="html">
         <source>Edit registration questions</source>
+      </trans-unit>
+      <trans-unit id="5387180389281510995" datatype="html">
+        <source>Use these exact data column names</source>
       </trans-unit>
       <trans-unit id="5393530739323921341" datatype="html">
         <source>We use the external &quot;<x ctype="x-em" equiv-text="&lt;em&gt;" id="START_EMPHASISED_TEXT"/>Matomo Cloud<x ctype="x-em" equiv-text="&lt;/em&gt;" id="CLOSE_EMPHASISED_TEXT"/>&quot;-service by InnoCraft Ltd. to measure the usage of the 121 Platform.</source>
