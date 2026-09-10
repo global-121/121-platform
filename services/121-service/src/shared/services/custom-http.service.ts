@@ -270,11 +270,11 @@ export class CustomHttpService {
   ): void {
     if (this.defaultClient) {
       try {
-        const requestPayload = this.redactPasswordsInLoggedContent(
-          JSON.stringify(this.redactSensitiveDataProperties(request.payload)),
+        const requestPayload = JSON.stringify(
+          this.redactSensitiveDataProperties(request.payload),
         );
-        const responseBody = this.redactPasswordsInLoggedContent(
-          JSON.stringify(this.redactSensitiveDataProperties(response.data)),
+        const responseBody = JSON.stringify(
+          this.redactSensitiveDataProperties(response.data),
         );
 
         const requestContent = `URL: ${request.url}. Payload: ${requestPayload}`;
@@ -302,11 +302,11 @@ export class CustomHttpService {
   ): void {
     if (this.defaultClient) {
       try {
-        const requestPayload = this.redactPasswordsInLoggedContent(
-          this.stringify(this.redactSensitiveDataProperties(request.payload)),
+        const requestPayload = this.stringify(
+          this.redactSensitiveDataProperties(request.payload),
         );
-        const responseBody = this.redactPasswordsInLoggedContent(
-          this.stringify(this.redactSensitiveDataProperties(error.data)),
+        const responseBody = this.stringify(
+          this.redactSensitiveDataProperties(error.data),
         );
 
         const requestContent = `URL: ${request.url}. Payload: ${requestPayload}`;
@@ -387,13 +387,6 @@ export class CustomHttpService {
     });
   }
 
-  private redactPasswordsInLoggedContent(content: string): string {
-    return content.replace(
-      /(Password:\s*<code>)(.*?)(<\/code>)/gs,
-      '$1**REDACTED**$3',
-    );
-  }
-
   private flushLogs(methodName: string): void {
     try {
       this.defaultClient.flush();
@@ -460,8 +453,18 @@ export class CustomHttpService {
         if (isUsernameProperty(key) && typeof value === 'string') {
           return maskValueKeepStart(value, 3);
         }
+        if (typeof value === 'string') {
+          return this.redactPasswordsInLoggedContent(value);
+        }
         return undefined;
       },
+    );
+  }
+
+  private redactPasswordsInLoggedContent(content: string): string {
+    return content.replace(
+      /(Password:\s*<code>)(.*?)(<\/code>)/gs,
+      '$1**REDACTED**$3',
     );
   }
 }

@@ -88,7 +88,7 @@ describe('CustomHttpService', () => {
       };
 
       // Act
-      await service.post('https://graph.microsoft.com/v1.0/users/support@121.global/sendMail', payload);
+      await service.post('https://email.example.net/api/sendMail', payload);
 
       // Assert
       const sentPayload = httpServicePostMock.mock.calls[0][1];
@@ -430,7 +430,7 @@ describe('CustomHttpService', () => {
 
       // Act
       service.logMessageRequest(
-        { url: 'https://graph.microsoft.com/v1.0/users/support@121.global/sendMail', payload },
+        { url: 'https://email.example.net/api/sendMail', payload },
         { status: HttpStatus.ACCEPTED, statusText: 'Accepted', data: {} },
       );
 
@@ -600,7 +600,7 @@ describe('CustomHttpService', () => {
 
       // Act
       service.logErrorRequest(
-        { url: 'https://graph.microsoft.com/v1.0/users/support@121.global/sendMail', payload },
+        { url: 'https://email.example.net/api/sendMail', payload },
         {
           status: HttpStatus.BAD_REQUEST,
           statusText: 'Bad Request',
