@@ -15,37 +15,50 @@
       </p>
     </div>
 
-    <div class="flex">
-      <div class="shrink-0">1.</div>
-      <div>
-        <p
-          i18n
-          class="font-bold"
-        >
-          Your registration form must include the following required fields
-          based on the program's FSPs:
-        </p>
-        <p i18n>Use these exact data column names</p>
+    @if (!isKoboIntegrated()) {
+      <div class="flex gap-2">
+        <div class="shrink-0 font-bold">1.</div>
+        <div>
+          <p
+            i18n
+            class="font-bold"
+          >
+            Your registration form must include the following required fields
+            based on the program's FSPs:
+          </p>
+          <p i18n>Use these exact data column names</p>
+        </div>
       </div>
-    </div>
 
-    @if (!koboIntegration.isPending()) {
-      <app-required-attributes
-        [programId]="programId()"
-        [isKoboIntegrated]="isKoboIntegrated()"
-      ></app-required-attributes>
+      @if (!koboIntegration.isPending()) {
+        <app-required-attributes
+          [programId]="programId()"
+          [isKoboIntegrated]="isKoboIntegrated()"
+        ></app-required-attributes>
+      }
+
+      <div class="mbs-4 mbe-2 flex gap-2">
+        <div class="shrink-0 font-bold">2.</div>
+        <div>
+          <p
+            i18n
+            class="font-bold"
+          >
+            Link your registration tool:
+          </p>
+        </div>
+      </div>
     }
 
     <app-kobo-integration-card
       [programId]="programId()"
       class="inline-1/2"
-    ></app-kobo-integration-card>
+    >
+    </app-kobo-integration-card>
   </p-card>
 
   @if (isKoboIntegrated()) {
-    <app-registration-questions-card
-      [programId]="programId()"
-    ></app-registration-questions-card>
+    <app-registration-questions-card [programId]="programId()" />
   }
 
   <app-deduplication-card [programId]="programId()"></app-deduplication-card>

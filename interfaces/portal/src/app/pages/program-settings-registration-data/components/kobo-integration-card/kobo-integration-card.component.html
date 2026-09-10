@@ -10,8 +10,8 @@
   i18n-title
   (cardClicked)="handleCardClicked()"
 >
-  <ng-container card-subtitle>
-    @if (isKoboIntegrated()) {
+  @if (isKoboIntegrated()) {
+    <ng-container card-subtitle>
       <div class="flex items-end justify-between">
         @if (externalFormUrl(); as formUrl) {
           <a
@@ -42,7 +42,39 @@
           >
         </p>
       </div>
-    }
+    </ng-container>
+  }
+
+  <ng-container card-content>
+    <p-accordion class="p-accordion-padding-reset relative z-10">
+      <p-accordion-panel value="0">
+        <p-accordion-header class="border-bs pbs-4">
+          <div>
+            <p
+              i18n
+              class="font-bold"
+            >
+              Form requirements
+            </p>
+          </div>
+        </p-accordion-header>
+        <p-accordion-content>
+          <p
+            i18n
+            class="mbe-4 font-normal"
+          >
+            Your form must include the following required fields in this
+            <b>exact format</b>
+            for this FSP integration in the data column name:
+          </p>
+
+          <app-required-attributes
+            [programId]="programId()"
+            [isKoboIntegrated]="isKoboIntegrated()"
+          ></app-required-attributes>
+        </p-accordion-content>
+      </p-accordion-panel>
+    </p-accordion>
   </ng-container>
 
   @if (!isKoboIntegrated()) {

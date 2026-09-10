@@ -13,6 +13,12 @@ import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionHeader,
+  AccordionPanel,
+} from 'primeng/accordion';
 import { MenuItem } from 'primeng/api';
 import { Button } from 'primeng/button';
 
@@ -28,6 +34,7 @@ import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { KoboConfigurationDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-configuration-dialog/kobo-configuration-dialog.component';
 import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
 import { KoboIntegrationErrorDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-integration-error-dialog/kobo-integration-error-dialog.component';
+import { RequiredAttributesComponent } from '~/pages/program-settings-registration-data/components/required-attributes/required-attributes.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
@@ -41,6 +48,11 @@ import { ColorVariant } from '~/utils/color-variant.enum';
     KoboImportExistingRegistrationsDialogComponent,
     KoboIntegrationErrorDialogComponent,
     Button,
+    Accordion,
+    AccordionPanel,
+    AccordionHeader,
+    AccordionContent,
+    RequiredAttributesComponent,
   ],
   templateUrl: './kobo-integration-card.component.html',
   styles: ``,
