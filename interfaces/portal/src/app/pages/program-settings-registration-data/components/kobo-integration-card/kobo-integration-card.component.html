@@ -109,3 +109,41 @@
   [errors]="koboRefreshErrors()"
   [isKoboIntegrated]="isKoboIntegrated()"
 />
+
+<!-- NO FSP, ADD FSP FIRST -->
+
+<p-dialog
+  [(visible)]="noFspConfiguredDialogVisible"
+  [modal]="true"
+  [resizable]="false"
+>
+  <ng-template #header>
+    <h3>
+      <i class="pi pi-exclamation-triangle me-2"></i>
+      <ng-container i18n>Pending FSP selection</ng-container>
+    </h3>
+  </ng-template>
+
+  <p i18n>
+    You must select at least one FSP before linking a registration form.
+  </p>
+
+  <div class="mbs-5 flex justify-end gap-4">
+    <p-button
+      (onClick)="noFspConfiguredDialogVisible.set(false)"
+      label="Close"
+      i18n-label
+      outlined
+      rounded
+    />
+
+    @if (canManageFspConfigurations()) {
+      <p-button
+        (onClick)="handleOnSelectFspsClick()"
+        label="Select FSPs"
+        i18n-label
+        rounded
+      />
+    }
+  </div>
+</p-dialog>

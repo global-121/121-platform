@@ -8,6 +8,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { Router } from '@angular/router';
 
 import {
   injectMutation,
@@ -21,11 +22,14 @@ import {
 } from 'primeng/accordion';
 import { MenuItem } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { Dialog } from 'primeng/dialog';
 
 import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
+import { AppRoutes } from '~/app.routes';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
+import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import {
   buildKoboFormUrl,
   isKoboIntegrated,
@@ -53,6 +57,7 @@ import { ColorVariant } from '~/utils/color-variant.enum';
     AccordionHeader,
     AccordionContent,
     RequiredAttributesComponent,
+    Dialog,
   ],
   templateUrl: './kobo-integration-card.component.html',
   styles: ``,
@@ -62,11 +67,18 @@ import { ColorVariant } from '~/utils/color-variant.enum';
 export class KoboIntegrationCardComponent {
   readonly programId = input.required<number | string>();
 
+  readonly router = inject(Router);
+
   private readonly koboApiService = inject(KoboApiService);
   private readonly authService = inject(AuthService);
   private readonly toastService = inject(ToastService);
 
+  private readonly fspConfigurationApiService = inject(
+    FspConfigurationApiService,
+  );
+
   readonly koboRefreshErrors = signal<KoboValidationError[]>([]);
+  readonly noFspConfiguredDialogVisible = signal(false);
   readonly ColorVariant = ColorVariant;
 
   readonly koboIntegrationErrorDialog =
@@ -89,6 +101,10 @@ export class KoboIntegrationCardComponent {
     enabled: !!this.programId(),
   }));
 
+  readonly fspConfigurations = injectQuery(() => ({
+    ...this.fspConfigurationApiService.getFspConfigurations(this.programId)(),
+  }));
+
   readonly isKoboIntegrated = computed<boolean>(() =>
     isKoboIntegrated(this.koboIntegration),
   );
@@ -97,10 +113,22 @@ export class KoboIntegrationCardComponent {
     this.isKoboIntegrated() ? $localize`Linked` : undefined,
   );
 
+  // --------------- PERMISSION CHECKS
+
   readonly canUpdateKoboIntegration = computed(() =>
     this.authService.hasPermission({
       programId: this.programId(),
       requiredPermission: PermissionEnum.ProgramKoboUPDATE,
+    }),
+  );
+
+  readonly canManageFspConfigurations = computed(() =>
+    this.authService.hasSomePermission({
+      programId: this.programId(),
+      optionalPermissions: [
+        PermissionEnum.ProgramFspConfigCREATE,
+        PermissionEnum.ProgramFspConfigUPDATE,
+      ],
     }),
   );
 
@@ -184,6 +212,11 @@ export class KoboIntegrationCardComponent {
       return;
     }
 
+    if (this.fspConfigurations.data()?.length === 0) {
+      this.noFspConfiguredDialogVisible.set(true);
+      return;
+    }
+
     if (!this.canUpdateKoboIntegration()) {
       this.toastService.showToast({
         severity: 'warn',
@@ -193,5 +226,16 @@ export class KoboIntegrationCardComponent {
     }
 
     this.openConfigurationDialog();
+  }
+
+  async handleOnSelectFspsClick(): Promise<void> {
+    this.noFspConfiguredDialogVisible.set(false);
+    await this.router.navigate([
+      '/',
+      AppRoutes.program,
+      this.programId(),
+      AppRoutes.programSettings,
+      AppRoutes.programSettingsFsps,
+    ]);
   }
 }

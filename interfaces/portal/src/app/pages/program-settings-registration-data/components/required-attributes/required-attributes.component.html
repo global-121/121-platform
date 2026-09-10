@@ -45,7 +45,7 @@
           {{ attribute.name }}
           <app-copy-to-clipboard-button [copyThis]="attribute.name" />
 
-          @if (attribute.name === 'fsp') {
+          @if (attribute.name === 'fsp' && programFspNames().length > 0) {
             <div class="mbs-2 space-y-2 [&>ul]:space-y-2">
               <div
                 i18n
