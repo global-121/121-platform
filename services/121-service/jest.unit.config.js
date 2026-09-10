@@ -23,6 +23,7 @@ module.exports = {
     'node_modules/(?!@t3-oss|uuid|openid-client|oauth4webapi|jose|sanitize-html|htmlparser2|entities|domhandler|domutils|domelementtype|dom-serializer)',
   ],
   detectOpenHandles: true,
+  errorOnDeprecated: true,
   logHeapUsage: true,
   randomize: true,
   verbose: true,
