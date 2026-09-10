@@ -270,11 +270,11 @@ export class CustomHttpService {
   ): void {
     if (this.defaultClient) {
       try {
-        const requestPayload = JSON.stringify(
-          this.redactSensitiveDataProperties(request.payload),
+        const requestPayload = this.redactPasswordsInLoggedContent(
+          JSON.stringify(this.redactSensitiveDataProperties(request.payload)),
         );
-        const responseBody = JSON.stringify(
-          this.redactSensitiveDataProperties(response.data),
+        const responseBody = this.redactPasswordsInLoggedContent(
+          JSON.stringify(this.redactSensitiveDataProperties(response.data)),
         );
 
         const requestContent = `URL: ${request.url}. Payload: ${requestPayload}`;
@@ -302,11 +302,11 @@ export class CustomHttpService {
   ): void {
     if (this.defaultClient) {
       try {
-        const requestPayload = this.stringify(
-          this.redactSensitiveDataProperties(request.payload),
+        const requestPayload = this.redactPasswordsInLoggedContent(
+          this.stringify(this.redactSensitiveDataProperties(request.payload)),
         );
-        const responseBody = this.stringify(
-          this.redactSensitiveDataProperties(error.data),
+        const responseBody = this.redactPasswordsInLoggedContent(
+          this.stringify(this.redactSensitiveDataProperties(error.data)),
         );
 
         const requestContent = `URL: ${request.url}. Payload: ${requestPayload}`;
@@ -385,6 +385,13 @@ export class CustomHttpService {
       ciphers: 'DEFAULT:@SECLEVEL=0',
       ...extraOpts,
     });
+  }
+
+  private redactPasswordsInLoggedContent(content: string): string {
+    return content.replace(
+      /(Password:\s*<code>)(.*?)(<\/code>)/gs,
+      '$1**REDACTED**$3',
+    );
   }
 
   private flushLogs(methodName: string): void {

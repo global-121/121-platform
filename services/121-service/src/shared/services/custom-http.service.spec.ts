@@ -71,6 +71,33 @@ describe('CustomHttpService', () => {
       const sentPayload = httpServicePostMock.mock.calls[0][1];
       expect(sentPayload).toBe(payload);
     });
+
+    it('should send an email payload with a password unmodified while redacting the password in the log', async () => {
+      // Arrange
+      const password = 'temp-pass-123';
+      const payload = {
+        message: {
+          subject: '121 Portal account created',
+          body: {
+            contentType: 'HTML',
+            content: `<p>Username: user@example.org<br>\nPassword: <code>${password}</code></p>`,
+          },
+          toRecipients: [{ emailAddress: { address: 'user@example.org' } }],
+        },
+        saveToSentItems: false,
+      };
+
+      // Act
+      await service.post('https://graph.microsoft.com/v1.0/users/support@121.global/sendMail', payload);
+
+      // Assert
+      const sentPayload = httpServicePostMock.mock.calls[0][1];
+      expect(sentPayload.message.body.content).toContain(password);
+
+      const loggedMessage = trackTraceMock.mock.calls[0][0].message;
+      expect(loggedMessage).not.toContain(password);
+      expect(loggedMessage).toContain('Password: <code>**REDACTED**</code>');
+    });
   });
 
   describe('remove sensitive values from logging', () => {
@@ -385,6 +412,32 @@ describe('CustomHttpService', () => {
         );
       }).not.toThrow();
     });
+
+    it('should redact passwords embedded in HTML email bodies', () => {
+      // Arrange
+      const password = 'ABCXXXXXXXXXXXXXXXXXXXXXX';
+      const payload = {
+        message: {
+          subject: '121 Portal password reset',
+          body: {
+            contentType: 'HTML',
+            content: `<p>Username: user@example.org<br>\nPassword: <code>${password}</code></p>`,
+          },
+          toRecipients: [{ emailAddress: { address: 'user@example.org' } }],
+        },
+        saveToSentItems: false,
+      };
+
+      // Act
+      service.logMessageRequest(
+        { url: 'https://graph.microsoft.com/v1.0/users/support@121.global/sendMail', payload },
+        { status: HttpStatus.ACCEPTED, statusText: 'Accepted', data: {} },
+      );
+
+      // Assert
+      expect(getTracedMessage()).not.toContain(password);
+      expect(getTracedMessage()).toContain('Password: <code>**REDACTED**</code>');
+    });
   });
 
   describe('logErrorRequest', () => {
@@ -528,6 +581,36 @@ describe('CustomHttpService', () => {
           },
         );
       }).not.toThrow();
+    });
+
+    it('should redact passwords embedded in HTML email bodies', () => {
+      // Arrange
+      const password = 'ABCXXXXXXXXXXXXXXXXXXXXXX';
+      const payload = {
+        message: {
+          subject: '121 Portal password reset',
+          body: {
+            contentType: 'HTML',
+            content: `<p>Username: user@example.org<br>\nPassword: <code>${password}</code></p>`,
+          },
+          toRecipients: [{ emailAddress: { address: 'user@example.org' } }],
+        },
+        saveToSentItems: false,
+      };
+
+      // Act
+      service.logErrorRequest(
+        { url: 'https://graph.microsoft.com/v1.0/users/support@121.global/sendMail', payload },
+        {
+          status: HttpStatus.BAD_REQUEST,
+          statusText: 'Bad Request',
+          data: {},
+        },
+      );
+
+      // Assert
+      expect(getExceptionMessage()).not.toContain(password);
+      expect(getExceptionMessage()).toContain('Password: <code>**REDACTED**</code>');
     });
   });
 });
