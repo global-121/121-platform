@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -82,6 +82,9 @@
       </trans-unit>
       <trans-unit id="1369610904910546430" datatype="html">
         <source>Who we share information with</source>
+      </trans-unit>
+      <trans-unit id="1376965978865731966" datatype="html">
+        <source>xxxx</source>
       </trans-unit>
       <trans-unit id="138735154290622738" datatype="html">
         <source>yourname@example.org</source>
@@ -240,6 +243,9 @@
       <trans-unit id="19569847887954644" datatype="html">
         <source>Included registrations</source>
       </trans-unit>
+      <trans-unit id="1989930177949251804" datatype="html">
+        <source>Your registration form must include the following required fields based on the program&apos;s FSPs:</source>
+      </trans-unit>
       <trans-unit id="2012659005494284050" datatype="html">
         <source>Forgot your password?</source>
       </trans-unit>
@@ -266,6 +272,9 @@
       </trans-unit>
       <trans-unit id="2121303710925969971" datatype="html">
         <source>Ordered By</source>
+      </trans-unit>
+      <trans-unit id="2133394077130609617" datatype="html">
+        <source>Select Many</source>
       </trans-unit>
       <trans-unit id="2161871078253886554" datatype="html">
         <source>Unknown user</source>
@@ -375,9 +384,6 @@
       <trans-unit id="2413028101045997188" datatype="html">
         <source>You&apos;re about to reset <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.displayName }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b &gt;" id="CLOSE_BOLD_TEXT"/>&apos;s password. The user will receive an email with the new password sent to their registered email address. Only proceed if the user has requested this action.</source>
       </trans-unit>
-      <trans-unit id="2438205306314074008" datatype="html">
-        <source>Integrated FSPs</source>
-      </trans-unit>
       <trans-unit id="2438590582556677910" datatype="html">
         <source>Start!</source>
       </trans-unit>
@@ -399,6 +405,9 @@
       <trans-unit id="2530685350362198190" datatype="html">
         <source>Voucher <x equiv-text="this.paymentId()" id="PH"/> on <x equiv-text="this.paymentDate()" id="PH_1"/></source>
       </trans-unit>
+      <trans-unit id="2534235831625605891" datatype="html">
+        <source>Link your registration tool:</source>
+      </trans-unit>
       <trans-unit id="2560790823235400386" datatype="html">
         <source>No debit cards found</source>
       </trans-unit>
@@ -407,6 +416,9 @@
       </trans-unit>
       <trans-unit id="2569677772635471712" datatype="html">
         <source>The card number you entered is already linked to another registration.</source>
+      </trans-unit>
+      <trans-unit id="2573938693180340150" datatype="html">
+        <source>You must select at least one FSP before linking a registration form.</source>
       </trans-unit>
       <trans-unit id="2583667945049138476" datatype="html">
         <source>Unsupported language</source>
@@ -459,9 +471,6 @@
       <trans-unit id="2832894421278390919" datatype="html">
         <source>Invalid email or password. Double-check your credentials and try again.</source>
       </trans-unit>
-      <trans-unit id="2835677509514958966" datatype="html">
-        <source>fsp should be a &apos;hidden&apos; field in your form that has the &apos;default response&apos; set to the FSP name: <x equiv-text="fspNames" id="PH"/></source>
-      </trans-unit>
       <trans-unit id="2840088863087373358" datatype="html">
         <source>Updating registration(s)</source>
       </trans-unit>
@@ -476,6 +485,9 @@
       </trans-unit>
       <trans-unit id="2892716641858969594" datatype="html">
         <source>Go to the security section</source>
+      </trans-unit>
+      <trans-unit id="289341251890660084" datatype="html">
+        <source>Checkbox</source>
       </trans-unit>
       <trans-unit id="2904462051420457381" datatype="html">
         <source>House number</source>
@@ -557,6 +569,9 @@
       </trans-unit>
       <trans-unit id="3206588778935189186" datatype="html">
         <source>Upload the updated CSV below</source>
+      </trans-unit>
+      <trans-unit id="3223718257667186867" datatype="html">
+        <source>Link form</source>
       </trans-unit>
       <trans-unit id="3241357959735682038" datatype="html">
         <source>Confirm Password</source>
@@ -751,6 +766,9 @@
       </trans-unit>
       <trans-unit id="3967269098753656610" datatype="html">
         <source>Email address</source>
+      </trans-unit>
+      <trans-unit id="3973931101896534797" datatype="html">
+        <source>Date</source>
       </trans-unit>
       <trans-unit id="3978034238801036238" datatype="html">
         <source>Kobo form URL</source>
@@ -989,6 +1007,9 @@
       <trans-unit id="4814285799071780083" datatype="html">
         <source>Remove</source>
       </trans-unit>
+      <trans-unit id="4820528532769775314" datatype="html">
+        <source>Field</source>
+      </trans-unit>
       <trans-unit id="4821724891066824263" datatype="html">
         <source>You&apos;re about to remove the &quot;<x equiv-text="{{ fspConfigurationLabel() }}" id="INTERPOLATION"/>&quot; FSP configuration from your program. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
       </trans-unit>
@@ -1009,6 +1030,9 @@
       </trans-unit>
       <trans-unit id="4902817035128594900" datatype="html">
         <source>Description</source>
+      </trans-unit>
+      <trans-unit id="4927319423170891829" datatype="html">
+        <source>Pending FSP selection</source>
       </trans-unit>
       <trans-unit id="4941441939532394435" datatype="html">
         <source>This field needs to be at least <x equiv-text="min" id="PH"/>.</source>
@@ -1106,9 +1130,6 @@
       <trans-unit id="5270320047142620174" datatype="html">
         <source>Information automatically collected about you</source>
       </trans-unit>
-      <trans-unit id="5274418165298849960" datatype="html">
-        <source>Click to link</source>
-      </trans-unit>
       <trans-unit id="5306473977542913614" datatype="html">
         <source>Activity</source>
       </trans-unit>
@@ -1126,6 +1147,9 @@
       </trans-unit>
       <trans-unit id="5357145550757146604" datatype="html">
         <source>Edit registration questions</source>
+      </trans-unit>
+      <trans-unit id="5387180389281510995" datatype="html">
+        <source>Use these exact data column names</source>
       </trans-unit>
       <trans-unit id="5393530739323921341" datatype="html">
         <source>We use the external &quot;<x ctype="x-em" equiv-text="&lt;em&gt;" id="START_EMPHASISED_TEXT"/>Matomo Cloud<x ctype="x-em" equiv-text="&lt;/em&gt;" id="CLOSE_EMPHASISED_TEXT"/>&quot;-service by InnoCraft Ltd. to measure the usage of the 121 Platform.</source>
@@ -1181,9 +1205,6 @@
       <trans-unit id="5568900620756681669" datatype="html">
         <source>Your form must include the following required fields in this <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>exact format<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> for this FSP integration in the data column name:</source>
       </trans-unit>
-      <trans-unit id="5577392467072414418" datatype="html">
-        <source>fsp should be &apos;select many&apos; with the following FSP names as options: <x equiv-text="fspNames" id="PH"/></source>
-      </trans-unit>
       <trans-unit id="5578437656517849832" datatype="html">
         <source>Order cards to your branch by filling in this form and clicking on order. If the order is sent successfully it will be logged in the table on the &apos;Debit cards&apos; tab.</source>
       </trans-unit>
@@ -1235,6 +1256,9 @@
       <trans-unit id="574910377369158209" datatype="html">
         <source>Save and switch language to translate relevant details.</source>
       </trans-unit>
+      <trans-unit id="5750485945694679561" datatype="html">
+        <source>Photo</source>
+      </trans-unit>
       <trans-unit id="5758338325877529724" datatype="html">
         <source>The position of the serial number, below the barcode on the back of the card. Highlighted in red.</source>
       </trans-unit>
@@ -1250,8 +1274,8 @@
       <trans-unit id="581189508098722225" datatype="html">
         <source>Reconciliation data imported successfully.</source>
       </trans-unit>
-      <trans-unit id="5833271673900301518" datatype="html">
-        <source>Scope should be a &apos;hidden&apos; field in your form that has the &apos;default response&apos; set to the scope of the registration</source>
+      <trans-unit id="5820091469118357161" datatype="html">
+        <source>Data column name</source>
       </trans-unit>
       <trans-unit id="5906272961955453157" datatype="html">
         <source>Approved</source>
@@ -1266,7 +1290,7 @@
         <source>Add users to your program team and assign roles to them.</source>
       </trans-unit>
       <trans-unit id="5951235042771324221" datatype="html">
-        <source>&quot;<x equiv-text="text" id="PH"/>&quot; copied to clipboard</source>
+        <source>&quot;<x equiv-text="this.copyThis()" id="PH"/>&quot; copied to clipboard</source>
       </trans-unit>
       <trans-unit id="5963256347991946436" datatype="html">
         <source>These users would have to approve payment if the total amount is above the decided value.</source>
@@ -1300,6 +1324,9 @@
       </trans-unit>
       <trans-unit id="6151408429233480883" datatype="html">
         <source>Required fields not found</source>
+      </trans-unit>
+      <trans-unit id="6162693758764653365" datatype="html">
+        <source>Text</source>
       </trans-unit>
       <trans-unit id="6169902268775373280" datatype="html">
         <source>Select users for this approval step</source>
@@ -1335,6 +1362,9 @@
       <trans-unit id="631812235369405800" datatype="html">
         <source>Edit budget</source>
       </trans-unit>
+      <trans-unit id="6336988689286096782" datatype="html">
+        <source>Answer values:</source>
+      </trans-unit>
       <trans-unit id="6342731461089211149" datatype="html">
         <source>Should be an ISO 4217 currency code (full list available on Wikipedia).</source>
       </trans-unit>
@@ -1349,6 +1379,9 @@
       </trans-unit>
       <trans-unit id="6369488977592373957" datatype="html">
         <source>This means that they will not be included in payments.</source>
+      </trans-unit>
+      <trans-unit id="6370642728789544052" datatype="html">
+        <source>Number</source>
       </trans-unit>
       <trans-unit id="6371588679924903737" datatype="html">
         <source>Open in new tab</source>
@@ -1530,9 +1563,6 @@
       <trans-unit id="7014051207286040747" datatype="html">
         <source>Data column name</source>
       </trans-unit>
-      <trans-unit id="7017298442896734249" datatype="html">
-        <source>Your form must include the following required fields, using these <x ctype="x-strong" equiv-text="&lt;strong class=&quot;font-display&quot;&gt;" id="START_TAG_STRONG"/>exact data column names<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> (these would be the column headers in Excel).</source>
-      </trans-unit>
       <trans-unit id="7017859949445533273" datatype="html">
         <source>Date is before</source>
       </trans-unit>
@@ -1617,6 +1647,9 @@
       <trans-unit id="732965913930858930" datatype="html">
         <source>Edit file details</source>
       </trans-unit>
+      <trans-unit id="7353664173789993774" datatype="html">
+        <source>Recommended type</source>
+      </trans-unit>
       <trans-unit id="7364054681305096413" datatype="html">
         <source>There are no registrations in this program yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Learn more about importing registrations in your program in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
       </trans-unit>
@@ -1670,6 +1703,9 @@
       </trans-unit>
       <trans-unit id="7585097972263982693" datatype="html">
         <source>Old FSP</source>
+      </trans-unit>
+      <trans-unit id="7585588338166441738" datatype="html">
+        <source>Ask this in the form. Answer options must match these values exactly.</source>
       </trans-unit>
       <trans-unit id="7585826646011739428" datatype="html">
         <source>Edit</source>
@@ -1730,6 +1766,9 @@
       </trans-unit>
       <trans-unit id="7814604735706675498" datatype="html">
         <source>Cards ordered</source>
+      </trans-unit>
+      <trans-unit id="7819314041543176992" datatype="html">
+        <source>Close</source>
       </trans-unit>
       <trans-unit id="7848450150740100683" datatype="html">
         <source>Failed to update financial service providers.</source>
@@ -1832,6 +1871,9 @@
       </trans-unit>
       <trans-unit id="819007450583343771" datatype="html">
         <source>Voucher</source>
+      </trans-unit>
+      <trans-unit id="8206586909226879603" datatype="html">
+        <source>Select One</source>
       </trans-unit>
       <trans-unit id="8209340100752123472" datatype="html">
         <source>When you receive a task, any information linked to the person&apos;s phone number found in active programs in the 121 Platform will appear here.</source>
@@ -2057,6 +2099,9 @@
       </trans-unit>
       <trans-unit id="976904059902830801" datatype="html">
         <source>Change reason</source>
+      </trans-unit>
+      <trans-unit id="996392855508119363" datatype="html">
+        <source>Hidden</source>
       </trans-unit>
       <trans-unit id="actions" datatype="html">
         <source>Actions</source>

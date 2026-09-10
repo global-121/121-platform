@@ -10,8 +10,8 @@
   i18n-title
   (cardClicked)="handleCardClicked()"
 >
-  <ng-container card-subtitle>
-    @if (isKoboIntegrated()) {
+  @if (isKoboIntegrated()) {
+    <ng-container card-subtitle>
       <div class="flex items-end justify-between">
         @if (externalFormUrl(); as formUrl) {
           <a
@@ -42,12 +42,54 @@
           >
         </p>
       </div>
-    }
+    </ng-container>
+  }
 
-    @if (!isKoboIntegrated()) {
-      <p i18n>Click to link</p>
-    }
-  </ng-container>
+  @if (isKoboIntegrated()) {
+    <ng-container card-content>
+      <p-accordion class="p-accordion-padding-reset relative z-10">
+        <p-accordion-panel value="0">
+          <p-accordion-header class="border-bs pbs-4">
+            <div>
+              <p
+                i18n
+                class="font-bold"
+              >
+                Form requirements
+              </p>
+            </div>
+          </p-accordion-header>
+          <p-accordion-content>
+            <p
+              i18n
+              class="mbe-4 font-normal"
+            >
+              Your form must include the following required fields in this
+              <b>exact format</b>
+              for this FSP integration in the data column name:
+            </p>
+
+            <app-required-attributes
+              [programId]="programId()"
+              [isKoboIntegrated]="isKoboIntegrated()"
+            ></app-required-attributes>
+          </p-accordion-content>
+        </p-accordion-panel>
+      </p-accordion>
+    </ng-container>
+  }
+
+  @if (!isKoboIntegrated()) {
+    <ng-container card-action>
+      <p-button
+        (onClick)="handleCardClicked()"
+        label="Link form"
+        i18n-label
+        icon="pi pi-link"
+        rounded
+      />
+    </ng-container>
+  }
 </app-card-with-link>
 
 <!-- DIALOGS -->
@@ -67,3 +109,41 @@
   [errors]="koboRefreshErrors()"
   [isKoboIntegrated]="isKoboIntegrated()"
 />
+
+<!-- NO FSP, ADD FSP FIRST -->
+
+<p-dialog
+  [(visible)]="noFspConfiguredDialogVisible"
+  [modal]="true"
+  [resizable]="false"
+>
+  <ng-template #header>
+    <h3>
+      <i class="pi pi-exclamation-triangle me-2"></i>
+      <ng-container i18n>Pending FSP selection</ng-container>
+    </h3>
+  </ng-template>
+
+  <p i18n>
+    You must select at least one FSP before linking a registration form.
+  </p>
+
+  <div class="mbs-5 flex justify-end gap-4">
+    <p-button
+      (onClick)="noFspConfiguredDialogVisible.set(false)"
+      label="Close"
+      i18n-label
+      outlined
+      rounded
+    />
+
+    @if (canManageFspConfigurations()) {
+      <p-button
+        (onClick)="handleOnSelectFspsClick()"
+        label="Select FSPs"
+        i18n-label
+        rounded
+      />
+    }
+  </div>
+</p-dialog>
