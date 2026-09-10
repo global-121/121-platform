@@ -27,14 +27,17 @@ import { programHasInclusionScore } from '~/domains/program/program.helper';
 import { Program } from '~/domains/program/program.model';
 import {
   ATTRIBUTE_EDIT_INFO,
+  ATTRIBUTE_EDIT_INFO_TRACKING_NAMES,
   ATTRIBUTE_LABELS,
   DEFAULT_ATTRIBUTE_EDIT_INFO,
+  DEFAULT_ATTRIBUTE_EDIT_INFO_TRACKING_NAMES,
   isGenericAttribute,
 } from '~/domains/program/program-attribute.helpers';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { Registration } from '~/domains/registration/registration.model';
 import { AuthService } from '~/services/auth.service';
 import { GetRegistrationPreferredLanguageNameService } from '~/services/get-registration-preferrred-language-name.service';
+import { InfoTooltipName } from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Locale } from '~/utils/locale';
 
@@ -67,6 +70,7 @@ export interface NormalizedRegistrationAttribute {
   name: GenericRegistrationAttributes | string;
   label: string | UILanguageTranslation;
   editInfo?: string;
+  editInfoTrackingName?: InfoTooltipName;
   isRequired: boolean;
   isEditable: boolean;
   pattern?: string;
@@ -211,6 +215,7 @@ export class RegistrationAttributeService {
         name: attributeName,
         label: ATTRIBUTE_LABELS[attributeName],
         editInfo: ATTRIBUTE_EDIT_INFO[attributeName],
+        editInfoTrackingName: ATTRIBUTE_EDIT_INFO_TRACKING_NAMES[attributeName],
         options,
         value,
         type,
@@ -251,6 +256,10 @@ export class RegistrationAttributeService {
         label,
         editInfo:
           DEFAULT_ATTRIBUTE_EDIT_INFO[
+            name as DefaultRegistrationDataAttributeNames
+          ],
+        editInfoTrackingName:
+          DEFAULT_ATTRIBUTE_EDIT_INFO_TRACKING_NAMES[
             name as DefaultRegistrationDataAttributeNames
           ],
         pattern,
@@ -324,6 +333,7 @@ export class RegistrationAttributeService {
               name: 'name',
               label: $localize`:@@registration-full-name:Name`,
               editInfo: $localize`:@@registration-full-name-edit-info:This field is dynamically generated based on the other name fields available below: ${allNameFields}:allNameFields:`,
+              editInfoTrackingName: InfoTooltipName.attributeEditInfoFullName,
               value: registration?.name,
               type: RegistrationAttributeTypes.text,
               isEditable: false,

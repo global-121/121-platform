@@ -89,6 +89,40 @@ export enum TrackingAction {
   toggleProgramValidation = 'toggle: Use Program Validation',
 }
 
+export enum InfoTooltipName {
+  attributeEditInfoFullName = 'Registration Full Name Edit Info',
+  attributeEditInfoInclusionScore = 'Inclusion Score Edit Info',
+  attributeEditInfoMaxPayments = 'Max Payments Edit Info',
+  attributeEditInfoPaymentAmountMultiplier = 'Payment Amount Multiplier Edit Info',
+  attributeEditInfoPaymentCountRemaining = 'Payment Count Remaining Edit Info',
+  attributeEditInfoPhoneNumber = 'Phone Number Edit Info',
+  attributeEditInfoScope = 'Scope Edit Info',
+  customMessageCharacterLimit = 'Custom Message Character Limit',
+  fspConfigurationSensitiveProperty = 'Fsp Configuration Sensitive Property',
+  koboConfigurationErrorInfo = 'Kobo Configuration Error Info',
+  koboFormSettingErrorInfo = 'Kobo Form Setting Error Info',
+  koboFormSettingErrors = 'Kobo Form Setting Errors',
+  koboImportSkippedSubmissions = 'Kobo Import Skipped Submissions',
+  koboMissingRequiredFields = 'Kobo Missing Required Fields',
+  monitoringIncludedRegistrations = 'Monitoring Included Registrations',
+  monitoringTotalRegistrations = 'Monitoring Total Registrations',
+  paymentApprovalAdditionalStepThreshold = 'Payment Approval Additional Step Threshold',
+  paymentApprovalFirstStepRequired = 'Payment Approval First Step Required',
+  paymentApprovalThresholdColumn = 'Payment Approval Threshold Column',
+  paymentNameDefault = 'Payment Name Default',
+  paymentTotalAmountCalculation = 'Payment Total Amount Calculation',
+  programCurrency = 'Program Currency',
+  programDistributionDuration = 'Program Distribution Duration',
+  programEnableScope = 'Program Enable Scope',
+  programTargetRegistrations = 'Program Target Registrations',
+  programValidationProcess = 'Program Validation Process',
+  registrationQuestionDataColumnName = 'Registration Question Data Column Name',
+  registrationQuestionLabel = 'Registration Question Label',
+  requiredAttributeFspInfo = 'Required Attribute Fsp Info',
+  requiredAttributeScopeInfo = 'Required Attribute Scope Info',
+  unsupportedLanguageWarning = 'Unsupported Language Warning',
+}
+
 /**
  * Matomo tracking Event.
  *

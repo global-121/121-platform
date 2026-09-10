@@ -25,12 +25,14 @@ import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.com
 import { ImageDialogTriggerComponent } from '~/components/image/image-dialog-trigger/image-dialog-trigger.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import { InfoTooltipName } from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
 
 export type DataListItem = {
   label: string | UILanguageTranslation;
   tooltip?: string;
+  tooltipTrackingName?: InfoTooltipName;
   loading?: boolean;
   chipLabel?: string;
   chipVariant?: ColorVariant;

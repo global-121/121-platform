@@ -3,6 +3,8 @@ import {
   GenericRegistrationAttributes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 
+import { InfoTooltipName } from '~/services/tracking.service';
+
 export const ATTRIBUTE_LABELS: Record<GenericRegistrationAttributes, string> = {
   referenceId: $localize`:@@attribute-label-referenceId:Reference ID`,
   preferredLanguage: $localize`:@@attribute-label-preferredLanguage:Preferred Language`,
@@ -35,6 +37,23 @@ export const DEFAULT_ATTRIBUTE_EDIT_INFO: Partial<
   Record<DefaultRegistrationDataAttributeNames, string>
 > = {
   phoneNumber: $localize`:@@attribute-edit-info-phoneNumber:Required format: numbers only (including country-code).`,
+};
+
+export const ATTRIBUTE_EDIT_INFO_TRACKING_NAMES: Partial<
+  Record<GenericRegistrationAttributes, InfoTooltipName>
+> = {
+  inclusionScore: InfoTooltipName.attributeEditInfoInclusionScore,
+  maxPayments: InfoTooltipName.attributeEditInfoMaxPayments,
+  paymentCountRemaining: InfoTooltipName.attributeEditInfoPaymentCountRemaining,
+  paymentAmountMultiplier:
+    InfoTooltipName.attributeEditInfoPaymentAmountMultiplier,
+  scope: InfoTooltipName.attributeEditInfoScope,
+};
+
+export const DEFAULT_ATTRIBUTE_EDIT_INFO_TRACKING_NAMES: Partial<
+  Record<DefaultRegistrationDataAttributeNames, InfoTooltipName>
+> = {
+  phoneNumber: InfoTooltipName.attributeEditInfoPhoneNumber,
 };
 
 export const isGenericAttribute = (

@@ -23,6 +23,7 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
+import { InfoTooltipName } from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
 import { Locale } from '~/utils/locale';
@@ -46,6 +47,8 @@ import { Locale } from '~/utils/locale';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageLayoutMonitoringComponent {
+  readonly InfoTooltipName = InfoTooltipName;
+
   readonly programId = input.required<string>();
 
   readonly locale = inject<Locale>(LOCALE_ID);
