@@ -45,9 +45,7 @@
     [errorMessage]="formFieldErrors()('targetNrRegistrations')"
     [isRequired]="true"
     [labelTooltip]="PROGRAM_FORM_TOOLTIPS.targetRegistrations"
-    [labelTooltipTrackingName]="
-      PROGRAM_FORM_TOOLTIP_TRACKING_NAMES.targetRegistrations
-    "
+    [labelTooltipTrackingName]="InfoTooltipName.programTargetRegistrations"
   >
     <input
       pInputText
@@ -71,7 +69,7 @@
     >
     <app-info-tooltip
       [message]="PROGRAM_FORM_TOOLTIPS.validationProcess"
-      [trackingName]="PROGRAM_FORM_TOOLTIP_TRACKING_NAMES.validationProcess"
+      [trackingName]="InfoTooltipName.programValidationProcess"
     />
   </div>
   <div class="mbs-4 flex justify-items-center">
@@ -88,7 +86,7 @@
     >
     <app-info-tooltip
       [message]="PROGRAM_FORM_TOOLTIPS.enableScope"
-      [trackingName]="PROGRAM_FORM_TOOLTIP_TRACKING_NAMES.enableScope"
+      [trackingName]="InfoTooltipName.programEnableScope"
     />
   </div>
 </ng-container>

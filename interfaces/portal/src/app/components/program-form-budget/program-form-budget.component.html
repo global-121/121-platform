@@ -18,7 +18,7 @@
       i18n-label
       [errorMessage]="formFieldErrors()('currency')"
       [labelTooltip]="PROGRAM_FORM_TOOLTIPS.currency"
-      [labelTooltipTrackingName]="PROGRAM_FORM_TOOLTIP_TRACKING_NAMES.currency"
+      [labelTooltipTrackingName]="InfoTooltipName.programCurrency"
       [isRequired]="true"
     >
       <p-select
@@ -35,9 +35,7 @@
     i18n-label
     [errorMessage]="formFieldErrors()('distributionDuration')"
     [labelTooltip]="PROGRAM_FORM_TOOLTIPS.distributionDuration"
-    [labelTooltipTrackingName]="
-      PROGRAM_FORM_TOOLTIP_TRACKING_NAMES.distributionDuration
-    "
+    [labelTooltipTrackingName]="InfoTooltipName.programDistributionDuration"
   >
     <input
       pInputText
