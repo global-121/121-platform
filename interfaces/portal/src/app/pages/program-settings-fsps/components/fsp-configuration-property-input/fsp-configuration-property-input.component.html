@@ -2,7 +2,9 @@
   <app-form-field-wrapper
     [label]="label()"
     [labelTooltip]="labelTooltip()"
-    [labelTooltipTrackingName]="labelTooltipTrackingName"
+    [labelTooltipTrackingName]="
+      InfoTooltipName.fspConfigurationSensitiveProperty
+    "
     [errorMessage]="
       formControl().invalid && formControl().touched && errorMessage()
     "

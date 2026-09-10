@@ -39,6 +39,12 @@ export const DEFAULT_ATTRIBUTE_EDIT_INFO: Partial<
   phoneNumber: $localize`:@@attribute-edit-info-phoneNumber:Required format: numbers only (including country-code).`,
 };
 
+export const DEFAULT_ATTRIBUTE_EDIT_INFO_TRACKING_NAMES: Partial<
+  Record<DefaultRegistrationDataAttributeNames, InfoTooltipName>
+> = {
+  phoneNumber: InfoTooltipName.attributeEditInfoPhoneNumber,
+};
+
 export const ATTRIBUTE_EDIT_INFO_TRACKING_NAMES: Partial<
   Record<GenericRegistrationAttributes, InfoTooltipName>
 > = {
@@ -48,12 +54,6 @@ export const ATTRIBUTE_EDIT_INFO_TRACKING_NAMES: Partial<
   paymentAmountMultiplier:
     InfoTooltipName.attributeEditInfoPaymentAmountMultiplier,
   scope: InfoTooltipName.attributeEditInfoScope,
-};
-
-export const DEFAULT_ATTRIBUTE_EDIT_INFO_TRACKING_NAMES: Partial<
-  Record<DefaultRegistrationDataAttributeNames, InfoTooltipName>
-> = {
-  phoneNumber: InfoTooltipName.attributeEditInfoPhoneNumber,
 };
 
 export const isGenericAttribute = (

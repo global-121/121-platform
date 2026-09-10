@@ -119,8 +119,10 @@ export class CreatePaymentComponent {
 
   today = new Date();
   protected readonly MAX_PAYMENT_NAME_LENGTH: number = 60;
-  paymentNameTooltip = $localize`Payments are named by date and time by default. Rename the payment for clarity if needed.`;
-  readonly paymentNameTooltipTrackingName = InfoTooltipName.paymentNameDefault;
+
+  readonly InfoTooltipName = InfoTooltipName;
+  readonly paymentNameTooltip = $localize`Payments are named by date and time by default. Rename the payment for clarity if needed.`;
+
   overrideFilters = {
     // only registrations with status "included" are eligible for payment
     status: RegistrationStatusEnum.included,
