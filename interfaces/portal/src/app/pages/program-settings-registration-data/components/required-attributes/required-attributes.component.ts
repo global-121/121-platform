@@ -15,6 +15,10 @@ import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-set
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 
+import {
+  ExplainerComponent,
+  ExplainerItem,
+} from '~/components/explainer/explainer.component';
 import { FspTagsComponent } from '~/components/fsp-tags/fsp-tags.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
@@ -29,6 +33,7 @@ import { ToastService } from '~/services/toast.service';
     InfoTooltipComponent,
     AccordionModule,
     FspTagsComponent,
+    ExplainerComponent,
   ],
   providers: [ToastService],
   templateUrl: './required-attributes.component.html',
@@ -132,6 +137,40 @@ export class RequiredAttributesComponent {
   readonly accordionValue = computed(() =>
     this.isKoboIntegrated() ? undefined : 'integrated-fsps-accordion-panel',
   );
+
+  readonly dataColumnNamesExplainers: {
+    title: string;
+    items: ExplainerItem[];
+  } = {
+    title: $localize`Where do I find data column names?`,
+    items: [
+      {
+        content: $localize`In KoboToolbox, when creating or editing the form, locate the question you want to change the data column name of and click on the settings (the cog icon)`,
+        image: {
+          url: 'assets/images/explainers/kobo/kobo-data-column-names-field.png',
+          alt: $localize`Location of question settings button (cog icon) in KoboToolbox`,
+        },
+      },
+      {
+        content: $localize`You will then find the data column name in the 'Question Options'`,
+        image: {
+          url: 'assets/images/explainers/kobo/kobo-data-column-names-question-options.png',
+          alt: $localize`Location of the 'Data Column Name' field in 'Question Options'`,
+        },
+      },
+      {
+        content: $localize`Replace the data column name from the question to the required name from the table`,
+        image: {
+          url: 'assets/images/explainers/kobo/kobo-data-column-names-column-name.png',
+          alt: $localize`Replacing the data column name with the required name`,
+        },
+      },
+
+      {
+        content: $localize`Exit the settings and continue to the next question. This will not affect the way the questions are displayed in the form.`,
+      },
+    ],
+  };
 
   copyToClipboard(text: string) {
     void navigator.clipboard.writeText(text);
