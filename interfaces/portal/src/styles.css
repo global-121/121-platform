@@ -62,10 +62,6 @@ html {
 
 body {
   @apply bg-grey-100 font-body text-base text-black antialiased;
-
-  * {
-    font-size: 14px !important;
-  }
 }
 
 :root {
