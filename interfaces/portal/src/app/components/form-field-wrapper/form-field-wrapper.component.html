@@ -15,6 +15,7 @@
         @if (tooltip) {
           <app-info-tooltip
             [message]="tooltip"
+            [trackingName]="labelTooltipTrackingName()!"
             class="ms-1"
           ></app-info-tooltip>
         }

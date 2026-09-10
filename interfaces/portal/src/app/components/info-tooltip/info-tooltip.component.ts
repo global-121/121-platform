@@ -10,6 +10,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import {
+  InfoTooltipName,
   TrackingAction,
   TrackingCategory,
   TrackingService,
@@ -26,6 +27,7 @@ const TRACK_EVENT_DELAY_MS = 1000;
 export class InfoTooltipComponent {
   readonly rtlHelper = inject(RtlHelperService);
   readonly message = input.required<string>();
+  readonly trackingName = input.required<InfoTooltipName>();
   private trackingService = inject(TrackingService);
   private trackEventTimeout: ReturnType<typeof setTimeout> | undefined;
 
@@ -53,7 +55,7 @@ export class InfoTooltipComponent {
     this.trackingService.trackEvent({
       category: TrackingCategory.additionalInformationViewed,
       action: TrackingAction.hoverInformationIcon,
-      name: this.message(),
+      name: this.trackingName(),
     });
   }
 

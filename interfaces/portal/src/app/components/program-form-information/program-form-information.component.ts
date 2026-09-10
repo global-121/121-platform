@@ -18,7 +18,10 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
-import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
+import {
+  PROGRAM_FORM_TOOLTIP_TRACKING_NAMES,
+  PROGRAM_FORM_TOOLTIPS,
+} from '~/domains/program/program.helper';
 import { Program } from '~/domains/program/program.model';
 import {
   TrackingAction,
@@ -96,6 +99,8 @@ export class ProgramFormInformationComponent {
     });
   });
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
+  readonly PROGRAM_FORM_TOOLTIP_TRACKING_NAMES =
+    PROGRAM_FORM_TOOLTIP_TRACKING_NAMES;
 
   readonly isCreateProgram =
     typeof window !== 'undefined' &&

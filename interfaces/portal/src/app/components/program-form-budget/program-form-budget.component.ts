@@ -22,7 +22,10 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FspMultiselectComponent } from '~/components/fsp-multiselect/fsp-multiselect.component';
-import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
+import {
+  PROGRAM_FORM_TOOLTIP_TRACKING_NAMES,
+  PROGRAM_FORM_TOOLTIPS,
+} from '~/domains/program/program.helper';
 import { Program } from '~/domains/program/program.model';
 import {
   TrackingAction,
@@ -117,6 +120,8 @@ export class ProgramFormBudgetComponent {
     }
   });
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
+  readonly PROGRAM_FORM_TOOLTIP_TRACKING_NAMES =
+    PROGRAM_FORM_TOOLTIP_TRACKING_NAMES;
 
   readonly isCreateProgram =
     typeof window !== 'undefined' &&

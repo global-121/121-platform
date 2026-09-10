@@ -56,7 +56,10 @@
             <td class="px-2">
               {{ attribute.label }}
               @if (attribute.infoTooltip) {
-                <app-info-tooltip [message]="attribute.infoTooltip()" />
+                <app-info-tooltip
+                  [message]="attribute.infoTooltip()"
+                  [trackingName]="attribute.infoTooltipTrackingName!"
+                />
               }
             </td>
             <td class="px-2">

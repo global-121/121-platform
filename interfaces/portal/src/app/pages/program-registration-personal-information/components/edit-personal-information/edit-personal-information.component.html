@@ -72,6 +72,7 @@
             [dataTestId]="'edit-personal-information-' + attribute.name"
             [label]="attribute.label"
             [labelTooltip]="attribute.editInfo"
+            [labelTooltipTrackingName]="attribute.editInfoTrackingName!"
             [errorMessage]="formFieldErrors()()(attribute.name)"
             [isRequired]="attribute.isRequired"
           >

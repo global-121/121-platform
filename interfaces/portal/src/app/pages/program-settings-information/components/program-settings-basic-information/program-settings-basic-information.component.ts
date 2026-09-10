@@ -33,6 +33,7 @@ import {
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import {
   mergeUILanguageForProgramLanguageAttributes,
+  PROGRAM_FORM_TOOLTIP_TRACKING_NAMES,
   PROGRAM_FORM_TOOLTIPS,
 } from '~/domains/program/program.helper';
 import { AuthService } from '~/services/auth.service';
@@ -199,6 +200,8 @@ export class ProgramSettingsBasicInformationComponent {
         fullWidth: true,
         type: 'number',
         tooltip: PROGRAM_FORM_TOOLTIPS.targetRegistrations,
+        tooltipTrackingName:
+          PROGRAM_FORM_TOOLTIP_TRACKING_NAMES.targetRegistrations,
       },
       {
         label: $localize`Enable validation`,
@@ -206,6 +209,8 @@ export class ProgramSettingsBasicInformationComponent {
         fullWidth: true,
         type: 'boolean',
         tooltip: PROGRAM_FORM_TOOLTIPS.validationProcess,
+        tooltipTrackingName:
+          PROGRAM_FORM_TOOLTIP_TRACKING_NAMES.validationProcess,
       },
       {
         label: $localize`Enable scope`,
@@ -213,6 +218,7 @@ export class ProgramSettingsBasicInformationComponent {
         fullWidth: true,
         type: 'boolean',
         tooltip: PROGRAM_FORM_TOOLTIPS.enableScope,
+        tooltipTrackingName: PROGRAM_FORM_TOOLTIP_TRACKING_NAMES.enableScope,
       },
     ];
 
