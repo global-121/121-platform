@@ -56,7 +56,7 @@ type PickSelect<
   Entity extends ObjectLiteral,
   Select extends FindOptionsSelect<Entity> | undefined,
 > = {
-  [R in TruthyKeys<Select>]: SelectValueAt<
+  [R in TruthyKeys<NonNullable<Select>>]: SelectValueAt<
     Entity,
     R & keyof Entity,
     Select & FindOptionsSelect<Entity>
@@ -87,7 +87,7 @@ type PickRelations<
   Entity extends ObjectLiteral,
   Relation extends FindOptionsRelations<Entity> | undefined,
 > = {
-  [R in TruthyKeys<Relation>]: RelationValueAt<
+  [R in TruthyKeys<NonNullable<Relation>>]: RelationValueAt<
     Entity,
     R & keyof Entity,
     Relation & FindOptionsRelations<Entity>
