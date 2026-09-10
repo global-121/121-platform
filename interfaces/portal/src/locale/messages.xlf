@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -1473,16 +1473,14 @@
       <trans-unit id="6821230510150972530" datatype="html">
         <source>Choose the fields you want to use as duplication indicators. Go for unique identifiers like phone numbers, bank account numbers, or ID numbers. If any of these fields match across two or more registrations, those registrations will be marked as duplicates.</source>
       </trans-unit>
-<<<<<<< HEAD
       <trans-unit id="6822416971424318047" datatype="html">
         <source>Select a unique identifier - phone number, ID number, or Red Cross registration number - to be used during reconciliation to update the transaction status for each registration.</source>
-=======
+      </trans-unit>
       <trans-unit id="6824449389004001261" datatype="html">
         <source>Location of the &apos;Data Column Name&apos; field in &apos;Question Options&apos;</source>
       </trans-unit>
       <trans-unit id="6846931882472220376" datatype="html">
         <source>Where do I find data column names?</source>
->>>>>>> bbba095de (feat: Explanation component squashed)
       </trans-unit>
       <trans-unit id="6885844978916799621" datatype="html">
         <source>Budget</source>
