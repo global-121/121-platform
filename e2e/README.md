@@ -11,6 +11,7 @@
   - [Set necessary Environment-variables](#set-necessary-environment-variables)
 - [Running tests](#running-tests)
   - [Using the command-line](#using-the-command-line)
+  - [Flaky tests](#flaky-tests)
   - [Using the VS Code-extension](#using-the-vs-code-extension)
 - [Fixtures](#fixtures)
   - [What are fixtures in Playwright?](#what-are-fixtures-in-playwright)
