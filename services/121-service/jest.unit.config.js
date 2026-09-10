@@ -1,6 +1,5 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  preset: 'ts-jest',
   rootDir: '.',
   testMatch: ['<rootDir>/**/*.spec.ts'],
   setupFilesAfterEnv: [
@@ -14,14 +13,16 @@ module.exports = {
     '^@121-service/(.*)$': '<rootDir>/$1',
   },
   transform: {
-    'node_modules/(@t3-oss|uuid|openid-client|oauth4webapi|jose|sanitize-html|htmlparser2|entities|domhandler|domutils|domelementtype|dom-serializer)/.+[.]js$': [
-      'ts-jest',
-      { useESM: true },
-    ],
+    'node_modules/(@t3-oss|uuid|openid-client|oauth4webapi|jose|sanitize-html|htmlparser2|entities|domhandler|domutils|domelementtype|dom-serializer)/.+[.]js$':
+      ['ts-jest', { useESM: true }],
+    '^.+\\.tsx?$': ['ts-jest', {}],
   },
   transformIgnorePatterns: [
     'node_modules/(?!@t3-oss|uuid|openid-client|oauth4webapi|jose|sanitize-html|htmlparser2|entities|domhandler|domutils|domelementtype|dom-serializer)',
   ],
+  detectOpenHandles: true,
+  errorOnDeprecated: true,
+  logHeapUsage: true,
   randomize: true,
   verbose: true,
   reporters: [
