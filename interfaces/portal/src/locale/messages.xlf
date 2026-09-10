@@ -384,9 +384,6 @@
       <trans-unit id="2413028101045997188" datatype="html">
         <source>You&apos;re about to reset <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.displayName }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b &gt;" id="CLOSE_BOLD_TEXT"/>&apos;s password. The user will receive an email with the new password sent to their registered email address. Only proceed if the user has requested this action.</source>
       </trans-unit>
-      <trans-unit id="2438205306314074008" datatype="html">
-        <source>Integrated FSPs</source>
-      </trans-unit>
       <trans-unit id="2438590582556677910" datatype="html">
         <source>Start!</source>
       </trans-unit>
@@ -407,6 +404,9 @@
       </trans-unit>
       <trans-unit id="2530685350362198190" datatype="html">
         <source>Voucher <x equiv-text="this.paymentId()" id="PH"/> on <x equiv-text="this.paymentDate()" id="PH_1"/></source>
+      </trans-unit>
+      <trans-unit id="2534235831625605891" datatype="html">
+        <source>Link your registration tool:</source>
       </trans-unit>
       <trans-unit id="2560790823235400386" datatype="html">
         <source>No debit cards found</source>
@@ -1556,9 +1556,6 @@
       </trans-unit>
       <trans-unit id="7014051207286040747" datatype="html">
         <source>Data column name</source>
-      </trans-unit>
-      <trans-unit id="7017298442896734249" datatype="html">
-        <source>Your form must include the following required fields, using these <x ctype="x-strong" equiv-text="&lt;strong class=&quot;font-display&quot;&gt;" id="START_TAG_STRONG"/>exact data column names<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> (these would be the column headers in Excel).</source>
       </trans-unit>
       <trans-unit id="7017859949445533273" datatype="html">
         <source>Date is before</source>

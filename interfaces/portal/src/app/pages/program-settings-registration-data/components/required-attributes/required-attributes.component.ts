@@ -22,7 +22,6 @@ import {
   ExplainerComponent,
   ExplainerItem,
 } from '~/components/explainer/explainer.component';
-import { FspTagsComponent } from '~/components/fsp-tags/fsp-tags.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
@@ -33,7 +32,6 @@ import { ToastService } from '~/services/toast.service';
   imports: [
     TableModule,
     AccordionModule,
-    FspTagsComponent,
     ExplainerComponent,
     CopyToClipboardButtonComponent,
     InfoTooltipComponent,
