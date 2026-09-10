@@ -20,7 +20,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { DEFAULT_ATTRIBUTE_EDIT_INFO } from '~/domains/program/program-attribute.helpers';
 import { ToastService } from '~/services/toast.service';
-import { InfoTooltipName } from '~/services/tracking.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
@@ -38,7 +38,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
 })
 export class OrderDebitCardsDialogComponent {
   readonly phoneNumberEditInfo = DEFAULT_ATTRIBUTE_EDIT_INFO.phoneNumber;
-  readonly InfoTooltipName = InfoTooltipName;
+  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
 
   readonly programId = input.required<string>();
   readonly toastService = inject(ToastService);

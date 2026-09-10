@@ -22,7 +22,7 @@ import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.com
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { AttributeWithTranslatedLabel } from '~/domains/program/program.model';
 import { MessagingService } from '~/services/messaging.service';
-import { InfoTooltipName } from '~/services/tracking.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 
 @Component({
   selector: 'app-custom-message-control',
@@ -47,15 +47,15 @@ import { InfoTooltipName } from '~/services/tracking.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomMessageControlComponent implements ControlValueAccessor {
-  readonly InfoTooltipName = InfoTooltipName;
-
   readonly programId = input.required<string>();
   readonly error = input<string>();
 
   private messagingService = inject(MessagingService);
 
-  readonly customMessageInternalModel = model('');
   readonly customMessageDisabled = model(false);
+  readonly customMessageInternalModel = model('');
+
+  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
 
   placeholders = injectQuery(
     this.messagingService.getMessagePlaceholders(this.programId),

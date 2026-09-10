@@ -23,7 +23,7 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { InfoTooltipName } from '~/services/tracking.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
 import { Locale } from '~/utils/locale';
@@ -47,7 +47,7 @@ import { Locale } from '~/utils/locale';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageLayoutMonitoringComponent {
-  readonly InfoTooltipName = InfoTooltipName;
+  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
 
   readonly programId = input.required<string>();
 
@@ -154,6 +154,8 @@ export class PageLayoutMonitoringComponent {
         type: 'currency',
         currencyCode: programData?.currency,
         tooltip: $localize`The base transfer value is multiplied by a set factor for each registration.\n\nFor example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.`,
+        tooltipTrackingName:
+          InfoTooltipTrackingName.monitoringBaseTransferValue,
       },
     ];
 

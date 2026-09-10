@@ -22,7 +22,7 @@ import { FspFormField } from '~/domains/fsp-configuration/fsp-configuration.mode
 import { FspConfigurationPropertyInputType } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
-import { InfoTooltipName } from '~/services/tracking.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 
 @Component({
   selector: 'app-fsp-configuration-property-input',
@@ -78,7 +78,7 @@ export class FspConfigurationPropertyInputComponent {
       : undefined,
   );
 
-  readonly InfoTooltipName = InfoTooltipName;
+  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
 
   readonly inputTextPlaceholder = computed(() =>
     this.fspFormField().isSensitive ? sensitivePropertyString : '',

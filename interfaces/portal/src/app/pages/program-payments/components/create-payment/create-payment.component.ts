@@ -57,7 +57,7 @@ import { ExportService } from '~/services/export.service';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
-import { InfoTooltipName } from '~/services/tracking.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
 import { generateFieldErrors } from '~/utils/form-validation';
@@ -120,7 +120,7 @@ export class CreatePaymentComponent {
   today = new Date();
   protected readonly MAX_PAYMENT_NAME_LENGTH: number = 60;
 
-  readonly InfoTooltipName = InfoTooltipName;
+  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
   readonly paymentNameTooltip = $localize`Payments are named by date and time by default. Rename the payment for clarity if needed.`;
 
   overrideFilters = {
@@ -208,7 +208,8 @@ export class CreatePaymentComponent {
           '1.2-2',
         ),
         tooltip: $localize`The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.`,
-        tooltipTrackingName: InfoTooltipName.paymentTotalAmountCalculation,
+        tooltipTrackingName:
+          InfoTooltipTrackingName.paymentTotalAmountCalculation,
         fullWidth: true,
       },
     ];

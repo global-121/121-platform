@@ -21,7 +21,7 @@ import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.com
 import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
 import { Program } from '~/domains/program/program.model';
 import {
-  InfoTooltipName,
+  InfoTooltipTrackingName,
   TrackingAction,
   TrackingCategory,
   TrackingEvent,
@@ -97,7 +97,7 @@ export class ProgramFormInformationComponent {
     });
   });
   readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
-  readonly InfoTooltipName = InfoTooltipName;
+  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
 
   readonly isCreateProgram =
     typeof window !== 'undefined' &&

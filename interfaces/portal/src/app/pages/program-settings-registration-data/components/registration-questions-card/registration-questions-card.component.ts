@@ -31,7 +31,7 @@ import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Attribute } from '~/domains/program/program.model';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
-import { InfoTooltipName } from '~/services/tracking.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { getLinguonym } from '~/utils/get-linguonym';
 import {
   getUILanguageFromLocale,
@@ -61,7 +61,7 @@ import { environment } from '~environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationQuestionsCardComponent {
-  readonly InfoTooltipName = InfoTooltipName;
+  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
 
   readonly programId = input.required<number | string>();
 

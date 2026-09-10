@@ -53,7 +53,7 @@ import { programHasFspWithExportFileIntegration } from '~/domains/program/progra
 import { AuthService } from '~/services/auth.service';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
-import { InfoTooltipName } from '~/services/tracking.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
 import { generateFieldErrors } from '~/utils/form-validation';
@@ -100,7 +100,7 @@ const noWhitespaceOnlyValueValidator = (
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageLayoutPaymentComponent {
-  readonly InfoTooltipName = InfoTooltipName;
+  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
 
   readonly programId = input.required<string>();
   readonly paymentId = input.required<string>();

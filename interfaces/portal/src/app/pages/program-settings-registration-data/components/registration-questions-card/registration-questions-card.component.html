@@ -55,7 +55,9 @@
               <app-info-tooltip
                 message="Since the 121 portal does not currently support this language, users will not be able to see column names and answers in this language. Contact your account manager to add this language to the portal."
                 i18n-message
-                [trackingName]="InfoTooltipName.unsupportedLanguageWarning"
+                [trackingName]="
+                  InfoTooltipTrackingName.unsupportedLanguageWarning
+                "
               ></app-info-tooltip>
             </div>
           }
@@ -78,7 +80,7 @@
                     message="The data column name of the question."
                     i18n-message
                     [trackingName]="
-                      InfoTooltipName.registrationQuestionDataColumnName
+                      InfoTooltipTrackingName.registrationQuestionDataColumnName
                     "
                   ></app-info-tooltip>
                 </th>
@@ -93,7 +95,9 @@
                   <app-info-tooltip
                     message="The label that will be shown in the registration page table header and registration's profile. The labels can be edited by clicking on the pencil icon above."
                     i18n-message
-                    [trackingName]="InfoTooltipName.registrationQuestionLabel"
+                    [trackingName]="
+                      InfoTooltipTrackingName.registrationQuestionLabel
+                    "
                   ></app-info-tooltip>
                 </th>
               </tr>

@@ -32,7 +32,7 @@ import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import {
-  InfoTooltipName,
+  InfoTooltipTrackingName,
   TrackingAction,
   TrackingCategory,
   TrackingEvent,
@@ -143,7 +143,7 @@ export class ProgramSettingsBudgetComponent {
         label: '*' + $localize`Currency`,
         value: programData?.currency,
         tooltip: PROGRAM_FORM_TOOLTIPS.currency,
-        tooltipTrackingName: InfoTooltipName.programCurrency,
+        tooltipTrackingName: InfoTooltipTrackingName.programCurrency,
         type: 'text',
       },
       {
@@ -152,7 +152,8 @@ export class ProgramSettingsBudgetComponent {
         type: 'number',
         fullWidth: true,
         tooltip: PROGRAM_FORM_TOOLTIPS.distributionDuration,
-        tooltipTrackingName: InfoTooltipName.programDistributionDuration,
+        tooltipTrackingName:
+          InfoTooltipTrackingName.programDistributionDuration,
       },
       {
         label: '*' + $localize`Fixed transfer value`,
