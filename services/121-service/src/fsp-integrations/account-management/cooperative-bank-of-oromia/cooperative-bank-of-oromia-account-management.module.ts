@@ -6,6 +6,7 @@ import { CooperativeBankOfOromiaAccountManagementService } from '@121-service/sr
 import { CooperativeBankOfOromiaAccountValidationEntity } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/entities/cooperative-bank-of-oromia-account-validation.entity';
 import { CooperativeBankOfOromiaAccountValidationScopedRepository } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/repositories/cooperative-bank-of-oromia-account-validation.scoped.repository';
 import { CooperativeBankOfOromiaModule } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/cooperative-bank-of-oromia.module';
+import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
@@ -17,6 +18,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     CooperativeBankOfOromiaModule,
     RegistrationsModule,
     ProgramModule,
+    ProgramFspConfigurationsModule,
   ],
   providers: [
     CooperativeBankOfOromiaAccountManagementService,
