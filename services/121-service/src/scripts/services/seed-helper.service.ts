@@ -25,6 +25,7 @@ import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/en
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
+import { ProgramRegistrationProgramIdCounterRepository } from '@121-service/src/programs/repositories/program-registration-program-id-counter.repository';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
@@ -47,6 +48,7 @@ export class SeedHelperService {
     private readonly httpService: CustomHttpService,
     private readonly axiosCallsService: AxiosCallsService,
     private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
+    private readonly programRegistrationProgramIdCounterRepository: ProgramRegistrationProgramIdCounterRepository,
   ) {}
 
   public async seedData({
@@ -374,6 +376,10 @@ export class SeedHelperService {
     const programExampleDump = JSON.stringify(programExample);
     const programFromJSON = JSON.parse(programExampleDump);
     const programReturn = await programRepository.save(programFromJSON);
+
+    await this.programRegistrationProgramIdCounterRepository.createForProgram({
+      programId: programReturn.id,
+    });
 
     // Remove original program registration attributes and add it to a separate variable
     const programRegistrationAttributes =

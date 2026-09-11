@@ -1,7 +1,5 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { randomInt } from 'node:crypto';
-import { setTimeout } from 'node:timers/promises';
 import {
   DataSource,
   DeleteResult,
@@ -9,8 +7,8 @@ import {
   FindOptionsRelations,
   FindOptionsWhere,
   InsertResult,
-  QueryFailedError,
   RemoveOptions,
+  Repository,
   SaveOptions,
   UpdateResult,
 } from 'typeorm';
@@ -18,27 +16,27 @@ import { type QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialE
 
 import { ExportVisaCardDetailsRawData } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
-import {
-  REGISTRATION_PROGRAM_UNIQUE_CONSTRAINT,
-  RegistrationEntity,
-} from '@121-service/src/registration/entities/registration.entity';
+import { ProgramRegistrationProgramIdCounterEntity } from '@121-service/src/programs/entities/program-registration-program-id-counter.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { GetDuplicatesResult } from '@121-service/src/registration/interfaces/get-duplicates-result.interface';
 import { RegistrationScopedBaseRepository } from '@121-service/src/registration/repositories/registration-scoped-base.repository';
-import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
-
-const MAX_REGISTRATION_PROGRAM_ID_SAVE_ATTEMPTS = 3;
 
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class RegistrationScopedRepository extends RegistrationScopedBaseRepository<RegistrationEntity> {
+  private readonly counterRepository: Repository<ProgramRegistrationProgramIdCounterEntity>;
+
   constructor(
     dataSource: DataSource,
     // TODO check if this can be set on ScopedRepository so it can be reused
     @Inject(REQUEST) public override request: ScopedUserRequest,
   ) {
     super(RegistrationEntity, dataSource);
+    this.counterRepository = dataSource.getRepository(
+      ProgramRegistrationProgramIdCounterEntity,
+    );
   }
 
   ///////////////////////////////////////////////////////////////
@@ -74,49 +72,12 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     registration: RegistrationEntity;
     options?: SaveOptions;
   }): Promise<RegistrationEntity> {
-    for (
-      let attempt = 1;
-      attempt <= MAX_REGISTRATION_PROGRAM_ID_SAVE_ATTEMPTS;
-      attempt++
-    ) {
-      registration.registrationProgramId =
-        await this.getNextRegistrationProgramId({
-          programId: registration.program?.id ?? registration.programId,
-        });
+    registration.registrationProgramId =
+      await this.getNextRegistrationProgramId({
+        programId: registration.program?.id ?? registration.programId,
+      });
 
-      try {
-        return await this.repository.save(registration, options);
-      } catch (error) {
-        const isLastAttempt =
-          attempt === MAX_REGISTRATION_PROGRAM_ID_SAVE_ATTEMPTS;
-
-        // Only retry the constraint that recalculating registrationProgramId can resolve, not any unrelated violation
-        if (
-          !this.isRegistrationProgramIdUniqueViolation(error) ||
-          isLastAttempt
-        ) {
-          throw error;
-        } else {
-          await setTimeout(randomInt(1, 21)); // Some jitter to reduce the chance of retries colliding on registrationProgramId
-        }
-      }
-    }
-
-    throw new Error(
-      `Failed to save a registration with a unique registrationProgramId after ${MAX_REGISTRATION_PROGRAM_ID_SAVE_ATTEMPTS} attempts.`,
-    );
-  }
-
-  private isRegistrationProgramIdUniqueViolation(
-    error: unknown,
-  ): error is QueryFailedError & { code: string; constraint: string } {
-    return (
-      error instanceof QueryFailedError &&
-      'code' in error &&
-      error.code === PostgresStatusCodes.UNIQUE_VIOLATION &&
-      'constraint' in error &&
-      error.constraint === REGISTRATION_PROGRAM_UNIQUE_CONSTRAINT
-    );
+    return this.repository.save(registration, options);
   }
 
   private async getNextRegistrationProgramId({
@@ -124,14 +85,23 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   }: {
     programId: number;
   }): Promise<number> {
-    // Deliberately unscoped: registrationProgramId must be unique across all scopes within a program
-    const result = await this.repository
-      .createQueryBuilder('r')
-      .select('MAX(r."registrationProgramId")', 'max')
-      .andWhere('r.programId = :programId', { programId })
-      .getRawOne<{ max: number | null }>();
+    const updateResult = await this.counterRepository
+      .createQueryBuilder()
+      .update(ProgramRegistrationProgramIdCounterEntity)
+      .set({
+        lastRegistrationProgramId: () => '"lastRegistrationProgramId" + 1',
+      })
+      .where('"programId" = :programId', { programId })
+      .returning('lastRegistrationProgramId')
+      .execute();
 
-    return (result?.max ?? 0) + 1;
+    if (updateResult.raw && updateResult.raw.length > 0) {
+      return Number(updateResult.raw[0].lastRegistrationProgramId);
+    }
+
+    throw new Error(
+      `No registrationProgramId counter found for program ${programId}`,
+    );
   }
 
   public async insert(
