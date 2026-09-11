@@ -1,8 +1,15 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationScopedKisumuEastPv } from '@121-service/test/fixtures/scoped-registrations';
+import { postProgram } from '@121-service/test/helpers/program.helper';
+import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   getRegistrations,
   importRegistrations,
@@ -40,16 +47,52 @@ const createRegistrations = ({
 const createSequenceUpTo = (count: number) =>
   Array.from({ length: count }, (_, index) => index + 1);
 
+const minimalProgram: CreateProgramDto = {
+  titlePortal: { en: 'Program for registrationProgramId tests' },
+  currency: CurrencyCode.EUR,
+};
+
+// Name matches registrationScopedKisumuEastPv.programFspConfigurationName, so imported registrations resolve to this configuration
+const newProgramFspConfiguration: CreateProgramFspConfigurationDto = {
+  name: Fsps.intersolveVoucherPaper,
+  label: { en: 'Intersolve Voucher Paper' },
+  fspName: Fsps.intersolveVoucherPaper,
+  properties: [
+    { name: FspConfigurationProperties.username, value: 'username' },
+    { name: FspConfigurationProperties.password, value: 'password' },
+  ],
+};
+
+// Each test creates its own program so registrationProgramId counters never leak between tests
+const createProgram = async ({
+  accessToken,
+}: {
+  accessToken: string;
+}): Promise<number> => {
+  const createProgramResponse = await postProgram(minimalProgram, accessToken);
+  expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
+  const programId = createProgramResponse.body.id;
+
+  await postProgramFspConfiguration({
+    programId,
+    body: newProgramFspConfiguration,
+    accessToken,
+  });
+
+  return programId;
+};
+
 describe('Assign registrationProgramId', () => {
   let accessToken: string;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
   });
 
   it('should assign a unique sequential registrationProgramId to concurrently imported registrations', async () => {
     // Arrange
+    const programId = await createProgram({ accessToken });
     const registrationBatches = Array.from(
       { length: numberOfConcurrentBatches },
       (_, batchIndex) =>
@@ -63,7 +106,7 @@ describe('Assign registrationProgramId', () => {
     // Act
     const responses = await Promise.all(
       registrationBatches.map((registrations) =>
-        importRegistrations(programIdPV, registrations, accessToken),
+        importRegistrations(programId, registrations, accessToken),
       ),
     );
 
@@ -73,7 +116,7 @@ describe('Assign registrationProgramId', () => {
     }
 
     const registrations = await waitForRegistrationCount({
-      programId: programIdPV,
+      programId,
       expectedCount: numberOfConcurrentRegistrations,
       accessToken,
       sort: { field: 'registrationProgramId', direction: 'ASC' },

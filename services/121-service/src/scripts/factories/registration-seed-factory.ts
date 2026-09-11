@@ -4,6 +4,7 @@ import { DataSource, DeepPartial, Equal, In, Not } from 'typeorm';
 
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { ProgramRegistrationProgramIdCounterEntity } from '@121-service/src/programs/entities/program-registration-program-id-counter.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -75,6 +76,18 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
 
     const newRegistrationIds =
       await this.insertEntitiesBatch(newRegistrationsData);
+
+    await this.dataSource
+      .getRepository(ProgramRegistrationProgramIdCounterEntity)
+      .createQueryBuilder()
+      .insert()
+      .into(ProgramRegistrationProgramIdCounterEntity)
+      .values({
+        programId,
+        lastRegistrationProgramId: currentMax,
+      })
+      .orUpdate(['lastRegistrationProgramId'], ['programId'])
+      .execute();
 
     await this.attributeDataFactory.duplicateAttributeDataForRegistrations(
       newRegistrationIds,

@@ -7,6 +7,7 @@ import { MessageTemplateEntity } from '@121-service/src/notifications/message-te
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { ProgramRegistrationProgramIdCounterEntity } from '@121-service/src/programs/entities/program-registration-program-id-counter.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
@@ -122,4 +123,11 @@ export class ProgramEntity extends Base121Entity {
 
   @OneToOne(() => KoboEntity, (kobo) => kobo.program, { onDelete: 'SET NULL' })
   public kobo: Relation<KoboEntity>;
+
+  @OneToOne(
+    () => ProgramRegistrationProgramIdCounterEntity,
+    (counter) => counter.program,
+    { cascade: true, onDelete: 'CASCADE' },
+  )
+  public registrationProgramIdCounter: Relation<ProgramRegistrationProgramIdCounterEntity>;
 }
