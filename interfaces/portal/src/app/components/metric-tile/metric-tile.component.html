@@ -14,7 +14,10 @@
   <dt class="text-grey-700 txt-body-m mbs-auto mbe-2 pbs-11">
     {{ metricLabel() }}
     @if (metricTooltip()) {
-      <app-info-tooltip [message]="metricTooltip()!" />
+      <app-info-tooltip
+        [message]="metricTooltip()!"
+        [trackingName]="metricTooltipTrackingName()!"
+      />
     }
   </dt>
   <dd

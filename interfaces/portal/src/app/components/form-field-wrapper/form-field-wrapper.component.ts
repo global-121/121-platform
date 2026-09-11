@@ -5,7 +5,7 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
-
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 @Component({
   selector: 'app-form-field-wrapper',
   imports: [FormErrorComponent, TranslatableStringPipe, InfoTooltipComponent],
@@ -16,6 +16,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 export class FormFieldWrapperComponent {
   readonly label = input.required<string | UILanguageTranslation>();
   readonly labelTooltip = input<string>();
+  readonly labelTooltipTrackingName = input<InfoTooltipTrackingName>();
   readonly isRequired = input<boolean>();
   readonly errorMessage = input<false | string>();
   readonly dataTestId = input<string>();

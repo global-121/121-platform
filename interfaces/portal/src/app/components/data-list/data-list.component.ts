@@ -25,12 +25,12 @@ import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.com
 import { ImageDialogTriggerComponent } from '~/components/image/image-dialog-trigger/image-dialog-trigger.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
 
 export type DataListItem = {
   label: string | UILanguageTranslation;
-  tooltip?: string;
   loading?: boolean;
   chipLabel?: string;
   chipVariant?: ColorVariant;
@@ -43,58 +43,68 @@ export type DataListItem = {
   dataTestId?: string;
 } & (
   | {
-      type: 'boolean';
-      value: boolean;
+      tooltip: string;
+      tooltipTrackingName: InfoTooltipTrackingName;
     }
   | {
-      type: 'code';
-      value?: null | string;
+      tooltip?: undefined;
+      tooltipTrackingName?: never;
     }
-  | {
-      type: 'component';
-      value: Type<unknown>;
-      inputs?: Record<string, unknown>;
-    }
-  | {
-      type: 'currency';
-      value?: null | number;
-      currencyCode?: null | string;
-      currencyFormat?: string;
-    }
-  | {
-      type: 'date';
-      value?: Date | null | number | string;
-    }
-  | {
-      type: 'koboImage';
-      value: string;
-    }
-  | {
-      type: 'number';
-      value?: null | number;
-    }
-  | {
-      type: 'options';
-      value: string | string[];
-      options?: {
+) &
+  (
+    | {
+        type: 'boolean';
+        value: boolean;
+      }
+    | {
+        type: 'code';
+        value?: null | string;
+      }
+    | {
+        type: 'component';
+        value: Type<unknown>;
+        inputs?: Record<string, unknown>;
+      }
+    | {
+        type: 'currency';
+        value?: null | number;
+        currencyCode?: null | string;
+        currencyFormat?: string;
+      }
+    | {
+        type: 'date';
+        value?: Date | null | number | string;
+      }
+    | {
+        type: 'koboImage';
         value: string;
-        label?: string | UILanguageTranslation;
-      }[];
-    }
-  | {
-      type: 'tags';
-      value: string | string[];
-      options: {
-        value: string;
-        label?: string | UILanguageTranslation;
-      }[];
-    }
-  | {
-      type?: 'text';
-      value?: null | string | UILanguageTranslation;
-      routerLink?: RouterLink['routerLink'];
-    }
-);
+      }
+    | {
+        type: 'number';
+        value?: null | number;
+      }
+    | {
+        type: 'options';
+        value: string | string[];
+        options?: {
+          value: string;
+          label?: string | UILanguageTranslation;
+        }[];
+      }
+    | {
+        type: 'tags';
+        value: string | string[];
+        options: {
+          value: string;
+          label?: string | UILanguageTranslation;
+        }[];
+      }
+    | {
+        type?: 'text';
+        value?: null | string | UILanguageTranslation;
+        routerLink?: RouterLink['routerLink'];
+      }
+  );
 
 @Component({
   selector: 'app-data-list',

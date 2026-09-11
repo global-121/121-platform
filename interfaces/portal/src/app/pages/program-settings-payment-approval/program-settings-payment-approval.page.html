@@ -55,6 +55,9 @@
                 <app-info-tooltip
                   message="This user or one of these users will need to approve the payment if the total amount is above the decided value."
                   i18n-message
+                  [trackingName]="
+                    InfoTooltipTrackingName.paymentApprovalThresholdColumn
+                  "
                 />
               </span>
             </th>
@@ -78,6 +81,9 @@
           i18n-label
           labelTooltip="First approval step must be set for all payments regardless of the total payment amount."
           i18n-labelTooltip
+          [labelTooltipTrackingName]="
+            InfoTooltipTrackingName.paymentApprovalFirstStepRequired
+          "
         >
           <p-multiSelect
             [inputId]="'first-step-users'"
@@ -172,6 +178,9 @@
                   i18n-label
                   labelTooltip="These users would have to approve payment if the total amount is above the decided value."
                   i18n-labelTooltip
+                  [labelTooltipTrackingName]="
+                    InfoTooltipTrackingName.paymentApprovalAdditionalStepThreshold
+                  "
                 >
                   <p-inputNumber
                     [min]="1"

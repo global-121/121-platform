@@ -30,6 +30,7 @@ import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { DialogState } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registrations-dialog-state.enum';
 import { KoboIntegrationErrorDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-integration-error-dialog/kobo-integration-error-dialog.component';
 import { ToastService } from '~/services/toast.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
 
 interface ValidationError {
@@ -57,6 +58,8 @@ interface ValidationErrorTableRow extends ValidationError {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KoboImportExistingRegistrationsDialogComponent {
+  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
+
   private readonly koboApiService = inject(KoboApiService);
   private readonly toastService = inject(ToastService);
 

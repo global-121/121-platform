@@ -73,6 +73,9 @@
       label="Addressee phone number"
       i18n-label
       [labelTooltip]="phoneNumberEditInfo"
+      [labelTooltipTrackingName]="
+        InfoTooltipTrackingName.attributeEditInfoPhoneNumber
+      "
       [errorMessage]="formFieldErrors()('addresseePhoneNumber')"
       [isRequired]="true"
     >

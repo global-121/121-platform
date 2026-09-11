@@ -25,6 +25,7 @@ import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-conf
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 @Component({
   selector: 'app-required-attributes',
   imports: [
@@ -117,6 +118,7 @@ export class RequiredAttributesComponent {
           ? $localize`fsp should be a 'hidden' field in your form that has the 'default response' set to the FSP name: ${fspNames}`
           : $localize`fsp should be 'select many' with the following FSP names as options: ${fspNames}`;
       },
+      infoTooltipTrackingName: InfoTooltipTrackingName.requiredAttributeFspInfo,
     };
 
     // Scope is a field that is independent from the FSPs, so we hardcode it to the list of required attributes if the program has scope enabled.
@@ -125,6 +127,8 @@ export class RequiredAttributesComponent {
       label: 'Scope',
       infoTooltip: () =>
         $localize`Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration`,
+      infoTooltipTrackingName:
+        InfoTooltipTrackingName.requiredAttributeScopeInfo,
     };
 
     return [
