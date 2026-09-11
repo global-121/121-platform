@@ -6,12 +6,14 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationAHWhatsapp } from '@121-service/src/seed-data/mock/registration-pv.data';
 import {
+  doPayment,
   getPaymentSummary,
   retryPayment,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
+  seedIncludedRegistrations,
   seedPaidRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -130,20 +132,49 @@ describe('Do payment retry', () => {
   it('should retry all failed transactions if no filter is used', async () => {
     // Arrange
     const transferValue = 230;
-    const paymentId = await seedPaidRegistrations({
-      registrations: [
-        registrationSuccess,
-        registrationError1,
-        registrationWaiting,
-      ],
+    const registrations = [
+      registrationSuccess,
+      registrationError1,
+      registrationWaiting,
+    ];
+    await seedIncludedRegistrations(registrations, programId, accessToken);
+    const doPaymentResponse = await doPayment({
       programId,
       transferValue,
-      completeStatuses: [
-        TransactionStatusEnum.success,
-        TransactionStatusEnum.error,
-        TransactionStatusEnum.waiting,
-      ],
+      referenceIds: registrations.map(
+        (registration) => registration.referenceId,
+      ),
+      accessToken,
     });
+    const paymentId = doPaymentResponse.body.id;
+
+    // Waited for separately per expected end-status: a shared status list would let "waiting"
+    // count as complete for registrationSuccess too, while its transaction is still transitioning
+    // from waiting to success.
+    await Promise.all([
+      waitForPaymentAndTransactionsToComplete({
+        programId,
+        paymentReferenceIds: [
+          registrationSuccess.referenceId,
+          registrationError1.referenceId,
+        ],
+        paymentId,
+        accessToken,
+        maxWaitTimeMs: 30_000,
+        completeStatuses: [
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.error,
+        ],
+      }),
+      waitForPaymentAndTransactionsToComplete({
+        programId,
+        paymentReferenceIds: [registrationWaiting.referenceId],
+        paymentId,
+        accessToken,
+        maxWaitTimeMs: 30_000,
+        completeStatuses: [TransactionStatusEnum.waiting],
+      }),
+    ]);
 
     // Act
     await updateRegistration(
