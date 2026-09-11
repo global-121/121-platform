@@ -67,7 +67,7 @@
   },
   {
     "method": "patch",
-    "path": "/api/cronjobs/fsps/alfouad",
+    "path": "/api/cronjobs/fsps/al-fouad",
     "params": []
   },
   {

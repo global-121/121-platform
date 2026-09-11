@@ -1,5 +1,5 @@
 import { AIRTEL_SETTINGS } from '@121-service/src/fsp-integrations/settings/airtel/airtel-settings.const';
-import { ALFOUAD_SETTINGS } from '@121-service/src/fsp-integrations/settings/alfouad/alfouad-settings.const';
+import { AL_FOUAD_SETTINGS } from '@121-service/src/fsp-integrations/settings/al-fouad/al-fouad-settings.const';
 import { COMMERCIAL_BANK_ETHIOPIA_SETTINGS } from '@121-service/src/fsp-integrations/settings/commercial-bank-ethiopia/commercial-bank-ethiopia-settings.const';
 import { COOPERATIVE_BANK_OF_OROMIA_SETTINGS } from '@121-service/src/fsp-integrations/settings/cooperative-bank-of-oromia/cooperative-bank-of-oromia-settings.const';
 import { EXCEL_SETTINGS } from '@121-service/src/fsp-integrations/settings/excel/excel-settings.const';
@@ -28,5 +28,5 @@ export const FSP_SETTINGS: Record<Fsps, FspSettingsDto> = {
   [Fsps.onafriq]: ONAFRIQ_SETTINGS,
   [Fsps.cooperativeBankOfOromia]: COOPERATIVE_BANK_OF_OROMIA_SETTINGS,
   [Fsps.mtn]: MTN_SETTINGS,
-  [Fsps.alfouad]: ALFOUAD_SETTINGS,
+  [Fsps.alFouad]: AL_FOUAD_SETTINGS,
 };
