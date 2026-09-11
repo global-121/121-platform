@@ -28,6 +28,7 @@ import { routes } from '~/app.routes';
 import AppTheme from '~/app.theme';
 import { CustomPageTitleStrategy } from '~/app.title-strategy';
 import { AuthService } from '~/services/auth.service';
+import { LogService } from '~/services/log.service';
 import { TrackingService } from '~/services/tracking.service';
 import { Locale } from '~/utils/locale';
 
@@ -98,6 +99,7 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
     }),
     provideTanStackQuery(queryClient),
     ...AuthService.APP_PROVIDERS,
+    ...LogService.APP_PROVIDERS,
     ...TrackingService.APP_PROVIDERS,
     { provide: TitleStrategy, useClass: CustomPageTitleStrategy },
     { provide: LOCALE_ID, useValue: locale },
