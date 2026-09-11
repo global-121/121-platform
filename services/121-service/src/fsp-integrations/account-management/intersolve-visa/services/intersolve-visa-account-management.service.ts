@@ -172,8 +172,7 @@ export class IntersolveVisaAccountManagementService {
       );
     }
 
-    await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
-
+    // Check this before validating the new card with Intersolve, to avoid an unnecessary external call.
     const isChildWalletLinkedToRegistration =
       await this.intersolveVisaChildWalletScopedRepository.hasLinkedChildWalletForRegistrationId(
         registration.id,
@@ -184,6 +183,8 @@ export class IntersolveVisaAccountManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
+
+    await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
 
     await this.replaceCard({
       referenceId,
@@ -459,6 +460,8 @@ export class IntersolveVisaAccountManagementService {
             HttpStatus.BAD_REQUEST,
           );
         }
+      } else {
+        throw error;
       }
     }
 
