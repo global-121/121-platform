@@ -48,7 +48,7 @@ const createSequenceUpTo = (count: number) =>
   Array.from({ length: count }, (_, index) => index + 1);
 
 const minimalProgram: CreateProgramDto = {
-  titlePortal: { en: 'Program for registrationProgramId counter test' },
+  titlePortal: { en: 'Program for registrationProgramId tests' },
   currency: CurrencyCode.EUR,
 };
 
@@ -63,6 +63,25 @@ const newProgramFspConfiguration: CreateProgramFspConfigurationDto = {
   ],
 };
 
+// Each test creates its own program so registrationProgramId counters never leak between tests
+const createProgram = async ({
+  accessToken,
+}: {
+  accessToken: string;
+}): Promise<number> => {
+  const createProgramResponse = await postProgram(minimalProgram, accessToken);
+  expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
+  const programId = createProgramResponse.body.id;
+
+  await postProgramFspConfiguration({
+    programId,
+    body: newProgramFspConfiguration,
+    accessToken,
+  });
+
+  return programId;
+};
+
 describe('Assign registrationProgramId', () => {
   let accessToken: string;
 
@@ -73,6 +92,7 @@ describe('Assign registrationProgramId', () => {
 
   it('should assign a unique sequential registrationProgramId to concurrently imported registrations', async () => {
     // Arrange
+    const programId = await createProgram({ accessToken });
     const registrationBatches = Array.from(
       { length: numberOfConcurrentBatches },
       (_, batchIndex) =>
@@ -86,7 +106,7 @@ describe('Assign registrationProgramId', () => {
     // Act
     const responses = await Promise.all(
       registrationBatches.map((registrations) =>
-        importRegistrations(programIdPV, registrations, accessToken),
+        importRegistrations(programId, registrations, accessToken),
       ),
     );
 
@@ -96,7 +116,7 @@ describe('Assign registrationProgramId', () => {
     }
 
     const registrations = await waitForRegistrationCount({
-      programId: programIdPV,
+      programId,
       expectedCount: numberOfConcurrentRegistrations,
       accessToken,
       sort: { field: 'registrationProgramId', direction: 'ASC' },
@@ -156,40 +176,5 @@ describe('Assign registrationProgramId', () => {
         numberOfOutOfScopeRegistrations + numberOfInScopeRegistrations,
       ),
     );
-  });
-
-  it('should assign sequential registrationProgramIds starting at 1 for a newly created program', async () => {
-    // Arrange
-    const createProgramResponse = await postProgram(
-      minimalProgram,
-      accessToken,
-    );
-    expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
-    const newProgramId = createProgramResponse.body.id;
-
-    await postProgramFspConfiguration({
-      programId: newProgramId,
-      body: newProgramFspConfiguration,
-      accessToken,
-    });
-
-    // Act
-    const importResponse = await importRegistrations(
-      newProgramId,
-      [registrationScopedKisumuEastPv],
-      accessToken,
-    );
-
-    // Assert
-    expect(importResponse.statusCode).toBe(HttpStatus.CREATED);
-
-    // A first import receiving registrationProgramId 1 confirms the counter row was
-    // created via the program cascade with lastRegistrationProgramId starting at 0
-    const registrations = await waitForRegistrationCount({
-      programId: newProgramId,
-      expectedCount: 1,
-      accessToken,
-    });
-    expect(registrations[0].registrationProgramId).toBe(1);
   });
 });
