@@ -8,13 +8,13 @@ export class AddProgramRegistrationProgramIdCounter1788794699491 implements Migr
       `CREATE TABLE "121-service"."program_registration_program_id_counter" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "programId" integer NOT NULL, "lastRegistrationProgramId" integer NOT NULL DEFAULT 0, CONSTRAINT "REL_program_registration_program_id_counter_programId" UNIQUE ("programId"), CONSTRAINT "PK_program_registration_program_id_counter" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE INDEX "IDX_program_registration_program_id_counter_created" ON "121-service"."program_registration_program_id_counter" ("created")`,
+      `CREATE INDEX "IDX_4c3f6cb29531b666ef1759fed5" ON "121-service"."program_registration_program_id_counter" ("created")`,
     );
     await queryRunner.query(
-      `CREATE UNIQUE INDEX "IDX_program_registration_program_id_counter_programId" ON "121-service"."program_registration_program_id_counter" ("programId")`,
+      `CREATE UNIQUE INDEX "IDX_017d12e48ecd706400d3bb4554" ON "121-service"."program_registration_program_id_counter" ("programId")`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."program_registration_program_id_counter" ADD CONSTRAINT "FK_program_registration_program_id_counter_programId" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "121-service"."program_registration_program_id_counter" ADD CONSTRAINT "FK_017d12e48ecd706400d3bb45544" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `INSERT INTO "121-service"."program_registration_program_id_counter" ("programId", "lastRegistrationProgramId")
