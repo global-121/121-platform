@@ -222,10 +222,16 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
   }: {
     fsps: string[];
   }) {
-    const requiredFsps = this.page.getByTestId('required-fsps');
-    for (const fspName of fsps) {
-      await expect(requiredFsps).toContainText(fspName);
-    }
+    const listItems = this.page
+      .getByTestId('required-fsps')
+      .getByRole('listitem');
+
+    const sortedFspsInnerTexts = (await listItems.allInnerTexts())
+      .map((text) => text.trim())
+      .sort();
+    const sortedFspNames = fsps.sort();
+
+    expect(sortedFspsInnerTexts).toEqual(sortedFspNames);
   }
 
   async validateKoboRequiredFieldsTable({
