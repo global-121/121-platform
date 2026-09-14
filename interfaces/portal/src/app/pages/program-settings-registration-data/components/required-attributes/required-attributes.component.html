@@ -42,8 +42,8 @@
               i18n
               class="text-grey-700 mbs-2 font-normal"
             >
-              Ask this in the form. The answer option default value must match
-              these values exactly.
+              Ask this in the form. The options automatic field must match the
+              answers values to the right exactly.
             </p>
           }
         }
@@ -78,6 +78,7 @@
   </ng-template>
 </p-table>
 
+<<<<<<< HEAD
       <div class="mbs-4">
         <app-explainer
           [title]="dataColumnNamesExplainers.title"
@@ -90,3 +91,12 @@
     </p-accordion-content>
   </p-accordion-panel>
 </p-accordion>
+=======
+@if (!this.isKoboIntegrated()) {
+  <app-explainer
+    [title]="dataColumnNamesExplainers.title"
+    [items]="dataColumnNamesExplainers.items"
+    [trackingEventName]="'Data column names'"
+  />
+}
+>>>>>>> bc48940e8 (Finetuning with Tal)

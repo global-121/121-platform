@@ -14,6 +14,9 @@
       <trans-unit id="1053772170616919441" datatype="html">
         <source>You&apos;re about to download an Excel file with all of the registrations included in payments.</source>
       </trans-unit>
+      <trans-unit id="1054469251797090110" datatype="html">
+        <source>Add FSP(s) to your program to see all required data columns.</source>
+      </trans-unit>
       <trans-unit id="1061597182953948916" datatype="html">
         <source>Use your work email to log in.</source>
       </trans-unit>
@@ -1701,9 +1704,6 @@
       <trans-unit id="7585097972263982693" datatype="html">
         <source>Old FSP</source>
       </trans-unit>
-      <trans-unit id="7585588338166441738" datatype="html">
-        <source>Ask this in the form. Answer options must match these values exactly.</source>
-      </trans-unit>
       <trans-unit id="7585826646011739428" datatype="html">
         <source>Edit</source>
       </trans-unit>
@@ -1715,6 +1715,9 @@
       </trans-unit>
       <trans-unit id="7617906385730294527" datatype="html">
         <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>)</source>
+      </trans-unit>
+      <trans-unit id="7622202090437576589" datatype="html">
+        <source>Ask this in the form. The options automatic field must match the answers values to the right exactly.</source>
       </trans-unit>
       <trans-unit id="7675424950942601762" datatype="html">
         <source>Optionally pass a start date and/or an end date to filter the data changes. The export is limited to 100,000 data changes. Adapt your dates if needed.</source>

@@ -26,30 +26,23 @@
     </p>
 
     @if (!isEditing()) {
-      <p-table
-        [value]="tableRows()"
-        class="p-datatable-sm"
-      >
+      <p-table [value]="tableRows()">
         <ng-template #header>
-          <tr class="border-grey-300 bg-grey-100 border-be">
+          <tr>
             <th
               scope="col"
               i18n
-              class="txt-body-s text-grey-700 px-4 py-2 text-center font-semibold inline-[11%]"
+              class="inline-1/8"
             >
               Step
             </th>
             <th
               scope="col"
               i18n
-              class="txt-body-s text-grey-700 px-4 py-2 font-semibold inline-[46%]"
             >
               Users
             </th>
-            <th
-              scope="col"
-              class="txt-body-s text-grey-700 px-4 py-2 font-semibold inline-[43%]"
-            >
+            <th scope="col">
               <span class="inline-flex items-center gap-1 whitespace-nowrap">
                 <ng-container i18n>If payment total exceeds</ng-container>
                 <app-info-tooltip

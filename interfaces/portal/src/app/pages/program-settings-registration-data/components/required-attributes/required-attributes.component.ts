@@ -116,6 +116,7 @@ export class RequiredAttributesComponent {
     const fspNames = this.programFspNames().join(', ');
     const fspEntry = {
       name: 'fsp',
+<<<<<<< HEAD
       label: 'Fsp',
       infoTooltipData: {
         message:
@@ -124,6 +125,9 @@ export class RequiredAttributesComponent {
             : $localize`fsp should be 'select many' with the following FSP names as options: ${fspNames}`,
         trackingName: InfoTooltipTrackingName.requiredAttributeFspInfo,
       },
+=======
+      label: 'FSP',
+>>>>>>> bc48940e8 (Finetuning with Tal)
     };
 
     // Scope is a field that is independent from the FSPs, so we hardcode it to the list of required attributes if the program has scope enabled.
