@@ -27,7 +27,7 @@
       </td>
 
       <td>
-        {{ getTranslatedRecommendedAttributeType(attribute) }}
+        {{ getTranslatedRecommendedAttributeType({ attribute }) }}
 
         @if (attribute.name === 'fsp') {
           @if (programFspNames().length === 1) {
@@ -42,8 +42,8 @@
               i18n
               class="text-grey-700 mbs-2 font-normal"
             >
-              Ask this in the form. Answer options must match these values
-              exactly.
+              Ask this in the form. The answer option default value must match
+              these values exactly.
             </p>
           }
         }
@@ -62,7 +62,7 @@
               >
                 Answer values:
               </div>
-              <ul>
+              <ul data-testid="required-fsps">
                 @for (name of programFspNames(); track name) {
                   <li>
                     {{ name }}
