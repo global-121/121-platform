@@ -29,7 +29,7 @@ export class NoteScopedRepository extends ScopedRepository<NoteEntity> {
         },
       },
       relations: { user: true },
-      order: { created: 'DESC' },
+      order: { created: 'DESC', id: 'DESC' },
     });
     return result;
   }

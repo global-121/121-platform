@@ -68,7 +68,9 @@ export class ActivitiesMapper {
 
     return {
       meta: { availableTypes, count },
-      data: activityLogItems.sort((a, b) => (b.created > a.created ? 1 : -1)),
+      data: activityLogItems.sort(
+        (a, b) => b.created.getTime() - a.created.getTime(),
+      ),
     };
   }
 
