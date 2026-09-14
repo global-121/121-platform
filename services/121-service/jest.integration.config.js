@@ -1,5 +1,6 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} */
-module.exports = {
+import { defineConfig } from 'jest';
+
+export default defineConfig({
   rootDir: '.',
   testMatch: ['<rootDir>/test/**/*.test.ts'],
   setupFilesAfterEnv: ['jest-extended/all'],
@@ -11,10 +12,7 @@ module.exports = {
   },
   moduleFileExtensions: ['js', 'ts'],
   transform: {
-    '^.+\\.ts?$': ['ts-jest', { tsconfig: '<rootDir>/test/tsconfig.json' }],
-    'node_modules/(@t3-oss|uuid|openid-client|oauth4webapi|jose|sanitize-html|htmlparser2|entities|domhandler|domutils|domelementtype|dom-serializer)/.+[.]js$':
-      ['ts-jest', { useESM: true }],
-    '^.+\\.tsx?$': ['ts-jest', {}],
+    '^.+\\.(t|j)sx?$': '@swc/jest',
   },
   transformIgnorePatterns: [
     'node_modules/(?!@t3-oss|uuid|openid-client|oauth4webapi|jose|sanitize-html|htmlparser2|entities|domhandler|domutils|domelementtype|dom-serializer)',
@@ -29,4 +27,4 @@ module.exports = {
   testEnvironmentOptions: {
     globalsCleanup: 'on',
   },
-};
+});
