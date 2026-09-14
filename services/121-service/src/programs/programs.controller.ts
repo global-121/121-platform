@@ -342,7 +342,9 @@ and adjust as needed.`,
     );
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramRegistrationAttributesREAD],
+  })
   @ApiOperation({ summary: 'Get attributes for given program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -383,23 +385,7 @@ and adjust as needed.`,
       new ParseBoolPipe({ optional: true }),
     )
     filterShowInRegistrationsTable: boolean,
-    @Req() req: ScopedUserRequest,
   ): Promise<Attribute[]> {
-    const userId = RequestHelper.getUserId(req);
-
-    if (userId) {
-      const hasPersonalReadAccess =
-        await this.programService.hasPersonalReadAccess(
-          Number(userId),
-          programId,
-        );
-      if (!hasPersonalReadAccess) {
-        // If a person does not have personal read permission we should
-        // not show registration data columns in the portal
-        return [];
-      }
-    }
-
     return await this.programRegistrationAttributesService.getAttributes({
       programId,
       includeProgramRegistrationAttributes,
