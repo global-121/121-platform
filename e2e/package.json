@@ -11,7 +11,7 @@
   "private": true,
   "scripts": {
     "prepare": "npm run install:dependencies-for-portal --prefix=../services/121-service/",
-    "setup": "npm install && npx playwright install",
+    "setup": "npm install && npx playwright install && npx skills experimental_install",
     "typecheck": "npx tsc --noEmit",
     "prelint": "npm run typecheck",
     "lint": "eslint \"**/*.{ts,js,mjs}\" --cache",
