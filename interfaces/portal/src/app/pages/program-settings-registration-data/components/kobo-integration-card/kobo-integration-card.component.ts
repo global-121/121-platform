@@ -212,6 +212,10 @@ export class KoboIntegrationCardComponent {
       return;
     }
 
+    if (this.fspConfigurations.isPending()) {
+      return;
+    }
+
     if (this.fspConfigurations.data()?.length === 0) {
       this.noFspConfiguredDialogVisible.set(true);
       return;
