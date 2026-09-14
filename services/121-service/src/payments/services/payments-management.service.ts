@@ -390,7 +390,7 @@ export class PaymentsManagementService {
     });
 
     // Check for duplicate registrations before allowing approval
-    await this.throwIfPaymentHasDuplicateRegistrations({
+    await this.paymentsHelperService.throwIfPaymentHasDuplicateRegistrations({
       programId,
       paymentId,
     });
@@ -608,7 +608,7 @@ export class PaymentsManagementService {
         {
           programId,
           paymentId,
-          status: TransactionStatusEnum.pendingApproval,
+          transactionStatus: [TransactionStatusEnum.pendingApproval],
         },
       );
 

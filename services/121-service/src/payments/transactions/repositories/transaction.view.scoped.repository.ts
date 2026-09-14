@@ -323,16 +323,16 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
   public async getByStatusOfIncludedRegistrations({
     programId,
     paymentId,
-    status,
+    transactionStatus,
   }: {
     programId: number;
     paymentId: number;
-    status: TransactionStatusEnum;
+    transactionStatus: TransactionStatusEnum[];
   }): Promise<TransactionViewEntity[]> {
     return this.getTransactionsByStatusAndRegistrationStatus({
       programId,
       paymentId,
-      status,
+      transactionStatus,
       registrationStatusCondition: Equal(RegistrationStatusEnum.included),
     });
   }
@@ -340,16 +340,16 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
   public async getByStatusOfNonIncludedRegistrations({
     programId,
     paymentId,
-    status,
+    transactionStatus,
   }: {
     programId: number;
     paymentId: number;
-    status: TransactionStatusEnum;
+    transactionStatus: TransactionStatusEnum[];
   }): Promise<TransactionViewEntity[]> {
     return this.getTransactionsByStatusAndRegistrationStatus({
       programId,
       paymentId,
-      status,
+      transactionStatus,
       registrationStatusCondition: Not(Equal(RegistrationStatusEnum.included)),
     });
   }
@@ -357,12 +357,12 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
   private async getTransactionsByStatusAndRegistrationStatus({
     programId,
     paymentId,
-    status,
+    transactionStatus,
     registrationStatusCondition,
   }: {
     programId: number;
     paymentId: number;
-    status: TransactionStatusEnum;
+    transactionStatus: TransactionStatusEnum[];
     registrationStatusCondition: FindOperator<RegistrationStatusEnum>;
   }): Promise<TransactionViewEntity[]> {
     return this.find({
@@ -371,7 +371,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
           id: Equal(paymentId),
           programId: Equal(programId),
         },
-        status: Equal(status),
+        status: In(transactionStatus),
         /* eslint-disable-next-line no-restricted-syntax -- we pass in Equal(...) or Not(Equal(...)) here */
         registration: {
           /* eslint-disable-next-line no-restricted-syntax -- we pass in Equal(...) or Not(Equal(...)) here */
