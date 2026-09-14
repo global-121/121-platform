@@ -130,10 +130,15 @@ export class RequiredAttributesComponent {
     const scope = {
       name: 'scope',
       label: 'Scope',
+<<<<<<< HEAD
       infoTooltipData: {
         message: $localize`Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration`,
         trackingName: InfoTooltipTrackingName.requiredAttributeScopeInfo,
       },
+=======
+      infoTooltip: () =>
+        $localize`Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration`,
+>>>>>>> 2cbcc0e26 (Addressing copilot comments)
     };
 
     return [
@@ -185,13 +190,17 @@ export class RequiredAttributesComponent {
     if (this.programFspNames().length === 1) {
       return $localize`Hidden`;
     } else {
-      return $localize`Select Many`;
+      return $localize`Select One`;
     }
   }
 
-  getTranslatedRecommendedAttributeType(attribute: {
-    type: RegistrationAttributeTypes;
-    name: string;
+  getTranslatedRecommendedAttributeType({
+    attribute,
+  }: {
+    attribute: {
+      type: RegistrationAttributeTypes;
+      name: string;
+    };
   }) {
     if (attribute.name === 'fsp') {
       return this.getRecommendedFspAttributeType();
@@ -204,10 +213,10 @@ export class RequiredAttributesComponent {
     switch (attribute.type) {
       case RegistrationAttributeTypes.dropdown:
         return $localize`Select One`;
-      case RegistrationAttributeTypes.tel:
       case RegistrationAttributeTypes.numeric:
       case RegistrationAttributeTypes.numericNullable:
         return $localize`Number`;
+      case RegistrationAttributeTypes.tel:
       case RegistrationAttributeTypes.text:
         return $localize`Text`;
       case RegistrationAttributeTypes.date:

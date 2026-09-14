@@ -30,13 +30,22 @@
         {{ getTranslatedRecommendedAttributeType(attribute) }}
 
         @if (attribute.name === 'fsp') {
-          <p
-            i18n
-            class="text-grey-700 mbs-2 font-normal"
-          >
-            Ask this in the form. Answer options must match these values
-            exactly.
-          </p>
+          @if (programFspNames().length === 1) {
+            <p
+              i18n
+              class="text-grey-700 mbs-2 font-normal"
+            >
+              Make this a hidden field. Pre-fill with the answer value.
+            </p>
+          } @else {
+            <p
+              i18n
+              class="text-grey-700 mbs-2 font-normal"
+            >
+              Ask this in the form. Answer options must match these values
+              exactly.
+            </p>
+          }
         }
       </td>
 

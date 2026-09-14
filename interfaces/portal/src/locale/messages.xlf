@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -82,9 +82,6 @@
       </trans-unit>
       <trans-unit id="1369610904910546430" datatype="html">
         <source>Who we share information with</source>
-      </trans-unit>
-      <trans-unit id="1376965978865731966" datatype="html">
-        <source>xxxx</source>
       </trans-unit>
       <trans-unit id="138735154290622738" datatype="html">
         <source>yourname@example.org</source>
@@ -896,6 +893,9 @@
       <trans-unit id="4384073389334234587" datatype="html">
         <source>KoboToolbox account security section</source>
       </trans-unit>
+      <trans-unit id="4386487803555878914" datatype="html">
+        <source>Make this a hidden field. Pre-fill with the answer value.</source>
+      </trans-unit>
       <trans-unit id="4388879716045736175" datatype="html">
         <source>Note</source>
       </trans-unit>
@@ -1270,6 +1270,9 @@
       </trans-unit>
       <trans-unit id="5820091469118357161" datatype="html">
         <source>Data column name</source>
+      </trans-unit>
+      <trans-unit id="5833271673900301518" datatype="html">
+        <source>Scope should be a &apos;hidden&apos; field in your form that has the &apos;default response&apos; set to the scope of the registration</source>
       </trans-unit>
       <trans-unit id="5906272961955453157" datatype="html">
         <source>Approved</source>
