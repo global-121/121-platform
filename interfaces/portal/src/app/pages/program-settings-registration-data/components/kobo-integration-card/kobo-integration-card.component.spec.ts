@@ -10,6 +10,7 @@ import {
 import { MessageService } from 'primeng/api';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { KoboIntegrationCardComponent } from '~/pages/program-settings-registration-data/components/kobo-integration-card/kobo-integration-card.component';
 import { ToastService } from '~/services/toast.service';
@@ -33,6 +34,16 @@ describe('KoboIntegrationCardComponent', () => {
             getKoboIntegration: (programId: Signal<number | string>) => () =>
               queryOptions({
                 queryKey: ['koboIntegration', programId()],
+                queryFn: () => Promise.resolve(null),
+              }),
+          },
+        },
+        {
+          provide: FspConfigurationApiService,
+          useValue: {
+            getFspConfiguration: (programId: Signal<number | string>) => () =>
+              queryOptions({
+                queryKey: ['fspConfiguration', programId()],
                 queryFn: () => Promise.resolve(null),
               }),
           },
