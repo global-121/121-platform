@@ -84,7 +84,9 @@
         <app-explainer
           [title]="dataColumnNamesExplainers.title"
           [items]="dataColumnNamesExplainers.items"
-          [trackingEventName]="'Data column names'"
+          [trackingEventName]="
+            ExplainerTrackingName.requiredDataColumnNamesExplainer
+          "
         />
       </div>
     </p-accordion-content>
