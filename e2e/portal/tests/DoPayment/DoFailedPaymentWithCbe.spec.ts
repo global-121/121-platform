@@ -7,7 +7,6 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-// registrationsCbe is a shared fixture, so it's copied here instead of mutated to avoid affecting other tests
 const registrationsCbeWithError = registrationsCbe.map((registration) => ({
   ...registration,
   fullName: 'error', // Full name is set to 'error' to create a failed payment
