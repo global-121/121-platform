@@ -4,6 +4,7 @@ import { CommercialBankEthiopiaAccountManagementService } from '@121-service/src
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
 import { CommercialBankEthiopiaApiService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.api.service';
 import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
@@ -17,6 +18,7 @@ describe('CommercialBankEthiopiaAccountManagementService', () => {
   let commercialBankEthiopiaAccountEnquiriesScopedRepo: jest.Mocked<
     ScopedRepository<CommercialBankEthiopiaAccountEnquiriesEntity>
   >;
+  let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
 
   const mockCredentials = {
     username: 'test-user',
@@ -73,6 +75,12 @@ describe('CommercialBankEthiopiaAccountManagementService', () => {
           },
         },
         {
+          provide: ProgramFspConfigurationRepository,
+          useValue: {
+            isFspConfiguredForProgram: jest.fn(),
+          },
+        },
+        {
           provide: CommercialBankEthiopiaApiService,
           useValue: {
             getValidationStatus: jest.fn(),
@@ -120,12 +128,18 @@ describe('CommercialBankEthiopiaAccountManagementService', () => {
     ) as jest.Mocked<
       ScopedRepository<CommercialBankEthiopiaAccountEnquiriesEntity>
     >;
+    programFspConfigurationRepository = module.get(
+      ProgramFspConfigurationRepository,
+    );
 
     // Set up default mocks for getAllRegistrationData
     jest
       .spyOn(service, 'getAllRegistrationData')
       .mockResolvedValue(mockRegistrations);
 
+    programFspConfigurationRepository.isFspConfiguredForProgram.mockResolvedValue(
+      true,
+    );
     commercialBankEthiopiaService.getCommercialBankEthiopiaCredentialsOrThrow.mockResolvedValue(
       mockCredentials,
     );
@@ -133,6 +147,29 @@ describe('CommercialBankEthiopiaAccountManagementService', () => {
 
   describe('retrieveAndUpsertAccountEnquiriesForProgram', () => {
     const programId = 1;
+
+    it('should return 0 early if CBE is not fully configured for the program', async () => {
+      // Arrange
+      programFspConfigurationRepository.isFspConfiguredForProgram.mockResolvedValue(
+        false,
+      );
+
+      // Act
+      const result =
+        await service.retrieveAndUpsertAccountEnquiriesForProgram(programId);
+
+      // Assert
+      expect(result).toBe(0);
+      expect(
+        commercialBankEthiopiaService.getCommercialBankEthiopiaCredentialsOrThrow,
+      ).not.toHaveBeenCalled();
+      expect(
+        commercialBankEthiopiaApiService.getValidationStatus,
+      ).not.toHaveBeenCalled();
+      expect(
+        commercialBankEthiopiaAccountEnquiriesScopedRepo.save,
+      ).not.toHaveBeenCalled();
+    });
 
     it('should successfully retrieve and upsert account enquiries for all registrations (happy flow)', async () => {
       // Arrange

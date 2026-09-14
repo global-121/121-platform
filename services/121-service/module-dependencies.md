@@ -15,9 +15,11 @@ graph LR
   AlFouadReconciliationModule-->TransactionEventsModule
   AlFouadReconciliationModule-->TransactionsModule
   CommercialBankEthiopiaAccountManagementModule-->CommercialBankEthiopiaModule
+  CommercialBankEthiopiaAccountManagementModule-->ProgramFspConfigurationsModule
   CommercialBankEthiopiaAccountManagementModule-->ProgramModule
   CommercialBankEthiopiaAccountManagementModule-->RegistrationsModule
   CooperativeBankOfOromiaAccountManagementModule-->CooperativeBankOfOromiaModule
+  CooperativeBankOfOromiaAccountManagementModule-->ProgramFspConfigurationsModule
   CooperativeBankOfOromiaAccountManagementModule-->ProgramModule
   CooperativeBankOfOromiaAccountManagementModule-->RegistrationsModule
   CronjobModule-->AlFouadReconciliationModule

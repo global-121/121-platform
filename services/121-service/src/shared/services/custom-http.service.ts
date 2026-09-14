@@ -453,8 +453,18 @@ export class CustomHttpService {
         if (isUsernameProperty(key) && typeof value === 'string') {
           return maskValueKeepStart(value, 3);
         }
+        if (typeof value === 'string') {
+          return this.redactPasswordsInLoggedContent(value);
+        }
         return undefined;
       },
+    );
+  }
+
+  private redactPasswordsInLoggedContent(content: string): string {
+    return content.replace(
+      /(Password:\s*<code>)(.*?)(<\/code>)/gs,
+      '$1**REDACTED**$3',
     );
   }
 }

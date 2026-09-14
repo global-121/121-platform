@@ -9,6 +9,7 @@ import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/required-username-password.interface';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
@@ -31,6 +32,7 @@ export class CommercialBankEthiopiaAccountManagementService {
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
   public async retrieveAndUpsertAccountEnquiries(): Promise<number> {
@@ -62,6 +64,16 @@ export class CommercialBankEthiopiaAccountManagementService {
   public async retrieveAndUpsertAccountEnquiriesForProgram(
     programId: number,
   ): Promise<number> {
+    const isConfigured =
+      await this.programFspConfigurationRepository.isFspConfiguredForProgram({
+        programId,
+        fspName: Fsps.commercialBankEthiopia,
+      });
+
+    if (!isConfigured) {
+      return 0;
+    }
+
     const credentials =
       await this.commercialBankEthiopiaService.getCommercialBankEthiopiaCredentialsOrThrow(
         { programId },

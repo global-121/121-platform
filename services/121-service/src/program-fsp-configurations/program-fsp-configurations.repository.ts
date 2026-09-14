@@ -6,6 +6,7 @@ import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/sh
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspConfigurationProperty } from '@121-service/src/fsp-integrations/shared/interfaces/fsp-configuration-property.interface';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
 
 export class ProgramFspConfigurationRepository extends Repository<ProgramFspConfigurationEntity> {
@@ -34,6 +35,27 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
       },
       relations: { properties: true },
     });
+  }
+
+  public async isFspConfiguredForProgram({
+    programId,
+    fspName,
+  }: {
+    programId: number;
+    fspName: Fsps;
+  }): Promise<boolean> {
+    const configs = await this.getByProgramIdAndFspName({
+      programId,
+      fspName,
+    });
+
+    if (configs.length === 0) {
+      return false;
+    }
+
+    return configs.every(
+      (config) => config.state === FspConfigurationStates.configured,
+    );
   }
 
   public async getUsernamePasswordProperties({
