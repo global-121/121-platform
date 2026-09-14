@@ -217,6 +217,17 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
     }
   }
 
+  async validateProgramFspsAreShownInRequiredFieldsTable({
+    fsps,
+  }: {
+    fsps: string[];
+  }) {
+    const requiredFsps = this.page.getByTestId('required-fsps');
+    for (const fspName of fsps) {
+      await expect(requiredFsps).toContainText(fspName);
+    }
+  }
+
   async validateKoboRequiredFieldsTable({
     requiredDataColumnNames,
   }: {
@@ -234,13 +245,20 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
     await expect(async () => {
       const columnHeaders = await requiredFieldsTable.getTextArrayFromHeader();
       const dataColumnNames = await requiredFieldsTable.tableRows
-        .locator('td:nth-child(2)')
+        .locator('td:nth-child(3)')
         .allInnerTexts();
 
       const trimmedDataColumnNames = dataColumnNames.map((row) => row.trim());
 
-      expect(columnHeaders).toEqual(['Field', 'Data column name']);
-      expect(trimmedDataColumnNames).toEqual(requiredDataColumnNames);
+      expect(columnHeaders).toEqual([
+        'Field',
+        'Recommended type',
+        'Data column name',
+      ]);
+
+      const [_, ...columnsWithoutFsps] = trimmedDataColumnNames;
+
+      expect(columnsWithoutFsps).toEqual(requiredDataColumnNames);
     }).toPass({ timeout: 5_000 });
   }
 

@@ -26,7 +26,6 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
 });
 
 const allRequiredAttributesFromSeed = [
-  'fsp',
   'scope',
   'fullName',
   'phoneNumber',
@@ -37,6 +36,13 @@ const allRequiredAttributesFromSeed = [
   'addressCity',
 ];
 
+const allRequiredFspsFromSeed = [
+  Fsps.excel,
+  Fsps.intersolveVoucherWhatsapp,
+  Fsps.intersolveVisa,
+  Fsps.intersolveVoucherPaper,
+];
+
 test('Check if all required fields are shown prior to integration', async ({
   programSettingsRegistrationDataPage,
 }) => {
@@ -45,6 +51,11 @@ test('Check if all required fields are shown prior to integration', async ({
     await programSettingsRegistrationDataPage.validateKoboRequiredFieldsTable({
       requiredDataColumnNames: allRequiredAttributesFromSeed,
     });
+    await programSettingsRegistrationDataPage.validateProgramFspsAreShownInRequiredFieldsTable(
+      {
+        fsps: [...allRequiredFspsFromSeed],
+      },
+    );
   });
 });
 
@@ -119,12 +130,19 @@ test('Check if all required fields are updated when deleting a FSP', async ({
     await programSettingsRegistrationDataPage.clickRegistrationDataSection();
     await programSettingsRegistrationDataPage.validateKoboRequiredFieldsTable({
       requiredDataColumnNames: [
-        'fsp',
         'scope',
         'fullName',
         'phoneNumber',
         'whatsappPhoneNumber',
       ],
     });
+
+    await programSettingsRegistrationDataPage.validateProgramFspsAreShownInRequiredFieldsTable(
+      {
+        fsps: allRequiredFspsFromSeed.filter(
+          (fsp) => fsp !== Fsps.intersolveVisa,
+        ),
+      },
+    );
   });
 });
