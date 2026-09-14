@@ -90,6 +90,12 @@ export enum TrackingAction {
   toggleProgramValidation = 'toggle: Use Program Validation',
 }
 
+export enum ExplainerTrackingName {
+  koboToolboxApiKey = 'Explainer: KoboToolbox API key',
+  koboToolboxFormUrl = 'Explainer: KoboToolbox form URL',
+  requiredDataColumnNamesExplainer = 'Explainer: Required Data Column Names',
+}
+
 export enum InfoTooltipTrackingName {
   attributeEditInfoFullName = 'Edit Attributes: Name Info',
   attributeEditInfoInclusionScore = 'Edit Attributes: Inclusion Score Info',
