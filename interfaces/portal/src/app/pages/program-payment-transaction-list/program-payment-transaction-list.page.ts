@@ -160,6 +160,18 @@ export class ProgramPaymentTransactionListPageComponent {
         getCellChipData: (transaction) =>
           getChipDataByRegistrationStatus(transaction.registrationStatus),
       },
+      // {
+      //   field: 'duplicateStatus',
+      //   header: $localize`:@@registration-duplicates:Duplicates`,
+      //   type: QueryTableColumnType.MULTISELECT,
+      //   options: Object.values(DuplicateStatus).map((status) => ({
+      //     label: DUPLICATE_STATUS_LABELS[status],
+      //     value: status,
+      //   })),
+      //   displayAsChip: true,
+      //   getCellChipData: (transaction) =>
+      //     getChipDataByDuplicateStatus(transaction.duplicateStatus),
+      // },
       {
         field: 'status',
         header: $localize`Transaction status`,
