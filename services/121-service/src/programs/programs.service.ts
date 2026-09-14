@@ -485,17 +485,6 @@ export class ProgramService {
     return relations;
   }
 
-  public async hasPersonalReadAccess(
-    userId: number,
-    programId: number,
-  ): Promise<boolean> {
-    return await this.userService.canActivate(
-      [PermissionEnum.RegistrationPersonalREAD],
-      programId,
-      userId,
-    );
-  }
-
   public async getFundingWallet(programId: number) {
     // TODO: Refactor ensure this works with the new structure of FSP configuration properties
     const programFspConfigurations =

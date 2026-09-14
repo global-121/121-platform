@@ -39,6 +39,7 @@ export enum PermissionEnum {
   ProgramMetricsREAD = 'program:metrics.read',
 
   // Program Registration Attributes
+  ProgramRegistrationAttributesREAD = 'program:registration-attributes.read',
   ProgramRegistrationAttributesCREATE = 'program:registration-attributes.create',
   ProgramRegistrationAttributesUPDATE = 'program:registration-attributes.update',
   ProgramRegistrationAttributesDELETE = 'program:registration-attributes.delete',
