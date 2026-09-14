@@ -255,6 +255,9 @@
       <trans-unit id="2077783620698115246" datatype="html">
         <source>Your score is <x equiv-text="{{ score() }}" id="INTERPOLATION"/>.</source>
       </trans-unit>
+      <trans-unit id="2086846439240550891" datatype="html">
+        <source>Answer value:</source>
+      </trans-unit>
       <trans-unit id="2095982362430871638" datatype="html">
         <source>Select 1 or more fields</source>
       </trans-unit>

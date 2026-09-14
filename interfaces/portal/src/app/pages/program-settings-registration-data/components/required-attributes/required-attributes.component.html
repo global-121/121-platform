@@ -26,7 +26,7 @@
         </span>
       </td>
 
-      <td>
+      <td class="px-2">
         {{ getTranslatedRecommendedAttributeType({ attribute }) }}
 
         @if (attribute.name === 'fsp') {
@@ -54,14 +54,23 @@
           {{ attribute.name }}
           <app-copy-to-clipboard-button [copyThis]="attribute.name" />
 
-          @if (attribute.name === 'fsp' && programFspNames().length > 0) {
+          @if (attribute.name === 'fsp') {
             <div class="mbs-2 space-y-2 [&>ul]:space-y-2">
-              <div
-                i18n
-                class="text-grey-700 font-normal"
-              >
-                Answer values:
-              </div>
+              @if (programFspNames().length === 1) {
+                <div
+                  i18n
+                  class="text-grey-700 font-normal"
+                >
+                  Answer value:
+                </div>
+              } @else {
+                <div
+                  i18n
+                  class="text-grey-700 font-normal"
+                >
+                  Answer values:
+                </div>
+              }
               <ul data-testid="required-fsps">
                 @for (name of programFspNames(); track name) {
                   <li>
