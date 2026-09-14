@@ -29,11 +29,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
-import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
-import {
-  buildKoboFormUrl,
-  isKoboIntegrated,
-} from '~/domains/kobo/kobo.helpers';
+import { buildKoboFormUrl } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { KoboConfigurationDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-configuration-dialog/kobo-configuration-dialog.component';
 import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
@@ -66,6 +62,8 @@ import { ColorVariant } from '~/utils/color-variant.enum';
 })
 export class KoboIntegrationCardComponent {
   readonly programId = input.required<number | string>();
+  readonly fspConfigurationCount = input.required<number>();
+  readonly isKoboIntegrated = input.required<boolean>();
 
   readonly router = inject(Router);
 
@@ -73,12 +71,9 @@ export class KoboIntegrationCardComponent {
   private readonly authService = inject(AuthService);
   private readonly toastService = inject(ToastService);
 
-  private readonly fspConfigurationApiService = inject(
-    FspConfigurationApiService,
-  );
-
   readonly koboRefreshErrors = signal<KoboValidationError[]>([]);
   readonly noFspConfiguredDialogVisible = signal(false);
+
   readonly ColorVariant = ColorVariant;
 
   readonly koboIntegrationErrorDialog =
@@ -100,14 +95,6 @@ export class KoboIntegrationCardComponent {
     ...this.koboApiService.getKoboIntegration(this.programId)(),
     enabled: !!this.programId(),
   }));
-
-  readonly fspConfigurations = injectQuery(() => ({
-    ...this.fspConfigurationApiService.getFspConfigurations(this.programId)(),
-  }));
-
-  readonly isKoboIntegrated = computed<boolean>(() =>
-    isKoboIntegrated(this.koboIntegration),
-  );
 
   readonly titleColoredChipLabel = computed(() =>
     this.isKoboIntegrated() ? $localize`Linked` : undefined,
@@ -212,11 +199,7 @@ export class KoboIntegrationCardComponent {
       return;
     }
 
-    if (this.fspConfigurations.isPending()) {
-      return;
-    }
-
-    if (this.fspConfigurations.data()?.length === 0) {
+    if (this.fspConfigurationCount() === 0) {
       this.noFspConfiguredDialogVisible.set(true);
       return;
     }

@@ -110,7 +110,7 @@ export class RequiredAttributesComponent {
     // until we do not require it anymore for programs with only one FSP configured.
     const fspEntry = {
       name: 'fsp',
-      label: 'Fsp',
+      label: 'FSP',
     };
 
     // Scope is a field that is independent from the FSPs, so we hardcode it to the list of required attributes if the program has scope enabled.

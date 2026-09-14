@@ -30,6 +30,15 @@
         </div>
       </div>
 
+      @if (this.fspConfigurationCount() === 0) {
+        <div class="my-4">
+          <app-notification-banner
+            [color]="ColorVariant.Orange"
+            [content]="noFspConfigurationsBannerContent"
+          ></app-notification-banner>
+        </div>
+      }
+
       @if (!koboIntegration.isPending()) {
         <app-required-attributes
           [programId]="programId()"
@@ -52,7 +61,8 @@
 
     <app-kobo-integration-card
       [programId]="programId()"
-      class="inline-1/2"
+      [fspConfigurationCount]="fspConfigurationCount()"
+      [isKoboIntegrated]="isKoboIntegrated()"
     >
     </app-kobo-integration-card>
   </p-card>
