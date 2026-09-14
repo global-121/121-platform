@@ -41,9 +41,9 @@ describe('KoboIntegrationCardComponent', () => {
         {
           provide: FspConfigurationApiService,
           useValue: {
-            getFspConfiguration: (programId: Signal<number | string>) => () =>
+            getFspConfigurations: (programId: Signal<number | string>) => () =>
               queryOptions({
-                queryKey: ['fspConfiguration', programId()],
+                queryKey: ['fspConfigurations', programId()],
                 queryFn: () => Promise.resolve(null),
               }),
           },
