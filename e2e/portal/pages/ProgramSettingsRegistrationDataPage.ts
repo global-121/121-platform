@@ -256,7 +256,7 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
         'Data column name',
       ]);
 
-      const [_, ...columnsWithoutFsps] = trimmedDataColumnNames;
+      const [, ...columnsWithoutFsps] = trimmedDataColumnNames;
 
       expect(columnsWithoutFsps).toEqual(requiredDataColumnNames);
     }).toPass({ timeout: 5_000 });
