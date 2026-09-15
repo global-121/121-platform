@@ -64,11 +64,12 @@ export class ProgramSettingsRegistrationDataPageComponent {
     icon: 'warning',
   };
 
-  // Computed properties
-
-  readonly fspConfigurationCount = computed<number>(() => {
-    if (this.fspConfigurations.isPending()) {
-      return 0;
+  readonly fspConfigurationCount = computed<null | number>(() => {
+    if (
+      this.fspConfigurations.isPending() ||
+      this.fspConfigurations.isError()
+    ) {
+      return null;
     }
     return this.fspConfigurations.data()?.length ?? 0;
   });
