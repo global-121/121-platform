@@ -62,7 +62,7 @@ import { ColorVariant } from '~/utils/color-variant.enum';
 })
 export class KoboIntegrationCardComponent {
   readonly programId = input.required<number | string>();
-  readonly fspConfigurationCount = input.required<number>();
+  readonly fspConfigurationCount = input.required<null | number>();
   readonly isKoboIntegrated = input.required<boolean>();
 
   readonly router = inject(Router);
@@ -100,8 +100,6 @@ export class KoboIntegrationCardComponent {
     this.isKoboIntegrated() ? $localize`Linked` : undefined,
   );
 
-  // --------------- PERMISSION CHECKS
-
   readonly canUpdateKoboIntegration = computed(() =>
     this.authService.hasPermission({
       programId: this.programId(),
@@ -109,13 +107,10 @@ export class KoboIntegrationCardComponent {
     }),
   );
 
-  readonly canManageFspConfigurations = computed(() =>
-    this.authService.hasSomePermission({
+  readonly canSelectFsps = computed(() =>
+    this.authService.hasPermission({
       programId: this.programId(),
-      optionalPermissions: [
-        PermissionEnum.ProgramFspConfigCREATE,
-        PermissionEnum.ProgramFspConfigUPDATE,
-      ],
+      requiredPermission: PermissionEnum.ProgramUPDATE,
     }),
   );
 
@@ -199,7 +194,14 @@ export class KoboIntegrationCardComponent {
       return;
     }
 
-    if (this.fspConfigurationCount() === 0) {
+    const fspConfigurationCount = this.fspConfigurationCount();
+
+    // Do not act while the FSP configuration count is unknown (loading or failed).
+    if (fspConfigurationCount === null) {
+      return;
+    }
+
+    if (fspConfigurationCount === 0) {
       this.noFspConfiguredDialogVisible.set(true);
       return;
     }

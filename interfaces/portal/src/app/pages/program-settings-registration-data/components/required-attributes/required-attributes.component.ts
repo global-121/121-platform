@@ -132,6 +132,20 @@ export class RequiredAttributesComponent {
     this.isKoboIntegrated() ? undefined : 'integrated-fsps-accordion-panel',
   );
 
+  // ------ Translations and hints related to FSP fields in the registration form.
+
+  readonly fspTranslations = computed(() => ({
+    typeHint:
+      this.programFspNames().length === 1
+        ? $localize`Make this a hidden field. Pre-fill with the answer value.`
+        : $localize`Ask this in the form. The options automatic field must match the
+              answers values to the right exactly.`,
+    answerValue:
+      this.programFspNames().length === 1
+        ? $localize`Answer value`
+        : $localize`Answer values`,
+  }));
+
   readonly dataColumnNamesExplainers: {
     title: string;
     items: ExplainerItem[];

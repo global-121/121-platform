@@ -64,6 +64,8 @@ describe('KoboIntegrationCardComponent', () => {
 
     fixture = TestBed.createComponent(KoboIntegrationCardComponent);
     fixture.componentRef.setInput('programId', 1);
+    fixture.componentRef.setInput('fspConfigurationCount', 0);
+    fixture.componentRef.setInput('isKoboIntegrated', false);
     fixture.detectChanges();
     component = fixture.componentInstance;
   });
