@@ -148,9 +148,9 @@ describe('Do payment retry', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    // Waited for separately per expected end-status: a shared status list would let "waiting"
-    // count as complete for registrationSuccess too, while its transaction is still transitioning
-    // from waiting to success.
+// Wait separately for each expected end status: a shared status list would let "waiting"
+// count as complete for registrationSuccess too, while its transaction is still transitioning
+// from waiting to success.
     await Promise.all([
       waitForPaymentAndTransactionsToComplete({
         programId,
