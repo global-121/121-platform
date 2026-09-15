@@ -5,6 +5,7 @@ import {
   MTN_RECONCILIATION_QUEUE_LIMITER_DURATION_MS,
   MTN_RECONCILIATION_QUEUE_MAX_JOBS_PER_SECOND,
 } from '@121-service/src/fsp-integrations/reconciliation/mtn/mtn-reconciliation.config';
+import { BullRedisClientsService } from '@121-service/src/queues-registry/bull-redis-client.service';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
@@ -248,7 +249,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
   ],
-  providers: [QueuesRegistryService, AzureLogService],
-  exports: [QueuesRegistryService],
+  providers: [BullRedisClientsService, QueuesRegistryService, AzureLogService],
+  exports: [BullRedisClientsService, QueuesRegistryService],
 })
 export class QueuesRegistryModule {}
