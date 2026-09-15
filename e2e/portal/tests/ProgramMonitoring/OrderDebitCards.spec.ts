@@ -11,8 +11,8 @@ import {
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const orderDebitCardOrder = {
-  noOfCards: '100',
-  noOfCardsOrdered: '100', // Since the order is processed successfully, the number of cards processed should match the number of cards ordered
+  noOfCards: '10',
+  noOfCardsOrdered: '10', // Since the order is processed successfully, the number of cards processed should match the number of cards ordered
   addressPostalCode: '2593 HT',
   addressCity: 'Den Haag',
   addressStreet: 'Anna van Saksenlaan',
