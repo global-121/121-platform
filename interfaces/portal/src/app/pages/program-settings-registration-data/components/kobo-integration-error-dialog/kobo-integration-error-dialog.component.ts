@@ -52,6 +52,8 @@ const koboErrorDisplayTypeMap: Record<
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KoboIntegrationErrorDialogComponent {
+  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
+
   readonly errors = input<KoboValidationError[]>([]);
   readonly dialogVisible = model(false);
   readonly tryAgain = output();
