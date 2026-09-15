@@ -647,13 +647,17 @@ describe('IntersolveVisaService', () => {
     const brandCode = 'BRAND';
     const coverLetterCode = 'COVER_LETTER';
 
-    beforeEach(() => {
+    // Builds a customer with a single child wallet to replace, and mocks the repository to return it.
+    const mockCustomerWithChildWalletToReplace = (
+      overrides: Partial<IntersolveVisaChildWalletEntity> = {},
+    ): void => {
       const childWalletToReplace = new IntersolveVisaChildWalletEntity();
       childWalletToReplace.id = 10;
       childWalletToReplace.tokenCode = 'old-token';
       childWalletToReplace.isTokenBlocked = false;
       childWalletToReplace.isDebitCardCreated = true;
       childWalletToReplace.created = new Date('2023-01-01T00:00:00Z');
+      Object.assign(childWalletToReplace, overrides);
 
       const parentWalletWithCard = new IntersolveVisaParentWalletEntity();
       parentWalletWithCard.tokenCode = 'parent-token';
@@ -666,6 +670,10 @@ describe('IntersolveVisaService', () => {
       jest
         .spyOn(customerRepo, 'findOneWithWalletsByRegistrationId')
         .mockResolvedValue(customerWithCard);
+    };
+
+    beforeEach(() => {
+      mockCustomerWithChildWalletToReplace();
       (childWalletRepo.save as jest.Mock).mockImplementation(
         async (wallet: IntersolveVisaChildWalletEntity) => ({
           ...wallet,
@@ -674,6 +682,11 @@ describe('IntersolveVisaService', () => {
       );
       jest.spyOn(apiService, 'substituteToken').mockResolvedValue(undefined);
       jest.spyOn(childWalletRepo, 'updateUnscoped').mockImplementation();
+      jest.spyOn(apiService, 'issueToken').mockResolvedValue({
+        code: 'new-token',
+        status: IntersolveVisaTokenStatus.Active,
+        blocked: false,
+      });
     });
 
     it('should not create a physical card when replacing an on-site linked card, because the physical card already exists', async () => {
@@ -698,11 +711,59 @@ describe('IntersolveVisaService', () => {
     });
 
     it('should create a physical card when replacing a by-mail card, because no physical card exists yet', async () => {
-      // Arrange: a by-mail replacement has no physical card token, so a new token is issued
-      jest.spyOn(apiService, 'issueToken').mockResolvedValue({
-        code: 'new-token',
-        status: IntersolveVisaTokenStatus.Active,
-        blocked: false,
+      // Act
+      await service.replaceCard({
+        registrationId,
+        contactInformation,
+        brandCode,
+        coverLetterCode,
+      });
+
+      // Assert
+      expect(apiService.createPhysicalCard).toHaveBeenCalled();
+    });
+
+    it('should close the old debit card at Intersolve', async () => {
+      // Act
+      await service.replaceCard({
+        registrationId,
+        contactInformation,
+        brandCode,
+        coverLetterCode,
+      });
+
+      // Assert
+      expect(apiService.closeCard).toHaveBeenCalledWith({
+        tokenCode: 'old-token',
+      });
+      expect(childWalletRepo.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tokenCode: 'old-token',
+          cardStatus: IntersolveVisaCardStatus.CardClosed,
+        }),
+      );
+    });
+
+    it('should not close a card at Intersolve for a wallet that never had a debit card', async () => {
+      // Arrange: the wallet being replaced has no card created for it
+      mockCustomerWithChildWalletToReplace({ isDebitCardCreated: false });
+
+      // Act
+      await service.replaceCard({
+        registrationId,
+        contactInformation,
+        brandCode,
+        coverLetterCode,
+      });
+
+      // Assert
+      expect(apiService.closeCard).not.toHaveBeenCalled();
+    });
+
+    it('should not close a card at Intersolve that is already closed', async () => {
+      // Arrange: the wallet being replaced already has a closed card
+      mockCustomerWithChildWalletToReplace({
+        cardStatus: IntersolveVisaCardStatus.CardClosed,
       });
 
       // Act
@@ -714,7 +775,7 @@ describe('IntersolveVisaService', () => {
       });
 
       // Assert
-      expect(apiService.createPhysicalCard).toHaveBeenCalled();
+      expect(apiService.closeCard).not.toHaveBeenCalled();
     });
   });
 
