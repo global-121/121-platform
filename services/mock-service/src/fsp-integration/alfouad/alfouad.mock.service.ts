@@ -30,11 +30,11 @@ enum AlfouadMockPhoneNumber {
 }
 
 enum AlfouadMockReferenceNumber {
-  stateNotFound = '00000000-0000-0000-0000-000000000404',
-  statePendingApproval = '00000000-0000-0000-0000-000000000001',
-  stateApproved = '00000000-0000-0000-0000-000000000002',
-  stateHold = '00000000-0000-0000-0000-000000000004',
-  stateCanceled = '00000000-0000-0000-0000-000000000005',
+  stateNotFound = '00000000-0000-4000-a000-000000000404',
+  statePendingApproval = '00000000-0000-4000-a000-000000000001',
+  stateApproved = '00000000-0000-4000-a000-000000000002',
+  stateHold = '00000000-0000-4000-a000-000000000004',
+  stateCanceled = '00000000-0000-4000-a000-000000000005',
 }
 
 const stateByReferenceNumber = new Map<string, AlfouadMockTransactionState>([
