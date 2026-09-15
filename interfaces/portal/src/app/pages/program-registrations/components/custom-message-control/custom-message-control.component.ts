@@ -60,6 +60,7 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
   placeholders = injectQuery(
     this.messagingService.getMessagePlaceholders(this.programId),
   );
+
   readonly messagePlaceholders = computed<{ label: string }[]>(() => {
     if (this.placeholders.isSuccess()) {
       return this.placeholders.data();

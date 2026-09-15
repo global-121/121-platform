@@ -45,12 +45,6 @@ export const DEFAULT_ATTRIBUTE_EDIT_TOOLTIP_DATA: Partial<
   },
 };
 
-export const DEFAULT_ATTRIBUTE_EDIT_INFO_TRACKING_NAMES: Partial<
-  Record<DefaultRegistrationDataAttributeNames, InfoTooltipTrackingName>
-> = {
-  phoneNumber: InfoTooltipTrackingName.attributeEditInfoPhoneNumber,
-};
-
 export const ATTRIBUTE_EDIT_INFO_TRACKING_NAMES: Partial<
   Record<GenericRegistrationAttributes, InfoTooltipTrackingName>
 > = {
