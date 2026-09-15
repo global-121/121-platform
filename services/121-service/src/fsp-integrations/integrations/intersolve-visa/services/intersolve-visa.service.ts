@@ -501,8 +501,9 @@ export class IntersolveVisaService {
   /**
    * This function replaces a card for a given registration ID.
    * - The function first creates a new (child) token at Intersolve
+   * - Closes the old debit card at Intersolve, so it can no longer be used for payments,
+   * - Substitutes the old token with the new one,
    * - Creates a new child wallet entity,
-   * - Substitutes the old token with the new one.
    * - Finally, it creates a new card and updates the child wallet status.
    *
    * @param {ReplaceCardParams} input - The parameters for the card replacement.
@@ -551,6 +552,18 @@ export class IntersolveVisaService {
       brandCode: input.brandCode,
       holderId: intersolveVisaCustomer.holderId,
     });
+
+    // Close the old debit card at Intersolve so it can no longer be used for payments, per the Card Lost/Stolen flow (Intersolve integration manual section 1.5)
+    // Skip if already closed, so this call stays idempotent (e.g. on a retry of this function)
+    if (
+      childWalletToReplace.isDebitCardCreated &&
+      childWalletToReplace.cardStatus !== IntersolveVisaCardStatus.CardClosed
+    ) {
+      await this.intersolveVisaApiService.closeCard({
+        tokenCode: childWalletToReplace.tokenCode,
+      });
+      childWalletToReplace.cardStatus = IntersolveVisaCardStatus.CardClosed;
+    }
 
     // Substitute the old token with the new token at Intersolve
     await this.intersolveVisaApiService.substituteToken({
