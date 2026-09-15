@@ -22,11 +22,11 @@ export enum FspConfigurationProperties {
   // Cooperative Bank of Oromia
   debitAccountNumber = 'debitAccountNumber',
   // Al Fouad
-  accountAlfouad = 'accountAlfouad',
-  branchIdAlfouad = 'branchIdAlfouad',
-  usernameAlfouad = 'usernameAlfouad',
-  passwordAlfouad = 'passwordAlfouad',
-  publicKeyAlfouad = 'publicKeyAlfouad',
-  senderFullNameAlfouad = 'senderFullNameAlfouad',
-  senderPhoneNumberAlfouad = 'senderPhoneNumberAlfouad',
+  accountAlFouad = 'accountAlFouad',
+  branchIdAlFouad = 'branchIdAlFouad',
+  usernameAlFouad = 'usernameAlFouad',
+  passwordAlFouad = 'passwordAlFouad',
+  publicKeyAlFouad = 'publicKeyAlFouad',
+  senderFullNameAlFouad = 'senderFullNameAlFouad',
+  senderPhoneNumberAlFouad = 'senderPhoneNumberAlFouad',
 }

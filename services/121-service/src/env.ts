@@ -30,21 +30,21 @@ export const airtelEnvVariablesSchema = {
   AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY: z.string().optional(),
 };
 
-export const alfouadEnvVariablesSchema = {
-  ALFOUAD_MODE: FspModeSchema,
-  CRON_ALFOUAD_RECONCILIATION: z.stringbool().default(false),
-  ALFOUAD_API_URL: z
+export const alFouadEnvVariablesSchema = {
+  AL_FOUAD_MODE: FspModeSchema,
+  CRON_AL_FOUAD_RECONCILIATION: z.stringbool().default(false),
+  AL_FOUAD_API_URL: z
     .url()
     .pipe(z.transform((url) => withoutTrailingSlash(url)))
     .optional(),
 };
 
-const alfouadOptionalEnvVariablesSchema = {
-  ALFOUAD_ACCOUNT: z.string().optional(),
-  ALFOUAD_BRANCH_ID: z.string().optional(),
-  ALFOUAD_USERNAME: z.string().optional(),
-  ALFOUAD_PASSWORD: z.string().optional(),
-  ALFOUAD_PUBLIC_KEY: z.string().optional(),
+const alFouadOptionalEnvVariablesSchema = {
+  AL_FOUAD_ACCOUNT: z.string().optional(),
+  AL_FOUAD_BRANCH_ID: z.string().optional(),
+  AL_FOUAD_USERNAME: z.string().optional(),
+  AL_FOUAD_PASSWORD: z.string().optional(),
+  AL_FOUAD_PUBLIC_KEY: z.string().optional(),
 };
 
 export const commercialBankEthiopiaEnvVariablesSchema = {
@@ -207,8 +207,8 @@ export const safaricomEnvVariablesSchema = {
 
 const fspEnvVariablesSchema = {
   ...airtelEnvVariablesSchema,
-  ...alfouadEnvVariablesSchema,
-  ...alfouadOptionalEnvVariablesSchema,
+  ...alFouadEnvVariablesSchema,
+  ...alFouadOptionalEnvVariablesSchema,
   ...commercialBankEthiopiaEnvVariablesSchema,
   ...cooperativeBankOfOromiaEnvVariablesSchema,
   // No environment variables for Excel FSP.

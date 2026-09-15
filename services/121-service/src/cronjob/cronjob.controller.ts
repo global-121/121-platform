@@ -173,9 +173,9 @@ export class CronjobController {
     status: HttpStatus.OK,
     description: 'Number of AlFouad transactions reconciled',
   })
-  @Patch('fsps/alfouad')
-  public async cronDoAlfouadReconciliation(): Promise<number | undefined> {
-    return await this.cronjobExecutionService.cronDoAlfouadReconciliation();
+  @Patch('fsps/al-fouad')
+  public async cronDoAlFouadReconciliation(): Promise<number | undefined> {
+    return await this.cronjobExecutionService.cronDoAlFouadReconciliation();
   }
 
   @AuthenticatedUser({ isAdmin: true })

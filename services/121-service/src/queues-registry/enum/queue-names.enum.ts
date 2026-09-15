@@ -10,7 +10,7 @@ export enum QueueNames {
   transactionJobsCooperativeBankOfOromia = 'cooperative-bank-of-oromia-transaction-jobs',
   transactionJobsExcel = 'excel-transaction-jobs',
   transactionJobsMtn = 'mtn-transaction-jobs',
-  transactionJobsAlfouad = 'alfouad-transaction-jobs',
+  transactionJobsAlFouad = 'al-fouad-transaction-jobs',
 
   // payment callback jobs
   paymentCallbackSafaricomTransfer = 'safaricomTransferCallback',
