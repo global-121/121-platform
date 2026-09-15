@@ -25,7 +25,10 @@ import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-conf
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
-import { InfoTooltipTrackingName } from '~/services/tracking.service';
+import {
+  ExplainerTrackingName,
+  InfoTooltipTrackingName,
+} from '~/services/tracking.service';
 @Component({
   selector: 'app-required-attributes',
   imports: [
@@ -62,6 +65,7 @@ export class RequiredAttributesComponent {
   readonly program = injectQuery(
     this.programApiService.getProgram(this.programId),
   );
+  readonly ExplainerTrackingName = ExplainerTrackingName;
   readonly enableScope = computed(() => this.program.data()?.enableScope);
 
   readonly programAttributes = injectQuery(

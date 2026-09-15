@@ -33,6 +33,7 @@ import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { KoboImportExistingRegistrationsDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registration-dialog.component';
 import { KoboIntegrationErrorDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-integration-error-dialog/kobo-integration-error-dialog.component';
 import { ToastService } from '~/services/toast.service';
+import { ExplainerTrackingName } from '~/services/tracking.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 @Component({
   selector: 'app-kobo-configuration-dialog',
@@ -80,6 +81,8 @@ export class KoboConfigurationDialogComponent {
     viewChild.required<KoboImportExistingRegistrationsDialogComponent>(
       'koboImportExistingDialog',
     );
+
+  readonly ExplainerTrackingName = ExplainerTrackingName;
 
   readonly koboConfigurationFormGroup = new FormGroup({
     fullKoboFormUrl: new FormControl('', {
