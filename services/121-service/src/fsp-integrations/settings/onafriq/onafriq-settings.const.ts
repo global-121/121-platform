@@ -37,5 +37,9 @@ export const ONAFRIQ_SETTINGS: FspSettingsDto = {
       name: FspConfigurationProperties.uniqueKeyOnafriq,
       isRequired: true,
     },
+    {
+      name: FspConfigurationProperties.currencyCodeOnafriq,
+      isRequired: true,
+    },
   ],
 };

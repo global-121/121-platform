@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { setTimeout } from 'node:timers/promises';
 import { lastValueFrom } from 'rxjs';
 import { v4 as uuid } from 'uuid';
@@ -24,6 +24,13 @@ export class OnafriqMockService {
   public async callService(
     callServiceDto: OnafriqCallServicePayload,
   ): Promise<OnafriqCallServiceResponseBodyDto> {
+    if (!callServiceDto.requestBody[0].amount.currencyCode) {
+      throw new HttpException(
+        { message: 'amount.currencyCode is required.' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     let mockScenario: MockScenario = MockScenario.success;
     if (callServiceDto.requestBody[0].recipient.msisdn === '24300000000') {
       mockScenario = MockScenario.errorOnRequestGeneric;

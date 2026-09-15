@@ -3,10 +3,15 @@ import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/inte
 import { OnafriqReconciliationReport } from '@121-service/src/fsp-integrations/reconciliation/onafriq/interfaces/onafriq-reconciliation-report.interface';
 
 export class OnafriqReconciliationMapper {
-  public static mapTransactionToReportItem(
-    onafriqTransaction: OnafriqTransactionEntity,
-    corporateCode: string,
-  ): OnafriqReconciliationReport {
+  public static mapTransactionToReportItem({
+    onafriqTransaction,
+    corporateCode,
+    currencyCode,
+  }: {
+    onafriqTransaction: OnafriqTransactionEntity;
+    corporateCode: string;
+    currencyCode: string;
+  }): OnafriqReconciliationReport {
     return {
       Datestamp: onafriqTransaction.transaction.created.toISOString(),
       'Transaction ID': onafriqTransaction.thirdPartyTransId, // same as 'Third_PartyID'
@@ -17,7 +22,7 @@ export class OnafriqReconciliationMapper {
       From_MSISDN: env.ONAFRIQ_SENDER_MSISDN,
       To_MSISDN: onafriqTransaction.recipientMsisdn,
       Send_Currency: null, // We use 'Receive' type, so this is  N.A.
-      Receive_Currency: env.ONAFRIQ_CURRENCY_CODE,
+      Receive_Currency: currencyCode,
       Send_amount: null, // We use 'Receive' type, so this is  N.A.
       Receive_amount: onafriqTransaction.transaction.transferValue,
       Fee_Amount: null, // We use 'Receive' type, so this is  N.A.
