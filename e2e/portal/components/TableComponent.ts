@@ -76,6 +76,7 @@ class TableComponent {
   }
 
   async selectAll() {
+    await this.waitForLoaded();
     await expect(this.selectAllRowsCheckbox).not.toBeChecked();
     await this.selectAllRowsCheckbox.click();
   }
@@ -115,12 +116,16 @@ class TableComponent {
   }
 
   async waitForLoaded(rowsCount?: number) {
-    await expect(this.tableLoading).toHaveCount(0);
-    await expect(this.tableEmpty).not.toBeVisible();
+    // Re-check all states together so a table that briefly hasn't mounted yet
+    // (e.g. right after navigation) doesn't pass loading/empty checks before rows exist.
+    await expect(async () => {
+      await expect(this.tableLoading).toHaveCount(0);
+      await expect(this.tableEmpty).not.toBeVisible();
 
-    if (rowsCount) {
-      await expect(this.tableRows).toHaveCount(rowsCount);
-    }
+      if (rowsCount) {
+        await expect(this.tableRows).toHaveCount(rowsCount);
+      }
+    }).toPass();
   }
 
   async getTextArrayFromColumn(column: number) {
@@ -273,8 +278,21 @@ class TableComponent {
 
     await this.textboxField.click();
     await this.textboxField.fill(filterText);
-    await this.applyFiltersButton.click();
+    await this.applyColumnFilter();
     await this.waitForLoaded();
+  }
+
+  private async applyColumnFilter(): Promise<void> {
+    await this.applyFiltersButton.click();
+    await this.waitForColumnFilterOverlayToClose();
+  }
+
+  //  waiting for the popover element to be removed from the DOM
+  private async waitForColumnFilterOverlayToClose(): Promise<void> {
+    await this.page
+      .locator('.p-datatable-filter-overlay')
+      .first()
+      .waitFor({ state: 'detached' });
   }
 
   async filterColumnByNumber({
@@ -297,7 +315,7 @@ class TableComponent {
       await this.page.getByRole('option', { name: filterMode }).click();
     }
     await this.spinbuttonField.fill(String(filterNumber));
-    await this.applyFiltersButton.click();
+    await this.applyColumnFilter();
   }
 
   async filterColumnByDropDownSelection({
@@ -371,7 +389,7 @@ class TableComponent {
     await this.page.locator('input[type="text"]').click();
     await this.page.locator(`[data-date="${day}"]`).click();
 
-    await this.applyFiltersButton.click();
+    await this.applyColumnFilter();
   }
 
   async validateSortingOfColumns(
@@ -544,6 +562,7 @@ class TableComponent {
     const clearFilterButton = columnHeader.locator('.pi-filter-slash');
 
     await clearFilterButton.click();
+    await this.waitForLoaded();
   }
 
   async validateMessageActivityByTypeAndText({
