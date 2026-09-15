@@ -591,4 +591,11 @@ export class PageLayoutPaymentComponent {
       await this.payments.refetch();
     },
   }));
+
+  tooltips = {
+    paymentTotalAmountCalculation: {
+      message: $localize`The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.`,
+      trackingName: InfoTooltipTrackingName.paymentTotalAmountCalculation,
+    },
+  };
 }

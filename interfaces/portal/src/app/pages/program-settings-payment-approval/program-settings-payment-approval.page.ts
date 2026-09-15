@@ -208,6 +208,22 @@ export class ProgramSettingsPaymentApprovalPageComponent implements ComponentCan
     title: $localize`No eligible users found.`,
   };
 
+  tooltipData = {
+    paymentApprovalAdditionalStepThreshold: {
+      message: $localize`These users would have to approve payment if the total amount is above the decided value.`,
+      trackingName:
+        InfoTooltipTrackingName.paymentApprovalAdditionalStepThreshold,
+    },
+    paymentApprovalFirstStepRequired: {
+      message: $localize`First approval step must be set for all payments regardless of the total payment amount.`,
+      trackingName: InfoTooltipTrackingName.paymentApprovalFirstStepRequired,
+    },
+    paymentApprovalThresholdColumn: {
+      message: $localize`This user or one of these users will need to approve the payment if the total amount is above the decided value.`,
+      trackingName: InfoTooltipTrackingName.paymentApprovalThresholdColumn,
+    },
+  };
+
   constructor() {
     effect(() => {
       const isEditing = this.isEditing();

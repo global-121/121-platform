@@ -29,8 +29,7 @@ import {
   ATTRIBUTE_EDIT_INFO,
   ATTRIBUTE_EDIT_INFO_TRACKING_NAMES,
   ATTRIBUTE_LABELS,
-  DEFAULT_ATTRIBUTE_EDIT_INFO,
-  DEFAULT_ATTRIBUTE_EDIT_INFO_TRACKING_NAMES,
+  DEFAULT_ATTRIBUTE_EDIT_TOOLTIP_DATA,
   isGenericAttribute,
 } from '~/domains/program/program-attribute.helpers';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -254,12 +253,8 @@ export class RegistrationAttributeService {
         isRequired: isRequired ?? false,
         name,
         label,
-        editInfo:
-          DEFAULT_ATTRIBUTE_EDIT_INFO[
-            name as DefaultRegistrationDataAttributeNames
-          ],
-        editInfoTrackingName:
-          DEFAULT_ATTRIBUTE_EDIT_INFO_TRACKING_NAMES[
+        infoTooltipData:
+          DEFAULT_ATTRIBUTE_EDIT_TOOLTIP_DATA[
             name as DefaultRegistrationDataAttributeNames
           ],
         pattern,

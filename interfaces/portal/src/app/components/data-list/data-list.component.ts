@@ -23,13 +23,22 @@ import { getRandomInt } from '@121-service/src/utils/random-value.helper';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { ImageDialogTriggerComponent } from '~/components/image/image-dialog-trigger/image-dialog-trigger.component';
-import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
+import {
+  InfoTooltipComponent,
+  InfoTooltipData,
+} from '~/components/info-tooltip/info-tooltip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
-import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
 
-export type DataListItem = {
+export type DataListItem = (
+  | {
+      infoTooltipData: InfoTooltipData;
+    }
+  | {
+      infoTooltipData?: undefined;
+    }
+) & {
   label: string | UILanguageTranslation;
   loading?: boolean;
   chipLabel?: string;
@@ -42,16 +51,6 @@ export type DataListItem = {
   };
   dataTestId?: string;
 } & (
-  | {
-      tooltip: string;
-      tooltipTrackingName: InfoTooltipTrackingName;
-    }
-  | {
-      tooltip?: undefined;
-      tooltipTrackingName?: never;
-    }
-) &
-  (
     | {
         type: 'boolean';
         value: boolean;

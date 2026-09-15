@@ -71,8 +71,14 @@
           <app-form-field-wrapper
             [dataTestId]="'edit-personal-information-' + attribute.name"
             [label]="attribute.label"
-            [labelTooltip]="attribute.editInfo"
-            [labelTooltipTrackingName]="attribute.editInfoTrackingName!"
+            [infoTooltipData]="
+              attribute.editInfo && attribute.editInfoTrackingName
+                ? {
+                    message: attribute.editInfo,
+                    trackingName: attribute.editInfoTrackingName,
+                  }
+                : undefined
+            "
             [errorMessage]="formFieldErrors()()(attribute.name)"
             [isRequired]="attribute.isRequired"
           >

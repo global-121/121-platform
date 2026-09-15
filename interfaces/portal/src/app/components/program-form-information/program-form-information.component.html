@@ -44,10 +44,7 @@
     i18n-label
     [errorMessage]="formFieldErrors()('targetNrRegistrations')"
     [isRequired]="true"
-    [labelTooltip]="PROGRAM_FORM_TOOLTIPS.targetRegistrations"
-    [labelTooltipTrackingName]="
-      InfoTooltipTrackingName.programTargetRegistrations
-    "
+    [infoTooltipData]="PROGRAM_FORM_TOOLTIPS_CONFIG.targetRegistrations"
   >
     <input
       pInputText
@@ -70,8 +67,7 @@
       >Use "validation" in this program</label
     >
     <app-info-tooltip
-      [message]="PROGRAM_FORM_TOOLTIPS.validationProcess"
-      [trackingName]="InfoTooltipTrackingName.programValidationProcess"
+      [infoTooltipData]="PROGRAM_FORM_TOOLTIPS_CONFIG.validationProcess"
     />
   </div>
   <div class="mbs-4 flex justify-items-center">
@@ -87,8 +83,7 @@
       >Use "scope" in this program</label
     >
     <app-info-tooltip
-      [message]="PROGRAM_FORM_TOOLTIPS.enableScope"
-      [trackingName]="InfoTooltipTrackingName.programEnableScope"
+      [infoTooltipData]="PROGRAM_FORM_TOOLTIPS_CONFIG.enableScope"
     />
   </div>
 </ng-container>

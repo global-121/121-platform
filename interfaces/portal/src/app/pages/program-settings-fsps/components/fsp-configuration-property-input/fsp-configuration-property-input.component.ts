@@ -72,11 +72,16 @@ export class FspConfigurationPropertyInputComponent {
     return FSP_CONFIGURATION_PROPERTY_LABELS[propertyName] + propertyIsOptional;
   });
 
-  readonly labelTooltip = computed(() =>
-    this.fspFormField().isSensitive
-      ? $localize`This is a sensitive property, therefore its value needs to be re-entered upon reconfiguration.`
-      : undefined,
-  );
+  readonly infoTooltipData = computed(() => {
+    if (this.fspFormField().isSensitive) {
+      return {
+        message: $localize`This is a sensitive property, therefore its value needs to be re-entered upon reconfiguration.`,
+        trackingName: InfoTooltipTrackingName.fspConfigurationSensitiveProperty,
+      };
+    }
+
+    return undefined;
+  });
 
   readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
 

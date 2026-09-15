@@ -33,13 +33,12 @@ import {
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import {
   mergeUILanguageForProgramLanguageAttributes,
-  PROGRAM_FORM_TOOLTIPS,
+  PROGRAM_FORM_TOOLTIPS_CONFIG,
 } from '~/domains/program/program.helper';
 import { AuthService } from '~/services/auth.service';
 import { RegistrationsTableColumnService } from '~/services/registrations-table-column.service';
 import { ToastService } from '~/services/toast.service';
 import {
-  InfoTooltipTrackingName,
   TrackingAction,
   TrackingCategory,
   TrackingEvent,
@@ -199,24 +198,21 @@ export class ProgramSettingsBasicInformationComponent {
         value: programData?.targetNrRegistrations,
         fullWidth: true,
         type: 'number',
-        tooltip: PROGRAM_FORM_TOOLTIPS.targetRegistrations,
-        tooltipTrackingName: InfoTooltipTrackingName.programTargetRegistrations,
+        infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.targetRegistrations,
       },
       {
         label: $localize`Enable validation`,
         value: programData?.validation ?? false,
         fullWidth: true,
         type: 'boolean',
-        tooltip: PROGRAM_FORM_TOOLTIPS.validationProcess,
-        tooltipTrackingName: InfoTooltipTrackingName.programValidationProcess,
+        infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.validationProcess,
       },
       {
         label: $localize`Enable scope`,
         value: programData?.enableScope ?? false,
         fullWidth: true,
         type: 'boolean',
-        tooltip: PROGRAM_FORM_TOOLTIPS.enableScope,
-        tooltipTrackingName: InfoTooltipTrackingName.programEnableScope,
+        infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.enableScope,
       },
     ];
 

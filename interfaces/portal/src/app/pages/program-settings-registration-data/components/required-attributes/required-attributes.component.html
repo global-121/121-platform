@@ -57,8 +57,7 @@
               {{ attribute.label }}
               @if (attribute.infoTooltip) {
                 <app-info-tooltip
-                  [message]="attribute.infoTooltip()"
-                  [trackingName]="attribute.infoTooltipTrackingName!"
+                  [infoTooltipData]="attribute.infoTooltipData()"
                 />
               }
             </td>

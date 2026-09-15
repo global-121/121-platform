@@ -18,6 +18,11 @@ import {
 
 const TRACK_EVENT_DELAY_MS = 1000;
 
+export interface InfoTooltipData {
+  message: string;
+  trackingName: InfoTooltipTrackingName;
+}
+
 @Component({
   selector: 'app-info-tooltip',
   imports: [TooltipModule],
@@ -26,8 +31,8 @@ const TRACK_EVENT_DELAY_MS = 1000;
 })
 export class InfoTooltipComponent {
   readonly rtlHelper = inject(RtlHelperService);
-  readonly message = input.required<string>();
-  readonly trackingName = input.required<InfoTooltipTrackingName>();
+  readonly infoTooltipData = input.required<InfoTooltipData>();
+
   private trackingService = inject(TrackingService);
   private trackEventTimeout: ReturnType<typeof setTimeout> | undefined;
 
@@ -55,7 +60,7 @@ export class InfoTooltipComponent {
     this.trackingService.trackEvent({
       category: TrackingCategory.additionalInformationViewed,
       action: TrackingAction.hoverInformationIcon,
-      name: this.trackingName(),
+      name: this.infoTooltipData().trackingName,
     });
   }
 

@@ -11,13 +11,12 @@
           <span class="me-0">*</span>
         }
         <span class="ms-0">{{ label() | translatableString }}</span>
-        @let tooltip = labelTooltip();
-        @if (tooltip) {
+        @let tooltipData = infoTooltipData();
+        @if (tooltipData) {
           <app-info-tooltip
-            [message]="tooltip.message"
-            [trackingName]="tooltip.trackingName"
+            [infoTooltipData]="tooltipData"
             class="ms-1"
-          ></app-info-tooltip>
+          />
         }
       </span>
     </strong>

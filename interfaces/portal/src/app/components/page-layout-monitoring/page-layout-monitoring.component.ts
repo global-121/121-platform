@@ -153,9 +153,7 @@ export class PageLayoutMonitoringComponent {
         value: programData?.fixedTransferValue,
         type: 'currency',
         currencyCode: programData?.currency,
-        tooltip: $localize`The base transfer value is multiplied by a set factor for each registration.\n\nFor example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.`,
-        tooltipTrackingName:
-          InfoTooltipTrackingName.monitoringBaseTransferValue,
+        infoTooltipData: this.tooltipsData.monitoringBaseTransferValue,
       },
     ];
 
@@ -164,4 +162,19 @@ export class PageLayoutMonitoringComponent {
       loading: this.program.isPending(),
     }));
   });
+
+  tooltipsData = {
+    monitoringTotalRegistrations: {
+      message: $localize`Total registrations excluding rejected and deleted registrations.`,
+      trackingName: InfoTooltipTrackingName.monitoringTotalRegistrations,
+    },
+    monitoringIncludedRegistrations: {
+      message: $localize`Registrations with the status “included”.`,
+      trackingName: InfoTooltipTrackingName.monitoringIncludedRegistrations,
+    },
+    monitoringBaseTransferValue: {
+      message: $localize`The base transfer value is multiplied by a set factor for each registration.\n\nFor example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.`,
+      trackingName: InfoTooltipTrackingName.monitoringBaseTransferValue,
+    },
+  };
 }

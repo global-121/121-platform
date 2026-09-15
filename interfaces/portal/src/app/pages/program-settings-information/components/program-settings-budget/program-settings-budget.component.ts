@@ -28,11 +28,10 @@ import {
 } from '~/components/program-form-budget/program-form-budget.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
+import { PROGRAM_FORM_TOOLTIPS_CONFIG } from '~/domains/program/program.helper';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import {
-  InfoTooltipTrackingName,
   TrackingAction,
   TrackingCategory,
   TrackingEvent,
@@ -142,8 +141,7 @@ export class ProgramSettingsBudgetComponent {
       {
         label: '*' + $localize`Currency`,
         value: programData?.currency,
-        tooltip: PROGRAM_FORM_TOOLTIPS.currency,
-        tooltipTrackingName: InfoTooltipTrackingName.programCurrency,
+        infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.currency,
         type: 'text',
       },
       {
@@ -151,9 +149,7 @@ export class ProgramSettingsBudgetComponent {
         value: programData?.distributionDuration,
         type: 'number',
         fullWidth: true,
-        tooltip: PROGRAM_FORM_TOOLTIPS.distributionDuration,
-        tooltipTrackingName:
-          InfoTooltipTrackingName.programDistributionDuration,
+        infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.distributionDuration,
       },
       {
         label: '*' + $localize`Fixed transfer value`,

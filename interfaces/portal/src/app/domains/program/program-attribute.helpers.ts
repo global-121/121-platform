@@ -33,10 +33,16 @@ export const ATTRIBUTE_EDIT_INFO: Partial<
 
 // Edit-info hints for registration data attributes that are not generic
 // attributes but still benefit from extra guidance in the Portal.
-export const DEFAULT_ATTRIBUTE_EDIT_INFO: Partial<
-  Record<DefaultRegistrationDataAttributeNames, string>
+export const DEFAULT_ATTRIBUTE_EDIT_TOOLTIP_DATA: Partial<
+  Record<
+    DefaultRegistrationDataAttributeNames,
+    { message: string; trackingName: InfoTooltipTrackingName }
+  >
 > = {
-  phoneNumber: $localize`:@@attribute-edit-info-phoneNumber:Required format: numbers only (including country-code).`,
+  phoneNumber: {
+    message: $localize`:@@attribute-edit-info-phoneNumber:Required format: numbers only (including country-code).`,
+    trackingName: InfoTooltipTrackingName.attributeEditInfoPhoneNumber,
+  },
 };
 
 export const DEFAULT_ATTRIBUTE_EDIT_INFO_TRACKING_NAMES: Partial<

@@ -87,6 +87,11 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
     mentionSelect: (item: AttributeWithTranslatedLabel) => `{{${item.name}}} `,
   }));
 
+  readonly customMessageInfoTooltipData = {
+    message: $localize`Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.`,
+    trackingName: InfoTooltipTrackingName.customMessageCharacterLimit,
+  };
+
   writeValue(value: string | undefined) {
     this.customMessageInternalModel.set(value ?? '');
   }

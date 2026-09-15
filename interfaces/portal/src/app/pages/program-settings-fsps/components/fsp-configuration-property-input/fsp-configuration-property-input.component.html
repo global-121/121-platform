@@ -1,10 +1,7 @@
 @if (useDefaultFormFieldWrapper()) {
   <app-form-field-wrapper
     [label]="label()"
-    [labelTooltip]="labelTooltip()"
-    [labelTooltipTrackingName]="
-      InfoTooltipTrackingName.fspConfigurationSensitiveProperty
-    "
+    [infoTooltipData]="infoTooltipData()"
     [errorMessage]="
       formControl().invalid && formControl().touched && errorMessage()
     "

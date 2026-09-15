@@ -125,10 +125,10 @@ export class RequiredAttributesComponent {
     const scope = {
       name: 'scope',
       label: 'Scope',
-      infoTooltip: () =>
-        $localize`Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration`,
-      infoTooltipTrackingName:
-        InfoTooltipTrackingName.requiredAttributeScopeInfo,
+      infoTooltipData: () => ({
+        message: $localize`Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration`,
+        trackingName: InfoTooltipTrackingName.requiredAttributeScopeInfo,
+      }),
     };
 
     return [

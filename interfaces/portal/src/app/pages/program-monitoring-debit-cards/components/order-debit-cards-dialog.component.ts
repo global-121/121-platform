@@ -18,7 +18,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { DEFAULT_ATTRIBUTE_EDIT_INFO } from '~/domains/program/program-attribute.helpers';
+import { DEFAULT_ATTRIBUTE_EDIT_TOOLTIP_DATA } from '~/domains/program/program-attribute.helpers';
 import { ToastService } from '~/services/toast.service';
 import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { generateFieldErrors } from '~/utils/form-validation';
@@ -37,7 +37,8 @@ import { generateFieldErrors } from '~/utils/form-validation';
   providers: [],
 })
 export class OrderDebitCardsDialogComponent {
-  readonly phoneNumberEditInfo = DEFAULT_ATTRIBUTE_EDIT_INFO.phoneNumber;
+  readonly phoneNumberEditInfoTooltipData =
+    DEFAULT_ATTRIBUTE_EDIT_TOOLTIP_DATA.phoneNumber;
   readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
 
   readonly programId = input.required<string>();

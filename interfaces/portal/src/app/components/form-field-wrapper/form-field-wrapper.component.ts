@@ -3,14 +3,11 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
-import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
+import {
+  InfoTooltipComponent,
+  InfoTooltipData,
+} from '~/components/info-tooltip/info-tooltip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
-import { InfoTooltipTrackingName } from '~/services/tracking.service';
-
-export interface LabelTooltip {
-  message: string;
-  trackingName: InfoTooltipTrackingName;
-}
 
 @Component({
   selector: 'app-form-field-wrapper',
@@ -21,7 +18,7 @@ export interface LabelTooltip {
 })
 export class FormFieldWrapperComponent {
   readonly label = input.required<string | UILanguageTranslation>();
-  readonly labelTooltip = input<LabelTooltip>();
+  readonly infoTooltipData = input<InfoTooltipData>();
   readonly isRequired = input<boolean>();
   readonly errorMessage = input<false | string>();
   readonly dataTestId = input<string>();

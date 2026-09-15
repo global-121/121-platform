@@ -53,12 +53,8 @@
               <span class="mx-1">-</span>
               <span i18n>121 does not support this language currently.</span>
               <app-info-tooltip
-                message="Since the 121 portal does not currently support this language, users will not be able to see column names and answers in this language. Contact your account manager to add this language to the portal."
-                i18n-message
-                [trackingName]="
-                  InfoTooltipTrackingName.unsupportedLanguageWarning
-                "
-              ></app-info-tooltip>
+                [infoTooltipData]="tooltipData.unsupportedLanguageWarning"
+              />
             </div>
           }
           <p-table
@@ -77,12 +73,10 @@
                     Data column name</span
                   >
                   <app-info-tooltip
-                    message="The data column name of the question."
-                    i18n-message
-                    [trackingName]="
-                      InfoTooltipTrackingName.registrationQuestionDataColumnName
+                    [infoTooltipData]="
+                      tooltipData.registrationQuestionDataColumnName
                     "
-                  ></app-info-tooltip>
+                  />
                 </th>
                 <th
                   class="txt-body-s text-grey-700 font-semibold uppercase inline-1/2"
@@ -93,12 +87,8 @@
                     >Question label</span
                   >
                   <app-info-tooltip
-                    message="The label that will be shown in the registration page table header and registration's profile. The labels can be edited by clicking on the pencil icon above."
-                    i18n-message
-                    [trackingName]="
-                      InfoTooltipTrackingName.registrationQuestionLabel
-                    "
-                  ></app-info-tooltip>
+                    [infoTooltipData]="tooltipData.registrationQuestionLabel"
+                  />
                 </th>
               </tr>
             </ng-template>

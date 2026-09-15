@@ -120,8 +120,10 @@ export class CreatePaymentComponent {
   today = new Date();
   protected readonly MAX_PAYMENT_NAME_LENGTH: number = 60;
 
-  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
-  readonly paymentNameTooltip = $localize`Payments are named by date and time by default. Rename the payment for clarity if needed.`;
+  readonly paymentNameTooltipData = {
+    message: $localize`Payments are named by date and time by default. Rename the payment for clarity if needed.`,
+    trackingName: InfoTooltipTrackingName.paymentName,
+  };
 
   overrideFilters = {
     // only registrations with status "included" are eligible for payment
@@ -207,9 +209,10 @@ export class CreatePaymentComponent {
           'symbol-narrow',
           '1.2-2',
         ),
-        tooltip: $localize`The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.`,
-        tooltipTrackingName:
-          InfoTooltipTrackingName.paymentTotalAmountCalculation,
+        infoTooltipData: {
+          message: $localize`The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.`,
+          trackingName: InfoTooltipTrackingName.paymentTotalAmountCalculation,
+        },
         fullWidth: true,
       },
     ];

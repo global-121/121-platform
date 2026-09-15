@@ -22,7 +22,10 @@ import { GenericRegistrationAttributes } from '@121-service/src/registration/enu
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { getChipDataBySubmissionsKey } from '~/components/colored-chip/colored-chip.helper';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
-import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
+import {
+  InfoTooltipComponent,
+  InfoTooltipData,
+} from '~/components/info-tooltip/info-tooltip.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import { QueryTableColumn } from '~/components/query-table/query-table.types';
 import { ImportExistingSubmissionsResultKey } from '~/domains/kobo/kobo.helpers';
@@ -208,6 +211,13 @@ export class KoboImportExistingRegistrationsDialogComponent {
       header: $localize`:@@generic-error:Error`,
     },
   ]);
+
+  readonly koboImportSkippedSubmissionsTooltipData = computed<InfoTooltipData>(
+    () => ({
+      message: $localize`:@@kobo-import-skipped-submissions-tooltip:Submissions that have been added to the program already are skipped to avoid duplications.`,
+      trackingName: InfoTooltipTrackingName.koboImportSkippedSubmissions,
+    }),
+  );
 
   public get DialogState(): typeof DialogState {
     return DialogState;

@@ -42,8 +42,7 @@
         <app-form-field-wrapper
           label="Payment name"
           i18n-label
-          [labelTooltip]="paymentNameTooltip"
-          [labelTooltipTrackingName]="InfoTooltipTrackingName.paymentName"
+          [infoTooltipData]="paymentNameTooltipData"
           [errorMessage]="formFieldErrors()('name')"
         >
           <input
