@@ -19,6 +19,7 @@ export enum FspConfigurationProperties {
   corporateCodeOnafriq = 'corporateCodeOnafriq',
   passwordOnafriq = 'passwordOnafriq',
   uniqueKeyOnafriq = 'uniqueKeyOnafriq',
+  currencyCodeOnafriq = 'currencyCodeOnafriq',
   // Cooperative Bank of Oromia
   debitAccountNumber = 'debitAccountNumber',
   // Al Fouad

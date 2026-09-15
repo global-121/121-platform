@@ -43,6 +43,8 @@ export const FspConfigurationPropertyVisibilityMap: Record<
     FspConfigurationPropertyVisibility.default,
   [FspConfigurationProperties.corporateCodeOnafriq]:
     FspConfigurationPropertyVisibility.default,
+  [FspConfigurationProperties.currencyCodeOnafriq]:
+    FspConfigurationPropertyVisibility.default,
   [FspConfigurationProperties.debitAccountNumber]:
     FspConfigurationPropertyVisibility.default,
   // MTN properties

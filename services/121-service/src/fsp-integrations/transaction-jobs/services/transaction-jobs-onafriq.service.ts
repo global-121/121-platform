@@ -145,6 +145,7 @@ export class TransactionJobsOnafriqService implements TransactionJobService<Onaf
     corporateCode: string;
     password: string;
     uniqueKey: string;
+    currencyCode: string;
   }> {
     const programFspConfigProperties =
       await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
@@ -153,6 +154,7 @@ export class TransactionJobsOnafriqService implements TransactionJobService<Onaf
           FspConfigurationProperties.corporateCodeOnafriq,
           FspConfigurationProperties.passwordOnafriq,
           FspConfigurationProperties.uniqueKeyOnafriq,
+          FspConfigurationProperties.currencyCodeOnafriq,
         ],
       });
     return {
@@ -164,6 +166,9 @@ export class TransactionJobsOnafriqService implements TransactionJobService<Onaf
       )?.value as string,
       uniqueKey: programFspConfigProperties.find(
         (c) => c.name === FspConfigurationProperties.uniqueKeyOnafriq,
+      )?.value as string,
+      currencyCode: programFspConfigProperties.find(
+        (c) => c.name === FspConfigurationProperties.currencyCodeOnafriq,
       )?.value as string,
     };
   }

@@ -70,6 +70,7 @@ describe('TransactionJobsOnafriqService', () => {
       const mockCorporateCode = 'mocked_corporate_code';
       const mockPassword = 'mocked_password';
       const mockUniqueKey = 'mocked_unique_key';
+      const mockCurrencyCode = 'mocked_currency_code';
 
       const existingOnafriqTransaction = { transactionId: 99 };
       (transactionsService.saveProgress as jest.Mock).mockImplementation();
@@ -97,6 +98,10 @@ describe('TransactionJobsOnafriqService', () => {
           name: FspConfigurationProperties.uniqueKeyOnafriq,
           value: mockUniqueKey,
         },
+        {
+          name: FspConfigurationProperties.currencyCodeOnafriq,
+          value: mockCurrencyCode,
+        },
       ]);
 
       await service.processTransactionJob(transactionJob);
@@ -117,6 +122,7 @@ describe('TransactionJobsOnafriqService', () => {
           corporateCode: mockCorporateCode,
           password: mockPassword,
           uniqueKey: mockUniqueKey,
+          currencyCode: mockCurrencyCode,
         },
       });
     });

@@ -12,6 +12,7 @@ export const fspConfigurationPropertyTypes = {
   [FspConfigurationProperties.corporateCodeOnafriq]: 'string',
   [FspConfigurationProperties.passwordOnafriq]: 'string',
   [FspConfigurationProperties.uniqueKeyOnafriq]: 'string',
+  [FspConfigurationProperties.currencyCodeOnafriq]: 'string',
   [FspConfigurationProperties.debitAccountNumber]: 'string',
   [FspConfigurationProperties.password]: 'string',
   [FspConfigurationProperties.username]: 'string',
