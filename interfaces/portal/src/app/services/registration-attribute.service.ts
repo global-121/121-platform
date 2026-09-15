@@ -248,15 +248,17 @@ export class RegistrationAttributeService {
           label: this.translatableStringService.translate(option.label),
         }));
       const value: unknown = registration?.[name];
+      const editTooltipData =
+        DEFAULT_ATTRIBUTE_EDIT_TOOLTIP_DATA[
+          name as DefaultRegistrationDataAttributeNames
+        ];
 
       return {
         isRequired: isRequired ?? false,
         name,
         label,
-        infoTooltipData:
-          DEFAULT_ATTRIBUTE_EDIT_TOOLTIP_DATA[
-            name as DefaultRegistrationDataAttributeNames
-          ],
+        editInfo: editTooltipData?.message,
+        editInfoTrackingName: editTooltipData?.trackingName,
         pattern,
         options,
         value,
