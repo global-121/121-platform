@@ -274,7 +274,16 @@ class TableComponent {
     await this.textboxField.click();
     await this.textboxField.fill(filterText);
     await this.applyFiltersButton.click();
+    await this.waitForColumnFilterOverlayToClose();
     await this.waitForLoaded();
+  }
+
+  //  waiting for the popover element to be removed from the DOM
+  private async waitForColumnFilterOverlayToClose(): Promise<void> {
+    await this.page
+      .locator('.p-datatable-filter-overlay')
+      .first()
+      .waitFor({ state: 'detached' });
   }
 
   async filterColumnByNumber({
@@ -544,6 +553,7 @@ class TableComponent {
     const clearFilterButton = columnHeader.locator('.pi-filter-slash');
 
     await clearFilterButton.click();
+    await this.waitForColumnFilterOverlayToClose();
   }
 
   async validateMessageActivityByTypeAndText({
