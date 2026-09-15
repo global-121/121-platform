@@ -231,6 +231,9 @@
       <trans-unit id="1894127940120118823" datatype="html">
         <source>Card successfully updated</source>
       </trans-unit>
+      <trans-unit id="1913131976793483329" datatype="html">
+        <source>Answer values</source>
+      </trans-unit>
       <trans-unit id="1918076919963278361" datatype="html">
         <source>Registration information</source>
       </trans-unit>
@@ -254,9 +257,6 @@
       </trans-unit>
       <trans-unit id="2077783620698115246" datatype="html">
         <source>Your score is <x equiv-text="{{ score() }}" id="INTERPOLATION"/>.</source>
-      </trans-unit>
-      <trans-unit id="2086846439240550891" datatype="html">
-        <source>Answer value:</source>
       </trans-unit>
       <trans-unit id="2095982362430871638" datatype="html">
         <source>Select 1 or more fields</source>
@@ -681,6 +681,9 @@
       <trans-unit id="3690602656993506785" datatype="html">
         <source>Name the file for easy identification</source>
       </trans-unit>
+      <trans-unit id="3693064171209701698" datatype="html">
+        <source>Make this a hidden field. Pre-fill with the answer value.</source>
+      </trans-unit>
       <trans-unit id="3698276378504762536" datatype="html">
         <source>This is a sensitive property, therefore its value needs to be re-entered upon reconfiguration.</source>
       </trans-unit>
@@ -875,6 +878,9 @@
       <trans-unit id="4275051684912699373" datatype="html">
         <source>Amount sent per payment</source>
       </trans-unit>
+      <trans-unit id="4277360312543804104" datatype="html">
+        <source>Ask this in the form. The options automatic field must match the answers values to the right exactly.</source>
+      </trans-unit>
       <trans-unit id="428968768517674095" datatype="html">
         <source>Would you like to proceed with <x equiv-text="{{ dryRunData?.applicableCount }}" id="INTERPOLATION"/> registration(s)?</source>
       </trans-unit>
@@ -898,9 +904,6 @@
       </trans-unit>
       <trans-unit id="4384073389334234587" datatype="html">
         <source>KoboToolbox account security section</source>
-      </trans-unit>
-      <trans-unit id="4386487803555878914" datatype="html">
-        <source>Make this a hidden field. Pre-fill with the answer value.</source>
       </trans-unit>
       <trans-unit id="4388879716045736175" datatype="html">
         <source>Note</source>
@@ -1093,6 +1096,9 @@
       </trans-unit>
       <trans-unit id="5124373210930196762" datatype="html">
         <source>For more information about how to set up payment approval see <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/></source>
+      </trans-unit>
+      <trans-unit id="513394352250458505" datatype="html">
+        <source>Answer value</source>
       </trans-unit>
       <trans-unit id="5156383097673576773" datatype="html">
         <source>Fail reason</source>
@@ -1364,9 +1370,6 @@
       </trans-unit>
       <trans-unit id="631812235369405800" datatype="html">
         <source>Edit budget</source>
-      </trans-unit>
-      <trans-unit id="6336988689286096782" datatype="html">
-        <source>Answer values:</source>
       </trans-unit>
       <trans-unit id="6342731461089211149" datatype="html">
         <source>Should be an ISO 4217 currency code (full list available on Wikipedia).</source>
@@ -1718,9 +1721,6 @@
       </trans-unit>
       <trans-unit id="7617906385730294527" datatype="html">
         <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>)</source>
-      </trans-unit>
-      <trans-unit id="7622202090437576589" datatype="html">
-        <source>Ask this in the form. The options automatic field must match the answers values to the right exactly.</source>
       </trans-unit>
       <trans-unit id="7675424950942601762" datatype="html">
         <source>Optionally pass a start date and/or an end date to filter the data changes. The export is limited to 100,000 data changes. Adapt your dates if needed.</source>

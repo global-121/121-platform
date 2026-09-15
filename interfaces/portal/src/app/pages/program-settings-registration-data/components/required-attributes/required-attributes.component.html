@@ -30,22 +30,9 @@
         {{ getTranslatedRecommendedAttributeType({ attribute }) }}
 
         @if (attribute.name === 'fsp') {
-          @if (programFspNames().length === 1) {
-            <p
-              i18n
-              class="text-grey-700 mbs-2 font-normal"
-            >
-              Make this a hidden field. Pre-fill with the answer value.
-            </p>
-          } @else {
-            <p
-              i18n
-              class="text-grey-700 mbs-2 font-normal"
-            >
-              Ask this in the form. The options automatic field must match the
-              answers values to the right exactly.
-            </p>
-          }
+          <p class="text-grey-700 mbs-2 font-normal">
+            {{ fspTranslations().typeHint }}
+          </p>
         }
       </td>
 
@@ -56,21 +43,9 @@
 
           @if (attribute.name === 'fsp') {
             <div class="mbs-2 space-y-2 [&>ul]:space-y-2">
-              @if (programFspNames().length === 1) {
-                <div
-                  i18n
-                  class="text-grey-700 font-normal"
-                >
-                  Answer value:
-                </div>
-              } @else {
-                <div
-                  i18n
-                  class="text-grey-700 font-normal"
-                >
-                  Answer values:
-                </div>
-              }
+              <div class="text-grey-700 font-normal">
+                {{ fspTranslations().answerValue }}
+              </div>
               <ul data-testid="required-fsps">
                 @for (name of programFspNames(); track name) {
                   <li>
