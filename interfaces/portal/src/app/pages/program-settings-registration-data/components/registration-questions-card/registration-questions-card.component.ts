@@ -61,8 +61,6 @@ import { environment } from '~environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationQuestionsCardComponent {
-  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
-
   readonly programId = input.required<number | string>();
 
   readonly programApiService = inject(ProgramApiService);

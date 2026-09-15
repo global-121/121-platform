@@ -55,8 +55,6 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
   readonly customMessageDisabled = model(false);
   readonly customMessageInternalModel = model('');
 
-  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
-
   placeholders = injectQuery(
     this.messagingService.getMessagePlaceholders(this.programId),
   );

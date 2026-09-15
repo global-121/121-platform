@@ -47,8 +47,6 @@ import { Locale } from '~/utils/locale';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageLayoutMonitoringComponent {
-  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
-
   readonly programId = input.required<string>();
 
   readonly locale = inject<Locale>(LOCALE_ID);

@@ -73,8 +73,6 @@ type ApprovalStepFormGroup = FormGroup<{
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgramSettingsPaymentApprovalPageComponent implements ComponentCanDeactivate {
-  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
-
   readonly isEditing = signal(false);
   readonly programId = input.required<string>();
   private readonly hasInitializedEditForm = signal(false);

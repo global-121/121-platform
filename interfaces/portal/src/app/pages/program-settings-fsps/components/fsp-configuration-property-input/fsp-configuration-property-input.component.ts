@@ -83,8 +83,6 @@ export class FspConfigurationPropertyInputComponent {
     return undefined;
   });
 
-  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
-
   readonly inputTextPlaceholder = computed(() =>
     this.fspFormField().isSensitive ? sensitivePropertyString : '',
   );

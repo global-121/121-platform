@@ -100,8 +100,6 @@ const noWhitespaceOnlyValueValidator = (
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageLayoutPaymentComponent {
-  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
-
   readonly programId = input.required<string>();
   readonly paymentId = input.required<string>();
 

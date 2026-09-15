@@ -61,8 +61,6 @@ interface ValidationErrorTableRow extends ValidationError {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KoboImportExistingRegistrationsDialogComponent {
-  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
-
   private readonly koboApiService = inject(KoboApiService);
   private readonly toastService = inject(ToastService);
 
