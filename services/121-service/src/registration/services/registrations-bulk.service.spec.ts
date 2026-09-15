@@ -156,6 +156,7 @@ describe('RegistrationBulkService', () => {
         totalFilterCount: 1,
         applicableCount: 1,
         nonApplicableCount: 0,
+        duplicateCount: 0,
       });
       expect(queueMessageService.addMessageJob).toHaveBeenCalledTimes(0);
     });
@@ -178,6 +179,7 @@ describe('RegistrationBulkService', () => {
         totalFilterCount: 1,
         applicableCount: 1,
         nonApplicableCount: 0,
+        duplicateCount: 0,
       });
 
       // Wait for all pending asynchronous operations to complete

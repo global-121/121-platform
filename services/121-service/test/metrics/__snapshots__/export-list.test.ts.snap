@@ -53,7 +53,7 @@ exports[`Metric export list should export all registration attributes when no "s
   "paymentCount": 0,
   "paymentCountRemaining": null,
   "personAffectedSequence": "PA #3",
-  "phoneNumber": "14155236666",
+  "phoneNumber": "14155236667",
   "preferredLanguage": "nl",
   "programFspConfigurationId": 6,
   "programFspConfigurationLabel": "Visa debit card",
@@ -62,7 +62,7 @@ exports[`Metric export list should export all registration attributes when no "s
   "referenceId": "43e62864557597e0d",
   "scope": "",
   "status": "new",
-  "whatsappPhoneNumber": "14155236666",
+  "whatsappPhoneNumber": "14155236667",
 }
 `;
 

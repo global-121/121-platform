@@ -16,6 +16,9 @@ export class BulkActionResultDto {
 
   @ApiPropertyOptional({ example: 1 })
   public readonly pendingApprovalCount?: number;
+
+  @ApiProperty({ example: 0 })
+  public duplicateCount: number;
 }
 
 export class BulkActionResultPaymentDto extends BulkActionResultDto {
