@@ -15,8 +15,8 @@
     {{ metricLabel() }}
     @if (metricTooltip()) {
       <app-info-tooltip
-        [message]="metricTooltip()!"
-        [trackingName]="metricTooltipTrackingName()!"
+        [message]="metricTooltip().message"
+        [trackingName]="metricTooltip().trackingName"
       />
     }
   </dt>

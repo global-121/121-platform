@@ -9,6 +9,10 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
 
+export interface MetricTooltip {
+  message: string;
+  trackingName: InfoTooltipTrackingName;
+}
 @Component({
   selector: 'app-metric-tile',
   imports: [
@@ -27,8 +31,7 @@ export class MetricTileComponent {
 
   readonly metricLabel = input.required<string>();
   readonly metricValue = input<null | number | string>();
-  readonly metricTooltip = input<string>();
-  readonly metricTooltipTrackingName = input<InfoTooltipTrackingName>();
+  readonly metricTooltip = input.required<MetricTooltip>();
 
   readonly chipVariant = input<ColorVariant>();
   readonly chipLabel = input<string>();

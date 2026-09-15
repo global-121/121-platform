@@ -14,8 +14,8 @@
         @let tooltip = labelTooltip();
         @if (tooltip) {
           <app-info-tooltip
-            [message]="tooltip"
-            [trackingName]="labelTooltipTrackingName()!"
+            [message]="tooltip.message"
+            [trackingName]="tooltip.trackingName"
             class="ms-1"
           ></app-info-tooltip>
         }
