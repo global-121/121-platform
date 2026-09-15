@@ -17,6 +17,7 @@ import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.d
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { ProgramRegistrationProgramIdCounterEntity } from '@121-service/src/programs/entities/program-registration-program-id-counter.entity';
 import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
@@ -194,6 +195,10 @@ export class ProgramService {
 
     let savedProgram: ProgramEntity;
     try {
+      const counter = new ProgramRegistrationProgramIdCounterEntity();
+      counter.lastRegistrationProgramId = 0;
+      program.registrationProgramIdCounter = counter;
+
       savedProgram = await programRepository.save(program);
 
       savedProgram.programRegistrationAttributes = [];

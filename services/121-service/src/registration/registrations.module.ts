@@ -18,6 +18,7 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/entiti
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { ProgramRegistrationProgramIdCounterEntity } from '@121-service/src/programs/entities/program-registration-program-id-counter.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationsController } from '@121-service/src/registration/controllers/registrations.controller';
@@ -56,6 +57,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
       MessageTemplateEntity,
       ProgramRegistrationAttributeEntity,
       UniqueRegistrationPairEntity,
+      ProgramRegistrationProgramIdCounterEntity,
     ]),
     UserModule,
     HttpModule,

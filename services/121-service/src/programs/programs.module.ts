@@ -11,12 +11,14 @@ import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-con
 import { ProgramRegistrationAttributesModule } from '@121-service/src/program-registration-attributes/program-registration-attributes.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { ProgramRegistrationProgramIdCounterEntity } from '@121-service/src/programs/entities/program-registration-program-id-counter.entity';
 import { ProgramAidworkerAssignmentsModule } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignments.module';
 import { ProgramAttachmentsModule } from '@121-service/src/programs/program-attachments/program-attachments.module';
 import { ProgramController } from '@121-service/src/programs/programs.controller';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
+import { ProgramRegistrationProgramIdCounterRepository } from '@121-service/src/programs/repositories/program-registration-program-id-counter.repository';
 import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
 import { UserModule } from '@121-service/src/user/user.module';
 
@@ -26,6 +28,7 @@ import { UserModule } from '@121-service/src/user/user.module';
       ProgramEntity,
       ProgramRegistrationAttributeEntity,
       ProgramFspConfigurationEntity,
+      ProgramRegistrationProgramIdCounterEntity,
     ]),
     UserModule,
     FspsModule,
@@ -44,12 +47,14 @@ import { UserModule } from '@121-service/src/user/user.module';
     ProgramRepository,
     ProgramExistenceInterceptor,
     ProgramRegistrationAttributeRepository,
+    ProgramRegistrationProgramIdCounterRepository,
   ],
   controllers: [ProgramController],
   exports: [
     ProgramService,
     ProgramRepository,
     ProgramRegistrationAttributeRepository,
+    ProgramRegistrationProgramIdCounterRepository,
   ],
 })
 export class ProgramModule {}
