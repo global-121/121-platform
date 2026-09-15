@@ -9,7 +9,10 @@ import { DataSource } from 'typeorm';
 
 import { ActivitiesModule } from '@121-service/src/activities/activities.module';
 import { AuthModule } from '@121-service/src/auth/auth.module';
-import { THROTTLING_LIMIT_GENERIC } from '@121-service/src/config';
+import {
+  BULL_STALLED_INTERVAL_MS,
+  THROTTLING_LIMIT_GENERIC,
+} from '@121-service/src/config';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
 import { EmailsModule } from '@121-service/src/emails/emails.module';
 import { env } from '@121-service/src/env';
@@ -90,6 +93,9 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
       prefix: env.REDIS_PREFIX,
       defaultJobOptions: {
         removeOnComplete: true,
+      },
+      settings: {
+        stalledInterval: BULL_STALLED_INTERVAL_MS,
       },
     }),
     AuthModule,
