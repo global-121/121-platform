@@ -109,26 +109,27 @@ export class RequiredAttributesComponent {
 
     // The FSP is a hidden field that is always required, so we hardcode it to the list of required attributes
     // until we do not require it anymore for programs with only one FSP configured.
+    const fspNames = this.programFspNames().join(', ');
     const fspEntry = {
       name: 'fsp',
       label: 'Fsp',
-      infoTooltip: () => {
-        const fspNames = this.programFspNames().join(', ');
-        return this.programFspNames().length === 1
-          ? $localize`fsp should be a 'hidden' field in your form that has the 'default response' set to the FSP name: ${fspNames}`
-          : $localize`fsp should be 'select many' with the following FSP names as options: ${fspNames}`;
+      infoTooltipData: {
+        message:
+          this.programFspNames().length === 1
+            ? $localize`fsp should be a 'hidden' field in your form that has the 'default response' set to the FSP name: ${fspNames}`
+            : $localize`fsp should be 'select many' with the following FSP names as options: ${fspNames}`,
+        trackingName: InfoTooltipTrackingName.requiredAttributeFspInfo,
       },
-      infoTooltipTrackingName: InfoTooltipTrackingName.requiredAttributeFspInfo,
     };
 
     // Scope is a field that is independent from the FSPs, so we hardcode it to the list of required attributes if the program has scope enabled.
     const scope = {
       name: 'scope',
       label: 'Scope',
-      infoTooltipData: () => ({
+      infoTooltipData: {
         message: $localize`Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration`,
         trackingName: InfoTooltipTrackingName.requiredAttributeScopeInfo,
-      }),
+      },
     };
 
     return [
