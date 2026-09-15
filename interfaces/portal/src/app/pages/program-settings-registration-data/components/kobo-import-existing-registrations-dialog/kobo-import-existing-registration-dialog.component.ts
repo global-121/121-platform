@@ -22,7 +22,10 @@ import { GenericRegistrationAttributes } from '@121-service/src/registration/enu
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { getChipDataBySubmissionsKey } from '~/components/colored-chip/colored-chip.helper';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
-import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
+import {
+  InfoTooltipComponent,
+  InfoTooltipData,
+} from '~/components/info-tooltip/info-tooltip.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import { QueryTableColumn } from '~/components/query-table/query-table.types';
 import { ImportExistingSubmissionsResultKey } from '~/domains/kobo/kobo.helpers';
@@ -30,6 +33,7 @@ import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { DialogState } from '~/pages/program-settings-registration-data/components/kobo-import-existing-registrations-dialog/kobo-import-existing-registrations-dialog-state.enum';
 import { KoboIntegrationErrorDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-integration-error-dialog/kobo-integration-error-dialog.component';
 import { ToastService } from '~/services/toast.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
 
 interface ValidationError {
@@ -205,6 +209,13 @@ export class KoboImportExistingRegistrationsDialogComponent {
       header: $localize`:@@generic-error:Error`,
     },
   ]);
+
+  readonly koboImportSkippedSubmissionsTooltipData = computed<InfoTooltipData>(
+    () => ({
+      message: $localize`:@@kobo-import-skipped-submissions-tooltip:Submissions that have been added to the program already are skipped to avoid duplications.`,
+      trackingName: InfoTooltipTrackingName.koboImportSkippedSubmissions,
+    }),
+  );
 
   public get DialogState(): typeof DialogState {
     return DialogState;

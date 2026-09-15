@@ -1,7 +1,7 @@
 @if (useDefaultFormFieldWrapper()) {
   <app-form-field-wrapper
     [label]="label()"
-    [labelTooltip]="labelTooltip()"
+    [infoTooltipData]="infoTooltipData()"
     [errorMessage]="
       formControl().invalid && formControl().touched && errorMessage()
     "

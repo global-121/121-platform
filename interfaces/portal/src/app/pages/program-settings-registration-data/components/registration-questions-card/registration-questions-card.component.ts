@@ -31,6 +31,7 @@ import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Attribute } from '~/domains/program/program.model';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { getLinguonym } from '~/utils/get-linguonym';
 import {
   getUILanguageFromLocale,
@@ -232,6 +233,22 @@ export class RegistrationQuestionsCardComponent {
       requiredPermission: PermissionEnum.ProgramRegistrationAttributesUPDATE,
     }),
   );
+
+  readonly tooltipData = {
+    unsupportedLanguageWarning: {
+      message: $localize`Since the 121 portal does not currently support this language, users will not be able to see column names and answers in this language. Contact your account manager to add this language to the portal.`,
+      trackingName: InfoTooltipTrackingName.unsupportedLanguageWarning,
+    },
+
+    registrationQuestionDataColumnName: {
+      message: $localize`The data column name of the question.`,
+      trackingName: InfoTooltipTrackingName.registrationQuestionDataColumnName,
+    },
+    registrationQuestionLabel: {
+      message: $localize`The label that will be shown in the registration page table header and registration's profile. The labels can be edited by clicking on the pencil icon above.`,
+      trackingName: InfoTooltipTrackingName.registrationQuestionLabel,
+    },
+  };
 
   private getLabelToShow({
     language,

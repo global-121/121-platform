@@ -44,6 +44,7 @@ import { ProgramApiService } from '~/domains/program/program.api.service';
 import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { Dto } from '~/utils/dto-type';
 
 type ApprovalStepFormGroup = FormGroup<{
@@ -203,6 +204,22 @@ export class ProgramSettingsPaymentApprovalPageComponent implements ComponentCan
   noEligibleUsersFoundMessage = {
     message: $localize`Only users with full program access can approve. You cannot assign yourself, and users can only be assigned to one step.`,
     title: $localize`No eligible users found.`,
+  };
+
+  tooltipData = {
+    paymentApprovalAdditionalStepThreshold: {
+      message: $localize`These users would have to approve payment if the total amount is above the decided value.`,
+      trackingName:
+        InfoTooltipTrackingName.paymentApprovalAdditionalStepThreshold,
+    },
+    paymentApprovalFirstStepRequired: {
+      message: $localize`First approval step must be set for all payments regardless of the total payment amount.`,
+      trackingName: InfoTooltipTrackingName.paymentApprovalFirstStepRequired,
+    },
+    paymentApprovalThresholdColumn: {
+      message: $localize`This user or one of these users will need to approve the payment if the total amount is above the decided value.`,
+      trackingName: InfoTooltipTrackingName.paymentApprovalThresholdColumn,
+    },
   };
 
   constructor() {

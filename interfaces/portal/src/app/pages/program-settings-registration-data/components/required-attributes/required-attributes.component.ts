@@ -25,6 +25,7 @@ import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-conf
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 @Component({
   selector: 'app-required-attributes',
   imports: [
@@ -108,14 +109,16 @@ export class RequiredAttributesComponent {
 
     // The FSP is a hidden field that is always required, so we hardcode it to the list of required attributes
     // until we do not require it anymore for programs with only one FSP configured.
+    const fspNames = this.programFspNames().join(', ');
     const fspEntry = {
       name: 'fsp',
       label: 'Fsp',
-      infoTooltip: () => {
-        const fspNames = this.programFspNames().join(', ');
-        return this.programFspNames().length === 1
-          ? $localize`fsp should be a 'hidden' field in your form that has the 'default response' set to the FSP name: ${fspNames}`
-          : $localize`fsp should be 'select many' with the following FSP names as options: ${fspNames}`;
+      infoTooltipData: {
+        message:
+          this.programFspNames().length === 1
+            ? $localize`fsp should be a 'hidden' field in your form that has the 'default response' set to the FSP name: ${fspNames}`
+            : $localize`fsp should be 'select many' with the following FSP names as options: ${fspNames}`,
+        trackingName: InfoTooltipTrackingName.requiredAttributeFspInfo,
       },
     };
 
@@ -123,8 +126,10 @@ export class RequiredAttributesComponent {
     const scope = {
       name: 'scope',
       label: 'Scope',
-      infoTooltip: () =>
-        $localize`Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration`,
+      infoTooltipData: {
+        message: $localize`Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration`,
+        trackingName: InfoTooltipTrackingName.requiredAttributeScopeInfo,
+      },
     };
 
     return [

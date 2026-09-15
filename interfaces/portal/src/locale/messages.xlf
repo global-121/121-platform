@@ -642,9 +642,6 @@
       <trans-unit id="3604386807230411192" datatype="html">
         <source>Start Date</source>
       </trans-unit>
-      <trans-unit id="3608877004778230790" datatype="html">
-        <source>Submissions that have been added to the program already are skipped to avoid duplications.</source>
-      </trans-unit>
       <trans-unit id="362413796363960378" datatype="html">
         <source>View voucher</source>
       </trans-unit>
@@ -1201,9 +1198,6 @@
       </trans-unit>
       <trans-unit id="5656654201977017111" datatype="html">
         <source>Refresh link</source>
-      </trans-unit>
-      <trans-unit id="566208731639813177" datatype="html">
-        <source>Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the program team&apos;s page. To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.</source>
       </trans-unit>
       <trans-unit id="5670622821110743398" datatype="html">
         <source>Program information</source>
@@ -2055,6 +2049,9 @@
       <trans-unit id="958505185210366652" datatype="html">
         <source>Replacing the data column name with the required name</source>
       </trans-unit>
+      <trans-unit id="967085384644702996" datatype="html">
+        <source>Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the program team&apos;s page. To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.</source>
+      </trans-unit>
       <trans-unit id="976904059902830801" datatype="html">
         <source>Change reason</source>
       </trans-unit>
@@ -2494,6 +2491,9 @@
       <trans-unit id="integrate-kobo-form-url-explanation" datatype="html">
         <source>The full URL from the form&apos;s page in KoboToolbox, i.e: https://kobo.ifrc.org/#/forms/XXXXXX/summary</source>
         <note priority="1" from="description">Do NOT translate the URL!</note>
+      </trans-unit>
+      <trans-unit id="kobo-import-skipped-submissions-tooltip" datatype="html">
+        <source>Submissions that have been added to the program already are skipped to avoid duplications.</source>
       </trans-unit>
       <trans-unit id="language-switcher-selected" datatype="html">
         <source>Language: <x equiv-text="{{ selectedLocaleLabel() }}" id="INTERPOLATION"/></source>

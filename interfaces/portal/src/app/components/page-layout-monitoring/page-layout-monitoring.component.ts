@@ -23,6 +23,7 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
 import { Locale } from '~/utils/locale';
@@ -150,7 +151,7 @@ export class PageLayoutMonitoringComponent {
         value: programData?.fixedTransferValue,
         type: 'currency',
         currencyCode: programData?.currency,
-        tooltip: $localize`The base transfer value is multiplied by a set factor for each registration.\n\nFor example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.`,
+        infoTooltipData: this.tooltipsData.monitoringBaseTransferValue,
       },
     ];
 
@@ -159,4 +160,19 @@ export class PageLayoutMonitoringComponent {
       loading: this.program.isPending(),
     }));
   });
+
+  tooltipsData = {
+    monitoringTotalRegistrations: {
+      message: $localize`Total registrations excluding rejected and deleted registrations.`,
+      trackingName: InfoTooltipTrackingName.monitoringTotalRegistrations,
+    },
+    monitoringIncludedRegistrations: {
+      message: $localize`Registrations with the status “included”.`,
+      trackingName: InfoTooltipTrackingName.monitoringIncludedRegistrations,
+    },
+    monitoringBaseTransferValue: {
+      message: $localize`The base transfer value is multiplied by a set factor for each registration.\n\nFor example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.`,
+      trackingName: InfoTooltipTrackingName.monitoringBaseTransferValue,
+    },
+  };
 }

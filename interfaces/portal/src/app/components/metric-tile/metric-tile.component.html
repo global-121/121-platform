@@ -13,8 +13,9 @@
   }
   <dt class="text-grey-700 txt-body-m mbs-auto mbe-2 pbs-11">
     {{ metricLabel() }}
-    @if (metricTooltip()) {
-      <app-info-tooltip [message]="metricTooltip()!" />
+    @let metricTooltip = metricTooltipData();
+    @if (metricTooltip) {
+      <app-info-tooltip [infoTooltipData]="metricTooltip" />
     }
   </dt>
   <dd

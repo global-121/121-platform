@@ -22,6 +22,7 @@ import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.com
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { AttributeWithTranslatedLabel } from '~/domains/program/program.model';
 import { MessagingService } from '~/services/messaging.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.service';
 
 @Component({
   selector: 'app-custom-message-control',
@@ -51,12 +52,13 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
 
   private messagingService = inject(MessagingService);
 
-  readonly customMessageInternalModel = model('');
   readonly customMessageDisabled = model(false);
+  readonly customMessageInternalModel = model('');
 
   placeholders = injectQuery(
     this.messagingService.getMessagePlaceholders(this.programId),
   );
+
   readonly messagePlaceholders = computed<{ label: string }[]>(() => {
     if (this.placeholders.isSuccess()) {
       return this.placeholders.data();
@@ -83,6 +85,11 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
     labelKey: 'label',
     mentionSelect: (item: AttributeWithTranslatedLabel) => `{{${item.name}}} `,
   }));
+
+  readonly customMessageInfoTooltipData = {
+    message: $localize`Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.`,
+    trackingName: InfoTooltipTrackingName.customMessageCharacterLimit,
+  };
 
   writeValue(value: string | undefined) {
     this.customMessageInternalModel.set(value ?? '');
