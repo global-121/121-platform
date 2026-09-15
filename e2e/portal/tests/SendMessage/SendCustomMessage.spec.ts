@@ -44,6 +44,9 @@ test.describe('Send custom message', () => {
       await registrationsPage.validateToastMessageAndClose(
         'Closing this notification will not cancel message sending.',
       );
+    });
+
+    await test.step('Verify message', async () => {
       await waitForMessagesToComplete({
         programId: programIdPV,
         referenceIds: [registrationPV8.referenceId],
@@ -54,9 +57,7 @@ test.describe('Send custom message', () => {
           values: [customMessageResult],
         },
       });
-    });
 
-    await test.step('Verify message', async () => {
       // Prepare a clean slate from any previous tries/actions on the page
       await registrationActivityLogPage.resetTableStateStorage();
 
