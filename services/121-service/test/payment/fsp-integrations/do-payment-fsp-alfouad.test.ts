@@ -210,6 +210,17 @@ describe('Do payment with FSP: AlFouad', () => {
       accessToken,
     });
     expect(transactionEventDescriptions).toEqual(expectedEventsForSyncError);
+
+    // Reconcile the waiting transaction to success so it does not remain waiting for subsequent tests
+    await runCronJobDoAlfouadReconciliation();
+    await waitForPaymentAndTransactionsToComplete({
+      programId,
+      paymentReferenceIds,
+      paymentId,
+      accessToken,
+      maxWaitTimeMs: 10_000,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
   });
 
   it('should yield error transaction when the Al Fouad API reports a duplicate reference that does not exist', async () => {
