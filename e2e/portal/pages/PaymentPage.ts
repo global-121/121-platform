@@ -122,9 +122,15 @@ class PaymentPage extends BasePage {
 
   async openActionsMenu() {
     await expect(async () => {
+      const actionsMenu = this.page.getByRole('menu').last();
+
       await expect(this.threeDotsMenuButton).toBeVisible();
+      if (await actionsMenu.isVisible()) {
+        return;
+      }
+
       await this.threeDotsMenuButton.click();
-      await expect(this.page.getByRole('menu').last()).toBeVisible();
+      await expect(actionsMenu).toBeVisible();
     }).toPass({ timeout: 15_000 });
   }
 
