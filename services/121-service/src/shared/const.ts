@@ -22,6 +22,7 @@ const registrationViewAttributeNamesRecord: Record<
   preferredLanguage: true,
   inclusionScore: true,
   paymentAmountMultiplier: true,
+  transferValue: true,
   registrationProgramId: true,
   maxPayments: true,
   paymentCount: true,

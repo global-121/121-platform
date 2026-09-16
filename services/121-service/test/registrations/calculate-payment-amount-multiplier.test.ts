@@ -152,4 +152,33 @@ describe('Set/calculate payment amount multiplier', () => {
       paymentAmountMultiplier,
     );
   });
+
+  it('should return transferValue on the registration view calculated from paymentAmountMultiplier and the program fixedTransferValue', async () => {
+    // Arrange
+    await resetDB({ seedScript: SeedScript.testMultiple });
+    const nrOfDragons = 2;
+    const registrationWesterosCopy = { ...registrationWesteros1 };
+    registrationWesterosCopy.dragon = nrOfDragons;
+
+    // Act
+    await seedIncludedRegistrations(
+      [registrationWesterosCopy],
+      programIdWesteros,
+      accessToken,
+    );
+    const searchRegistrationResponse = await searchRegistrationByReferenceId(
+      registrationWesterosCopy.referenceId,
+      programIdWesteros,
+      accessToken,
+    );
+    const importedRegistration = searchRegistrationResponse.body.data[0];
+
+    // Assert
+    // Program Westeros has fixedTransferValue 10 and formula "1 + 1 * dragon"
+    const expectedMultiplier = nrOfDragons + 1;
+    expect(importedRegistration.paymentAmountMultiplier).toBe(
+      expectedMultiplier,
+    );
+    expect(importedRegistration.transferValue).toBe(expectedMultiplier * 10);
+  });
 });

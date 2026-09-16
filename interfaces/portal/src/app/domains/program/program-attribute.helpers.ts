@@ -9,6 +9,7 @@ export const ATTRIBUTE_LABELS: Record<GenericRegistrationAttributes, string> = {
   referenceId: $localize`:@@attribute-label-referenceId:Reference ID`,
   preferredLanguage: $localize`:@@attribute-label-preferredLanguage:Preferred Language`,
   paymentAmountMultiplier: $localize`:@@attribute-label-paymentAmountMultiplier:Transfer value multiplier`,
+  transferValue: $localize`:@@attribute-label-transferValue:Transfer value`,
   programFspConfigurationName: $localize`:@@attribute-label-programFspConfigurationName:FSP`,
   programFspConfigurationLabel: $localize`:@@attribute-label-programFspConfigurationLabel:FSP`,
   maxPayments: $localize`:@@attribute-label-maxPayments:Max. payments`,
