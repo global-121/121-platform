@@ -38,6 +38,10 @@ export class PaymentsExecutionService {
     programId: number;
     paymentId: number;
   }): Promise<void> {
+    await this.paymentsProgressService.checkAndLockPaymentProgressOrThrow({
+      programId,
+    });
+
     await this.paymentsHelperService.throwIfPaymentHasDuplicateRegistrations({
       programId,
       paymentId,
