@@ -8,6 +8,7 @@ import {
 } from '@nestjs/terminus';
 
 import { APP_VERSION } from '@121-service/src/config';
+import { env } from '@121-service/src/env';
 import { NoUserAuthenticationController } from '@121-service/src/guards/no-user-authentication.decorator';
 import { GetVersionDto } from '@121-service/src/health/dto/get-version.dto';
 
@@ -28,7 +29,10 @@ export class HealthController {
   @HealthCheck()
   public check(): Promise<HealthCheckResult> {
     return this.health.check([
-      () => this.db.pingCheck('database', { timeout: 600 }),
+      () =>
+        this.db.pingCheck('database', {
+          timeout: env.HEALTH_DATABASE_TIMEOUT,
+        }),
     ]);
   }
 
