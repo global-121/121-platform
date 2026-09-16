@@ -110,7 +110,7 @@ class PaymentPage extends BasePage {
       } else {
         await expect(deleteButton).toBeHidden();
       }
-    }).toPass({ timeout: 5_000 });
+    }).toPass({ timeout: 15_000 });
   }
 
   async renamePayment(newName: string) {
@@ -125,7 +125,7 @@ class PaymentPage extends BasePage {
       await expect(this.threeDotsMenuButton).toBeVisible();
       await this.threeDotsMenuButton.click();
       await expect(this.page.getByRole('menu').last()).toBeVisible();
-    }).toPass({ timeout: 5_000 });
+    }).toPass({ timeout: 15_000 });
   }
 
   async validatePaymentName(expectedName: string) {

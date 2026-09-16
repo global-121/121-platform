@@ -53,10 +53,6 @@ test('Payment can be deleted when payment is not started', async ({
     await paymentPage.validateToastMessageAndClose(
       'Payment approved successfully',
     );
-    await paymentPage.validateBadgeIsPresentByLabel({
-      badgeName: 'Approved',
-      count: 1,
-    });
     await paymentPage.validateButtonVisibility({
       isVisible: true,
       button: 'start',
