@@ -182,10 +182,10 @@ export async function runCronJobDoMtnReconciliation(): Promise<request.Response>
     .set('Cookie', [accessToken]);
 }
 
-export async function runCronJobDoAlfouadReconciliation(): Promise<request.Response> {
+export async function runCronJobDoAlFouadReconciliation(): Promise<request.Response> {
   const accessToken = await getAccessToken();
   return await getServer()
-    .patch('/cronjobs/fsps/alfouad')
+    .patch('/cronjobs/fsps/al-fouad')
     .set('Cookie', [accessToken]);
 }
 
