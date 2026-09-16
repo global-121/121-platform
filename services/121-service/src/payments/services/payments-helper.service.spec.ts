@@ -21,21 +21,27 @@ describe('PaymentsHelperService', () => {
             findOne: jest.fn(),
           },
         },
-        TransactionViewScopedRepository,
-        RegistrationsPaginationService,
-        RegistrationsBulkService,
+        {
+          provide: TransactionViewScopedRepository,
+          useValue: {
+            getByStatusOfIncludedRegistrations: jest.fn(),
+          },
+        },
+        {
+          provide: RegistrationsPaginationService,
+          useValue: {
+            getRegistrationViewsNoLimit: jest.fn(),
+          },
+        },
+        {
+          provide: RegistrationsBulkService,
+          useValue: {
+            getBaseQuery: jest.fn(),
+          },
+        },
         PaymentsHelperService,
       ],
     }).compile();
-    // programFspConfigurationRepository = {
-    //   findOne: jest.fn(),
-    // } as unknown as ProgramFspConfigurationRepository;
-
-    // transactionViewScopedRepository = {
-    //   findOne: jest.fn(),
-    // } as unknown as TransactionViewScopedRepository;
-
-    // registrationsPaginationService = module.get;
 
     service = module.get(PaymentsHelperService);
     programFspConfigurationRepository = module.get(

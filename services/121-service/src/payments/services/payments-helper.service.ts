@@ -60,9 +60,11 @@ export class PaymentsHelperService {
   async throwIfPaymentHasDuplicateRegistrations({
     programId,
     paymentId,
+    action,
   }: {
     programId: number;
     paymentId: number;
+    action: 'approve' | 'start';
   }): Promise<void> {
     const transactionsForPayment =
       await this.transactionViewScopedRepository.getByStatusOfIncludedRegistrations(
@@ -101,7 +103,7 @@ export class PaymentsHelperService {
 
     if (duplicateRegistrations.length > 0) {
       throw new HttpException(
-        `Cannot approve payment: ${duplicateRegistrations.length} registration(s) have duplicate status. Resolve duplicates before approving this payment.`,
+        `Cannot ${action} payment: ${duplicateRegistrations.length} registration(s) have duplicate status. Resolve duplicates before approving this payment.`,
         HttpStatus.BAD_REQUEST,
       );
     }
