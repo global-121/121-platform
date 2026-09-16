@@ -89,9 +89,6 @@ export class IgnoreDuplicationDialogComponent {
         registrationIds: this.duplicatesRegistrationIds(),
         reason,
       }),
-    meta: {
-      invalidateCacheAgainAfterDelay: 500,
-    },
     onSuccess: () => {
       this.formGroup.reset();
     },
