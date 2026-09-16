@@ -41,9 +41,9 @@ import { ToastService } from '~/services/toast.service';
 import {
   TrackingAction,
   TrackingCategory,
-  TrackingEvent,
-} from '~/services/tracking.enum';
-import { TrackingService } from '~/services/tracking.service';
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
+import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import {
   getLocaleLabel,

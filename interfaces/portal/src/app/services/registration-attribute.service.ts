@@ -36,7 +36,7 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
 import { Registration } from '~/domains/registration/registration.model';
 import { AuthService } from '~/services/auth.service';
 import { GetRegistrationPreferredLanguageNameService } from '~/services/get-registration-preferrred-language-name.service';
-import { InfoTooltipTrackingName } from '~/services/tracking.enum';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Locale } from '~/utils/locale';
 

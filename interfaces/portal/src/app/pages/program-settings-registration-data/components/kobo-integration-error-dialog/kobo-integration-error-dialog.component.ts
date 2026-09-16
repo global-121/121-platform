@@ -16,7 +16,7 @@ import { KoboValidationErrorType } from '@121-service/src/kobo/enum/kobo-validat
 import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
-import { InfoTooltipTrackingName } from '~/services/tracking.enum';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 
 enum KoboErrorDisplayType {
   formSetting = 'formSetting',

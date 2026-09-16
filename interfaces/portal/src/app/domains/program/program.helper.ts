@@ -13,7 +13,7 @@ import {
   ProgramAttachmentFileType,
 } from '~/domains/program/program.model';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
-import { InfoTooltipTrackingName } from '~/services/tracking.enum';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 
 export const programHasVoucherSupport = (program?: Program): boolean =>
   program?.programFspConfigurations.some((fsp) =>

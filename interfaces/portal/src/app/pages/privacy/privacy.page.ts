@@ -2,7 +2,7 @@ import { DatePipe, NgComponentOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
-import { TrackingService } from '~/services/tracking.service';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 @Component({
   selector: 'app-privacy-page',

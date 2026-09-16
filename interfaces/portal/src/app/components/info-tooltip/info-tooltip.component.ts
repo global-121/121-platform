@@ -13,8 +13,8 @@ import {
   InfoTooltipTrackingName,
   TrackingAction,
   TrackingCategory,
-} from '~/services/tracking.enum';
-import { TrackingService } from '~/services/tracking.service';
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 const TRACK_EVENT_DELAY_MS = 1000;
 

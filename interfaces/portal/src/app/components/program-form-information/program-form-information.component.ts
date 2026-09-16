@@ -23,8 +23,8 @@ import { Program } from '~/domains/program/program.model';
 import {
   TrackingAction,
   TrackingCategory,
-  TrackingEvent,
-} from '~/services/tracking.enum';
+} from '~/services/tracking/tracking.enums';
+import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
 import { generateFieldErrors, trackFieldErrors } from '~/utils/form-validation';
 
 export type ProgramInformationFormGroup =

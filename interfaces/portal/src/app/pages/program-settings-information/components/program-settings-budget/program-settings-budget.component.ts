@@ -34,8 +34,8 @@ import { ToastService } from '~/services/toast.service';
 import {
   TrackingAction,
   TrackingCategory,
-  TrackingEvent,
-} from '~/services/tracking.enum';
+} from '~/services/tracking/tracking.enums';
+import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
 
 @Component({
   selector: 'app-program-settings-budget',

@@ -12,7 +12,7 @@ import { parseMatomoConnectionString } from 'scripts/lib/matomo.utils.mjs';
 import { AppRoutes } from '~/app.routes';
 import { PrivacyCopyNoTrackingComponent } from '~/components/privacy/privacy-copy-no-tracking.component';
 import { PrivacyCopyTrackingComponent } from '~/components/privacy/privacy-copy-tracking.component';
-import { TrackingEvent } from '~/services/tracking.enum';
+import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
 import { environment } from '~environment';
 
 const MATOMO_CONNECTION_INFO = parseMatomoConnectionString(

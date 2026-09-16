@@ -32,8 +32,11 @@ import { AuthService } from '~/services/auth.service';
 import { ExportService } from '~/services/export.service';
 import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
-import { TrackingAction, TrackingCategory } from '~/services/tracking.enum';
-import { TrackingService } from '~/services/tracking.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 @Component({
   selector: 'app-export-registrations',

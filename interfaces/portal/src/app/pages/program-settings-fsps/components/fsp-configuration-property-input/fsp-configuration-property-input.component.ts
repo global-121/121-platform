@@ -22,7 +22,7 @@ import { FspFormField } from '~/domains/fsp-configuration/fsp-configuration.mode
 import { FspConfigurationPropertyInputType } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
-import { InfoTooltipTrackingName } from '~/services/tracking.enum';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 
 @Component({
   selector: 'app-fsp-configuration-property-input',

@@ -31,7 +31,7 @@ import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Attribute } from '~/domains/program/program.model';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
-import { InfoTooltipTrackingName } from '~/services/tracking.enum';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 import { getLinguonym } from '~/utils/get-linguonym';
 import {
   getUILanguageFromLocale,

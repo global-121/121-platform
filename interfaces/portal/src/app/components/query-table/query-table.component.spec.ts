@@ -19,7 +19,7 @@ import { QueryTableRowExpansionService } from '~/components/query-table/services
 import { QueryTableSelectionService } from '~/components/query-table/services/query-table-selection.service';
 import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
-import { TrackingService } from '~/services/tracking.service';
+import { TrackingService } from '~/services/tracking/tracking.service';
 import { Locale } from '~/utils/locale';
 
 // To make the tests concerning PrimeNG ContextMenu work.

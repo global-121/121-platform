@@ -33,8 +33,11 @@ import { ProgramUserWithRolesLabel } from '~/domains/program/program.model';
 import { RoleApiService } from '~/domains/role/role.api.service';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
-import { TrackingAction, TrackingCategory } from '~/services/tracking.enum';
-import { TrackingService } from '~/services/tracking.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({

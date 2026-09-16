@@ -22,7 +22,7 @@ import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.com
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { AttributeWithTranslatedLabel } from '~/domains/program/program.model';
 import { MessagingService } from '~/services/messaging.service';
-import { InfoTooltipTrackingName } from '~/services/tracking.enum';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 
 @Component({
   selector: 'app-custom-message-control',

@@ -121,16 +121,3 @@ export enum InfoTooltipTrackingName {
   requiredAttributeScopeInfo = 'Kobo Required Attribute: Scope Info',
   unsupportedLanguageWarning = 'Registration Questions: Unsupported Language Warning',
 }
-
-/**
- * Matomo tracking Event.
- *
- * Contains the information that is sent to the Matomo API.
- *
- */
-export interface TrackingEvent {
-  category: TrackingCategory;
-  action: TrackingAction;
-  name?: string; // Optional, but recommended
-  value?: number; // Optional, but recommended
-}

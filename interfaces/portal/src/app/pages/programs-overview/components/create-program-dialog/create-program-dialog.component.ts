@@ -45,8 +45,8 @@ import {
 } from '~/pages/programs-overview/components/create-program-dialog/create-new-program-tracker';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
-import { TrackingEvent } from '~/services/tracking.enum';
-import { TrackingService } from '~/services/tracking.service';
+import { TrackingService } from '~/services/tracking/tracking.service';
+import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
 

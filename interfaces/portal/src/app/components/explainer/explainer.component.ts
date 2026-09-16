@@ -11,8 +11,8 @@ import {
   ExplainerTrackingName,
   TrackingAction,
   TrackingCategory,
-} from '~/services/tracking.enum';
-import { TrackingService } from '~/services/tracking.service';
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 export interface ExplainerItem {
   content: string;

@@ -17,8 +17,11 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 
 import { RtlHelperService } from '~/services/rtl-helper.service';
-import { TrackingAction, TrackingCategory } from '~/services/tracking.enum';
-import { TrackingService } from '~/services/tracking.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 @Component({
   selector: 'app-query-table-global-search',

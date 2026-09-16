@@ -3,7 +3,7 @@ import {
   GenericRegistrationAttributes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 
-import { InfoTooltipTrackingName } from '~/services/tracking.enum';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 
 export const ATTRIBUTE_LABELS: Record<GenericRegistrationAttributes, string> = {
   referenceId: $localize`:@@attribute-label-referenceId:Reference ID`,
