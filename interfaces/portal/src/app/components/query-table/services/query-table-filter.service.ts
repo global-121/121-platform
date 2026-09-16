@@ -8,11 +8,8 @@ import {
   QueryTableColumnType,
 } from '~/components/query-table/query-table.types';
 import { QueryTableCellService } from '~/components/query-table/services/query-table-cell.service';
-import {
-  TrackingAction,
-  TrackingCategory,
-  TrackingService,
-} from '~/services/tracking.service';
+import { TrackingAction, TrackingCategory } from '~/services/tracking.enum';
+import { TrackingService } from '~/services/tracking.service';
 
 export class QueryTableFilterService<TData> {
   private readonly trackingService = inject(TrackingService);

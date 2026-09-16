@@ -22,7 +22,7 @@ import {
   TrackingAction,
   TrackingCategory,
   TrackingEvent,
-} from '~/services/tracking.service';
+} from '~/services/tracking.enum';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { generateFieldErrors, trackFieldErrors } from '~/utils/form-validation';
 

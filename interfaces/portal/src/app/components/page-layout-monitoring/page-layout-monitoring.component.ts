@@ -23,7 +23,7 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { InfoTooltipTrackingName } from '~/services/tracking.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.enum';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
 import { Locale } from '~/utils/locale';

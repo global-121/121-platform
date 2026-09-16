@@ -35,7 +35,7 @@ import {
   TrackingAction,
   TrackingCategory,
   TrackingEvent,
-} from '~/services/tracking.service';
+} from '~/services/tracking.enum';
 
 @Component({
   selector: 'app-program-settings-budget',

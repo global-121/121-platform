@@ -2,7 +2,7 @@ import {
   TrackingAction,
   TrackingCategory,
   TrackingEvent,
-} from '~/services/tracking.service';
+} from '~/services/tracking.enum';
 
 type ProgramStep = 1 | 2 | 3;
 type CompletionMode = 'create' | 'duplicate';

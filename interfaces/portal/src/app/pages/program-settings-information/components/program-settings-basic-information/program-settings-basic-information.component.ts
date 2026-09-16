@@ -42,8 +42,8 @@ import {
   TrackingAction,
   TrackingCategory,
   TrackingEvent,
-  TrackingService,
-} from '~/services/tracking.service';
+} from '~/services/tracking.enum';
+import { TrackingService } from '~/services/tracking.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import {
   getLocaleLabel,

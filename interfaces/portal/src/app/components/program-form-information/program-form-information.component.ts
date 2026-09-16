@@ -24,7 +24,7 @@ import {
   TrackingAction,
   TrackingCategory,
   TrackingEvent,
-} from '~/services/tracking.service';
+} from '~/services/tracking.enum';
 import { generateFieldErrors, trackFieldErrors } from '~/utils/form-validation';
 
 export type ProgramInformationFormGroup =

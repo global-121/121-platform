@@ -44,11 +44,8 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
-import {
-  TrackingAction,
-  TrackingCategory,
-  TrackingService,
-} from '~/services/tracking.service';
+import { TrackingAction, TrackingCategory } from '~/services/tracking.enum';
+import { TrackingService } from '~/services/tracking.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
 import { Locale } from '~/utils/locale';
 

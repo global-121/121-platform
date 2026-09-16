@@ -28,7 +28,7 @@ import {
   TrackingAction,
   TrackingCategory,
   TrackingEvent,
-} from '~/services/tracking.service';
+} from '~/services/tracking.enum';
 import { generateFieldErrors, trackFieldErrors } from '~/utils/form-validation';
 import { Locale } from '~/utils/locale';
 

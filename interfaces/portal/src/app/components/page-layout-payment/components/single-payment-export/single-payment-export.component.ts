@@ -18,11 +18,8 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { AuthService } from '~/services/auth.service';
 import { ExportService } from '~/services/export.service';
 import { ToastService } from '~/services/toast.service';
-import {
-  TrackingAction,
-  TrackingCategory,
-  TrackingService,
-} from '~/services/tracking.service';
+import { TrackingAction, TrackingCategory } from '~/services/tracking.enum';
+import { TrackingService } from '~/services/tracking.service';
 
 @Component({
   selector: 'app-single-payment-export',

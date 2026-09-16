@@ -44,7 +44,7 @@ import { ProgramApiService } from '~/domains/program/program.api.service';
 import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
-import { InfoTooltipTrackingName } from '~/services/tracking.service';
+import { InfoTooltipTrackingName } from '~/services/tracking.enum';
 import { Dto } from '~/utils/dto-type';
 
 type ApprovalStepFormGroup = FormGroup<{

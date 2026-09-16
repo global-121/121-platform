@@ -28,7 +28,7 @@ import { ToastService } from '~/services/toast.service';
 import {
   ExplainerTrackingName,
   InfoTooltipTrackingName,
-} from '~/services/tracking.service';
+} from '~/services/tracking.enum';
 @Component({
   selector: 'app-required-attributes',
   imports: [

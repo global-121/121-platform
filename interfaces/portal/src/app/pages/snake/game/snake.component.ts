@@ -13,11 +13,8 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 
-import {
-  TrackingAction,
-  TrackingCategory,
-  TrackingService,
-} from '~/services/tracking.service';
+import { TrackingAction, TrackingCategory } from '~/services/tracking.enum';
+import { TrackingService } from '~/services/tracking.service';
 
 interface Vector {
   x: number;
