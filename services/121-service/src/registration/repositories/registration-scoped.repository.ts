@@ -16,7 +16,7 @@ import { type QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialE
 
 import { ExportVisaCardDetailsRawData } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
-import { ProgramRegistrationProgramIdCounterEntity } from '@121-service/src/programs/entities/program-registration-program-id-counter.entity';
+import { RegistrationProgramIdSequenceEntity } from '@121-service/src/programs/entities/registration-program-id-sequence.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -26,7 +26,7 @@ import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class RegistrationScopedRepository extends RegistrationScopedBaseRepository<RegistrationEntity> {
-  private readonly counterRepository: Repository<ProgramRegistrationProgramIdCounterEntity>;
+  private readonly sequenceRepository: Repository<RegistrationProgramIdSequenceEntity>;
 
   constructor(
     dataSource: DataSource,
@@ -34,8 +34,8 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     @Inject(REQUEST) public override request: ScopedUserRequest,
   ) {
     super(RegistrationEntity, dataSource);
-    this.counterRepository = dataSource.getRepository(
-      ProgramRegistrationProgramIdCounterEntity,
+    this.sequenceRepository = dataSource.getRepository(
+      RegistrationProgramIdSequenceEntity,
     );
   }
 
@@ -85,9 +85,9 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   }: {
     programId: number;
   }): Promise<number> {
-    const updateResult = await this.counterRepository
+    const updateResult = await this.sequenceRepository
       .createQueryBuilder()
-      .update(ProgramRegistrationProgramIdCounterEntity)
+      .update(RegistrationProgramIdSequenceEntity)
       .set({
         lastRegistrationProgramId: () => '"lastRegistrationProgramId" + 1',
       })
@@ -100,7 +100,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     }
 
     throw new Error(
-      `No registrationProgramId counter found for program ${programId}`,
+      `No registrationProgramId sequence found for program ${programId}`,
     );
   }
 

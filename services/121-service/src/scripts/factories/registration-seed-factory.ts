@@ -4,7 +4,7 @@ import { DataSource, DeepPartial, Equal, In, Not } from 'typeorm';
 
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
-import { ProgramRegistrationProgramIdCounterEntity } from '@121-service/src/programs/entities/program-registration-program-id-counter.entity';
+import { RegistrationProgramIdSequenceEntity } from '@121-service/src/programs/entities/registration-program-id-sequence.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -78,10 +78,10 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
       await this.insertEntitiesBatch(newRegistrationsData);
 
     await this.dataSource
-      .getRepository(ProgramRegistrationProgramIdCounterEntity)
+      .getRepository(RegistrationProgramIdSequenceEntity)
       .createQueryBuilder()
       .insert()
-      .into(ProgramRegistrationProgramIdCounterEntity)
+      .into(RegistrationProgramIdSequenceEntity)
       .values({
         programId,
         lastRegistrationProgramId: currentMax,
