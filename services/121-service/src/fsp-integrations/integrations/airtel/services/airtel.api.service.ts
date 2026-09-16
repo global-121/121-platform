@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
+import { AxiosResponse } from 'axios';
 
 import { env } from '@121-service/src/env';
 import { AirtelApiAuthenticationRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/airtel/dtos/airtel-api-authentication-request-body.dto';
