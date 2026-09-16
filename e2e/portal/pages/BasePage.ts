@@ -281,17 +281,6 @@ class BasePage {
     }
   }
 
-  // On the budget page and kobo requirement page we show the FSPs in a pill format, so we need to validate that the pills are shown correctly
-  async validateProgramFspsPills({ fspNames }: { fspNames: string[] }) {
-    const list = this.page.getByTestId('integrated-fsp-list');
-    const fsps = list.getByRole('listitem');
-
-    const sortedFspsInnerTexts = (await fsps.allInnerTexts()).sort();
-    const sortedFspNames = fspNames.sort();
-
-    await expect(sortedFspsInnerTexts).toEqual(sortedFspNames);
-  }
-
   async validateExportedFile({
     filePath,
     minRowCount,
