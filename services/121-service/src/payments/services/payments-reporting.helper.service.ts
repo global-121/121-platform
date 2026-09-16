@@ -42,6 +42,7 @@ export class PaymentsReportingHelperService {
           programId: Equal(programId),
           includeInTransactionExport: Equal(true),
         },
+        order: { created: 'ASC', id: 'ASC' },
       });
 
     return programRegistrationAttributes.map((attr) => attr.name);

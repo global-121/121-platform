@@ -7,13 +7,15 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  // Full name is set to 'error' to create a failed payment
-  registrationsCbe[0].fullName = 'error';
+const registrationsCbeWithError = registrationsCbe.map((registration) => ({
+  ...registration,
+  fullName: 'error', // Full name is set to 'error' to create a failed payment
+}));
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.cbeProgram,
-    registrations: registrationsCbe,
+    registrations: registrationsCbeWithError,
     programId: programIdCbe,
     navigateToPage: `/program/${programIdCbe}/payments`,
   });

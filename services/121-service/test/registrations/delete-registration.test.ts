@@ -9,6 +9,7 @@ import {
   getRegistrationEvents,
   importRegistrations,
   searchRegistrationByReferenceId,
+  waitForDeleteRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -20,17 +21,28 @@ describe('Delete PA', () => {
   let accessToken: string;
   const reason = 'automated test';
 
+  const registrationVisa1 = {
+    ...registrationVisa,
+    referenceId: `${registrationVisa.referenceId}-1`,
+  };
+  const registrationVisa2 = {
+    ...registrationVisa,
+    referenceId: `${registrationVisa.referenceId}-2`,
+  };
+
   beforeAll(async () => {
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
-  });
-  beforeEach(async () => {
-    await importRegistrations(programId, [registrationVisa], accessToken);
+    await importRegistrations(
+      programId,
+      [registrationVisa1, registrationVisa2],
+      accessToken,
+    );
   });
 
   it('should not delete unknown registrations', async () => {
     // Arrange
-    const wrongReferenceId = registrationVisa.referenceId + '-fail-test';
+    const wrongReferenceId = 'non-existing-reference-id';
 
     // Act
     const response = await deleteRegistrations({
@@ -47,7 +59,7 @@ describe('Delete PA', () => {
   });
 
   it('should successfully delete', async () => {
-    const rightReferenceId = registrationVisa.referenceId;
+    const rightReferenceId = registrationVisa2.referenceId;
 
     // Act
     const response = await deleteRegistrations({
@@ -56,16 +68,28 @@ describe('Delete PA', () => {
       accessToken,
       reason,
     });
+    await waitForDeleteRegistrations({
+      programId,
+      referenceIds: [rightReferenceId],
+    });
     const registration = await searchRegistrationByReferenceId(
-      registrationVisa.referenceId,
+      rightReferenceId,
       programId,
       accessToken,
     );
     const eventsResponse = await getRegistrationEvents({
       programId,
+      referenceId: rightReferenceId,
       accessToken,
     });
-    const deleteEvent = eventsResponse.body.data[1]; // The second event is the delete event
+    const deleteEvent = eventsResponse.body.data.find(
+      (event: {
+        type: RegistrationEventEnum;
+        newValue: RegistrationStatusEnum;
+      }) =>
+        event.type === RegistrationEventEnum.registrationStatusChange &&
+        event.newValue === RegistrationStatusEnum.deleted,
+    );
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.ACCEPTED);

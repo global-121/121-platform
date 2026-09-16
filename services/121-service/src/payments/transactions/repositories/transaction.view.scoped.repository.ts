@@ -34,7 +34,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
           programId: Equal(programId),
         },
       },
-      order: { created: 'DESC' },
+      order: { created: 'DESC', id: 'DESC' },
       select: {
         id: true,
         paymentId: true,

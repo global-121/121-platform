@@ -29,10 +29,12 @@ import {
 const duplicateNumber = 5; // 2^5 = 32
 const maxWaitTimeMs = 5_000; // 5 seconds
 const passRate = 100; // 100%
-const maxRetryDurationMs = 30_000; // 30 seconds
+// Bull's stalled-job recovery can take up to lockDuration + stalledInterval (worst case ~45s)
+// after 121-service crashes, on top of the time it takes the service to restart
+const maxRetryDurationMs = 60_000; // 60 seconds
 const delayBetweenAttemptsMs = 3_000; // 3 seconds
 const transferValue = 25;
-const testTimeout = 50_000; // 50 seconds
+const testTimeout = 90_000; // 90 seconds
 
 jest.setTimeout(testTimeout);
 describe('Retry Failed Jobs On Startup During Queue Processing', () => {

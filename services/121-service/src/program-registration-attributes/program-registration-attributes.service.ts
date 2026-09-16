@@ -196,6 +196,7 @@ export class ProgramRegistrationAttributesService {
     let queryRegistrationAttr = this.programRegistrationAttributeRepository
       .createQueryBuilder('programRegistrationAttribute')
       .orderBy('programRegistrationAttribute.created', 'ASC')
+      .addOrderBy('programRegistrationAttribute.id', 'ASC')
       .where({ program: { id: programId } });
 
     if (filterShowInRegistrationsTable) {

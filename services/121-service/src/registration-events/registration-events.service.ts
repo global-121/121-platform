@@ -67,9 +67,14 @@ export class RegistrationEventsService {
         },
       );
 
+    const sortBy: PaginateQueryLimitRequired['sortBy'] = [
+      ['created', 'DESC'],
+      ['id', 'DESC'],
+    ];
     const paginateQuery = {
       path: '',
       limit: paginationLimitForMethodsNotUsingPagination,
+      sortBy,
     };
     return this.getPaginatedRegistrationEvents({
       paginateQuery,
