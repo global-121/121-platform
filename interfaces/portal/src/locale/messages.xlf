@@ -2145,6 +2145,9 @@
       <trans-unit id="attribute-label-status" datatype="html">
         <source>Status</source>
       </trans-unit>
+      <trans-unit id="attribute-label-transferValue" datatype="html">
+        <source>Transfer value</source>
+      </trans-unit>
       <trans-unit id="card-title-program-settings-basic-information" datatype="html">
         <source>Basic information</source>
       </trans-unit>

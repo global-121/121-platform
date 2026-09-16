@@ -11,6 +11,7 @@ export enum GenericRegistrationAttributes {
   referenceId = 'referenceId',
   preferredLanguage = 'preferredLanguage',
   paymentAmountMultiplier = 'paymentAmountMultiplier',
+  transferValue = 'transferValue',
   programFspConfigurationName = 'programFspConfigurationName',
   programFspConfigurationLabel = 'programFspConfigurationLabel',
   maxPayments = 'maxPayments',

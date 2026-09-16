@@ -29,6 +29,7 @@ exports[`Metric export list should export all registration attributes when no "s
   "referenceId": "22e62864557597e0d",
   "scope": "",
   "status": "included",
+  "transferValue": 25,
   "whatsappPhoneNumber": "14155237775",
 }
 `;
@@ -62,6 +63,7 @@ exports[`Metric export list should export all registration attributes when no "s
   "referenceId": "43e62864557597e0d",
   "scope": "",
   "status": "new",
+  "transferValue": 50,
   "whatsappPhoneNumber": "14155236666",
 }
 `;
@@ -95,6 +97,7 @@ exports[`Metric export list should export all registration attributes when no "s
   "referenceId": "54e62864557597e0d",
   "scope": "",
   "status": "new",
+  "transferValue": 75,
   "whatsappPhoneNumber": "14155235555",
 }
 `;
@@ -128,6 +131,7 @@ exports[`Metric export list should export all registration attributes when no "s
   "referenceId": "54e62864557597e034",
   "scope": "",
   "status": "new",
+  "transferValue": 75,
   "whatsappPhoneNumber": "14155235556",
 }
 `;

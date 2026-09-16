@@ -45,6 +45,7 @@ const getGenericAttributeType = (
     case GenericRegistrationAttributes.maxPayments:
       return RegistrationAttributeTypes.numericNullable;
     case GenericRegistrationAttributes.paymentAmountMultiplier:
+    case GenericRegistrationAttributes.transferValue:
     case GenericRegistrationAttributes.inclusionScore:
     case GenericRegistrationAttributes.paymentCount:
     case GenericRegistrationAttributes.paymentCountRemaining:
