@@ -39,6 +39,7 @@ import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/prog
 import { ProgramApprovalThresholdsModule } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.module';
 import { ProgramAttachmentsModule } from '@121-service/src/programs/program-attachments/program-attachments.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
+import { BullRedisClientsService } from '@121-service/src/queues-registry/bull-redis-client.service';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationsUpdateJobsModule } from '@121-service/src/registrations-update-jobs/registrations-update-jobs.module';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
@@ -83,20 +84,29 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
         ttl: THROTTLING_LIMIT_GENERIC.default.ttl,
       },
     ]),
-    BullModule.forRoot({
-      redis: {
-        host: env.REDIS_HOST,
-        port: env.REDIS_PORT,
-        password: env.REDIS_PASSWORD,
-        tls: env.REDIS_HOST === '121-redis' ? undefined : {}, // No SSL for local development
-      },
-      prefix: env.REDIS_PREFIX,
-      defaultJobOptions: {
-        removeOnComplete: true,
-      },
-      settings: {
-        stalledInterval: BULL_STALLED_INTERVAL_MS,
-      },
+    BullModule.forRootAsync({
+      imports: [QueuesRegistryModule],
+      inject: [BullRedisClientsService],
+      useFactory: (bullRedisClientService: BullRedisClientsService) => ({
+        redis: {
+          host: env.REDIS_HOST,
+          port: env.REDIS_PORT,
+          password: env.REDIS_PASSWORD,
+          tls: env.REDIS_HOST === '121-redis' ? undefined : {}, // No SSL for local development
+        },
+        createClient: (type, redisOptions) =>
+          bullRedisClientService.createClient({
+            type,
+            redisOptions,
+          }),
+        prefix: env.REDIS_PREFIX,
+        defaultJobOptions: {
+          removeOnComplete: true,
+        },
+        settings: {
+          stalledInterval: BULL_STALLED_INTERVAL_MS,
+        },
+      }),
     }),
     AuthModule,
     ActivitiesModule,
