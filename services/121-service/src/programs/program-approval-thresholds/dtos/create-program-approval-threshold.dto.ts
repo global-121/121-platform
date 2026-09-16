@@ -6,13 +6,15 @@ import {
   IsNotEmpty,
   IsNumber,
   IsPositive,
+  Max,
   Min,
 } from 'class-validator';
 
 export class CreateProgramApprovalThresholdDto {
   @ApiProperty({ example: 1000, description: 'Threshold amount for approval' })
-  @IsNumber()
+  @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
+  @Max(100_000_000_000) // Sanity upper bound to reject clearly erroneous input
   @IsNotEmpty()
   public readonly thresholdAmount: number;
 
