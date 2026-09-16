@@ -212,7 +212,7 @@ describe('Do payment with FSP: AlFouad', () => {
     expect(transactionEventDescriptions).toEqual(expectedEventsForSyncError);
 
     // Reconcile the waiting transaction to success so it does not remain waiting for subsequent tests
-    await runCronJobDoAlfouadReconciliation();
+    await runCronJobDoAlFouadReconciliation();
     await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
