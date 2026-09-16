@@ -10,6 +10,7 @@ interface QueryBuilderMock {
   getRawOne?: () => any;
   distinct?: () => QueryBuilderMock;
   orderBy?: () => QueryBuilderMock;
+  addOrderBy?: () => QueryBuilderMock;
 }
 
 export function generateMockCreateQueryBuilder(
@@ -25,7 +26,9 @@ export function generateMockCreateQueryBuilder(
     innerJoin: () => mock,
     distinct: () => mock,
     orderBy: () => mock,
+    addOrderBy: () => mock,
   };
+
 
   if (options.useGetMany) {
     mock.getMany = () => dbQueryResult;

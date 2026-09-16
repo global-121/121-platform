@@ -93,3 +93,11 @@ export const THROTTLING_LIMIT_HIGH = {
 };
 
 export const DEFAULT_PAGINATION_LIMIT = 20;
+
+// Configure Bull queue stalled-job recovery:
+// See: https://github.com/OptimalBits/bull/blob/develop/REFERENCE.md#queue
+// ---------------------------------------------------------------------------
+// Lower than Bull's 30s default so jobs that were 'active' when 121-service crashes
+// are detected as stalled and requeued faster, without weakening lockDuration
+// (which stays at Bull's default and protects genuinely slow, still-running jobs).
+export const BULL_STALLED_INTERVAL_MS = 15_000;

@@ -30,13 +30,13 @@ export const FSP_CONFIGURATION_PROPERTY_LABELS: Record<
   [FspConfigurationProperties.subscriptionKeyMtn]: $localize`Subscription key`,
   [FspConfigurationProperties.referenceIdMtn]: $localize`:@@attribute-label-referenceId:Reference ID`,
   [FspConfigurationProperties.apiKeyMtn]: $localize`API key`,
-  [FspConfigurationProperties.accountAlfouad]: $localize`Account`,
-  [FspConfigurationProperties.branchIdAlfouad]: $localize`Branch ID`,
-  [FspConfigurationProperties.usernameAlfouad]: $localize`Username`,
-  [FspConfigurationProperties.passwordAlfouad]: $localize`Password`,
-  [FspConfigurationProperties.publicKeyAlfouad]: $localize`Public key`,
-  [FspConfigurationProperties.senderFullNameAlfouad]: $localize`Sender full name`,
-  [FspConfigurationProperties.senderPhoneNumberAlfouad]: $localize`Sender phone number`,
+  [FspConfigurationProperties.accountAlFouad]: $localize`Account`,
+  [FspConfigurationProperties.branchIdAlFouad]: $localize`Branch ID`,
+  [FspConfigurationProperties.usernameAlFouad]: $localize`Username`,
+  [FspConfigurationProperties.passwordAlFouad]: $localize`Password`,
+  [FspConfigurationProperties.publicKeyAlFouad]: $localize`Public key`,
+  [FspConfigurationProperties.senderFullNameAlFouad]: $localize`Sender full name`,
+  [FspConfigurationProperties.senderPhoneNumberAlFouad]: $localize`Sender phone number`,
 };
 
 export const FSP_IMAGE_URLS: Record<Fsps, string> = {
@@ -51,7 +51,7 @@ export const FSP_IMAGE_URLS: Record<Fsps, string> = {
   [Fsps.onafriq]: 'assets/fsps/onafriq.jpg',
   [Fsps.cooperativeBankOfOromia]: 'assets/fsps/cbo.png',
   [Fsps.mtn]: 'assets/fsps/mtn.png',
-  [Fsps.alfouad]: 'assets/fsps/alfouad.jpg',
+  [Fsps.alFouad]: 'assets/fsps/al-fouad.jpg',
 };
 
 const hasPendingFspConfiguration = ({
