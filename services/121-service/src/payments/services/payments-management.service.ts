@@ -393,6 +393,7 @@ export class PaymentsManagementService {
     await this.paymentsHelperService.throwIfPaymentHasDuplicateRegistrations({
       programId,
       paymentId,
+      action: 'approve',
     });
 
     const totalApprovals = await this.paymentApprovalRepository.count({
