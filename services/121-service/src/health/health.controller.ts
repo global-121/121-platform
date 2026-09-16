@@ -16,8 +16,7 @@ import { GetVersionDto } from '@121-service/src/health/dto/get-version.dto';
   'Called by the public status-page and other monitoring tools.',
 )
 @ApiTags('instance')
-// TODO: REFACTOR: rename to instance
-@Controller('health')
+@Controller('health') // TODO: REFACTOR: rename to instance
 export class HealthController {
   public constructor(
     private health: HealthCheckService,
