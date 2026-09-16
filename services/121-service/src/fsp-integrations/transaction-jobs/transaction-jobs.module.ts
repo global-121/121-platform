@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AirtelModule } from '@121-service/src/fsp-integrations/integrations/airtel/airtel.module';
-import { AlfouadModule } from '@121-service/src/fsp-integrations/integrations/alfouad/alfouad.module';
+import { AlFouadModule } from '@121-service/src/fsp-integrations/integrations/al-fouad/al-fouad.module';
 import { CommercialBankEthiopiaModule } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
 import { CooperativeBankOfOromiaModule } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/cooperative-bank-of-oromia.module';
 import { ExcelModule } from '@121-service/src/fsp-integrations/integrations/excel/excel.module';
@@ -15,7 +15,7 @@ import { OnafriqModule } from '@121-service/src/fsp-integrations/integrations/on
 import { SafaricomModule } from '@121-service/src/fsp-integrations/integrations/safaricom/safaricom.module';
 import { createTransactionJobProcessor } from '@121-service/src/fsp-integrations/transaction-jobs/processor/create-transaction-job-processor';
 import { TransactionJobsAirtelService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-airtel.service';
-import { TransactionJobsAlfouadService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-alfouad.service';
+import { TransactionJobsAlFouadService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-al-fouad.service';
 import { TransactionJobsCommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-commercial-bank-ethiopia.service';
 import { TransactionJobsCooperativeBankOfOromiaService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-cooperative-bank-of-oromia.service';
 import { TransactionJobsExcelService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-excel.service';
@@ -52,7 +52,7 @@ const transactionJobProcessors = [
   createTransactionJobProcessor(QueueNames.transactionJobsCommercialBankEthiopia, TransactionJobsCommercialBankEthiopiaService),
   createTransactionJobProcessor(QueueNames.transactionJobsExcel, TransactionJobsExcelService),
   createTransactionJobProcessor(QueueNames.transactionJobsMtn, TransactionJobsMtnService),
-  createTransactionJobProcessor(QueueNames.transactionJobsAlfouad, TransactionJobsAlfouadService),
+  createTransactionJobProcessor(QueueNames.transactionJobsAlFouad, TransactionJobsAlFouadService),
 ];
 
 @Module({
@@ -63,7 +63,7 @@ const transactionJobProcessors = [
     IntersolveVoucherModule,
     SafaricomModule,
     AirtelModule,
-    AlfouadModule,
+    AlFouadModule,
     CooperativeBankOfOromiaModule,
     MtnModule,
     NedbankModule,
@@ -93,7 +93,7 @@ const transactionJobProcessors = [
     TransactionJobsCommercialBankEthiopiaService,
     TransactionJobsMtnService,
     TransactionJobsExcelService,
-    TransactionJobsAlfouadService,
+    TransactionJobsAlFouadService,
     createScopedRepositoryProvider(OnafriqTransactionEntity),
     TransactionEventsScopedRepository,
   ],

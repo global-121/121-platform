@@ -7,6 +7,7 @@ import { CooperativeBankOfOromiaAccountValidationScopedRepository } from '@121-s
 import { CooperativeBankOfOromiaService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.service';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
@@ -20,6 +21,7 @@ export class CooperativeBankOfOromiaAccountManagementService {
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly cooperativeBankOfOromiaService: CooperativeBankOfOromiaService,
     private readonly programRepository: ProgramRepository,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
   public async retrieveAndUpsertAccountInformation(): Promise<number> {
@@ -40,6 +42,16 @@ export class CooperativeBankOfOromiaAccountManagementService {
   }: {
     programId: number;
   }): Promise<number> {
+    const isConfigured =
+      await this.programFspConfigurationRepository.isFspConfiguredForProgram({
+        programId,
+        fspName: Fsps.cooperativeBankOfOromia,
+      });
+
+    if (!isConfigured) {
+      return 0;
+    }
+
     const queryBuilder =
       this.registrationViewScopedRepository.getQueryBuilderForAccountValidation(
         {

@@ -179,6 +179,7 @@ test.describe('as user with only view paper voucher permissions', () => {
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationPersonalREAD,
+          PermissionEnum.ProgramRegistrationAttributesREAD,
           PermissionEnum.PaymentVoucherPaperREAD,
         ],
         programId: programIdPV,

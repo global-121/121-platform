@@ -5,6 +5,7 @@ import { CommercialBankEthiopiaAccountManagementController } from '@121-service/
 import { CommercialBankEthiopiaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia/commercial-bank-ethiopia-account-management.service';
 import { CommercialBankEthiopiaModule } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
+import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
@@ -20,6 +21,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     CommercialBankEthiopiaModule,
     RegistrationsModule,
     ProgramModule,
+    ProgramFspConfigurationsModule,
   ],
   providers: [
     CommercialBankEthiopiaAccountManagementService,

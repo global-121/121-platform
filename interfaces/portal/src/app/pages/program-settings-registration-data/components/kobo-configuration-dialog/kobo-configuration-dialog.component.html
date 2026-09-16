@@ -9,59 +9,67 @@
   proceedLabel="Continue"
   i18n-proceedLabel
 >
-  <!-- WRAPPED IN DIV TO MITIGATE SPACING FROM PARENT  -->
-  <div class="mbe-2">
-    <p i18n>
-      For more information about how to integrate Kobo see
-      <app-manual-link />
-    </p>
-    <p i18n>
-      Make sure the default language in the 'Form' tab of Kobo matches the main
-      language of the program. One language must be set to English (EN).
-    </p>
+  <div class="overflow-y-auto max-block-[70vh]">
+    <div class="mbe-2">
+      <p i18n>
+        For more information about how to integrate Kobo see
+        <app-manual-link />
+      </p>
+      <p i18n>
+        Make sure the default language in the 'Form' tab of Kobo matches the
+        main language of the program. One language must be set to English (EN).
+      </p>
+    </div>
+
+    <app-form-field-wrapper
+      label="Kobo form URL"
+      i18n-label
+      [errorMessage]="koboConfigurationFormFieldErrors()('fullKoboFormUrl')"
+    >
+      <small
+        i18n="Do NOT translate the URL!@@integrate-kobo-form-url-explanation"
+        class="text-grey-700 -mbs-1.5 mbe-2 block text-sm"
+      >
+        The full URL from the form's page in KoboToolbox, i.e:
+        https://kobo.ifrc.org/#/forms/XXXXXX/summary
+      </small>
+
+      <input
+        pInputText
+        type="url"
+        inputmode="url"
+        formControlName="fullKoboFormUrl"
+        (input)="onFormUrlUpdate($event)"
+      />
+    </app-form-field-wrapper>
+
+    <div class="mbe-3">
+      <app-explainer
+        [title]="koboExplainers.formUrl.title"
+        [items]="koboExplainers.formUrl.items"
+        [trackingEventName]="'KoboToolbox form URL'"
+      />
+    </div>
+
+    <app-form-field-wrapper
+      label="API key"
+      i18n-label
+      [errorMessage]="koboConfigurationFormFieldErrors()('token')"
+    >
+      <p-password
+        formControlName="token"
+        [toggleMask]="true"
+        autocomplete="off"
+        [feedback]="false"
+      />
+    </app-form-field-wrapper>
+
+    <app-explainer
+      [title]="koboExplainers.apiKey.title"
+      [items]="koboExplainers.apiKey.items"
+      [trackingEventName]="'KoboToolbox API key'"
+    />
   </div>
-
-  <app-form-field-wrapper
-    label="Kobo form URL"
-    i18n-label
-    [errorMessage]="koboConfigurationFormFieldErrors()('fullKoboFormUrl')"
-  >
-    <small
-      i18n="Do NOT translate the URL!@@integrate-kobo-form-url-explanation"
-      class="text-grey-700 mbe-2 block text-sm"
-    >
-      The full URL from the form's page in KoboToolbox, i.e:
-      https://kobo.ifrc.org/#/forms/XXXXXX/summary
-    </small>
-
-    <input
-      pInputText
-      type="url"
-      inputmode="url"
-      formControlName="fullKoboFormUrl"
-      (input)="onFormUrlUpdate($event)"
-    />
-  </app-form-field-wrapper>
-  <app-form-field-wrapper
-    label="API key"
-    i18n-label
-    [errorMessage]="koboConfigurationFormFieldErrors()('token')"
-  >
-    <small
-      i18n="@@integrate-kobo-form-api-key-explanation"
-      class="text-grey-700 mbe-2 block text-sm"
-    >
-      Copy the API key from the Kobo account settings (top right) > security.<br />
-      Make sure to click 'display' next to the API Key before copying.
-    </small>
-
-    <p-password
-      formControlName="token"
-      [toggleMask]="true"
-      autocomplete="off"
-      [feedback]="false"
-    />
-  </app-form-field-wrapper>
 </app-form-dialog>
 
 <app-form-dialog
