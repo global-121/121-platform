@@ -87,6 +87,13 @@ export abstract class BaseProgramDto {
   public readonly fullnameNamingConvention?: string[];
 
   @ApiProperty({
+    example: ['region', 'district', 'subDistrict'],
+  })
+  @IsOptional()
+  @IsArray()
+  public readonly scopeRegistrationAttributeNames?: string[];
+
+  @ApiProperty({
     example: Object.values(RegistrationPreferredLanguage),
   })
   @IsOptional()

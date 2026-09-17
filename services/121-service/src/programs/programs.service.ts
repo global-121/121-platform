@@ -10,6 +10,7 @@ import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-conf
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramRegistrationAttributeLockService } from '@121-service/src/program-registration-attributes/program-registration-attribute-lock.service';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
@@ -40,6 +41,7 @@ export class ProgramService {
     private readonly userService: UserService,
     private readonly programAttachmentsService: ProgramAttachmentsService,
     private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
+    private readonly programRegistrationAttributeLockService: ProgramRegistrationAttributeLockService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly intersolveVisaService: IntersolveVisaService,
   ) {}
@@ -182,6 +184,8 @@ export class ProgramService {
     program.enableScope = !!programData.enableScope;
     program.monitoringDashboardUrl = programData.monitoringDashboardUrl ?? null;
     program.budget = programData.budget ?? null;
+    program.scopeRegistrationAttributeNames =
+      programData.scopeRegistrationAttributeNames ?? null;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
@@ -414,8 +418,23 @@ export class ProgramService {
       );
     }
 
-    for (const key in updateProgramDto) {
-      program[key] = updateProgramDto[key];
+    const { scopeRegistrationAttributeNames, ...otherProgramUpdates } =
+      updateProgramDto;
+
+    if (scopeRegistrationAttributeNames !== undefined) {
+      program.scopeRegistrationAttributeNames =
+        this.programRegistrationAttributeLockService.validateScopeRegistrationAttributeNames(
+          {
+            programId: program.id,
+            programRegistrationAttributes:
+              program.programRegistrationAttributes ?? [],
+            attributeNames: scopeRegistrationAttributeNames,
+          },
+        );
+    }
+
+    for (const key in otherProgramUpdates) {
+      program[key] = otherProgramUpdates[key];
     }
 
     const savedProgram = await this.programRepository.save(program);
@@ -452,6 +471,8 @@ export class ProgramService {
           program.programRegistrationAttributes,
         ),
       fullnameNamingConvention: program.fullnameNamingConvention ?? undefined,
+      scopeRegistrationAttributeNames:
+        program.scopeRegistrationAttributeNames ?? undefined,
       languages: program.languages,
       enableMaxPayments: program.enableMaxPayments,
       enableScope: program.enableScope,
@@ -543,3 +564,4 @@ export class ProgramService {
     return namingConventionData;
   }
 }
+

@@ -183,6 +183,15 @@ export class ProgramReturnDto {
   public readonly fullnameNamingConvention?: string[];
 
   @ApiProperty({
+    example: ['region', 'district', 'subDistrict'],
+    description:
+      'Should be array of select-one program-registration-attributes used for scope calculation (max 3).',
+  })
+  @IsArray()
+  @IsOptional()
+  public readonly scopeRegistrationAttributeNames?: string[];
+
+  @ApiProperty({
     example: [
       RegistrationPreferredLanguage.en,
       RegistrationPreferredLanguage.nl,

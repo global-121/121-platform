@@ -6,6 +6,7 @@ import { Equal, In, QueryFailedError, Repository } from 'typeorm';
 
 import { env } from '@121-service/src/env';
 import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
+import { ProgramRegistrationAttributeLockService } from '@121-service/src/program-registration-attributes/program-registration-attribute-lock.service';
 import {
   CreateProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
@@ -35,6 +36,10 @@ export class ProgramRegistrationAttributesService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramRegistrationAttributeEntity)
   private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
+
+  public constructor(
+    private readonly programRegistrationAttributeLockService: ProgramRegistrationAttributeLockService,
+  ) {}
 
   public getFilterableAttributes(program: ProgramEntity) {
     const genericPaAttributeFilters = [
@@ -433,10 +438,14 @@ export class ProgramRegistrationAttributesService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
+    const scopeRegistrationAttributeNames =
+      await this.getScopeRegistrationAttributeNames(programId);
+
     const updatedProgramRegistrationAttribute =
       await this.getUpdatedProgramRegistrationAttribute({
         programRegistrationAttributeFromRepo,
         updateProgramRegistrationAttribute,
+        scopeRegistrationAttributeNames,
       });
 
     await this.programRegistrationAttributeRepository.save(
@@ -496,6 +505,9 @@ export class ProgramRegistrationAttributesService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
+    const scopeRegistrationAttributeNames =
+      await this.getScopeRegistrationAttributeNames(programId);
+
     const updatedAttributes: ProgramRegistrationAttributeEntity[] = [];
 
     const chunks = chunk(attributesToUpdate, 10000);
@@ -504,6 +516,7 @@ export class ProgramRegistrationAttributesService {
       const updatedChunk = await this.getUpdatedProgramAttributePerChunk({
         programId,
         programAttributesToUpdateChunk,
+        scopeRegistrationAttributeNames,
       });
       updatedAttributes.push(...updatedChunk);
     }
@@ -515,9 +528,11 @@ export class ProgramRegistrationAttributesService {
   private async getUpdatedProgramAttributePerChunk({
     programId,
     programAttributesToUpdateChunk,
+    scopeRegistrationAttributeNames,
   }: {
     programId: number;
     programAttributesToUpdateChunk: UpdateProgramRegistrationAttributesBatchDto[];
+    scopeRegistrationAttributeNames: string[] | null;
   }) {
     const updatedChunk: ProgramRegistrationAttributeEntity[] = [];
 
@@ -546,6 +561,7 @@ export class ProgramRegistrationAttributesService {
           programRegistrationAttributeFromRepo,
           updateProgramRegistrationAttribute:
             attributeWithUpdates!.updateProgramRegistrationAttribute,
+          scopeRegistrationAttributeNames,
         });
 
       updatedChunk.push(updatedProgramRegistrationAttribute);
@@ -554,13 +570,36 @@ export class ProgramRegistrationAttributesService {
     return updatedChunk;
   }
 
-  private async getUpdatedProgramRegistrationAttribute({
+  private async getScopeRegistrationAttributeNames(
+    programId: number,
+  ): Promise<string[] | null> {
+    const program = await this.programRepository.findOne({
+      where: { id: Equal(programId) },
+      select: { scopeRegistrationAttributeNames: true },
+    });
+    return program?.scopeRegistrationAttributeNames ?? null;
+  }
+
+  private getUpdatedProgramRegistrationAttribute({
     programRegistrationAttributeFromRepo,
     updateProgramRegistrationAttribute,
+    scopeRegistrationAttributeNames,
   }: {
     programRegistrationAttributeFromRepo: ProgramRegistrationAttributeEntity;
     updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
-  }) {
+    scopeRegistrationAttributeNames: string[] | null;
+  }): ProgramRegistrationAttributeEntity {
+    this.programRegistrationAttributeLockService.validateAttributeChangeAllowed(
+      {
+        scopeRegistrationAttributeNames,
+        existingAttribute: programRegistrationAttributeFromRepo,
+        change: {
+          type: updateProgramRegistrationAttribute.type,
+          options: updateProgramRegistrationAttribute.options,
+        },
+      },
+    );
+
     for (const attribute in updateProgramRegistrationAttribute) {
       programRegistrationAttributeFromRepo[attribute] =
         updateProgramRegistrationAttribute[attribute];
@@ -585,15 +624,16 @@ export class ProgramRegistrationAttributesService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    // Twilio needs a phoneNumber to send messages, so it cannot be removed while Twilio is enabled.
-    if (
-      env.TWILIO_MODE !== TwilioMode.disabled &&
-      programRegistrationAttribute.name ===
-        DefaultRegistrationDataAttributeNames.phoneNumber
-    ) {
-      const errors = `The '${DefaultRegistrationDataAttributeNames.phoneNumber}' attribute cannot be deleted while Twilio is enabled.`;
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
+    const scopeRegistrationAttributeNames =
+      await this.getScopeRegistrationAttributeNames(programId);
+
+    this.programRegistrationAttributeLockService.validateAttributeChangeAllowed(
+      {
+        scopeRegistrationAttributeNames,
+        existingAttribute: programRegistrationAttribute,
+        change: 'delete',
+      },
+    );
 
     return await this.programRegistrationAttributeRepository.remove(
       programRegistrationAttribute,
