@@ -190,16 +190,25 @@ export class OnafriqReconciliationService {
     const programFspConfigProperties =
       await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
         programFspConfigurationId: fspConfigs[0].id, // There will be just 1 fspConfig per program for Onafriq
-        names: [FspConfigurationProperties.corporateCodeOnafriq],
+        names: [
+          FspConfigurationProperties.corporateCodeOnafriq,
+          FspConfigurationProperties.currencyCodeOnafriq,
+        ],
       });
-    const corporateCode = programFspConfigProperties[0].value as string;
+    const corporateCode = programFspConfigProperties.find(
+      (c) => c.name === FspConfigurationProperties.corporateCodeOnafriq,
+    )?.value as string;
+    const currencyCode = programFspConfigProperties.find(
+      (c) => c.name === FspConfigurationProperties.currencyCodeOnafriq,
+    )?.value as string;
 
     const report: OnafriqReconciliationReport[] = onafriqTransactions.map(
       (onafriqTransaction) =>
-        OnafriqReconciliationMapper.mapTransactionToReportItem(
+        OnafriqReconciliationMapper.mapTransactionToReportItem({
           onafriqTransaction,
           corporateCode,
-        ),
+          currencyCode,
+        }),
     );
 
     // Only send to SFTP if transactions, and only on production (staging also has IS_PRODUCTION, but also ONAFRIQ_MODE=MOCK. // REFACTOR: this is not full-proof)

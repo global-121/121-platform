@@ -25,7 +25,7 @@ export class OnafriqApiHelperService {
       batchId,
       requestIdentity.uniqueKey,
     );
-    const currencyCode = env.ONAFRIQ_CURRENCY_CODE;
+    const currencyCode = requestIdentity.currencyCode;
     const countryCode = env.ONAFRIQ_COUNTRY_CODE;
     const callServicePayload: OnafriqApiCallServiceRequestBody = {
       corporateCode: requestIdentity.corporateCode,

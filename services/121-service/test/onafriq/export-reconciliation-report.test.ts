@@ -16,6 +16,7 @@ import {
 describe('Export reconciliation report', () => {
   const programId = 1;
   const transferValue = 12327;
+  const currencyCodeOnafriq = env.ONAFRIQ_CURRENCY_CODE;
   const baseRegistrationOnafriq = {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
     programFspConfigurationName: Fsps.onafriq,
@@ -68,7 +69,7 @@ describe('Export reconciliation report', () => {
       Transaction_Status: expect.stringMatching(/success|error/),
       To_MSISDN: baseRegistrationOnafriq.phoneNumberPayment,
       Receive_amount: transferValue,
-      Receive_Currency: env.ONAFRIQ_CURRENCY_CODE,
+      Receive_Currency: currencyCodeOnafriq,
       From_MSISDN: env.ONAFRIQ_SENDER_MSISDN,
       Wallet_Identifier: expect.any(String),
       Partner_name: expect.any(String),

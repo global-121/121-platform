@@ -1638,6 +1638,9 @@
       <trans-unit id="7450324673386885301" datatype="html">
         <source>Postal code</source>
       </trans-unit>
+      <trans-unit id="745146051951352480" datatype="html">
+        <source>Currency code</source>
+      </trans-unit>
       <trans-unit id="7457873139064677422" datatype="html">
         <source>Field for identifying registrations</source>
       </trans-unit>
