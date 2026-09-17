@@ -101,11 +101,12 @@ export class PaymentsHelperService {
           }),
       });
 
+    const exceptionMessage: Record<string, string | number> = {
+      message: `Cannot ${action} payment: ${duplicateRegistrations.length} registration(s) have duplicate status. Resolve duplicates before ${action === 'approve' ? 'approving' : 'starting'} this payment.`,
+      duplicateCount: duplicateRegistrations.length,
+    };
     if (duplicateRegistrations.length > 0) {
-      throw new HttpException(
-        `Cannot ${action} payment: ${duplicateRegistrations.length} registration(s) have duplicate status. Resolve duplicates before ${action === 'approve' ? 'approving' : 'starting'} this payment.`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(exceptionMessage, HttpStatus.BAD_REQUEST);
     }
   }
 }
