@@ -5,6 +5,7 @@ import { Equal, Repository } from 'typeorm';
 
 import { env } from '@121-service/src/env';
 import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
+import { ProgramRegistrationAttributeLockService } from '@121-service/src/program-registration-attributes/program-registration-attribute-lock.service';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import {
   CreateProgramRegistrationAttributeDto,
@@ -30,6 +31,7 @@ const mockEnv = env as unknown as { TWILIO_MODE: string };
 
 describe('ProgramRegistrationAttributesService', () => {
   let programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
+  let programRepository: Repository<ProgramEntity>;
   let programRegistrationAttributesService: ProgramRegistrationAttributesService;
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- TypeORM method requires this
   const programRepositoryToken: string | Function =
@@ -71,10 +73,19 @@ describe('ProgramRegistrationAttributesService', () => {
     return entity;
   };
 
+  const mockProgramScopeAttributeNames = (
+    scopeRegistrationAttributeNames: string[] | null,
+  ) => {
+    jest.spyOn(programRepository, 'findOne').mockResolvedValue({
+      scopeRegistrationAttributeNames,
+    } as ProgramEntity);
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProgramRegistrationAttributesService,
+        ProgramRegistrationAttributeLockService,
         {
           provide: programRegistrationAttributeToken,
           useClass: Repository,
@@ -93,6 +104,12 @@ describe('ProgramRegistrationAttributesService', () => {
     programRegistrationAttributeRepository = module.get<
       Repository<ProgramRegistrationAttributeEntity>
     >(programRegistrationAttributeToken);
+    programRepository = module.get<Repository<ProgramEntity>>(
+      programRepositoryToken,
+    );
+
+    // By default, no scope is configured. Individual tests override this if needed.
+    mockProgramScopeAttributeNames(null);
   });
 
   describe('getAttributes', () => {
@@ -338,6 +355,124 @@ describe('ProgramRegistrationAttributesService', () => {
       expect(result).toEqual(attributeEntity);
       expect(removeSpy).toHaveBeenCalledWith(attributeEntity);
     });
+
+    it('should throw when deleting an attribute used for scope configuration', async () => {
+      // Arrange
+      const programId = 1;
+      const programRegistrationAttributeId = 99;
+      const attributeEntity = createAttributeEntity({
+        id: programRegistrationAttributeId,
+        programId,
+        name: 'region',
+        type: RegistrationAttributeTypes.dropdown,
+      });
+
+      mockProgramScopeAttributeNames(['region']);
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'findOne')
+        .mockResolvedValue(attributeEntity);
+      const removeSpy = jest
+        .spyOn(programRegistrationAttributeRepository, 'remove')
+        .mockResolvedValue(attributeEntity);
+
+      // Act + Assert
+      await expect(
+        programRegistrationAttributesService.deleteProgramRegistrationAttribute(
+          programId,
+          programRegistrationAttributeId,
+        ),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+      expect(removeSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('updateProgramRegistrationAttribute', () => {
+    it('should update the attribute when the change is allowed', async () => {
+      // Arrange
+      const programId = 1;
+      const existingEntity = createAttributeEntity({
+        id: 10,
+        name: 'firstName',
+        label: { en: 'Old Label' },
+      });
+
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'findOne')
+        .mockResolvedValue(existingEntity);
+      const saveSpy = jest
+        .spyOn(programRegistrationAttributeRepository, 'save')
+        .mockImplementation(async (entity: any) => entity);
+
+      // Act
+      const result =
+        await programRegistrationAttributesService.updateProgramRegistrationAttribute(
+          {
+            programId,
+            programRegistrationAttributeName: 'firstName',
+            updateProgramRegistrationAttribute: {
+              label: { en: 'New Label' },
+            },
+          },
+        );
+
+      // Assert
+      expect(result.label).toEqual({ en: 'New Label' });
+      expect(saveSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ label: { en: 'New Label' } }),
+      );
+    });
+
+    it('should throw not found when the attribute does not exist', async () => {
+      // Arrange
+      const programId = 1;
+
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'findOne')
+        .mockResolvedValue(null);
+
+      // Act + Assert
+      await expect(
+        programRegistrationAttributesService.updateProgramRegistrationAttribute(
+          {
+            programId,
+            programRegistrationAttributeName: 'nonExistent',
+            updateProgramRegistrationAttribute: {
+              label: { en: 'New Label' },
+            },
+          },
+        ),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.NOT_FOUND);
+    });
+
+    it('should throw when changing the type of an attribute used for scope configuration', async () => {
+      // Arrange
+      const programId = 1;
+      const existingEntity = createAttributeEntity({
+        id: 10,
+        name: 'region',
+        type: RegistrationAttributeTypes.dropdown,
+      });
+
+      mockProgramScopeAttributeNames(['region']);
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'findOne')
+        .mockResolvedValue(existingEntity);
+      const saveSpy = jest.spyOn(programRegistrationAttributeRepository, 'save');
+
+      // Act + Assert
+      await expect(
+        programRegistrationAttributesService.updateProgramRegistrationAttribute(
+          {
+            programId,
+            programRegistrationAttributeName: 'region',
+            updateProgramRegistrationAttribute: {
+              type: RegistrationAttributeTypes.text,
+            },
+          },
+        ),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+      expect(saveSpy).not.toHaveBeenCalled();
+    });
   });
 
   describe('update registration attributes in batch', () => {
@@ -449,6 +584,46 @@ describe('ProgramRegistrationAttributesService', () => {
           },
         ),
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.NOT_FOUND);
+    });
+
+    it('should throw when a batch update tries to remove an option used for scope configuration', async () => {
+      // Arrange
+      const existingRegionEntity = createAttributeEntity({
+        id: 12,
+        name: 'region',
+        type: RegistrationAttributeTypes.dropdown,
+        options: [
+          { option: 'utrecht', label: { en: 'Utrecht' } },
+          { option: 'zuidholland', label: { en: 'Zuid-Holland' } },
+        ],
+      });
+
+      const attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[] =
+        [
+          {
+            programRegistrationAttributeName: 'region',
+            updateProgramRegistrationAttribute: {
+              options: [{ option: 'utrecht', label: { en: 'Utrecht' } }],
+            },
+          },
+        ];
+
+      mockProgramScopeAttributeNames(['region']);
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'find')
+        .mockResolvedValue([existingRegionEntity]);
+      const saveSpy = jest.spyOn(programRegistrationAttributeRepository, 'save');
+
+      // Act + Assert
+      await expect(
+        programRegistrationAttributesService.updateBatchProgramRegistrationAttributes(
+          {
+            programId,
+            attributesToUpdate,
+          },
+        ),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+      expect(saveSpy).not.toHaveBeenCalled();
     });
   });
 

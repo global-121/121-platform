@@ -10,6 +10,7 @@ import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-conf
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramRegistrationAttributeLockService } from '@121-service/src/program-registration-attributes/program-registration-attribute-lock.service';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
@@ -22,7 +23,6 @@ import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/prog
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
-import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
@@ -41,6 +41,7 @@ export class ProgramService {
     private readonly userService: UserService,
     private readonly programAttachmentsService: ProgramAttachmentsService,
     private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
+    private readonly programRegistrationAttributeLockService: ProgramRegistrationAttributeLockService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly intersolveVisaService: IntersolveVisaService,
   ) {}
@@ -422,10 +423,14 @@ export class ProgramService {
 
     if (scopeRegistrationAttributeNames !== undefined) {
       program.scopeRegistrationAttributeNames =
-        this.validateScopeRegistrationAttributeNames({
-          program,
-          attributeNames: scopeRegistrationAttributeNames,
-        });
+        this.programRegistrationAttributeLockService.validateScopeRegistrationAttributeNames(
+          {
+            programId: program.id,
+            programRegistrationAttributes:
+              program.programRegistrationAttributes ?? [],
+            attributeNames: scopeRegistrationAttributeNames,
+          },
+        );
     }
 
     for (const key in otherProgramUpdates) {
@@ -557,50 +562,6 @@ export class ProgramService {
     }
 
     return namingConventionData;
-  }
-
-  private validateScopeRegistrationAttributeNames({
-    program,
-    attributeNames,
-  }: {
-    program: FoundProgramDto;
-    attributeNames: string[] | null;
-  }): string[] | null {
-    if (!attributeNames || attributeNames.length === 0) {
-      return null;
-    }
-
-    const maxScopeLevels = 3;
-    if (attributeNames.length > maxScopeLevels) {
-      throw new HttpException(
-        `Scope calculation cannot have more than ${maxScopeLevels} attributes`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const programAttributes = program.programRegistrationAttributes ?? [];
-    const attributeByName = new Map(
-      programAttributes.map((attr) => [attr.name, attr]),
-    );
-
-    for (const name of attributeNames) {
-      const attribute = attributeByName.get(name);
-      if (!attribute) {
-        throw new HttpException(
-          `Registration attribute '${name}' does not exist in program ${program.id}`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
-      if (attribute.type !== RegistrationAttributeTypes.dropdown) {
-        throw new HttpException(
-          `Registration attribute '${name}' must be of type '${RegistrationAttributeTypes.dropdown}' for scope calculation`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    }
-
-    return attributeNames;
   }
 }
 

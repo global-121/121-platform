@@ -9,6 +9,7 @@ jest.mock('@121-service/src/env', () => ({
   },
 }));
 
+import { ProgramRegistrationAttributeLockService } from '@121-service/src/program-registration-attributes/program-registration-attribute-lock.service';
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -74,7 +75,10 @@ describe('ProgramService', () => {
     }) as FoundProgramDto;
 
   beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(ProgramService).compile();
+    const { unit, unitRef } = TestBed.create(ProgramService)
+      .mock(ProgramRegistrationAttributeLockService)
+      .using(new ProgramRegistrationAttributeLockService())
+      .compile();
 
     service = unit;
     programRepository = unitRef.get(
