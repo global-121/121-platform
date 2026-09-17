@@ -390,6 +390,9 @@
       <trans-unit id="2424309330980717607" datatype="html">
         <source>Payments cannot be approved if there are duplicate registrations. Filter and resolve duplicates in the registration table to continue.</source>
       </trans-unit>
+      <trans-unit id="2438205306314074008" datatype="html">
+        <source>Integrated FSPs</source>
+      </trans-unit>
       <trans-unit id="2438590582556677910" datatype="html">
         <source>Start!</source>
       </trans-unit>
@@ -2917,7 +2920,7 @@
         <source>Go to login page</source>
       </trans-unit>
       <trans-unit id="session-expired-title" datatype="html">
-        <source>Session expired</source>
+        <source>Error</source>
       </trans-unit>
       <trans-unit id="submission-result-failed" datatype="html">
         <source>Submissions failed</source>
