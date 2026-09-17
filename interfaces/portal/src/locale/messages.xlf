@@ -2791,7 +2791,7 @@
         <source>Go to login page</source>
       </trans-unit>
       <trans-unit id="session-expired-title" datatype="html">
-        <source>Error</source>
+        <source>Session expired</source>
       </trans-unit>
       <trans-unit id="submission-result-failed" datatype="html">
         <source>Submissions failed</source>

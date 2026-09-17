@@ -13,6 +13,7 @@ import {
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { isObject } from 'radashi';
 
 import {
   DataListComponent,
@@ -73,7 +74,7 @@ export class StartPaymentComponent {
 
       const cause = error.cause as HttpErrorResponse;
 
-      if (!('duplicateCount' in cause.error)) {
+      if (!isObject(cause.error) || !('duplicateCount' in cause.error)) {
         return;
       }
 
