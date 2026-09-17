@@ -1,9 +1,14 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { CreateProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { patchProgram } from '@121-service/test/helpers/program.helper';
+import {
+  patchProgram,
+  postProgramRegistrationAttribute,
+} from '@121-service/test/helpers/program.helper';
 import {
   getAccessToken,
   resetDB,
@@ -19,6 +24,14 @@ describe('Update program', () => {
 
   it('should update a program', async () => {
     // Arrange
+    const provinceAttribute: CreateProgramRegistrationAttributeDto = {
+      name: 'province',
+      type: RegistrationAttributeTypes.dropdown,
+      label: { en: 'Province' },
+      options: [{ option: 'utrecht', label: { en: 'Utrecht' } }],
+    };
+    await postProgramRegistrationAttribute(provinceAttribute, 2, accessToken);
+
     // Test with a few possibly to be changed attributes, not all attributes of a program
     const program: UpdateProgramDto = {
       titlePortal: { en: 'new title' },
@@ -28,6 +41,7 @@ describe('Update program', () => {
       budget: 50000,
       monitoringDashboardUrl: 'https://example.org/new-dashboard',
       fullnameNamingConvention: ['firstName', 'lastName'],
+      scopeRegistrationAttributeNames: ['province'],
       languages: [
         RegistrationPreferredLanguage.en,
         RegistrationPreferredLanguage.nl,
@@ -60,6 +74,9 @@ describe('Update program', () => {
     expect(updateProgramResponse.body.fullnameNamingConvention).toStrictEqual(
       program.fullnameNamingConvention,
     );
+    expect(
+      updateProgramResponse.body.scopeRegistrationAttributeNames,
+    ).toStrictEqual(program.scopeRegistrationAttributeNames);
     expect(updateProgramResponse.body.languages).toStrictEqual(
       program.languages,
     );
