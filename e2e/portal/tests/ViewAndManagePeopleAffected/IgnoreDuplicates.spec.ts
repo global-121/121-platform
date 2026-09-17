@@ -4,6 +4,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdPV,
   registrationsPV,
+  registrationsPVWithOneDuplicate,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
@@ -11,7 +12,7 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
-    registrations: registrationsPV,
+    registrations: registrationsPVWithOneDuplicate,
     programId: programIdPV,
     navigateToPage: `/program/${programIdPV}/registrations`,
   });
@@ -21,8 +22,8 @@ test('Ignore duplicates', async ({
   registrationsPage,
   registrationActivityLogPage,
 }) => {
-  const duplicateRegistrationA = registrationsPV[1]; // 'Jan Janssen'
-  const duplicateRegistrationB = registrationsPV[2]; // 'Joost Herlembach'
+  const duplicateRegistrationA = registrationsPVWithOneDuplicate[1]; // 'Jan Janssen'
+  const duplicateRegistrationB = registrationsPVWithOneDuplicate[2]; // 'Joost Herlembach'
 
   await test.step('Wait for registrations to load', async () => {
     const allRegistrationsCount = registrationsPV.length;
