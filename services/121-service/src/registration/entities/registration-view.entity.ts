@@ -54,9 +54,14 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
         'registration.paymentAmountMultiplier',
         'paymentAmountMultiplier',
       )
+      .addSelect(
+        'registration.paymentAmountMultiplier * program."fixedTransferValue"',
+        'transferValue',
+      )
       .addSelect('registration.maxPayments', 'maxPayments')
       .addSelect('registration.scope', 'scope')
       .leftJoin('registration.programFspConfiguration', 'fspconfig')
+      .leftJoin('registration.program', 'program')
       .leftJoin('registration.latestMessage', 'latestMessage')
       .leftJoin('latestMessage.message', 'message')
       .addSelect(
@@ -140,6 +145,9 @@ export class RegistrationViewEntity {
 
   @ViewColumn()
   public paymentAmountMultiplier: number;
+
+  @ViewColumn()
+  public transferValue: number | null;
 
   @ViewColumn()
   public fspName: Fsps;
