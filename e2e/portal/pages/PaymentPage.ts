@@ -121,9 +121,12 @@ class PaymentPage extends BasePage {
   }
 
   async openActionsMenu() {
-    await expect(async () => {
-      const actionsMenu = this.page.getByRole('menu').last();
+    // Scoped to avoid matching the page's other menu (export), which is also a `p-menu`.
+    const actionsMenu = this.page.getByRole('menu').filter({
+      has: this.page.getByRole('menuitem', { name: 'Rename payment' }),
+    });
 
+    await expect(async () => {
       await expect(this.threeDotsMenuButton).toBeVisible();
       if (await actionsMenu.isVisible()) {
         return;
