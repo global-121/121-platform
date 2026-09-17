@@ -390,9 +390,10 @@ export class PaymentsManagementService {
     });
 
     // Check for duplicate registrations before allowing approval
-    await this.throwIfPaymentHasDuplicateRegistrations({
+    await this.paymentsHelperService.throwIfPaymentHasDuplicateRegistrations({
       programId,
       paymentId,
+      action: 'approve',
     });
 
     const totalApprovals = await this.paymentApprovalRepository.count({
@@ -467,53 +468,6 @@ export class PaymentsManagementService {
       throw new HttpException(
         'User is not assigned to the current approval step and cannot approve it',
         HttpStatus.FORBIDDEN,
-      );
-    }
-  }
-
-  private async throwIfPaymentHasDuplicateRegistrations({
-    programId,
-    paymentId,
-  }: {
-    programId: number;
-    paymentId: number;
-  }): Promise<void> {
-    const transactionsForPayment =
-      await this.transactionViewScopedRepository.getByStatusOfIncludedRegistrations(
-        {
-          programId,
-          paymentId,
-          status: TransactionStatusEnum.pendingApproval,
-        },
-      );
-
-    const registrationIds = [
-      ...new Set(transactionsForPayment.map((t) => t.registrationId)),
-    ];
-    if (registrationIds.length === 0) {
-      return;
-    }
-
-    const duplicateRegistrations =
-      await this.registrationsPaginationService.getRegistrationViewsNoLimit({
-        programId,
-        paginateQuery: {
-          path: '',
-          filter: {
-            duplicateStatus: DuplicateStatus.duplicate,
-          },
-        },
-        queryBuilder: this.registrationsBulkService
-          .getBaseQuery()
-          .andWhere('registration.id IN (:...registrationIds)', {
-            registrationIds,
-          }),
-      });
-
-    if (duplicateRegistrations.length > 0) {
-      throw new HttpException(
-        `Cannot approve payment: ${duplicateRegistrations.length} registration(s) have duplicate status. Resolve duplicates before approving this payment.`,
-        HttpStatus.BAD_REQUEST,
       );
     }
   }
@@ -622,7 +576,7 @@ export class PaymentsManagementService {
         {
           programId,
           paymentId,
-          status: TransactionStatusEnum.pendingApproval,
+          transactionStatus: [TransactionStatusEnum.pendingApproval],
         },
       );
 

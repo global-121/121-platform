@@ -1,14 +1,19 @@
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
+  model,
+  signal,
   viewChild,
 } from '@angular/core';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { isObject } from 'radashi';
 
 import {
   DataListComponent,
@@ -18,10 +23,11 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
+import { isErrorWithStatusCode } from '~/utils/is-error-with-status-code.helper';
 
 @Component({
   selector: 'app-start-payment',
-  imports: [ButtonModule, FormDialogComponent, DataListComponent],
+  imports: [ButtonModule, FormDialogComponent, DataListComponent, DialogModule],
   templateUrl: './start-payment.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,6 +42,9 @@ export class StartPaymentComponent {
 
   private paymentApiService = inject(PaymentApiService);
   private toastService = inject(ToastService);
+
+  readonly duplicateErrorDialogVisible = model(false);
+  readonly duplicateCount = signal(0);
 
   readonly startPaymentDialog =
     viewChild.required<FormDialogComponent>('startPaymentDialog');
@@ -52,6 +61,32 @@ export class StartPaymentComponent {
       this.toastService.showToast({
         detail: $localize`Payment started successfully.`,
       });
+    },
+    onError: (error) => {
+      if (
+        !isErrorWithStatusCode({
+          error,
+          statusCode: HttpStatusCode.BadRequest,
+        })
+      ) {
+        return;
+      }
+
+      const cause = error.cause as HttpErrorResponse;
+
+      if (!isObject(cause.error) || !('duplicateCount' in cause.error)) {
+        return;
+      }
+
+      const errorObject = cause.error as {
+        message: string;
+        duplicateCount: number;
+      };
+
+      this.duplicateCount.set(errorObject.duplicateCount);
+      this.startPaymentDialog().hide();
+      this.startPaymentMutation.reset();
+      this.duplicateErrorDialogVisible.set(true);
     },
   }));
 
