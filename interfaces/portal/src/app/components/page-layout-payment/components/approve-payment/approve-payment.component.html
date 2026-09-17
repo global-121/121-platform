@@ -43,3 +43,39 @@
     />
   </app-form-field-wrapper>
 </app-form-dialog>
+
+<p-dialog
+  [modal]="true"
+  [(visible)]="duplicateErrorDialogVisible"
+  [closable]="false"
+  [closeOnEscape]="false"
+  styleClass="max-inline-lg"
+>
+  <ng-template pTemplate="header">
+    <h3 class="text-red-700">
+      <i class="pi pi-exclamation-triangle me-2"></i>
+      <ng-container i18n="@@session-expired-title">Error</ng-container>
+    </h3>
+  </ng-template>
+  <div class="flex flex-col gap-4">
+    <p i18n>
+      <strong>
+        There are {{ duplicateCount() }} duplicate registration(s) included in
+        your payment.
+      </strong>
+    </p>
+    <p i18n>
+      Payments cannot be approved if there are duplicate registrations. Filter
+      and resolve duplicates in the registration table to continue.
+    </p>
+    <div class="flex justify-end">
+      <p-button
+        label="Close"
+        i18n-label
+        (click)="duplicateErrorDialogVisible.set(false)"
+        rounded
+        severity="primary"
+      />
+    </div>
+  </div>
+</p-dialog>
