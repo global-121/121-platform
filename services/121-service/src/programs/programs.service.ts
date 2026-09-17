@@ -22,6 +22,7 @@ import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/prog
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
@@ -182,6 +183,8 @@ export class ProgramService {
     program.enableScope = !!programData.enableScope;
     program.monitoringDashboardUrl = programData.monitoringDashboardUrl ?? null;
     program.budget = programData.budget ?? null;
+    program.scopeRegistrationAttributeNames =
+      programData.scopeRegistrationAttributeNames ?? null;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
@@ -414,8 +417,19 @@ export class ProgramService {
       );
     }
 
-    for (const key in updateProgramDto) {
-      program[key] = updateProgramDto[key];
+    const { scopeRegistrationAttributeNames, ...otherProgramUpdates } =
+      updateProgramDto;
+
+    if (scopeRegistrationAttributeNames !== undefined) {
+      program.scopeRegistrationAttributeNames =
+        this.validateScopeRegistrationAttributeNames({
+          program,
+          attributeNames: scopeRegistrationAttributeNames,
+        });
+    }
+
+    for (const key in otherProgramUpdates) {
+      program[key] = otherProgramUpdates[key];
     }
 
     const savedProgram = await this.programRepository.save(program);
@@ -452,6 +466,8 @@ export class ProgramService {
           program.programRegistrationAttributes,
         ),
       fullnameNamingConvention: program.fullnameNamingConvention ?? undefined,
+      scopeRegistrationAttributeNames:
+        program.scopeRegistrationAttributeNames ?? undefined,
       languages: program.languages,
       enableMaxPayments: program.enableMaxPayments,
       enableScope: program.enableScope,
@@ -542,4 +558,49 @@ export class ProgramService {
 
     return namingConventionData;
   }
+
+  private validateScopeRegistrationAttributeNames({
+    program,
+    attributeNames,
+  }: {
+    program: FoundProgramDto;
+    attributeNames: string[] | null;
+  }): string[] | null {
+    if (!attributeNames || attributeNames.length === 0) {
+      return null;
+    }
+
+    const maxScopeLevels = 3;
+    if (attributeNames.length > maxScopeLevels) {
+      throw new HttpException(
+        `Scope calculation cannot have more than ${maxScopeLevels} attributes`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const programAttributes = program.programRegistrationAttributes ?? [];
+    const attributeByName = new Map(
+      programAttributes.map((attr) => [attr.name, attr]),
+    );
+
+    for (const name of attributeNames) {
+      const attribute = attributeByName.get(name);
+      if (!attribute) {
+        throw new HttpException(
+          `Registration attribute '${name}' does not exist in program ${program.id}`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      if (attribute.type !== RegistrationAttributeTypes.dropdown) {
+        throw new HttpException(
+          `Registration attribute '${name}' must be of type '${RegistrationAttributeTypes.dropdown}' for scope calculation`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    return attributeNames;
+  }
 }
+

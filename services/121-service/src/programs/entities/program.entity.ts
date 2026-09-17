@@ -81,6 +81,9 @@ export class ProgramEntity extends Base121Entity {
   @Column('json', { nullable: true })
   public fullnameNamingConvention: string[] | null;
 
+  @Column('json', { nullable: true })
+  public scopeRegistrationAttributeNames: string[] | null;
+
   @Column('json', { default: [] })
   public languages: RegistrationPreferredLanguage[];
 
