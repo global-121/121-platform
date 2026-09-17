@@ -92,28 +92,49 @@ class PaymentPage extends BasePage {
   }
 
   async deletePayment() {
-    await this.threeDotsMenuButton.click();
+    await this.openActionsMenu();
     await this.page.getByRole('menuitem', { name: 'Delete payment' }).click();
     await this.formDialogSubmitButton.click();
   }
 
   async isDeletePaymentButtonVisible({ isVisible }: { isVisible: boolean }) {
-    await this.threeDotsMenuButton.click();
-    const deleteButton = this.page.getByRole('menuitem', {
-      name: 'Delete payment',
-    });
-    if (isVisible) {
-      await expect(deleteButton).toBeVisible();
-    } else {
-      await expect(deleteButton).toBeHidden();
-    }
+    await expect(async () => {
+      await this.openActionsMenu();
+
+      const deleteButton = this.page.getByRole('menuitem', {
+        name: 'Delete payment',
+      });
+
+      if (isVisible) {
+        await expect(deleteButton).toBeVisible();
+      } else {
+        await expect(deleteButton).toBeHidden();
+      }
+    }).toPass({ timeout: 15_000 });
   }
 
   async renamePayment(newName: string) {
-    await this.threeDotsMenuButton.click();
+    await this.openActionsMenu();
     await this.page.getByRole('menuitem', { name: 'Rename payment' }).click();
     await this.renamePaymentInput.fill(newName);
     await this.renamePaymentButton.click();
+  }
+
+  async openActionsMenu() {
+    // Scoped to avoid matching the page's other menu (export), which is also a `p-menu`.
+    const actionsMenu = this.page.getByRole('menu').filter({
+      has: this.page.getByRole('menuitem', { name: 'Rename payment' }),
+    });
+
+    await expect(async () => {
+      await expect(this.threeDotsMenuButton).toBeVisible();
+      if (await actionsMenu.isVisible()) {
+        return;
+      }
+
+      await this.threeDotsMenuButton.click();
+      await expect(actionsMenu).toBeVisible();
+    }).toPass({ timeout: 15_000 });
   }
 
   async validatePaymentName(expectedName: string) {
