@@ -13,7 +13,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { KoboIntegrationCardComponent } from '~/pages/program-settings-registration-data/components/kobo-integration-card/kobo-integration-card.component';
 import { ToastService } from '~/services/toast.service';
-import { TrackingService } from '~/services/tracking.service';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 class TrackingServiceStub {
   trackEvent = vi.fn();

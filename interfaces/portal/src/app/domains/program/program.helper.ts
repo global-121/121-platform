@@ -13,6 +13,7 @@ import {
   ProgramAttachmentFileType,
 } from '~/domains/program/program.model';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 
 export const programHasVoucherSupport = (program?: Program): boolean =>
   program?.programFspConfigurations.some((fsp) =>
@@ -134,12 +135,26 @@ export const PROGRAM_ATTACHMENT_FILE_TYPE_ICONS: Record<
   [ProgramAttachmentFileType.PDF]: 'pi pi-file-pdf text-red-500',
 };
 
-export const PROGRAM_FORM_TOOLTIPS = {
-  targetRegistrations: $localize`The amount of people/households your program plans to reach.`,
-  validationProcess: $localize`This enables an additional registration status: "${REGISTRATION_STATUS_LABELS[RegistrationStatusEnum.validated]}".`,
-  enableScope: $localize`Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the program team's page.
-
+export const PROGRAM_FORM_TOOLTIPS_CONFIG = {
+  targetRegistrations: {
+    message: $localize`The amount of people/households your program plans to reach.`,
+    trackingName: InfoTooltipTrackingName.programTargetRegistrations,
+  },
+  validationProcess: {
+    message: $localize`This enables an additional registration status: "${REGISTRATION_STATUS_LABELS[RegistrationStatusEnum.validated]}".`,
+    trackingName: InfoTooltipTrackingName.programValidationProcess,
+  },
+  enableScope: {
+    message: $localize`Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the program team's page.
 To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.`,
-  currency: $localize`Should be an ISO 4217 currency code (full list available on Wikipedia).`,
-  distributionDuration: $localize`The number of times a registration will receive distributions in the program by default.`,
+    trackingName: InfoTooltipTrackingName.programEnableScope,
+  },
+  currency: {
+    message: $localize`Should be an ISO 4217 currency code (full list available on Wikipedia).`,
+    trackingName: InfoTooltipTrackingName.programCurrency,
+  },
+  distributionDuration: {
+    message: $localize`The number of times a registration will receive distributions in the program by default.`,
+    trackingName: InfoTooltipTrackingName.programDistributionDuration,
+  },
 };

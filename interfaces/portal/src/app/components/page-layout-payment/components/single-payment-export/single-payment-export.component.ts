@@ -21,8 +21,8 @@ import { ToastService } from '~/services/toast.service';
 import {
   TrackingAction,
   TrackingCategory,
-  TrackingService,
-} from '~/services/tracking.service';
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 @Component({
   selector: 'app-single-payment-export',

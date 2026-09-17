@@ -8,10 +8,11 @@ import {
 } from '@angular/core';
 
 import {
+  ExplainerTrackingName,
   TrackingAction,
   TrackingCategory,
-  TrackingService,
-} from '~/services/tracking.service';
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 export interface ExplainerItem {
   content: string;
@@ -26,7 +27,7 @@ export interface ExplainerItem {
 export class ExplainerComponent {
   readonly title = input.required<string>();
   readonly items = input.required<ExplainerItem[]>();
-  readonly trackingEventName = input.required<string>();
+  readonly trackingEventName = input.required<ExplainerTrackingName>();
 
   readonly expanded = model<boolean>(false);
   readonly trackingService = inject(TrackingService);

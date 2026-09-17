@@ -28,7 +28,7 @@ import { routes } from '~/app.routes';
 import AppTheme from '~/app.theme';
 import { CustomPageTitleStrategy } from '~/app.title-strategy';
 import { AuthService } from '~/services/auth.service';
-import { TrackingService } from '~/services/tracking.service';
+import { TrackingService } from '~/services/tracking/tracking.service';
 import { Locale } from '~/utils/locale';
 
 declare module '@tanstack/angular-query-experimental' {

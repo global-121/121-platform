@@ -14,7 +14,8 @@ import { ConfirmDialog, ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FocusTrapModule } from 'primeng/focustrap';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
-import { TrackingEvent, TrackingService } from '~/services/tracking.service';
+import { TrackingService } from '~/services/tracking/tracking.service';
+import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
 
 @Component({
   selector: 'app-form-dialog',

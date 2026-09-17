@@ -1,8 +1,8 @@
 import {
   TrackingAction,
   TrackingCategory,
-  TrackingEvent,
-} from '~/services/tracking.service';
+} from '~/services/tracking/tracking.enums';
+import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
 
 type ProgramStep = 1 | 2 | 3;
 type CompletionMode = 'create' | 'duplicate';

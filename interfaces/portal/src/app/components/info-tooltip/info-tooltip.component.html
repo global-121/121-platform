@@ -2,7 +2,7 @@
   <i
     class="pi pi-info-circle cursor-help text-xs"
     tabindex="0"
-    [pTooltip]="message()"
+    [pTooltip]="infoTooltipData().message"
     [tooltipPosition]="rtlHelper.createPosition('end')()"
     (mouseover)="handleMouseOver($event)"
     (mouseout)="handleMouseOut($event)"

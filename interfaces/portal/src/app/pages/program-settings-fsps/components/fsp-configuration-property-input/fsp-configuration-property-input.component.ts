@@ -22,6 +22,7 @@ import { FspFormField } from '~/domains/fsp-configuration/fsp-configuration.mode
 import { FspConfigurationPropertyInputType } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 
 @Component({
   selector: 'app-fsp-configuration-property-input',
@@ -71,11 +72,16 @@ export class FspConfigurationPropertyInputComponent {
     return FSP_CONFIGURATION_PROPERTY_LABELS[propertyName] + propertyIsOptional;
   });
 
-  readonly labelTooltip = computed(() =>
-    this.fspFormField().isSensitive
-      ? $localize`This is a sensitive property, therefore its value needs to be re-entered upon reconfiguration.`
-      : undefined,
-  );
+  readonly infoTooltipData = computed(() => {
+    if (this.fspFormField().isSensitive) {
+      return {
+        message: $localize`This is a sensitive property, therefore its value needs to be re-entered upon reconfiguration.`,
+        trackingName: InfoTooltipTrackingName.fspConfigurationSensitiveProperty,
+      };
+    }
+
+    return undefined;
+  });
 
   readonly inputTextPlaceholder = computed(() =>
     this.fspFormField().isSensitive ? sensitivePropertyString : '',

@@ -16,6 +16,7 @@ import { KoboValidationErrorType } from '@121-service/src/kobo/enum/kobo-validat
 import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 
 enum KoboErrorDisplayType {
   formSetting = 'formSetting',
@@ -51,6 +52,8 @@ const koboErrorDisplayTypeMap: Record<
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KoboIntegrationErrorDialogComponent {
+  readonly InfoTooltipTrackingName = InfoTooltipTrackingName;
+
   readonly errors = input<KoboValidationError[]>([]);
   readonly dialogVisible = model(false);
   readonly tryAgain = output();
@@ -91,6 +94,17 @@ export class KoboIntegrationErrorDialogComponent {
       .map((error: KoboValidationError) => error.attributeName);
     return [...new Set(fields)];
   });
+
+  readonly tooltipData = {
+    koboMissingRequiredFields: {
+      message: $localize`These fields are expected by 121 but are missing from your Kobo form. Add them before redeploying.`,
+      trackingName: InfoTooltipTrackingName.koboMissingRequiredFields,
+    },
+    koboFormSettingErrorsTooltipData: {
+      message: $localize`These are the errors related to your Kobo form settings.`,
+      trackingName: InfoTooltipTrackingName.koboFormSettingErrors,
+    },
+  };
 
   show() {
     this.dialogVisible.set(true);

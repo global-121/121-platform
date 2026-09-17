@@ -62,7 +62,6 @@ import { generateFieldErrors } from '~/utils/form-validation';
     ImageDialogTriggerComponent,
   ],
   templateUrl: './edit-personal-information.component.html',
-  styles: ``,
   providers: [ToastService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

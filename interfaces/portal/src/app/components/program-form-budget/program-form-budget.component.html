@@ -17,7 +17,7 @@
       label="Currency"
       i18n-label
       [errorMessage]="formFieldErrors()('currency')"
-      [labelTooltip]="PROGRAM_FORM_TOOLTIPS.currency"
+      [infoTooltipData]="PROGRAM_FORM_TOOLTIPS_CONFIG.currency"
       [isRequired]="true"
     >
       <p-select
@@ -33,7 +33,7 @@
     label="Number of distributions per registration"
     i18n-label
     [errorMessage]="formFieldErrors()('distributionDuration')"
-    [labelTooltip]="PROGRAM_FORM_TOOLTIPS.distributionDuration"
+    [infoTooltipData]="PROGRAM_FORM_TOOLTIPS_CONFIG.distributionDuration"
   >
     <input
       pInputText

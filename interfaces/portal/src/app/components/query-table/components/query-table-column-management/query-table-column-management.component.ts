@@ -25,8 +25,8 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
 import {
   TrackingAction,
   TrackingCategory,
-  TrackingService,
-} from '~/services/tracking.service';
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 @Component({
   selector: 'app-query-table-column-management',

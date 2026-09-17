@@ -11,8 +11,8 @@ import { QueryTableCellService } from '~/components/query-table/services/query-t
 import {
   TrackingAction,
   TrackingCategory,
-  TrackingService,
-} from '~/services/tracking.service';
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 export class QueryTableFilterService<TData> {
   private readonly trackingService = inject(TrackingService);

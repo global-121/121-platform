@@ -53,6 +53,7 @@ import { programHasFspWithExportFileIntegration } from '~/domains/program/progra
 import { AuthService } from '~/services/auth.service';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
 import { generateFieldErrors } from '~/utils/form-validation';
@@ -588,4 +589,11 @@ export class PageLayoutPaymentComponent {
       await this.payments.refetch();
     },
   }));
+
+  tooltips = {
+    paymentTotalAmountCalculation: {
+      message: $localize`The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.`,
+      trackingName: InfoTooltipTrackingName.paymentTotalAmountCalculation,
+    },
+  };
 }

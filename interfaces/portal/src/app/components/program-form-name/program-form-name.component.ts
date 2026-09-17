@@ -21,8 +21,8 @@ import { Program } from '~/domains/program/program.model';
 import {
   TrackingAction,
   TrackingCategory,
-  TrackingEvent,
-} from '~/services/tracking.service';
+} from '~/services/tracking/tracking.enums';
+import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { generateFieldErrors, trackFieldErrors } from '~/utils/form-validation';
 

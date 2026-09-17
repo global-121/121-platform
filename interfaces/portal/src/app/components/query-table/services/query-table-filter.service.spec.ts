@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { QueryTableCellService } from '~/components/query-table/services/query-table-cell.service';
 import { QueryTableFilterService } from '~/components/query-table/services/query-table-filter.service';
-import { TrackingService } from '~/services/tracking.service';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 class TrackingServiceStub {
   trackEvent = vi.fn();

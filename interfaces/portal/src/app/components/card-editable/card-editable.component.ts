@@ -16,7 +16,8 @@ import { FocusTrapModule } from 'primeng/focustrap';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
-import { TrackingEvent, TrackingService } from '~/services/tracking.service';
+import { TrackingService } from '~/services/tracking/tracking.service';
+import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
 
 @Component({
   selector: 'app-card-editable',

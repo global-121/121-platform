@@ -16,8 +16,8 @@ import { DialogModule } from 'primeng/dialog';
 import {
   TrackingAction,
   TrackingCategory,
-  TrackingService,
-} from '~/services/tracking.service';
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 interface Vector {
   x: number;

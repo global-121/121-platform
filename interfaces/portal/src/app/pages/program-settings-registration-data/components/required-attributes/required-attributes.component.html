@@ -55,8 +55,10 @@
           <tr>
             <td class="px-2">
               {{ attribute.label }}
-              @if (attribute.infoTooltip) {
-                <app-info-tooltip [message]="attribute.infoTooltip()" />
+              @if (attribute.infoTooltipData) {
+                <app-info-tooltip
+                  [infoTooltipData]="attribute.infoTooltipData"
+                />
               }
             </td>
             <td class="px-2">
@@ -82,7 +84,9 @@
         <app-explainer
           [title]="dataColumnNamesExplainers.title"
           [items]="dataColumnNamesExplainers.items"
-          [trackingEventName]="'Data column names'"
+          [trackingEventName]="
+            ExplainerTrackingName.requiredDataColumnNamesExplainer
+          "
         />
       </div>
     </p-accordion-content>

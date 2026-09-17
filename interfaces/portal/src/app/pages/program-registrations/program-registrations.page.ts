@@ -39,8 +39,8 @@ import { ToastService } from '~/services/toast.service';
 import {
   TrackingAction,
   TrackingCategory,
-  TrackingService,
-} from '~/services/tracking.service';
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 import { getOriginUrl } from '~/utils/url-helper';
 
 @Component({

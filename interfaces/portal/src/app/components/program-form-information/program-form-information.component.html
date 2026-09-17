@@ -44,7 +44,7 @@
     i18n-label
     [errorMessage]="formFieldErrors()('targetNrRegistrations')"
     [isRequired]="true"
-    [labelTooltip]="PROGRAM_FORM_TOOLTIPS.targetRegistrations"
+    [infoTooltipData]="PROGRAM_FORM_TOOLTIPS_CONFIG.targetRegistrations"
   >
     <input
       pInputText
@@ -66,7 +66,9 @@
       i18n
       >Use "validation" in this program</label
     >
-    <app-info-tooltip [message]="PROGRAM_FORM_TOOLTIPS.validationProcess" />
+    <app-info-tooltip
+      [infoTooltipData]="PROGRAM_FORM_TOOLTIPS_CONFIG.validationProcess"
+    />
   </div>
   <div class="mbs-4 flex justify-items-center">
     <p-toggleSwitch
@@ -80,6 +82,8 @@
       i18n
       >Use "scope" in this program</label
     >
-    <app-info-tooltip [message]="PROGRAM_FORM_TOOLTIPS.enableScope" />
+    <app-info-tooltip
+      [infoTooltipData]="PROGRAM_FORM_TOOLTIPS_CONFIG.enableScope"
+    />
   </div>
 </ng-container>
