@@ -211,7 +211,12 @@ class PaymentPage extends BasePage {
     badgeName: string;
     count: number;
   }) {
-    const badge = this.page.locator('app-colored-chip').getByLabel(badgeName);
+    const paymentTransactionListTable = this.page.getByTestId(
+      'payment-transaction-list-table',
+    );
+    const badge = paymentTransactionListTable
+      .locator('app-colored-chip')
+      .getByLabel(badgeName);
 
     await expect(badge).toHaveCount(count);
 
