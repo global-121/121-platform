@@ -28,6 +28,7 @@ const filterableColumns: Partial<{
   registrationReferenceId: AllowedFiltersString,
   registrationProgramId: AllowedFiltersNumber,
   registrationScope: AllowedFiltersString,
+  duplicateStatus: AllowedFiltersString,
 };
 
 const maxLimit = -1; // No limit
