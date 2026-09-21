@@ -17,6 +17,7 @@ import {
 
 import ExportData from '@121-e2e/portal/components/ExportData';
 import TableComponent from '@121-e2e/portal/components/TableComponent';
+import { InputHelper } from '@121-e2e/portal/helpers/InputHelper';
 import BasePage from '@121-e2e/portal/pages/BasePage';
 import FspSettingsPage from '@121-e2e/portal/pages/FspSettingsPage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
@@ -65,6 +66,7 @@ interface Fixtures {
     password: string;
   }) => Promise<void>;
   onlyResetAndSeedRegistrations: (params) => Promise<void>;
+  inputHelper: InputHelper;
   basePage: BasePage;
   exportDataComponent: ExportData;
   fspSettingsPage: FspSettingsPage;
@@ -276,6 +278,10 @@ export const customSharedFixture = base.extend<Fixtures>({
 
   tableComponent: async ({ page }, use) => {
     await use(new TableComponent(page));
+  },
+
+  inputHelper: async ({ page }, use) => {
+    await use(new InputHelper(page));
   },
 
   basePage: async ({ page }, use) => {

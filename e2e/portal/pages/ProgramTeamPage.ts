@@ -55,13 +55,15 @@ class ProgramTeamPage extends BasePage {
     userEmail: string;
     role: string;
   }) {
-    await this.addUserFormChooseUserDropdown.click();
-    await this.addUserFormChooseUserDropdown.fill(userSearchPhrase);
-    await this.page.getByText(userEmail).click();
-    await this.addUserFormChooseRoleDropdown.click();
-    await this.page.getByText(role).click();
-    // Close the roles dropdown which stays open because multiple roles can be selected
-    await this.closeOpenSelectOrMultiselectWithRetries();
+    await this.inputHelper.selectDropdownOption({
+      locator: this.addUserFormChooseUserDropdown,
+      option: userEmail,
+      searchPhrase: userSearchPhrase,
+    });
+    await this.inputHelper.selectDropdownOption({
+      locator: this.addUserFormChooseRoleDropdown,
+      option: role,
+    });
     await this.addUserFormSubmitButton.click();
   }
 
