@@ -20,8 +20,8 @@
       <td class="px-2">
         {{ attribute.label }}
         <span class="relative inset-bs-1">
-          @if (attribute.infoTooltip) {
-            <app-info-tooltip [message]="attribute.infoTooltip()" />
+          @if (attribute.infoTooltipData) {
+            <app-info-tooltip [infoTooltipData]="attribute.infoTooltipData" />
           }
         </span>
       </td>
@@ -62,25 +62,10 @@
   </ng-template>
 </p-table>
 
-<<<<<<< HEAD
-      <div class="mbs-4">
-        <app-explainer
-          [title]="dataColumnNamesExplainers.title"
-          [items]="dataColumnNamesExplainers.items"
-          [trackingEventName]="
-            ExplainerTrackingName.requiredDataColumnNamesExplainer
-          "
-        />
-      </div>
-    </p-accordion-content>
-  </p-accordion-panel>
-</p-accordion>
-=======
 @if (!this.isKoboIntegrated()) {
   <app-explainer
     [title]="dataColumnNamesExplainers.title"
     [items]="dataColumnNamesExplainers.items"
-    [trackingEventName]="'Data column names'"
+    [trackingEventName]="ExplainerTrackingName.requiredDataColumnNamesExplainer"
   />
 }
->>>>>>> bc48940e8 (Finetuning with Tal)
