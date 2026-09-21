@@ -318,7 +318,6 @@ export class ProgramRegistrationAttributesService {
     existingAttribute: ProgramRegistrationAttributeEntity;
     update: ProgramRegistrationAttribute;
   }): void {
-    // Read before the loop below overwrites it with the incoming (unmerged) options.
     const existingOptions = existingAttribute.options ?? [];
 
     Object.assign(existingAttribute, update);
