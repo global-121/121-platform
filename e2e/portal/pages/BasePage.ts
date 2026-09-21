@@ -6,10 +6,12 @@ import * as XLSX from 'xlsx';
 
 import { PrimeNGDropdown } from '@121-e2e/portal/components/PrimeNGDropdown';
 import TableComponent from '@121-e2e/portal/components/TableComponent';
+import { InputHelper } from '@121-e2e/portal/helpers/InputHelper';
 
 class BasePage {
   readonly page: Page;
   readonly table: TableComponent;
+  readonly inputHelper: InputHelper;
   readonly logo: Locator;
   readonly localeDropdown: PrimeNGDropdown;
   readonly programHeader: Locator;
@@ -25,6 +27,7 @@ class BasePage {
   constructor(page: Page) {
     this.page = page;
     this.table = new TableComponent(page);
+    this.inputHelper = new InputHelper(page);
 
     this.logo = this.page.getByTestId('logo');
     this.localeDropdown = new PrimeNGDropdown({
@@ -172,7 +175,7 @@ class BasePage {
     await this.formError.waitFor();
 
     const errorString = await this.formError.textContent();
-    expect(await this.formError.isVisible()).toBe(true);
+    await expect(this.formError).toBeVisible();
     expect(errorString).toContain(errorText);
   }
 
@@ -251,7 +254,6 @@ class BasePage {
     return filePath;
   }
 
-  // @TODO: Maybe we should make an input helper file that handles all of the input variants (checkbox, select, text, etc.)
   async selectMultiselectOptions({
     dropdownTestId,
     optionsToClick,
@@ -259,26 +261,14 @@ class BasePage {
     dropdownTestId: string;
     optionsToClick: string[];
   }) {
-    await this.page.getByTestId(dropdownTestId).click();
-    for (const option of optionsToClick) {
-      await this.page.getByRole('option', { name: option }).click();
-    }
-    await this.closeOpenSelectOrMultiselectWithRetries();
+    await this.inputHelper.selectMultiselectOptions({
+      testId: dropdownTestId,
+      options: optionsToClick,
+    });
   }
 
   async closeOpenSelectOrMultiselectWithRetries(retries = 3) {
-    for (let i = 0; i < retries; i++) {
-      try {
-        const overlay = this.page
-          .locator('.p-multiselect-overlay')
-          .or(this.page.locator('.p-select-overlay'));
-        await this.page.keyboard.press('Escape');
-        await expect(overlay).not.toBeVisible();
-        return; // Click successful, exit the loop
-      } catch (error) {
-        console.log(`Click failed. Retrying... Attempt ${i + 1}/${retries}`);
-      }
-    }
+    await this.inputHelper.closeOverlayWithRetries({ retries });
   }
 
   // On the budget page and kobo requirement page we show the FSPs in a pill format, so we need to validate that the pills are shown correctly
@@ -289,7 +279,7 @@ class BasePage {
     const sortedFspsInnerTexts = (await fsps.allInnerTexts()).sort();
     const sortedFspNames = fspNames.sort();
 
-    await expect(sortedFspsInnerTexts).toEqual(sortedFspNames);
+    expect(sortedFspsInnerTexts).toEqual(sortedFspNames);
   }
 
   async validateExportedFile({
@@ -326,7 +316,7 @@ class BasePage {
     }
 
     if (expectedRowCount) {
-      expect(data.length).toEqual(expectedRowCount);
+      expect(data).toHaveLength(expectedRowCount);
     }
 
     const headerCells = headerRow.split(',');

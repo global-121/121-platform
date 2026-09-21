@@ -92,9 +92,10 @@ class ProgramSettingsPaymentApprovalPage extends BasePage {
   }
 
   async selectFirstStepUserByText(user: string) {
-    await this.firstStepUsersDropdown.click();
-    await this.page.getByRole('option', { name: user, exact: true }).click();
-    await this.page.keyboard.press('Escape');
+    await this.inputHelper.selectDropdownOption({
+      locator: this.firstStepUsersDropdown,
+      option: user,
+    });
   }
 
   async validateFirstStepUserOptionIsNotVisible(user: string) {
