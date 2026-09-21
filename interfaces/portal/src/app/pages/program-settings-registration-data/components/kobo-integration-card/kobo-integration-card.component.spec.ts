@@ -10,6 +10,7 @@ import {
 import { MessageService } from 'primeng/api';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { KoboIntegrationCardComponent } from '~/pages/program-settings-registration-data/components/kobo-integration-card/kobo-integration-card.component';
 import { ToastService } from '~/services/toast.service';
@@ -37,6 +38,16 @@ describe('KoboIntegrationCardComponent', () => {
               }),
           },
         },
+        {
+          provide: FspConfigurationApiService,
+          useValue: {
+            getFspConfigurations: (programId: Signal<number | string>) => () =>
+              queryOptions({
+                queryKey: ['fspConfigurations', programId()],
+                queryFn: () => Promise.resolve(null),
+              }),
+          },
+        },
         ToastService,
         MessageService,
         provideTanStackQuery(
@@ -53,6 +64,8 @@ describe('KoboIntegrationCardComponent', () => {
 
     fixture = TestBed.createComponent(KoboIntegrationCardComponent);
     fixture.componentRef.setInput('programId', 1);
+    fixture.componentRef.setInput('fspConfigurationCount', 0);
+    fixture.componentRef.setInput('isKoboIntegrated', false);
     fixture.detectChanges();
     component = fixture.componentInstance;
   });

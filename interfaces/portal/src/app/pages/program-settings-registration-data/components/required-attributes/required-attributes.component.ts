@@ -8,18 +8,20 @@ import {
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { AccordionModule } from 'primeng/accordion';
-import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
-import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  DefaultRegistrationDataAttributeNames,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 
+import { CopyToClipboardButtonComponent } from '~/components/copy-to-clipboard-button/copy-to-clipboard.component';
 import {
   ExplainerComponent,
   ExplainerItem,
 } from '~/components/explainer/explainer.component';
-import { FspTagsComponent } from '~/components/fsp-tags/fsp-tags.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
@@ -33,11 +35,10 @@ import {
   selector: 'app-required-attributes',
   imports: [
     TableModule,
-    Button,
-    InfoTooltipComponent,
     AccordionModule,
-    FspTagsComponent,
     ExplainerComponent,
+    CopyToClipboardButtonComponent,
+    InfoTooltipComponent,
   ],
   providers: [ToastService],
   templateUrl: './required-attributes.component.html',
@@ -48,10 +49,11 @@ export class RequiredAttributesComponent {
   readonly programId = input.required<number | string>();
   readonly isKoboIntegrated = input.required<boolean>();
 
-  private readonly toastService = inject(ToastService);
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
   readonly fspConfigurationService = inject(FspConfigurationService);
   readonly programApiService = inject(ProgramApiService);
+
+  readonly ExplainerTrackingName = ExplainerTrackingName;
 
   readonly fspConfigurations = injectQuery(
     this.fspConfigurationApiService.getFspConfigurations(this.programId),
@@ -65,7 +67,6 @@ export class RequiredAttributesComponent {
   readonly program = injectQuery(
     this.programApiService.getProgram(this.programId),
   );
-  readonly ExplainerTrackingName = ExplainerTrackingName;
   readonly enableScope = computed(() => this.program.data()?.enableScope);
 
   readonly programAttributes = injectQuery(
@@ -113,17 +114,9 @@ export class RequiredAttributesComponent {
 
     // The FSP is a hidden field that is always required, so we hardcode it to the list of required attributes
     // until we do not require it anymore for programs with only one FSP configured.
-    const fspNames = this.programFspNames().join(', ');
     const fspEntry = {
       name: 'fsp',
-      label: 'Fsp',
-      infoTooltipData: {
-        message:
-          this.programFspNames().length === 1
-            ? $localize`fsp should be a 'hidden' field in your form that has the 'default response' set to the FSP name: ${fspNames}`
-            : $localize`fsp should be 'select many' with the following FSP names as options: ${fspNames}`,
-        trackingName: InfoTooltipTrackingName.requiredAttributeFspInfo,
-      },
+      label: 'FSP',
     };
 
     // Scope is a field that is independent from the FSPs, so we hardcode it to the list of required attributes if the program has scope enabled.
@@ -146,6 +139,20 @@ export class RequiredAttributesComponent {
   readonly accordionValue = computed(() =>
     this.isKoboIntegrated() ? undefined : 'integrated-fsps-accordion-panel',
   );
+
+  // ------ Translations and hints related to FSP fields in the registration form.
+
+  readonly fspTranslations = computed(() => ({
+    typeHint:
+      this.programFspNames().length === 1
+        ? $localize`Make this a hidden field. Pre-fill with the answer value.`
+        : $localize`Ask this in the form. The options automatic field must match the
+              answers values to the right exactly.`,
+    answerValue:
+      this.programFspNames().length === 1
+        ? $localize`Answer value`
+        : $localize`Answer values`,
+  }));
 
   readonly dataColumnNamesExplainers: {
     title: string;
@@ -181,10 +188,47 @@ export class RequiredAttributesComponent {
     ],
   };
 
-  copyToClipboard(text: string) {
-    void navigator.clipboard.writeText(text);
-    this.toastService.showToast({
-      detail: $localize`"${text}" copied to clipboard`,
-    });
+  getRecommendedFspAttributeType() {
+    if (this.programFspNames().length === 1) {
+      return $localize`Hidden`;
+    } else {
+      return $localize`Select One`;
+    }
+  }
+
+  getTranslatedRecommendedAttributeType({
+    attribute,
+  }: {
+    attribute: {
+      type: RegistrationAttributeTypes;
+      name: string;
+    };
+  }) {
+    if (attribute.name === 'fsp') {
+      return this.getRecommendedFspAttributeType();
+    }
+
+    if (attribute.name === 'scope') {
+      return $localize`Hidden`;
+    }
+
+    switch (attribute.type) {
+      case RegistrationAttributeTypes.dropdown:
+        return $localize`Select One`;
+      case RegistrationAttributeTypes.numeric:
+      case RegistrationAttributeTypes.numericNullable:
+        return $localize`Number`;
+      case RegistrationAttributeTypes.tel:
+      case RegistrationAttributeTypes.text:
+        return $localize`Text`;
+      case RegistrationAttributeTypes.date:
+        return $localize`Date`;
+      case RegistrationAttributeTypes.multiSelect:
+        return $localize`Select Many`;
+      case RegistrationAttributeTypes.boolean:
+        return $localize`Checkbox`;
+      case RegistrationAttributeTypes.koboImage:
+        return $localize`Photo`;
+    }
   }
 }

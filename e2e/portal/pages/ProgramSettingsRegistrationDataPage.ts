@@ -217,6 +217,23 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
     }
   }
 
+  async validateProgramFspsAreShownInRequiredFieldsTable({
+    fsps,
+  }: {
+    fsps: string[];
+  }) {
+    const listItems = this.page
+      .getByTestId('required-fsps')
+      .getByRole('listitem');
+
+    const sortedFspsInnerTexts = (await listItems.allInnerTexts())
+      .map((text) => text.trim())
+      .sort();
+    const sortedFspNames = fsps.sort();
+
+    expect(sortedFspsInnerTexts).toEqual(sortedFspNames);
+  }
+
   async validateKoboRequiredFieldsTable({
     requiredDataColumnNames,
   }: {
@@ -234,13 +251,20 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
     await expect(async () => {
       const columnHeaders = await requiredFieldsTable.getTextArrayFromHeader();
       const dataColumnNames = await requiredFieldsTable.tableRows
-        .locator('td:nth-child(2)')
+        .locator('td:nth-child(3)')
         .allInnerTexts();
 
       const trimmedDataColumnNames = dataColumnNames.map((row) => row.trim());
 
-      expect(columnHeaders).toEqual(['Field', 'Data column name']);
-      expect(trimmedDataColumnNames).toEqual(requiredDataColumnNames);
+      expect(columnHeaders).toEqual([
+        'Field',
+        'Recommended type',
+        'Data column name',
+      ]);
+
+      const [, ...columnsWithoutFsps] = trimmedDataColumnNames;
+
+      expect(columnsWithoutFsps).toEqual(requiredDataColumnNames);
     }).toPass({ timeout: 5_000 });
   }
 
