@@ -135,8 +135,9 @@ class FspSettingsPage extends BasePage {
   }
 
   async validateFspConfiguration(fspConfiguration: string[]) {
-    // Wait for inputs to be loaded
-    await this.page.waitForTimeout(200);
+    // Wait until the form is visible
+    const form = this.page.getByTestId('fsp-configuration-dialog-form');
+    await expect(form).toBeVisible();
 
     const inputs = this.page.locator('input');
     const inputCount = await inputs.count();
@@ -196,62 +197,6 @@ class FspSettingsPage extends BasePage {
       } else {
         await expect(fspLocator).toBeHidden();
       }
-    }
-  }
-
-  async addFsp({ fspNames }: { fspNames: string[] }) {
-    for (const name of fspNames) {
-      // Check if we need to click "Add another FSP" first
-      await this.page.waitForTimeout(200); // Small wait to ensure button is loaded
-      if (await this.addFspButton.isVisible()) {
-        await this.addFspButton.click();
-      }
-      // Now proceed with selecting and configuring the FSP
-      await this.fspCard.filter({ hasText: name }).click();
-      await this.page.waitForTimeout(200); // Wait for inputs to load
-      const inputs = this.page.locator('input');
-      const inputCount = await inputs.count();
-
-      // Check if this FSP uses dropdowns by looking for specific placeholder
-      const dropdown = this.page.getByPlaceholder('Select 1');
-      const hasDropdowns = (await dropdown.count()) > 0;
-
-      if (hasDropdowns) {
-        // Handle dropdowns (e.g., Excel Payment Instructions FSP)
-        await this.page.waitForLoadState('domcontentloaded');
-        const dropdownsCount = await dropdown.count();
-
-        for (let i = 0; i < dropdownsCount; i++) {
-          await dropdown.nth(i).waitFor({ state: 'visible' });
-          await dropdown.nth(i).click();
-          // Select the option with the FSP name
-          await this.page
-            .getByLabel('Full Name')
-            .nth(i + 1)
-            .click();
-
-          await this.closeOpenSelectOrMultiselectWithRetries();
-        }
-      } else {
-        for (let i = 1; i < inputCount; i++) {
-          const input = inputs.nth(i);
-          const inputType = await input.getAttribute('type');
-
-          switch (inputType) {
-            case 'checkbox':
-              await input.check();
-              break;
-            case 'number':
-              await input.fill('150');
-              break;
-            default:
-              await input.fill(name);
-          }
-        }
-      }
-
-      await this.integrateFspButton.waitFor({ state: 'visible' });
-      await this.integrateFspButton.click();
     }
   }
 

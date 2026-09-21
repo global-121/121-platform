@@ -115,7 +115,7 @@ test('View available actions for a "view only" user', async ({
   });
 
   await test.step('Validate hidden buttons', async () => {
-    await expect(paymentsPage.exportButton).not.toBeVisible();
-    await expect(paymentsPage.createNewPaymentButton).not.toBeVisible();
+    await expect(paymentsPage.exportButton).toBeHidden();
+    await expect(paymentsPage.createNewPaymentButton).toBeHidden();
   });
 });

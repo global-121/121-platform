@@ -64,6 +64,9 @@ test.describe('Attachments on Program Level', () => {
           filePath,
           filename: `Test ${path.basename(filePath, path.extname(filePath)).toUpperCase()} file upload`,
         });
+        await programMonitoringPage.validateToastMessageAndClose(
+          'File uploaded successfully',
+        );
       }
     });
 

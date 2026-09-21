@@ -103,8 +103,7 @@ class TableComponent {
     await expect(transactionHistoryTable).toBeVisible();
     const transactionHistoryTableRows =
       transactionHistoryTable.locator('tbody tr');
-    const rowCount = await transactionHistoryTableRows.count();
-    expect(rowCount).toBe(expectedRowCount);
+    await expect(transactionHistoryTableRows).toHaveCount(expectedRowCount);
   }
 
   async closeViewTransactionHistory() {
@@ -120,7 +119,7 @@ class TableComponent {
     // (e.g. right after navigation) doesn't pass loading/empty checks before rows exist.
     await expect(async () => {
       await expect(this.tableLoading).toHaveCount(0);
-      await expect(this.tableEmpty).not.toBeVisible();
+      await expect(this.tableEmpty).toBeHidden();
 
       if (rowsCount) {
         await expect(this.tableRows).toHaveCount(rowsCount);
@@ -156,8 +155,8 @@ class TableComponent {
     expectedRowCount: number;
   }) {
     await expect(async () => {
-      const rowCount = await this.tableRows.count();
-      expect(rowCount).toBe(expectedRowCount);
+      const rowCount = this.tableRows;
+      await expect(rowCount).toHaveCount(expectedRowCount);
     }).toPass({ timeout: 2000 });
   }
 
@@ -170,15 +169,11 @@ class TableComponent {
 
     await expect(this.globalSearchInput).toBeVisible();
     await this.globalSearchInput.fill(searchText);
-    // wait for 500s for filter to be applied in the BE
-    await this.page.waitForTimeout(500);
   }
 
   async clearAllFilters() {
     // When table is empty we have more than one clear filters button that is why we use first()
     await this.clearAllFiltersButton.first().click();
-    // wait for 500s for filter to be cleared in the BE
-    await this.page.waitForTimeout(500);
   }
 
   async getSortingTypeOfColumn(columnName: string) {
@@ -415,7 +410,7 @@ class TableComponent {
 
   async validateSelectionCount(expectedCount: number) {
     if (expectedCount === 0) {
-      await expect(this.table.getByText('selected')).not.toBeVisible();
+      await expect(this.table.getByText('selected')).toBeHidden();
       return;
     }
 
@@ -514,16 +509,13 @@ class TableComponent {
     registrationName: string,
     label: string,
   ) {
-    const firstRowText = await this.page
+    const firstRowText = this.page
       .getByRole('row', { name: registrationName })
-      .getByLabel(label)
-      .textContent();
-    expect(firstRowText).toBe(label);
+      .getByLabel(label);
+    await expect(firstRowText).toHaveText(label);
   }
 
   async assertEmptyTableState() {
-    await this.page.waitForTimeout(200);
-    await this.page.waitForSelector('table tbody tr td');
     await expect(this.page.getByText('No results')).toBeVisible();
   }
 
@@ -586,7 +578,7 @@ class TableComponent {
       .locator('tr')
       .filter({ hasText: notificationType });
 
-    await expect(messageNotification).not.toBeVisible();
+    await expect(messageNotification).toBeHidden();
   }
 
   async validateActivityPresentByType({

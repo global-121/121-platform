@@ -54,9 +54,7 @@ test('After the data change of duplicate registration, both registrations get un
   });
 
   await test.step('Verify banner has disappeared and registration is now unique', async () => {
-    await expect(
-      registrationActivityLogPage.duplicatesBanner,
-    ).not.toBeVisible();
+    await expect(registrationActivityLogPage.duplicatesBanner).toBeHidden();
 
     await registrationActivityLogPage.assertDuplicateStatus({
       status: 'Unique',

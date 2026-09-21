@@ -131,7 +131,15 @@ test('Import existing Kobo registrations that include errors in the registration
   });
 
   await test.step('Validate error table with details of the errors in the registrations', async () => {
-    await programSettingsRegistrationDataPage.validateErrorTable();
+    await programSettingsRegistrationDataPage.validateErrorTable({
+      dataTestId: 'kobo-import-existing-registration-dialog-errors-table',
+      columnHeaders: ['Reference ID', 'Column', 'Error'],
+      rowData: [
+        'failure-import-with-failure',
+        'fsp',
+        'Fsp undefined not found in program. Allowed values: Safaricom',
+      ],
+    });
   });
 });
 

@@ -176,25 +176,6 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
     await this.page.getByText('Refresh link').click();
   }
 
-  async validateErrorTable() {
-    const fileDialogErrorTable = new TableComponent(
-      this.page,
-      'kobo-import-existing-registration-dialog-errors-table',
-    );
-
-    const columnHeaders = await fileDialogErrorTable.getTextArrayFromHeader();
-    const rows = await fileDialogErrorTable.tableRows
-      .locator('td')
-      .allInnerTexts();
-
-    expect(columnHeaders).toEqual(['Reference ID', 'Column', 'Error']);
-    expect(rows).toEqual([
-      'failure-import-with-failure',
-      'fsp',
-      'Fsp undefined not found in program. Allowed values: Safaricom',
-    ]);
-  }
-
   async validateLanguageTabs({ languages }: { languages: string[] }) {
     await expect(this.languageTabs).toHaveCount(languages.length);
     for (const [index, language] of languages.entries()) {
@@ -313,8 +294,8 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
       .allInnerTexts();
     const rows = await configurationErrorsTable.locator('td').allInnerTexts();
 
-    await expect(columnHeaders).toEqual(configurationErrorsTableColumns);
-    await expect(rows.map((row) => row.trim())).toEqual(configurationErrors);
+    expect(columnHeaders).toEqual(configurationErrorsTableColumns);
+    expect(rows.map((row) => row.trim())).toEqual(configurationErrors);
   }
 
   async validateErrorDialogIsShown() {
