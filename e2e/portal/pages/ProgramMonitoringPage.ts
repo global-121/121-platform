@@ -91,11 +91,11 @@ class ProgramMonitoring extends BasePage {
       await this.monitoringIframe
         .locator('iframe')
         .waitFor({ state: 'attached', timeout: 1000 });
-      const iframe = await this.monitoringIframe.locator('iframe').all();
-      expect(iframe.length).toBe(1);
+      const iframe = this.monitoringIframe.locator('iframe');
+      await expect(iframe).toHaveCount(1);
     } else {
-      const iframe = await this.monitoringIframe.locator('iframe').all();
-      expect(iframe.length).toBe(0);
+      const iframe = this.monitoringIframe.locator('iframe');
+      await expect(iframe).toHaveCount(0);
       await expect(this.monitoringIframe).toContainText(
         'No PowerBI dashboard has been configured for this program, please contact support@121.global to set this up',
       );
@@ -189,7 +189,7 @@ class ProgramMonitoring extends BasePage {
     await this.page.waitForLoadState('networkidle');
     await this.formError.waitFor();
     const errorString = await this.formError.textContent();
-    expect(await this.formError.isVisible()).toBe(true);
+    await expect(this.formError).toBeVisible();
     expect(errorString).toContain(errorText);
   }
 

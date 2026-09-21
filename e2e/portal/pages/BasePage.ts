@@ -166,12 +166,10 @@ class BasePage {
   }
 
   async waitForPageLoad() {
-    await this.page.waitForLoadState('networkidle');
     await this.page.waitForLoadState('domcontentloaded');
   }
 
   async validateFormError({ errorText }: { errorText: string }) {
-    await this.page.waitForLoadState('networkidle');
     await this.formError.waitFor();
 
     const errorString = await this.formError.textContent();
@@ -211,24 +209,24 @@ class BasePage {
     await expect(errorElement).toContainText(errorMessage);
   }
 
-  async validateErrorTable() {
-    const fileDialogErrorTable = new TableComponent(
-      this.page,
-      'import-file-dialog-errors-table',
+  async validateErrorTable({
+    dataTestId,
+    columnHeaders,
+    rowData,
+  }: {
+    dataTestId: string;
+    columnHeaders: string[];
+    rowData: string[];
+  }) {
+    const fileDialogErrorTable = new TableComponent(this.page, dataTestId);
+
+    const actualColumnHeaders =
+      await fileDialogErrorTable.getTextArrayFromHeader();
+    expect(actualColumnHeaders).toEqual(columnHeaders);
+
+    await expect(fileDialogErrorTable.tableRows.locator('td')).toHaveText(
+      rowData,
     );
-
-    const columnHeaders = await fileDialogErrorTable.getTextArrayFromHeader();
-    const rows = await fileDialogErrorTable.tableRows
-      .locator('td')
-      .allInnerTexts();
-
-    expect(columnHeaders).toEqual(['Line number', 'Column', 'Value', 'Error']);
-    expect(rows).toEqual([
-      '13',
-      'addressCity',
-      '',
-      'Cannot update/set addressCity with a nullable value as it is required for the FSP: Intersolve-visa',
-    ]);
   }
 
   /**

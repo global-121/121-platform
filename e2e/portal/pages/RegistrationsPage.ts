@@ -122,11 +122,9 @@ class RegistrationsPage extends BasePage {
         }
       }
 
-      expect(
-        await this.manageTableSidebar
-          .getByRole('checkbox', { checked: true })
-          .count(),
-      ).toBe(0);
+      await expect(
+        this.manageTableSidebar.getByRole('checkbox', { checked: true }),
+      ).toHaveCount(0);
     }
 
     for (const column of columns) {
@@ -137,7 +135,7 @@ class RegistrationsPage extends BasePage {
       .getByRole('button', { name: 'Apply' })
       .click();
 
-    await expect(this.manageTableSidebar).not.toBeVisible();
+    await expect(this.manageTableSidebar).toBeHidden();
 
     if (onlyGivenColumns) {
       // Validate only the given columns are visible in the table
@@ -158,11 +156,11 @@ class RegistrationsPage extends BasePage {
     await this.openManageTableSidebar();
 
     await expect(async () => {
-      const checkbox = await this.manageTableSidebar.getByLabel(column);
+      const checkbox = this.manageTableSidebar.getByLabel(column);
       if (shouldBeAvailable) {
         await expect(checkbox).toBeVisible();
       } else {
-        await expect(checkbox).not.toBeVisible();
+        await expect(checkbox).toBeHidden();
       }
     }).toPass({ timeout: 5000 });
 
@@ -170,7 +168,7 @@ class RegistrationsPage extends BasePage {
       .getByRole('button', { name: 'Cancel' })
       .click();
 
-    await expect(this.manageTableSidebar).not.toBeVisible();
+    await expect(this.manageTableSidebar).toBeHidden();
   }
 
   async getFirstRegistrationNameFromTable() {

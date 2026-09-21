@@ -74,6 +74,7 @@ test('Reconfigure FSP', async ({
       fspName: newVisaConfiguration[0],
       optionLabel: 'Configure',
     });
+
     await fspSettingsPage.validateFspConfiguration(newVisaConfiguration);
   });
 });

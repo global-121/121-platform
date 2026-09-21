@@ -36,7 +36,7 @@ class RegistrationActivityLogPage extends RegistrationBasePage {
 
     await expect(lastMessageRow).toBeVisible();
 
-    await expect(this.page.getByText(message)).not.toBeVisible();
+    await expect(this.page.getByText(message)).toBeHidden();
 
     // The expanded state of this row is remembered in localStorage! So resetting the table-state is required for predictable test behavior.
     await lastMessageRow.getByLabel('Toggle row').click();
