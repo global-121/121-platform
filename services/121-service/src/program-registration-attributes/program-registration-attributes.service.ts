@@ -321,9 +321,7 @@ export class ProgramRegistrationAttributesService {
     // Read before the loop below overwrites it with the incoming (unmerged) options.
     const existingOptions = existingAttribute.options ?? [];
 
-    for (const key in update) {
-      existingAttribute[key] = update[key];
-    }
+    Object.assign(existingAttribute, update);
 
     // Kobo sync can only add choices, never remove ones already relied upon elsewhere.
     if (update.options !== undefined) {
