@@ -53,6 +53,8 @@ export class RequiredAttributesComponent {
   readonly fspConfigurationService = inject(FspConfigurationService);
   readonly programApiService = inject(ProgramApiService);
 
+  readonly ExplainerTrackingName = ExplainerTrackingName;
+
   readonly fspConfigurations = injectQuery(
     this.fspConfigurationApiService.getFspConfigurations(this.programId),
   );
@@ -65,7 +67,6 @@ export class RequiredAttributesComponent {
   readonly program = injectQuery(
     this.programApiService.getProgram(this.programId),
   );
-  readonly ExplainerTrackingName = ExplainerTrackingName;
   readonly enableScope = computed(() => this.program.data()?.enableScope);
 
   readonly programAttributes = injectQuery(
@@ -113,36 +114,19 @@ export class RequiredAttributesComponent {
 
     // The FSP is a hidden field that is always required, so we hardcode it to the list of required attributes
     // until we do not require it anymore for programs with only one FSP configured.
-    const fspNames = this.programFspNames().join(', ');
     const fspEntry = {
       name: 'fsp',
-<<<<<<< HEAD
-      label: 'Fsp',
-      infoTooltipData: {
-        message:
-          this.programFspNames().length === 1
-            ? $localize`fsp should be a 'hidden' field in your form that has the 'default response' set to the FSP name: ${fspNames}`
-            : $localize`fsp should be 'select many' with the following FSP names as options: ${fspNames}`,
-        trackingName: InfoTooltipTrackingName.requiredAttributeFspInfo,
-      },
-=======
       label: 'FSP',
->>>>>>> bc48940e8 (Finetuning with Tal)
     };
 
     // Scope is a field that is independent from the FSPs, so we hardcode it to the list of required attributes if the program has scope enabled.
     const scope = {
       name: 'scope',
       label: 'Scope',
-<<<<<<< HEAD
       infoTooltipData: {
         message: $localize`Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration`,
         trackingName: InfoTooltipTrackingName.requiredAttributeScopeInfo,
       },
-=======
-      infoTooltip: () =>
-        $localize`Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration`,
->>>>>>> 2cbcc0e26 (Addressing copilot comments)
     };
 
     return [
