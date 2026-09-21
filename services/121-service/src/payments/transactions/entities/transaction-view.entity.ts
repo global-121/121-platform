@@ -19,6 +19,8 @@ import { LastTransactionEventEntity } from '@121-service/src/payments/transactio
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
+import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
@@ -45,6 +47,7 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
       .addSelect('registration.registrationProgramId', 'registrationProgramId')
       .addSelect('registration.referenceId', 'registrationReferenceId')
       .addSelect('registration.scope', 'registrationScope')
+      .addSelect('registrationview.duplicateStatus', 'duplicateStatus')
       .from(TransactionEntity, 't')
       .innerJoin(LastTransactionEventEntity, 'lte', 't.id = lte.transactionId')
       .leftJoin(
@@ -61,6 +64,11 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
         RegistrationEntity,
         'registration',
         't.registrationId = registration.id',
+      )
+      .leftJoin(
+        RegistrationViewEntity,
+        'registrationview',
+        't.registrationId = registrationview.id',
       ),
 })
 export class TransactionViewEntity {
@@ -150,4 +158,7 @@ export class TransactionViewEntity {
 
   @ViewColumn()
   public registrationScope: string | null;
+
+  @ViewColumn()
+  public duplicateStatus: DuplicateStatus;
 }

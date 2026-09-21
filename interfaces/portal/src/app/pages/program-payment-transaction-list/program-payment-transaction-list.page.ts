@@ -18,10 +18,12 @@ import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import {
+  getChipDataByDuplicateStatus,
   getChipDataByRegistrationStatus,
   getChipDataByTransactionStatus,
 } from '~/components/colored-chip/colored-chip.helper';
@@ -34,6 +36,7 @@ import {
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import {
+  DUPLICATE_STATUS_LABELS,
   REGISTRATION_STATUS_LABELS,
   registrationLink,
 } from '~/domains/registration/registration.helper';
@@ -171,6 +174,18 @@ export class ProgramPaymentTransactionListPageComponent {
         displayAsChip: true,
         getCellChipData: (transaction) =>
           getChipDataByTransactionStatus(transaction.status),
+      },
+      {
+        field: 'duplicateStatus',
+        header: $localize`:@@registration-duplicates:Duplicates`,
+        type: QueryTableColumnType.MULTISELECT,
+        options: Object.values(DuplicateStatus).map((status) => ({
+          label: DUPLICATE_STATUS_LABELS[status],
+          value: status,
+        })),
+        displayAsChip: true,
+        getCellChipData: (transaction) =>
+          getChipDataByDuplicateStatus(transaction.duplicateStatus),
       },
       {
         field: 'errorMessage',
