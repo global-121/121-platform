@@ -28,6 +28,7 @@ import {
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { registrationViewAttributeNames } from '@121-service/src/shared/const';
+import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 
 @Injectable()
 export class ProgramRegistrationAttributesService {
@@ -294,10 +295,10 @@ export class ProgramRegistrationAttributesService {
       const existingAttribute = existingAttributesMap.get(attribute.name);
 
       if (existingAttribute) {
-        // Update existing attribute
-        for (const key in attribute) {
-          existingAttribute[key] = attribute[key];
-        }
+        this.applyProgramRegistrationAttributeUpdate({
+          existingAttribute,
+          update: attribute,
+        });
         entitiesToSave.push(existingAttribute);
       } else {
         // Create new attribute
@@ -308,6 +309,47 @@ export class ProgramRegistrationAttributesService {
       }
     }
     await this.programRegistrationAttributeRepository.save(entitiesToSave);
+  }
+
+  private applyProgramRegistrationAttributeUpdate({
+    existingAttribute,
+    update,
+  }: {
+    existingAttribute: ProgramRegistrationAttributeEntity;
+    update: ProgramRegistrationAttribute;
+  }): void {
+    // Read before the loop below overwrites it with the incoming (unmerged) options.
+    const existingOptions = existingAttribute.options ?? [];
+
+    for (const key in update) {
+      existingAttribute[key] = update[key];
+    }
+
+    // Kobo sync can only add choices, never remove ones already relied upon elsewhere.
+    if (update.options !== undefined) {
+      existingAttribute.options = this.mergeProgramRegistrationAttributeOptions(
+        {
+          existingOptions,
+          incomingOptions: update.options,
+        },
+      );
+    }
+  }
+
+  private mergeProgramRegistrationAttributeOptions({
+    existingOptions,
+    incomingOptions,
+  }: {
+    existingOptions: QuestionOption[];
+    incomingOptions: QuestionOption[];
+  }): QuestionOption[] {
+    const incomingOptionValues = new Set(
+      incomingOptions.map((option) => option.option),
+    );
+    const preservedExistingOptions = existingOptions.filter(
+      (option) => !incomingOptionValues.has(option.option),
+    );
+    return [...incomingOptions, ...preservedExistingOptions];
   }
 
   public async createProgramRegistrationAttribute({

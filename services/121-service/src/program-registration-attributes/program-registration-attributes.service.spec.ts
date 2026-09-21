@@ -182,6 +182,7 @@ describe('ProgramRegistrationAttributesService', () => {
         name: 'firstName',
         label: { en: 'Old Label' },
         isRequired: false,
+        options: [{ option: 'a', label: { en: 'A' } }],
       });
 
       const updateDto = createAttributeDto({
@@ -213,6 +214,94 @@ describe('ProgramRegistrationAttributesService', () => {
       expect(savedEntities[0].name).toBe('firstName');
       expect(savedEntities[0].label).toEqual({ en: 'Updated First Name' });
       expect(savedEntities[0].isRequired).toBe(true);
+      expect(savedEntities[0].options).toEqual([
+        { option: 'a', label: { en: 'A' } },
+      ]);
+    });
+
+    it('should not remove options missing from the update when the update does include options', async () => {
+      // Arrange
+      const programId = 1;
+      const existingEntity = createAttributeEntity({
+        id: 10,
+        name: 'dropdownAttribute',
+        options: [
+          { option: 'a', label: { en: 'A' } },
+          { option: 'b', label: { en: 'B' } },
+          { option: 'c', label: { en: 'C' } },
+        ],
+      });
+
+      const updateDto = createAttributeDto({
+        name: 'dropdownAttribute',
+        options: [
+          { option: 'b', label: { en: 'B' } },
+          { option: 'd', label: { en: 'D' } },
+        ],
+      });
+
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'find')
+        .mockResolvedValue([existingEntity]);
+
+      const saveSpy = jest
+        .spyOn(programRegistrationAttributeRepository, 'save')
+        .mockImplementation(async (entities: any) => entities);
+
+      // Act
+      await programRegistrationAttributesService.upsertProgramRegistrationAttributes(
+        {
+          programId,
+          programRegistrationAttributes: [updateDto],
+        },
+      );
+
+      // Assert
+      const savedOptions = saveSpy.mock.calls[0][0][0].options;
+      expect(savedOptions).toHaveLength(4);
+      expect(savedOptions).toEqual(
+        expect.arrayContaining([
+          { option: 'a', label: { en: 'A' } },
+          { option: 'b', label: { en: 'B' } },
+          { option: 'c', label: { en: 'C' } },
+          { option: 'd', label: { en: 'D' } },
+        ]),
+      );
+    });
+
+    it("should replace an existing option's label when it is present in the update", async () => {
+      // Arrange
+      const programId = 1;
+      const existingEntity = createAttributeEntity({
+        id: 10,
+        name: 'dropdownAttribute',
+        options: [{ option: 'a', label: { en: 'Old A' } }],
+      });
+
+      const updateDto = createAttributeDto({
+        name: 'dropdownAttribute',
+        options: [{ option: 'a', label: { en: 'New A' } }],
+      });
+
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'find')
+        .mockResolvedValue([existingEntity]);
+
+      const saveSpy = jest
+        .spyOn(programRegistrationAttributeRepository, 'save')
+        .mockImplementation(async (entities: any) => entities);
+
+      // Act
+      await programRegistrationAttributesService.upsertProgramRegistrationAttributes(
+        {
+          programId,
+          programRegistrationAttributes: [updateDto],
+        },
+      );
+
+      // Assert
+      const savedOptions = saveSpy.mock.calls[0][0][0].options;
+      expect(savedOptions).toEqual([{ option: 'a', label: { en: 'New A' } }]);
     });
   });
 
