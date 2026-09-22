@@ -77,7 +77,7 @@ test('User is silently redirected to login on fresh page load with already-expir
 
   // The "Session expired" dialog must NOT appear
   const sessionExpiredDialog = page.getByText('Session expired');
-  await expect(sessionExpiredDialog).not.toBeVisible();
+  await expect(sessionExpiredDialog).toBeHidden();
   // After logging back in, the user should land on the originally requested URL.
   await loginPage.loginAsAdmin({
     skipNavigateToLogin: true,
@@ -106,5 +106,5 @@ test('User with a valid (non-expired) token is not redirected to login on page r
 
   // The "Session expired" dialog must NOT appear
   const sessionExpiredDialog = page.getByText('Session expired');
-  await expect(sessionExpiredDialog).not.toBeVisible();
+  await expect(sessionExpiredDialog).toBeHidden();
 });

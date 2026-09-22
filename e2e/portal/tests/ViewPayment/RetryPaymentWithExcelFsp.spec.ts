@@ -8,7 +8,10 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations, page }) => {
+  const context = page.context();
+  const cdpSession = await context.newCDPSession(page);
+  await cdpSession.send('Emulation.setCPUThrottlingRate', { rate: 6 });
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     registrations: registrationsPvExcel,
@@ -49,7 +52,7 @@ test('Retry payments should put failed transactions back in processing and downl
   await test.step('Retry payment, Export FSP payment data and assert file', async () => {
     await paymentPage.validateRetryFailedTransactionsButtonToBeVisible();
     // Timeout has to be used in this case because choose option is not visible immediately after the dropdown button is clicked
-    await page.waitForTimeout(200);
+    // await page.waitForTimeout(200);
     await paymentPage.retryFailedTransactions({
       totalTransactions: 4,
       failedTransactions: 2,
