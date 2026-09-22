@@ -21,6 +21,7 @@ const createSSLConfig = (): boolean | TlsOptions => {
       `${certsPath}/Microsoft_RSA_Root_Certificate_Authority_2017.pem`,
     ).toString(),
     readFileSync(`${certsPath}/DigiCert_Global_Root_G2.pem`).toString(),
+    readFileSync(`${certsPath}/ISRG_Root_X1.pem`).toString(),
   ].join('\n\n');
 
   return {
