@@ -170,9 +170,10 @@ class PaymentPage extends BasePage {
 
   async waitForPaymentToComplete({
     expectedAmount,
-  }: { expectedAmount?: number } = {}) {
+    failed,
+  }: { expectedAmount?: number; failed?: boolean } = {}) {
     await expect(this.page.locator('p-chart')).toHaveAttribute(
-      'data-success',
+      failed ? 'data-failed' : 'data-success',
       '1',
     );
 
