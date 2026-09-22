@@ -149,7 +149,7 @@ export class ApplicationModule implements OnApplicationBootstrap {
 
     // Any additional bootstrap tasks only AFTER successful migrations
     await this.permissionMaintenanceService.syncSupportedPermissions();
-    await this.permissionMaintenanceService.syncAdminRolePermissions();
+    await this.permissionMaintenanceService.syncDefaultRoles();
     await this.permissionMaintenanceService.removeExtraneousPermissions();
   }
 }

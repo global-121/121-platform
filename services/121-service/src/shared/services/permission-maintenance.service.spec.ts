@@ -3,6 +3,10 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
 import { PermissionMaintenanceService } from '@121-service/src/shared/services/permission-maintenance.service';
+import {
+  DEFAULT_USER_ROLES,
+  DefaultUserRoleDefinition,
+} from '@121-service/src/user/const/default-user-roles.const';
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -42,30 +46,34 @@ function getMissingPermissionFixture(): {
   };
 }
 
-function createAdminRoleEntity({
-  permissions,
-}: {
-  permissions: PermissionEntity[];
-}): UserRoleEntity {
-  const userRole = new UserRoleEntity();
-  userRole.id = 1;
-  userRole.role = DefaultUserRole.Admin;
-  userRole.permissions = [...permissions];
-  return userRole;
+function createDefaultRoleEntities(): UserRoleEntity[] {
+  const permissionsByName = new Map(
+    getAllSupportedPermissions().map((permission) => [
+      permission.name,
+      permission,
+    ]),
+  );
+
+  return DEFAULT_USER_ROLES.map((definition, index) => {
+    const userRole = new UserRoleEntity();
+    userRole.id = index + 1;
+    userRole.role = definition.role;
+    userRole.label = definition.label;
+    userRole.permissions = definition.permissions
+      .map((permissionName) => permissionsByName.get(permissionName))
+      .filter((permission) => permission !== undefined);
+    return userRole;
+  });
 }
 
-function mockAdminRoleLookup({
-  userRoleRepository,
-  permissions,
+function getDefaultRoleDefinition({
+  role,
 }: {
-  userRoleRepository: {
-    findOne: jest.Mock;
-  };
-  permissions: PermissionEntity[] | null;
-}): void {
-  userRoleRepository.findOne.mockResolvedValue(
-    permissions ? createAdminRoleEntity({ permissions }) : null,
-  );
+  role: DefaultUserRole;
+}): DefaultUserRoleDefinition {
+  return DEFAULT_USER_ROLES.find(
+    (definition) => definition.role === role,
+  ) as DefaultUserRoleDefinition;
 }
 
 describe('PermissionMaintenanceService', () => {
@@ -76,7 +84,7 @@ describe('PermissionMaintenanceService', () => {
     save: jest.Mock;
   };
   let userRoleRepository: {
-    findOne: jest.Mock;
+    find: jest.Mock;
     save: jest.Mock;
   };
 
@@ -93,7 +101,7 @@ describe('PermissionMaintenanceService', () => {
     };
 
     userRoleRepository = {
-      findOne: jest.fn(),
+      find: jest.fn(),
       save: jest.fn().mockImplementation(async (role: UserRoleEntity) => role),
     };
 
@@ -114,34 +122,43 @@ describe('PermissionMaintenanceService', () => {
     service = moduleRef.get(PermissionMaintenanceService);
   });
 
-  it('does not perform writes when admin already has all supported permissions', async () => {
+  it('does not perform writes when all default roles are in sync', async () => {
     const existingPermissions = getAllSupportedPermissions();
+    const customRole = new UserRoleEntity();
+    customRole.role = 'custom-role';
+    customRole.permissions = [];
 
     permissionRepository.find.mockResolvedValue(existingPermissions);
-    mockAdminRoleLookup({
-      userRoleRepository,
-      permissions: existingPermissions,
-    });
+    userRoleRepository.find.mockResolvedValue([
+      ...createDefaultRoleEntities(),
+      customRole,
+    ]);
 
-    await service.syncAdminRolePermissions();
+    await service.syncDefaultRoles();
 
     expect(permissionRepository.save).not.toHaveBeenCalled();
     expect(userRoleRepository.save).not.toHaveBeenCalled();
   });
 
-  it('returns without writes when admin role is missing', async () => {
+  it('creates a default role when it is missing', async () => {
     const existingPermissions = getAllSupportedPermissions();
+    const rolesWithoutAdmin = createDefaultRoleEntities().filter(
+      (role) => role.role !== DefaultUserRole.Admin,
+    );
 
     permissionRepository.find.mockResolvedValue(existingPermissions);
-    mockAdminRoleLookup({
-      userRoleRepository,
-      permissions: null,
-    });
+    userRoleRepository.find.mockResolvedValue(rolesWithoutAdmin);
 
-    await service.syncAdminRolePermissions();
+    await service.syncDefaultRoles();
 
-    expect(permissionRepository.save).not.toHaveBeenCalled();
-    expect(userRoleRepository.save).not.toHaveBeenCalled();
+    expect(userRoleRepository.save).toHaveBeenCalledTimes(1);
+    const savedRole = userRoleRepository.save.mock
+      .calls[0][0] as UserRoleEntity;
+    expect(savedRole.role).toBe(DefaultUserRole.Admin);
+    expect(savedRole.label).toBe('Admin');
+    expect(savedRole.permissions).toHaveLength(
+      Object.values(PermissionEnum).length,
+    );
   });
 
   it('creates missing supported permissions before continuing', async () => {
@@ -163,61 +180,65 @@ describe('PermissionMaintenanceService', () => {
     expect(userRoleRepository.save).not.toHaveBeenCalled();
   });
 
-  it('assigns any missing supported permission to admin', async () => {
-    const { missingPermission, existingPermissions } =
-      getMissingPermissionFixture();
-    const missingPermissionEntity = createPermissionEntity({
-      name: missingPermission,
+  it('re-syncs a default role whose permissions have drifted', async () => {
+    const existingPermissions = getAllSupportedPermissions();
+    const defaultRoles = createDefaultRoleEntities();
+    const viewRole = defaultRoles.find(
+      (role) => role.role === DefaultUserRole.View,
+    ) as UserRoleEntity;
+    const viewDefinition = getDefaultRoleDefinition({
+      role: DefaultUserRole.View,
     });
-    const allPermissions = [...existingPermissions, missingPermissionEntity];
-
-    permissionRepository.find.mockResolvedValue(allPermissions);
-    mockAdminRoleLookup({
-      userRoleRepository,
-      permissions: existingPermissions,
+    const extraPermission = createPermissionEntity({
+      name: PermissionEnum.PaymentSTART,
     });
+    viewRole.permissions = [...viewRole.permissions.slice(1), extraPermission];
 
-    await service.syncAdminRolePermissions();
+    permissionRepository.find.mockResolvedValue(existingPermissions);
+    userRoleRepository.find.mockResolvedValue(defaultRoles);
 
+    await service.syncDefaultRoles();
+
+    expect(userRoleRepository.save).toHaveBeenCalledTimes(1);
+    const savedRole = userRoleRepository.save.mock
+      .calls[0][0] as UserRoleEntity;
+    expect(savedRole.role).toBe(DefaultUserRole.View);
+    expect(savedRole.permissions).toHaveLength(
+      viewDefinition.permissions.length,
+    );
+    expect(savedRole.permissions).not.toContain(extraPermission);
+  });
+
+  it('re-syncs the label of a default role when it has drifted', async () => {
+    const existingPermissions = getAllSupportedPermissions();
+    const defaultRoles = createDefaultRoleEntities();
+    defaultRoles[0].label = 'Outdated label';
+
+    permissionRepository.find.mockResolvedValue(existingPermissions);
+    userRoleRepository.find.mockResolvedValue(defaultRoles);
+
+    await service.syncDefaultRoles();
+
+    expect(userRoleRepository.save).toHaveBeenCalledTimes(1);
     expect(userRoleRepository.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        permissions: expect.arrayContaining([missingPermissionEntity]),
+        role: DefaultUserRole.Admin,
+        label: 'Admin',
       }),
     );
   });
 
-  it('skips missing permissions when admin sync runs without prior permission sync', async () => {
-    const { existingPermissions } = getMissingPermissionFixture();
+  it('does not fail when a default role save encounters a duplicate relation conflict', async () => {
+    const existingPermissions = getAllSupportedPermissions();
+    const defaultRoles = createDefaultRoleEntities();
+    defaultRoles[0].label = 'Outdated label';
 
     permissionRepository.find.mockResolvedValue(existingPermissions);
-    mockAdminRoleLookup({
-      userRoleRepository,
-      permissions: existingPermissions,
-    });
-
-    await service.syncAdminRolePermissions();
-
-    expect(permissionRepository.save).not.toHaveBeenCalled();
-    expect(userRoleRepository.save).not.toHaveBeenCalled();
-  });
-
-  it('does not fail when admin role save encounters a duplicate relation conflict', async () => {
-    const { missingPermission, existingPermissions } =
-      getMissingPermissionFixture();
-    const allPermissions = [
-      ...existingPermissions,
-      createPermissionEntity({ name: missingPermission }),
-    ];
-
-    permissionRepository.find.mockResolvedValue(allPermissions);
-    mockAdminRoleLookup({
-      userRoleRepository,
-      permissions: existingPermissions,
-    });
+    userRoleRepository.find.mockResolvedValue(defaultRoles);
     userRoleRepository.save.mockRejectedValueOnce({
       code: PostgresStatusCodes.UNIQUE_VIOLATION,
     });
 
-    await expect(service.syncAdminRolePermissions()).resolves.toBeUndefined();
+    await expect(service.syncDefaultRoles()).resolves.toBeUndefined();
   });
 });
