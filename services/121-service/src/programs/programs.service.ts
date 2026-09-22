@@ -11,6 +11,7 @@ import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
+import { AccessGroupLevelsService } from '@121-service/src/programs/access-group-levels/access-group-levels.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
 import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
@@ -42,6 +43,7 @@ export class ProgramService {
     private readonly programRegistrationAttributesService: ProgramRegistrationAttributesService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly intersolveVisaService: IntersolveVisaService,
+    private readonly accessGroupLevelsService: AccessGroupLevelsService,
   ) {}
 
   public async findProgramOrThrow(
@@ -423,6 +425,29 @@ export class ProgramService {
     const programDto: ProgramReturnDto =
       this.fillProgramReturnDto(savedProgram);
     return programDto;
+  }
+
+  public async getAccessGroupLevels(programId: number): Promise<string[]> {
+    return this.accessGroupLevelsService.getAccessGroupLevels({ programId });
+  }
+
+  public async updateAccessGroupLevels({
+    programId,
+    accessGroupRegistrationAttributeNames,
+  }: {
+    programId: number;
+    accessGroupRegistrationAttributeNames: string[];
+  }): Promise<string[]> {
+    const activeRegistrationAttributes =
+      await this.programRegistrationAttributeRepository.find({
+        where: { programId: Equal(programId) },
+      });
+
+    return this.accessGroupLevelsService.updateAccessGroupLevels({
+      programId,
+      activeRegistrationAttributes,
+      accessGroupRegistrationAttributeNames,
+    });
   }
 
   // This function takes a filled ProgramEntity and returns a filled ProgramReturnDto

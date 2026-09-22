@@ -38,6 +38,8 @@ export enum PermissionEnum {
 
   ProgramMetricsREAD = 'program:metrics.read',
 
+  ProgramAccessGroupLevelsUPDATE = 'program:access-group-levels.update',
+
   // Program Registration Attributes
   ProgramRegistrationAttributesREAD = 'program:registration-attributes.read',
   ProgramRegistrationAttributesCREATE = 'program:registration-attributes.create',

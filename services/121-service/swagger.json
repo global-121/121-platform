@@ -578,6 +578,22 @@
   },
   {
     "method": "get",
+    "path": "/api/programs/{programId}/access-group-levels",
+    "params": [
+      "programId"
+    ],
+    "returnType": "AccessGroupLevelsResponseDto"
+  },
+  {
+    "method": "put",
+    "path": "/api/programs/{programId}/access-group-levels",
+    "params": [
+      "programId"
+    ],
+    "returnType": "AccessGroupLevelsResponseDto"
+  },
+  {
+    "method": "get",
     "path": "/api/fsps",
     "params": [],
     "returnType": "FspSettingsDto"

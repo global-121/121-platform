@@ -16,7 +16,10 @@ import { KoboLanguageMapper } from '@121-service/src/kobo/mappers/kobo-language.
 import { fspQuestionName } from '@121-service/src/kobo/services/kobo.service';
 import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { AccessGroupLevelsService } from '@121-service/src/programs/access-group-levels/access-group-levels.service';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
+import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import {
   DefaultRegistrationDataAttributeNames,
@@ -34,6 +37,8 @@ export class KoboValidationService {
   constructor(
     private readonly programRepository: ProgramRepository,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
+    private readonly accessGroupLevelsService: AccessGroupLevelsService,
   ) {}
 
   public async validateKoboFormDefinition({
@@ -52,6 +57,11 @@ export class KoboValidationService {
       },
     });
 
+    const accessGroupRegistrationAttributeNames =
+      await this.accessGroupLevelsService.getAccessGroupRegistrationAttributeNames(
+        { programId },
+      );
+
     const fspConfigs = await this.programFspConfigurationRepository.find({
       where: { programId: Equal(programId) },
       select: {
@@ -59,6 +69,11 @@ export class KoboValidationService {
         name: true,
       },
     });
+
+    const programRegistrationAttributes =
+      await this.programRegistrationAttributeRepository.find({
+        where: { programId: Equal(programId) },
+      });
 
     let errors = this.validateFspAttributes({
       koboSurveyItems: formDefinition.survey,
@@ -92,6 +107,15 @@ export class KoboValidationService {
       error: this.validateScopeInKoboSurveyItems({
         koboSurveyItems: formDefinition.survey,
         scopeEnabled: program.enableScope,
+      }),
+    });
+
+    errors = this.collectErrors({
+      accumulatedErrors: errors,
+      error: this.validateAccessGroupLockedAttributes({
+        koboSurveyItems: formDefinition.survey,
+        programRegistrationAttributes,
+        accessGroupRegistrationAttributeNames,
       }),
     });
 
@@ -362,6 +386,80 @@ export class KoboValidationService {
       surveyItemType: scopeItem.type,
       expected121Type: RegistrationAttributeTypes.text,
     });
+  }
+
+  private validateAccessGroupLockedAttributes({
+    koboSurveyItems,
+    programRegistrationAttributes,
+    accessGroupRegistrationAttributeNames,
+  }: {
+    koboSurveyItems: KoboSurveyItemCleaned[];
+    programRegistrationAttributes: ProgramRegistrationAttributeEntity[];
+    accessGroupRegistrationAttributeNames: string[] | null;
+  }): KoboValidationError[] {
+    return programRegistrationAttributes
+      .map((existingAttribute) =>
+        this.findMatchingSurveyItemType({
+          existingAttribute,
+          koboSurveyItems,
+        }),
+      )
+      .filter(isDefined)
+      .map(({ existingAttribute, type }) => {
+        const violation =
+          this.accessGroupLevelsService.getAccessGroupAttributeTypeViolation({
+            accessGroupRegistrationAttributeNames,
+            existingAttribute,
+            type,
+          });
+
+        if (!violation) {
+          return undefined;
+        }
+
+        return this.buildAccessGroupAttributeLockedError({
+          attributeName: existingAttribute.name,
+        });
+      })
+      .filter(isDefined);
+  }
+
+  private findMatchingSurveyItemType({
+    existingAttribute,
+    koboSurveyItems,
+  }: {
+    existingAttribute: ProgramRegistrationAttributeEntity;
+    koboSurveyItems: KoboSurveyItemCleaned[];
+  }):
+    | {
+        existingAttribute: ProgramRegistrationAttributeEntity;
+        type: RegistrationAttributeTypes;
+      }
+    | undefined {
+    const surveyItem = koboSurveyItems.find(
+      (item) => item.name === existingAttribute.name,
+    );
+    if (!surveyItem) {
+      return undefined;
+    }
+
+    return {
+      existingAttribute,
+      type: KOBO_TO_121_TYPE_MAPPING[surveyItem.type],
+    };
+  }
+
+  private buildAccessGroupAttributeLockedError({
+    attributeName,
+  }: {
+    attributeName: string;
+  }): KoboValidationError {
+    return {
+      type: KoboValidationErrorType.accessGroupAttributeLocked,
+      attributeName,
+      error: `Attribute '${attributeName}' must stay a select_one question because it's used for access group configuration`,
+      solution: `Keep '${attributeName}' as a select_one question in the Kobo form, or remove it from the program's access group configuration first`,
+    };
   }
 
   private validateNoMatrixType(
