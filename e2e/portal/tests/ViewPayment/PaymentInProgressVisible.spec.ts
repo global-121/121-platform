@@ -39,6 +39,10 @@ test('Show in progress banner and chip when payment is in progress', async ({
   });
 
   await test.step('Validate payment in progress in Payment overview', async () => {
+    // @TODO: To be honest, the way we check this thing is brittle...
+    // There are chips all over the place on this page, it should be better
+    // For example, the header chip says approved, but the chip inside the registrations
+    // metric tile says in progress. I don't understand why it was put there..
     const inProgressChip = page
       .getByTestId('metric-tile-chip')
       .filter({ hasText: 'In progress' });

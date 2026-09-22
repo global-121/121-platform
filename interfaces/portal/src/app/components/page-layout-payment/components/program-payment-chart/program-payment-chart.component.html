@@ -4,4 +4,14 @@
   [options]="chartOptions()"
   class="[&>canvas]:max-inline-full lg:[&>canvas]:max-block-72! lg:[&>canvas]:max-inline-5xl! lg:[&>canvas]:min-block-64!"
   [ariaLabel]="chartTextAlternative()"
+  [attr.data-approved]="
+    this.paymentDetails().aggregationsPerStatus.approved.count
+  "
+  [attr.data-waiting]="
+    this.paymentDetails().aggregationsPerStatus.waiting.count
+  "
+  [attr.data-success]="
+    this.paymentDetails().aggregationsPerStatus.success.count
+  "
+  [attr.data-failed]="this.paymentDetails().aggregationsPerStatus.failed.count"
 />
