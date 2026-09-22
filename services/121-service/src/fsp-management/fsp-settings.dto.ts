@@ -30,8 +30,8 @@ export class FspSettingsDto {
 
   @ApiProperty({
     example: [
-      { name: 'columnsToExport', isRequired: true },
-      { name: 'columnToMatch', isRequired: true },
+      { name: 'username', isRequired: true },
+      { name: 'password', isRequired: true },
     ],
   })
   readonly configurationProperties: {

@@ -7,7 +7,7 @@ import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/r
 export class ProgramRegistrationAttributeRepository extends Repository<ProgramRegistrationAttributeEntity> {
   constructor(
     @InjectRepository(ProgramRegistrationAttributeEntity)
-    private repository: Repository<ProgramRegistrationAttributeEntity>,
+    private readonly repository: Repository<ProgramRegistrationAttributeEntity>,
   ) {
     super(repository.target, repository.manager, repository.queryRunner);
   }
@@ -49,5 +49,17 @@ export class ProgramRegistrationAttributeRepository extends Repository<ProgramRe
     });
 
     return result.id;
+  }
+
+  public async getNamesByProgramId({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<string[]> {
+    const attributes = await this.repository.find({
+      where: { programId: Equal(programId) },
+      select: { name: true },
+    });
+    return attributes.map(({ name }) => name);
   }
 }

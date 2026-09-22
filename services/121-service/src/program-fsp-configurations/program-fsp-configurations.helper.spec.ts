@@ -35,41 +35,10 @@ describe('ProgramFspConfigurationsHelperService', () => {
       expect(result).toBe(FspConfigurationStates.configured);
     });
 
-    it('should return configured when all required properties are provided', () => {
-      // Excel requires columnToMatch
-      const result = helper.computeFspConfigurationState({
-        fspName: Fsps.excel,
-        fspConfigurationProperties: [
-          {
-            name: FspConfigurationProperties.columnToMatch,
-            value: 'phoneNumber',
-          },
-        ],
-      });
-
-      expect(result).toBe(FspConfigurationStates.configured);
-    });
-
-    it('should return configurationPending when required properties are missing', () => {
-      // Excel requires columnToMatch, providing nothing
+    it('should leave Excel pending until its dedicated configuration is saved', () => {
       const result = helper.computeFspConfigurationState({
         fspName: Fsps.excel,
         fspConfigurationProperties: [],
-      });
-
-      expect(result).toBe(FspConfigurationStates.configurationPending);
-    });
-
-    it('should return configurationPending when only non-required properties are provided', () => {
-      // Excel requires columnToMatch; columnsToExport is optional
-      const result = helper.computeFspConfigurationState({
-        fspName: Fsps.excel,
-        fspConfigurationProperties: [
-          {
-            name: FspConfigurationProperties.columnsToExport,
-            value: ['col1', 'col2'],
-          },
-        ],
       });
 
       expect(result).toBe(FspConfigurationStates.configurationPending);
@@ -80,8 +49,8 @@ describe('ProgramFspConfigurationsHelperService', () => {
     it('should not throw when value matches expected string type', () => {
       expect(() =>
         helper.validatePropertyValueTypeOrThrow({
-          propertyName: FspConfigurationProperties.columnToMatch,
-          propertyValue: 'phoneNumber',
+          propertyName: FspConfigurationProperties.username,
+          propertyValue: 'username',
         }),
       ).not.toThrow();
     });
@@ -100,15 +69,6 @@ describe('ProgramFspConfigurationsHelperService', () => {
         helper.validatePropertyValueTypeOrThrow({
           propertyName: FspConfigurationProperties.cardDistributionByMail,
           propertyValue: true,
-        }),
-      ).not.toThrow();
-    });
-
-    it('should not throw when value matches expected array type with string items', () => {
-      expect(() =>
-        helper.validatePropertyValueTypeOrThrow({
-          propertyName: FspConfigurationProperties.columnsToExport,
-          propertyValue: ['col1', 'col2'],
         }),
       ).not.toThrow();
     });
@@ -140,36 +100,20 @@ describe('ProgramFspConfigurationsHelperService', () => {
         }),
       );
     });
-
-    it('should throw when array contains non-string items', () => {
-      expect(() =>
-        helper.validatePropertyValueTypeOrThrow({
-          propertyName: FspConfigurationProperties.columnsToExport,
-          propertyValue: [123, 456] as any,
-        }),
-      ).toThrow(
-        expect.objectContaining({
-          status: HttpStatus.BAD_REQUEST,
-          message: expect.stringContaining(
-            'Expected array, got non-string-array',
-          ),
-        }),
-      );
-    });
   });
 
   describe('validatePropertyValueTypesOrThrow', () => {
-    it('should not throw when all properties have valid types', () => {
+    it('should not throw when all generic properties have valid types', () => {
       expect(() =>
         helper.validatePropertyValueTypesOrThrow({
           properties: [
             {
-              name: FspConfigurationProperties.columnToMatch,
-              value: 'phoneNumber',
+              name: FspConfigurationProperties.username,
+              value: 'username',
             },
             {
-              name: FspConfigurationProperties.columnsToExport,
-              value: ['col1'],
+              name: FspConfigurationProperties.brandCode,
+              value: 'brand-code',
             },
           ],
         }),
@@ -181,7 +125,7 @@ describe('ProgramFspConfigurationsHelperService', () => {
         helper.validatePropertyValueTypesOrThrow({
           properties: [
             {
-              name: FspConfigurationProperties.columnToMatch,
+              name: FspConfigurationProperties.username,
               value: 'valid',
             },
             {
@@ -198,7 +142,7 @@ describe('ProgramFspConfigurationsHelperService', () => {
       );
     });
 
-    it('should not throw for empty array', () => {
+    it('should not throw for an empty property list', () => {
       expect(() =>
         helper.validatePropertyValueTypesOrThrow({ properties: [] }),
       ).not.toThrow();
@@ -241,142 +185,145 @@ describe('ProgramFspConfigurationsHelperService', () => {
         }),
       );
     });
+  });
 
-    describe('validateFspIsEnabledOrThrow', () => {
-      beforeEach(() => {
-        for (const key of Object.keys(mockFspModes)) {
-          delete mockFspModes[key];
-        }
-      });
-
-      it('should not throw when FSP is not disabled', () => {
-        mockFspModes[Fsps.excel] = FspMode.mock;
-
-        expect(() =>
-          helper.validateFspIsEnabledOrThrow({ fspName: Fsps.excel }),
-        ).not.toThrow();
-      });
-
-      it('should throw with BAD_REQUEST when FSP is disabled', () => {
-        mockFspModes[Fsps.excel] = FspMode.disabled;
-
-        expect(() =>
-          helper.validateFspIsEnabledOrThrow({ fspName: Fsps.excel }),
-        ).toThrow(
-          expect.objectContaining({
-            status: HttpStatus.BAD_REQUEST,
-            message: expect.stringContaining(Fsps.excel),
-          }),
-        );
-      });
+  describe('validateFspIsEnabledOrThrow', () => {
+    beforeEach(() => {
+      for (const key of Object.keys(mockFspModes)) {
+        delete mockFspModes[key];
+      }
     });
 
-    describe('validateAllowedPropertyNames', () => {
-      it('should not throw when all property names are valid for the FSP', () => {
-        expect(() =>
-          helper.validateAllowedPropertyNames({
-            fspName: Fsps.excel,
-            propertyNames: [FspConfigurationProperties.columnToMatch],
-          }),
-        ).not.toThrow();
-      });
+    it('should not throw when FSP is not disabled', () => {
+      mockFspModes[Fsps.excel] = FspMode.mock;
 
-      it('should not throw for an empty array of property names', () => {
-        expect(() =>
-          helper.validateAllowedPropertyNames({
-            fspName: Fsps.excel,
-            propertyNames: [],
-          }),
-        ).not.toThrow();
-      });
-
-      it('should throw when a property name is not allowed for the FSP', () => {
-        expect(() =>
-          helper.validateAllowedPropertyNames({
-            fspName: Fsps.excel,
-            propertyNames: [FspConfigurationProperties.password],
-          }),
-        ).toThrow(
-          expect.objectContaining({
-            status: HttpStatus.BAD_REQUEST,
-            message: expect.stringContaining(
-              FspConfigurationProperties.password,
-            ),
-          }),
-        );
-      });
-
-      it('should throw when duplicate property names are provided', () => {
-        expect(() =>
-          helper.validateAllowedPropertyNames({
-            fspName: Fsps.excel,
-            propertyNames: [
-              FspConfigurationProperties.columnToMatch,
-              FspConfigurationProperties.columnToMatch,
-            ],
-          }),
-        ).toThrow(
-          expect.objectContaining({
-            status: HttpStatus.BAD_REQUEST,
-            message: expect.stringContaining(
-              'Duplicate property names are not allowed',
-            ),
-          }),
-        );
-      });
-
-      it('should throw combining both invalid name and duplicate errors', () => {
-        expect(() =>
-          helper.validateAllowedPropertyNames({
-            fspName: Fsps.excel,
-            propertyNames: [
-              FspConfigurationProperties.columnToMatch,
-              FspConfigurationProperties.columnToMatch,
-              FspConfigurationProperties.password,
-            ],
-          }),
-        ).toThrow(
-          expect.objectContaining({
-            status: HttpStatus.BAD_REQUEST,
-            message: expect.stringContaining(
-              'Duplicate property names are not allowed',
-            ),
-          }),
-        );
-      });
+      expect(() =>
+        helper.validateFspIsEnabledOrThrow({ fspName: Fsps.excel }),
+      ).not.toThrow();
     });
 
-    describe('getAllowlistedPropertyNamesForFsp', () => {
-      it('should return empty array for FSP with no configuration properties', () => {
-        const result = helper.getAllowlistedPropertyNamesForFsp({
-          fspName: Fsps.safaricom,
-        });
+    it('should throw with BAD_REQUEST when FSP is disabled', () => {
+      mockFspModes[Fsps.excel] = FspMode.disabled;
 
-        expect(result).toEqual([]);
-      });
+      expect(() =>
+        helper.validateFspIsEnabledOrThrow({ fspName: Fsps.excel }),
+      ).toThrow(
+        expect.objectContaining({
+          status: HttpStatus.BAD_REQUEST,
+          message: expect.stringContaining(Fsps.excel),
+        }),
+      );
+    });
+  });
 
-      it('should only return properties marked as public', () => {
-        const result = helper.getAllowlistedPropertyNamesForFsp({
-          fspName: Fsps.intersolveVisa,
-        });
-
-        // cardDistributionByMail is the only public property for Intersolve Visa
-        expect(result).toContain(
-          FspConfigurationProperties.cardDistributionByMail,
-        );
-
-        // Secret properties should not be included
-        expect(result).not.toContain(FspConfigurationProperties.password);
-        expect(result).not.toContain(FspConfigurationProperties.username);
-      });
-
-      it('should return empty array for Excel as it has no public properties', () => {
-        const result = helper.getAllowlistedPropertyNamesForFsp({
+  describe('validateAllowedPropertyNames', () => {
+    it('should reject legacy Excel fields from the generic property bag', () => {
+      expect(() =>
+        helper.validateAllowedPropertyNames({
           fspName: Fsps.excel,
-        });
+          propertyNames: ['columnToMatch' as FspConfigurationProperties],
+        }),
+      ).toThrow(
+        expect.objectContaining({
+          status: HttpStatus.BAD_REQUEST,
+          message: expect.stringContaining('columnToMatch'),
+        }),
+      );
+    });
 
-        expect(result).toEqual([]);
+    it('should not throw for an empty array of property names', () => {
+      expect(() =>
+        helper.validateAllowedPropertyNames({
+          fspName: Fsps.excel,
+          propertyNames: [],
+        }),
+      ).not.toThrow();
+    });
+
+    it('should throw when a property name is not allowed for the FSP', () => {
+      expect(() =>
+        helper.validateAllowedPropertyNames({
+          fspName: Fsps.excel,
+          propertyNames: [FspConfigurationProperties.password],
+        }),
+      ).toThrow(
+        expect.objectContaining({
+          status: HttpStatus.BAD_REQUEST,
+          message: expect.stringContaining(FspConfigurationProperties.password),
+        }),
+      );
+    });
+
+    it('should throw when duplicate property names are provided', () => {
+      expect(() =>
+        helper.validateAllowedPropertyNames({
+          fspName: Fsps.intersolveVisa,
+          propertyNames: [
+            FspConfigurationProperties.brandCode,
+            FspConfigurationProperties.brandCode,
+          ],
+        }),
+      ).toThrow(
+        expect.objectContaining({
+          status: HttpStatus.BAD_REQUEST,
+          message: expect.stringContaining(
+            'Duplicate property names are not allowed',
+          ),
+        }),
+      );
+    });
+
+    it('should throw combining both invalid name and duplicate errors', () => {
+      expect(() =>
+        helper.validateAllowedPropertyNames({
+          fspName: Fsps.intersolveVisa,
+          propertyNames: [
+            FspConfigurationProperties.brandCode,
+            FspConfigurationProperties.brandCode,
+            FspConfigurationProperties.password,
+          ],
+        }),
+      ).toThrow(
+        expect.objectContaining({
+          status: HttpStatus.BAD_REQUEST,
+          message: expect.stringContaining(
+            'Duplicate property names are not allowed',
+          ),
+        }),
+      );
+    });
+  });
+
+  describe('getAllowlistedPropertyNamesForFsp', () => {
+    it('should return empty array for FSP with no configuration properties', () => {
+      const result = helper.getAllowlistedPropertyNamesForFsp({
+        fspName: Fsps.safaricom,
       });
+
+      expect(result).toEqual([]);
+    });
+
+    it('should only return properties marked as public', () => {
+      const result = helper.getAllowlistedPropertyNamesForFsp({
+        fspName: Fsps.intersolveVisa,
+      });
+
+      // cardDistributionByMail is the only public property for Intersolve Visa
+      expect(result).toContain(
+        FspConfigurationProperties.cardDistributionByMail,
+      );
+
+      // Secret properties should not be included
+      expect(result).not.toContain(FspConfigurationProperties.password);
+      expect(result).not.toContain(FspConfigurationProperties.username);
+    });
+
+    it('should return empty array for Excel as it has no public properties', () => {
+      const result = helper.getAllowlistedPropertyNamesForFsp({
+        fspName: Fsps.excel,
+      });
+
+      expect(result).toEqual([]);
     });
   });
 });

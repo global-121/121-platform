@@ -1,1 +1,1 @@
-export type FspConfigurationPropertyType = boolean | number | string | string[];
+export type FspConfigurationPropertyType = boolean | number | string;

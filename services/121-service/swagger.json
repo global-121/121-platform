@@ -1153,6 +1153,24 @@
   },
   {
     "method": "get",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}/excel",
+    "params": [
+      "programId",
+      "name"
+    ],
+    "returnType": "ExcelFspConfigurationResponseDto"
+  },
+  {
+    "method": "put",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}/excel",
+    "params": [
+      "programId",
+      "name"
+    ],
+    "returnType": "ExcelFspConfigurationResponseDto"
+  },
+  {
+    "method": "get",
     "path": "/api/programs/{programId}/payments/excel-reconciliation/template",
     "params": [
       "programId"

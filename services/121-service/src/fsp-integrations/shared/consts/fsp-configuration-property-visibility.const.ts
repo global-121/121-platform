@@ -27,10 +27,6 @@ export const FspConfigurationPropertyVisibilityMap: Record<
   [FspConfigurationProperties.cardDistributionByMail]:
     FspConfigurationPropertyVisibility.public,
   // Default properties
-  [FspConfigurationProperties.columnsToExport]:
-    FspConfigurationPropertyVisibility.default,
-  [FspConfigurationProperties.columnToMatch]:
-    FspConfigurationPropertyVisibility.default,
   [FspConfigurationProperties.brandCode]:
     FspConfigurationPropertyVisibility.default,
   [FspConfigurationProperties.coverLetterCode]:

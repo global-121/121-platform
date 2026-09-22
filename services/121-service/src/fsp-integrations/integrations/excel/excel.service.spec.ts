@@ -1,11 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 import { ExcelService } from '@121-service/src/fsp-integrations/integrations/excel/excel.service';
+import { ExcelFspConfigurationRepository } from '@121-service/src/fsp-integrations/integrations/excel/excel-fsp-configuration.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -20,19 +17,15 @@ describe('ExcelService', () => {
       providers: [
         ExcelService,
         {
-          provide: getRepositoryToken(ProgramEntity),
-          useClass: Repository,
-        },
-        {
           provide: RegistrationsPaginationService,
           useValue: {
             getRegistrationViewsByReferenceIds: jest.fn(),
           },
         },
         {
-          provide: ProgramFspConfigurationRepository,
+          provide: ExcelFspConfigurationRepository,
           useValue: {
-            getPropertyValueByName: jest.fn(),
+            getByProgramFspConfigurationId: jest.fn(),
           },
         },
       ],

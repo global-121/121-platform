@@ -1,8 +1,6 @@
 export enum FspConfigurationProperties {
   password = 'password',
   username = 'username',
-  columnsToExport = 'columnsToExport',
-  columnToMatch = 'columnToMatch',
   // Intersolve Visa
   brandCode = 'brandCode',
   coverLetterCode = 'coverLetterCode',
