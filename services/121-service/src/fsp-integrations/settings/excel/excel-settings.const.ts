@@ -14,10 +14,16 @@ export const EXCEL_SETTINGS: FspSettingsDto = {
     {
       name: FspConfigurationProperties.columnToMatch,
       isRequired: true,
+      explanation: {
+        en: 'Select a unique identifier - phone number, ID number, or Red Cross registration number - to be used during reconciliation to update the transaction status for each registration.',
+      },
     },
     {
       name: FspConfigurationProperties.columnsToExport,
       isRequired: false,
+      explanation: {
+        en: 'Select the fields to include in the payment report you send to your FSP.',
+      },
     },
   ],
 };

@@ -37,5 +37,6 @@ export class FspSettingsDto {
   readonly configurationProperties: {
     name: FspConfigurationProperties;
     isRequired: boolean;
+    explanation?: UILanguageTranslation;
   }[];
 }
