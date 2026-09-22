@@ -45,6 +45,7 @@ test('Do successful payment for Voucher fsp', async ({
   await test.step('Validate payment card', async () => {
     await paymentPage.waitForPaymentToComplete({
       expectedAmount: defaultMaxTransferValue,
+      numberOfPas,
     });
     await paymentPage.navigateToProgramPage('Payments');
     await paymentsPage.validatePaymentCard({
