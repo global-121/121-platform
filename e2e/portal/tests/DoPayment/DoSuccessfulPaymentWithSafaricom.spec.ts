@@ -7,7 +7,10 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations, page }) => {
+  const context = page.context();
+  const cdpSession = await context.newCDPSession(page);
+  await cdpSession.send('Emulation.setCPUThrottlingRate', { rate: 6 });
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.safaricomProgram,
     registrations: registrationsSafaricom,
