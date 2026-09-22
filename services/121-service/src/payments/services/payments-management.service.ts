@@ -484,7 +484,7 @@ export class PaymentsManagementService {
         {
           programId,
           paymentId,
-          status: TransactionStatusEnum.pendingApproval,
+          transactionStatus: [TransactionStatusEnum.pendingApproval],
         },
       );
 
