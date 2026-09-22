@@ -171,6 +171,8 @@ class PaymentPage extends BasePage {
   async waitForPaymentToComplete({
     expectedAmount,
   }: { expectedAmount?: number } = {}) {
+    await this.page.waitForTimeout(500); // TODO for now needed to bridge in-progress gap between actions & queue.
+
     const approvedChip = this.page
       .locator('app-colored-chip')
       .getByLabel('Approved')
