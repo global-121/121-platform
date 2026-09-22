@@ -109,11 +109,14 @@ jobs:
         id: base
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "sha=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+            base_ref="${{ github.event.pull_request.base.ref }}"
           else
             # Manual runs have no PR base, so diff against the default branch instead.
-            echo "sha=$(git merge-base "origin/${{ github.event.repository.default_branch }}" HEAD)" >> "$GITHUB_OUTPUT"
+            base_ref="${{ github.event.repository.default_branch }}"
           fi
+          # Merge-base (not the branch tip) avoids treating base-branch commits
+          # made after this branch diverged as changes introduced by this PR.
+          echo "sha=$(git merge-base "origin/$base_ref" HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Select changed/new E2E spec files for flaky-test detection
         id: select
