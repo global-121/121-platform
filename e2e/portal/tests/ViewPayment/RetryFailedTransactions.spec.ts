@@ -75,9 +75,7 @@ test('Retry failed transactions with filtering on failed transactions', async ({
     await paymentPage.waitForPaymentToComplete();
     // Leaving this for now
     // My assumption is that there are a lot of jobs running in the background and for the test to retry the failed transactions correctly we need to re-navigate to payment overview page
-    await page.goto(paymentPageUrl, {
-      waitUntil: 'networkidle',
-    });
+    await page.goto(paymentPageUrl);
     await paymentPage.validateRetryFailedTransactionsButtonToBeVisible();
   });
 
