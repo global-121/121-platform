@@ -34,8 +34,10 @@ class PaymentPage extends BasePage {
     this.importReconciliationDataButton = this.page.getByRole('button', {
       name: 'Import reconciliation data',
     });
-    this.succesfullyTransferredAmountChip =
-      this.page.getByTestId('metric-tile-chip');
+    this.succesfullyTransferredAmountChip = this.page
+      .locator('app-metric-tile')
+      .filter({ hasText: 'Total amount' })
+      .getByTestId('metric-tile-chip');
 
     this.chooseFileButton = this.page.getByRole('button', {
       name: 'Choose file',
