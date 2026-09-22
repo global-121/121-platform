@@ -46,7 +46,7 @@ test('Do failed payment for Cbe fsp', async ({
   });
 
   await test.step('Validate payment card with failed payment data', async () => {
-    await paymentPage.waitForPaymentToComplete({ failed: true, numberOfPas });
+    await paymentPage.waitForPaymentToComplete();
     await paymentPage.navigateToProgramPage('Payments');
     await paymentsPage.validatePaymentCard({
       paymentAmount: defaultMaxTransferValue,

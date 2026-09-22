@@ -37,10 +37,7 @@ test('Retry failed transactions without filtering', async ({
   paymentPage,
 }) => {
   await test.step('Check presence of retry button', async () => {
-    await paymentPage.waitForPaymentToComplete({
-      failed: true,
-      numberOfPas: registrations.length,
-    });
+    await paymentPage.waitForPaymentToComplete();
     // Leaving this for now
     // My assumption is that there are a lot of jobs running in the background and for the test to retry the failed transactions correctly we need to re-navigate to payment overview page
     await page.goto(paymentPageUrl);
@@ -75,10 +72,7 @@ test('Retry failed transactions with filtering on failed transactions', async ({
   page,
 }) => {
   await test.step('Check presence of retry button', async () => {
-    await paymentPage.waitForPaymentToComplete({
-      failed: true,
-      numberOfPas: registrations.length,
-    });
+    await paymentPage.waitForPaymentToComplete();
     // Leaving this for now
     // My assumption is that there are a lot of jobs running in the background and for the test to retry the failed transactions correctly we need to re-navigate to payment overview page
     await page.goto(paymentPageUrl);

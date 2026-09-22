@@ -251,9 +251,7 @@ test('Payment page should display correctly during all phases of payment with 2 
     await paymentPage.validateToastMessageAndClose(
       'Payment started successfully.',
     );
-    await paymentPage.waitForPaymentToComplete({
-      numberOfPas: registrationsCount,
-    });
+    await paymentPage.waitForPaymentToComplete();
   });
 
   await test.step('Validate payment-page after "Start" (and complete)', async () => {
