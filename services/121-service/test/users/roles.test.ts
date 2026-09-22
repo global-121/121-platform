@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { getUserRoles } from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
@@ -15,6 +16,28 @@ describe('/ Roles', () => {
     await resetDB({ seedScript: SeedScript.testMultiple });
     accessToken = await getAccessToken();
   });
+
+  async function createCustomRole(): Promise<number> {
+    const response = await getServer()
+      .post('/roles')
+      .set('Cookie', [accessToken])
+      .send({
+        role: 'test-manager',
+        label: 'Do stuff with certain permissions',
+        description: 'This is a test role',
+        permissions: ['program.update', 'program:metrics.read'],
+      });
+    expect(response.status).toBe(HttpStatus.CREATED);
+    return response.body.id;
+  }
+
+  async function getDefaultRoleId(role: DefaultUserRole): Promise<number> {
+    const response = await getUserRoles(accessToken);
+    const defaultRole = response.body.find(
+      (r: { role: string }) => r.role === role,
+    );
+    return defaultRole.id;
+  }
 
   it('should create roles when using valid permissions', async () => {
     // Act
@@ -95,7 +118,7 @@ describe('/ Roles', () => {
 
   it('should update a role by userRoleId', async () => {
     // Arrange
-    const userRoleId = 1;
+    const userRoleId = await createCustomRole();
     const updateData = {
       label: 'Updated user role label',
       description: 'Updated user role description',
@@ -118,9 +141,24 @@ describe('/ Roles', () => {
     expect(role.description).toBe(updateData.description);
   });
 
+  it('should not update a default role', async () => {
+    // Arrange
+    const defaultRoleId = await getDefaultRoleId(DefaultUserRole.View);
+    // Act
+    const response = await getServer()
+      .put(`/roles/${defaultRoleId}`)
+      .set('Cookie', [accessToken])
+      .send({ label: 'Updated user role label' });
+    // Assert
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toMatchInlineSnapshot(
+      `"Role 'view' is a default role and cannot be updated or deleted"`,
+    );
+  });
+
   it('should delete a role by userRoleId', async () => {
     // Arrange
-    const userRoleId = 2;
+    const userRoleId = await createCustomRole();
     // Get user roles before delete
     const getUserRoleBeforeDelete = await getUserRoles(accessToken);
     expect(getUserRoleBeforeDelete.status).toBe(HttpStatus.OK);
@@ -138,5 +176,20 @@ describe('/ Roles', () => {
     expect(getUserRoleAfterDelete.status).toBe(HttpStatus.OK);
     const rolesLengthAfterDelete = getUserRoleAfterDelete.body.length;
     expect(rolesLengthAfterDelete).toBe(rolesLengthBeforeDelete - 1);
+  });
+
+  it('should not delete a default role', async () => {
+    // Arrange
+    const defaultRoleId = await getDefaultRoleId(DefaultUserRole.Admin);
+    // Act
+    const response = await getServer()
+      .delete(`/roles/${defaultRoleId}`)
+      .set('Cookie', [accessToken])
+      .send();
+    // Assert
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toMatchInlineSnapshot(
+      `"Role 'admin' is a default role and cannot be updated or deleted"`,
+    );
   });
 });

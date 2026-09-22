@@ -11,7 +11,6 @@ import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { CreateProgramAssignmentDto } from '@121-service/src/user/dto/assign-aw-to-program.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { CreateUserRoleDto } from '@121-service/src/user/dto/create-user-role.dto';
-import { UpdateUserRoleDto } from '@121-service/src/user/dto/update-user-role.dto';
 import { UserRoleResponseDTO } from '@121-service/src/user/dto/userrole-response.dto';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
@@ -187,29 +186,6 @@ export async function runCronJobDoAlFouadReconciliation(): Promise<request.Respo
   return await getServer()
     .patch('/cronjobs/fsps/al-fouad')
     .set('Cookie', [accessToken]);
-}
-
-export async function updatePermissionsOfRole(
-  userRoleId: number,
-  roleToUpdate: UpdateUserRoleDto,
-): Promise<void> {
-  const accessToken = await getAccessToken();
-  await getServer()
-    .put(`/roles/${userRoleId}`)
-    .set('Cookie', [accessToken])
-    .send(roleToUpdate);
-}
-export async function addPermissionToRole(
-  roleName: DefaultUserRole,
-  permissionsToAdd: PermissionEnum[],
-): Promise<void> {
-  const role = await getRole(roleName);
-  const permissionSet = new Set(role.permissions || []);
-  permissionsToAdd.forEach((permission) => permissionSet.add(permission));
-  const updatedPermissions = Array.from(permissionSet) as PermissionEnum[];
-  await updatePermissionsOfRole(role.id, {
-    permissions: updatedPermissions,
-  });
 }
 
 export async function getRole(type: string): Promise<UserRoleResponseDTO> {

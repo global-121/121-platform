@@ -12,6 +12,7 @@ import { PermissionEntity } from '@121-service/src/user/entities/permissions.ent
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 
@@ -313,6 +314,27 @@ describe('UserService', () => {
       );
     });
 
+    it('should throw HttpException when updating a default role', async () => {
+      // Arrange
+      jest.spyOn(userRoleRepository, 'findOneBy').mockResolvedValue({
+        ...mockExistingRole,
+        role: DefaultUserRole.View,
+      } as UserRoleEntity);
+      const updateData = { label: 'New Label' };
+      const saveSpy = jest.spyOn(userRoleRepository, 'save');
+
+      // Act & Assert
+      await expect(
+        service.updateUserRole(userRoleId, updateData),
+      ).rejects.toThrow(
+        new HttpException(
+          `Role '${DefaultUserRole.View}' is a default role and cannot be updated or deleted`,
+          HttpStatus.BAD_REQUEST,
+        ),
+      );
+      expect(saveSpy).not.toHaveBeenCalled();
+    });
+
     it('should update only the label when provided', async () => {
       // Arrange
       const updateData = { label: 'Updated Label' };
@@ -525,6 +547,24 @@ describe('UserService', () => {
       // Act & Assert
       await expect(service.deleteUserRole(userRoleId)).rejects.toThrow(
         new HttpException('Role not found', HttpStatus.NOT_FOUND),
+      );
+
+      expect(userRoleRepository.remove).not.toHaveBeenCalled();
+    });
+
+    it('should throw HttpException when deleting a default role', async () => {
+      // Arrange
+      jest.spyOn(userRoleRepository, 'findOneBy').mockResolvedValue({
+        ...mockExistingRole,
+        role: DefaultUserRole.Admin,
+      } as UserRoleEntity);
+
+      // Act & Assert
+      await expect(service.deleteUserRole(userRoleId)).rejects.toThrow(
+        new HttpException(
+          `Role '${DefaultUserRole.Admin}' is a default role and cannot be updated or deleted`,
+          HttpStatus.BAD_REQUEST,
+        ),
       );
 
       expect(userRoleRepository.remove).not.toHaveBeenCalled();

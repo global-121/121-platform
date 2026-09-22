@@ -3,10 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
+import {
+  DEFAULT_USER_ROLES,
+  DefaultUserRoleDefinition,
+} from '@121-service/src/user/const/default-user-roles.const';
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 
 @Injectable()
 export class PermissionMaintenanceService {
@@ -27,45 +30,102 @@ export class PermissionMaintenanceService {
     }
   }
 
-  public async syncAdminRolePermissions(): Promise<void> {
-    const supportedPermissions = Object.values(PermissionEnum);
+  /**
+   * Keeps all default roles in sync with the seed definition
+   * (DEFAULT_USER_ROLES), so that every instance has the same permissions
+   * behind the same default role name. Default roles are read-only via the
+   * API, so any drift can only come from direct database changes.
+   */
+  public async syncDefaultRoles(): Promise<void> {
     const allPermissions = await this.permissionRepository.find();
     const permissionsByName = new Map(
       allPermissions.map((permission) => [permission.name, permission]),
     );
-    const adminRole = await this.userRoleRepository.findOne({
-      where: { role: Equal(DefaultUserRole.Admin) },
+    const existingRoles = await this.userRoleRepository.find({
       relations: { permissions: true },
     });
+    const rolesByName = new Map(
+      existingRoles.map((role) => [role.role, role]),
+    );
 
-    if (!adminRole) {
+    for (const defaultRole of DEFAULT_USER_ROLES) {
+      await this.syncDefaultRole({
+        defaultRole,
+        rolesByName,
+        permissionsByName,
+      });
+    }
+  }
+
+  private async syncDefaultRole({
+    defaultRole,
+    rolesByName,
+    permissionsByName,
+  }: {
+    defaultRole: DefaultUserRoleDefinition;
+    rolesByName: Map<string, UserRoleEntity>;
+    permissionsByName: Map<string, PermissionEntity>;
+  }): Promise<void> {
+    const targetPermissions = defaultRole.permissions
+      .map((permissionName) => permissionsByName.get(permissionName))
+      .filter((permission) => permission !== undefined);
+
+    const existingRole = rolesByName.get(defaultRole.role);
+
+    if (!existingRole) {
+      await this.createDefaultRole({ defaultRole, targetPermissions });
       return;
     }
 
-    const adminPermissionNames = new Set(
-      adminRole.permissions.map((permission) => permission.name),
+    if (
+      this.isDefaultRoleInSync({ existingRole, defaultRole, targetPermissions })
+    ) {
+      return;
+    }
+
+    existingRole.label = defaultRole.label;
+    existingRole.permissions = targetPermissions;
+    await this.persistRoleUpdates({ userRole: existingRole });
+  }
+
+  private async createDefaultRole({
+    defaultRole,
+    targetPermissions,
+  }: {
+    defaultRole: DefaultUserRoleDefinition;
+    targetPermissions: PermissionEntity[];
+  }): Promise<void> {
+    const userRole = new UserRoleEntity();
+    userRole.role = defaultRole.role;
+    userRole.label = defaultRole.label;
+    userRole.permissions = targetPermissions;
+
+    await this.persistRoleUpdates({ userRole });
+  }
+
+  private isDefaultRoleInSync({
+    existingRole,
+    defaultRole,
+    targetPermissions,
+  }: {
+    existingRole: UserRoleEntity;
+    defaultRole: DefaultUserRoleDefinition;
+    targetPermissions: PermissionEntity[];
+  }): boolean {
+    if (existingRole.label !== defaultRole.label) {
+      return false;
+    }
+
+    const currentPermissionNames = new Set(
+      (existingRole.permissions ?? []).map((permission) => permission.name),
     );
-    let hasAdminRoleUpdates = false;
-
-    for (const permissionName of supportedPermissions) {
-      const permissionEntity = permissionsByName.get(permissionName);
-
-      if (!permissionEntity) {
-        continue;
-      }
-
-      const wasPermissionAdded = await this.ensureAdminHasPermission({
-        adminRole,
-        adminPermissionNames,
-        permissionName,
-        permissionEntity,
-      });
-      hasAdminRoleUpdates = hasAdminRoleUpdates || wasPermissionAdded;
+    if (currentPermissionNames.size !== targetPermissions.length) {
+      return false;
     }
 
-    if (hasAdminRoleUpdates) {
-      await this.persistAdminRoleUpdates({ adminRole });
-    }
+    return targetPermissions.every((permission) =>
+      currentPermissionNames.has(permission.name),
+    );
   }
 
   /**
@@ -125,34 +185,13 @@ export class PermissionMaintenanceService {
     return createdPermission;
   }
 
-  private async ensureAdminHasPermission({
-    adminRole,
-    adminPermissionNames,
-    permissionName,
-    permissionEntity,
+  private async persistRoleUpdates({
+    userRole,
   }: {
-    adminRole: UserRoleEntity;
-    adminPermissionNames: Set<PermissionEnum>;
-    permissionName: PermissionEnum;
-    permissionEntity: PermissionEntity;
-  }): Promise<boolean> {
-    if (adminPermissionNames.has(permissionName)) {
-      return false;
-    }
-
-    adminRole.permissions.push(permissionEntity);
-
-    adminPermissionNames.add(permissionName);
-    return true;
-  }
-
-  private async persistAdminRoleUpdates({
-    adminRole,
-  }: {
-    adminRole: UserRoleEntity;
+    userRole: UserRoleEntity;
   }): Promise<void> {
     try {
-      await this.userRoleRepository.save(adminRole);
+      await this.userRoleRepository.save(userRole);
     } catch (error: unknown) {
       if (!this.isUniqueViolationError({ error })) {
         throw error;
