@@ -27,6 +27,24 @@ class RegistrationActivityLogPage extends RegistrationBasePage {
     await this.page.localStorage.removeItem('activity-log-table');
   }
 
+  async validateDialogContent({
+    title,
+    content,
+  }: {
+    title?: string;
+    content?: string;
+  }) {
+    const dialog = this.page.locator('.p-dialog');
+    await expect(dialog).toBeVisible();
+    if (title) {
+      const titleLocator = dialog.getByRole('heading', { level: 3 });
+      await expect(titleLocator).toContainText(title);
+    }
+    if (content) {
+      await expect(dialog).toContainText(content);
+    }
+  }
+
   async validateLastMessageSent(message: string) {
     const lastMessageRow = this.table.tableRows
       .filter({
