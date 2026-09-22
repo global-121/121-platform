@@ -49,7 +49,6 @@ test('Do successful payment for Safaricom fsp', async ({
   await test.step('Validate payment card', async () => {
     await paymentPage.waitForPaymentToComplete({
       expectedAmount: defaultMaxTransferValue,
-      numberOfPas,
     });
 
     await paymentPage.navigateToProgramPage('Payments');
