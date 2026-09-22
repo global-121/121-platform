@@ -1137,6 +1137,32 @@
   },
   {
     "method": "get",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}/excel",
+    "params": [
+      "programId",
+      "name"
+    ],
+    "returnType": "ExcelFspConfigurationResponseDto"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}/excel",
+    "params": [
+      "programId",
+      "name"
+    ],
+    "returnType": "ProgramFspConfigurationResponseDto"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/fsp-configurations/excel",
+    "params": [
+      "programId"
+    ],
+    "returnType": "ProgramFspConfigurationResponseDto"
+  },
+  {
+    "method": "get",
     "path": "/api/programs/{programId}/payments/excel-reconciliation/template",
     "params": [
       "programId"

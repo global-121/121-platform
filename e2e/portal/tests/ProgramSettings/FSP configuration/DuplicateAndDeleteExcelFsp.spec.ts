@@ -61,6 +61,17 @@ test('Duplicate and delete Excel FSP', async ({
     });
   });
 
+  await test.step('Reopen Excel configuration and verify saved fields', async () => {
+    await fspSettingsPage.clickOptionInFspDropdownMenu({
+      fspName: 'Excel Payment Instructions 2',
+      optionLabel: 'Reconfigure',
+    });
+    await fspSettingsPage.assertExcelIdentifierField({
+      expectedLabel: 'First Name',
+    });
+    await fspSettingsPage.cancelButton.click();
+  });
+
   await test.step('Delete the duplicated FSP', async () => {
     await fspSettingsPage.deleteFsp({
       fspNames: ['Excel Payment Instructions 2'],

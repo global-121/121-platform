@@ -1,5 +1,8 @@
 import { Injectable, Signal } from '@angular/core';
 
+import { CreateExcelFspConfigurationDto } from '@121-service/src/fsp-integrations/integrations/excel/dto/create-excel-fsp-configuration.dto';
+import { ExcelFspConfigurationResponseDto } from '@121-service/src/fsp-integrations/integrations/excel/dto/excel-fsp-configuration-response.dto';
+import { UpdateExcelFspConfigurationDto } from '@121-service/src/fsp-integrations/integrations/excel/dto/update-excel-fsp-configuration.dto';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspConfigurationProperty } from '@121-service/src/fsp-integrations/shared/interfaces/fsp-configuration-property.interface';
@@ -20,6 +23,62 @@ const BASE_ENDPOINT = (programId: Signal<number | string | undefined>) => [
   providedIn: 'root',
 })
 export class FspConfigurationApiService extends DomainApiService {
+  getExcelFspConfiguration({
+    programId,
+    configurationName,
+  }: {
+    programId: Signal<number | string>;
+    configurationName: string;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<
+      Dto<ExcelFspConfigurationResponseDto>
+    >({
+      method: 'GET',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(programId),
+        encodeURIComponent(configurationName),
+        'excel',
+      ]).join('/'),
+    });
+  }
+
+  createExcelFspConfiguration({
+    programId,
+    configuration,
+  }: {
+    programId: Signal<number | string>;
+    configuration: Dto<CreateExcelFspConfigurationDto>;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<FspConfiguration>({
+      method: 'POST',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(programId),
+        'excel',
+      ]).join('/'),
+      body: configuration,
+    });
+  }
+
+  updateExcelFspConfiguration({
+    programId,
+    configurationName,
+    configuration,
+  }: {
+    programId: Signal<number | string>;
+    configurationName: string;
+    configuration: Dto<UpdateExcelFspConfigurationDto>;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<FspConfiguration>({
+      method: 'PATCH',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(programId),
+        encodeURIComponent(configurationName),
+        'excel',
+      ]).join('/'),
+      body: configuration,
+    });
+  }
+
   getFspConfigurations(programId: Signal<number | string | undefined>) {
     return this.generateQueryOptions<FspConfiguration[]>({
       enabled: () => !!programId(),
