@@ -17,6 +17,7 @@ const mockedCreateTransactionParams: CreateTransactionParams = {
     corporateCode: 'mocked_corporate_code',
     password: 'mocked_password',
     uniqueKey: 'mocked_unique_key',
+    currencyCode: 'mocked_currency_code',
   },
 };
 

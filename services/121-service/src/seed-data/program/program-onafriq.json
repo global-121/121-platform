@@ -87,6 +87,10 @@
         {
           "name": "uniqueKeyOnafriq",
           "value": "UNIQUE_KEY_ONAFRIQ"
+        },
+        {
+          "name": "currencyCodeOnafriq",
+          "value": "ONAFRIQ_CURRENCY_CODE"
         }
       ]
     }
