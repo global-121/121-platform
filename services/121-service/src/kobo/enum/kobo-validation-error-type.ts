@@ -11,4 +11,5 @@ export enum KoboValidationErrorType {
   invalidLanguageCode = 'invalidLanguageCode',
   selectOneNoChoices = 'selectOneNoChoices',
   missingFullnameAttributes = 'missingFullnameAttributes',
+  accessGroupAttributeLocked = 'accessGroupAttributeLocked',
 }

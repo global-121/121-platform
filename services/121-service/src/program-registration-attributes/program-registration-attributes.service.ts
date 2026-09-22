@@ -6,6 +6,7 @@ import { Equal, In, QueryFailedError, Repository } from 'typeorm';
 
 import { env } from '@121-service/src/env';
 import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
+import { AccessGroupLevelsService } from '@121-service/src/programs/access-group-levels/access-group-levels.service';
 import {
   CreateProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
@@ -36,6 +37,10 @@ export class ProgramRegistrationAttributesService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramRegistrationAttributeEntity)
   private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
+
+  public constructor(
+    private readonly accessGroupLevelsService: AccessGroupLevelsService,
+  ) {}
 
   public getFilterableAttributes(program: ProgramEntity) {
     const genericPaAttributeFilters = [
@@ -472,10 +477,14 @@ export class ProgramRegistrationAttributesService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
+    const accessGroupRegistrationAttributeNames =
+      await this.getAccessGroupRegistrationAttributeNames({ programId });
+
     const updatedProgramRegistrationAttribute =
       await this.getUpdatedProgramRegistrationAttribute({
         programRegistrationAttributeFromRepo,
         updateProgramRegistrationAttribute,
+        accessGroupRegistrationAttributeNames,
       });
 
     await this.programRegistrationAttributeRepository.save(
@@ -535,6 +544,9 @@ export class ProgramRegistrationAttributesService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
+    const accessGroupRegistrationAttributeNames =
+      await this.getAccessGroupRegistrationAttributeNames({ programId });
+
     const updatedAttributes: ProgramRegistrationAttributeEntity[] = [];
 
     const chunks = chunk(attributesToUpdate, 10000);
@@ -543,6 +555,7 @@ export class ProgramRegistrationAttributesService {
       const updatedChunk = await this.getUpdatedProgramAttributePerChunk({
         programId,
         programAttributesToUpdateChunk,
+        accessGroupRegistrationAttributeNames,
       });
       updatedAttributes.push(...updatedChunk);
     }
@@ -554,9 +567,11 @@ export class ProgramRegistrationAttributesService {
   private async getUpdatedProgramAttributePerChunk({
     programId,
     programAttributesToUpdateChunk,
+    accessGroupRegistrationAttributeNames,
   }: {
     programId: number;
     programAttributesToUpdateChunk: UpdateProgramRegistrationAttributesBatchDto[];
+    accessGroupRegistrationAttributeNames: string[] | null;
   }) {
     const updatedChunk: ProgramRegistrationAttributeEntity[] = [];
 
@@ -585,6 +600,7 @@ export class ProgramRegistrationAttributesService {
           programRegistrationAttributeFromRepo,
           updateProgramRegistrationAttribute:
             attributeWithUpdates!.updateProgramRegistrationAttribute,
+          accessGroupRegistrationAttributeNames,
         });
 
       updatedChunk.push(updatedProgramRegistrationAttribute);
@@ -593,13 +609,34 @@ export class ProgramRegistrationAttributesService {
     return updatedChunk;
   }
 
+  private async getAccessGroupRegistrationAttributeNames({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<string[] | null> {
+    return this.accessGroupLevelsService.getAccessGroupRegistrationAttributeNames(
+      { programId },
+    );
+  }
+
   private async getUpdatedProgramRegistrationAttribute({
     programRegistrationAttributeFromRepo,
     updateProgramRegistrationAttribute,
+    accessGroupRegistrationAttributeNames,
   }: {
     programRegistrationAttributeFromRepo: ProgramRegistrationAttributeEntity;
     updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
-  }) {
+    accessGroupRegistrationAttributeNames: string[] | null;
+  }): Promise<ProgramRegistrationAttributeEntity> {
+    await this.accessGroupLevelsService.validateAttributeUpdateAllowed({
+      accessGroupRegistrationAttributeNames,
+      existingAttribute: programRegistrationAttributeFromRepo,
+      update: {
+        type: updateProgramRegistrationAttribute.type,
+        options: updateProgramRegistrationAttribute.options,
+      },
+    });
+
     for (const attribute in updateProgramRegistrationAttribute) {
       programRegistrationAttributeFromRepo[attribute] =
         updateProgramRegistrationAttribute[attribute];
@@ -633,6 +670,14 @@ export class ProgramRegistrationAttributesService {
       const errors = `The '${DefaultRegistrationDataAttributeNames.phoneNumber}' attribute cannot be deleted while Twilio is enabled.`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
+
+    const accessGroupRegistrationAttributeNames =
+      await this.getAccessGroupRegistrationAttributeNames({ programId });
+
+    this.accessGroupLevelsService.validateAttributeDeleteAllowed({
+      accessGroupRegistrationAttributeNames,
+      existingAttribute: programRegistrationAttribute,
+    });
 
     return await this.programRegistrationAttributeRepository.remove(
       programRegistrationAttribute,
