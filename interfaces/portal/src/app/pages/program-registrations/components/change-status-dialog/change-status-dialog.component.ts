@@ -239,14 +239,13 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
         return;
       }
 
+      this.duplicateCount.set(data.duplicateCount);
+
       if (
         this.status() === RegistrationStatusEnum.included &&
-        data.duplicateCount > 0
+        this.duplicateCount() > 0
       ) {
-        // case #1.5: block change if there are duplicate registrations
-        this.showDuplicatesErrorDialog({
-          duplicateCount: data.duplicateCount,
-        });
+        this.showDuplicatesErrorDialog();
         return;
       }
 
@@ -335,10 +334,14 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
     this.dryRunPreviewData.set(undefined);
   }
 
-  showDuplicatesErrorDialog({ duplicateCount }: { duplicateCount: number }) {
+  showDuplicatesErrorDialog() {
     this.dialogVisible.set(false);
     this.changeStatusMutation.reset();
-    this.duplicateCount.set(duplicateCount);
     this.duplicatesErrorDialogVisible.set(true);
+  }
+
+  hideDuplicatesErrorDialog() {
+    this.duplicatesErrorDialogVisible.set(false);
+    this.duplicateCount.set(0);
   }
 }
