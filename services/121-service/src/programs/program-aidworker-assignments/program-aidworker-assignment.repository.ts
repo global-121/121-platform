@@ -24,4 +24,12 @@ export class ProgramAidworkerAssignmentRepository extends Repository<ProgramAidw
     });
     return assignment !== null;
   }
+
+  public async findByProgramId(
+    programId: number,
+  ): Promise<ProgramAidworkerAssignmentEntity[]> {
+    return await this.baseRepository.find({
+      where: { programId: Equal(programId) },
+    });
+  }
 }

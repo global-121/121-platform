@@ -2,6 +2,7 @@
 
 ```mermaid
 graph LR
+  AccessGroupLevelsModule-->RegistrationDataModule
   ActivitiesModule-->MessageModule
   ActivitiesModule-->NoteModule
   ActivitiesModule-->RegistrationEventsModule
@@ -152,6 +153,7 @@ graph LR
   ProgramModule-->ProgramFspConfigurationsModule
   ProgramModule-->ProgramRegistrationAttributesModule
   ProgramModule-->UserModule
+  ProgramRegistrationAttributesModule-->AccessGroupLevelsModule
   RegistrationEventsModule-->UserModule
   RegistrationUtilsModule-->RegistrationDataModule
   RegistrationsModule-->FspsModule

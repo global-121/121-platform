@@ -6,6 +6,7 @@ import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { AccessGroupLevelEntity } from '@121-service/src/programs/access-group-levels/access-group-level.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationProgramIdSequenceEntity } from '@121-service/src/programs/entities/registration-program-id-sequence.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
@@ -73,6 +74,12 @@ export class ProgramEntity extends Base121Entity {
   public programRegistrationAttributes: Relation<
     ProgramRegistrationAttributeEntity[]
   >;
+
+  @OneToMany(
+    () => AccessGroupLevelEntity,
+    (programAccessGroupLevel) => programAccessGroupLevel.program,
+  )
+  public programAccessGroupLevels: Relation<AccessGroupLevelEntity[]>;
 
   @OneToMany(() => RegistrationEntity, (registrations) => registrations.program)
   public registrations: Relation<RegistrationEntity[]>;

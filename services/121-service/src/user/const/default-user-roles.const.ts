@@ -24,6 +24,7 @@ const DEFAULT_USER_ROLE_CONTENT: Record<
       PermissionEnum.AidWorkerProgramREAD,
       PermissionEnum.AidWorkerProgramUPDATE,
       PermissionEnum.PaymentREAD,
+      PermissionEnum.ProgramAccessGroupLevelsUPDATE,
       PermissionEnum.ProgramApprovalThresholdsREAD,
       PermissionEnum.ProgramApprovalThresholdsUPDATE,
       PermissionEnum.ProgramAttachmentsCREATE,
@@ -85,6 +86,7 @@ const DEFAULT_USER_ROLE_CONTENT: Record<
     permissions: [
       PermissionEnum.ProgramREAD,
       PermissionEnum.ProgramUPDATE,
+      PermissionEnum.ProgramAccessGroupLevelsUPDATE,
       PermissionEnum.ProgramMetricsREAD,
       PermissionEnum.ProgramAttachmentsREAD,
       PermissionEnum.ProgramAttachmentsCREATE,
