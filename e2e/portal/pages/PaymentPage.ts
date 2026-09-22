@@ -30,7 +30,7 @@ class PaymentPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.page = page;
-    this.table = new TableComponent(page);
+    this.table = new TableComponent(page, 'payment-transaction-list-table');
     this.importReconciliationDataButton = this.page.getByRole('button', {
       name: 'Import reconciliation data',
     });
@@ -204,7 +204,14 @@ class PaymentPage extends BasePage {
     }
   }
 
-  async validateBadgeIsPresentByLabel({
+  async validatePaymentStatusHeaderChip({ badgeName }: { badgeName: string }) {
+    const chip = this.page
+      .getByTestId('payment-status-header-chip')
+      .getByLabel(badgeName);
+    await expect(chip).toBeVisible();
+  }
+
+  async validateRegistrationTransactionStatusLabel({
     badgeName,
     count,
   }: {

@@ -213,7 +213,7 @@ class TableComponent {
   async sortAndValidateColumnByName(columnName: string) {
     const columnToSort = this.table
       .getByRole('columnheader', { name: columnName })
-      .locator('p-sorticon');
+      .getByTestId('sort-column');
 
     await columnToSort.click();
     await this.waitForSortingIconOnTableHeader({
@@ -233,7 +233,7 @@ class TableComponent {
     const sortingType = await this.getSortingTypeOfColumn(columnName);
     const columnToSort = this.table
       .getByRole('columnheader', { name: columnName })
-      .locator('p-sorticon');
+      .getByTestId('sort-column');
 
     // If the current state is not the desired state, click to change it
     if (sortingType !== sort) {
