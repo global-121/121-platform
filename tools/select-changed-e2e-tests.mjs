@@ -18,7 +18,7 @@ import { execFile } from 'node:child_process';
 import { appendFileSync, readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 
-const execFileAsync = (command, commandArgs, options) =>
+const execFileAsync = ({ command, commandArgs, options = {} }) =>
   new Promise((resolve, reject) => {
     execFile(command, commandArgs, options, (error, stdout) => {
       if (error) {
@@ -50,16 +50,26 @@ const threshold = Number(args.threshold);
 const maxFiles = Number(args['max-files']);
 
 async function getRepositoryRoot() {
-  const stdout = await execFileAsync('git', ['rev-parse', '--show-toplevel']);
+  const stdout = await execFileAsync({
+    command: 'git',
+    commandArgs: ['rev-parse', '--show-toplevel'],
+  });
   return stdout.trim();
 }
 
 async function getChangedSpecFiles({ repositoryRoot, base, head }) {
-  const stdout = await execFileAsync(
-    'git',
-    ['diff', '--no-renames', '--numstat', base, head],
-    { cwd: repositoryRoot },
-  );
+  const stdout = await execFileAsync({
+    command: 'git',
+    commandArgs: [
+      'diff',
+      '--no-renames',
+      '--diff-filter=AM', // Excludes deleted paths, which no longer exist in `head` to read.
+      '--numstat',
+      base,
+      head,
+    ],
+    options: { cwd: repositoryRoot },
+  });
 
   return stdout
     .split('\n')
@@ -79,8 +89,10 @@ async function getChangedSpecFiles({ repositoryRoot, base, head }) {
 
 async function isNewFile({ repositoryRoot, base, path }) {
   try {
-    await execFileAsync('git', ['cat-file', '-e', `${base}:${path}`], {
-      cwd: repositoryRoot,
+    await execFileAsync({
+      command: 'git',
+      commandArgs: ['cat-file', '-e', `${base}:${path}`],
+      options: { cwd: repositoryRoot },
     });
     return false;
   } catch {
@@ -139,12 +151,12 @@ function capCandidates({ candidates }) {
   return candidates.slice(0, maxFiles);
 }
 
-function toE2eRelativePath(path) {
+function toE2eRelativePath({ path }) {
   return path.slice('e2e/'.length);
 }
 
 function writeGithubOutput({ candidates }) {
-  const files = candidates.map(({ path }) => toE2eRelativePath(path));
+  const files = candidates.map(({ path }) => toE2eRelativePath({ path }));
   const hasCandidates = files.length > 0;
 
   const outputPath = process.env.GITHUB_OUTPUT;
