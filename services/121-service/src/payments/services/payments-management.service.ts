@@ -490,29 +490,15 @@ export class PaymentsManagementService {
     const registrationIds = [
       ...new Set(transactionsForPayment.map((t) => t.registrationId)),
     ];
-    if (registrationIds.length === 0) {
-      return;
-    }
 
-    const duplicateRegistrations =
-      await this.registrationsPaginationService.getRegistrationViewsNoLimit({
-        programId,
-        paginateQuery: {
-          path: '',
-          filter: {
-            duplicateStatus: DuplicateStatus.duplicate,
-          },
-        },
-        queryBuilder: this.registrationsBulkService
-          .getBaseQuery()
-          .andWhere('registration.id IN (:...registrationIds)', {
-            registrationIds,
-          }),
+    const duplicateCount =
+      await this.registrationsBulkService.countDuplicatesForRegistrations({
+        registrationIds,
       });
 
-    if (duplicateRegistrations.length > 0) {
+    if (duplicateCount > 0) {
       throw new HttpException(
-        `Cannot approve payment: ${duplicateRegistrations.length} registration(s) have duplicate status. Resolve duplicates before approving this payment.`,
+        `Cannot approve payment: ${duplicateCount} registration(s) have duplicate status. Resolve duplicates before approving this payment.`,
         HttpStatus.BAD_REQUEST,
       );
     }
