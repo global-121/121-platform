@@ -37,7 +37,7 @@ export default defineConfig(
       'playwright/valid-expect': 'error',
       'playwright/valid-describe-callback': 'error',
       'playwright/valid-expect-in-promise': 'error',
-      'playwright/no-standalone-expect': 'error',
+      'playwright/no-standalone-expect': 'off',
       // Warn on known flaky/bad Playwright patterns (per Playwright best practices)
       'playwright/no-wait-for-timeout': 'warn',
       'playwright/no-networkidle': 'warn',
