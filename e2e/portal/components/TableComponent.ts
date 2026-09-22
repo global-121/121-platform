@@ -170,14 +170,12 @@ class TableComponent {
     await expect(this.globalSearchInput).toBeVisible();
     await this.globalSearchInput.fill(searchText);
 
-    // eslint-disable-next-line playwright/no-wait-for-timeout -- no DOM signal for the BE-driven filter finishing, so waitForLoaded() can't be used here
     await this.page.waitForTimeout(500);
   }
 
   async clearAllFilters() {
     // When table is empty we have more than one clear filters button that is why we use first()
     await this.clearAllFiltersButton.first().click();
-    // eslint-disable-next-line playwright/no-wait-for-timeout -- no DOM signal for the BE-driven filter finishing, so waitForLoaded() can't be used here
     await this.page.waitForTimeout(500);
   }
 
