@@ -169,26 +169,5 @@ describe('ProgramFspConfigurationMapper', () => {
       expect(entity.programFspConfigurationId).toBe(programFspConfigurationId);
       expect(entity.value).toBe(dto.value);
     });
-
-    it('should correctly handle columnsToExport as an array', () => {
-      // Arrange
-      const dto: CreateProgramFspConfigurationPropertyDto = {
-        name: FspConfigurationProperties.columnsToExport,
-        value: ['column1', 'column2', 'column3'],
-      };
-      const programFspConfigurationId = 2;
-
-      // Act
-      const entities = ProgramFspConfigurationMapper.mapPropertyDtosToEntities(
-        [dto],
-        programFspConfigurationId,
-      );
-      const entity = entities[0];
-
-      // Assert
-      expect(entity.name).toBe(dto.name);
-      expect(entity.programFspConfigurationId).toBe(programFspConfigurationId);
-      expect(entity.value).toBe(dto.value);
-    });
   });
 });

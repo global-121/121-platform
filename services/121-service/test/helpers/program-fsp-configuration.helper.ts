@@ -1,5 +1,7 @@
 import * as request from 'supertest';
 
+import { ExcelFspConfigurationResponseDto } from '@121-service/src/fsp-integrations/integrations/excel/dto/excel-fsp-configuration-response.dto';
+import { UpdateExcelFspConfigurationDto } from '@121-service/src/fsp-integrations/integrations/excel/dto/update-excel-fsp-configuration.dto';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
@@ -208,4 +210,43 @@ export async function getPublicProgramFspConfigurationProperties({
       `/programs/${programId}/fsp-configurations/${configName}/properties/public`,
     )
     .set('Cookie', [accessToken]);
+}
+
+export async function getExcelFspConfiguration({
+  programId,
+  configName,
+  accessToken,
+}: {
+  programId: number;
+  configName: string;
+  accessToken: string;
+}): Promise<
+  Omit<request.Response, 'body'> & {
+    body: ExcelFspConfigurationResponseDto;
+  }
+> {
+  return await getServer()
+    .get(`/programs/${programId}/fsp-configurations/${configName}/excel`)
+    .set('Cookie', [accessToken]);
+}
+
+export async function putExcelFspConfiguration({
+  programId,
+  configName,
+  body,
+  accessToken,
+}: {
+  programId: number;
+  configName: string;
+  body: UpdateExcelFspConfigurationDto;
+  accessToken: string;
+}): Promise<
+  Omit<request.Response, 'body'> & {
+    body: ExcelFspConfigurationResponseDto;
+  }
+> {
+  return await getServer()
+    .put(`/programs/${programId}/fsp-configurations/${configName}/excel`)
+    .set('Cookie', [accessToken])
+    .send(body);
 }

@@ -99,6 +99,10 @@ export class FspConfigurationCardComponent {
     }),
   );
 
+  readonly excelFspConfigurations = injectQuery(
+    this.fspConfigurationApiService.getExcelFspConfigurations(this.programId),
+  );
+
   readonly fspConfigurationLabel = computed(
     () =>
       this.translatableStringService.translate(this.configuration().label) ??
@@ -168,7 +172,9 @@ export class FspConfigurationCardComponent {
     const requiredFspAttributes =
       this.fspConfigurationService.getRequiredFspAttributes({
         fspSetting: this.fspSetting(),
-        existingFspConfiguration: this.configuration(),
+        excelFspConfiguration: this.excelFspConfigurations
+          .data()
+          ?.find(({ name }) => name === this.configuration().name),
       });
 
     return requiredFspAttributes.map((propertyName) =>

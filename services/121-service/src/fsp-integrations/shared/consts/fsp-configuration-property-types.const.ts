@@ -3,8 +3,6 @@ import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/sh
 export const fspConfigurationPropertyTypes = {
   [FspConfigurationProperties.maxBalanceInCents]: 'number',
   [FspConfigurationProperties.cardDistributionByMail]: 'boolean',
-  [FspConfigurationProperties.columnsToExport]: 'array',
-  [FspConfigurationProperties.columnToMatch]: 'string',
   [FspConfigurationProperties.brandCode]: 'string',
   [FspConfigurationProperties.coverLetterCode]: 'string',
   [FspConfigurationProperties.fundingTokenCode]: 'string',
@@ -33,10 +31,11 @@ interface RuntimeTypeToTsType {
   string: string;
   number: number;
   boolean: boolean;
-  array: string[];
 }
 
 // Derive TypeScript interface from runtime object
 export type FspConfigurationPropertyTypeMap = {
-  [K in keyof typeof fspConfigurationPropertyTypes]: RuntimeTypeToTsType[(typeof fspConfigurationPropertyTypes)[K]];
+  [
+    K in keyof typeof fspConfigurationPropertyTypes
+  ]: RuntimeTypeToTsType[(typeof fspConfigurationPropertyTypes)[K]];
 };

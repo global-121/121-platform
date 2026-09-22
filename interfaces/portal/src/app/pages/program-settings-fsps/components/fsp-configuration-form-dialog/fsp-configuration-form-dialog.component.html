@@ -16,20 +16,12 @@
   </p>
 
   <div data-testid="fsp-configuration-dialog-form">
-    @if (isExcelFsp()) {
-      <app-excel-fsp-dialog-content
+    @for (fspFormField of fspFormFields(); track fspFormField.name) {
+      <app-fsp-configuration-property-input
         [programId]="programId()"
         [formGroup]="formGroup()"
-        [fspFormFields]="fspFormFields()"
+        [fspFormField]="fspFormField"
       />
-    } @else {
-      @for (fspFormField of fspFormFields(); track fspFormField.name) {
-        <app-fsp-configuration-property-input
-          [programId]="programId()"
-          [formGroup]="formGroup()"
-          [fspFormField]="fspFormField"
-        />
-      }
     }
   </div>
 </app-form-dialog>

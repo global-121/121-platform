@@ -5,8 +5,14 @@ import { Dto } from '~/utils/dto-type';
 
 export type FspConfiguration = Dto<ProgramFspConfigurationResponseDto>;
 
+export type FspFormFieldName =
+  | 'columnsToExport'
+  | 'columnToMatch'
+  | 'displayName'
+  | FspConfigurationProperties;
+
 export interface FspFormField {
-  name: 'displayName' | FspConfigurationProperties;
+  name: FspFormFieldName;
   isRequired: boolean;
   isSensitive: boolean;
 }

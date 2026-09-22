@@ -15,8 +15,6 @@ export const FSP_CONFIGURATION_PROPERTY_LABELS: Record<
 > = {
   [FspConfigurationProperties.password]: $localize`Password`,
   [FspConfigurationProperties.username]: $localize`Username`,
-  [FspConfigurationProperties.columnsToExport]: $localize`Columns to export`,
-  [FspConfigurationProperties.columnToMatch]: $localize`Field for identifying registrations`,
   [FspConfigurationProperties.brandCode]: $localize`Brand code`,
   [FspConfigurationProperties.coverLetterCode]: $localize`Cover letter code`,
   [FspConfigurationProperties.fundingTokenCode]: $localize`Funding token code`,

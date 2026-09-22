@@ -3,8 +3,5 @@ import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/
 export function serializeFspConfigurationPropertyValue(
   value: FspConfigurationPropertyType,
 ): string {
-  if (Array.isArray(value)) {
-    return JSON.stringify(value);
-  }
   return String(value);
 }

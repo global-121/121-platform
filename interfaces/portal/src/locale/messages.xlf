@@ -1698,9 +1698,6 @@
       <trans-unit id="745146051951352480" datatype="html">
         <source>Currency code</source>
       </trans-unit>
-      <trans-unit id="7457873139064677422" datatype="html">
-        <source>Field for identifying registrations</source>
-      </trans-unit>
       <trans-unit id="7461594294922045071" datatype="html">
         <source>This means that they can be included in payments.</source>
       </trans-unit>
@@ -2129,9 +2126,6 @@
       </trans-unit>
       <trans-unit id="9190469470269882637" datatype="html">
         <source>Integrate FSP</source>
-      </trans-unit>
-      <trans-unit id="9202925211917001608" datatype="html">
-        <source>Columns to export</source>
       </trans-unit>
       <trans-unit id="9211474991659273932" datatype="html">
         <source>Create new program</source>

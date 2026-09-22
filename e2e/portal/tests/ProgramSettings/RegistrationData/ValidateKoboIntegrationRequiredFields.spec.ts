@@ -27,11 +27,13 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
 
 const allRequiredAttributesFromSeed = [
   'scope',
+  'namePartnerOrganization',
   'fullName',
   'phoneNumber',
   'whatsappPhoneNumber',
   'addressStreet',
   'addressHouseNumber',
+  'addressHouseNumberAddition',
   'addressPostalCode',
   'addressCity',
 ];
@@ -130,12 +132,7 @@ test('Check if all required fields are updated when deleting a FSP', async ({
   await test.step('Validate required fields', async () => {
     await programSettingsRegistrationDataPage.clickRegistrationDataSection();
     await programSettingsRegistrationDataPage.validateKoboRequiredFieldsTable({
-      requiredDataColumnNames: [
-        'scope',
-        'fullName',
-        'phoneNumber',
-        'whatsappPhoneNumber',
-      ],
+      requiredDataColumnNames: allRequiredAttributesFromSeed,
     });
 
     await programSettingsRegistrationDataPage.validateProgramFspsAreShownInRequiredFieldsTable(

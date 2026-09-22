@@ -1,7 +1,6 @@
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
-import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -15,6 +14,7 @@ import { postProgramFspConfiguration } from '@121-service/test/helpers/program-f
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
+  getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
@@ -71,28 +71,24 @@ describe('Reconciliate excel FSP data', () => {
       completeStatuses: [TransactionStatusEnum.waiting],
     });
 
-    const excelFspConfigWithDifferentMatchColumn = {
-      fspName: Fsps.excel,
-      name: 'different-match-column-fsp',
-      label: {
-        en: 'Excel FSP config with different match column',
-      },
-      properties: [
-        {
-          name: FspConfigurationProperties.columnsToExport,
-          value: [differentMatchColumn],
-        },
-        {
-          name: FspConfigurationProperties.columnToMatch,
-          value: differentMatchColumn,
-        },
-      ],
-    };
     await postProgramFspConfiguration({
       programId: programIdWesteros,
-      body: excelFspConfigWithDifferentMatchColumn,
+      body: {
+        fspName: Fsps.excel,
+        name: 'different-match-column-fsp',
+        label: { en: 'Excel FSP config with different match column' },
+      },
       accessToken,
     });
+    await getServer()
+      .put(
+        `/programs/${programIdWesteros}/fsp-configurations/different-match-column-fsp/excel`,
+      )
+      .set('Cookie', [accessToken])
+      .send({
+        uniqueIdentifierField: differentMatchColumn,
+        exportFields: [differentMatchColumn],
+      });
   });
 
   // NOTE: error because payment is in progress is covered in unit test excel-reconciliation.service.spec.ts
