@@ -285,6 +285,25 @@ export class RegistrationsBulkService {
     };
   }
 
+  public async countDuplicatesForRegistrations({
+    registrationIds,
+  }: {
+    registrationIds: number[];
+  }): Promise<number> {
+    if (registrationIds.length === 0) {
+      return 0;
+    }
+
+    return await this.getBaseQuery()
+      .andWhere('registration.id IN (:...registrationIds)', {
+        registrationIds,
+      })
+      .andWhere('registration."duplicateStatus" = :duplicateStatus', {
+        duplicateStatus: DuplicateStatus.duplicate,
+      })
+      .getCount();
+  }
+
   private async countDuplicatesInSelection({
     programId,
     paginateQuery,

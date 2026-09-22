@@ -214,6 +214,10 @@ export class ScriptsController {
     @Query('skipIntroduceDuplicates') skipIntroduceDuplicates: boolean,
     @Res() res,
   ): Promise<void> {
+    skipIntroduceDuplicates =
+      skipIntroduceDuplicates !== undefined &&
+      skipIntroduceDuplicates.toString() === 'true';
+
     if (body.secret !== env.RESET_SECRET) {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
     }
