@@ -171,10 +171,12 @@ class PaymentPage extends BasePage {
   async waitForPaymentToComplete({
     expectedAmount,
     failed,
-  }: { expectedAmount?: number; failed?: boolean } = {}) {
+    numberOfPas,
+  }: { expectedAmount?: number; failed?: boolean; numberOfPas?: number } = {}) {
     await expect(this.page.locator('p-chart')).toHaveAttribute(
       failed ? 'data-failed' : 'data-success',
-      '1',
+      numberOfPas?.toString() ?? '1',
+      { timeout: 30_000 },
     );
 
     const approvedChip = this.page

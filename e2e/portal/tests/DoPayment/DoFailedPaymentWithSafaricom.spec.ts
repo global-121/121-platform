@@ -51,6 +51,7 @@ test('Do failed payment for Safaricom fsp', async ({
   await test.step('Validate payment card with failed payment data', async () => {
     await paymentPage.waitForPaymentToComplete({
       failed: true,
+      numberOfPas,
     });
     await paymentPage.navigateToProgramPage('Payments');
     // First try to validate the payment card where system still waits for the response from the PA with Voucher payment method.
