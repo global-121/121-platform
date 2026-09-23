@@ -120,6 +120,10 @@ export class QueuesRegistryService implements OnModuleInit {
     };
   }
 
+  public getAllQueues(): Queue[] {
+    return Object.values(this.allQueues);
+  }
+
   async onModuleInit(): Promise<void> {
     const registered = Array.from(REGISTERED_PROCESSORS);
     const expected = Object.keys(this.allQueues);

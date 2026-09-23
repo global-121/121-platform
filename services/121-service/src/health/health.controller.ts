@@ -11,6 +11,7 @@ import { APP_VERSION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { NoUserAuthenticationController } from '@121-service/src/guards/no-user-authentication.decorator';
 import { GetVersionDto } from '@121-service/src/health/dto/get-version.dto';
+import { RedisQueuesHealthIndicator } from '@121-service/src/health/redis-queues.health-indicator';
 
 @NoUserAuthenticationController(
   'Called by the public status-page and other monitoring tools.',
@@ -21,6 +22,7 @@ export class HealthController {
   public constructor(
     private health: HealthCheckService,
     private db: TypeOrmHealthIndicator,
+    private redisQueues: RedisQueuesHealthIndicator,
   ) {}
 
   @ApiOperation({ summary: 'Get health of instance' })
@@ -32,6 +34,7 @@ export class HealthController {
         this.db.pingCheck('database', {
           timeout: env.HEALTH_DATABASE_TIMEOUT,
         }),
+      () => this.redisQueues.isHealthy('redisQueue'),
     ]);
   }
 
