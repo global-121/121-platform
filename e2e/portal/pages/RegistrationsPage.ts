@@ -19,6 +19,7 @@ class RegistrationsPage extends BasePage {
   readonly exportCSVFieldsDropdown: Locator;
   readonly exportCSVButton: Locator;
   readonly manageTableSidebar: Locator;
+  readonly duplicatesErrorDialogMessage: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -43,6 +44,9 @@ class RegistrationsPage extends BasePage {
       name: 'Export CSV',
     });
     this.manageTableSidebar = this.page.getByRole('complementary');
+    this.duplicatesErrorDialogMessage = this.page.getByTestId(
+      'duplicates-error-dialog-message',
+    );
   }
 
   async waitForLoaded(registrationsCount: number) {
@@ -434,6 +438,17 @@ class RegistrationsPage extends BasePage {
         .getByTestId('change-status-dry-run-warning-dialog-submit')
         .click();
     }
+  }
+
+  async validateDuplicatesErrorDialog({
+    duplicateCount,
+  }: {
+    duplicateCount: number;
+  }) {
+    await expect(this.duplicatesErrorDialogMessage).toBeVisible();
+    await expect(this.duplicatesErrorDialogMessage)
+      .toContainText(`There are ${duplicateCount} registration(s) that don't support this action.
+`);
   }
 }
 
