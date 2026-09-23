@@ -45,7 +45,7 @@ export default defineConfig(
       'playwright/no-element-handle': 'warn',
       'playwright/no-wait-for-selector': 'warn',
       'playwright/no-force-option': 'warn',
-      'playwright/no-conditional-in-test': 'warn',
+      'playwright/no-conditional-in-test': 'off',
       'playwright/no-unused-locators': 'warn',
       'playwright/valid-title': 'warn',
       // Turn off noisy stylistic rules handled by Prettier or incompatible with POM assertions

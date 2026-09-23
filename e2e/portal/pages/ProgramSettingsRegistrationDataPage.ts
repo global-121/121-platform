@@ -289,12 +289,11 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
     const configurationErrorsTable = this.page
       .getByTestId('kobo-integration-configuration-errors-table')
       .locator('table');
-    const columnHeaders = await configurationErrorsTable
-      .locator('th')
-      .allInnerTexts();
+    await expect(configurationErrorsTable.locator('th')).toHaveText(
+      configurationErrorsTableColumns,
+    );
     const rows = await configurationErrorsTable.locator('td').allInnerTexts();
 
-    expect(columnHeaders).toEqual(configurationErrorsTableColumns);
     expect(rows.map((row) => row.trim())).toEqual(configurationErrors);
   }
 

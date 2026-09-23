@@ -172,8 +172,7 @@ class RegistrationsPage extends BasePage {
   }
 
   async getFirstRegistrationNameFromTable() {
-    await this.page.waitForTimeout(200);
-    await this.page.waitForSelector('table tbody tr td');
+    await this.table.waitForLoaded();
     const fullName = await this.table.getCell(0, 2);
     const fullNameText = (await fullName.textContent())?.trim();
     if (!fullNameText) {
