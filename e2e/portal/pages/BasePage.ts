@@ -146,6 +146,7 @@ class BasePage {
       visible: true,
       hasText: message,
     });
+    await expect(toastLocator).toBeVisible();
 
     // Handle multiple toasts (if any)
     for (const toast of await toastLocator.all()) {

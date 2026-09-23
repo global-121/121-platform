@@ -407,6 +407,7 @@ class ProgramMonitoring extends BasePage {
       this.page,
       'program-ordered-visa-cards-table',
     );
+    await visaCardOrdersTable.waitForLoaded();
 
     const headers = await visaCardOrdersTable.getTextArrayFromHeader();
 
