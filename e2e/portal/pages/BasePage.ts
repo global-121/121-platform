@@ -151,6 +151,8 @@ class BasePage {
     // Handle multiple toasts (if any)
     for (const toast of await toastLocator.all()) {
       await toast.getByRole('button').click();
+      // Wait for the leave animation to finish so an identical toast shown later isn't matched twice
+      await toast.waitFor({ state: 'hidden' });
     }
   }
 
