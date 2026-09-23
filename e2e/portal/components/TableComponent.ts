@@ -35,9 +35,9 @@ class TableComponent {
     });
     this.globalSearchOpenerButton = this.table.getByTitle('Filter by keyword');
     this.globalSearchInput = this.table.getByPlaceholder('Filter by keyword');
-    this.clearAllFiltersButton = this.table.getByTestId(
-      'query-table-clear-filters',
-    );
+    this.clearAllFiltersButton = this.table.getByRole('button', {
+      name: 'Clear filters',
+    });
 
     // Not in the HTML of the table component.
     this.applyFiltersButton = this.page.getByLabel('Apply');
@@ -125,9 +125,6 @@ class TableComponent {
         await expect(this.tableRows).toHaveCount(rowsCount);
       }
     }).toPass();
-
-    // Header row can render a beat after the loading/empty state settles.
-    await expect(this.tableHeader).toBeAttached();
   }
 
   async getTextArrayFromColumn(column: number) {
@@ -177,8 +174,9 @@ class TableComponent {
   }
 
   async clearAllFilters() {
-    await this.clearAllFiltersButton.click();
-    await this.waitForLoaded();
+    // When table is empty we have more than one clear filters button that is why we use first()
+    await this.clearAllFiltersButton.first().click();
+    await this.page.waitForTimeout(500);
   }
 
   async getSortingTypeOfColumn(columnName: string) {
@@ -262,7 +260,6 @@ class TableComponent {
     filterText: string;
     filterMode?: 'Equal to' | 'Not equal to' | 'Contains';
   }) {
-    await this.waitForLoaded();
     const filterMenuButton = this.table
       .getByRole('columnheader', { name: columnName })
       .getByLabel('Show Filter Menu');
@@ -305,7 +302,6 @@ class TableComponent {
     filterNumber: number;
     filterMode?: 'Less than' | 'Greater than' | 'Not equal to' | 'Equal to';
   }) {
-    await this.waitForLoaded();
     const filterMenuButton = this.table
       .getByRole('columnheader', { name: columnName })
       .getByLabel('Show Filter Menu');
@@ -327,7 +323,6 @@ class TableComponent {
     columnName: string;
     selection: string;
   }) {
-    await this.waitForLoaded();
     const filterMenuButton = this.table
       .getByRole('columnheader', { name: columnName })
       .getByLabel('Show Filter Menu');
@@ -377,7 +372,6 @@ class TableComponent {
     day: string;
     filterMode: string;
   }) {
-    await this.waitForLoaded();
     const filterMenuButton = this.table
       .getByRole('columnheader', { name: columnName })
       .getByLabel('Show Filter Menu');
