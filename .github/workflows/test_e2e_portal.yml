@@ -291,7 +291,14 @@ jobs:
   # This is a workaround for this issue: https://github.com/orgs/community/discussions/44490
   test-shard-resolution-e2e:
     runs-on: ubuntu-slim
-    needs: [detect-flaky-candidates, test-shard-e2e, find-flaky-changed-tests]
+    needs:
+      [
+        path-filter,
+        lint-code,
+        detect-flaky-candidates,
+        test-shard-e2e,
+        find-flaky-changed-tests,
+      ]
     if: always()
     steps:
       - name: Check required job results
