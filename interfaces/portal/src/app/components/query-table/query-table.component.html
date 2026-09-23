@@ -36,6 +36,7 @@
   [columns]="visibleColumns()"
   [dataKey]="'id'"
   [attr.data-testid]="dataTestId()"
+  [attr.data-loaded]="isPending() ? 'false' : 'true'"
 >
   <ng-template pTemplate="caption">
     <div
