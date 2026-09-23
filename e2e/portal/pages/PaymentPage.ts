@@ -26,6 +26,7 @@ class PaymentPage extends BasePage {
   readonly renamePaymentButton: Locator;
   readonly threeDotsMenuButton: Locator;
   readonly succesfullyTransferredAmountChip: Locator;
+  readonly duplicatesErrorDialogMessage: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -79,6 +80,9 @@ class PaymentPage extends BasePage {
       name: 'Rename',
     });
     this.threeDotsMenuButton = this.page.getByTestId('ellipsis-menu-button');
+    this.duplicatesErrorDialogMessage = this.page.getByTestId(
+      'duplicates-error-dialog-message',
+    );
   }
 
   async approvePayment() {
@@ -401,6 +405,18 @@ class PaymentPage extends BasePage {
     for (const [key, value] of expectedValues.entries()) {
       expect(actualValues.get(key)).toBe(value);
     }
+  }
+
+  async validateDuplicatesErrorDialog({
+    duplicateCount,
+  }: {
+    duplicateCount: number;
+  }) {
+    await expect(this.duplicatesErrorDialogMessage).toBeVisible();
+    await expect(this.duplicatesErrorDialogMessage)
+      .toContainText(`There are ${duplicateCount} duplicate registration(s) included in
+        your payment.
+`);
   }
 }
 

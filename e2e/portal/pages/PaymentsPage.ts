@@ -102,11 +102,13 @@ class PaymentsPage extends BasePage {
     note,
     onlyStep1 = false,
     includeRegistrationsByNames,
+    expectFailure = false,
   }: {
     name?: string;
     note?: string;
     onlyStep1?: boolean;
     includeRegistrationsByNames?: string[];
+    expectFailure?: boolean;
   }) {
     await this.createNewPaymentButton.click();
 
@@ -135,7 +137,11 @@ class PaymentsPage extends BasePage {
       await this.addPaymentNote(note);
     }
 
-    await this.createPaymentButton.click();
+    if (expectFailure) {
+      await this.createPaymentButton.click({ timeout: 1000 });
+    } else {
+      await this.createPaymentButton.click();
+    }
   }
 
   async addPaymentNote(note: string) {
