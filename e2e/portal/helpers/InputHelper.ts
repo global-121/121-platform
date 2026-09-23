@@ -44,7 +44,7 @@ export class InputHelper {
           return;
         }
         await this.page.keyboard.press('Escape');
-        await expect(overlay).not.toBeVisible({ timeout: 1_000 });
+        await expect(overlay).toBeHidden({ timeout: 1_000 });
         return;
       } catch {
         if (i === retries - 1) {
