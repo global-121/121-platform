@@ -115,16 +115,15 @@ class TableComponent {
   }
 
   async waitForLoaded(rowsCount?: number) {
-    // Re-check all states together so a table that briefly hasn't mounted yet
-    // (e.g. right after navigation) doesn't pass loading/empty checks before rows exist.
-    await expect(async () => {
-      await expect(this.tableLoading).toHaveCount(0);
-      await expect(this.tableEmpty).toBeHidden();
+    // data-loaded reflects the component's isPending() signal directly, so it flips
+    // to 'true' in the same render pass as the rows/empty-state, avoiding races with
+    // checking child elements right after navigation (before the table has mounted).
+    await expect(this.table).toHaveAttribute('data-loaded', 'true');
+    await expect(this.tableEmpty).toBeHidden();
 
-      if (rowsCount) {
-        await expect(this.tableRows).toHaveCount(rowsCount);
-      }
-    }).toPass();
+    if (rowsCount) {
+      await expect(this.tableRows).toHaveCount(rowsCount);
+    }
   }
 
   async getTextArrayFromColumn(column: number) {
