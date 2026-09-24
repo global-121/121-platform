@@ -77,13 +77,11 @@ test.describe('User actions', () => {
     ];
     for (const { label, icon } of actions) {
       await test.step(`Admin should see "${label}" action in action menu`, async () => {
-        // Assert
-        const actionItem = page.getByRole('menuitem', {
-          name: label,
+        await registrationActivityLogPage.assertActionItemVisibility({
+          label,
+          icon,
+          visible: true,
         });
-        await expect(actionItem).toBeVisible();
-        const iconLocator = actionItem.locator(`.${icon.replace(' ', '.')}`);
-        await expect(iconLocator).toBeVisible();
       });
     }
   });
@@ -130,19 +128,14 @@ test.describe('User actions', () => {
       { label: 'Pause', icon: 'pi pi-pause', visible: true },
       { label: 'Delete', icon: 'pi pi-trash', visible: false },
     ];
+
     for (const { label, icon, visible } of actions) {
       await test.step(`CVA Officer should ${visible ? '' : 'not'} see "${label}" action in action menu`, async () => {
-        // Assert
-        const actionItem = page.getByRole('menuitem', {
-          name: label,
+        await registrationActivityLogPage.assertActionItemVisibility({
+          label,
+          icon,
+          visible,
         });
-        if (visible) {
-          await expect(actionItem).toBeVisible();
-          const iconLocator = actionItem.locator(`.${icon.replace(' ', '.')}`);
-          await expect(iconLocator).toBeVisible();
-        } else {
-          await expect(actionItem).not.toBeVisible();
-        }
       });
     }
   });
@@ -196,7 +189,7 @@ test.describe('User actions', () => {
       const statusUpdateHeader = menu.locator(':scope > li', {
         hasText: 'Status update',
       });
-      await expect(statusUpdateHeader).not.toBeVisible();
+      await expect(statusUpdateHeader).toBeHidden();
     });
 
     const actions = [
@@ -210,17 +203,11 @@ test.describe('User actions', () => {
     ];
     for (const { label, icon, visible } of actions) {
       await test.step(`"View Only" user should ${visible ? '' : 'not'} see "${label}" action in action menu`, async () => {
-        // Assert
-        const actionItem = page.getByRole('menuitem', {
-          name: label,
+        await registrationActivityLogPage.assertActionItemVisibility({
+          label,
+          icon,
+          visible,
         });
-        if (visible) {
-          await expect(actionItem).toBeVisible();
-          const iconLocator = actionItem.locator(`.${icon.replace(' ', '.')}`);
-          await expect(iconLocator).toBeVisible();
-        } else {
-          await expect(actionItem).not.toBeVisible();
-        }
       });
     }
   });

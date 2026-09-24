@@ -231,7 +231,7 @@ test.describe('as user with only view paper voucher permissions', () => {
         balanceAndViewVoucherCells.nth(1).getByRole('button', {
           name: 'View voucher',
         }),
-      ).not.toBeVisible();
+      ).toBeHidden();
     });
   });
 });

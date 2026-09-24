@@ -61,6 +61,27 @@ abstract class RegistrationBasePage extends BasePage {
     await this.page.getByRole('button', { name: 'Actions' }).click();
   }
 
+  async assertActionItemVisibility({
+    label,
+    icon,
+    visible,
+  }: {
+    label: string;
+    icon: string;
+    visible: boolean;
+  }) {
+    const actionItem = this.page.getByRole('menuitem', { name: label });
+
+    if (!visible) {
+      await expect(actionItem).toBeHidden();
+      return;
+    }
+
+    await expect(actionItem).toBeVisible();
+    const iconLocator = actionItem.locator(`.${icon.replace(' ', '.')}`);
+    await expect(iconLocator).toBeVisible();
+  }
+
   async initiateAction(action: string) {
     await this.clickActionDropdown();
     await this.page.getByRole('menuitem', { name: action }).click();

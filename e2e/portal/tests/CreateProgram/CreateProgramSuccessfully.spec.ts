@@ -47,23 +47,21 @@ test('Create program successfully', async ({
 }) => {
   const createProgramDialog = new CreateProgramDialog(page);
   // Act
-  await test.step('Should display correct program details in settings page', async () => {
-    await test.step('Should navigate to main page and select "Create new program" button and fill in the form', async () => {
-      await programOverviewPage.openCreateNewProgram();
-      await expect(page.getByText('Step 1 of 3')).toBeVisible();
-      await createProgramDialog.fillInStep1(programData);
-      await expect(page.getByText('Step 2 of 3')).toBeVisible();
-      await createProgramDialog.fillInStep2(programData);
-      await expect(page.getByText('Step 3 of 3')).toBeVisible();
-      await createProgramDialog.fillInStep3(programData);
-      const newProgramId = 3; // Id of newly created program based on SeedScript.testMultiple
-      await page.waitForURL((url) =>
-        url.pathname.startsWith(`/en-GB/program/${newProgramId}/settings`),
-      );
-      await programOverviewPage.validateToastMessageAndClose(
-        'Program successfully created.',
-      );
-    });
+  await test.step('Should navigate to main page and select "Create new program" button and fill in the form', async () => {
+    await programOverviewPage.openCreateNewProgram();
+    await expect(page.getByText('Step 1 of 3')).toBeVisible();
+    await createProgramDialog.fillInStep1(programData);
+    await expect(page.getByText('Step 2 of 3')).toBeVisible();
+    await createProgramDialog.fillInStep2(programData);
+    await expect(page.getByText('Step 3 of 3')).toBeVisible();
+    await createProgramDialog.fillInStep3(programData);
+    const newProgramId = 3; // Id of newly created program based on SeedScript.testMultiple
+    await page.waitForURL((url) =>
+      url.pathname.startsWith(`/en-GB/program/${newProgramId}/settings`),
+    );
+    await programOverviewPage.validateToastMessageAndClose(
+      'Program successfully created.',
+    );
   });
 
   await test.step('Should display correct program details in settings page', async () => {

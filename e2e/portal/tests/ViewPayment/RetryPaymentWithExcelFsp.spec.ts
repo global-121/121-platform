@@ -48,8 +48,6 @@ test('Retry payments should put failed transactions back in processing and downl
   // TODO: this process downloads a file, assert that that happens and the content is correct
   await test.step('Retry payment, Export FSP payment data and assert file', async () => {
     await paymentPage.validateRetryFailedTransactionsButtonToBeVisible();
-    // Timeout has to be used in this case because choose option is not visible immediately after the dropdown button is clicked
-    await page.waitForTimeout(200);
     await paymentPage.retryFailedTransactions({
       totalTransactions: 4,
       failedTransactions: 2,

@@ -107,11 +107,11 @@ test('Payment page should display correctly during all phases of payment with 2 
   });
 
   await test.step('Validate payment-page in "Pending approval" state', async () => {
-    await paymentPage.validateBadgeIsPresentByLabel({
+    await paymentPage.validatePaymentStatusHeaderChip({
       badgeName: '0 of 2 approved',
-      count: 1,
     });
-    await paymentPage.validateBadgeIsPresentByLabel({
+
+    await paymentPage.validateRegistrationTransactionStatusLabel({
       badgeName: pendingApprovalTransactionLabel,
       count: 8, // 1 per transaction
     });
@@ -165,11 +165,10 @@ test('Payment page should display correctly during all phases of payment with 2 
   });
 
   await test.step('Validate payment-page in between 2 approvals', async () => {
-    await paymentPage.validateBadgeIsPresentByLabel({
+    await paymentPage.validatePaymentStatusHeaderChip({
       badgeName: '1 of 2 approved',
-      count: 1,
     });
-    await paymentPage.validateBadgeIsPresentByLabel({
+    await paymentPage.validateRegistrationTransactionStatusLabel({
       badgeName: pendingApprovalTransactionLabel,
       count: 8, // 1 per transaction
     });
@@ -207,9 +206,12 @@ test('Payment page should display correctly during all phases of payment with 2 
   });
 
   await test.step('Validate payment-page in "Approved" state', async () => {
-    await paymentPage.validateBadgeIsPresentByLabel({
+    await paymentPage.validatePaymentStatusHeaderChip({
       badgeName: approvedBadgeLabel,
-      count: 9, // 1 top of the chart + 8 transactions
+    });
+    await paymentPage.validateRegistrationTransactionStatusLabel({
+      badgeName: approvedBadgeLabel,
+      count: 8,
     });
     await paymentPage.validateGraphStatus({
       approved: registrationsCount,
@@ -264,11 +266,11 @@ test('Payment page should display correctly during all phases of payment with 2 
       failed: 0,
     });
     // Validate 1 approved badge for payment and 8 successful badges for transactions
-    await paymentPage.validateBadgeIsPresentByLabel({
+    await paymentPage.validatePaymentStatusHeaderChip({
       badgeName: approvedBadgeLabel,
-      count: 1,
     });
-    await paymentPage.validateBadgeIsPresentByLabel({
+
+    await paymentPage.validateRegistrationTransactionStatusLabel({
       badgeName: successfulBadgeLabel,
       count: registrationsCount,
     });

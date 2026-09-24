@@ -6,10 +6,12 @@ import * as XLSX from 'xlsx';
 
 import { PrimeNGDropdown } from '@121-e2e/portal/components/PrimeNGDropdown';
 import TableComponent from '@121-e2e/portal/components/TableComponent';
+import { InputHelper } from '@121-e2e/portal/helpers/InputHelper';
 
 class BasePage {
   readonly page: Page;
   readonly table: TableComponent;
+  readonly inputHelper: InputHelper;
   readonly logo: Locator;
   readonly localeDropdown: PrimeNGDropdown;
   readonly programHeader: Locator;
@@ -25,6 +27,7 @@ class BasePage {
   constructor(page: Page) {
     this.page = page;
     this.table = new TableComponent(page);
+    this.inputHelper = new InputHelper(page);
 
     this.logo = this.page.getByTestId('logo');
     this.localeDropdown = new PrimeNGDropdown({
@@ -143,10 +146,13 @@ class BasePage {
       visible: true,
       hasText: message,
     });
+    await expect(toastLocator).toBeVisible();
 
     // Handle multiple toasts (if any)
     for (const toast of await toastLocator.all()) {
       await toast.getByRole('button').click();
+      // Wait for the leave animation to finish so an identical toast shown later isn't matched twice
+      await toast.waitFor({ state: 'hidden' });
     }
   }
 
@@ -163,16 +169,14 @@ class BasePage {
   }
 
   async waitForPageLoad() {
-    await this.page.waitForLoadState('networkidle');
     await this.page.waitForLoadState('domcontentloaded');
   }
 
   async validateFormError({ errorText }: { errorText: string }) {
-    await this.page.waitForLoadState('networkidle');
     await this.formError.waitFor();
 
     const errorString = await this.formError.textContent();
-    expect(await this.formError.isVisible()).toBe(true);
+    await expect(this.formError).toBeVisible();
     expect(errorString).toContain(errorText);
   }
 
@@ -208,24 +212,24 @@ class BasePage {
     await expect(errorElement).toContainText(errorMessage);
   }
 
-  async validateErrorTable() {
-    const fileDialogErrorTable = new TableComponent(
-      this.page,
-      'import-file-dialog-errors-table',
+  async validateErrorTable({
+    dataTestId,
+    columnHeaders,
+    rowData,
+  }: {
+    dataTestId: string;
+    columnHeaders: string[];
+    rowData: string[];
+  }) {
+    const fileDialogErrorTable = new TableComponent(this.page, dataTestId);
+
+    const actualColumnHeaders =
+      await fileDialogErrorTable.getTextArrayFromHeader();
+    expect(actualColumnHeaders).toEqual(columnHeaders);
+
+    await expect(fileDialogErrorTable.tableRows.locator('td')).toHaveText(
+      rowData,
     );
-
-    const columnHeaders = await fileDialogErrorTable.getTextArrayFromHeader();
-    const rows = await fileDialogErrorTable.tableRows
-      .locator('td')
-      .allInnerTexts();
-
-    expect(columnHeaders).toEqual(['Line number', 'Column', 'Value', 'Error']);
-    expect(rows).toEqual([
-      '13',
-      'addressCity',
-      '',
-      'Cannot update/set addressCity with a nullable value as it is required for the FSP: Intersolve-visa',
-    ]);
   }
 
   /**
@@ -251,7 +255,6 @@ class BasePage {
     return filePath;
   }
 
-  // @TODO: Maybe we should make an input helper file that handles all of the input variants (checkbox, select, text, etc.)
   async selectMultiselectOptions({
     dropdownTestId,
     optionsToClick,
@@ -259,26 +262,14 @@ class BasePage {
     dropdownTestId: string;
     optionsToClick: string[];
   }) {
-    await this.page.getByTestId(dropdownTestId).click();
-    for (const option of optionsToClick) {
-      await this.page.getByRole('option', { name: option }).click();
-    }
-    await this.closeOpenSelectOrMultiselectWithRetries();
+    await this.inputHelper.selectMultiselectOptions({
+      testId: dropdownTestId,
+      options: optionsToClick,
+    });
   }
 
   async closeOpenSelectOrMultiselectWithRetries(retries = 3) {
-    for (let i = 0; i < retries; i++) {
-      try {
-        const overlay = this.page
-          .locator('.p-multiselect-overlay')
-          .or(this.page.locator('.p-select-overlay'));
-        await this.page.keyboard.press('Escape');
-        await expect(overlay).not.toBeVisible();
-        return; // Click successful, exit the loop
-      } catch (error) {
-        console.log(`Click failed. Retrying... Attempt ${i + 1}/${retries}`);
-      }
-    }
+    await this.inputHelper.closeOverlayWithRetries({ retries });
   }
 
   async validateExportedFile({
@@ -315,7 +306,7 @@ class BasePage {
     }
 
     if (expectedRowCount) {
-      expect(data.length).toEqual(expectedRowCount);
+      expect(data).toHaveLength(expectedRowCount);
     }
 
     const headerCells = headerRow.split(',');

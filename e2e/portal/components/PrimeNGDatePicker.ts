@@ -17,7 +17,7 @@ export class PrimeNGDatePicker {
     await expect(this.datePickerPanel).toBeVisible();
     await this.datePickerField.fill('');
     await this.page.keyboard.press('Escape');
-    await expect(this.datePickerPanel).not.toBeVisible();
+    await expect(this.datePickerPanel).toBeHidden();
   }
 
   async selectDate({ targetDate }: { targetDate: Date }) {
@@ -65,6 +65,6 @@ export class PrimeNGDatePicker {
     await this.datePickerPanel
       .locator(`[data-date="${formattedDate}"]`)
       .click();
-    await expect(this.datePickerPanel).not.toBeVisible();
+    await expect(this.datePickerPanel).toBeHidden();
   }
 }

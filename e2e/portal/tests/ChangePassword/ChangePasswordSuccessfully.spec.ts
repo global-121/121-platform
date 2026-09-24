@@ -47,7 +47,7 @@ test('Change password successfully', async ({ page, loginPage, basePage }) => {
     await loginPage.login({
       username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
       password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
-      skipUrlCheck: true,
+      expectLoginToFail: true,
     });
     await loginPage.validateFormError({
       errorText:

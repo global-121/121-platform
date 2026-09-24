@@ -93,9 +93,10 @@ test('Check if scope is not shown when scope is disabled', async ({
       name: 'Use "scope" in this program',
     });
 
-    if ((await scopeSwitch.getAttribute('aria-checked')) !== 'false') {
-      await scopeSwitch.click();
-    }
+    await programSettingsPage.inputHelper.setSwitch({
+      locator: scopeSwitch,
+      checked: false,
+    });
 
     await programSettingsPage.saveChanges();
     await programSettingsPage.validateToastMessageAndClose(

@@ -103,12 +103,12 @@ test.describe('Close debit card', () => {
 
     await expect(
       await registrationDebitCardPage.getPauseCardButton(),
-    ).not.toBeVisible();
+    ).toBeHidden();
     await expect(
       await registrationDebitCardPage.getUnpauseCardButton(),
-    ).not.toBeVisible();
+    ).toBeHidden();
     await expect(
       await registrationDebitCardPage.getCloseCardButton(),
-    ).not.toBeVisible();
+    ).toBeHidden();
   });
 });

@@ -50,9 +50,7 @@ test('Open registration in new tab and verify new tab', async ({
       'Activity log | Registration details | 121 Portal',
     );
 
-    const pageHeader = await pages[1].$('h1');
-
-    expect(await pageHeader?.textContent()).toContain(
+    await expect(pages[1].locator('h1')).toContainText(
       chosenRegistration.fullName,
     );
   });

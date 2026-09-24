@@ -15,6 +15,7 @@
     [serverSideFiltering]="true"
     [serverSideTotalRecords]="totalTransactions()"
     (updatePaginateQuery)="paginateQuery.set($event)"
+    [dataTestId]="'payment-transaction-list-table'"
   >
     <div
       table-actions

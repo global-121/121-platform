@@ -30,12 +30,14 @@ class PaymentPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.page = page;
-    this.table = new TableComponent(page);
+    this.table = new TableComponent(page, 'payment-transaction-list-table');
     this.importReconciliationDataButton = this.page.getByRole('button', {
       name: 'Import reconciliation data',
     });
-    this.succesfullyTransferredAmountChip =
-      this.page.getByTestId('metric-tile-chip');
+    this.succesfullyTransferredAmountChip = this.page
+      .locator('app-metric-tile')
+      .filter({ hasText: 'Total amount' })
+      .getByTestId('metric-tile-chip');
 
     this.chooseFileButton = this.page.getByRole('button', {
       name: 'Choose file',
@@ -172,10 +174,12 @@ class PaymentPage extends BasePage {
     expectedAmount,
   }: { expectedAmount?: number } = {}) {
     await this.page.waitForTimeout(500); // TODO for now needed to bridge in-progress gap between actions & queue.
+
     const approvedChip = this.page
       .locator('app-colored-chip')
       .getByLabel('Approved')
       .first();
+
     const inProgressChip = this.page
       .locator('app-colored-chip')
       .getByLabel('In progress');
@@ -204,14 +208,26 @@ class PaymentPage extends BasePage {
     }
   }
 
-  async validateBadgeIsPresentByLabel({
+  async validatePaymentStatusHeaderChip({ badgeName }: { badgeName: string }) {
+    const chip = this.page
+      .getByTestId('payment-status-header-chip')
+      .getByLabel(badgeName);
+    await expect(chip).toBeVisible();
+  }
+
+  async validateRegistrationTransactionStatusLabel({
     badgeName,
     count,
   }: {
     badgeName: string;
     count: number;
   }) {
-    const badge = this.page.locator('app-colored-chip').getByLabel(badgeName);
+    const paymentTransactionListTable = this.page.getByTestId(
+      'payment-transaction-list-table',
+    );
+    const badge = paymentTransactionListTable
+      .locator('app-colored-chip')
+      .getByLabel(badgeName);
 
     await expect(badge).toHaveCount(count);
 
@@ -388,7 +404,7 @@ class PaymentPage extends BasePage {
   }
 
   async validateTransferHistoryDialogTitle({ title }: { title: string }) {
-    await this.page.waitForSelector('role=dialog');
+    await expect(this.page.getByRole('dialog')).toBeVisible();
     await expect(this.page.getByText(/transaction history/i)).toContainText(
       title,
     ); // the title does not contain 'transfer history' text therefore we check for 'transaction history' text which is always present and then check if the date and rest of the string is correct
