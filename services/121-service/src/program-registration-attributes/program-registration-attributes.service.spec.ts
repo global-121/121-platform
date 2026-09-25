@@ -6,17 +6,21 @@ import { Equal, Repository } from 'typeorm';
 import { env } from '@121-service/src/env';
 import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
+import { AccessGroupLevelRepository } from '@121-service/src/programs/access-group-levels/access-group-level.repository';
+import { AccessGroupLevelsService } from '@121-service/src/programs/access-group-levels/access-group-levels.service';
 import {
   CreateProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributesBatchDto,
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import {
   DefaultRegistrationDataAttributeNames,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { RegistrationAttributeDataRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-attribute-data.repository';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/test-helpers/createQueryBuilderMock.helper';
 
 jest.mock('@121-service/src/env', () => ({
@@ -31,6 +35,8 @@ const mockEnv = env as unknown as { TWILIO_MODE: string };
 describe('ProgramRegistrationAttributesService', () => {
   let programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
   let programRegistrationAttributesService: ProgramRegistrationAttributesService;
+  let programAccessGroupLevelRepository: AccessGroupLevelRepository;
+  let registrationAttributeDataRepository: RegistrationAttributeDataRepository;
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- TypeORM method requires this
   const programRepositoryToken: string | Function =
     getRepositoryToken(ProgramEntity);
@@ -71,10 +77,42 @@ describe('ProgramRegistrationAttributesService', () => {
     return entity;
   };
 
+  const mockProgramAccessGroupAttributeNames = (
+    accessGroupRegistrationAttributeNames: string[] | null,
+  ) => {
+    jest
+      .spyOn(
+        programAccessGroupLevelRepository,
+        'findOrderedAttributeNamesByProgramId',
+      )
+      .mockResolvedValue(accessGroupRegistrationAttributeNames);
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProgramRegistrationAttributesService,
+        AccessGroupLevelsService,
+        {
+          provide: RegistrationAttributeDataRepository,
+          useValue: {
+            getValuesInUse: jest.fn().mockResolvedValue(new Set()),
+          },
+        },
+        {
+          provide: ProgramAidworkerAssignmentRepository,
+          useValue: {
+            findByProgramId: jest.fn().mockResolvedValue([]),
+          },
+        },
+        {
+          provide: AccessGroupLevelRepository,
+          useValue: {
+            findOrderedAttributeNamesByProgramId: jest
+              .fn()
+              .mockResolvedValue(null),
+          },
+        },
         {
           provide: programRegistrationAttributeToken,
           useClass: Repository,
@@ -93,6 +131,16 @@ describe('ProgramRegistrationAttributesService', () => {
     programRegistrationAttributeRepository = module.get<
       Repository<ProgramRegistrationAttributeEntity>
     >(programRegistrationAttributeToken);
+    programAccessGroupLevelRepository = module.get<AccessGroupLevelRepository>(
+      AccessGroupLevelRepository,
+    );
+    registrationAttributeDataRepository =
+      module.get<RegistrationAttributeDataRepository>(
+        RegistrationAttributeDataRepository,
+      );
+
+    // By default, no access groups are configured. Individual tests override this if needed.
+    mockProgramAccessGroupAttributeNames(null);
   });
 
   describe('getAttributes', () => {
@@ -427,6 +475,137 @@ describe('ProgramRegistrationAttributesService', () => {
       expect(result).toEqual(attributeEntity);
       expect(removeSpy).toHaveBeenCalledWith(attributeEntity);
     });
+
+    it('should throw when deleting an attribute used for access group configuration', async () => {
+      // Arrange
+      const programId = 1;
+      const programRegistrationAttributeId = 99;
+      const attributeEntity = createAttributeEntity({
+        id: programRegistrationAttributeId,
+        programId,
+        name: 'region',
+        type: RegistrationAttributeTypes.dropdown,
+      });
+
+      mockProgramAccessGroupAttributeNames(['region']);
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'findOne')
+        .mockResolvedValue(attributeEntity);
+      const removeSpy = jest
+        .spyOn(programRegistrationAttributeRepository, 'remove')
+        .mockResolvedValue(attributeEntity);
+
+      // Act + Assert
+      const promise =
+        programRegistrationAttributesService.deleteProgramRegistrationAttribute(
+          programId,
+          programRegistrationAttributeId,
+        );
+      await expect(promise).rejects.toBeHttpExceptionWithStatus(
+        HttpStatus.BAD_REQUEST,
+      );
+      await expect(promise).rejects.toThrow(
+        `The 'region' attribute cannot be deleted while used for access group configuration.`,
+      );
+      expect(removeSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Updating a program registration attribute', () => {
+    it('should update the attribute when the change is allowed', async () => {
+      // Arrange
+      const programId = 1;
+      const existingEntity = createAttributeEntity({
+        id: 10,
+        name: 'firstName',
+        label: { en: 'Old Label' },
+      });
+
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'findOne')
+        .mockResolvedValue(existingEntity);
+      const saveSpy = jest
+        .spyOn(programRegistrationAttributeRepository, 'save')
+        .mockImplementation(async (entity: any) => entity);
+
+      // Act
+      const result =
+        await programRegistrationAttributesService.updateProgramRegistrationAttribute(
+          {
+            programId,
+            programRegistrationAttributeName: 'firstName',
+            updateProgramRegistrationAttribute: {
+              label: { en: 'New Label' },
+            },
+          },
+        );
+
+      // Assert
+      expect(result.label).toEqual({ en: 'New Label' });
+      expect(saveSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ label: { en: 'New Label' } }),
+      );
+    });
+
+    it('should throw not found when the attribute does not exist', async () => {
+      // Arrange
+      const programId = 1;
+
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'findOne')
+        .mockResolvedValue(null);
+
+      // Act + Assert
+      await expect(
+        programRegistrationAttributesService.updateProgramRegistrationAttribute(
+          {
+            programId,
+            programRegistrationAttributeName: 'nonExistent',
+            updateProgramRegistrationAttribute: {
+              label: { en: 'New Label' },
+            },
+          },
+        ),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.NOT_FOUND);
+    });
+
+    it('should throw when changing the type of an attribute used for access group configuration', async () => {
+      // Arrange
+      const programId = 1;
+      const existingEntity = createAttributeEntity({
+        id: 10,
+        name: 'region',
+        type: RegistrationAttributeTypes.dropdown,
+      });
+
+      mockProgramAccessGroupAttributeNames(['region']);
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'findOne')
+        .mockResolvedValue(existingEntity);
+      const saveSpy = jest.spyOn(
+        programRegistrationAttributeRepository,
+        'save',
+      );
+
+      // Act + Assert
+      const promise =
+        programRegistrationAttributesService.updateProgramRegistrationAttribute(
+          {
+            programId,
+            programRegistrationAttributeName: 'region',
+            updateProgramRegistrationAttribute: {
+              type: RegistrationAttributeTypes.text,
+            },
+          },
+        );
+      await expect(promise).rejects.toBeHttpExceptionWithStatus(
+        HttpStatus.BAD_REQUEST,
+      );
+      await expect(promise).rejects.toThrow(
+        `The 'region' attribute's type cannot be changed while used for access group configuration.`,
+      );
+      expect(saveSpy).not.toHaveBeenCalled();
+    });
   });
 
   describe('update registration attributes in batch', () => {
@@ -538,6 +717,57 @@ describe('ProgramRegistrationAttributesService', () => {
           },
         ),
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.NOT_FOUND);
+    });
+
+    it('should throw when a batch update tries to remove an option used for access group configuration', async () => {
+      // Arrange
+      const existingRegionEntity = createAttributeEntity({
+        id: 12,
+        name: 'region',
+        type: RegistrationAttributeTypes.dropdown,
+        options: [
+          { option: 'utrecht', label: { en: 'Utrecht' } },
+          { option: 'zuidholland', label: { en: 'Zuid-Holland' } },
+        ],
+      });
+
+      const attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[] =
+        [
+          {
+            programRegistrationAttributeName: 'region',
+            updateProgramRegistrationAttribute: {
+              options: [{ option: 'utrecht', label: { en: 'Utrecht' } }],
+            },
+          },
+        ];
+
+      mockProgramAccessGroupAttributeNames(['region']);
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'find')
+        .mockResolvedValue([existingRegionEntity]);
+      jest
+        .spyOn(registrationAttributeDataRepository, 'getValuesInUse')
+        .mockResolvedValue(new Set(['zuidholland']));
+      const saveSpy = jest.spyOn(
+        programRegistrationAttributeRepository,
+        'save',
+      );
+
+      // Act + Assert
+      const promise =
+        programRegistrationAttributesService.updateBatchProgramRegistrationAttributes(
+          {
+            programId,
+            attributesToUpdate,
+          },
+        );
+      await expect(promise).rejects.toBeHttpExceptionWithStatus(
+        HttpStatus.BAD_REQUEST,
+      );
+      await expect(promise).rejects.toThrow(
+        `The 'region' attribute's option(s) 'zuidholland' cannot be removed while used for access group configuration.`,
+      );
+      expect(saveSpy).not.toHaveBeenCalled();
     });
   });
 

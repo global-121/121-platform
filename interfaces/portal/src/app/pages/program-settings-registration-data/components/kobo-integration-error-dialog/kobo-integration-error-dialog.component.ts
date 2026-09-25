@@ -42,6 +42,8 @@ const koboErrorDisplayTypeMap: Record<
   [KoboValidationErrorType.selectOneNoChoices]: KoboErrorDisplayType.table,
   [KoboValidationErrorType.missingFullnameAttributes]:
     KoboErrorDisplayType.table,
+  [KoboValidationErrorType.accessGroupAttributeLocked]:
+    KoboErrorDisplayType.table,
 };
 
 @Component({

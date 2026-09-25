@@ -10,12 +10,20 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
   Query,
   Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 
@@ -23,9 +31,9 @@ import { env } from '@121-service/src/env';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { KoboConnectService } from '@121-service/src/kobo-connect/kobo-connect.service';
-import {
-  ProgramRegistrationAttributesService
-} from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
+import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
+import { AccessGroupLevelsResponseDto } from '@121-service/src/programs/access-group-levels/dtos/access-group-levels-response.dto';
+import { UpdateProgramAccessGroupLevelsDto } from '@121-service/src/programs/access-group-levels/dtos/update-program-access-group-levels.dto';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import {
   CreateProgramRegistrationAttributeDto,
@@ -36,9 +44,7 @@ import {
 import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import {
-  ProgramRegistrationAttributeEntity
-} from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
@@ -265,7 +271,9 @@ and adjust as needed.`,
     return await this.programService.updateProgram(programId, updateProgramDto);
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramRegistrationAttributesCREATE] })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramRegistrationAttributesCREATE],
+  })
   @ApiOperation({ summary: 'Create registration attribute' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/registration-attributes')
@@ -282,7 +290,9 @@ and adjust as needed.`,
     );
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramRegistrationAttributesUPDATE] })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramRegistrationAttributesUPDATE],
+  })
   @ApiOperation({ summary: 'Update program registration attribute' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -318,7 +328,9 @@ and adjust as needed.`,
     );
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramRegistrationAttributesDELETE] })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramRegistrationAttributesDELETE],
+  })
   @ApiOperation({
     summary:
       'Delete Registration Attribute for a Program. Also deletes the data of this Attribute for the Registrations in this Program.',
@@ -433,5 +445,56 @@ and adjust as needed.`,
         attributesToUpdate,
       },
     );
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramREAD] })
+  @ApiOperation({
+    summary:
+      'Get the ordered list of registration attributes used to calculate access groups for this program.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The ordered list of access group level attribute names.',
+    type: AccessGroupLevelsResponseDto,
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Get(':programId/access-group-levels')
+  public async getAccessGroupLevels(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<AccessGroupLevelsResponseDto> {
+    const accessGroupRegistrationAttributeNames =
+      await this.programService.getAccessGroupLevels(programId);
+    return { accessGroupRegistrationAttributeNames };
+  }
+
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramAccessGroupLevelsUPDATE],
+  })
+  @ApiOperation({
+    summary:
+      'Replace the registration attributes used to calculate access groups for this program.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'The updated ordered list of access group level attribute names.',
+    type: AccessGroupLevelsResponseDto,
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Put(':programId/access-group-levels')
+  public async updateAccessGroupLevels(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Body()
+    updateProgramAccessGroupLevelsDto: UpdateProgramAccessGroupLevelsDto,
+  ): Promise<AccessGroupLevelsResponseDto> {
+    const accessGroupRegistrationAttributeNames =
+      await this.programService.updateAccessGroupLevels({
+        programId,
+        accessGroupRegistrationAttributeNames:
+          updateProgramAccessGroupLevelsDto.accessGroupRegistrationAttributeNames,
+      });
+    return { accessGroupRegistrationAttributeNames };
   }
 }
