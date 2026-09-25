@@ -137,7 +137,6 @@ export class CronjobInitiateService {
 
   @Cron(CronExpression.EVERY_DAY_AT_11AM, {
     disabled: !env.CRON_AL_FOUAD_RECONCILIATION,
-    timeZone: 'Asia/Damascus',
   })
   public async cronDoAlFouadReconciliationMidday(cronJobMethodName): cronReturn {
     const { baseCronUrl, headers } =
