@@ -140,6 +140,10 @@ describe('Filter registrations', () => {
         filterValue: '1',
         expectedReferenceIds: allReferenceIds,
       },
+      transferValue: {
+        filterValue: '',
+        expectedReferenceIds: allReferenceIds,
+      },
       programFspConfigurationName: {
         filterValue: Fsps.intersolveVoucherWhatsapp,
         expectedReferenceIds: [registrationOCW5.referenceId],
