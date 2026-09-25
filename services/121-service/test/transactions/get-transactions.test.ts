@@ -2,6 +2,7 @@ import { FilterOperator } from 'nestjs-paginate';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -206,6 +207,39 @@ describe('Registrations - [Scoped]', () => {
       expect(meta.currentPage).toBe(2);
       expect(transactions).toHaveLength(1);
       expect(transactions[0].paymentId).toBe(paymentIdPv);
+    });
+
+    it('should filter transactions using $eq operator on duplicateStatus', async () => {
+      // Arrange
+      const accessToken = await getAccessToken();
+
+      // Act
+      const uniqueTransactionsResponse =
+        await getTransactionsByPaymentIdPaginated({
+          programId: programIdPV,
+          paymentId: paymentIdPv,
+          accessToken,
+          filter: {
+            'filter.duplicateStatus': `${FilterOperator.EQ}:${DuplicateStatus.unique}`,
+          },
+        });
+      const uniqueMeta = uniqueTransactionsResponse.body.meta;
+
+      expect(uniqueMeta.totalItems).toBe(4);
+
+      // Act
+      const duplicateTransactionsResponse =
+        await getTransactionsByPaymentIdPaginated({
+          programId: programIdPV,
+          paymentId: paymentIdPv,
+          accessToken,
+          filter: {
+            'filter.duplicateStatus': `${FilterOperator.EQ}:${DuplicateStatus.duplicate}`,
+          },
+        });
+      const duplicateMeta = duplicateTransactionsResponse.body.meta;
+
+      expect(duplicateMeta.totalItems).toBe(0);
     });
   });
 });

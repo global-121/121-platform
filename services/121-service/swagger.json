@@ -1042,6 +1042,7 @@
       "filter.registrationReferenceId",
       "filter.registrationProgramId",
       "filter.registrationScope",
+      "filter.duplicateStatus",
       "search",
       "searchBy"
     ]
@@ -1082,6 +1083,7 @@
       "filter.registrationReferenceId",
       "filter.registrationProgramId",
       "filter.registrationScope",
+      "filter.duplicateStatus",
       "sortBy",
       "search",
       "searchBy"
