@@ -92,7 +92,7 @@ class ProgramSettingsPaymentApprovalPage extends BasePage {
   }
 
   async selectFirstStepUserByText(user: string) {
-    await this.inputHelper.selectDropdownOption({
+    await this.selectDropdownOption({
       locator: this.firstStepUsersDropdown,
       option: user,
     });

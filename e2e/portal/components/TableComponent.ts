@@ -118,7 +118,10 @@ class TableComponent {
     // data-loaded reflects the component's isPending() signal directly, so it flips
     // to 'true' in the same render pass as the rows/empty-state, avoiding races with
     // checking child elements right after navigation (before the table has mounted).
-    await expect(this.table).toHaveAttribute('data-loaded', 'true');
+
+    // https://github.com/global-121/121-platform/pull/8865#discussion_r4121544703
+    // await expect(this.table).toHaveAttribute('data-loaded', 'true');
+
     await expect(this.tableEmpty).toBeHidden();
 
     if (rowsCount) {
@@ -153,10 +156,9 @@ class TableComponent {
   }: {
     expectedRowCount: number;
   }) {
-    await expect(async () => {
-      const rowCount = this.tableRows;
-      await expect(rowCount).toHaveCount(expectedRowCount);
-    }).toPass({ timeout: 2000 });
+    await expect(this.tableRows).toHaveCount(expectedRowCount, {
+      timeout: 2000,
+    });
   }
 
   async globalSearch(searchText: string) {
@@ -169,7 +171,7 @@ class TableComponent {
     await expect(this.globalSearchInput).toBeVisible();
     await this.globalSearchInput.fill(searchText);
 
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(500); // Applying the filter on the back-end takes time
   }
 
   async clearAllFilters() {

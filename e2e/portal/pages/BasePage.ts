@@ -6,12 +6,10 @@ import * as XLSX from 'xlsx';
 
 import { PrimeNGDropdown } from '@121-e2e/portal/components/PrimeNGDropdown';
 import TableComponent from '@121-e2e/portal/components/TableComponent';
-import { InputHelper } from '@121-e2e/portal/helpers/InputHelper';
 
 class BasePage {
   readonly page: Page;
   readonly table: TableComponent;
-  readonly inputHelper: InputHelper;
   readonly logo: Locator;
   readonly localeDropdown: PrimeNGDropdown;
   readonly programHeader: Locator;
@@ -27,7 +25,6 @@ class BasePage {
   constructor(page: Page) {
     this.page = page;
     this.table = new TableComponent(page);
-    this.inputHelper = new InputHelper(page);
 
     this.logo = this.page.getByTestId('logo');
     this.localeDropdown = new PrimeNGDropdown({
@@ -261,15 +258,92 @@ class BasePage {
   }: {
     dropdownTestId: string;
     optionsToClick: string[];
-  }) {
-    await this.inputHelper.selectMultiselectOptions({
-      testId: dropdownTestId,
-      options: optionsToClick,
-    });
+  }): Promise<void> {
+    await this.page.getByTestId(dropdownTestId).click();
+    for (const option of optionsToClick) {
+      await this.page.getByRole('option', { name: option }).click();
+    }
+    await this.closeOpenSelectOrMultiselectWithRetries();
   }
 
   async closeOpenSelectOrMultiselectWithRetries(retries = 3) {
-    await this.inputHelper.closeOverlayWithRetries({ retries });
+    for (let i = 0; i < retries; i++) {
+      try {
+        const overlay = this.page
+          .locator('.p-multiselect-overlay')
+          .or(this.page.locator('.p-select-overlay'));
+        await this.page.keyboard.press('Escape');
+        await expect(overlay).toBeHidden();
+        return; // Click successful, exit the loop
+      } catch (error) {
+        console.log(`Click failed. Retrying... Attempt ${i + 1}/${retries}`);
+      }
+    }
+  }
+
+  async selectDropdownOption({
+    locator,
+    testId,
+    option,
+    searchPhrase,
+    exact = true,
+  }: {
+    locator?: Locator;
+    testId?: string;
+    option: string;
+    searchPhrase?: string;
+    exact?: boolean;
+  }): Promise<void> {
+    const target = testId ? this.page.getByTestId(testId) : locator!;
+    await target.click();
+    if (searchPhrase) {
+      const searchInput = this.page
+        .locator(
+          '.p-select-filter, .p-dropdown-filter, input[role="searchbox"]',
+        )
+        .or(target.locator('input'))
+        .first();
+      if (await searchInput.isVisible()) {
+        await searchInput.fill(searchPhrase);
+      } else {
+        await target.fill(searchPhrase);
+      }
+    }
+    const optionLocator = this.page
+      .getByRole('option', { name: option, exact })
+      .or(this.page.getByText(option, { exact }))
+      .first();
+    await optionLocator.click();
+    await this.closeOpenSelectOrMultiselectWithRetries();
+  }
+
+  /**
+   * Checks whether a switch / toggle component is checked.
+   */
+
+  async isSwitchChecked({ locator }: { locator: Locator }): Promise<boolean> {
+    const ariaChecked = await locator.getAttribute('aria-checked');
+    if (ariaChecked !== null) {
+      return ariaChecked === 'true';
+    }
+    return locator.isChecked();
+  }
+
+  /**
+   * Sets a switch / toggle to the desired state.
+   */
+
+  async setSwitch({
+    locator,
+    checked,
+  }: {
+    locator: Locator;
+    checked: boolean;
+  }): Promise<void> {
+    const isCurrentlyChecked = await this.isSwitchChecked({ locator });
+    if (isCurrentlyChecked !== checked) {
+      await locator.click();
+    }
   }
 
   async validateExportedFile({

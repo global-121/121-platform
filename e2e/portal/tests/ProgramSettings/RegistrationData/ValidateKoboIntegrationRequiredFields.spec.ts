@@ -93,7 +93,7 @@ test('Check if scope is not shown when scope is disabled', async ({
       name: 'Use "scope" in this program',
     });
 
-    await programSettingsPage.inputHelper.setSwitch({
+    await programSettingsPage.setSwitch({
       locator: scopeSwitch,
       checked: false,
     });

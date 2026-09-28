@@ -6,7 +6,7 @@ export const prettierOnly = {
 
 export const baseConfig = {
   '*.ts': () => 'npm run typecheck', // Needs to run the whole project, not just the staged/changed files
-  '*.{ts,js,mjs}': 'npx --no-install eslint --fix --cache',
+  '*.{ts,js,mjs}': 'eslint --fix --cache',
   ...prettierOnly,
 };
 

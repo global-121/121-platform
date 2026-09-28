@@ -55,12 +55,12 @@ class ProgramTeamPage extends BasePage {
     userEmail: string;
     role: string;
   }) {
-    await this.inputHelper.selectDropdownOption({
+    await this.selectDropdownOption({
       locator: this.addUserFormChooseUserDropdown,
       option: userEmail,
       searchPhrase: userSearchPhrase,
     });
-    await this.inputHelper.selectDropdownOption({
+    await this.selectDropdownOption({
       locator: this.addUserFormChooseRoleDropdown,
       option: role,
     });
