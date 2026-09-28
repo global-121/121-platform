@@ -482,6 +482,7 @@ class TableComponent {
       }
     }
     const submitButton = this.page.getByTestId('change-status-submit-button');
+    await expect(submitButton).toBeVisible();
     await submitButton.click();
   }
 
