@@ -118,10 +118,7 @@ class TableComponent {
     // data-loaded reflects the component's isPending() signal directly, so it flips
     // to 'true' in the same render pass as the rows/empty-state, avoiding races with
     // checking child elements right after navigation (before the table has mounted).
-
-    // https://github.com/global-121/121-platform/pull/8865#discussion_r4121544703
-    // await expect(this.table).toHaveAttribute('data-loaded', 'true');
-
+    await expect(this.table).toHaveAttribute('data-loaded', 'true');
     await expect(this.tableEmpty).toBeHidden();
 
     if (rowsCount) {
