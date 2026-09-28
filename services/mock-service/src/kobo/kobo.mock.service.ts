@@ -409,6 +409,43 @@ const getHappyFlowAlwaysNewVersion = (): KoboAssetDeployment => {
   return withNewVersion;
 };
 
+const generateManyChoices = ({
+  count = 10_000,
+  listName = 'ol0qe57',
+}: {
+  count?: number;
+  listName?: string;
+}): KoboChoice[] =>
+  Array.from({ length: count }, (_, index) => {
+    const optionNumber = index + 1;
+    return {
+      name: `option_${optionNumber}`,
+      $kuid: `kuid_opt_${optionNumber}`,
+      label: [`Option ${optionNumber}`, `Optie ${optionNumber}`],
+      list_name: listName,
+      $autovalue: `option_${optionNumber}`,
+    };
+  });
+
+const getHappyFlowWithManyOptions = (): KoboAssetDeployment => {
+  const withManyOptions = structuredClone(happyFlowFromDefinition);
+
+  withManyOptions.version_id = KoboMockAssetUids.manyOptions;
+  withManyOptions.asset.version_id = KoboMockAssetUids.manyOptions;
+
+  const manyChoices = generateManyChoices({
+    count: 10_000,
+    listName: 'ol0qe57',
+  });
+
+  withManyOptions.asset.content.choices = [
+    ...(withManyOptions.asset.content.choices ?? []),
+    ...manyChoices,
+  ];
+
+  return withManyOptions;
+};
+
 @Injectable()
 export class KoboMockService {
   public constructor(private readonly httpService: HttpService) {}
@@ -428,6 +465,8 @@ export class KoboMockService {
         return getHappyFlowWithChanges();
       case KoboMockAssetUids.happyFlowAlwaysNewVersion:
         return getHappyFlowAlwaysNewVersion();
+      case KoboMockAssetUids.manyOptions:
+        return getHappyFlowWithManyOptions();
       default: {
         return happyFlowFromDefinition;
       }
@@ -571,6 +610,25 @@ export class KoboMockService {
       return { count: 1001, next: null, previous: null, results };
     }
 
+    if (
+      uid_asset === KoboMockAssetUids.manyOptions ||
+      uid_asset.includes(KoboMockAssetUids.manyOptions)
+    ) {
+      const results = this.generateSubmissions({
+        uid_asset,
+        origin,
+        versionId: asset.version_id,
+        count: 1000,
+      });
+
+      return {
+        count: results.length,
+        next: null,
+        previous: null,
+        results,
+      };
+    }
+
     return { count: results.length, next: null, previous: null, results };
   }
 
@@ -586,6 +644,24 @@ export class KoboMockService {
     const asset = this.getAssetDeployment(uid_asset);
 
     if (submissionId.includes(KoboMockSubmissionUuids.success)) {
+      if (
+        uid_asset === KoboMockAssetUids.manyOptions ||
+        uid_asset.includes(KoboMockAssetUids.manyOptions)
+      ) {
+        const optionNumberMatch = submissionId.match(/-(\d+)$/);
+        const optionNumber = optionNumberMatch
+          ? parseInt(optionNumberMatch[1], 10)
+          : 1;
+
+        return this.createSubmissionForOption({
+          optionNumber,
+          uid_asset,
+          origin,
+          versionId: asset.version_id,
+          submissionUuid: submissionId,
+        });
+      }
+
       return {
         _id: 1,
         _uuid: submissionId,
@@ -697,6 +773,89 @@ export class KoboMockService {
     return {
       message: 'Webhook triggered successfully',
       submissionUuid,
+    };
+  }
+
+  private generateSubmissions({
+    uid_asset,
+    origin,
+    versionId,
+    count = 1000,
+  }: {
+    uid_asset: string;
+    origin: string;
+    versionId: string;
+    count: number;
+  }): Record<string, any>[] {
+    return Array.from({ length: count }, (_, index) => {
+      const optionNumber = index + 1;
+      return this.createSubmissionForOption({
+        optionNumber,
+        uid_asset,
+        origin,
+        versionId,
+      });
+    });
+  }
+
+  private createSubmissionForOption({
+    optionNumber,
+    uid_asset,
+    origin,
+    versionId,
+    submissionUuid,
+  }: {
+    optionNumber: number;
+    uid_asset: string;
+    origin: string;
+    versionId: string;
+    submissionUuid?: string;
+  }): Record<string, any> {
+    const uuid =
+      submissionUuid ??
+      `${KoboMockSubmissionUuids.success}-${uid_asset}-${optionNumber}`;
+
+    return {
+      _id: optionNumber,
+      _uuid: uuid,
+      _xform_id_string: uid_asset,
+      _submission_time: '2025-04-30T15:30:00.000Z',
+      _status: 'submitted_via_web',
+      start: '2025-04-30T15:29:00.000Z',
+      end: '2025-04-30T15:30:00.000Z',
+      fsp: 'Safaricom',
+      'group_ad8jk55/fullName': `John Doe ${optionNumber}`,
+      'group_ad8jk55/group_gz24g15/What_is_2_2_number': 4,
+      nationalId: `${100000000 + optionNumber}`,
+      phoneNumber: `+316${String(optionNumber).padStart(8, '0')}`,
+      'group_or1bl43/How_are_you_today_select_one': `option_${optionNumber}`,
+      photo: 'username/attachments/form-id/submission-uuid/important_photo.jpg',
+      idPhoto:
+        'username/attachments/form-id/submission-uuid/identity_document.jpg',
+      driversLicensePhoto: '',
+      _attachments: [
+        {
+          filename:
+            'username/attachments/form-id/submission-uuid/important_photo.jpg',
+          download_url: this.buildAttachmentDownloadUrl({
+            origin,
+            uid_asset,
+            attachmentId: 1,
+          }),
+          mimetype: 'image/jpeg',
+        },
+        {
+          filename:
+            'username/attachments/form-id/submission-uuid/identity_document.jpg',
+          download_url: this.buildAttachmentDownloadUrl({
+            origin,
+            uid_asset,
+            attachmentId: 2,
+          }),
+          mimetype: 'image/jpeg',
+        },
+      ],
+      __version__: versionId,
     };
   }
 
