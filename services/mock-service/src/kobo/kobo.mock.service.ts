@@ -610,10 +610,7 @@ export class KoboMockService {
       return { count: 1001, next: null, previous: null, results };
     }
 
-    if (
-      uid_asset === KoboMockAssetUids.manyOptions ||
-      uid_asset.includes(KoboMockAssetUids.manyOptions)
-    ) {
+    if (uid_asset.includes('many-options')) {
       const results = this.generateSubmissions({
         uid_asset,
         origin,
@@ -644,10 +641,7 @@ export class KoboMockService {
     const asset = this.getAssetDeployment(uid_asset);
 
     if (submissionId.includes(KoboMockSubmissionUuids.success)) {
-      if (
-        uid_asset === KoboMockAssetUids.manyOptions ||
-        uid_asset.includes(KoboMockAssetUids.manyOptions)
-      ) {
+      if (uid_asset.includes('many-options')) {
         const optionNumberMatch = submissionId.match(/-(\d+)$/);
         const optionNumber = optionNumberMatch
           ? parseInt(optionNumberMatch[1], 10)
