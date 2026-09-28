@@ -39,9 +39,6 @@ test('User can initiate registration status changes from registration page', asy
       );
     });
 
-    // @TODO: Maybe it's just me, but why are we only testing the dialog,
-    // and not asserting if the dialog form actually works?
-
     await test.step(`Initiate action: ${actionName}`, async () => {
       await registrationActivityLogPage.initiateAction(actionName);
       await registrationActivityLogPage.validateDialogContent({
