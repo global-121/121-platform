@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   test:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-26.04
     # Don't run this check on dependabot PRs
     if: contains(github.actor, 'dependabot') == false
 

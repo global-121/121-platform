@@ -14,7 +14,7 @@ env:
 
 jobs:
   generate-test-files:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       shard1_files: ${{ steps.discover.outputs.shard1_files }}
       long_test_1: ${{ steps.discover.outputs.long_test_1 }}
@@ -60,7 +60,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
   performance-test-shard:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [generate-test-files]
     strategy:
       fail-fast: false
@@ -118,7 +118,7 @@ jobs:
         uses: global-121/collect-container-logs@78594c6154439e32858bf3dc17c9ff36561a1d31
 
   performance-test-shard-resolution:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-26.04
     needs:
       - performance-test-shard
     if: always()

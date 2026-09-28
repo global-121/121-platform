@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   upgrade_shared_dependencies:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-26.04
     # Don't run this check on forks and Dependabot PRs
     if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.repo.fork == false && contains(github.actor, 'dependabot') == false)
 

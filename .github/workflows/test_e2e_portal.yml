@@ -28,7 +28,7 @@ env:
 
 jobs:
   path-filter:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     outputs:
       should_skip: ${{ steps.filter.outputs.should_skip }}
@@ -59,7 +59,7 @@ jobs:
 
   lint-code:
     needs: path-filter
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
     steps:
       - name: Check out repository code
@@ -82,7 +82,7 @@ jobs:
         run: 'npm run lint'
 
   test-shard-e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs:
       - path-filter
       - lint-code
@@ -164,7 +164,7 @@ jobs:
   # This job is here to make the above jobs "required" in GitHub.
   # This is a workaround for this issue: https://github.com/orgs/community/discussions/44490
   test-shard-resolution-e2e:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-26.04
     needs: [test-shard-e2e]
     if: always()
     steps:
