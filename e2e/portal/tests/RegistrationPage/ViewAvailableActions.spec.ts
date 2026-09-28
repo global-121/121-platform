@@ -7,11 +7,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { getRegistrationIdByReferenceId } from '@121-service/test/helpers/registration.helper';
 import {
-  createUserProgramAssignment,
-  getAllUsers,
-} from '@121-service/test/helpers/user.helper';
-import {
-  createRole,
+  createUserWithPermissions,
   getAccessToken,
   getRole,
 } from '@121-service/test/helpers/utility.helper';
@@ -160,39 +156,24 @@ test.describe('User actions', () => {
       // Log out before the view-only user starts from the login page.
       await page.goto('/logout');
       await page.waitForURL((url) => url.pathname.startsWith('/en-GB/login'));
-      // Assign the "viewOnlyUser" a custom role with an UPDATE permission, so
-      // that the actions menu becomes visible. Default roles are read-only,
-      // so a custom role is created for this purpose.
+      // Create a user with the "view" permissions plus an UPDATE permission,
+      // so that the actions menu becomes visible.
       const accessToken = await getAccessToken();
       const viewRole = await getRole(DefaultUserRole.View);
-      const customRoleName = 'view-with-registration-update';
-      await createRole({
-        roleName: customRoleName,
-        label: 'View with registration update',
-        description: 'View role plus registration update, for test purposes',
+      const { username, password } = await createUserWithPermissions({
         permissions: [
           ...(viewRole.permissions ?? []),
           PermissionEnum.RegistrationPersonalUPDATE,
         ],
+        programId: programIdPV,
         adminAccessToken: accessToken,
       });
-      const allUsersResponse = await getAllUsers(accessToken);
-      const viewOnlyUser = allUsersResponse.body.find(
-        (user: { username: string }) =>
-          user.username === env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
-      );
-      await createUserProgramAssignment({
-        programId: programIdPV,
-        userId: viewOnlyUser.id,
-        roles: [customRoleName],
-        accessToken,
-      });
-      // Login as "viewOnlyUser" before checking which actions are available.
+      // Login as the newly created view-only user before checking which actions are available.
       await loginPage.login({
         skipNavigateToLogin: false,
         skipUrlCheck: false,
-        username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
-        password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+        username,
+        password,
       });
       // Navigate to the registration activity log page of the seeded registration
       await registrationActivityLogPage.goto(

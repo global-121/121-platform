@@ -7,9 +7,6 @@ export interface DefaultUserRoleDefinition {
   readonly permissions: PermissionEnum[];
 }
 
-// Single source of truth for the default roles. These roles are read-only:
-// they are created by the seed and kept in sync with this definition on every
-// application startup (see PermissionMaintenanceService).
 export const DEFAULT_USER_ROLES: DefaultUserRoleDefinition[] = [
   {
     role: DefaultUserRole.Admin,
