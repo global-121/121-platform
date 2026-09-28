@@ -3,7 +3,7 @@
   [closeOnEscape]="false"
   [(visible)]="dialogVisible"
   styleClass="max-inline-280 sm:min-inline-240"
-  [attr.data-testid]="'kobo-error-dialog'"
+  data-testid="kobo-error-dialog"
 >
   <ng-template #header>
     <h3>
@@ -97,7 +97,7 @@
         [value]="errorTable()"
         [size]="'small'"
         class="text-base"
-        [attr.data-testid]="'kobo-integration-configuration-errors-table'"
+        data-testid="kobo-integration-configuration-errors-table"
       >
         <ng-template #header>
           <tr>
