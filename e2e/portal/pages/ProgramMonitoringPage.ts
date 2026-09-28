@@ -175,7 +175,8 @@ class ProgramMonitoring extends BasePage {
     filePath: string;
     filename: string;
   }) {
-    // await this.page.waitForLoadState('networkidle');
+    // eslint-disable-next-line playwright/no-networkidle  -- We need to wait for network idle before interacting with the upload file button
+    await this.page.waitForLoadState('networkidle');
     await this.uploadFileButton.waitFor({ state: 'visible' });
     await this.uploadFileButton.click();
     await this.chooseAndUploadFile(filePath);
