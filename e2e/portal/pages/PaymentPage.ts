@@ -242,7 +242,7 @@ class PaymentPage extends BasePage {
   }
 
   async selectPaymentExportOption({ option }: { option: string }) {
-    await this.page.waitForLoadState('networkidle');
+    // await this.page.waitForLoadState('networkidle');
     await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();
   }

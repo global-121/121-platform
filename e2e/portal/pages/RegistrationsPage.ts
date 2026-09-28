@@ -282,7 +282,7 @@ class RegistrationsPage extends BasePage {
 
   async selectMultipleRegistrations(selectionCount: number) {
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForLoadState('networkidle');
+    // await this.page.waitForLoadState('networkidle');
     for (let i = 1; i <= selectionCount; i++) {
       const rowCheckbox = await this.table.getCell(i, 0);
       await rowCheckbox.click();
@@ -376,7 +376,7 @@ class RegistrationsPage extends BasePage {
 
     await this.importFileButton.click();
     // Wait for the upload to complete
-    await this.page.waitForLoadState('networkidle');
+    // await this.page.waitForLoadState('networkidle');
   }
 
   async assertImportTemplateForPvProgram() {

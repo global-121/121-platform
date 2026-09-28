@@ -40,7 +40,7 @@ export default defineConfig(
       'playwright/no-standalone-expect': 'off',
       // Warn on known flaky/bad Playwright patterns (per Playwright best practices)
       'playwright/no-wait-for-timeout': 'off',
-      'playwright/no-networkidle': 'off',
+      'playwright/no-networkidle': 'warn',
       'playwright/prefer-web-first-assertions': 'warn',
       'playwright/no-element-handle': 'warn',
       'playwright/no-wait-for-selector': 'warn',
