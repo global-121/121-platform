@@ -55,6 +55,7 @@ test.describe('Attachments on Program Level with Scope', () => {
       });
 
       await test.step('Validate uploaded files', async () => {
+        await page.waitForTimeout(200); // Wait for file to be present in the table
         await tableComponent.validateWaitForTableRowCount({
           expectedRowCount: 1,
         });
@@ -84,6 +85,7 @@ test.describe('Attachments on Program Level with Scope', () => {
     });
 
     await test.step('Validate all uploaded files are visible for admin user', async () => {
+      await page.waitForTimeout(200); // Wait for file to be present in the table
       await tableComponent.validateWaitForTableRowCount({
         expectedRowCount: 2, // Expected row count is 2 as admin user should see both files uploaded by scoped users
       });
