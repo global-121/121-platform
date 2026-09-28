@@ -182,6 +182,8 @@ class ProgramMonitoring extends BasePage {
     await this.page
       .getByPlaceholder('Name the file for easy identification')
       .fill(filename);
+
+    await this.importFileButton.waitFor({ state: 'visible' });
     await this.importFileButton.click();
   }
 
