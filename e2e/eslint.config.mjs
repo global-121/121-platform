@@ -37,15 +37,15 @@ export default defineConfig(
       'playwright/valid-expect': 'error',
       'playwright/valid-describe-callback': 'error',
       'playwright/valid-expect-in-promise': 'error',
-      'playwright/no-standalone-expect': 'off',
+      'playwright/no-standalone-expect': 'warn',
       // Warn on known flaky/bad Playwright patterns (per Playwright best practices)
-      'playwright/no-wait-for-timeout': 'off',
+      'playwright/no-wait-for-timeout': 'off', // @TODO: Consider enabling this rule once all tests are updated to avoid using waitForTimeout
       'playwright/no-networkidle': 'warn',
       'playwright/prefer-web-first-assertions': 'warn',
       'playwright/no-element-handle': 'warn',
       'playwright/no-wait-for-selector': 'warn',
       'playwright/no-force-option': 'warn',
-      'playwright/no-conditional-in-test': 'off',
+      'playwright/no-conditional-in-test': 'off', // @TO_DISCUSS: I think this is not a greate rule tbh
       'playwright/no-unused-locators': 'warn',
       'playwright/valid-title': 'warn',
       // Turn off noisy stylistic rules handled by Prettier or incompatible with POM assertions

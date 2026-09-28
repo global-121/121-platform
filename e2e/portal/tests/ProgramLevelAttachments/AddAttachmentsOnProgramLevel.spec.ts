@@ -54,7 +54,6 @@ test.describe('Attachments on Program Level', () => {
   });
 
   test('Upload: Word, PDF, JPG and PNG attachments formats', async ({
-    page,
     tableComponent,
     programMonitoringPage,
   }) => {
@@ -71,8 +70,6 @@ test.describe('Attachments on Program Level', () => {
     });
 
     await test.step('Validate uploaded files', async () => {
-      await page.waitForTimeout(200); // Wait for last file to be present in the table
-
       await tableComponent.validateWaitForTableRowCount({
         expectedRowCount: 4,
       });
