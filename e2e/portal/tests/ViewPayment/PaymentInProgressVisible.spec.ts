@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test';
+
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDuplicateRegistrations } from '@121-service/test/helpers/utility.helper';
 import {
@@ -34,14 +36,17 @@ test('Show in progress banner and chip when payment is in progress', async ({
     await paymentPage.validateToastMessageAndClose('Payment started');
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentDetailsPageTitle();
-    await page.waitForTimeout(500); // wait a bit to allow the payment to start with 2^8 registrations
   });
 
   await test.step('Validate payment in progress in Payment overview', async () => {
-    await paymentPage.validateBadgeIsPresentByLabel({
-      badgeName: 'In progress',
-      count: 1,
-    });
+    // @TODO: To be honest, the way we check this thing is brittle...
+    // There are chips all over the place on this page, it should be better
+    // For example, the header chip says approved, but the chip inside the registrations
+    // metric tile says in progress. I don't understand why it was put there..
+    const inProgressChip = page
+      .getByTestId('metric-tile-chip')
+      .filter({ hasText: 'In progress' });
+    await expect(inProgressChip).toBeVisible();
   });
 
   await test.step('Validate payemnt in progress in Payments page', async () => {

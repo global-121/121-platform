@@ -52,7 +52,7 @@ class UsersPage extends BasePage {
     textContent,
   }: {
     email: string;
-    textContent: string;
+    textContent: string | string[];
   }) {
     const rowText = await this.page
       .getByRole('row', {
@@ -66,6 +66,17 @@ class UsersPage extends BasePage {
     }
     const trimTextContent = rowText.trim();
     const formattedTextContent = trimTextContent.replace('  ', ' ');
+
+    if (Array.isArray(textContent)) {
+      const hasMatch = textContent.some((candidate) =>
+        formattedTextContent.includes(candidate),
+      );
+      expect(
+        hasMatch,
+        `Expected row to contain at least one of [${textContent.join(', ')}], but got "${formattedTextContent}"`,
+      ).toBeTruthy();
+      return;
+    }
 
     expect(formattedTextContent).toContain(textContent);
   }

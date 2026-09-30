@@ -1,16 +1,13 @@
-import { format } from 'date-fns';
-
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
+import { generateTimestampsWithGrace } from '@121-e2e/portal/utils';
 
-const date = new Date();
-const formattedDate = format(date, 'dd/MM/y,');
-const formattedTime = format(date, 'HH:mm');
-const loginTimeStamp = `${formattedDate} ${formattedTime}`;
+let loginDate: Date;
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  loginDate = new Date();
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.testMultiple,
     skipSeedRegistrations: true,
@@ -30,11 +27,17 @@ test('[Admin] View last login', async ({ usersPage, loginPage, basePage }) => {
   });
 
   await test.step('Validate last login', async () => {
+    const candidateTimestamps = generateTimestampsWithGrace({
+      startDate: loginDate,
+      formatPattern: 'dd/MM/y, HH:mm',
+      graceMinutes: 1,
+    });
+
     await usersPage.navigateToPage('Users');
     // Assert
     await usersPage.validateRowTextContent({
       email: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
-      textContent: loginTimeStamp,
+      textContent: candidateTimestamps,
     });
   });
 });

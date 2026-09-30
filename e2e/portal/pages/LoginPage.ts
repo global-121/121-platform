@@ -39,11 +39,13 @@ class LoginPage extends BasePage {
     password,
     skipNavigateToLogin = false,
     skipUrlCheck = false,
+    expectLoginToFail = false,
   }: {
     username: string;
     password: string;
     skipNavigateToLogin?: boolean;
     skipUrlCheck?: boolean;
+    expectLoginToFail?: boolean;
   }): Promise<void> {
     if (!username || !password) {
       throw new Error('Username and password are required.');
@@ -57,7 +59,15 @@ class LoginPage extends BasePage {
     await this.passwordInput.fill(password);
     await this.loginButton.click();
 
+    if (expectLoginToFail) {
+      return;
+    }
+
     if (skipUrlCheck) {
+      // Wait until the app leaves the login page, which guarantees the login
+      // response was processed and the user was written to localStorage,
+      // before callers do a full page.goto() that tears down this page.
+      await this.page.waitForURL((url) => !url.pathname.includes('/login'));
       return;
     }
 

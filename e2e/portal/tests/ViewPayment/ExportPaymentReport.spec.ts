@@ -32,6 +32,7 @@ test('Export Payment Report should contain the right data', async ({
       await page.waitForURL((url) =>
         url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/${i}`),
       );
+      await paymentPage.validateToastMessageAndClose('Payment created');
       await paymentPage.approvePayment();
       await paymentPage.validateToastMessageAndClose('Payment approved');
       await paymentPage.startPayment();

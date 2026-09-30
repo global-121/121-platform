@@ -143,10 +143,13 @@ class BasePage {
       visible: true,
       hasText: message,
     });
+    await expect(toastLocator).toBeVisible();
 
     // Handle multiple toasts (if any)
     for (const toast of await toastLocator.all()) {
       await toast.getByRole('button').click();
+      // Wait for the leave animation to finish so an identical toast shown later isn't matched twice
+      await toast.waitFor({ state: 'hidden' });
     }
   }
 
@@ -163,16 +166,14 @@ class BasePage {
   }
 
   async waitForPageLoad() {
-    await this.page.waitForLoadState('networkidle');
     await this.page.waitForLoadState('domcontentloaded');
   }
 
   async validateFormError({ errorText }: { errorText: string }) {
-    await this.page.waitForLoadState('networkidle');
     await this.formError.waitFor();
 
     const errorString = await this.formError.textContent();
-    expect(await this.formError.isVisible()).toBe(true);
+    await expect(this.formError).toBeVisible();
     expect(errorString).toContain(errorText);
   }
 
@@ -208,24 +209,24 @@ class BasePage {
     await expect(errorElement).toContainText(errorMessage);
   }
 
-  async validateErrorTable() {
-    const fileDialogErrorTable = new TableComponent(
-      this.page,
-      'import-file-dialog-errors-table',
+  async validateErrorTable({
+    dataTestId,
+    columnHeaders,
+    rowData,
+  }: {
+    dataTestId: string;
+    columnHeaders: string[];
+    rowData: string[];
+  }) {
+    const fileDialogErrorTable = new TableComponent(this.page, dataTestId);
+
+    const actualColumnHeaders =
+      await fileDialogErrorTable.getTextArrayFromHeader();
+    expect(actualColumnHeaders).toEqual(columnHeaders);
+
+    await expect(fileDialogErrorTable.tableRows.locator('td')).toHaveText(
+      rowData,
     );
-
-    const columnHeaders = await fileDialogErrorTable.getTextArrayFromHeader();
-    const rows = await fileDialogErrorTable.tableRows
-      .locator('td')
-      .allInnerTexts();
-
-    expect(columnHeaders).toEqual(['Line number', 'Column', 'Value', 'Error']);
-    expect(rows).toEqual([
-      '13',
-      'addressCity',
-      '',
-      'Cannot update/set addressCity with a nullable value as it is required for the FSP: Intersolve-visa',
-    ]);
   }
 
   /**
@@ -251,14 +252,13 @@ class BasePage {
     return filePath;
   }
 
-  // @TODO: Maybe we should make an input helper file that handles all of the input variants (checkbox, select, text, etc.)
   async selectMultiselectOptions({
     dropdownTestId,
     optionsToClick,
   }: {
     dropdownTestId: string;
     optionsToClick: string[];
-  }) {
+  }): Promise<void> {
     await this.page.getByTestId(dropdownTestId).click();
     for (const option of optionsToClick) {
       await this.page.getByRole('option', { name: option }).click();
@@ -273,11 +273,76 @@ class BasePage {
           .locator('.p-multiselect-overlay')
           .or(this.page.locator('.p-select-overlay'));
         await this.page.keyboard.press('Escape');
-        await expect(overlay).not.toBeVisible();
+        await expect(overlay).toBeHidden();
         return; // Click successful, exit the loop
       } catch (error) {
         console.log(`Click failed. Retrying... Attempt ${i + 1}/${retries}`);
       }
+    }
+  }
+
+  async selectDropdownOption({
+    locator,
+    testId,
+    option,
+    searchPhrase,
+    exact = true,
+  }: {
+    locator?: Locator;
+    testId?: string;
+    option: string;
+    searchPhrase?: string;
+    exact?: boolean;
+  }): Promise<void> {
+    const target = testId ? this.page.getByTestId(testId) : locator!;
+    await target.click();
+    if (searchPhrase) {
+      const searchInput = this.page
+        .locator(
+          '.p-select-filter, .p-dropdown-filter, input[role="searchbox"]',
+        )
+        .or(target.locator('input'))
+        .first();
+      if (await searchInput.isVisible()) {
+        await searchInput.fill(searchPhrase);
+      } else {
+        await target.fill(searchPhrase);
+      }
+    }
+    const optionLocator = this.page
+      .getByRole('option', { name: option, exact })
+      .or(this.page.getByText(option, { exact }))
+      .first();
+    await optionLocator.click();
+    await this.closeOpenSelectOrMultiselectWithRetries();
+  }
+
+  /**
+   * Checks whether a switch / toggle component is checked.
+   */
+
+  async isSwitchChecked({ locator }: { locator: Locator }): Promise<boolean> {
+    const ariaChecked = await locator.getAttribute('aria-checked');
+    if (ariaChecked !== null) {
+      return ariaChecked === 'true';
+    }
+    return locator.isChecked();
+  }
+
+  /**
+   * Sets a switch / toggle to the desired state.
+   */
+
+  async setSwitch({
+    locator,
+    checked,
+  }: {
+    locator: Locator;
+    checked: boolean;
+  }): Promise<void> {
+    const isCurrentlyChecked = await this.isSwitchChecked({ locator });
+    if (isCurrentlyChecked !== checked) {
+      await locator.click();
     }
   }
 
@@ -315,7 +380,7 @@ class BasePage {
     }
 
     if (expectedRowCount) {
-      expect(data.length).toEqual(expectedRowCount);
+      expect(data).toHaveLength(expectedRowCount);
     }
 
     const headerCells = headerRow.split(',');

@@ -113,17 +113,17 @@ test('User does not find debit card of a person without payments', async ({
 
   await test.step('User can not view current debit card data', async () => {
     const debitCardData = await debitCardPage.getCurrentDebitCardElement();
-    await expect(debitCardData).not.toBeVisible();
+    await expect(debitCardData).toBeHidden();
   });
 
   await test.step('User can not view pause card button', async () => {
     const pauseCardButton = await debitCardPage.getPauseCardButton();
-    await expect(pauseCardButton).not.toBeVisible();
+    await expect(pauseCardButton).toBeHidden();
   });
 
   await test.step('User can not view replace card button', async () => {
     const replaceCardButton = await debitCardPage.getReplaceCardButton();
-    await expect(replaceCardButton).not.toBeVisible();
+    await expect(replaceCardButton).toBeHidden();
   });
 });
 
@@ -191,7 +191,7 @@ test('User can replace a debit card and view both new and old card', async ({
       await dialog.hasContent(
         'A message will be sent to the registration about this update',
       ),
-    );
+    ).toBeTruthy();
 
     // Verify dialog buttons
     const cancelButton = await dialog.getButton('Cancel');

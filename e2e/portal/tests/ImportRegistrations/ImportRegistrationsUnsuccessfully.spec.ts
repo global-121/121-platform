@@ -35,7 +35,16 @@ test('Unsuccessfully import registrations', async ({ registrationsPage }) => {
   });
 
   await test.step('Should show table with error details', async () => {
-    await registrationsPage.validateErrorTable();
+    await registrationsPage.validateErrorTable({
+      dataTestId: 'import-file-dialog-errors-table',
+      columnHeaders: ['Line number', 'Column', 'Value', 'Error'],
+      rowData: [
+        '13',
+        'addressCity',
+        '',
+        'Cannot update/set addressCity with a nullable value as it is required for the FSP: Intersolve-visa',
+      ],
+    });
   });
 });
 

@@ -476,6 +476,7 @@ export class ProgramService {
     const programRegistrationAttributes =
       await this.programRegistrationAttributeRepository.find({
         where: { program: { id: Equal(programId) } },
+        order: { created: 'ASC', id: 'ASC' },
       });
     for (const attribute of programRegistrationAttributes) {
       relations.push({

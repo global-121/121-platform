@@ -25,7 +25,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   }
 });
 
-test('Assign successfully roles to a user ', async ({ programTeamPage }) => {
+test('Assign successfully roles to a user', async ({ programTeamPage }) => {
   const programTitle = 'Cash program Westeros';
 
   await test.step('Select program and navigate to Manage team', async () => {

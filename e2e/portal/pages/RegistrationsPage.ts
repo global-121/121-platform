@@ -122,11 +122,9 @@ class RegistrationsPage extends BasePage {
         }
       }
 
-      expect(
-        await this.manageTableSidebar
-          .getByRole('checkbox', { checked: true })
-          .count(),
-      ).toBe(0);
+      await expect(
+        this.manageTableSidebar.getByRole('checkbox', { checked: true }),
+      ).toHaveCount(0);
     }
 
     for (const column of columns) {
@@ -137,7 +135,7 @@ class RegistrationsPage extends BasePage {
       .getByRole('button', { name: 'Apply' })
       .click();
 
-    await expect(this.manageTableSidebar).not.toBeVisible();
+    await expect(this.manageTableSidebar).toBeHidden();
 
     if (onlyGivenColumns) {
       // Validate only the given columns are visible in the table
@@ -158,11 +156,11 @@ class RegistrationsPage extends BasePage {
     await this.openManageTableSidebar();
 
     await expect(async () => {
-      const checkbox = await this.manageTableSidebar.getByLabel(column);
+      const checkbox = this.manageTableSidebar.getByLabel(column);
       if (shouldBeAvailable) {
         await expect(checkbox).toBeVisible();
       } else {
-        await expect(checkbox).not.toBeVisible();
+        await expect(checkbox).toBeHidden();
       }
     }).toPass({ timeout: 5000 });
 
@@ -170,18 +168,14 @@ class RegistrationsPage extends BasePage {
       .getByRole('button', { name: 'Cancel' })
       .click();
 
-    await expect(this.manageTableSidebar).not.toBeVisible();
+    await expect(this.manageTableSidebar).toBeHidden();
   }
 
   async getFirstRegistrationNameFromTable() {
-    await this.page.waitForTimeout(200);
-    await this.page.waitForSelector('table tbody tr td');
+    await this.table.waitForLoaded();
     const fullName = await this.table.getCell(0, 2);
-    const fullNameText = (await fullName.textContent())?.trim();
-    if (!fullNameText) {
-      throw new Error('Could not find full name in the table');
-    }
-    return fullNameText;
+    await expect(fullName).not.toBeEmpty();
+    return (await fullName.innerText()).trim();
   }
 
   async getColumnIndexByHeaderText(headerText: string): Promise<number> {
@@ -285,8 +279,7 @@ class RegistrationsPage extends BasePage {
   }
 
   async selectMultipleRegistrations(selectionCount: number) {
-    await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForLoadState('networkidle');
+    await this.table.waitForLoaded();
     for (let i = 1; i <= selectionCount; i++) {
       const rowCheckbox = await this.table.getCell(i, 0);
       await rowCheckbox.click();
@@ -379,7 +372,7 @@ class RegistrationsPage extends BasePage {
       .check();
 
     await this.importFileButton.click();
-    // Wait for the upload to complete
+    // eslint-disable-next-line playwright/no-networkidle -- Wait for the upload to complete
     await this.page.waitForLoadState('networkidle');
   }
 

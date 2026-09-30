@@ -81,9 +81,7 @@ test('Validate that "Duplicate" banner is displayed in overview of duplicated re
   });
 
   await test.step('Verify no banner is displayed for unique registration', async () => {
-    await expect(
-      registrationActivityLogPage.duplicatesBanner,
-    ).not.toBeVisible();
+    await expect(registrationActivityLogPage.duplicatesBanner).toBeHidden();
 
     await registrationActivityLogPage.assertDuplicateStatus({
       status: 'Unique',

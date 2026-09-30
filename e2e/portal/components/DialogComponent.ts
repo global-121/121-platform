@@ -1,4 +1,4 @@
-import { Locator } from '@playwright/test';
+import { expect, Locator } from '@playwright/test';
 
 class DialogComponent {
   readonly dialog: Locator;
@@ -37,10 +37,7 @@ class DialogComponent {
 
   async confirm(actionLabel = 'Proceed'): Promise<void> {
     await this.clickButton(actionLabel);
-    await this.dialog.page().waitForSelector('.p-dialog', {
-      state: 'detached',
-      timeout: 5000,
-    });
+    await expect(this.dialog).toBeHidden({ timeout: 5000 });
   }
 }
 

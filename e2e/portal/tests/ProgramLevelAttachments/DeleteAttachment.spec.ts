@@ -52,7 +52,6 @@ test.describe('Attachments on Program Level', () => {
   });
 
   test('Delete Attachment', async ({
-    page,
     programMonitoringPage,
     tableComponent,
   }) => {
@@ -64,8 +63,6 @@ test.describe('Attachments on Program Level', () => {
     });
 
     await test.step('Validate attachment deletion', async () => {
-      await page.waitForTimeout(200); // Wait for the deletion to be processed and table fully updated
-
       await tableComponent.validateWaitForTableRowCount({
         expectedRowCount: 3,
       }); // 4 files - 1 deleted = 3 remaining

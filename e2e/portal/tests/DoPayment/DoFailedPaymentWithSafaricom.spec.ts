@@ -6,13 +6,16 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  // Full phoneNumber is set to create a failed payment
-  registrationsSafaricom[0].phoneNumber = '254000000000';
 
+// Clone to avoid mutating the shared module-level array used by other spec files
+const registrations = structuredClone(registrationsSafaricom);
+// Full phoneNumber is set to create a failed payment
+registrations[0].phoneNumber = '254000000000';
+
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.safaricomProgram,
-    registrations: registrationsSafaricom,
+    registrations,
     programId: programIdSafaricom,
     navigateToPage: `/program/${programIdSafaricom}/payments`,
   });
@@ -23,14 +26,11 @@ test('Do failed payment for Safaricom fsp', async ({
   paymentPage,
   paymentsPage,
 }) => {
-  const numberOfPas = registrationsSafaricom.length;
+  const numberOfPas = registrations.length;
   const defaultTransferValue = KRCSProgram.fixedTransferValue;
-  const defaultMaxTransferValue = registrationsSafaricom.reduce(
-    (output, pa) => {
-      return output + pa.paymentAmountMultiplier * defaultTransferValue;
-    },
-    0,
-  );
+  const defaultMaxTransferValue = registrations.reduce((output, pa) => {
+    return output + pa.paymentAmountMultiplier * defaultTransferValue;
+  }, 0);
 
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});

@@ -86,12 +86,12 @@ test('Pause registrations included in pending payments', async ({
 
     // NOTE: The payment table currently has no stable row identifiers (no registration name/id/referenceId),
     // so this assertion relies on counting status chips on the page. This is not ideal, but it works for now.
-    await paymentPage.validateBadgeIsPresentByLabel({
+    await paymentPage.validateRegistrationTransactionStatusLabel({
       badgeName: 'Paused',
       count: 2,
     });
 
-    await paymentPage.validateBadgeIsPresentByLabel({
+    await paymentPage.validateRegistrationTransactionStatusLabel({
       badgeName: 'Included',
       count: 1,
     });
@@ -156,12 +156,12 @@ test('Decline registrations included in pending payments', async ({
 
     // NOTE: The payment table currently has no stable row identifiers (no registration name/id/referenceId),
     // so this assertion relies on counting status chips on the page.
-    await paymentPage.validateBadgeIsPresentByLabel({
+    await paymentPage.validateRegistrationTransactionStatusLabel({
       badgeName: 'Declined',
       count: 2,
     });
 
-    await paymentPage.validateBadgeIsPresentByLabel({
+    await paymentPage.validateRegistrationTransactionStatusLabel({
       badgeName: 'Included',
       count: 1,
     });
