@@ -1,13 +1,12 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { getRegistrationIdByReferenceId } from '@121-service/test/helpers/registration.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationsVoucher,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
-
-import { getRegistrationIdByReferenceId } from '../../../../services/121-service/test/helpers/registration.helper';
-import { getAccessToken } from '../../../../services/121-service/test/helpers/utility.helper';
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
@@ -66,7 +65,10 @@ test('Block start payment with duplicates', async ({
   await test.step('Fail to start payment', async () => {
     await paymentPage.goto(`/program/${programIdPV}/payments/1`);
 
-    await page.waitForTimeout(1000);
+    await paymentPage.validateButtonVisibility({
+      isVisible: true,
+      button: 'start',
+    });
 
     await paymentPage.startPayment();
     await paymentPage.validateDuplicatesErrorDialog({

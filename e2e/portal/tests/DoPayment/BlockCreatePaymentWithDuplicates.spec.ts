@@ -25,13 +25,11 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
 });
 
 test('Block payment creation with duplicates', async ({ paymentsPage }) => {
-  const customName = 'My custom payment';
+  await test.step('Block payment creation with duplicates', async () => {
+    await paymentsPage.createPayment({ onlyStep1: true });
 
-  await paymentsPage
-    .createPayment({ name: customName, expectFailure: true })
-    .catch(async () => {
-      await paymentsPage.validateToastMessageAndClose(
-        'One or more of your selected registrations are duplicate. Resolve or remove them to continue.',
-      );
-    });
+    await paymentsPage.validateToastMessageAndClose(
+      'One or more of your selected registrations are duplicate. Resolve or remove them to continue.',
+    );
+  });
 });
