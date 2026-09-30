@@ -7,13 +7,12 @@
  * Requires the GitHub CLI installed and authenticated: https://cli.github.com
  * (`gh auth login`).
  *
- * Note: unlike test_service_api.yml, this workflow only triggers on
- * pull_request/merge_group (no push-to-main runs), so `--branch` usually isn't
- * useful here and is omitted by default.
- *
  * Usage:
- *   node find-failed-tests-E2E.mjs [--workflow test_e2e_portal.yml]
- *     [--limit 200] [--branch main] [--repo global-121/121-platform]
+ *   node find-failed-tests-E2E.mjs
+ *     [--repo global-121/121-platform]
+ *     [--workflow test_e2e_portal.yml]
+ *     [--limit 50]
+ *     [--branch main]
  *     [--merge-queue-only]
  *     [--output report-failed-tests-E2E.json]
  */
@@ -21,22 +20,43 @@ import { writeFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 
 import {
-  ghJson,
-  ghText,
+  buildReport,
+  ghCLI,
   listFailedRuns,
+  printSummary,
   recordOccurrences,
   runWithConcurrency,
 } from './find-failed.utils.mjs';
 
 const { values: args } = parseArgs({
   options: {
-    repo: { type: 'string', default: 'global-121/121-platform' },
-    workflow: { type: 'string', default: 'test_e2e_portal.yml' },
-    limit: { type: 'string', default: '200' },
-    branch: { type: 'string' },
-    'merge-queue-only': { type: 'boolean', default: false },
-    concurrency: { type: 'string', default: '6' },
-    output: { type: 'string', default: 'report-failed-tests-E2E.json' },
+    repo: {
+      type: 'string',
+      default: 'global-121/121-platform',
+    },
+    workflow: {
+      type: 'string',
+      default: 'test_e2e_portal.yml',
+    },
+    limit: {
+      type: 'string',
+      default: '25',
+    },
+    branch: {
+      type: 'string',
+    },
+    'merge-queue-only': {
+      type: 'boolean',
+      default: false,
+    },
+    concurrency: {
+      type: 'string',
+      default: '6',
+    },
+    output: {
+      type: 'string',
+      default: 'report-failed-tests-E2E.json',
+    },
   },
 });
 
@@ -54,19 +74,10 @@ const shardJobNamePattern = /^test-shard-e2e \(/;
 const summaryCategoryPattern = /\b\d+ ([a-z]+)(?: \([^)]+\))?$/;
 const testEntryPattern = /\[(.+?)\]\s›\s(\S+)\s›\s(.+?)[\s─=-]*$/;
 
-async function listFailedRunsForWorkflow() {
-  return listFailedRuns({
-    repo,
-    workflow,
-    runLimit,
-    branch: args.branch,
-    mergeQueueOnly: args['merge-queue-only'],
-  });
-}
-
 async function getShardJobs({ runId }) {
-  const { jobs } = await ghJson({
+  const { jobs } = await ghCLI({
     ghArgs: ['run', 'view', String(runId), '--repo', repo, '--json', 'jobs'],
+    returnParsedJson: true,
   });
   return jobs.filter(
     (job) => shardJobNamePattern.test(job.name) && job.conclusion === 'failure',
@@ -108,8 +119,16 @@ function parseTestSummary({ logText }) {
 
 async function getFailedTestsForJob({ jobId }) {
   try {
-    const logText = await ghText({
-      ghArgs: ['run', 'view', '--repo', repo, '--job', String(jobId), '--log'],
+    const logText = await ghCLI({
+      ghArgs: [
+        'run',
+        'view',
+        '--repo',
+        repo,
+        '--job',
+        String(jobId),
+        '--log-failed',
+      ],
     });
     return {
       failedTests: parseTestSummary({ logText }),
@@ -160,59 +179,14 @@ async function collectFailureOccurrences({ runs }) {
   };
 }
 
-function summarizeOccurrences({ occurrencesByTest, scannedRunCount }) {
-  const tests = [...occurrencesByTest.entries()].map(
-    ([testId, occurrences]) => {
-      const distinctRunCount = new Set(occurrences.map((o) => o.runId)).size;
-      return {
-        testId,
-        failureCount: distinctRunCount,
-        totalRunsScanned: scannedRunCount,
-        occurrences,
-      };
-    },
-  );
-
-  tests.sort((a, b) => b.failureCount - a.failureCount);
-
-  return tests;
-}
-
-function buildReport({ occurrencesByTest, scannedRunCount, expiredLogCount }) {
-  return {
+async function main() {
+  const runs = await listFailedRuns({
     repo,
     workflow,
-    generatedAt: new Date().toISOString(),
-    totalRunsScanned: scannedRunCount,
-    expiredLogCount,
-    tests: summarizeOccurrences({
-      occurrencesByTest,
-      scannedRunCount,
-    }),
-  };
-}
-
-function printSummary({ report }) {
-  console.log(
-    `\nScanned ${report.totalRunsScanned} failed run(s) of "${report.workflow}" in ${report.repo}.`,
-  );
-  console.log(`Found ${report.tests.length} failed test(s):\n`);
-
-  for (const test of report.tests) {
-    console.log(
-      `  ${test.failureCount}/${test.totalRunsScanned} failed runs — ${test.testId}`,
-    );
-  }
-
-  if (report.expiredLogCount > 0) {
-    console.log(
-      `\n${report.expiredLogCount} job(s) had logs already deleted by GitHub (past its retention period) and were excluded from the counts above.`,
-    );
-  }
-}
-
-async function main() {
-  const runs = await listFailedRunsForWorkflow();
+    runLimit,
+    branch: args.branch,
+    mergeQueueOnly: args['merge-queue-only'],
+  });
   const failureOccurrences = await collectFailureOccurrences({ runs });
 
   if (failureOccurrences.scannedRunCount === 0) {
@@ -220,11 +194,16 @@ async function main() {
     return;
   }
 
-  const report = buildReport(failureOccurrences);
+  const report = buildReport({
+    repo,
+    workflow,
+    ...failureOccurrences,
+  });
   await writeFile(args.output, JSON.stringify(report, null, 2));
 
   printSummary({ report });
-  console.log(`\nFull report written to ${args.output}`);
+  console.log(`\n`);
+  console.log(`Full report written to ${args.output}`);
 }
 
 await main();
