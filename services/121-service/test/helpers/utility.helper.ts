@@ -57,7 +57,7 @@ function getCallerFilePath(): string {
   return 'unknown';
 }
 
-export async function resetDB({
+export function resetDB({
   seedScript,
   includeRegistrationEvents = false,
   approverMode,
@@ -69,7 +69,7 @@ export async function resetDB({
   approverMode?: ApproverSeedMode;
   resetIdentifier?: string;
 }): Promise<request.Response> {
-  const response = await getServer()
+  return getServer()
     .post('/scripts/reset')
     .query({
       script: seedScript,
@@ -81,14 +81,6 @@ export async function resetDB({
     .send({
       secret: env.RESET_SECRET,
     });
-
-  if (response.status !== HttpStatus.ACCEPTED) {
-    throw new Error(
-      `DB reset failed (${response.status}) for ${resetIdentifier}: ${response.text}`,
-    );
-  }
-
-  return response;
 }
 
 export function resetDuplicateRegistrations(
