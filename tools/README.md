@@ -27,10 +27,9 @@ Downloads the latest Docker-logs of any running production-instance from Azure.
 See what version(s) of the platforms' packages are running in production _right now_.  
 Similar to the 121 Status-page: <https://status.121.global>, but from the command-line.
 
-### Failed test reports
+### "Failed tests" reports
 
-These scripts scan recent failed GitHub Actions runs, write a JSON report, and
-print a summary of failed tests ranked by the number of runs in which they failed.
+These scripts scan recent failed GitHub Actions runs, write a JSON report, and print a summary of failed tests ranked by the number of runs in which they failed.
 Only failed test-shard jobs are read; runs skipped by path filters are excluded.
 
 #### Shared setup
@@ -41,8 +40,7 @@ Only failed test-shard jobs are read; runs skipped by path filters are excluded.
 
 #### API workflow: `npm run find-failed-tests-API`
 
-Scans failed runs of the Jest-based `test_service_api.yml` workflow and reports
-failed integration tests.
+Scans failed runs of the Jest-based `test_service_api.yml` workflow and reports failed integration tests.
 
 ```shell
 npm run find-failed-tests-API -- \
@@ -55,10 +53,7 @@ npm run find-failed-tests-API -- \
 
 #### E2E workflow: `npm run find-failed-tests-E2E`
 
-Scans failed runs of the Playwright e2e workflow and aggregates tests marked
-"failed" in failed shard-job logs (after any retries). This workflow only
-triggers on pull requests and the merge queue (no push-to-main runs), so
-`--branch` usually is not useful here.
+Scans failed runs of the Playwright e2e workflow and aggregates tests marked "failed" in failed shard-job logs (after any retries). This workflow only triggers on pull requests and the merge queue (no push-to-main runs), so `--branch` usually is not useful here.
 
 ```shell
 npm run find-failed-tests-E2E -- \
