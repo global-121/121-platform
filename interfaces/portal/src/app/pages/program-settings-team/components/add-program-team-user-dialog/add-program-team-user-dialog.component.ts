@@ -108,6 +108,12 @@ export class AddProgramTeamUserDialogComponent {
       }
       return $localize`Enter a valid scope. No spaces are allowed.`;
     },
+    userValue: (control) => {
+      if (!control.invalid) {
+        return;
+      }
+      return $localize`Selecting a user is required`;
+    },
   });
 
   readonly dialogHeader = computed(() =>
