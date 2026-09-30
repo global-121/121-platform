@@ -351,6 +351,8 @@ class TableComponent {
 
     const list = this.page.getByRole('listbox');
     await expect(list).toBeVisible();
+    // options can render slightly after the listbox becomes visible
+    await expect(this.page.getByRole('option').first()).toBeVisible();
 
     const dropdownActualValues = new Set<string>();
 
