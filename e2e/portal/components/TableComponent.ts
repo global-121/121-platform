@@ -332,6 +332,10 @@ class TableComponent {
     await this.searchBox.click();
     await this.searchBox.fill(selection);
     await this.page.getByRole('option', { name: selection }).first().click();
+
+    await this.page.keyboard.press('Escape');
+    await this.waitForColumnFilterOverlayToClose();
+    await this.waitForLoaded();
   }
 
   async validateDropdownValuesInTable({

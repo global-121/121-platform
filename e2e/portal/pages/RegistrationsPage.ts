@@ -174,11 +174,8 @@ class RegistrationsPage extends BasePage {
   async getFirstRegistrationNameFromTable() {
     await this.table.waitForLoaded();
     const fullName = await this.table.getCell(0, 2);
-    const fullNameText = (await fullName.textContent())?.trim();
-    if (!fullNameText) {
-      throw new Error('Could not find full name in the table');
-    }
-    return fullNameText;
+    await expect(fullName).not.toBeEmpty();
+    return (await fullName.innerText()).trim();
   }
 
   async getColumnIndexByHeaderText(headerText: string): Promise<number> {
