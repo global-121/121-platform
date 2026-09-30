@@ -123,7 +123,9 @@ export class CreateProgramRegistrationAttributeDto extends BaseProgramRegistrati
       en: 'Please enter your last name:',
       fr: "Remplissez votre nom, s'il vous plaît:",
     },
+    required: false,
   })
+  @IsOptional()
   public readonly label?: RegistrationPreferredLanguageTranslation | null;
 
   @ApiProperty({
@@ -157,7 +159,7 @@ export class UpdateProgramRegistrationAttributeDto extends BaseProgramRegistrati
     required: false,
   })
   @IsOptional()
-  public readonly label?: WrapperType<UILanguageTranslation>;
+  public readonly label?: RegistrationPreferredLanguageTranslation | null;
 
   @ApiProperty({
     example: RegistrationAttributeTypes.numeric,
@@ -183,12 +185,16 @@ export class UpdateProgramRegistrationAttributeDto extends BaseProgramRegistrati
   public readonly isRequired?: boolean;
 }
 
-export class UpdateProgramRegistrationAttributesBatchDto extends BaseProgramRegistrationAttributeDto {
+export class UpdateProgramRegistrationAttributesBatchDto {
   @ApiProperty({
     example: 'whatsappPhoneNumber',
   })
+  @IsNotEmpty()
+  @IsString()
   public readonly programRegistrationAttributeName: string;
 
   @ApiProperty()
+  @ValidateNested()
+  @Type(() => UpdateProgramRegistrationAttributeDto)
   public readonly updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
 }

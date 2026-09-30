@@ -47,6 +47,8 @@ describe('Create program', () => {
     );
     // Assert
     expect(createReponse.statusCode).toBe(HttpStatus.CREATED);
+    expect(createReponse.body.label).toEqual(programRegistrationAttribute.label);
+    expect(createReponse.body.koboLabel).toBeNull();
   });
 
   it('should not be able to post a registration attributes with a name that already exists', async () => {
