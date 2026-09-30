@@ -327,7 +327,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
   }: {
     programId: number;
     paymentId: number;
-    transactionStatus: TransactionStatusEnum[];
+    transactionStatus: TransactionStatusEnum;
   }): Promise<TransactionViewEntity[]> {
     return this.getTransactionsByStatusAndRegistrationStatus({
       programId,
@@ -344,7 +344,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
   }: {
     programId: number;
     paymentId: number;
-    transactionStatus: TransactionStatusEnum[];
+    transactionStatus: TransactionStatusEnum;
   }): Promise<TransactionViewEntity[]> {
     return this.getTransactionsByStatusAndRegistrationStatus({
       programId,
@@ -362,7 +362,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
   }: {
     programId: number;
     paymentId: number;
-    transactionStatus: TransactionStatusEnum[];
+    transactionStatus: TransactionStatusEnum;
     registrationStatusCondition: FindOperator<RegistrationStatusEnum>;
   }): Promise<TransactionViewEntity[]> {
     return this.find({
@@ -371,7 +371,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
           id: Equal(paymentId),
           programId: Equal(programId),
         },
-        status: In(transactionStatus),
+        status: Equal(transactionStatus),
         /* eslint-disable-next-line no-restricted-syntax -- we pass in Equal(...) or Not(Equal(...)) here */
         registration: {
           /* eslint-disable-next-line no-restricted-syntax -- we pass in Equal(...) or Not(Equal(...)) here */

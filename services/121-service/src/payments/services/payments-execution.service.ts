@@ -124,7 +124,7 @@ export class PaymentsExecutionService {
         {
           programId,
           paymentId,
-          transactionStatus: [TransactionStatusEnum.approved],
+          transactionStatus: TransactionStatusEnum.approved,
         },
       );
     await this.createTransactionJobs({
@@ -151,7 +151,7 @@ export class PaymentsExecutionService {
         {
           programId,
           paymentId,
-          transactionStatus: [TransactionStatusEnum.approved],
+          transactionStatus: TransactionStatusEnum.approved,
         },
       );
 

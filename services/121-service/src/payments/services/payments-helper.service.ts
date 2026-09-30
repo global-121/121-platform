@@ -66,17 +66,28 @@ export class PaymentsHelperService {
     paymentId: number;
     action: 'approve' | 'start';
   }): Promise<void> {
-    const transactionsForPayment =
+    const transactionsForPaymentPendingApproval =
       await this.transactionViewScopedRepository.getByStatusOfIncludedRegistrations(
         {
           programId,
           paymentId,
-          transactionStatus: [
-            TransactionStatusEnum.pendingApproval,
-            TransactionStatusEnum.approved,
-          ],
+          transactionStatus: TransactionStatusEnum.pendingApproval,
         },
       );
+
+    const transactionsForPaymentApproved =
+      await this.transactionViewScopedRepository.getByStatusOfIncludedRegistrations(
+        {
+          programId,
+          paymentId,
+          transactionStatus: TransactionStatusEnum.approved,
+        },
+      );
+
+    const transactionsForPayment = [
+      ...transactionsForPaymentPendingApproval,
+      ...transactionsForPaymentApproved,
+    ];
 
     const registrationIds = [
       ...new Set(transactionsForPayment.map((t) => t.registrationId)),
