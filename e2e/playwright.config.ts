@@ -21,7 +21,7 @@ export default defineConfig({
   use: {
     // eslint-disable-next-line n/no-process-env -- This environment variable `BASE_URL` is NOT used in the 121-service, thus not managed via the env.ts file.
     baseURL: process.env.BASE_URL ?? 'http://localhost:8088',
-    video: 'on-first-retry',
+    video: 'retain-on-failure',
     screenshot: 'only-on-failure',
     headless: true,
     acceptDownloads: true,
@@ -41,7 +41,7 @@ export default defineConfig({
     viewport: null,
     ignoreHTTPSErrors: true,
     bypassCSP: false,
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
   },
   projects: [
     {
