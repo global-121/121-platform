@@ -18,7 +18,7 @@ export async function ghText({ ghArgs }) {
   return stdout;
 }
 
-export async function listCompletedRuns({
+export async function listFailedRuns({
   repo,
   workflow,
   runLimit,
@@ -32,10 +32,12 @@ export async function listCompletedRuns({
     repo,
     '--workflow',
     workflow,
+    '--status',
+    'failure',
     '-L',
     String(runLimit),
     '--json',
-    'databaseId,conclusion,status,createdAt,headBranch,event,headSha,url',
+    'databaseId,conclusion,createdAt,headBranch,event,headSha,url',
   ];
   if (branch) {
     listArgs.push('--branch', branch);
@@ -43,7 +45,7 @@ export async function listCompletedRuns({
 
   const runs = await ghJson({ ghArgs: listArgs });
   return runs.filter((run) => {
-    if (run.status !== 'completed') {
+    if (run.conclusion !== 'failure') {
       return false;
     }
 

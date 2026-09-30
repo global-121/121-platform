@@ -6,8 +6,8 @@
     "postinstall": "npm run setup",
     "check-versions": "node check-versions.mjs",
     "download-logs": "node --env-file-if-exists=.env download-logs.mjs",
-    "find-flaky-tests-API": "node find-flaky-tests-API.mjs",
-    "find-flaky-tests-E2E": "node find-flaky-tests-E2E.mjs"
+    "find-failed-tests-API": "node find-failed-tests-API.mjs",
+    "find-failed-tests-E2E": "node find-failed-tests-E2E.mjs"
   },
   "dependencies": {
     "@azure/identity": "^4.13.1",

@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
 /**
- * Scans GitHub Actions runs of a Jest-based test workflow and reports which
- * integration tests fail intermittently (flaky) vs. consistently (broken).
+ * Scans failed GitHub Actions runs of a Jest-based test workflow and reports
+ * which integration tests failed.
  *
  * Requires the GitHub CLI installed and authenticated: https://cli.github.com
  * (`gh auth login`).
  *
  * Usage:
- *   node find-flaky-tests-API.mjs [--workflow test_service_api.yml]
+ *   node find-failed-tests-API.mjs [--workflow test_service_api.yml]
  *     [--limit 200] [--branch main] [--repo global-121/121-platform]
  *     [--merge-queue-only]
- *     [--output report-flaky-tests-API.json]
+ *     [--output report-failed-tests-API.json]
  */
 import { writeFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
@@ -19,10 +19,10 @@ import { parseArgs } from 'node:util';
 import {
   ghJson,
   ghText,
-  listCompletedRuns,
+  listFailedRuns,
   recordOccurrences,
   runWithConcurrency,
-} from './find-flaky.utils.mjs';
+} from './find-failed.utils.mjs';
 
 const { values: args } = parseArgs({
   options: {
@@ -32,7 +32,7 @@ const { values: args } = parseArgs({
     branch: { type: 'string' },
     'merge-queue-only': { type: 'boolean', default: false },
     concurrency: { type: 'string', default: '6' },
-    output: { type: 'string', default: 'report-flaky-tests-API.json' },
+    output: { type: 'string', default: 'report-failed-tests-API.json' },
   },
 });
 
@@ -45,8 +45,8 @@ const shardJobNamePattern = /^test-shard \(/;
 const failFilePattern = /FAIL (\S+\.test\.ts)/;
 const failingTestPattern = /●\s+(.+)$/;
 
-async function listCompletedRunsForWorkflow() {
-  return listCompletedRuns({
+async function listFailedRunsForWorkflow() {
+  return listFailedRuns({
     repo,
     workflow,
     runLimit,
@@ -101,7 +101,10 @@ async function getFailingTestsForJob({ jobId }) {
     };
   } catch (error) {
     // GitHub deletes Actions logs after a retention period; treat those as unknown.
-    console.warn(`Could not fetch logs for job ${jobId}:`, error?.message ?? error);
+    console.warn(
+      `Could not fetch logs for job ${jobId}:`,
+      error?.message ?? error,
+    );
     return { failingTests: new Set(), logAvailable: false };
   }
 }
@@ -115,14 +118,13 @@ async function collectFailureOccurrences({ runs }) {
     items: runs,
     worker: async (run) => {
       const shardJobs = await getShardJobs({ runId: run.databaseId });
-      if (shardJobs.length === 0) {
-        return; // The path-filter step skipped this run entirely.
-      }
-      scannedRunCount += 1;
-
       const failedShardJobs = shardJobs.filter(
         (job) => job.conclusion === 'failure',
       );
+      if (failedShardJobs.length === 0) {
+        return;
+      }
+      scannedRunCount += 1;
 
       for (const job of failedShardJobs) {
         const { failingTests, logAvailable } = await getFailingTestsForJob({
@@ -145,25 +147,16 @@ function buildReport({ occurrencesByTest, scannedRunCount, expiredLogCount }) {
   const tests = [...occurrencesByTest.entries()].map(
     ([testId, occurrences]) => {
       const distinctRunCount = new Set(occurrences.map((o) => o.runId)).size;
-      const failureRate = distinctRunCount / scannedRunCount;
       return {
         testId,
         failureCount: distinctRunCount,
         totalRunsScanned: scannedRunCount,
-        failureRate: Number(failureRate.toFixed(3)),
-        // Peaks at a 50% failure rate (most unpredictable); 0 at either extreme.
-        flakinessScore: Number((failureRate * (1 - failureRate)).toFixed(4)),
-        // A test failing in (almost) every run is broken, not flaky.
-        classification: failureRate >= 0.95 ? 'consistently-failing' : 'flaky',
         occurrences,
       };
     },
   );
 
-  tests.sort(
-    (a, b) =>
-      b.flakinessScore - a.flakinessScore || b.failureCount - a.failureCount,
-  );
+  tests.sort((a, b) => b.failureCount - a.failureCount);
 
   return {
     repo,
@@ -176,33 +169,15 @@ function buildReport({ occurrencesByTest, scannedRunCount, expiredLogCount }) {
 }
 
 function printSummary({ report }) {
-  // report.tests is already ordered by flakiness score (most unpredictable first).
-  const flakyTests = report.tests.filter(
-    (test) => test.classification === 'flaky',
-  );
-  // Broken tests aren't unpredictable, so rank them by how often they fail instead.
-  const brokenTests = report.tests
-    .filter((test) => test.classification === 'consistently-failing')
-    .sort((a, b) => b.failureRate - a.failureRate);
-
   console.log(
-    `\nScanned ${report.totalRunsScanned} run(s) of "${report.workflow}" in ${report.repo}.`,
+    `\nScanned ${report.totalRunsScanned} failed run(s) of "${report.workflow}" in ${report.repo}.`,
   );
-  console.log(`Found ${flakyTests.length} flaky test(s):\n`);
+  console.log(`Found ${report.tests.length} failed test(s):\n`);
 
-  for (const test of flakyTests) {
+  for (const test of report.tests) {
     console.log(
-      `  ${(test.failureRate * 100).toFixed(1)}% (${test.failureCount}/${test.totalRunsScanned}) — ${test.testId}`,
+      `  ${test.failureCount}/${test.totalRunsScanned} failed runs — ${test.testId}`,
     );
-  }
-
-  if (brokenTests.length > 0) {
-    console.log(
-      `\n${brokenTests.length} test(s) fail consistently (likely broken, not flaky):`,
-    );
-    for (const test of brokenTests) {
-      console.log(`  ${test.testId}`);
-    }
   }
 
   if (report.expiredLogCount > 0) {
@@ -213,11 +188,11 @@ function printSummary({ report }) {
 }
 
 async function main() {
-  const runs = await listCompletedRunsForWorkflow();
+  const runs = await listFailedRunsForWorkflow();
   const failureOccurrences = await collectFailureOccurrences({ runs });
 
   if (failureOccurrences.scannedRunCount === 0) {
-    console.log('No completed runs found to analyze.');
+    console.log('No failed runs found to analyze.');
     return;
   }
 
