@@ -281,9 +281,7 @@ class RegistrationsPage extends BasePage {
   }
 
   async selectMultipleRegistrations(selectionCount: number) {
-    // await this.page.waitForLoadState('domcontentloaded');
-    // eslint-disable-next-line playwright/no-networkidle -- Testing
-    await this.page.waitForLoadState('networkidle');
+    await this.table.waitForLoaded();
     for (let i = 1; i <= selectionCount; i++) {
       const rowCheckbox = await this.table.getCell(i, 0);
       await rowCheckbox.click();
@@ -376,8 +374,8 @@ class RegistrationsPage extends BasePage {
       .check();
 
     await this.importFileButton.click();
-    // Wait for the upload to complete
-    // await this.page.waitForLoadState('networkidle');
+    // eslint-disable-next-line playwright/no-networkidle -- Wait for the upload to complete
+    await this.page.waitForLoadState('networkidle');
   }
 
   async assertImportTemplateForPvProgram() {

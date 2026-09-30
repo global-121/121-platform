@@ -189,7 +189,6 @@ class ProgramMonitoring extends BasePage {
   }
 
   async validateFormError({ errorText }: { errorText: string }) {
-    // await this.page.waitForLoadState('networkidle');
     await this.formError.waitFor();
     const errorString = await this.formError.textContent();
     await expect(this.formError).toBeVisible();
