@@ -257,21 +257,22 @@ class RegistrationsPage extends BasePage {
 
   async cancelSendMessageBulkAction() {
     await this.page.getByRole('button', { name: 'Cancel' }).click();
+    await expect(this.sendMessageDialogPreview).not.toBeVisible();
   }
 
   async validateSendMessagePaCount(count: number) {
-    const dialogText = await this.sendMessageDialogPreview.innerText();
+    await expect(async () => {
+      const dialogText = await this.sendMessageDialogPreview.innerText();
+      const regex = /(\d+)/;
+      const match = regex.exec(dialogText);
 
-    // Extract the number from the dialog text
-    const regex = /(\d+)/;
-    const match = regex.exec(dialogText);
-    if (!match) {
-      throw new Error('Dialog text does not match expected format');
-    }
+      if (!match) {
+        throw new Error('Dialog text does not match expected format');
+      }
 
-    const actualCount = parseInt(match[1], 10);
-    // Validate the count
-    expect(actualCount).toBe(count);
+      const actualCount = parseInt(match[1], 10);
+      expect(actualCount).toBe(count);
+    }).toPass({ timeout: 2000 });
   }
 
   async goToRandomRegistration() {
