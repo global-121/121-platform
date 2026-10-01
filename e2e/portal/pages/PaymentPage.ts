@@ -443,7 +443,7 @@ class PaymentPage extends BasePage {
     }
   }
 
-  async validateDuplicatesErrorDialog({
+  async validateDuplicatesErrorDialogMessage({
     duplicateCount,
   }: {
     duplicateCount: number;

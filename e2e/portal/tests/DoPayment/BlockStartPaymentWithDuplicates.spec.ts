@@ -70,8 +70,10 @@ test('Block start payment with duplicates', async ({
       button: 'start',
     });
 
+    await paymentPage.table.waitForLoaded();
+
     await paymentPage.startPayment();
-    await paymentPage.validateDuplicatesErrorDialog({
+    await paymentPage.validateDuplicatesErrorDialogMessage({
       duplicateCount: registrationsVoucher.length,
     });
   });
