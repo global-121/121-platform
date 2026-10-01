@@ -2,6 +2,7 @@ import { FilterOperator } from 'nestjs-paginate';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -206,6 +207,48 @@ describe('Registrations - [Scoped]', () => {
       expect(meta.currentPage).toBe(2);
       expect(transactions).toHaveLength(1);
       expect(transactions[0].paymentId).toBe(paymentIdPv);
+    });
+
+    it('should filter transactions using $eq operator on registrationDuplicateStatus', async () => {
+      // Arrange
+      const accessToken = await getAccessToken();
+
+      // Act
+      const [uniqueResponse, duplicateResponse] = await Promise.all([
+        getTransactionsByPaymentIdPaginated({
+          programId: programIdPV,
+          paymentId: paymentIdPv,
+          accessToken,
+          filter: {
+            'filter.registrationDuplicateStatus': `${FilterOperator.EQ}:${DuplicateStatus.unique}`,
+          },
+        }),
+        getTransactionsByPaymentIdPaginated({
+          programId: programIdPV,
+          paymentId: paymentIdPv,
+          accessToken,
+          filter: {
+            'filter.registrationDuplicateStatus': `${FilterOperator.EQ}:${DuplicateStatus.duplicate}`,
+          },
+        }),
+      ]);
+
+      const uniqueTransactions = uniqueResponse.body.data;
+      const uniqueMeta = uniqueResponse.body.meta;
+      const duplicateTransactions = duplicateResponse.body.data;
+      const duplicateMeta = duplicateResponse.body.meta;
+
+      // Assert
+      expect(uniqueMeta.totalItems).toBe(4);
+      expect(uniqueTransactions).toHaveLength(4);
+      for (const transaction of uniqueTransactions) {
+        expect(transaction.registrationDuplicateStatus).toBe(
+          DuplicateStatus.unique,
+        );
+      }
+
+      expect(duplicateMeta.totalItems).toBe(0);
+      expect(duplicateTransactions).toHaveLength(0);
     });
   });
 });
