@@ -1,6 +1,7 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as appInsights from 'applicationinsights';
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
@@ -22,8 +23,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 import { ValidationPipeOptions } from '@121-service/src/validation-options/validation-pipe-options.const';
 
 import 'multer'; // This is import is required to prevent typing error on the MulterModule
-// eslint-disable-next-line @typescript-eslint/no-require-imports -- This version of AppInsighst still only works with require
-import appInsights = require('applicationinsights');
 
 /**
  * A visualization of module dependencies is generated using `nestjs-spelunker`

@@ -1,6 +1,6 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} */
-module.exports = {
-  preset: 'ts-jest',
+import { defineConfig } from 'jest';
+
+export default defineConfig({
   rootDir: '.',
   testMatch: ['<rootDir>/**/*.spec.ts'],
   setupFilesAfterEnv: [
@@ -13,15 +13,16 @@ module.exports = {
   moduleNameMapper: {
     '^@121-service/(.*)$': '<rootDir>/$1',
   },
+  moduleFileExtensions: ['js', 'ts'],
   transform: {
-    'node_modules/(@t3-oss|uuid|openid-client|oauth4webapi|jose|sanitize-html|htmlparser2|entities|domhandler|domutils|domelementtype|dom-serializer)/.+[.]js$': [
-      'ts-jest',
-      { useESM: true },
-    ],
+    '^.+\\.(t|j)sx?$': '@swc/jest',
   },
   transformIgnorePatterns: [
     'node_modules/(?!@t3-oss|uuid|openid-client|oauth4webapi|jose|sanitize-html|htmlparser2|entities|domhandler|domutils|domelementtype|dom-serializer)',
   ],
+  detectOpenHandles: true,
+  errorOnDeprecated: true,
+  logHeapUsage: true,
   randomize: true,
   verbose: true,
   reporters: [
@@ -29,4 +30,4 @@ module.exports = {
     ['github-actions', { silent: false }],
     'summary',
   ],
-};
+});
