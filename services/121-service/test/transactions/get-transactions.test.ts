@@ -209,37 +209,46 @@ describe('Registrations - [Scoped]', () => {
       expect(transactions[0].paymentId).toBe(paymentIdPv);
     });
 
-    it('should filter transactions using $eq operator on duplicateStatus', async () => {
+    it('should filter transactions using $eq operator on registrationDuplicateStatus', async () => {
       // Arrange
       const accessToken = await getAccessToken();
 
       // Act
-      const uniqueTransactionsResponse =
-        await getTransactionsByPaymentIdPaginated({
+      const [uniqueResponse, duplicateResponse] = await Promise.all([
+        getTransactionsByPaymentIdPaginated({
           programId: programIdPV,
           paymentId: paymentIdPv,
           accessToken,
           filter: {
-            'filter.duplicateStatus': `${FilterOperator.EQ}:${DuplicateStatus.unique}`,
+            'filter.registrationDuplicateStatus': `${FilterOperator.EQ}:${DuplicateStatus.unique}`,
           },
-        });
-      const uniqueMeta = uniqueTransactionsResponse.body.meta;
+        }),
+        getTransactionsByPaymentIdPaginated({
+          programId: programIdPV,
+          paymentId: paymentIdPv,
+          accessToken,
+          filter: {
+            'filter.registrationDuplicateStatus': `${FilterOperator.EQ}:${DuplicateStatus.duplicate}`,
+          },
+        }),
+      ]);
 
+      const uniqueTransactions = uniqueResponse.body.data;
+      const uniqueMeta = uniqueResponse.body.meta;
+      const duplicateTransactions = duplicateResponse.body.data;
+      const duplicateMeta = duplicateResponse.body.meta;
+
+      // Assert
       expect(uniqueMeta.totalItems).toBe(4);
-
-      // Act
-      const duplicateTransactionsResponse =
-        await getTransactionsByPaymentIdPaginated({
-          programId: programIdPV,
-          paymentId: paymentIdPv,
-          accessToken,
-          filter: {
-            'filter.duplicateStatus': `${FilterOperator.EQ}:${DuplicateStatus.duplicate}`,
-          },
-        });
-      const duplicateMeta = duplicateTransactionsResponse.body.meta;
+      expect(uniqueTransactions).toHaveLength(4);
+      for (const transaction of uniqueTransactions) {
+        expect(transaction.registrationDuplicateStatus).toBe(
+          DuplicateStatus.unique,
+        );
+      }
 
       expect(duplicateMeta.totalItems).toBe(0);
+      expect(duplicateTransactions).toHaveLength(0);
     });
   });
 });

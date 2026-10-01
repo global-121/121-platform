@@ -176,7 +176,7 @@ export class ProgramPaymentTransactionListPageComponent {
           getChipDataByTransactionStatus(transaction.status),
       },
       {
-        field: 'duplicateStatus',
+        field: 'registrationDuplicateStatus',
         header: $localize`:@@registration-duplicates:Duplicates`,
         type: QueryTableColumnType.MULTISELECT,
         options: Object.values(DuplicateStatus).map((status) => ({
@@ -185,7 +185,7 @@ export class ProgramPaymentTransactionListPageComponent {
         })),
         displayAsChip: true,
         getCellChipData: (transaction) =>
-          getChipDataByDuplicateStatus(transaction.duplicateStatus),
+          getChipDataByDuplicateStatus(transaction.registrationDuplicateStatus),
       },
       {
         field: 'errorMessage',
