@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseArrayPipe,
   ParseBoolPipe,
   ParseIntPipe,
   Patch,
@@ -420,9 +421,12 @@ and adjust as needed.`,
     description: 'Provided program registration attribute name not found',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiBody({ type: [UpdateProgramRegistrationAttributesBatchDto] })
   @Patch(':programId/registration-attributes-batch')
   public async updateBatchProgramRegistrationAttributes(
-    @Body()
+    @Body(
+      new ParseArrayPipe({ items: UpdateProgramRegistrationAttributesBatchDto }),
+    )
     attributesToUpdate: UpdateProgramRegistrationAttributesBatchDto[],
     @Param('programId', ParseIntPipe)
     programId: number,

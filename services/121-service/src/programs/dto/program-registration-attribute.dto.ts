@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
+  IsDefined,
   IsIn,
   IsNotEmpty,
   IsOptional,
@@ -194,6 +195,7 @@ export class UpdateProgramRegistrationAttributesBatchDto {
   public readonly programRegistrationAttributeName: string;
 
   @ApiProperty()
+  @IsDefined()
   @ValidateNested()
   @Type(() => UpdateProgramRegistrationAttributeDto)
   public readonly updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
