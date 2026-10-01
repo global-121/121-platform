@@ -102,11 +102,17 @@ export class AddProgramTeamUserDialogComponent {
   });
 
   formFieldErrors = generateFieldErrors(this.formGroup, {
-    scopeValue: (control) => {
-      if (!control.invalid) {
+    scopeValue: ({ invalid }) => {
+      if (!invalid) {
         return;
       }
       return $localize`Enter a valid scope. No spaces are allowed.`;
+    },
+    userValue: ({ invalid }) => {
+      if (!invalid) {
+        return;
+      }
+      return $localize`Selecting a user is required`;
     },
   });
 

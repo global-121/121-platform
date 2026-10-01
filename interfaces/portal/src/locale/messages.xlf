@@ -1443,6 +1443,9 @@
       <trans-unit id="6566240598427787934" datatype="html">
         <source>Part of payment</source>
       </trans-unit>
+      <trans-unit id="657037013799190105" datatype="html">
+        <source>Selecting a user is required</source>
+      </trans-unit>
       <trans-unit id="6582831988869863310" datatype="html">
         <source>You&apos;re about to edit the user <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ userToEdit()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> in your program team.</source>
       </trans-unit>
