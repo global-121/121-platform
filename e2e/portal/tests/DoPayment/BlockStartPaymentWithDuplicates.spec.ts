@@ -62,15 +62,26 @@ test('Block start payment with duplicates', async ({
     );
   });
 
-  await test.step('Fail to start payment', async () => {
+  await test.step('Filter transaction table for duplicates', async () => {
     await paymentPage.goto(`/program/${programIdPV}/payments/1`);
 
+    await paymentPage.table.waitForLoaded();
+
+    await paymentPage.table.filterColumnByDropDownSelection({
+      columnName: 'Duplicates',
+      selection: 'Duplicate',
+    });
+
+    await paymentPage.table.validateWaitForTableRowCount({
+      expectedRowCount: 2,
+    });
+  });
+
+  await test.step('Fail to start payment', async () => {
     await paymentPage.validateButtonVisibility({
       isVisible: true,
       button: 'start',
     });
-
-    await paymentPage.table.waitForLoaded();
 
     await paymentPage.startPayment();
     await paymentPage.validateDuplicatesErrorDialogMessage({
