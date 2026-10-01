@@ -79,9 +79,7 @@ async function getShardJobs({ runId }) {
     ghArgs: ['run', 'view', String(runId), '--repo', repo, '--json', 'jobs'],
     returnParsedJson: true,
   });
-  return jobs.filter(
-    (job) => shardJobNamePattern.test(job.name) && job.conclusion === 'failure',
-  );
+  return jobs.filter((job) => shardJobNamePattern.test(job.name));
 }
 
 /**

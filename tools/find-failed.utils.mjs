@@ -26,32 +26,24 @@ export async function listFailedRuns({
   const listArgs = [
     'run',
     'list',
-    '--repo',
-    repo,
-    '--workflow',
-    workflow,
-    '--status',
-    'failure',
-    '-L',
-    String(runLimit),
-    '--json',
-    'databaseId,conclusion,createdAt,headBranch,event,headSha,url',
+    `--repo=${repo}`,
+    `--workflow=${workflow}`,
+    '--status=failure',
+    `-L=${runLimit}`,
+    '--json=databaseId,createdAt,headBranch,event,headSha,url',
   ];
-  if (branch) {
-    listArgs.push('--branch', branch);
+
+  if (mergeQueueOnly) {
+    listArgs.push('--event=merge_group');
   }
 
-  const runs = await ghCLI({ ghArgs: listArgs, returnParsedJson: true });
-  return runs.filter((run) => {
-    if (run.conclusion !== 'failure') {
-      return false;
-    }
+  if (branch) {
+    listArgs.push(`--branch=${branch}`);
+  }
 
-    if (!mergeQueueOnly) {
-      return true;
-    }
-
-    return run.event === 'merge_group';
+  return await ghCLI({
+    ghArgs: listArgs,
+    returnParsedJson: true,
   });
 }
 
