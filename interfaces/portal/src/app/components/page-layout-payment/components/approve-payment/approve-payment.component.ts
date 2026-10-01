@@ -1,9 +1,12 @@
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
+  model,
+  signal,
   viewChild,
 } from '@angular/core';
 import {
@@ -15,7 +18,9 @@ import {
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { isObject } from 'radashi';
 
 import {
   DataListComponent,
@@ -27,6 +32,7 @@ import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
+import { isErrorWithStatusCode } from '~/utils/is-error-with-status-code.helper';
 
 type ApprovePaymentFormGroup =
   (typeof ApprovePaymentComponent)['prototype']['formGroup'];
@@ -41,6 +47,7 @@ type ApprovePaymentFormGroup =
     FormsModule,
     ReactiveFormsModule,
     InputTextModule,
+    DialogModule,
   ],
   templateUrl: './approve-payment.component.html',
   styles: ``,
@@ -58,6 +65,9 @@ export class ApprovePaymentComponent {
   private paymentApiService = inject(PaymentApiService);
   private toastService = inject(ToastService);
 
+  readonly duplicateErrorDialogVisible = model(false);
+  readonly duplicateCount = signal(0);
+
   readonly approvePaymentDialog = viewChild.required<FormDialogComponent>(
     'approvePaymentDialog',
   );
@@ -69,22 +79,50 @@ export class ApprovePaymentComponent {
     }),
   });
 
-  approvePaymentMutation = injectMutation(() => ({
-    mutationFn: ({
-      note,
-    }: ReturnType<ApprovePaymentFormGroup['getRawValue']>) =>
-      this.paymentApiService.approvePayment({
-        programId: this.programId,
-        paymentId: this.paymentId,
-        note: note ?? undefined,
-      }),
-    onSuccess: () => {
-      this.approvePaymentDialog().hide();
-      this.toastService.showToast({
-        detail: $localize`Payment approved successfully.`,
-      });
-    },
-  }));
+  approvePaymentMutation = injectMutation(() => {
+    return {
+      mutationFn: ({
+        note,
+      }: ReturnType<ApprovePaymentFormGroup['getRawValue']>) =>
+        this.paymentApiService.approvePayment({
+          programId: this.programId,
+          paymentId: this.paymentId,
+          note: note ?? undefined,
+        }),
+      onSuccess: () => {
+        this.approvePaymentDialog().hide();
+        this.toastService.showToast({
+          detail: $localize`Payment approved successfully.`,
+        });
+      },
+      onError: (error) => {
+        if (
+          !isErrorWithStatusCode({
+            error,
+            statusCode: HttpStatusCode.BadRequest,
+          })
+        ) {
+          return;
+        }
+
+        const cause = error.cause as HttpErrorResponse;
+
+        if (!isObject(cause.error) || !('duplicateCount' in cause.error)) {
+          return;
+        }
+
+        const errorObject = cause.error as {
+          message: string;
+          duplicateCount: number;
+        };
+
+        this.duplicateCount.set(errorObject.duplicateCount);
+        this.approvePaymentDialog().hide();
+        this.approvePaymentMutation.reset();
+        this.duplicateErrorDialogVisible.set(true);
+      },
+    };
+  });
 
   readonly dataList = computed<DataListItem[]>(() => [
     {
