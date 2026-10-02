@@ -126,10 +126,6 @@ export class SyncDefaultRoles1790861746910 implements MigrationInterface {
   }: {
     queryRunner: QueryRunner;
   }): Promise<RoleState[]> {
-    // Unsupported permissions are removed on bootstrap, so they are ignored here
-    const supportedPermissionNames = new Set<string>(
-      Object.values(PermissionEnum),
-    );
     const roles: { id: number; role: string; permissionNames: string[] }[] =
       await queryRunner.query(
         `SELECT
@@ -150,11 +146,7 @@ export class SyncDefaultRoles1790861746910 implements MigrationInterface {
     return roles.map((role) => ({
       id: role.id,
       role: role.role,
-      permissionNames: new Set(
-        role.permissionNames.filter((permissionName) =>
-          supportedPermissionNames.has(permissionName),
-        ),
-      ),
+      permissionNames: new Set(role.permissionNames),
     }));
   }
 
@@ -168,11 +160,32 @@ export class SyncDefaultRoles1790861746910 implements MigrationInterface {
     permissionIdsByName: Map<string, number>;
   }): Promise<DriftedDefaultRole[]> {
     const driftedDefaultRoles: DriftedDefaultRole[] = [];
+    const supportedPermissionNames = new Set<string>(
+      Object.values(PermissionEnum),
+    );
 
     for (const defaultRole of DEFAULT_USER_ROLES) {
       const existingRole = roles.find((role) => role.role === defaultRole.role);
+      const defaultPermissionNames = new Set<string>(defaultRole.permissions);
 
       if (!existingRole) {
+        const [createdRole]: { id: number }[] = await queryRunner.query(
+          `INSERT INTO "121-service"."user_role" ("role", "label")
+          VALUES ($1, $2)
+          RETURNING "id"`,
+          [defaultRole.role, defaultRole.label],
+        );
+        await this.setRolePermissions({
+          queryRunner,
+          roleId: createdRole.id,
+          permissionNames: defaultPermissionNames,
+          permissionIdsByName,
+        });
+        roles.push({
+          id: createdRole.id,
+          role: defaultRole.role,
+          permissionNames: defaultPermissionNames,
+        });
         continue;
       }
 
@@ -181,21 +194,28 @@ export class SyncDefaultRoles1790861746910 implements MigrationInterface {
         [defaultRole.label, existingRole.id],
       );
 
-      const defaultPermissionNames = new Set<string>(defaultRole.permissions);
-
-      if (isSameSet({ a: existingRole.permissionNames, b: defaultPermissionNames })) {
+      if (
+        isSameSet({ a: existingRole.permissionNames, b: defaultPermissionNames })
+      ) {
         continue;
       }
 
-      driftedDefaultRoles.push({
-        defaultRole,
-        roleId: existingRole.id,
-        originalPermissionNames: existingRole.permissionNames,
-        assignmentIds: await this.getAssignmentIds({
-          queryRunner,
+      const originalPermissionNames = new Set(
+        [...existingRole.permissionNames].filter((permissionName) =>
+          supportedPermissionNames.has(permissionName),
+        ),
+      );
+      if (!isSameSet({ a: originalPermissionNames, b: defaultPermissionNames })) {
+        driftedDefaultRoles.push({
+          defaultRole,
           roleId: existingRole.id,
-        }),
-      });
+          originalPermissionNames,
+          assignmentIds: await this.getAssignmentIds({
+            queryRunner,
+            roleId: existingRole.id,
+          }),
+        });
+      }
 
       await this.setRolePermissions({
         queryRunner,
