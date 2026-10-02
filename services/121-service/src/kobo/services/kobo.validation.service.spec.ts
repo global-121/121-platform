@@ -8,8 +8,14 @@ import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-d
 import { KoboValidationService } from '@121-service/src/kobo/services/kobo.validation.service';
 import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { AccessGroupLevelsService } from '@121-service/src/programs/access-group-levels/access-group-levels.service';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
-import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
+import {
+  GenericRegistrationAttributes,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 
 jest.mock('@121-service/src/env', () => ({
   env: {
@@ -24,6 +30,11 @@ describe('KoboValidationService', () => {
   let service: KoboValidationService;
   let programFspConfigurationRepository: ProgramFspConfigurationRepository;
   let programRepository: ProgramRepository;
+  let programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository;
+  let accessGroupLevelsService: {
+    getAccessGroupRegistrationAttributeNames: jest.Mock;
+    getAccessGroupAttributeTypeViolation: jest.Mock;
+  };
 
   const startAndEndSurveyItems = [
     {
@@ -114,6 +125,17 @@ describe('KoboValidationService', () => {
       providers: [
         KoboValidationService,
         {
+          provide: AccessGroupLevelsService,
+          useValue: {
+            getAccessGroupRegistrationAttributeNames: jest
+              .fn()
+              .mockResolvedValue(null),
+            getAccessGroupAttributeTypeViolation: jest
+              .fn()
+              .mockReturnValue(undefined),
+          },
+        },
+        {
           provide: ProgramFspConfigurationRepository,
           useValue: {
             find: jest.fn(),
@@ -127,6 +149,12 @@ describe('KoboValidationService', () => {
             }),
           },
         },
+        {
+          provide: ProgramRegistrationAttributeRepository,
+          useValue: {
+            find: jest.fn().mockResolvedValue([]),
+          },
+        },
       ],
     }).compile();
 
@@ -136,6 +164,11 @@ describe('KoboValidationService', () => {
         ProgramFspConfigurationRepository,
       );
     programRepository = module.get<ProgramRepository>(ProgramRepository);
+    programRegistrationAttributeRepository =
+      module.get<ProgramRegistrationAttributeRepository>(
+        ProgramRegistrationAttributeRepository,
+      );
+    accessGroupLevelsService = module.get(AccessGroupLevelsService);
   });
 
   describe('validate fsp attributes', () => {
@@ -702,6 +735,129 @@ describe('KoboValidationService', () => {
            },
          ]
         `);
+    });
+  });
+
+  describe('access-group-locked attribute validation', () => {
+    const createAccessGroupAttributeEntity = (
+      overrides: Partial<ProgramRegistrationAttributeEntity> = {},
+    ): ProgramRegistrationAttributeEntity =>
+      ({
+        id: 1,
+        programId,
+        name: 'region',
+        type: RegistrationAttributeTypes.dropdown,
+        options: [
+          { option: 'utrecht', label: { en: 'Utrecht' } },
+          { option: 'zuidholland', label: { en: 'Zuid-Holland' } },
+        ],
+        ...overrides,
+      }) as ProgramRegistrationAttributeEntity;
+
+    beforeEach(() => {
+      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+        fullnameNamingConvention: [],
+        enableScope: false,
+      });
+      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
+        [],
+      );
+      (
+        programRegistrationAttributeRepository.find as jest.Mock
+      ).mockResolvedValue([createAccessGroupAttributeEntity()]);
+      accessGroupLevelsService.getAccessGroupRegistrationAttributeNames.mockResolvedValue(
+        ['region'],
+      );
+    });
+
+    it('should pass validation when an access-group-locked attribute stays a select_one question', async () => {
+      // Arrange
+      const formDefinitionWithMatchingRegion: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [
+          ...baseSurveyItems,
+          {
+            name: 'region',
+            type: 'select_one',
+            label: ['Region'],
+            choices: [
+              { name: 'utrecht', label: ['Utrecht'], list_name: 'region' },
+              {
+                name: 'zuidholland',
+                label: ['Zuid-Holland'],
+                list_name: 'region',
+              },
+            ],
+          },
+        ],
+      };
+
+      // Act & Assert
+      await expect(
+        service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithMatchingRegion,
+          programId,
+        }),
+      ).resolves.not.toThrow();
+    });
+
+    it('should throw when an access-group-locked attribute is no longer a select_one question', async () => {
+      // Arrange
+      const formDefinitionWithChangedType: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [
+          ...baseSurveyItems,
+          {
+            name: 'region',
+            type: 'text',
+            label: ['Region'],
+            choices: [],
+          },
+        ],
+      };
+      accessGroupLevelsService.getAccessGroupAttributeTypeViolation.mockReturnValue(
+        { reason: 'type' },
+      );
+
+      // Act
+      let error: HttpException | any;
+      try {
+        await service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithChangedType,
+          programId,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+      expect(error.response.errors).toMatchInlineSnapshot(`
+         [
+           {
+             "attributeName": "region",
+             "error": "Attribute 'region' must stay a select_one question because it's used for access group configuration",
+             "solution": "Keep 'region' as a select_one question in the Kobo form, or remove it from the program's access group configuration first",
+             "type": "accessGroupAttributeLocked",
+           },
+         ]
+        `);
+    });
+
+    it('should pass validation when a Kobo question no longer exists for an access-group-locked attribute', async () => {
+      // Arrange
+      const formDefinitionWithoutRegion: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [...baseSurveyItems],
+      };
+
+      // Act & Assert
+      await expect(
+        service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithoutRegion,
+          programId,
+        }),
+      ).resolves.not.toThrow();
     });
   });
 
