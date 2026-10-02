@@ -231,6 +231,7 @@ export class UserService {
     userRoleData: UpdateUserRoleDto,
   ): Promise<UserRoleResponseDTO> {
     const existingRole = await this.findRoleOrThrow(userRoleId);
+    this.throwIfDefaultUserRole(existingRole);
 
     if (userRoleData.label) {
       existingRole.label = userRoleData.label;
@@ -260,8 +261,22 @@ export class UserService {
     userRoleId: number,
   ): Promise<UserRoleResponseDTO> {
     const existingRole = await this.findRoleOrThrow(userRoleId);
+    this.throwIfDefaultUserRole(existingRole);
     const deletedUserRole = await this.userRoleRepository.remove(existingRole);
     return this.getUserRoleResponse(deletedUserRole);
+  }
+
+  private throwIfDefaultUserRole(userRole: UserRoleEntity): void {
+    const isDefaultRole = Object.values(DefaultUserRole).includes(
+      userRole.role as DefaultUserRole,
+    );
+    if (!isDefaultRole) {
+      return;
+    }
+    throw new HttpException(
+      `Role '${userRole.role}' is a default role and cannot be updated or deleted`,
+      HttpStatus.BAD_REQUEST,
+    );
   }
 
   private async findRoleOrThrow(userRoleId: number): Promise<UserRoleEntity> {

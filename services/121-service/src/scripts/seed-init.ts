@@ -1,17 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import crypto from 'node:crypto';
-import { DataSource, Equal } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
+import { PermissionMaintenanceService } from '@121-service/src/shared/services/permission-maintenance.service';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
-import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 
 @Injectable()
@@ -20,6 +17,7 @@ export class SeedInit implements InterfaceScript {
     private dataSource: DataSource,
     private readonly queuesService: QueuesRegistryService,
     private readonly httpService: CustomHttpService,
+    private readonly permissionMaintenanceService: PermissionMaintenanceService,
   ) {}
 
   public async run({
@@ -41,8 +39,8 @@ export class SeedInit implements InterfaceScript {
       // Some migration scripts contain data migrations (i.e. add data), so delete all data before seeding as well.
       await this.truncateAll();
     }
-    const permissions = await this.addPermissions();
-    await this.createDefaultRoles(permissions);
+    await this.permissionMaintenanceService.syncSupportedPermissions();
+    await this.permissionMaintenanceService.syncDefaultRoles();
     await this.createAdminUser();
   }
 
@@ -50,272 +48,6 @@ export class SeedInit implements InterfaceScript {
     if (IS_DEVELOPMENT) {
       await this.httpService.get(`${env.MOCK_SERVICE_URL}/api/reset/callbacks`);
     }
-  }
-
-  private async addPermissions(): Promise<PermissionEntity[]> {
-    const permissionsRepository =
-      this.dataSource.getRepository(PermissionEntity);
-    const permissionEntities: PermissionEntity[] = [];
-    for (const permissionName of Object.values(PermissionEnum)) {
-      let permissionEntity = await permissionsRepository.findOne({
-        where: { name: Equal(permissionName) },
-      });
-      if (!permissionEntity) {
-        const permission = new PermissionEntity();
-        permission.name = permissionName as PermissionEnum;
-        permissionEntity = await permissionsRepository.save(permission);
-      }
-      permissionEntities.push(permissionEntity);
-    }
-    return permissionEntities;
-  }
-
-  private async createDefaultRoles(
-    permissions: PermissionEntity[],
-  ): Promise<UserRoleEntity[]> {
-    const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
-
-    const defaultRoles = [
-      {
-        role: DefaultUserRole.Admin,
-        label: 'Admin',
-        permissions: Object.values(PermissionEnum),
-      },
-      {
-        role: DefaultUserRole.ProgramAdmin,
-        label: 'Program Admin',
-        permissions: [
-          PermissionEnum.AidWorkerProgramREAD,
-          PermissionEnum.AidWorkerProgramUPDATE,
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.ProgramApprovalThresholdsREAD,
-          PermissionEnum.ProgramApprovalThresholdsUPDATE,
-          PermissionEnum.ProgramAttachmentsCREATE,
-          PermissionEnum.ProgramAttachmentsDELETE,
-          PermissionEnum.ProgramAttachmentsREAD,
-          PermissionEnum.ProgramAttachmentsUPDATE,
-          PermissionEnum.ProgramFspConfigCREATE,
-          PermissionEnum.ProgramFspConfigDELETE,
-          PermissionEnum.ProgramFspConfigREAD,
-          PermissionEnum.ProgramFspConfigUPDATE,
-          PermissionEnum.ProgramKoboREAD,
-          PermissionEnum.ProgramKoboUPDATE,
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.ProgramREAD,
-          PermissionEnum.ProgramRegistrationAttributesREAD,
-          PermissionEnum.ProgramRegistrationAttributesCREATE,
-          PermissionEnum.ProgramRegistrationAttributesDELETE,
-          PermissionEnum.ProgramRegistrationAttributesUPDATE,
-          PermissionEnum.ProgramUPDATE,
-          PermissionEnum.RegistrationREAD,
-        ],
-      },
-      {
-        role: DefaultUserRole.View,
-        label: 'Only view data, including Personally Identifiable Information',
-        permissions: [
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentTransactionREAD,
-          PermissionEnum.PaymentVoucherPaperREAD,
-          PermissionEnum.PaymentVoucherWhatsappREAD,
-          PermissionEnum.FspDebitCardREAD,
-          PermissionEnum.ProgramREAD,
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.ProgramAttachmentsREAD,
-          PermissionEnum.RegistrationNotificationREAD,
-          PermissionEnum.RegistrationPersonalREAD,
-          PermissionEnum.RegistrationREAD,
-          PermissionEnum.ProgramRegistrationAttributesREAD,
-        ],
-      },
-      {
-        role: DefaultUserRole.KoboRegistrationUser,
-        label: 'Only CREATE registrations',
-        permissions: [
-          PermissionEnum.ProgramREAD,
-          PermissionEnum.RegistrationCREATE,
-        ],
-      },
-      {
-        role: DefaultUserRole.KoboValidationUser,
-        label: 'Only UPDATE registrations',
-        permissions: [
-          PermissionEnum.ProgramREAD,
-          PermissionEnum.RegistrationAttributeUPDATE,
-          PermissionEnum.RegistrationAttributeFinancialUPDATE,
-          PermissionEnum.RegistrationPersonalUPDATE,
-          PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
-        ],
-      },
-      {
-        role: DefaultUserRole.CvaManager,
-        label: 'Cash Assistance Program Manager',
-        permissions: [
-          PermissionEnum.ProgramREAD,
-          PermissionEnum.ProgramUPDATE,
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.ProgramAttachmentsREAD,
-          PermissionEnum.ProgramAttachmentsCREATE,
-          PermissionEnum.ProgramAttachmentsDELETE,
-          PermissionEnum.ProgramAttachmentsUPDATE,
-          PermissionEnum.PaymentCREATE,
-          PermissionEnum.PaymentDELETE,
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentTransactionREAD,
-          PermissionEnum.PaymentVoucherPaperREAD,
-          PermissionEnum.PaymentVoucherWhatsappREAD,
-          PermissionEnum.FspDebitCardREAD,
-          PermissionEnum.FspDebitCardBLOCK,
-          PermissionEnum.FspDebitCardUNBLOCK,
-          PermissionEnum.RegistrationREAD,
-          PermissionEnum.ProgramRegistrationAttributesREAD,
-          PermissionEnum.RegistrationCREATE,
-          PermissionEnum.RegistrationAttributeUPDATE,
-          PermissionEnum.RegistrationAttributeFinancialUPDATE,
-          PermissionEnum.RegistrationNotificationCREATE,
-          PermissionEnum.RegistrationNotificationREAD,
-          PermissionEnum.RegistrationPersonalREAD,
-          PermissionEnum.RegistrationPersonalEXPORT,
-          PermissionEnum.RegistrationPersonalUPDATE,
-          PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
-          PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
-          PermissionEnum.RegistrationStatusIncludedUPDATE,
-          PermissionEnum.RegistrationImportTemplateREAD,
-          PermissionEnum.RegistrationDuplicationDELETE,
-          PermissionEnum.AidWorkerProgramREAD,
-          PermissionEnum.RegistrationStatusPausedUPDATE,
-          PermissionEnum.RegistrationBulkUPDATE,
-        ],
-      },
-      {
-        role: DefaultUserRole.CvaOfficer,
-        label: 'Cash Assistance Program Officer',
-        permissions: [
-          PermissionEnum.ProgramREAD,
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.ProgramAttachmentsREAD,
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentTransactionREAD,
-          PermissionEnum.PaymentVoucherPaperREAD,
-          PermissionEnum.PaymentVoucherWhatsappREAD,
-          PermissionEnum.FspDebitCardREAD,
-          PermissionEnum.FspDebitCardBLOCK,
-          PermissionEnum.RegistrationREAD,
-          PermissionEnum.ProgramRegistrationAttributesREAD,
-          PermissionEnum.RegistrationCREATE,
-          PermissionEnum.RegistrationAttributeUPDATE,
-          PermissionEnum.RegistrationNotificationREAD,
-          PermissionEnum.RegistrationNotificationCREATE,
-          PermissionEnum.RegistrationPersonalREAD,
-          PermissionEnum.RegistrationPersonalUPDATE,
-          PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
-          PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
-          PermissionEnum.RegistrationImportTemplateREAD,
-          PermissionEnum.RegistrationStatusPausedUPDATE,
-        ],
-      },
-      {
-        role: DefaultUserRole.FinanceManager,
-        label: 'Finance Manager',
-        permissions: [
-          PermissionEnum.ProgramREAD,
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.ProgramAttachmentsREAD,
-          PermissionEnum.ProgramAttachmentsCREATE,
-          PermissionEnum.PaymentCREATE,
-          PermissionEnum.PaymentDELETE,
-          PermissionEnum.PaymentSTART,
-          PermissionEnum.PaymentRETRY,
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentUPDATE,
-          PermissionEnum.PaymentTransactionREAD,
-          PermissionEnum.PaymentFspInstructionREAD,
-          PermissionEnum.PaymentVoucherPaperREAD,
-          PermissionEnum.PaymentVoucherWhatsappREAD,
-          PermissionEnum.FspDebitCardREAD,
-          PermissionEnum.FspDebitCardBLOCK,
-          PermissionEnum.FspDebitCardUNBLOCK,
-          PermissionEnum.RegistrationREAD,
-          PermissionEnum.ProgramRegistrationAttributesREAD,
-          PermissionEnum.RegistrationPersonalREAD,
-          PermissionEnum.RegistrationPaymentExport,
-        ],
-      },
-      {
-        role: DefaultUserRole.FinanceOfficer,
-        label: 'Finance Officer',
-        permissions: [
-          PermissionEnum.ProgramREAD,
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.ProgramAttachmentsREAD,
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentTransactionREAD,
-          PermissionEnum.PaymentFspInstructionREAD,
-          PermissionEnum.PaymentVoucherPaperREAD,
-          PermissionEnum.PaymentVoucherWhatsappREAD,
-          PermissionEnum.FspDebitCardREAD,
-          PermissionEnum.FspDebitCardBLOCK,
-          PermissionEnum.FspDebitCardUNBLOCK,
-          PermissionEnum.RegistrationREAD,
-          PermissionEnum.ProgramRegistrationAttributesREAD,
-          PermissionEnum.RegistrationPersonalREAD,
-        ],
-      },
-      {
-        role: DefaultUserRole.ViewWithoutPII,
-        label:
-          'Only view data, not including Personally Identifiable Information',
-        permissions: [
-          PermissionEnum.ProgramREAD,
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentTransactionREAD,
-          PermissionEnum.PaymentVoucherPaperREAD,
-          PermissionEnum.PaymentVoucherWhatsappREAD,
-          PermissionEnum.FspDebitCardREAD,
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.RegistrationNotificationREAD,
-          PermissionEnum.RegistrationREAD,
-        ],
-      },
-      {
-        role: DefaultUserRole.Approver,
-        label: 'Approve payments',
-        permissions: [
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentTransactionREAD,
-          PermissionEnum.PaymentFspInstructionREAD,
-          PermissionEnum.RegistrationREAD,
-          PermissionEnum.ProgramRegistrationAttributesREAD,
-          PermissionEnum.RegistrationPersonalREAD,
-        ],
-      },
-      {
-        role: DefaultUserRole.ProgramTeamManager,
-        label: 'Program Team Manager',
-        permissions: [
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentTransactionREAD,
-          PermissionEnum.RegistrationREAD,
-          PermissionEnum.RegistrationNotificationREAD,
-          PermissionEnum.AidWorkerProgramREAD,
-          PermissionEnum.AidWorkerProgramUPDATE,
-        ],
-      },
-    ];
-
-    const userRoleEntities: UserRoleEntity[] = [];
-    for (const defaultRole of defaultRoles) {
-      const defaultRoleEntity = new UserRoleEntity();
-      defaultRoleEntity.role = defaultRole.role;
-      defaultRoleEntity.label = defaultRole.label;
-      defaultRoleEntity.permissions = permissions.filter((permission) =>
-        defaultRole.permissions.includes(permission.name),
-      );
-      userRoleEntities.push(await userRoleRepository.save(defaultRoleEntity));
-    }
-    return userRoleEntities;
   }
 
   private async createAdminUser(): Promise<void> {
