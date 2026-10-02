@@ -8,7 +8,12 @@ import {
 
 declare const fileUploadLimitsBrand: unique symbol;
 
-export type FileUploadLimits = NonNullable<MulterModuleOptions['limits']> & {
+type StaticFileUploadLimits = Extract<
+  NonNullable<MulterModuleOptions['limits']>,
+  { fileSize?: number }
+>;
+
+export type FileUploadLimits = StaticFileUploadLimits & {
   readonly [fileUploadLimitsBrand]: true;
 };
 
@@ -21,7 +26,7 @@ const MAX_FILES_PER_UPLOAD = 1;
 const BYTES_PER_ALLOWED_ROW = 1024 + 10;
 
 function createFileUploadLimits(
-  limits: NonNullable<MulterModuleOptions['limits']>,
+  limits: StaticFileUploadLimits,
 ): FileUploadLimits {
   return limits as FileUploadLimits;
 }
