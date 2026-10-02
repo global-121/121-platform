@@ -7,6 +7,11 @@ name: 'Test: E2E (Portal)'
 
 on:
   workflow_dispatch:
+    inputs:
+      repeat_count:
+        description: 'Number of repetitions per test when hunting flaky tests'
+        type: string
+        default: '30'
   merge_group:
     types: [checks_requested]
   pull_request:
@@ -80,6 +85,127 @@ jobs:
       - name: Lint E2E-Tests code
         working-directory: ${{ env.e2eTestsPath }}
         run: 'npm run lint'
+
+  detect-flaky-candidates:
+    needs: path-filter
+    runs-on: ubuntu-latest
+    if: ${{ needs.path-filter.outputs.should_skip != 'true' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch') }}
+    outputs:
+      files: ${{ steps.select.outputs.files }}
+      has_candidates: ${{ steps.select.outputs.has_candidates }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+        with:
+          filter: blob:none # Reduce clone size/speed
+          fetch-depth: 0 # Full history is needed to diff against the base commit
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: '${{ env.e2eTestsPath }}/.node-version'
+
+      - name: Determine base commit for flaky-candidate selection
+        id: base
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base_ref="${{ github.event.pull_request.base.ref }}"
+          else
+            # Manual runs have no PR base, so diff against the default branch instead.
+            base_ref="${{ github.event.repository.default_branch }}"
+          fi
+          # Merge-base (not the branch tip) avoids treating base-branch commits
+          # made after this branch diverged as changes introduced by this PR.
+          echo "sha=$(git merge-base "origin/$base_ref" HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Select changed/new E2E spec files for flaky-test detection
+        id: select
+        run: |
+          node tools/select-changed-e2e-tests.mjs --base ${{ steps.base.outputs.sha }} --head ${{ github.sha }}
+
+  find-flaky-changed-tests:
+    runs-on: ubuntu-latest
+    needs:
+      - path-filter
+      - lint-code
+      - detect-flaky-candidates
+    if: ${{ needs.detect-flaky-candidates.outputs.has_candidates == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        file: ${{ fromJson(needs.detect-flaky-candidates.outputs.files) }}
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: '${{ env.e2eTestsPath }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.e2eTestsPath }}/package-lock.json'
+
+      - name: Install E2E-Tests code-dependencies
+        working-directory: ${{ env.e2eTestsPath }}
+        # We only need to install the tests' dependencies, so we can skip the `postinstall`-step
+        run: |
+          npm ci --ignore-scripts
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp services/.env.example services/.env
+
+      - name: Run Services with Docker
+        run: |
+          npm run start:services:ci:production
+
+      - name: Run Portal
+        working-directory: ./interfaces/portal
+        env:
+          NG_PRODUCTION: true
+          NG_URL_121_SERVICE_API: http://localhost:3000/api
+          NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: false
+        run: |
+          npm ci
+          cp .env.example .env
+          npm run start:debug-production > run-portal-logs.txt 2>&1 &
+
+      - name: Install E2E-Tests runtime-dependencies
+        working-directory: ${{ env.e2eTestsPath }}
+        run: |
+          npx playwright install chromium --with-deps --no-shell
+
+      - name: Wait for Portal
+        run: |
+          timeout 90s sh -c 'until curl http://localhost:8088 --head --silent; do echo "Waiting for Portal to be running..."; sleep 1; done'
+
+      - name: Hunt for flaky tests in changed/new spec file
+        working-directory: ${{ env.e2eTestsPath }}
+        env:
+          # Passed via env (not inlined into the script) since SPEC_FILE originates from PR file paths and must never be interpreted by the shell.
+          SPEC_FILE: ${{ matrix.file }}
+          REPEAT_COUNT: ${{ github.event.inputs.repeat_count || '30' }}
+        run: |
+          npm test -- "$SPEC_FILE" --fail-on-flaky-tests --repeat-each "$REPEAT_COUNT" -x --trace retain-on-failure --reporter=html
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: test-result-artifacts-flaky-${{ strategy.job-index }}
+          path: |
+            ${{ env.e2eTestsPath }}/test-results/
+            ${{ env.e2eTestsPath }}/playwright-report/
+            ./interfaces/portal/run-portal-logs.txt
+
+      - name: Portal logs
+        if: always()
+        shell: bash
+        run: cat ./interfaces/portal/run-portal-logs.txt
+
+      - name: Docker logs
+        if: always()
+        uses: global-121/collect-container-logs@78594c6154439e32858bf3dc17c9ff36561a1d31
 
   test-shard-e2e:
     runs-on: ubuntu-latest
@@ -165,7 +291,14 @@ jobs:
   # This is a workaround for this issue: https://github.com/orgs/community/discussions/44490
   test-shard-resolution-e2e:
     runs-on: ubuntu-slim
-    needs: [test-shard-e2e]
+    needs:
+      [
+        path-filter,
+        lint-code,
+        detect-flaky-candidates,
+        test-shard-e2e,
+        find-flaky-changed-tests,
+      ]
     if: always()
     steps:
       - name: Check required job results
