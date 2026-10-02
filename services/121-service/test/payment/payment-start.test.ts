@@ -9,32 +9,33 @@ import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
-    approvePayment,
-    createPayment,
-    getPaymentEvents,
-    getPaymentSummary,
-    getTransactionsByPaymentIdPaginated,
-    retryPayment,
-    startPayment,
-    waitForPaymentAndTransactionsToComplete,
-    waitForPaymentNotInProgress,
+  approvePayment,
+  createPayment,
+  getPaymentEvents,
+  getPaymentSummary,
+  getTransactionsByPaymentIdPaginated,
+  retryPayment,
+  startPayment,
+  waitForPaymentAndTransactionsToComplete,
+  waitForPaymentNotInProgress,
 } from '@121-service/test/helpers/program.helper';
 import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
-    awaitChangeRegistrationStatus,
-    getRegistrations,
-    seedIncludedRegistrations,
-    waitForRegistrationToHaveUpdatedPaymentCount,
+  awaitChangeRegistrationStatus,
+  getRegistrations,
+  seedIncludedRegistrations,
+  updateRegistration,
+  waitForRegistrationToHaveUpdatedPaymentCount,
 } from '@121-service/test/helpers/registration.helper';
 import {
-    createAccessTokenWithPermissions,
-    getAccessToken,
-    resetDB,
+  createAccessTokenWithPermissions,
+  getAccessToken,
+  resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-    programIdPV,
-    registrationPV5,
-    registrationPV6,
+  programIdPV,
+  registrationPV5,
+  registrationPV6,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Payment start', () => {
@@ -441,5 +442,66 @@ describe('Payment start', () => {
       (e) => e.type === PaymentEvent.started,
     );
     expect(paymentStartedEvents.length).toBe(2);
+  });
+
+  it('should reject starting a payment when registrations have duplicate status', async () => {
+    // Arrange: create registrations and include them
+    const registration1 = {
+      ...registrationPV5,
+      whatsappPhoneNumber: '14155230001',
+    };
+    const registration2 = {
+      ...registrationPV6,
+      whatsappPhoneNumber: '14155230002',
+    };
+    await seedIncludedRegistrations(
+      [registration1, registration2],
+      programId,
+      accessToken,
+    );
+
+    const referenceIds = [registration1.referenceId, registration2.referenceId];
+
+    // Create payment
+    const createPaymentResponse = await createPayment({
+      programId,
+      transferValue,
+      referenceIds,
+      accessToken,
+    });
+    expect(createPaymentResponse.status).toBe(HttpStatus.CREATED);
+    const paymentId = createPaymentResponse.body.id;
+
+    // Approve payment
+    await approvePayment({
+      programId,
+      paymentId,
+      accessToken,
+    });
+
+    // Make registrations duplicate
+    const reason = 'automated test';
+    const dataUpdate = {
+      whatsappPhoneNumber: '14155230001',
+    };
+
+    await updateRegistration(
+      programId,
+      registration2.referenceId,
+      dataUpdate,
+      reason,
+      accessToken,
+    );
+
+    // Act: attempt to start payment with duplicate registrations
+    const startPaymentResponse = await startPayment({
+      programId,
+      paymentId,
+      accessToken,
+    });
+
+    // Assert: start payment should be rejected
+    expect(startPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(startPaymentResponse.body.message).toContain('duplicate status');
   });
 });

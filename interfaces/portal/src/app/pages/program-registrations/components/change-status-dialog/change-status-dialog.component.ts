@@ -95,12 +95,15 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
   >(undefined);
   readonly dialogVisible = model(false);
   readonly dryRunFailureDialogVisible = model(false);
+  readonly duplicatesErrorDialogVisible = model(false);
   readonly enableSendMessage = model(false);
   readonly customMessage = model<string>();
   readonly status = signal<RegistrationStatusEnum | undefined>(undefined);
 
   readonly reason = model<string | undefined>(undefined);
   readonly reasonValidationErrorMessage = signal<string | undefined>(undefined);
+
+  readonly duplicateCount = signal(0);
 
   // Snapshot of the dry-run result so the warning dialog stays stable while the real mutation is in flight
   readonly dryRunPreviewData = signal<ChangeStatusResult | undefined>(
@@ -236,6 +239,16 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
         return;
       }
 
+      this.duplicateCount.set(data.duplicateCount);
+
+      if (
+        this.status() === RegistrationStatusEnum.included &&
+        this.duplicateCount() > 0
+      ) {
+        this.showDuplicatesErrorDialog();
+        return;
+      }
+
       this.handleDryRunResult({ data });
     },
   }));
@@ -319,5 +332,16 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
     this.enableSendMessage.set(false);
     this.customMessage.set(undefined);
     this.dryRunPreviewData.set(undefined);
+  }
+
+  showDuplicatesErrorDialog() {
+    this.dialogVisible.set(false);
+    this.changeStatusMutation.reset();
+    this.duplicatesErrorDialogVisible.set(true);
+  }
+
+  hideDuplicatesErrorDialog() {
+    this.duplicatesErrorDialogVisible.set(false);
+    this.duplicateCount.set(0);
   }
 }

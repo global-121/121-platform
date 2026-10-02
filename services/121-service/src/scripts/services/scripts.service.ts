@@ -88,10 +88,12 @@ export class ScriptsService {
     powerNrRegistrationsString,
     nrPaymentsString = '0',
     includeRegistrationEvents = false,
+    skipIntroduceDuplicates = false,
   }: {
     powerNrRegistrationsString: string;
     nrPaymentsString?: string;
     includeRegistrationEvents?: boolean;
+    skipIntroduceDuplicates?: boolean;
   }) {
     const { powerNrRegistrations, nrPayments } =
       await this.seedMockHelper.validateParametersForDataDuplication({
@@ -111,6 +113,8 @@ export class ScriptsService {
     }); // Ensure payment related data is extended
     await this.seedMockHelper.updateDerivedData();
     await this.seedMockHelper.updateSequenceNumbers();
-    await this.seedMockHelper.introduceDuplicates();
+    if (!skipIntroduceDuplicates) {
+      await this.seedMockHelper.introduceDuplicates();
+    }
   }
 }
