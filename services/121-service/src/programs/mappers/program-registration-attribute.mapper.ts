@@ -14,6 +14,7 @@ export class ProgramRegistrationAttributeMapper {
     return {
       name: entity.name,
       label: entity.label,
+      koboLabel: entity.koboLabel,
       type: entity.type,
       isRequired: entity.isRequired,
       options: entity.options ?? undefined,
@@ -39,6 +40,7 @@ export class ProgramRegistrationAttributeMapper {
     return {
       name: attribute.name,
       label: attribute.label,
+      koboLabel: attribute.koboLabel ?? null,
       type: attribute.type,
       isRequired: attribute.isRequired,
       options: attribute.options ?? null,

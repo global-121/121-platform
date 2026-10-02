@@ -1,8 +1,14 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { UpdateProgramRegistrationAttributesBatchDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import {
+  UpdateProgramRegistrationAttributeDto,
+  UpdateProgramRegistrationAttributesBatchDto,
+} from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { patchProgramRegistrationAttributesInBatch } from '@121-service/test/helpers/program.helper';
+import {
+  patchProgramRegistrationAttribute,
+  patchProgramRegistrationAttributesInBatch,
+} from '@121-service/test/helpers/program.helper';
 import {
   getAccessToken,
   resetDB,
@@ -17,11 +23,28 @@ async function setupNlrcEnvironment() {
   return accessToken;
 }
 
-describe('Update program registration attributes in batch', () => {
+describe('Update program registration attributes', () => {
   let accessToken: string;
 
   beforeEach(async () => {
     accessToken = await setupNlrcEnvironment();
+  });
+
+  it('should successfully update a single attribute label', async () => {
+    const attributeToUpdate: UpdateProgramRegistrationAttributeDto = {
+      label: { en: 'New WhatsApp Label', nl: 'Nieuw WhatsApp Label' },
+    };
+
+    // Act
+    const response = await patchProgramRegistrationAttribute({
+      programId: OCW_PROGRAM_ID,
+      programRegistrationAttributeName: 'whatsappPhoneNumber',
+      programRegistrationAttribute: attributeToUpdate,
+      accessToken,
+    });
+
+    // Assert
+    expect(response.body.label).toEqual(attributeToUpdate.label);
   });
 
   it('should successfully update multiple attributes', async () => {
