@@ -1,5 +1,7 @@
+import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
@@ -686,6 +688,9 @@ describe('IntersolveVisaService', () => {
         status: IntersolveVisaTokenStatus.Active,
         blocked: false,
       });
+      jest
+        .spyOn(service, 'retrieveAndUpdateWallet')
+        .mockResolvedValue({} as IntersolveVisaWalletDto);
     });
 
     it('should not create a physical card when replacing an on-site linked card, because the physical card already exists', async () => {
@@ -722,7 +727,7 @@ describe('IntersolveVisaService', () => {
       expect(apiService.createPhysicalCard).toHaveBeenCalled();
     });
 
-    it('should close the old debit card at Intersolve', async () => {
+    it('should close the old debit card at Intersolve and update wallet at the end of the flow', async () => {
       // Act
       await service.replaceCard({
         registrationId,
@@ -735,15 +740,60 @@ describe('IntersolveVisaService', () => {
       expect(apiService.closeCard).toHaveBeenCalledWith({
         tokenCode: 'old-token',
       });
-      expect(childWalletRepo.updateUnscoped).toHaveBeenCalledWith(10, {
-        cardStatus: IntersolveVisaCardStatus.CardClosed,
+      expect(service.retrieveAndUpdateWallet).toHaveBeenCalledWith({
+        registrationId,
       });
-      expect(childWalletRepo.save).toHaveBeenCalledWith(
-        expect.objectContaining({
-          tokenCode: 'old-token',
-          cardStatus: IntersolveVisaCardStatus.CardClosed,
+    });
+
+    it('should continue the flow when closeCard returns 405 Method Not Allowed', async () => {
+      // Arrange
+      jest
+        .spyOn(apiService, 'closeCard')
+        .mockRejectedValue(
+          new IntersolveVisaApiError(
+            'Method Not Allowed',
+            HttpStatus.METHOD_NOT_ALLOWED,
+          ),
+        );
+
+      // Act
+      await service.replaceCard({
+        registrationId,
+        contactInformation,
+        brandCode,
+        coverLetterCode,
+      });
+
+      // Assert
+      expect(apiService.substituteToken).toHaveBeenCalled();
+      expect(service.retrieveAndUpdateWallet).toHaveBeenCalledWith({
+        registrationId,
+      });
+    });
+
+    it('should rethrow errors from closeCard other than 405', async () => {
+      // Arrange
+      jest
+        .spyOn(apiService, 'closeCard')
+        .mockRejectedValue(
+          new IntersolveVisaApiError(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        );
+
+      // Act & Assert
+      await expect(
+        service.replaceCard({
+          registrationId,
+          contactInformation,
+          brandCode,
+          coverLetterCode,
         }),
-      );
+      ).rejects.toThrow(IntersolveVisaApiError);
+
+      expect(apiService.substituteToken).not.toHaveBeenCalled();
+      expect(service.retrieveAndUpdateWallet).not.toHaveBeenCalled();
     });
 
     it('should not close a card at Intersolve for a wallet that never had a debit card', async () => {

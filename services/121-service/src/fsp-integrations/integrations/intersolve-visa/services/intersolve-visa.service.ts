@@ -501,10 +501,11 @@ export class IntersolveVisaService {
   /**
    * This function replaces a card for a given registration ID.
    * - The function first creates a new (child) token at Intersolve
-   * - Closes the old debit card at Intersolve, so it is not longer renewed when it expires
+   * - Closes the old debit card at Intersolve, so it is no longer renewed when it expires
    * - Substitutes the old token with the new one,
    * - Creates a new child wallet entity,
-   * - Finally, it creates a new card and updates the child wallet status.
+   * - Creates a new card,
+   * - Finally, it retrieves and updates the latest wallet and card data from Intersolve.
    *
    * @param {ReplaceCardParams} input - The parameters for the card replacement.
    * @throws {Error} Throws an Error if no customer, parent wallet, or child wallet is found for the given registration ID, or if the child wallet to be replaced does not have a card created for it.
@@ -554,15 +555,20 @@ export class IntersolveVisaService {
     });
 
     if (childWalletToReplace.isDebitCardCreated) {
-      // Closing an already-closed card is a no-op at Intersolve, so this call is safe to repeat on an already closed card
-      await this.intersolveVisaApiService.closeCard({
-        tokenCode: childWalletToReplace.tokenCode,
-      });
-      childWalletToReplace.cardStatus = IntersolveVisaCardStatus.CardClosed;
-      await this.intersolveVisaChildWalletScopedRepository.updateUnscoped(
-        childWalletToReplace.id,
-        { cardStatus: IntersolveVisaCardStatus.CardClosed },
-      );
+      try {
+        await this.intersolveVisaApiService.closeCard({
+          tokenCode: childWalletToReplace.tokenCode,
+        });
+      } catch (error) {
+        if (
+          error instanceof IntersolveVisaApiError &&
+          error.statusCode === HttpStatus.METHOD_NOT_ALLOWED
+        ) {
+          // If the card cannot be closed at Intersolve (e.g. 405 Method Not Allowed), continue the flow
+        } else {
+          throw error;
+        }
+      }
     }
 
     // Substitute the old token with the new token at Intersolve
@@ -607,6 +613,10 @@ export class IntersolveVisaService {
     newChildWallet.isDebitCardCreated = true;
     newChildWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
     await this.intersolveVisaChildWalletScopedRepository.save(newChildWallet);
+
+    await this.retrieveAndUpdateWallet({
+      registrationId: input.registrationId,
+    });
   }
 
   public async hasIntersolveCustomer(registrationId: number): Promise<boolean> {
