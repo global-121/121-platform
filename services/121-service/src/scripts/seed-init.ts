@@ -1,17 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import crypto from 'node:crypto';
-import { DataSource, Equal } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { DEFAULT_USER_ROLES } from '@121-service/src/user/const/default-user-roles.const';
-import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
+import { PermissionMaintenanceService } from '@121-service/src/shared/services/permission-maintenance.service';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
-import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 
 @Injectable()
@@ -20,6 +17,7 @@ export class SeedInit implements InterfaceScript {
     private dataSource: DataSource,
     private readonly queuesService: QueuesRegistryService,
     private readonly httpService: CustomHttpService,
+    private readonly permissionMaintenanceService: PermissionMaintenanceService,
   ) {}
 
   public async run({
@@ -41,8 +39,8 @@ export class SeedInit implements InterfaceScript {
       // Some migration scripts contain data migrations (i.e. add data), so delete all data before seeding as well.
       await this.truncateAll();
     }
-    const permissions = await this.addPermissions();
-    await this.createDefaultRoles(permissions);
+    await this.permissionMaintenanceService.syncSupportedPermissions();
+    await this.permissionMaintenanceService.syncDefaultRoles();
     await this.createAdminUser();
   }
 
@@ -50,42 +48,6 @@ export class SeedInit implements InterfaceScript {
     if (IS_DEVELOPMENT) {
       await this.httpService.get(`${env.MOCK_SERVICE_URL}/api/reset/callbacks`);
     }
-  }
-
-  private async addPermissions(): Promise<PermissionEntity[]> {
-    const permissionsRepository =
-      this.dataSource.getRepository(PermissionEntity);
-    const permissionEntities: PermissionEntity[] = [];
-    for (const permissionName of Object.values(PermissionEnum)) {
-      let permissionEntity = await permissionsRepository.findOne({
-        where: { name: Equal(permissionName) },
-      });
-      if (!permissionEntity) {
-        const permission = new PermissionEntity();
-        permission.name = permissionName as PermissionEnum;
-        permissionEntity = await permissionsRepository.save(permission);
-      }
-      permissionEntities.push(permissionEntity);
-    }
-    return permissionEntities;
-  }
-
-  private async createDefaultRoles(
-    permissions: PermissionEntity[],
-  ): Promise<UserRoleEntity[]> {
-    const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
-
-    const userRoleEntities: UserRoleEntity[] = [];
-    for (const defaultRole of DEFAULT_USER_ROLES) {
-      const defaultRoleEntity = new UserRoleEntity();
-      defaultRoleEntity.role = defaultRole.role;
-      defaultRoleEntity.label = defaultRole.label;
-      defaultRoleEntity.permissions = permissions.filter((permission) =>
-        defaultRole.permissions.includes(permission.name),
-      );
-      userRoleEntities.push(await userRoleRepository.save(defaultRoleEntity));
-    }
-    return userRoleEntities;
   }
 
   private async createAdminUser(): Promise<void> {
