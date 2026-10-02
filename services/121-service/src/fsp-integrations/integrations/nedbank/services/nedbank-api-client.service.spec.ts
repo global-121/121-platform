@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
-import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { Test, TestingModule } from '@nestjs/testing';
+import { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import https from 'node:https';
 
 import { CreateOrderResponseNedbankApiDto } from '@121-service/src/fsp-integrations/integrations/nedbank/dtos/nedbank-api/create-order-response-nedbank-api.dto';
@@ -67,7 +67,7 @@ describe('NedbankApiClientService', () => {
         status: HttpStatus.CREATED,
         statusText: 'OK',
         headers: {},
-        config: {},
+        config: { headers: {} } as InternalAxiosRequestConfig,
       };
 
       jest.spyOn(httpService, 'request').mockResolvedValue(response);
@@ -124,7 +124,7 @@ describe('NedbankApiClientService', () => {
         status: HttpStatus.BAD_REQUEST,
         statusText: 'Bad Request',
         headers: {},
-        config: {},
+        config: { headers: {} } as InternalAxiosRequestConfig,
       };
 
       jest

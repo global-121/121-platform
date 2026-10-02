@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
+import { AxiosResponse } from 'axios';
 
 import {
   AL_FOUAD_AGENT_CODE,

@@ -1,5 +1,5 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common';
-import { AxiosError } from '@nestjs/terminus/dist/errors/axios.error';
+import { AxiosError } from 'axios';
 import soapRequest from 'easy-soap-request';
 import https from 'node:https';
 import * as convert from 'xml-js';

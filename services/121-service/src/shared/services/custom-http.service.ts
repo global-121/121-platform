@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { AxiosRequestConfig } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { defaultClient, TelemetryClient } from 'applicationinsights';
+import { AxiosRequestConfig } from 'axios';
 import { cloneDeepWith, isPlainObject } from 'lodash';
 import fs from 'node:fs';
 import https, { AgentOptions } from 'node:https';

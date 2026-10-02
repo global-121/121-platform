@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
+import { AxiosResponse } from 'axios';
 import { joinURL } from 'ufo';
 
 import { EXTERNAL_API } from '@121-service/src/config';

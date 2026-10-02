@@ -4,7 +4,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
-import { SpelunkerModule } from 'nestjs-spelunker';
 import fs, { writeFileSync } from 'node:fs';
 
 import { ApplicationModule } from '@121-service/src/app.module';
@@ -19,6 +18,7 @@ import {
 import { env } from '@121-service/src/env';
 import { INTERFACE_NAME_HEADER } from '@121-service/src/shared/enum/interface-names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { getModuleDependencyEdges } from '@121-service/src/utils/module-dependency-graph.helper';
 import { ValidationPipeOptions } from '@121-service/src/validation-options/validation-pipe-options.const';
 
 import 'multer'; // This is import is required to prevent typing error on the MulterModule
@@ -26,14 +26,14 @@ import 'multer'; // This is import is required to prevent typing error on the Mu
 import appInsights = require('applicationinsights');
 
 /**
- * A visualization of module dependencies is generated using `nestjs-spelunker`
+ * A visualization of module dependencies is generated using a small local
+ * re-implementation of `nestjs-spelunker` (see
+ * `@121-service/src/utils/module-dependency-graph.helper`), since that
+ * package is not compatible with NestJS v12+.
  * The file can be viewed with [Mermaid](https://mermaid.live) or in VSCode Markdown Preview-mode.
- * See: https://github.com/jmcdo29/nestjs-spelunker
  */
 function generateModuleDependencyGraph(app: INestApplication): void {
-  const tree = SpelunkerModule.explore(app);
-  const root = SpelunkerModule.graph(tree);
-  const edges = SpelunkerModule.findGraphEdges(root);
+  const edges = getModuleDependencyEdges(app);
   const genericModules = [
     // Sorted alphabetically
     'ApplicationModule',
@@ -53,10 +53,10 @@ function generateModuleDependencyGraph(app: INestApplication): void {
   const mermaidEdges = edges
     .filter(
       ({ from, to }) =>
-        !genericModules.includes(from.module.name) &&
-        !genericModules.includes(to.module.name),
+        !genericModules.includes(from.name) &&
+        !genericModules.includes(to.name),
     )
-    .map(({ from, to }) => `  ${from.module.name}-->${to.module.name}`);
+    .map(({ from, to }) => `  ${from.name}-->${to.name}`);
   const mermaidGraph =
     '# Module Dependencies Graph\n\n```mermaid\ngraph LR\n' +
     mermaidEdges.sort().join('\n') +
