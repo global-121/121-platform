@@ -221,6 +221,7 @@ export const expectedAttributes = [
   'preferredLanguage',
   'inclusionScore',
   'paymentAmountMultiplier',
+  'transferValue',
   'fspName',
   'registrationProgramId',
   'personAffectedSequence',
