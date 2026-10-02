@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import crypto from 'node:crypto';
-import { DataSource, Equal } from 'typeorm';
+import { DataSource, Equal, QueryFailedError } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
@@ -13,6 +13,7 @@ import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity'
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 
 @Injectable()
 export class SeedInit implements InterfaceScript {
@@ -365,9 +366,42 @@ export class SeedInit implements InterfaceScript {
 
     // Truncate all tables in a single statement
     // RESTART IDENTITY automatically resets all associated sequences
-    await this.dataSource.manager.query(
-      `TRUNCATE TABLE ${tableNames} RESTART IDENTITY CASCADE;`,
-    );
+    await this.runRetryingOnDeadlock({
+      query: `TRUNCATE TABLE ${tableNames} RESTART IDENTITY CASCADE;`,
+    });
+  }
+
+  // Jobs that are still active during a reset can deadlock with the TRUNCATE; Postgres aborts one side, so retrying is safe.
+  private async runRetryingOnDeadlock({
+    query,
+  }: {
+    query: string;
+  }): Promise<void> {
+    const truncateMaxAttempts = 5;
+    const truncateInitialRetryDelayInMs = 250;
+    for (let attempt = 1; ; attempt++) {
+      try {
+        await this.dataSource.manager.query(query);
+        return;
+      } catch (error) {
+        if (
+          !this.isDeadlockError({ error }) ||
+          attempt >= truncateMaxAttempts
+        ) {
+          throw error;
+        }
+        await waitFor(truncateInitialRetryDelayInMs * 2 ** (attempt - 1));
+      }
+    }
+  }
+
+  private isDeadlockError({ error }: { error: unknown }): boolean {
+    if (!(error instanceof QueryFailedError)) {
+      return false;
+    }
+    const postgresDeadlockErrorCode = '40P01';
+    const driverError: { code?: string } = error.driverError;
+    return driverError.code === postgresDeadlockErrorCode;
   }
 
   private async runAllMigrations(): Promise<void> {
