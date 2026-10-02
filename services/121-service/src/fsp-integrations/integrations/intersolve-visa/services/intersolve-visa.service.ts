@@ -504,8 +504,7 @@ export class IntersolveVisaService {
    * - Closes the old debit card at Intersolve, so it is no longer renewed when it expires
    * - Substitutes the old token with the new one,
    * - Creates a new child wallet entity,
-   * - Creates a new card,
-   * - Finally, it retrieves and updates the latest wallet and card data from Intersolve.
+   * - Finally, it creates a new card and updates the child wallet status.
    *
    * @param {ReplaceCardParams} input - The parameters for the card replacement.
    * @throws {Error} Throws an Error if no customer, parent wallet, or child wallet is found for the given registration ID, or if the child wallet to be replaced does not have a card created for it.
@@ -559,6 +558,11 @@ export class IntersolveVisaService {
         await this.intersolveVisaApiService.closeCard({
           tokenCode: childWalletToReplace.tokenCode,
         });
+        childWalletToReplace.cardStatus = IntersolveVisaCardStatus.CardClosed;
+        await this.intersolveVisaChildWalletScopedRepository.updateUnscoped(
+          childWalletToReplace.id,
+          { cardStatus: IntersolveVisaCardStatus.CardClosed },
+        );
       } catch (error) {
         if (
           error instanceof IntersolveVisaApiError &&
@@ -613,10 +617,6 @@ export class IntersolveVisaService {
     newChildWallet.isDebitCardCreated = true;
     newChildWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
     await this.intersolveVisaChildWalletScopedRepository.save(newChildWallet);
-
-    await this.retrieveAndUpdateWallet({
-      registrationId: input.registrationId,
-    });
   }
 
   public async hasIntersolveCustomer(registrationId: number): Promise<boolean> {
