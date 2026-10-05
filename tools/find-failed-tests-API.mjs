@@ -11,7 +11,7 @@
  *   node find-failed-tests-API.mjs [--workflow test_service_api.yml]
  *     [--limit 200] [--branch main] [--repo global-121/121-platform]
  *     [--merge-queue-only]
- *     [--output report-flaky-tests-API.json]
+ *     [--output report-failed-tests-API.json]
  */
 import { writeFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
@@ -26,13 +26,30 @@ import {
 
 const { values: args } = parseArgs({
   options: {
-    repo: { type: 'string', default: 'global-121/121-platform' },
-    workflow: { type: 'string', default: 'test_service_api.yml' },
-    limit: { type: 'string', default: '200' },
-    branch: { type: 'string' },
+    repo: {
+      type: 'string',
+      default: 'global-121/121-platform',
+    },
+    workflow: {
+      type: 'string',
+      default: 'test_service_api.yml',
+    },
+    limit: {
+      type: 'string',
+      default: '200',
+    },
+    branch: {
+      type: 'string',
+    },
     'merge-queue-only': { type: 'boolean', default: false },
-    concurrency: { type: 'string', default: '6' },
-    output: { type: 'string', default: 'report-flaky-tests-API.json' },
+    concurrency: {
+      type: 'string',
+      default: '6',
+    },
+    output: {
+      type: 'string',
+      default: 'report-failed-tests-API.json',
+    },
   },
 });
 
