@@ -38,14 +38,14 @@ ranked summary of the flakiest tests they found.
 - Login with `gh auth login`
 - Add `--merge-queue-only` to only scan runs triggered by the merge queue (`merge_group` event).
 
-#### API workflow: `npm run find-flaky-tests-API`
+#### API workflow: `npm run find-failed-tests-API`
 
 Scans the Jest-based `test_service_api.yml` workflow and reports which
 integration tests fail intermittently (flaky) versus consistently (likely
 broken).
 
 ```shell
-npm run find-flaky-tests-API -- \
+npm run find-failed-tests-API -- \
   --workflow test_service_api.yml \
   --branch main \
   --merge-queue-only \
@@ -53,7 +53,7 @@ npm run find-flaky-tests-API -- \
   --output report-flaky-tests-API.json
 ```
 
-#### E2E workflow: `npm run find-flaky-tests-E2E`
+#### E2E workflow: `npm run find-failed-tests-E2E`
 
 Same idea, but for the Playwright e2e workflow. Since Playwright already
 retries and labels tests as "flaky" itself, this reads every scanned job's log
@@ -63,7 +63,7 @@ workflow only triggers on pull requests and the merge queue (no push-to-main
 runs), so `--branch` usually is not useful here.
 
 ```shell
-npm run find-flaky-tests-E2E -- \
+npm run find-failed-tests-E2E -- \
   --workflow test_e2e_portal.yml \
   --merge-queue-only \
   --limit 200 \

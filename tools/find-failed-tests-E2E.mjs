@@ -5,7 +5,7 @@
  * tests are flaky (fail, then pass on Playwright's built-in retry) vs. tests
  * that fail even after retrying (likely broken, not flaky).
  *
- * Unlike Jest (see find-flaky-tests-API.mjs), Playwright is configured with
+ * Unlike Jest (see find-failed-tests-API.mjs), Playwright is configured with
  * `retries: 1` (see e2e/playwright.config.ts), so it already tells us which
  * tests were flaky per run via its "list" reporter summary. We don't need to
  * infer flakiness statistically; we just have to aggregate it across runs.
@@ -21,7 +21,7 @@
  * useful here and is omitted by default.
  *
  * Usage:
- *   node find-flaky-tests-E2E.mjs [--workflow test_e2e_portal.yml]
+ *   node find-failed-tests-E2E.mjs [--workflow test_e2e_portal.yml]
  *     [--limit 200] [--branch main] [--repo global-121/121-platform]
  *     [--merge-queue-only]
  *     [--output report-flaky-tests-E2E.json]
@@ -35,7 +35,7 @@ import {
   listCompletedRuns,
   recordOccurrences,
   runWithConcurrency,
-} from './find-flaky.utils.mjs';
+} from './find-failed.utils.mjs';
 
 const { values: args } = parseArgs({
   options: {
@@ -131,7 +131,10 @@ async function getTestSummaryForJob({ jobId }) {
     return { ...parseTestSummary({ logText }), logAvailable: true };
   } catch (error) {
     // GitHub deletes Actions logs after a retention period; treat those as unknown.
-    console.warn(`Could not fetch logs for job ${jobId}:`, error?.message ?? error);
+    console.warn(
+      `Could not fetch logs for job ${jobId}:`,
+      error?.message ?? error,
+    );
     return { failed: new Set(), flaky: new Set(), logAvailable: false };
   }
 }
@@ -159,8 +162,16 @@ async function collectTestOccurrences({ runs }) {
           expiredLogCount += 1;
           continue;
         }
-        recordOccurrences({ occurrencesByTest: flakyOccurrencesByTest, testIds: flaky, run });
-        recordOccurrences({ occurrencesByTest: failedOccurrencesByTest, testIds: failed, run });
+        recordOccurrences({
+          occurrencesByTest: flakyOccurrencesByTest,
+          testIds: flaky,
+          run,
+        });
+        recordOccurrences({
+          occurrencesByTest: failedOccurrencesByTest,
+          testIds: failed,
+          run,
+        });
       }
     },
     maxConcurrent: concurrency,
@@ -175,18 +186,22 @@ async function collectTestOccurrences({ runs }) {
 }
 
 function summarizeOccurrences({ occurrencesByTest, scannedRunCount }) {
-  const tests = [...occurrencesByTest.entries()].map(([testId, occurrences]) => {
-    const distinctRunCount = new Set(occurrences.map((o) => o.runId)).size;
-    return {
-      testId,
-      occurrenceCount: distinctRunCount,
-      totalRunsScanned: scannedRunCount,
-      rate: Number((distinctRunCount / scannedRunCount).toFixed(3)),
-      occurrences,
-    };
-  });
+  const tests = [...occurrencesByTest.entries()].map(
+    ([testId, occurrences]) => {
+      const distinctRunCount = new Set(occurrences.map((o) => o.runId)).size;
+      return {
+        testId,
+        occurrenceCount: distinctRunCount,
+        totalRunsScanned: scannedRunCount,
+        rate: Number((distinctRunCount / scannedRunCount).toFixed(3)),
+        occurrences,
+      };
+    },
+  );
 
-  tests.sort((a, b) => b.rate - a.rate || b.occurrenceCount - a.occurrenceCount);
+  tests.sort(
+    (a, b) => b.rate - a.rate || b.occurrenceCount - a.occurrenceCount,
+  );
 
   return tests;
 }

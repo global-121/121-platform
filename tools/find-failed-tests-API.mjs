@@ -8,7 +8,7 @@
  * (`gh auth login`).
  *
  * Usage:
- *   node find-flaky-tests-API.mjs [--workflow test_service_api.yml]
+ *   node find-failed-tests-API.mjs [--workflow test_service_api.yml]
  *     [--limit 200] [--branch main] [--repo global-121/121-platform]
  *     [--merge-queue-only]
  *     [--output report-flaky-tests-API.json]
@@ -22,7 +22,7 @@ import {
   listCompletedRuns,
   recordOccurrences,
   runWithConcurrency,
-} from './find-flaky.utils.mjs';
+} from './find-failed.utils.mjs';
 
 const { values: args } = parseArgs({
   options: {
@@ -101,7 +101,10 @@ async function getFailingTestsForJob({ jobId }) {
     };
   } catch (error) {
     // GitHub deletes Actions logs after a retention period; treat those as unknown.
-    console.warn(`Could not fetch logs for job ${jobId}:`, error?.message ?? error);
+    console.warn(
+      `Could not fetch logs for job ${jobId}:`,
+      error?.message ?? error,
+    );
     return { failingTests: new Set(), logAvailable: false };
   }
 }
