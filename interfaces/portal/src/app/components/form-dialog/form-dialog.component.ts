@@ -50,7 +50,7 @@ export class FormDialogComponent<TMutationData = unknown> {
   readonly proceedIcon = input<string | undefined>(undefined);
 
   readonly submitButtonDataTestId = input('form-dialog-submit-button');
-  readonly dialogTestId = input('form-dialog');
+  readonly dataTestId = input('form-dialog');
 
   readonly formGroup = input<FormGroup>();
 
