@@ -97,8 +97,8 @@ async function getShardJobs({ runId }) {
  * Parses the trailing summary section that Playwright's "list" reporter
  * prints, returning the failed test entries it found there.
  */
-function parseTestSummary({ logText }) {
-  const failed = new Set();
+function parseFailingTests({ logText }) {
+  const failingTests = new Set();
   let currentCategory;
 
   for (const rawLine of logText.split('\n')) {
@@ -117,16 +117,16 @@ function parseTestSummary({ logText }) {
     const testEntryMatch = testEntryPattern.exec(line);
     if (testEntryMatch) {
       const [, project, location, title] = testEntryMatch;
-      failed.add(`[${project}] ${location} :: ${title.trim()}`);
+      failingTests.add(`[${project}] ${location} :: ${title.trim()}`);
     } else if (line === '') {
       currentCategory = undefined;
     }
   }
 
-  return { failed };
+  return failingTests;
 }
 
-async function getTestSummaryForJob({ jobId }) {
+async function getFailingTestsForJob({ jobId }) {
   try {
     const logText = await ghText({
       ghArgs: [
@@ -139,19 +139,22 @@ async function getTestSummaryForJob({ jobId }) {
         '--log-failed',
       ],
     });
-    return { ...parseTestSummary({ logText }), logAvailable: true };
+    return {
+      failingTests: parseFailingTests({ logText }),
+      logAvailable: true,
+    };
   } catch (error) {
     // GitHub deletes Actions logs after a retention period; treat those as unknown.
     console.warn(
       `Could not fetch logs for job ${jobId}:`,
       error?.message ?? error,
     );
-    return { failed: new Set(), logAvailable: false };
+    return { failingTests: new Set(), logAvailable: false };
   }
 }
 
-async function collectTestOccurrences({ runs }) {
-  const failedOccurrencesByTest = new Map();
+async function collectFailureOccurrences({ runs }) {
+  const occurrencesByTest = new Map();
   let scannedRunCount = 0;
   let expiredLogCount = 0;
 
@@ -163,27 +166,27 @@ async function collectTestOccurrences({ runs }) {
         return; // The path-filter step skipped this run entirely, or no test shards failed.
       }
 
-      let hasFailedTests = false;
+      let hasFailingTests = false;
 
       for (const job of shardJobs) {
-        const { failed, logAvailable } = await getTestSummaryForJob({
+        const { failingTests, logAvailable } = await getFailingTestsForJob({
           jobId: job.databaseId,
         });
         if (!logAvailable) {
           expiredLogCount += 1;
           continue;
         }
-        if (failed.size > 0) {
-          hasFailedTests = true;
+        if (failingTests.size > 0) {
+          hasFailingTests = true;
           recordOccurrences({
-            occurrencesByTest: failedOccurrencesByTest,
-            testIds: failed,
+            occurrencesByTest,
+            testIds: failingTests,
             run,
           });
         }
       }
 
-      if (hasFailedTests) {
+      if (hasFailingTests) {
         scannedRunCount += 1;
       }
     },
@@ -191,48 +194,38 @@ async function collectTestOccurrences({ runs }) {
   });
 
   return {
-    failedOccurrencesByTest,
+    occurrencesByTest,
     scannedRunCount,
     expiredLogCount,
   };
 }
 
-function summarizeOccurrences({ occurrencesByTest, scannedRunCount }) {
+function buildReport({ occurrencesByTest, scannedRunCount, expiredLogCount }) {
   const tests = [...occurrencesByTest.entries()].map(
     ([testId, occurrences]) => {
       const distinctRunCount = new Set(occurrences.map((o) => o.runId)).size;
+      const failureRate = distinctRunCount / scannedRunCount;
       return {
         testId,
-        occurrenceCount: distinctRunCount,
+        failureCount: distinctRunCount,
         totalRunsScanned: scannedRunCount,
-        rate: Number((distinctRunCount / scannedRunCount).toFixed(3)),
+        failureRate: Number(failureRate.toFixed(3)),
         occurrences,
       };
     },
   );
 
   tests.sort(
-    (a, b) => b.rate - a.rate || b.occurrenceCount - a.occurrenceCount,
+    (a, b) => b.failureRate - a.failureRate || b.failureCount - a.failureCount,
   );
 
-  return tests;
-}
-
-function buildReport({
-  failedOccurrencesByTest,
-  scannedRunCount,
-  expiredLogCount,
-}) {
   return {
     repo,
     workflow,
     generatedAt: new Date().toISOString(),
     totalRunsScanned: scannedRunCount,
     expiredLogCount,
-    failedTests: summarizeOccurrences({
-      occurrencesByTest: failedOccurrencesByTest,
-      scannedRunCount,
-    }),
+    tests,
   };
 }
 
@@ -240,31 +233,31 @@ function printSummary({ report }) {
   console.log(
     `\nScanned ${report.totalRunsScanned} run(s) of "${report.workflow}" in ${report.repo}.`,
   );
-  console.log(`Found ${report.failedTests.length} failed test(s):\n`);
+  console.log(`Found ${report.tests.length} failed test(s):\n`);
 
-  for (const test of report.failedTests) {
+  for (const test of report.tests) {
     console.log(
-      `  ${(test.rate * 100).toFixed(1)}% (${test.occurrenceCount}/${test.totalRunsScanned}) — ${test.testId}`,
+      `  ${(test.failureRate * 100).toFixed(1)}% (${test.failureCount}/${test.totalRunsScanned}) — ${test.testId}`,
     );
   }
 
   if (report.expiredLogCount > 0) {
     console.log(
-      `\n${report.expiredLogCount} job(s) had logs already deleted by GitHub (past its retention period) and were excluded from the counts above.`,
+      `\n${report.expiredLogCount} failed job(s) had logs already deleted by GitHub (past its retention period) and were excluded from the counts above.`,
     );
   }
 }
 
 async function main() {
   const runs = await listCompletedRunsForWorkflow();
-  const testOccurrences = await collectTestOccurrences({ runs });
+  const failureOccurrences = await collectFailureOccurrences({ runs });
 
-  if (testOccurrences.scannedRunCount === 0) {
+  if (failureOccurrences.scannedRunCount === 0) {
     console.log('No completed runs found to analyze.');
     return;
   }
 
-  const report = buildReport(testOccurrences);
+  const report = buildReport(failureOccurrences);
   await writeFile(args.output, JSON.stringify(report, null, 2));
 
   printSummary({ report });

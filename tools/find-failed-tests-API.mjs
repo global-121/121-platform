@@ -83,7 +83,9 @@ async function getShardJobs({ runId }) {
   const { jobs } = await ghJson({
     ghArgs: ['run', 'view', String(runId), '--repo', repo, '--json', 'jobs'],
   });
-  return jobs.filter((job) => shardJobNamePattern.test(job.name));
+  return jobs.filter(
+    (job) => shardJobNamePattern.test(job.name) && job.conclusion === 'failure',
+  );
 }
 
 function parseFailingTests({ logText }) {
@@ -143,19 +145,12 @@ async function collectFailureOccurrences({ runs }) {
     worker: async (run) => {
       const shardJobs = await getShardJobs({ runId: run.databaseId });
       if (shardJobs.length === 0) {
-        return; // The path-filter step skipped this run entirely.
-      }
-
-      const failedShardJobs = shardJobs.filter(
-        (job) => job.conclusion === 'failure',
-      );
-      if (failedShardJobs.length === 0) {
-        return;
+        return; // The path-filter step skipped this run entirely, or no test shards failed.
       }
 
       let hasFailingTests = false;
 
-      for (const job of failedShardJobs) {
+      for (const job of shardJobs) {
         const { failingTests, logAvailable } = await getFailingTestsForJob({
           jobId: job.databaseId,
         });
