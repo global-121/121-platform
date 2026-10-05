@@ -26,7 +26,7 @@
         [tableCellContext]="tableCellContext()"
         [initialSortField]="'created'"
         [initialSortOrder]="-1"
-        data-testid="transaction-history-table"
+        [dataTestId]="'transaction-history-table'"
       />
     } @else if (transactionEventLog.isPending()) {
       <p-skeleton height="24rem" />

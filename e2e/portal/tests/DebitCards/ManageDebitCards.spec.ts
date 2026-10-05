@@ -222,7 +222,7 @@ test('User can replace a debit card and view both new and old card', async ({
   });
 
   await test.step('Verify old card details after replacement', async () => {
-    const oldCardList = page.locator('[data-testid="old-card-list"]');
+    const oldCardList = page.getByTestId('old-card-list');
     await expect(oldCardList).toBeVisible();
 
     // Verify the accordion header contains the original card number

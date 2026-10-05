@@ -251,7 +251,7 @@ class RegistrationsPage extends BasePage {
 
   async cancelSendMessageBulkAction() {
     await this.page.getByRole('button', { name: 'Cancel' }).click();
-    await expect(this.sendMessageDialogPreview).not.toBeVisible();
+    await expect(this.sendMessageDialogPreview).toBeHidden();
   }
 
   async validateSendMessagePaCount(count: number) {

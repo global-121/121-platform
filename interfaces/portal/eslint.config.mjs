@@ -11,12 +11,14 @@ import eslintPluginRegexp from 'eslint-plugin-regexp';
 import eslintSortClassMembers from 'eslint-plugin-sort-class-members';
 import tsEslint from 'typescript-eslint';
 
+import dataTestIdConvention from './eslint-rules/data-testid-convention.mjs';
 import noFormControlUndefinedValue from './eslint-rules/no-form-control-undefined-value.mjs';
 import tanstackNoManualCacheInvalidation from './eslint-rules/tanstack-no-manual-cache-invalidation.mjs';
 
 /** @type {import('eslint').ESLint.Plugin} */
 const customRulesPlugin = {
   rules: {
+    'data-testid-convention': dataTestIdConvention,
     'no-form-control-undefined-value': noFormControlUndefinedValue,
     'tanstack-no-manual-cache-invalidation': tanstackNoManualCacheInvalidation,
   },
@@ -147,9 +149,22 @@ export default defineConfig(
     ],
     plugins: {
       'better-tailwindcss': eslintPluginBetterTailwindcss,
+      'custom-rules': customRulesPlugin,
     },
     rules: {
       ...eslintPluginBetterTailwindcss.configs['recommended-error'].rules,
+      'custom-rules/data-testid-convention': [
+        'error',
+        {
+          componentsWithDataTestIdInput: [
+            'app-card-editable',
+            'app-form-dialog',
+            'app-form-field-wrapper',
+            'app-info-card',
+            'app-query-table',
+          ],
+        },
+      ],
       '@angular-eslint/template/i18n': [
         'error',
         {
