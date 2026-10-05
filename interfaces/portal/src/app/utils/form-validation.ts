@@ -1,6 +1,6 @@
 import { computed } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
 
 import { get } from 'radashi';
 
@@ -35,6 +35,10 @@ const genericValidationMessage = (control: AbstractControl) => {
 
   if (control.errors?.required || control.errors?.whitespaceOnly) {
     return $localize`:@@generic-required-field:This field is required.`;
+  }
+
+  if (control.errors?.integer) {
+    return $localize`Enter a whole number without decimals.`;
   }
 
   console.error('Validation errors: ', JSON.stringify(control.errors));
@@ -105,4 +109,11 @@ export const trackFieldErrors = ({
       }
     });
   }
+};
+
+export const integerValidator: ValidatorFn = (control) => {
+  if (Number.isInteger(control.value)) {
+    return null;
+  }
+  return { integer: true };
 };
