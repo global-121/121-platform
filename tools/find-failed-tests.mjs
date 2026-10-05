@@ -201,6 +201,15 @@ function parsePlaywrightFailingTests({ logText }) {
   return failingTests;
 }
 
+const logExpiredErrorPattern =
+  /HTTP 410|log not found|logs? (has|have)? ?expired/i;
+
+function isLogExpiredError({ error }) {
+  return logExpiredErrorPattern.test(
+    `${error?.stderr ?? ''}${error?.message ?? ''}`,
+  );
+}
+
 async function getFailingTestsForJob({ jobId }) {
   try {
     const logText = await ghCLI({
@@ -217,7 +226,9 @@ async function getFailingTestsForJob({ jobId }) {
       logAvailable: true,
     };
   } catch (error) {
-    // GitHub deletes Actions logs after a retention period; treat those as unknown.
+    if (!isLogExpiredError({ error })) {
+      throw error;
+    }
     console.warn(
       `Could not fetch logs for job ${jobId}:`,
       error?.message ?? error,
