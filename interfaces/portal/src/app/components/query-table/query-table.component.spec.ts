@@ -24,8 +24,7 @@ import { Locale } from '~/utils/locale';
 
 // To make the tests concerning PrimeNG ContextMenu work.
 // See: https://rebeccamdeprey.com/blog/mock-windowmatchmedia-in-vitest
-// See: https://vitest.dev/api/vi.html#vi-hoisted
-vi.hoisted(() => {
+beforeEach(() => {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
     enumerable: true,
