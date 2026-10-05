@@ -45,15 +45,6 @@ export default defineConfig(
       'playwright/no-element-handle': 'warn',
       'playwright/no-wait-for-selector': 'warn',
       'playwright/no-force-option': 'warn',
-      'no-restricted-syntax': [
-        'error',
-        {
-          message:
-            'Use `getByTestId()` instead of a raw `data-testid` CSS selector.',
-          selector:
-            'CallExpression[callee.property.name="locator"] :matches(Literal[value=/data-testid(?!-category)/], TemplateElement[value.raw=/data-testid(?!-category)/])',
-        },
-      ],
       'playwright/no-conditional-in-test': 'off', // @TO_DISCUSS: I think this is not a greate rule tbh
       'playwright/no-unused-locators': 'warn',
       'playwright/valid-title': 'warn',
