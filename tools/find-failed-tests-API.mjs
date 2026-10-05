@@ -1,18 +1,22 @@
 #!/usr/bin/env node
 
 /**
- * Scans GitHub Actions runs of a Jest-based test workflow and reports which
- * integration tests fail intermittently (flaky) vs. consistently (broken).
+ * Scans GitHub Actions runs and reports which API/integration-tests fail (often).
  *
  * Requires the GitHub CLI installed and authenticated: https://cli.github.com
  * (`gh auth login`).
  *
  * Usage:
- *   node find-failed-tests-API.mjs [--workflow test_service_api.yml]
- *     [--limit 200] [--branch main] [--repo global-121/121-platform]
+ *   node find-failed-tests-API.mjs
+ *     [--repo global-121/121-platform]
+ *     [--workflow test_service_api.yml]
+ *     [--limit 50]
+ *     [--branch main]
  *     [--merge-queue-only]
  *     [--output report-failed-tests-API.json]
+ *     [--concurrency 8]
  */
+
 import { writeFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 
@@ -36,12 +40,15 @@ const { values: args } = parseArgs({
     },
     limit: {
       type: 'string',
-      default: '200',
+      default: '25',
     },
     branch: {
       type: 'string',
     },
-    'merge-queue-only': { type: 'boolean', default: false },
+    'merge-queue-only': {
+      type: 'boolean',
+      default: false,
+    },
     concurrency: {
       type: 'string',
       default: '6',

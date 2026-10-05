@@ -1,31 +1,22 @@
 #!/usr/bin/env node
 
 /**
- * Scans GitHub Actions runs of the Playwright e2e workflow and reports which
- * tests are flaky (fail, then pass on Playwright's built-in retry) vs. tests
- * that fail even after retrying (likely broken, not flaky).
- *
- * Unlike Jest (see find-failed-tests-API.mjs), Playwright is configured with
- * `retries: 1` (see e2e/playwright.config.ts), so it already tells us which
- * tests were flaky per run via its "list" reporter summary. We don't need to
- * infer flakiness statistically; we just have to aggregate it across runs.
- * Because a flaky test can still make its job conclude "success" (it passed on
- * retry), we must read the log of every completed shard job, not just the
- * failed ones.
+ * Scans GitHub Actions runs and reports which E2E-tests fail (often).
  *
  * Requires the GitHub CLI installed and authenticated: https://cli.github.com
  * (`gh auth login`).
  *
- * Note: unlike test_service_api.yml, this workflow only triggers on
- * pull_request/merge_group (no push-to-main runs), so `--branch` usually isn't
- * useful here and is omitted by default.
- *
  * Usage:
- *   node find-failed-tests-E2E.mjs [--workflow test_e2e_portal.yml]
- *     [--limit 200] [--branch main] [--repo global-121/121-platform]
+ *   node find-failed-tests-E2E.mjs
+ *     [--repo global-121/121-platform]
+ *     [--workflow test_e2e_portal.yml]
+ *     [--limit 50]
+ *     [--branch main]
  *     [--merge-queue-only]
  *     [--output report-failed-tests-E2E.json]
+ *     [--concurrency 8]
  */
+
 import { writeFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 
@@ -49,7 +40,7 @@ const { values: args } = parseArgs({
     },
     limit: {
       type: 'string',
-      default: '200',
+      default: '25',
     },
     branch: {
       type: 'string',
