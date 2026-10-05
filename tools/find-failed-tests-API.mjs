@@ -21,8 +21,7 @@ import { writeFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 
 import {
-  ghJson,
-  ghText,
+  ghCLI,
   listCompletedRuns,
   recordOccurrences,
   runWithConcurrency,
@@ -80,8 +79,9 @@ async function listCompletedRunsForWorkflow() {
 }
 
 async function getShardJobs({ runId }) {
-  const { jobs } = await ghJson({
+  const { jobs } = await ghCLI({
     ghArgs: ['run', 'view', String(runId), '--repo', repo, '--json', 'jobs'],
+    returnParsedJson: true,
   });
   return jobs.filter(
     (job) => shardJobNamePattern.test(job.name) && job.conclusion === 'failure',
@@ -110,7 +110,7 @@ function parseFailingTests({ logText }) {
 
 async function getFailingTestsForJob({ jobId }) {
   try {
-    const logText = await ghText({
+    const logText = await ghCLI({
       ghArgs: [
         'run',
         'view',

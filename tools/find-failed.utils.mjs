@@ -8,13 +8,11 @@ const GH_EXEC_OPTIONS = {
   maxBuffer: 50 * 1024 * 1024,
 };
 
-export async function ghJson({ ghArgs }) {
+export async function ghCLI({ ghArgs, returnParsedJson = false }) {
   const { stdout } = await execFileAsync('gh', ghArgs, GH_EXEC_OPTIONS);
-  return JSON.parse(stdout);
-}
-
-export async function ghText({ ghArgs }) {
-  const { stdout } = await execFileAsync('gh', ghArgs, GH_EXEC_OPTIONS);
+  if (returnParsedJson) {
+    return JSON.parse(stdout);
+  }
   return stdout;
 }
 
@@ -42,7 +40,7 @@ export async function listCompletedRuns({
     listArgs.push('--branch', branch);
   }
 
-  const runs = await ghJson({ ghArgs: listArgs });
+  const runs = await ghCLI({ ghArgs: listArgs, returnParsedJson: true });
   return runs.filter((run) => {
     // NOTE: Filtering here, client-side because the GitHub API does not return recent runs when using the flag `--status=failed` consistently.
     if (run.status !== 'completed' || run.conclusion !== 'failure') {
