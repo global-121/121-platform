@@ -21,8 +21,10 @@ import { writeFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 
 import {
+  buildReport,
   ghCLI,
   listCompletedRuns,
+  printSummary,
   recordOccurrences,
   runWithConcurrency,
 } from './find-failed.utils.mjs';
@@ -114,10 +116,8 @@ async function getFailingTestsForJob({ jobId }) {
       ghArgs: [
         'run',
         'view',
-        '--repo',
-        repo,
-        '--job',
-        String(jobId),
+        `--repo=${repo}`,
+        `--job=${jobId}`,
         '--log-failed',
       ],
     });
@@ -171,55 +171,11 @@ async function collectFailureOccurrences({ runs }) {
     maxConcurrent: concurrency,
   });
 
-  return { occurrencesByTest, scannedRunCount, expiredLogCount };
-}
-
-function buildReport({ occurrencesByTest, scannedRunCount, expiredLogCount }) {
-  const tests = [...occurrencesByTest.entries()].map(
-    ([testId, occurrences]) => {
-      const distinctRunCount = new Set(occurrences.map((o) => o.runId)).size;
-      const failureRate = distinctRunCount / scannedRunCount;
-      return {
-        testId,
-        failureCount: distinctRunCount,
-        totalRunsScanned: scannedRunCount,
-        failureRate: Number(failureRate.toFixed(3)),
-        occurrences,
-      };
-    },
-  );
-
-  tests.sort(
-    (a, b) => b.failureRate - a.failureRate || b.failureCount - a.failureCount,
-  );
-
   return {
-    repo,
-    workflow,
-    generatedAt: new Date().toISOString(),
-    totalRunsScanned: scannedRunCount,
+    occurrencesByTest,
+    scannedRunCount,
     expiredLogCount,
-    tests,
   };
-}
-
-function printSummary({ report }) {
-  console.log(
-    `\nScanned ${report.totalRunsScanned} run(s) of "${report.workflow}" in ${report.repo}.`,
-  );
-  console.log(`Found ${report.tests.length} failed test(s):\n`);
-
-  for (const test of report.tests) {
-    console.log(
-      `  ${(test.failureRate * 100).toFixed(1)}% (${test.failureCount}/${test.totalRunsScanned}) — ${test.testId}`,
-    );
-  }
-
-  if (report.expiredLogCount > 0) {
-    console.log(
-      `\n${report.expiredLogCount} failed job(s) had logs already deleted by GitHub (past its retention period) and were excluded from the counts above.`,
-    );
-  }
 }
 
 async function main() {
@@ -235,7 +191,8 @@ async function main() {
   await writeFile(args.output, JSON.stringify(report, null, 2));
 
   printSummary({ report });
-  console.log(`\nFull report written to ${args.output}`);
+  console.log('\n');
+  console.log(`Full report written to ${args.output}`);
 }
 
 await main();
