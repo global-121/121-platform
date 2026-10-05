@@ -18,9 +18,6 @@ interface RedisQueuesMetrics {
   redis: {
     connectedClients?: number;
     blockedClients?: number;
-    usedMemory?: string;
-    maxMemory?: string;
-    memoryFragmentationRatio?: number;
     opsPerSecond?: number;
     evictedKeys?: number;
   };
@@ -73,13 +70,11 @@ export class RedisQueuesHealthIndicator {
     await client.ping();
     const pingLatencyMs = Date.now() - pingStart;
 
-    const [clientsInfo, memoryInfo, statsInfo] = await Promise.all([
+    const [clientsInfo, statsInfo] = await Promise.all([
       client.info('clients'),
-      client.info('memory'),
       client.info('stats'),
     ]);
     const clients = parseRedisInfoSection({ section: clientsInfo });
-    const memory = parseRedisInfoSection({ section: memoryInfo });
     const stats = parseRedisInfoSection({ section: statsInfo });
 
     const queueMetrics = await this.getQueueMetrics({ queues });
@@ -94,12 +89,6 @@ export class RedisQueuesHealthIndicator {
         blockedClients: getInfoNumber({
           info: clients,
           key: 'blocked_clients',
-        }),
-        usedMemory: memory.get('used_memory_human'),
-        maxMemory: memory.get('maxmemory_human'),
-        memoryFragmentationRatio: getInfoNumber({
-          info: memory,
-          key: 'mem_fragmentation_ratio',
         }),
         opsPerSecond: getInfoNumber({
           info: stats,
