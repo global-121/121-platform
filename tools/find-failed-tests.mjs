@@ -354,11 +354,6 @@ async function main() {
   const runs = await listCompletedRuns();
   const failureOccurrences = await collectFailureOccurrences({ runs });
 
-  if (failureOccurrences.scannedRunCount === 0) {
-    console.log('No completed runs found to analyze.');
-    return;
-  }
-
   const report = buildReport(failureOccurrences);
   await writeFile(outputPath, JSON.stringify(report, null, 2));
 
