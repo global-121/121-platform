@@ -9,7 +9,7 @@
  * Usage:
  *   node find-failed-tests.mjs --workflow=<test_service_api.yml|test_e2e_portal.yml>
  *     [--repo global-121/121-platform]
- *     [--limit 25]
+ *     [--limit 100]
  *     [--branch main]
  *     [--merge-queue-only]
  *     [--output report-failed-tests-<API|E2E>.json]
