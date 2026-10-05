@@ -9,7 +9,7 @@
  */
 const KEBAB_CASE_PATTERN = /^[a-z\d]+(?:-[a-z\d]+)*$/;
 
-const isTestIdName = (name) =>
+const isTestIdName = ({ name }) =>
   name === 'data-testid' || name.endsWith('TestId');
 
 const getFixedBoundValue = ({ value }) => {
@@ -52,10 +52,10 @@ export default {
     return {
       Element(element) {
         const staticAttributes = element.attributes.filter(({ name }) =>
-          isTestIdName(name),
+          isTestIdName({ name }),
         );
         const boundAttributes = element.inputs.filter(({ name }) =>
-          isTestIdName(name),
+          isTestIdName({ name }),
         );
 
         for (const attribute of [...staticAttributes, ...boundAttributes]) {
