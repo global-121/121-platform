@@ -145,11 +145,15 @@ async function collectFailureOccurrences({ runs }) {
       if (shardJobs.length === 0) {
         return; // The path-filter step skipped this run entirely.
       }
-      scannedRunCount += 1;
 
       const failedShardJobs = shardJobs.filter(
         (job) => job.conclusion === 'failure',
       );
+      if (failedShardJobs.length === 0) {
+        return;
+      }
+
+      let hasFailingTests = false;
 
       for (const job of failedShardJobs) {
         const { failingTests, logAvailable } = await getFailingTestsForJob({
@@ -159,7 +163,14 @@ async function collectFailureOccurrences({ runs }) {
           expiredLogCount += 1;
           continue;
         }
-        recordOccurrences({ occurrencesByTest, testIds: failingTests, run });
+        if (failingTests.size > 0) {
+          hasFailingTests = true;
+          recordOccurrences({ occurrencesByTest, testIds: failingTests, run });
+        }
+      }
+
+      if (hasFailingTests) {
+        scannedRunCount += 1;
       }
     },
     maxConcurrent: concurrency,
@@ -178,18 +189,13 @@ function buildReport({ occurrencesByTest, scannedRunCount, expiredLogCount }) {
         failureCount: distinctRunCount,
         totalRunsScanned: scannedRunCount,
         failureRate: Number(failureRate.toFixed(3)),
-        // Peaks at a 50% failure rate (most unpredictable); 0 at either extreme.
-        flakinessScore: Number((failureRate * (1 - failureRate)).toFixed(4)),
-        // A test failing in (almost) every run is broken, not flaky.
-        classification: failureRate >= 0.95 ? 'consistently-failing' : 'flaky',
         occurrences,
       };
     },
   );
 
   tests.sort(
-    (a, b) =>
-      b.flakinessScore - a.flakinessScore || b.failureCount - a.failureCount,
+    (a, b) => b.failureRate - a.failureRate || b.failureCount - a.failureCount,
   );
 
   return {
@@ -203,33 +209,15 @@ function buildReport({ occurrencesByTest, scannedRunCount, expiredLogCount }) {
 }
 
 function printSummary({ report }) {
-  // report.tests is already ordered by flakiness score (most unpredictable first).
-  const flakyTests = report.tests.filter(
-    (test) => test.classification === 'flaky',
-  );
-  // Broken tests aren't unpredictable, so rank them by how often they fail instead.
-  const brokenTests = report.tests
-    .filter((test) => test.classification === 'consistently-failing')
-    .sort((a, b) => b.failureRate - a.failureRate);
-
   console.log(
     `\nScanned ${report.totalRunsScanned} run(s) of "${report.workflow}" in ${report.repo}.`,
   );
-  console.log(`Found ${flakyTests.length} flaky test(s):\n`);
+  console.log(`Found ${report.tests.length} failed test(s):\n`);
 
-  for (const test of flakyTests) {
+  for (const test of report.tests) {
     console.log(
       `  ${(test.failureRate * 100).toFixed(1)}% (${test.failureCount}/${test.totalRunsScanned}) — ${test.testId}`,
     );
-  }
-
-  if (brokenTests.length > 0) {
-    console.log(
-      `\n${brokenTests.length} test(s) fail consistently (likely broken, not flaky):`,
-    );
-    for (const test of brokenTests) {
-      console.log(`  ${test.testId}`);
-    }
   }
 
   if (report.expiredLogCount > 0) {

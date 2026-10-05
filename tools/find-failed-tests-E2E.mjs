@@ -69,8 +69,6 @@ const shardJobNamePattern = /^test-shard-e2e \(/;
 // Playwright's "list" reporter ends with a summary like:
 //   2 failed
 //     [chromium] › portal/tests/Foo.spec.ts:12:3 › some describe › some test
-//   7 flaky
-//     [chromium] › portal/tests/Bar.spec.ts:5:2 › another test ──────────
 //   24 passed (11.9m)
 // (lines are prefixed by `gh run view --log` with "<job name>\t<step>\t<timestamp> ").
 const summaryCategoryPattern = /(\d+) (failed|flaky|passed|skipped)\b/;
@@ -91,18 +89,16 @@ async function getShardJobs({ runId }) {
     ghArgs: ['run', 'view', String(runId), '--repo', repo, '--json', 'jobs'],
   });
   return jobs.filter(
-    (job) =>
-      shardJobNamePattern.test(job.name) &&
-      (job.conclusion === 'success' || job.conclusion === 'failure'),
+    (job) => shardJobNamePattern.test(job.name) && job.conclusion === 'failure',
   );
 }
 
 /**
  * Parses the trailing summary section that Playwright's "list" reporter
- * prints, returning the flaky and failed test entries it found there.
+ * prints, returning the failed test entries it found there.
  */
 function parseTestSummary({ logText }) {
-  const testsByCategory = { failed: new Set(), flaky: new Set() };
+  const failed = new Set();
   let currentCategory;
 
   for (const rawLine of logText.split('\n')) {
@@ -114,30 +110,34 @@ function parseTestSummary({ logText }) {
       continue;
     }
 
-    if (currentCategory !== 'failed' && currentCategory !== 'flaky') {
+    if (currentCategory !== 'failed') {
       continue;
     }
 
     const testEntryMatch = testEntryPattern.exec(line);
     if (testEntryMatch) {
       const [, project, location, title] = testEntryMatch;
-      testsByCategory[currentCategory].add(
-        `[${project}] ${location} :: ${title.trim()}`,
-      );
+      failed.add(`[${project}] ${location} :: ${title.trim()}`);
     } else if (line === '') {
       currentCategory = undefined;
     }
   }
 
-  return testsByCategory;
+  return { failed };
 }
 
 async function getTestSummaryForJob({ jobId }) {
   try {
-    // Use the full log (not --log-failed): a flaky test can still leave the
-    // job's overall conclusion as "success" once it passes on retry.
     const logText = await ghText({
-      ghArgs: ['run', 'view', '--repo', repo, '--job', String(jobId), '--log'],
+      ghArgs: [
+        'run',
+        'view',
+        '--repo',
+        repo,
+        '--job',
+        String(jobId),
+        '--log-failed',
+      ],
     });
     return { ...parseTestSummary({ logText }), logAvailable: true };
   } catch (error) {
@@ -146,12 +146,11 @@ async function getTestSummaryForJob({ jobId }) {
       `Could not fetch logs for job ${jobId}:`,
       error?.message ?? error,
     );
-    return { failed: new Set(), flaky: new Set(), logAvailable: false };
+    return { failed: new Set(), logAvailable: false };
   }
 }
 
 async function collectTestOccurrences({ runs }) {
-  const flakyOccurrencesByTest = new Map();
   const failedOccurrencesByTest = new Map();
   let scannedRunCount = 0;
   let expiredLogCount = 0;
@@ -161,35 +160,37 @@ async function collectTestOccurrences({ runs }) {
     worker: async (run) => {
       const shardJobs = await getShardJobs({ runId: run.databaseId });
       if (shardJobs.length === 0) {
-        return; // The path-filter step skipped this run entirely.
+        return; // The path-filter step skipped this run entirely, or no test shards failed.
       }
-      scannedRunCount += 1;
+
+      let hasFailedTests = false;
 
       for (const job of shardJobs) {
-        const { flaky, failed, logAvailable } = await getTestSummaryForJob({
+        const { failed, logAvailable } = await getTestSummaryForJob({
           jobId: job.databaseId,
         });
         if (!logAvailable) {
           expiredLogCount += 1;
           continue;
         }
-        recordOccurrences({
-          occurrencesByTest: flakyOccurrencesByTest,
-          testIds: flaky,
-          run,
-        });
-        recordOccurrences({
-          occurrencesByTest: failedOccurrencesByTest,
-          testIds: failed,
-          run,
-        });
+        if (failed.size > 0) {
+          hasFailedTests = true;
+          recordOccurrences({
+            occurrencesByTest: failedOccurrencesByTest,
+            testIds: failed,
+            run,
+          });
+        }
+      }
+
+      if (hasFailedTests) {
+        scannedRunCount += 1;
       }
     },
     maxConcurrent: concurrency,
   });
 
   return {
-    flakyOccurrencesByTest,
     failedOccurrencesByTest,
     scannedRunCount,
     expiredLogCount,
@@ -218,7 +219,6 @@ function summarizeOccurrences({ occurrencesByTest, scannedRunCount }) {
 }
 
 function buildReport({
-  flakyOccurrencesByTest,
   failedOccurrencesByTest,
   scannedRunCount,
   expiredLogCount,
@@ -229,11 +229,7 @@ function buildReport({
     generatedAt: new Date().toISOString(),
     totalRunsScanned: scannedRunCount,
     expiredLogCount,
-    flakyTests: summarizeOccurrences({
-      occurrencesByTest: flakyOccurrencesByTest,
-      scannedRunCount,
-    }),
-    consistentlyFailingTests: summarizeOccurrences({
+    failedTests: summarizeOccurrences({
       occurrencesByTest: failedOccurrencesByTest,
       scannedRunCount,
     }),
@@ -244,21 +240,12 @@ function printSummary({ report }) {
   console.log(
     `\nScanned ${report.totalRunsScanned} run(s) of "${report.workflow}" in ${report.repo}.`,
   );
-  console.log(`Found ${report.flakyTests.length} flaky test(s):\n`);
+  console.log(`Found ${report.failedTests.length} failed test(s):\n`);
 
-  for (const test of report.flakyTests) {
+  for (const test of report.failedTests) {
     console.log(
       `  ${(test.rate * 100).toFixed(1)}% (${test.occurrenceCount}/${test.totalRunsScanned}) — ${test.testId}`,
     );
-  }
-
-  if (report.consistentlyFailingTests.length > 0) {
-    console.log(
-      `\n${report.consistentlyFailingTests.length} test(s) fail consistently, even after retry (likely broken, not flaky):`,
-    );
-    for (const test of report.consistentlyFailingTests) {
-      console.log(`  ${test.testId}`);
-    }
   }
 
   if (report.expiredLogCount > 0) {

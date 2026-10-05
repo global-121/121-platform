@@ -37,21 +37,23 @@ export async function listCompletedRuns({
     '--json',
     'databaseId,conclusion,status,createdAt,headBranch,event,headSha,url',
   ];
+
   if (branch) {
     listArgs.push('--branch', branch);
   }
 
   const runs = await ghJson({ ghArgs: listArgs });
   return runs.filter((run) => {
-    if (run.status !== 'completed') {
+    // NOTE: Filtering here, client-side because the GitHub API does not return recent runs when using the flag `--status=failed` consistently.
+    if (run.status !== 'completed' || run.conclusion !== 'failure') {
       return false;
     }
 
-    if (!mergeQueueOnly) {
-      return true;
+    if (mergeQueueOnly) {
+      return run.event === 'merge_group';
     }
 
-    return run.event === 'merge_group';
+    return true;
   });
 }
 
