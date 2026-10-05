@@ -16,27 +16,27 @@
  */
 import { execFile } from 'node:child_process';
 import { appendFileSync, readFileSync } from 'node:fs';
-import { parseArgs } from 'node:util';
 
-const execFileAsync = ({ command, commandArgs, options = {} }) =>
-  new Promise((resolve, reject) => {
-    execFile(command, commandArgs, options, (error, stdout) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      resolve(stdout);
-    });
-  });
+import { parseArgs, promisify } from 'node:util';
+const execFileAsync = promisify(execFile);
 
 const E2E_SPEC_TESTS_DIRECTORY = 'e2e/portal/tests/';
 
 const { values: args } = parseArgs({
   options: {
     base: { type: 'string' },
-    head: { type: 'string', default: 'HEAD' },
-    threshold: { type: 'string', default: '10' },
-    'max-files': { type: 'string', default: '15' },
+    head: {
+      type: 'string',
+      default: 'HEAD',
+    },
+    threshold: {
+      type: 'string',
+      default: '10',
+    },
+    'max-files': {
+      type: 'string',
+      default: '15',
+    },
   },
 });
 
@@ -151,12 +151,12 @@ function capCandidates({ candidates }) {
   return candidates.slice(0, maxFiles);
 }
 
-function toE2eRelativePath({ path }) {
+function toRelativePath({ path }) {
   return path.slice('e2e/'.length);
 }
 
-function writeGithubOutput({ candidates }) {
-  const files = candidates.map(({ path }) => toE2eRelativePath({ path }));
+function writeGitHubOutput({ candidates }) {
+  const files = candidates.map(({ path }) => toRelativePath({ path }));
   const hasCandidates = files.length > 0;
 
   const outputPath = process.env.GITHUB_OUTPUT;
@@ -184,4 +184,4 @@ if (candidates.length === 0) {
   }
 }
 
-writeGithubOutput({ candidates });
+writeGitHubOutput({ candidates });

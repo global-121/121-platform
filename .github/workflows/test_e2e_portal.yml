@@ -11,7 +11,7 @@ on:
       repeat_count:
         description: 'Number of repetitions per test when hunting flaky tests'
         type: string
-        default: '30'
+        default: '90'
   merge_group:
     types: [checks_requested]
   pull_request:
@@ -180,12 +180,12 @@ jobs:
         run: |
           timeout 90s sh -c 'until curl http://localhost:8088 --head --silent; do echo "Waiting for Portal to be running..."; sleep 1; done'
 
-      - name: Hunt for flaky tests in changed/new spec file
+      - name: Find flaky tests in changed/new E2E spec file(s)
         working-directory: ${{ env.e2eTestsPath }}
         env:
           # Passed via env (not inlined into the script) since SPEC_FILE originates from PR file paths and must never be interpreted by the shell.
           SPEC_FILE: ${{ matrix.file }}
-          REPEAT_COUNT: ${{ github.event.inputs.repeat_count || '30' }}
+          REPEAT_COUNT: ${{ github.event.inputs.repeat_count || '90' }}
         run: |
           npm test -- "$SPEC_FILE" --fail-on-flaky-tests --repeat-each "$REPEAT_COUNT" -x --trace retain-on-failure --reporter=html
 
@@ -292,13 +292,11 @@ jobs:
   test-shard-resolution-e2e:
     runs-on: ubuntu-slim
     needs:
-      [
-        path-filter,
-        lint-code,
-        detect-flaky-candidates,
-        test-shard-e2e,
-        find-flaky-changed-tests,
-      ]
+      - path-filter
+      - lint-code
+      - detect-flaky-candidates
+      - test-shard-e2e
+      - find-flaky-changed-tests
     if: always()
     steps:
       - name: Check required job results
