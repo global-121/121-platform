@@ -191,8 +191,8 @@ function parsePlaywrightFailingTests({ logText }) {
 
     const testEntryMatch = playwrightTestEntryPattern.exec(line);
     if (testEntryMatch) {
-      const [, project, location, title] = testEntryMatch;
-      failingTests.add(`[${project}] ${location} :: ${title.trim()}`);
+      const [, , location, title] = testEntryMatch;
+      failingTests.add(`${location} :: ${title.trim()}`);
     } else if (line === '') {
       currentCategory = undefined;
     }
