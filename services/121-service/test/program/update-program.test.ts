@@ -25,7 +25,7 @@ describe('Update program', () => {
       description: { en: 'new description' },
       distributionDuration: 100,
       fixedTransferValue: 500,
-      budget: 50000,
+      budget: 1337428.57,
       monitoringDashboardUrl: 'https://example.org/new-dashboard',
       fullnameNamingConvention: ['firstName', 'lastName'],
       languages: [
