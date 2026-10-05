@@ -1,0 +1,40 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+# More specific about composite actions: https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
+
+name: 'E2E: Collect results'
+description: Uploads the E2E-test results and prints the logs of the Portal and the Docker containers.
+
+#
+# Use with `if: always()`, to also collect results of failed test-runs.
+#
+
+inputs:
+  artifactName:
+    description: Name of the artifact to upload the test results to.
+    required: true
+  e2eTestsPath:
+    description: Location of the E2E-tests code. (relative to the repository-root)
+    required: false
+    default: ./e2e
+
+runs:
+  using: composite
+  steps:
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ inputs.artifactName }}
+        path: |
+          ${{ inputs.e2eTestsPath }}/test-results/
+          ${{ inputs.e2eTestsPath }}/playwright-report/
+          ./interfaces/portal/run-portal-logs.txt
+
+    - name: Portal logs
+      if: always()
+      shell: bash
+      run: cat ./interfaces/portal/run-portal-logs.txt
+
+    - name: Docker logs
+      if: always()
+      uses: global-121/collect-container-logs@78594c6154439e32858bf3dc17c9ff36561a1d31

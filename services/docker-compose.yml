@@ -33,6 +33,7 @@ services:
 
   mock-service:
     container_name: mock-service
+    image: localhost/121-platform/mock-service
     build:
       # To be able to access shared packages, this is considered from the repository root-folder
       context: ../
@@ -50,6 +51,7 @@ services:
 
   121-service:
     container_name: 121-service
+    image: localhost/121-platform/121-service
     build:
       # To be able to access shared packages, this is considered from the repository root-folder
       context: ../
