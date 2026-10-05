@@ -31,7 +31,9 @@ Similar to the 121 Status-page: <https://status.121.global>, but from the comman
 
 See recent failed CI-tests, ranked by the number of runs in which they failed.
 
-#### Shared setup
+Both reports use the same script (`find-failed-tests.mjs`), with the flag: `--workflow=<file>`. Supported workflows: `test_service_api.yml` and `test_e2e_portal.yml`.
+
+#### Setup
 
 - Install the [GitHub CLI](https://cli.github.com)
 - Login with `gh auth login`
@@ -39,10 +41,10 @@ See recent failed CI-tests, ranked by the number of runs in which they failed.
 
 #### API-tests
 
-Scans failed runs and reports failed API/integration-tests.
+Scan failed runs and reports failed API/integration-tests.
 
 ```shell
-npm run find-failed-tests-API --  --limit 25 --merge-queue-only
+npm run find-failed-tests:API --  --limit 50 --merge-queue-only
 ```
 
 Top 10:
@@ -53,10 +55,10 @@ jq -r '.tests[:10][] | [.failureCount, .totalRunsScanned, .testId] | @tsv' repor
 
 #### E2E-tests
 
-Scans failed runs and reports failed E2E-tests.
+Scan failed runs and reports failed E2E-tests.
 
 ```shell
-npm run find-failed-tests-E2E --  --limit 25 --merge-queue-only
+npm run find-failed-tests:E2E --  --limit 50 --merge-queue-only
 ```
 
 Top 10:
