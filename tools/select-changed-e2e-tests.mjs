@@ -49,19 +49,18 @@ const threshold = Number(args.threshold);
 // Bounds how many parallel Docker+Portal CI jobs a single PR can trigger.
 const maxFiles = Number(args['max-files']);
 
-async function runGit({ gitArgs, cwd }) {
-  const { stdout } = await execFileAsync('git', gitArgs, { cwd });
-  return stdout;
-}
-
 async function getRepositoryRoot() {
-  const stdout = await runGit({ gitArgs: ['rev-parse', '--show-toplevel'] });
+  const stdout = await execFileAsync({
+    command: 'git',
+    commandArgs: ['rev-parse', '--show-toplevel'],
+  });
   return stdout.trim();
 }
 
 async function getChangedSpecFiles({ repositoryRoot, base, head }) {
-  const stdout = await runGit({
-    gitArgs: [
+  const stdout = await execFileAsync({
+    command: 'git',
+    commandArgs: [
       'diff',
       '--no-renames',
       '--diff-filter=AM', // Excludes deleted paths, which no longer exist in `head` to read.
@@ -69,7 +68,7 @@ async function getChangedSpecFiles({ repositoryRoot, base, head }) {
       base,
       head,
     ],
-    cwd: repositoryRoot,
+    options: { cwd: repositoryRoot },
   });
 
   return stdout
@@ -90,9 +89,10 @@ async function getChangedSpecFiles({ repositoryRoot, base, head }) {
 
 async function isNewFile({ repositoryRoot, base, path }) {
   try {
-    await runGit({
-      gitArgs: ['cat-file', '-e', `${base}:${path}`],
-      cwd: repositoryRoot,
+    await execFileAsync({
+      command: 'git',
+      commandArgs: ['cat-file', '-e', `${base}:${path}`],
+      options: { cwd: repositoryRoot },
     });
     return false;
   } catch {

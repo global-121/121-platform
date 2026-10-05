@@ -52,8 +52,6 @@ jobs:
         with:
           paths: |
             - '.github/workflows/test_e2e_portal.yml'
-            - '.github/actions/e2e-environment/**'
-            - '.github/actions/e2e-collect-results/**'
             - 'e2e/**'
             - 'services/.env.example'
             - 'services/**'
@@ -125,71 +123,12 @@ jobs:
         run: |
           node tools/select-changed-e2e-tests.mjs --base ${{ steps.base.outputs.sha }} --head ${{ github.sha }}
 
-  build-e2e-environment:
-    needs:
-      - path-filter
-      - lint-code
-    runs-on: ubuntu-latest
-    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v7
-
-      - name: Set up Node.js version
-        uses: actions/setup-node@v7
-        with:
-          node-version-file: './interfaces/portal/.node-version'
-          cache: 'npm'
-          cache-dependency-path: './interfaces/portal/package-lock.json'
-
-      - name: Set ENV-variables for test-environment
-        run: |
-          cp services/.env.example services/.env
-
-      - name: Build Services with Docker
-        run: |
-          npm run install:services
-
-      - name: Export built Docker images
-        working-directory: ./services
-        run: |
-          mkdir -p "$RUNNER_TEMP/e2e-docker-images"
-          mapfile -t images < <(docker compose --file=docker-compose.yml config --format json | jq -r '.services[] | select(.build) | .image')
-          docker save "${images[@]}" | gzip --fast > "$RUNNER_TEMP/e2e-docker-images/images.tar.gz"
-
-      - name: Upload built Docker images
-        uses: actions/upload-artifact@v7
-        with:
-          name: e2e-docker-images
-          path: ${{ runner.temp }}/e2e-docker-images/images.tar.gz
-          compression-level: 0 # Already compressed
-          retention-days: 1
-
-      - name: Build Portal
-        working-directory: ./interfaces/portal
-        env:
-          NG_PRODUCTION: true
-          NG_URL_121_SERVICE_API: http://localhost:3000/api
-          NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: false
-        run: |
-          npm ci
-          cp .env.example .env
-          npm run build:production
-
-      - name: Upload built Portal
-        uses: actions/upload-artifact@v7
-        with:
-          name: e2e-portal-build
-          path: ./interfaces/portal/www/
-          retention-days: 1
-
   find-flaky-changed-tests:
     runs-on: ubuntu-latest
     needs:
       - path-filter
       - lint-code
       - detect-flaky-candidates
-      - build-e2e-environment
     if: ${{ needs.detect-flaky-candidates.outputs.has_candidates == 'true' }}
     strategy:
       fail-fast: false
@@ -200,10 +139,46 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v7
 
-      - name: Start E2E-Tests environment
-        uses: ./.github/actions/e2e-environment
+      - name: Set up Node.js version
+        uses: actions/setup-node@v7
         with:
-          e2eTestsPath: ${{ env.e2eTestsPath }}
+          node-version-file: '${{ env.e2eTestsPath }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.e2eTestsPath }}/package-lock.json'
+
+      - name: Install E2E-Tests code-dependencies
+        working-directory: ${{ env.e2eTestsPath }}
+        # We only need to install the tests' dependencies, so we can skip the `postinstall`-step
+        run: |
+          npm ci --ignore-scripts
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp services/.env.example services/.env
+
+      - name: Run Services with Docker
+        run: |
+          npm run start:services:ci:production
+
+      - name: Run Portal
+        working-directory: ./interfaces/portal
+        env:
+          NG_PRODUCTION: true
+          NG_URL_121_SERVICE_API: http://localhost:3000/api
+          NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: false
+        run: |
+          npm ci
+          cp .env.example .env
+          npm run start:debug-production > run-portal-logs.txt 2>&1 &
+
+      - name: Install E2E-Tests runtime-dependencies
+        working-directory: ${{ env.e2eTestsPath }}
+        run: |
+          npx playwright install chromium --with-deps --no-shell
+
+      - name: Wait for Portal
+        run: |
+          timeout 90s sh -c 'until curl http://localhost:8088 --head --silent; do echo "Waiting for Portal to be running..."; sleep 1; done'
 
       - name: Find flaky tests in changed/new E2E spec file(s)
         working-directory: ${{ env.e2eTestsPath }}
@@ -214,19 +189,29 @@ jobs:
         run: |
           npm test -- "$SPEC_FILE" --fail-on-flaky-tests --repeat-each "$REPEAT_COUNT" -x --trace retain-on-failure --reporter=html
 
-      - name: Collect E2E-Tests results
+      - uses: actions/upload-artifact@v7
         if: always()
-        uses: ./.github/actions/e2e-collect-results
         with:
-          artifactName: test-result-artifacts-flaky-${{ strategy.job-index }}
-          e2eTestsPath: ${{ env.e2eTestsPath }}
+          name: test-result-artifacts-flaky-${{ strategy.job-index }}
+          path: |
+            ${{ env.e2eTestsPath }}/test-results/
+            ${{ env.e2eTestsPath }}/playwright-report/
+            ./interfaces/portal/run-portal-logs.txt
+
+      - name: Portal logs
+        if: always()
+        shell: bash
+        run: cat ./interfaces/portal/run-portal-logs.txt
+
+      - name: Docker logs
+        if: always()
+        uses: global-121/collect-container-logs@78594c6154439e32858bf3dc17c9ff36561a1d31
 
   test-shard-e2e:
     runs-on: ubuntu-latest
     needs:
       - path-filter
       - lint-code
-      - build-e2e-environment
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
     strategy:
       # ONLY on the merge-queue, cancel test-runs that will not 'help' the PR get merged; Preventing (some) useless runs.
@@ -239,22 +224,68 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v7
 
-      - name: Start E2E-Tests environment
-        uses: ./.github/actions/e2e-environment
+      - name: Set up Node.js version
+        uses: actions/setup-node@v7
         with:
-          e2eTestsPath: ${{ env.e2eTestsPath }}
+          node-version-file: '${{ env.e2eTestsPath }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.e2eTestsPath }}/package-lock.json'
+
+      - name: Install E2E-Tests code-dependencies
+        working-directory: ${{ env.e2eTestsPath }}
+        # We only need to install the tests' dependencies, so we can skip the `postinstall`-step
+        run: |
+          npm ci --ignore-scripts
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp services/.env.example services/.env
+
+      - name: Run Services with Docker
+        run: |
+          npm run start:services:ci:production
+
+      - name: Run Portal
+        working-directory: ./interfaces/portal
+        env:
+          NG_PRODUCTION: true
+          NG_URL_121_SERVICE_API: http://localhost:3000/api
+          NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: false
+        run: |
+          npm ci
+          cp .env.example .env
+          npm run start:debug-production > run-portal-logs.txt 2>&1 &
+
+      - name: Install E2E-Tests runtime-dependencies
+        working-directory: ${{ env.e2eTestsPath }}
+        run: |
+          npx playwright install chromium --with-deps --no-shell
+
+      - name: Wait for Portal
+        run: |
+          timeout 90s sh -c 'until curl http://localhost:8088 --head --silent; do echo "Waiting for Portal to be running..."; sleep 1; done'
 
       - name: Run E2E-Tests with Playwright
         working-directory: ${{ env.e2eTestsPath }}
         run: |
           npm test -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
 
-      - name: Collect E2E-Tests results
+      - uses: actions/upload-artifact@v7
         if: always()
-        uses: ./.github/actions/e2e-collect-results
         with:
-          artifactName: test-result-artifacts-${{ matrix.shard }}
-          e2eTestsPath: ${{ env.e2eTestsPath }}
+          name: test-result-artifacts-${{ matrix.shard }}
+          path: |
+            ${{ env.e2eTestsPath }}/test-results/
+            ./interfaces/portal/run-portal-logs.txt
+
+      - name: Portal logs
+        if: always()
+        shell: bash
+        run: cat ./interfaces/portal/run-portal-logs.txt
+
+      - name: Docker logs
+        if: always()
+        uses: global-121/collect-container-logs@78594c6154439e32858bf3dc17c9ff36561a1d31
 
   # This job is here to make the above jobs "required" in GitHub.
   # This is a workaround for this issue: https://github.com/orgs/community/discussions/44490
@@ -264,7 +295,6 @@ jobs:
       - path-filter
       - lint-code
       - detect-flaky-candidates
-      - build-e2e-environment
       - test-shard-e2e
       - find-flaky-changed-tests
     if: always()
