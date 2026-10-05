@@ -262,6 +262,7 @@ export const env = createEnv({
       .pipe(z.transform((url) => withoutTrailingSlash(url))),
 
     HEALTH_DATABASE_TIMEOUT: z.coerce.number().optional().default(600),
+    HEALTH_REDIS_TIMEOUT: z.coerce.number().optional().default(600),
     GENERIC_THROTTLING_LIMIT: z.coerce.number().optional().default(3_000),
     GENERIC_THROTTLING_TTL: z.coerce.number().optional().default(60),
     HIGH_THROTTLING_LIMIT: z.coerce.number().optional().default(30),
