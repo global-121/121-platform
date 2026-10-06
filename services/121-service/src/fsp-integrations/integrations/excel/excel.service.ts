@@ -30,10 +30,17 @@ export class ExcelService {
     programId: number;
     programFspConfigurationId: number;
   }): Promise<ExcelFspInstructions[]> {
-    const exportColumns = await this.getExportColumnsForProgramFspConfig(
+    const configuredExportColumns =
+      await this.getExportColumnsForProgramFspConfig(
+        programFspConfigurationId,
+        programId,
+      );
+    const matchColumn = await this.getImportMatchColumn(
       programFspConfigurationId,
-      programId,
     );
+    const exportColumns = [
+      ...new Set([...configuredExportColumns, matchColumn]),
+    ];
     const referenceIds = transactions.map((t) => t.registration.referenceId);
 
     const registrations =

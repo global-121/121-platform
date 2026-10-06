@@ -59,6 +59,16 @@ describe('Do payment with Excel FSP', () => {
     .properties.find(
       (prop) => prop.name === FspConfigurationProperties.columnsToExport,
     )?.value ?? []) as string[];
+  const columnToMatchGringotts = programTest.programFspConfigurations
+    .find((p) => p.name === gringotts)!
+    .properties.find(
+      (prop) => prop.name === FspConfigurationProperties.columnToMatch,
+    )!.value as string;
+  const columnToMatchIronBank = programTest.programFspConfigurations
+    .find((p) => p.name === ironBank)!
+    .properties.find(
+      (prop) => prop.name === FspConfigurationProperties.columnToMatch,
+    )!.value as string;
 
   // Function for all seeding
   const seedPrograms = async () => {
@@ -166,13 +176,14 @@ describe('Do payment with Excel FSP', () => {
       const createFspInstructionObject = (
         registration: Record<string, unknown>,
         columnsToExport: string[],
+        columnToMatch: string,
       ): Record<string, unknown> => {
         // Any number for amount
         const obj: Record<string, unknown> = {
           amount: expect.any(Number), // Amount can differ per registration due payment amount calculation which is tested in different tests
           referenceId: registration.referenceId,
         };
-        for (const column of columnsToExport) {
+        for (const column of new Set([...columnsToExport, columnToMatch])) {
           obj[column] =
             registration[column] !== undefined
               ? String(registration[column])
@@ -188,6 +199,7 @@ describe('Do payment with Excel FSP', () => {
         createFspInstructionObject(
           registrationWesteros1,
           columnsToExportIronBank,
+          columnToMatchIronBank,
         ),
       );
 
@@ -198,6 +210,7 @@ describe('Do payment with Excel FSP', () => {
         createFspInstructionObject(
           registrationWesteros2,
           columnsToExportIronBank,
+          columnToMatchIronBank,
         ),
       );
 
@@ -208,7 +221,32 @@ describe('Do payment with Excel FSP', () => {
         createFspInstructionObject(
           registrationWesteros3,
           columnsToExportGringotts,
+          columnToMatchGringotts,
         ),
+      );
+    });
+
+    it('Should include "columnToMatch" on Get FSP instruction with Excel-FSP when it is not part of "columnsToExport"', async () => {
+      // Arrange
+      expect(columnsToExportGringotts).not.toContain(columnToMatchGringotts);
+
+      // Act
+      const fspInstructionsResponse = await getFspInstructions(
+        programIdWesteros,
+        excelPaymentIdWesteros,
+        accessToken,
+      );
+
+      // Assert
+      expect(fspInstructionsResponse.statusCode).toBe(HttpStatus.OK);
+      const fspInstructionsGringotts = fspInstructionsResponse.body.find(
+        (f) => f.fileNamePrefix === gringotts,
+      );
+      const fspInstructionReg3 = fspInstructionsGringotts.data.find(
+        (d) => d.referenceId === registrationWesteros3.referenceId,
+      );
+      expect(fspInstructionReg3[columnToMatchGringotts]).toBe(
+        String(registrationWesteros3[columnToMatchGringotts]),
       );
     });
 
