@@ -6,6 +6,7 @@ import { env } from '@121-service/src/env';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/fsp-management/fsp-attribute-type-mapping';
 import { getFspAttributeNames } from '@121-service/src/fsp-management/fsp-settings.helpers';
+import { fspQuestionName } from '@121-service/src/kobo/consts/fspQuestionName';
 import { KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES } from '@121-service/src/kobo/consts/kobo-allowed-registration-view-attributes.const';
 import { KOBO_TO_121_TYPE_MAPPING } from '@121-service/src/kobo/consts/kobo-survey-to-121-attribute-type.const';
 import { KoboValidationErrorType } from '@121-service/src/kobo/enum/kobo-validation-error-type';
@@ -13,7 +14,6 @@ import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-d
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
 import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 import { KoboLanguageMapper } from '@121-service/src/kobo/mappers/kobo-language.mapper';
-import { fspQuestionName } from '@121-service/src/kobo/services/kobo.service';
 import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
+import { fspQuestionName } from '@121-service/src/kobo/consts/fspQuestionName';
 import { KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES } from '@121-service/src/kobo/consts/kobo-allowed-registration-view-attributes.const';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
@@ -20,8 +21,6 @@ import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-
-export const fspQuestionName = 'fsp';
 
 @Injectable()
 export class KoboService {
@@ -314,8 +313,8 @@ export class KoboService {
       return !KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES[attr.name];
     };
 
-    // Filter out 'fsp' as it's a special field which we later use to determine the programFspConfigurationName of incoming Kobo submission
-    // The reason we map this is because fsp is less confusing to non-technical users than programFspConfigurationName
+    // Filter out "fsp" as it's a special field which we later use to determine the programFspConfigurationName of incoming Kobo submission
+    // The reason we map this is because "fsp" is less confusing to non-technical users than programFspConfigurationName
     const isNotFsp = (attr: { name: string }) => {
       return attr.name !== fspQuestionName;
     };

@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { env } from '@121-service/src/env';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { fspQuestionName } from '@121-service/src/kobo/consts/fspQuestionName';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboValidationService } from '@121-service/src/kobo/services/kobo.validation.service';
 import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
@@ -47,7 +48,7 @@ describe('KoboValidationService', () => {
   const baseSurveyItems = [
     ...startAndEndSurveyItems,
     {
-      name: 'fsp',
+      name: fspQuestionName,
       type: 'hidden',
       label: ['Financial Service Provider', 'Financiële dienstverlener'],
       choices: [],
@@ -1153,7 +1154,7 @@ describe('KoboValidationService', () => {
         survey: [
           ...startAndEndSurveyItems,
           {
-            name: 'fsp',
+            name: fspQuestionName,
             type: 'select_one',
             label: ['Financial Service Provider'],
             choices: [
@@ -1189,7 +1190,7 @@ describe('KoboValidationService', () => {
         survey: [
           ...startAndEndSurveyItems,
           {
-            name: 'fsp',
+            name: fspQuestionName,
             type: 'select_one',
             label: ['Financial Service Provider'],
             choices: [
@@ -1244,7 +1245,7 @@ describe('KoboValidationService', () => {
           survey: [
             ...startAndEndSurveyItems,
             {
-              name: 'fsp',
+              name: fspQuestionName,
               type: fspType,
               label: ['Financial Service Provider'],
               choices: [],
@@ -1269,7 +1270,7 @@ describe('KoboValidationService', () => {
         survey: [
           ...startAndEndSurveyItems,
           {
-            name: 'fsp',
+            name: fspQuestionName,
             type: 'text',
             label: ['Financial Service Provider'],
             choices: [],
