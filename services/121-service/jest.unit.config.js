@@ -1,5 +1,8 @@
 import { defineConfig } from 'jest';
 
+// eslint-disable-next-line n/no-process-env -- Allow for opt-in per-run; Not by default on all(CI) runs.
+const DEBUG = !!process.env.DEBUG;
+
 export default defineConfig({
   rootDir: '.',
   testMatch: ['<rootDir>/**/*.spec.ts'],
@@ -20,9 +23,9 @@ export default defineConfig({
   transformIgnorePatterns: [
     'node_modules/(?!@t3-oss|uuid|openid-client|oauth4webapi|jose|sanitize-html|htmlparser2|entities|domhandler|domutils|domelementtype|dom-serializer)',
   ],
-  detectOpenHandles: true,
+  detectOpenHandles: DEBUG,
   errorOnDeprecated: true,
-  logHeapUsage: true,
+  logHeapUsage: DEBUG,
   randomize: true,
   verbose: true,
   reporters: [
