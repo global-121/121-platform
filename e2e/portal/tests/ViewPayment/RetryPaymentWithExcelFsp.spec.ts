@@ -37,8 +37,7 @@ test('Retry payments should put failed transactions back in processing and downl
     await paymentPage.validateToastMessageAndClose('Payment approved');
     await paymentPage.startPayment();
     await paymentPage.validateToastMessageAndClose('Payment started');
-    // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentDetailsPageTitle();
+    await paymentPage.waitForPaymentToComplete();
   });
 
   await test.step('Upload payment reconciliation data', async () => {

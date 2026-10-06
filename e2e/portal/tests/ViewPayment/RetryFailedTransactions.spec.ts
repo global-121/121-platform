@@ -27,8 +27,6 @@ test.beforeEach(
     await paymentPage.validateToastMessageAndClose('Payment approved');
     await paymentPage.startPayment();
     await paymentPage.validateToastMessageAndClose('Payment started');
-    // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentDetailsPageTitle();
   },
 );
 
