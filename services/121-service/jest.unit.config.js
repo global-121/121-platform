@@ -28,7 +28,9 @@ export default defineConfig({
   logHeapUsage: DEBUG,
   randomize: true,
   verbose: true,
+  workerIdleMemoryLimit: '1GB',
   reporters: [
+    'default',
     'jest-ci-spec-reporter',
     ['github-actions', { silent: false }],
     'summary',
