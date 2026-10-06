@@ -85,7 +85,10 @@ class ProgramSettingsPage extends BasePage {
   }
 
   async editInformationFieldByLabel(label: string, value: string) {
-    await this.page.getByLabel(label).fill(value);
+    const field = this.page.getByLabel(label);
+    await field.fill(value);
+    // PrimeNG inputNumber only commits its value to the form control on blur
+    await field.blur();
   }
 
   async validateProgramDetails({
