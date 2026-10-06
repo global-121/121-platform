@@ -929,9 +929,6 @@
       <trans-unit id="4421433274861560863" datatype="html">
         <source>Add a user to the 121 platform. Fill in the fields below to create a new user account.</source>
       </trans-unit>
-      <trans-unit id="4447782514571198731" datatype="html">
-        <source>Enter a whole number without decimals.</source>
-      </trans-unit>
       <trans-unit id="4478569469579904965" datatype="html">
         <source>The note will be visible to other 121 users who are permitted to view personal profiles.</source>
       </trans-unit>

@@ -13,6 +13,7 @@ import {
 } from '@angular/forms';
 
 import { DatePickerModule } from 'primeng/datepicker';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
@@ -33,6 +34,7 @@ export type ProgramInformationFormGroup =
 @Component({
   selector: 'app-program-form-information',
   imports: [
+    InputNumberModule,
     FormFieldWrapperComponent,
     ReactiveFormsModule,
     InputTextModule,

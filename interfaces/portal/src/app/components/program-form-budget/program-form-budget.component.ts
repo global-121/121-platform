@@ -33,11 +33,7 @@ import {
   TrackingCategory,
 } from '~/services/tracking/tracking.enums';
 import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
-import {
-  generateFieldErrors,
-  integerValidator,
-  trackFieldErrors,
-} from '~/utils/form-validation';
+import { generateFieldErrors, trackFieldErrors } from '~/utils/form-validation';
 import { Locale } from '~/utils/locale';
 
 export type ProgramBudgetFormGroup =
@@ -99,7 +95,6 @@ export class ProgramFormBudgetComponent {
         // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
         Validators.required,
         Validators.min(0),
-        integerValidator,
       ],
     }),
     fsps: new FormControl<Fsps[]>([], {
@@ -109,9 +104,6 @@ export class ProgramFormBudgetComponent {
 
   formFieldErrors = generateFieldErrors(this.formGroup, {
     fixedTransferValue: (control) => {
-      if (control.errors?.integer) {
-        return $localize`Enter a whole number without decimals.`;
-      }
       if (control.errors?.min) {
         const min = get(control.errors.min, 'min') ?? 0;
         return $localize`This field needs to be at least ${min}.`;

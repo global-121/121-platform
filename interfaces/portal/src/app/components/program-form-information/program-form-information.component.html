@@ -46,13 +46,23 @@
     [isRequired]="true"
     [infoTooltipData]="PROGRAM_FORM_TOOLTIPS_CONFIG.targetRegistrations"
   >
-    <input
-      pInputText
-      type="number"
+    <p-inputNumber
+      mode="decimal"
+      [useGrouping]="true"
+      [minFractionDigits]="0"
+      [maxFractionDigits]="0"
+      class="inline-full"
+      inputStyleClass="inline-full"
       formControlName="targetNrRegistrations"
       placeholder="Target registrations"
       i18n-placeholder
     />
+    <!-- <input
+      pInputText
+      type="number"
+      formControlName="targetNrRegistrations"
+
+    /> -->
   </app-form-field-wrapper>
   <div class="mbs-4 flex justify-items-center">
     <p-toggleSwitch
