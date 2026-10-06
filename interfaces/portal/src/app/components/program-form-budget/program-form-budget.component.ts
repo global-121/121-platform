@@ -93,12 +93,8 @@ export class ProgramFormBudgetComponent {
     ),
     fixedTransferValue: new FormControl(0, {
       nonNullable: true,
-
-      validators: [
-        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-        Validators.required,
-        Validators.min(0),
-      ],
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+      validators: [Validators.required, Validators.min(0)],
     }),
     fsps: new FormControl<Fsps[]>([], {
       nonNullable: true,
