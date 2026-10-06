@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { setTimeout } from 'node:timers/promises';
 import { MessageInstance } from 'twilio/lib/rest/api/v2010/account/message';
 import { Equal, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
@@ -295,7 +296,7 @@ export class WhatsappService {
         sessionId,
       });
       // Wait 2 seconds to prevent Twilio from exceeded Rate limit for Channel
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await setTimeout(2_000);
     }
   }
 

@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { setTimeout } from 'node:timers/promises';
 import { DataSource } from 'typeorm';
 
 import { getBaseUrl } from '@121-service/src/config';
@@ -212,7 +213,7 @@ export class SeedMockHelperService {
       ) {
         return;
       }
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await setTimeout(100);
     }
   }
 
@@ -376,7 +377,7 @@ export class SeedMockHelperService {
       }
 
       if (!allTransactionsComplete) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await setTimeout(1_000);
       }
     }
 
