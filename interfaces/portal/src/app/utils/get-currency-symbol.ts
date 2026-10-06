@@ -1,10 +1,6 @@
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 
-export const getCurrencySymbol = ({
-  code,
-}: {
-  code: CurrencyCode;
-}): null | string => {
+export const getCurrencySymbol = ({ code }: { code: CurrencyCode }): string => {
   const currencyPart = new Intl.NumberFormat(CURRENCY_HOME_LOCALES[code], {
     style: 'currency',
     currency: code,
