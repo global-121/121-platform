@@ -21,7 +21,8 @@
   "module": {
     "type": "commonjs",
     "strict": true,
-    "noInterop": false
+    "ignoreDynamic": true,
+    "preserveImportMeta": true
   },
   "minify": false
 }

@@ -11,15 +11,15 @@
         "outDir": "dist"
       }
     ],
-    "watchAssets": true,
-    "deleteOutDir": true,
     "builder": {
-      "type": "swc",
-      "typeCheck": true,
       "options": {
         "extensions": [".js", ".ts"],
         "swcrcPath": ".swcrc"
-      }
-    }
+      },
+      "type": "swc"
+    },
+    "deleteOutDir": true,
+    "manualRestart": true,
+    "watchAssets": true
   }
 }
