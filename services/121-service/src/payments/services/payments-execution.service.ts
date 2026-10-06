@@ -38,6 +38,12 @@ export class PaymentsExecutionService {
     programId: number;
     paymentId: number;
   }): Promise<void> {
+    await this.paymentsHelperService.throwIfPaymentHasDuplicateRegistrations({
+      programId,
+      paymentId,
+      action: 'start',
+    });
+
     await this.paymentsProgressService.checkAndLockPaymentProgressOrThrow({
       programId,
     });
@@ -118,7 +124,7 @@ export class PaymentsExecutionService {
         {
           programId,
           paymentId,
-          status: TransactionStatusEnum.approved,
+          transactionStatus: TransactionStatusEnum.approved,
         },
       );
     await this.createTransactionJobs({
@@ -145,7 +151,7 @@ export class PaymentsExecutionService {
         {
           programId,
           paymentId,
-          status: TransactionStatusEnum.approved,
+          transactionStatus: TransactionStatusEnum.approved,
         },
       );
 
@@ -229,6 +235,7 @@ export class PaymentsExecutionService {
         totalFilterCount: referenceIds.length,
         applicableCount: transactionDetails.length,
         nonApplicableCount: referenceIds.length - transactionDetails.length,
+        duplicateCount: 0,
       };
 
       if (dryRun) {

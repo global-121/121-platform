@@ -83,13 +83,18 @@ export function resetDB({
     });
 }
 
-export function resetDuplicateRegistrations(
-  mockNumber: number,
-): Promise<request.Response> {
+export function resetDuplicateRegistrations({
+  mockPowerNumberRegistrations,
+  skipIntroduceDuplicates = false,
+}: {
+  mockPowerNumberRegistrations: number;
+  skipIntroduceDuplicates?: boolean;
+}): Promise<request.Response> {
   return getServer()
     .post('/scripts/duplicate-registrations')
     .query({
-      mockPowerNumberRegistrations: mockNumber,
+      mockPowerNumberRegistrations,
+      skipIntroduceDuplicates,
     })
     .send({
       secret: env.RESET_SECRET,

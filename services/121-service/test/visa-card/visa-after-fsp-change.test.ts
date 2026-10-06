@@ -35,7 +35,8 @@ describe('Visa registration after FSP change', () => {
     const testRegistration = {
       ...registrationVisa,
       referenceId: 'test-visa-customer-update',
-      whatsappPhoneNumber: registrationVisa.phoneNumber,
+      phoneNumber: '14155238821',
+      whatsappPhoneNumber: '14155238821',
     };
     await seedPaidRegistrations({
       registrations: [testRegistration],
@@ -84,7 +85,8 @@ describe('Visa registration after FSP change', () => {
     const testRegistration = {
       ...registrationVisa,
       referenceId: 'test-visa-wallet-after-fsp-change',
-      whatsappPhoneNumber: registrationVisa.phoneNumber,
+      phoneNumber: '14155238822',
+      whatsappPhoneNumber: '14155238822',
     };
     await seedPaidRegistrations({
       registrations: [testRegistration],

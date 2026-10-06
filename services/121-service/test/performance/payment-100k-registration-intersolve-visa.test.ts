@@ -82,6 +82,7 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
         body: {
           secret: env.RESET_SECRET,
         },
+        skipIntroduceDuplicates: true,
       });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
