@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { fspQuestionName } from '@121-service/src/kobo/consts/fspQuestionName';
+import { FSP_QUESTION_NAME } from '@121-service/src/kobo/consts/fsp-question-name.const';
 import { KoboAssetDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
@@ -360,7 +360,7 @@ describe('KoboService', () => {
           label: { en: 'Preferred Language' },
         },
         {
-          name: fspQuestionName, // This should be filtered out
+          name: FSP_QUESTION_NAME, // This should be filtered out
           type: RegistrationAttributeTypes.text,
           label: { en: 'Financial Service Provider' },
         },
