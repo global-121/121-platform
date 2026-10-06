@@ -1,13 +1,16 @@
+import { getBaseUrl } from '@121-service/src/config';
 import { CronjobInitiateService } from '@121-service/src/cronjob/services/cronjob-initiate.service';
 
-const exampleApiUrl = 'http://example.com/api';
+const exampleApiUrl = getBaseUrl();
 const expectedCronjobUrl = `${exampleApiUrl}/cronjobs`;
 
 describe('Cronjob initiation', () => {
   let cronjobInitiateService;
   const testHeader = { 'test-name': 'test value' };
+
   beforeAll(() => {
     cronjobInitiateService = new CronjobInitiateService();
+
     // Make this a noop.
     jest
       .spyOn(cronjobInitiateService.axiosCallsService, 'getAccessToken')
@@ -16,10 +19,6 @@ describe('Cronjob initiation', () => {
     jest
       .spyOn(cronjobInitiateService.axiosCallsService, 'accessTokenToHeaders')
       .mockResolvedValue(testHeader);
-    // We assert on this return value.
-    jest
-      .spyOn(cronjobInitiateService.axiosCallsService, 'getBaseUrl')
-      .mockResolvedValue(exampleApiUrl);
   });
 
   afterAll(jest.restoreAllMocks);

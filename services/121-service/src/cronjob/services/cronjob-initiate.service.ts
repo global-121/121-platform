@@ -3,6 +3,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AxiosResponse } from 'axios';
 
+import { getBaseUrl } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
@@ -124,7 +125,7 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'patch', headers);
   }
 
-  // Runs twice daily at 3:00 UTC and 9:00 UTC 
+  // Runs twice daily at 3:00 UTC and 9:00 UTC
   // This corresponds to 6:00 and 12:00 Syrian time
   @Cron('0 0 3,9 * * *', {
     disabled: !env.CRON_AL_FOUAD_RECONCILIATION,
@@ -216,7 +217,7 @@ export class CronjobInitiateService {
     }
     // Not a network operation so no try/catch.
     const cronPath = 'cronjobs';
-    const baseCronUrl = `${await this.axiosCallsService.getBaseUrl()}/${cronPath}`;
+    const baseCronUrl = `${getBaseUrl()}/${cronPath}`;
     return { baseCronUrl, headers };
   }
 
