@@ -26,7 +26,21 @@
         [showClear]="false"
         class="inline-full"
         [filter]="true"
-      />
+      >
+        <ng-template
+          #item
+          let-option
+        >
+          <div class="flex justify-between pe-2 inline-full">
+            <span>
+              {{ option.value }}
+            </span>
+            <span class="text-grey-700/75">
+              {{ getCurrencySymbol({ code: option.value }) }}
+            </span>
+          </div>
+        </ng-template>
+      </p-select>
     </app-form-field-wrapper>
   </div>
   <app-form-field-wrapper
@@ -43,28 +57,7 @@
       i18n-placeholder
     />
   </app-form-field-wrapper>
-  <app-form-field-wrapper
-    label="Fixed transfer value"
-    i18n-label
-    [errorMessage]="formFieldErrors()('fixedTransferValue')"
-    [isRequired]="true"
-  >
-    <p-inputNumber
-      mode="currency"
-      [currency]="formGroup.get('currency')?.value"
-      [locale]="locale"
-      currencyDisplay="symbol"
-      [useGrouping]="true"
-      inputId="integeronly"
-      [minFractionDigits]="0"
-      [maxFractionDigits]="2"
-      class="inline-full"
-      inputStyleClass="inline-full"
-      formControlName="fixedTransferValue"
-    />
-  </app-form-field-wrapper>
 
-  <!-- Alternative to the currency mode field above; remove one of the two -->
   <app-form-field-wrapper
     label="Fixed transfer value (input addon)"
     i18n-label

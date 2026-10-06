@@ -34,6 +34,7 @@ import {
 } from '~/services/tracking/tracking.enums';
 import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
 import { generateFieldErrors, trackFieldErrors } from '~/utils/form-validation';
+import { getCurrencySymbol } from '~/utils/get-currency-symbol';
 import { Locale } from '~/utils/locale';
 
 export type ProgramBudgetFormGroup =
@@ -60,6 +61,8 @@ export class ProgramFormBudgetComponent {
   readonly program = input<Program>();
   readonly programId = input<string>();
   readonly trackEvent = output<TrackingEvent>();
+
+  getCurrencySymbol = getCurrencySymbol;
 
   readonly currencies = Object.values(CurrencyCode)
     .map((code) => ({
@@ -158,21 +161,5 @@ export class ProgramFormBudgetComponent {
         });
       },
     });
-  }
-
-  protected getCurrencySymbol({ code }: { code: CurrencyCode }): string {
-    const currencyPart = new Intl.NumberFormat(this.locale, {
-      style: 'currency',
-      currency: code,
-      currencyDisplay: 'symbol',
-    })
-      .formatToParts(0)
-      .find((part) => part.type === 'currency');
-
-    if (!currencyPart) {
-      return code;
-    }
-
-    return currencyPart.value;
   }
 }
