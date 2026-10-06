@@ -40,6 +40,8 @@ export type DataListItem = (
     }
 ) & {
   label: string | UILanguageTranslation;
+  tooltip?: string;
+  inlineTooltip?: boolean;
   loading?: boolean;
   chipLabel?: string;
   chipVariant?: ColorVariant;

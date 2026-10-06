@@ -1,3 +1,4 @@
+import { CurrencyPipe } from '@angular/common';
 import { inject, Injectable, Signal, signal } from '@angular/core';
 
 import {
@@ -29,7 +30,9 @@ import {
   NormalizedRegistrationAttribute,
   RegistrationAttributeService,
 } from '~/services/registration-attribute.service';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { environment } from '~environment';
 
 const FILTERABLE_ATTRIBUTES_LABELS: Record<string, string> = {
   paymentCount: $localize`:@@payment-count:Number of payments`,
@@ -100,8 +103,7 @@ export class RegistrationsTableColumnService {
             ...scopeColumns,
             ...programSpecificColumns,
           ];
-
-          return this.processColumns(allColumns);
+          return this.processColumns({ columns: allColumns, program });
         },
       });
   }
@@ -272,11 +274,26 @@ export class RegistrationsTableColumnService {
     }));
   }
 
-  private processColumns(
-    columns: QueryTableColumn<Registration>[],
-  ): QueryTableColumn<Registration>[] {
+  private processColumns({
+    columns,
+    program,
+  }: {
+    columns: QueryTableColumn<Registration>[];
+    program: Program;
+  }): QueryTableColumn<Registration>[] {
     return columns
       .map((column) => {
+        if (column.field === 'transferValue') {
+          const transferValueTooltipParagraph1 = $localize`The transfer value result is calculated by multiplying the base transfer value by a multiplier based on registration data, if applicable.`;
+          const transferValueTooltipParagraph2 = $localize`For example, if the base transfer value is $50 and the multiplier is based on household size, a 3-person household would have a transfer value of $150.`;
+          column.tooltip = {
+            message: `${transferValueTooltipParagraph1}\n\n${transferValueTooltipParagraph2}`,
+            inline: true,
+            trackingName:
+              InfoTooltipTrackingName.registrationsTableTransferValue,
+          };
+        }
+
         // undefined indicates: use default text rendering (used for non-numeric columns).
         let getCellText: ((registration: Registration) => string) | undefined;
 
@@ -284,6 +301,17 @@ export class RegistrationsTableColumnService {
           getCellText = (registration: Registration) => {
             if (registration[column.field] === null) {
               return '';
+            }
+
+            if (column.field === 'transferValue') {
+              return (
+                new CurrencyPipe(environment.defaultLocale).transform(
+                  registration.transferValue,
+                  program.currency,
+                  'symbol-narrow',
+                  '1.2-2',
+                ) ?? ''
+              );
             }
 
             return registration[column.field] as string;

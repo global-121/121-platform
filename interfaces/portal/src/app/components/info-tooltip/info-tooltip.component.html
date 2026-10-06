@@ -1,6 +1,8 @@
-<sup>
+<ng-template #icon>
   <i
-    class="pi pi-info-circle cursor-help text-xs"
+    class="pi pi-info-circle cursor-help"
+    [class.text-sm]="infoTooltipData().inline"
+    [class.text-xs]="!infoTooltipData().inline"
     tabindex="0"
     [pTooltip]="infoTooltipData().message"
     [tooltipPosition]="rtlHelper.createPosition('end')()"
@@ -11,4 +13,12 @@
     (keydown.enter)="handleEnterKey($event)"
     (focusout)="handleFocusOut($event)"
   ></i>
-</sup>
+</ng-template>
+
+@if (infoTooltipData().inline) {
+  <ng-container *ngTemplateOutlet="icon"></ng-container>
+} @else {
+  <sup>
+    <ng-container *ngTemplateOutlet="icon"></ng-container>
+  </sup>
+}

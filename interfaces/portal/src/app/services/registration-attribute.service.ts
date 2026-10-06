@@ -189,6 +189,7 @@ export class RegistrationAttributeService {
       GenericRegistrationAttributes.programFspConfigurationName,
       GenericRegistrationAttributes.paymentAmountMultiplier,
       GenericRegistrationAttributes.preferredLanguage,
+      GenericRegistrationAttributes.transferValue,
     ];
 
     if (program.enableScope) {

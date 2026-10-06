@@ -49,6 +49,7 @@ test('User should see a summary of a registration', async ({
       Payments: '1',
       'Phone number': registrationPvScoped.phoneNumber,
       Scope: registrationPvScoped.scope,
+      'Transfer value result': '€17.50',
     };
     const receivedValueObject =
       await registrationActivityLogPage.getRegistrationSummaryList();
