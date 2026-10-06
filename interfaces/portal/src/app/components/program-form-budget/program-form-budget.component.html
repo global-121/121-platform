@@ -49,13 +49,43 @@
     [errorMessage]="formFieldErrors()('fixedTransferValue')"
     [isRequired]="true"
   >
-    <input
-      pInputText
-      type="number"
+    <p-inputNumber
+      mode="currency"
+      [currency]="formGroup.get('currency')?.value"
+      [locale]="locale"
+      currencyDisplay="symbol"
+      [useGrouping]="true"
+      inputId="integeronly"
+      [minFractionDigits]="0"
+      [maxFractionDigits]="2"
+      class="inline-full"
+      inputStyleClass="inline-full"
       formControlName="fixedTransferValue"
-      placeholder="Fixed transfer value"
-      i18n-placeholder
     />
+  </app-form-field-wrapper>
+
+  <!-- Alternative to the currency mode field above; remove one of the two -->
+  <app-form-field-wrapper
+    label="Fixed transfer value (input addon)"
+    i18n-label
+    [errorMessage]="formFieldErrors()('fixedTransferValue')"
+    [isRequired]="true"
+  >
+    <p-inputgroup>
+      <p-inputgroup-addon>
+        {{ getCurrencySymbol({ code: formGroup.controls.currency.value }) }}
+      </p-inputgroup-addon>
+      <p-inputNumber
+        mode="decimal"
+        [locale]="locale"
+        [useGrouping]="true"
+        [minFractionDigits]="0"
+        [maxFractionDigits]="0"
+        class="inline-full"
+        inputStyleClass="inline-full"
+        formControlName="fixedTransferValue"
+      />
+    </p-inputgroup>
   </app-form-field-wrapper>
 
   <app-form-field-wrapper

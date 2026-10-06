@@ -14,6 +14,9 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { get } from 'radashi';
@@ -45,16 +48,19 @@ export type ProgramBudgetFormGroup =
   imports: [
     FspMultiselectComponent,
     FormFieldWrapperComponent,
+    InputGroupModule,
     ReactiveFormsModule,
     InputTextModule,
     SelectModule,
+    InputGroupAddonModule,
+    InputNumberModule,
   ],
   templateUrl: './program-form-budget.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgramFormBudgetComponent {
-  private readonly locale = inject<Locale>(LOCALE_ID);
+  protected readonly locale = inject<Locale>(LOCALE_ID);
   readonly program = input<Program>();
   readonly programId = input<string>();
   readonly trackEvent = output<TrackingEvent>();
@@ -160,5 +166,21 @@ export class ProgramFormBudgetComponent {
         });
       },
     });
+  }
+
+  protected getCurrencySymbol({ code }: { code: CurrencyCode }): string {
+    const currencyPart = new Intl.NumberFormat(this.locale, {
+      style: 'currency',
+      currency: code,
+      currencyDisplay: 'symbol',
+    })
+      .formatToParts(0)
+      .find((part) => part.type === 'currency');
+
+    if (!currencyPart) {
+      return code;
+    }
+
+    return currencyPart.value;
   }
 }
