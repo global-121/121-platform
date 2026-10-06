@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AxiosResponse } from 'axios';
+import { setTimeout } from 'node:timers/promises';
 
 import { getBaseUrl } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
@@ -244,14 +245,17 @@ export class CronjobInitiateService {
     // the actual cronjob code)
     let response: AxiosResponse | undefined;
     const timeoutMs = 30_000;
+    const timeoutAbortController = new AbortController();
+
     try {
       const requestPromise =
         method === 'delete'
           ? this.httpService[method](url, headers)
           : this.httpService[method](url, {}, headers);
-      const timeoutPromise = new Promise<undefined>((resolve) => {
-        setTimeout(() => resolve(undefined), timeoutMs);
+      const timeoutPromise = setTimeout(timeoutMs, undefined, {
+        signal: timeoutAbortController.signal,
       });
+
       response = (await Promise.race([requestPromise, timeoutPromise])) as
         AxiosResponse | undefined;
     } catch (error) {
@@ -259,10 +263,13 @@ export class CronjobInitiateService {
         `While running cronjob "${this.currentlyRunningCronjobName}" an error occurred during a request.`,
         { cause: error },
       );
+    } finally {
+      timeoutAbortController.abort();
     }
     // We could move this to a separate function, but that makes each cronjob a
     // bit uglier.
     this.currentlyRunningCronjobName = '';
+
     // If no response, assume success (status 200)
     // Only reason we return something here is because we want to test it.
     return { url, responseStatus: response?.status ?? HttpStatus.OK };
