@@ -42,6 +42,8 @@ export class BasicAuthLoginComponent {
   private authService = inject(AuthService);
   readonly returnUrl = input<string | undefined>(undefined);
 
+  passWordResetSubject = `Request Password reset for 121 Platform: ${location.host}`; // NOTE: Not localized/translated, it's used by support-team only
+
   formGroup = new FormGroup({
     email: new FormControl('', {
       nonNullable: true,
