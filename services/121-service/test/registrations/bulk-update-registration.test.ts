@@ -25,8 +25,7 @@ function filterUnchangedProperties(
       !(key in patchData) &&
       key !== 'name' &&
       key !== 'duplicateStatus' &&
-      key !== 'lastMessageStatus' &&
-      key !== 'transferValue'
+      key !== 'lastMessageStatus'
     ) {
       unchangedProperties[key] = originalData[key];
     }

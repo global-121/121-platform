@@ -219,18 +219,6 @@ exports[`Create program should post a program: Create program response for progr
           "isInteger": false,
           "name": "referenceId",
         },
-        {
-          "allowedOperators": [
-            "$eq",
-            "$null",
-            "$gt",
-            "$lt",
-            "$btw",
-            "$not",
-          ],
-          "isInteger": true,
-          "name": "transferValue",
-        },
       ],
       "group": "paAttributes",
     },
@@ -736,18 +724,6 @@ exports[`Create program should post a program: Create program response for progr
           ],
           "isInteger": false,
           "name": "referenceId",
-        },
-        {
-          "allowedOperators": [
-            "$eq",
-            "$null",
-            "$gt",
-            "$lt",
-            "$btw",
-            "$not",
-          ],
-          "isInteger": true,
-          "name": "transferValue",
         },
         {
           "allowedOperators": [

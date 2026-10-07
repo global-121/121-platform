@@ -45,7 +45,6 @@ export class ProgramRegistrationAttributesService {
       'preferredLanguage',
       'inclusionScore',
       'paymentAmountMultiplier',
-      'transferValue',
       'programFspConfigurationName',
     ];
     const paAttributesNameArray = program['paTableAttributes'].map(
