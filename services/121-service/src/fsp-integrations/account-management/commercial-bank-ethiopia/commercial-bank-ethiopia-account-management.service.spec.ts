@@ -207,6 +207,9 @@ describe('CommercialBankEthiopiaAccountManagementService', () => {
       commercialBankEthiopiaAccountEnquiriesScopedRepo.save.mockResolvedValue([
         {} as CommercialBankEthiopiaAccountEnquiriesEntity,
       ]);
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
 
       // Act
       const result =
@@ -218,6 +221,7 @@ describe('CommercialBankEthiopiaAccountManagementService', () => {
       expect(
         commercialBankEthiopiaAccountEnquiriesScopedRepo.save,
       ).toHaveBeenCalledTimes(1);
+      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
     });
   });
 });
