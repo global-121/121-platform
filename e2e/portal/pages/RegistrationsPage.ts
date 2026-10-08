@@ -444,6 +444,17 @@ class RegistrationsPage extends BasePage {
       .toContainText(`There are ${duplicateCount} registration(s) that don't support this action.
 `);
   }
+
+  async validateTransferValues({
+    expectedValues,
+  }: {
+    expectedValues: string[];
+  }) {
+    await expect(async () => {
+      const transferValues = await this.table.getTextArrayFromColumn(10);
+      expectedSortedArraysToEqual(transferValues, expectedValues);
+    }).toPass({ timeout: 1000 });
+  }
 }
 
 export default RegistrationsPage;
