@@ -17,8 +17,14 @@ describe('AlFouadEncryptionService', () => {
     });
 
     it('should produce a different ciphertext each time (PKCS#1 v1.5 padding is randomized)', () => {
-      const first = service.encrypt({ data: 'secret', publicKeyXml: PUBLIC_KEY_XML });
-      const second = service.encrypt({ data: 'secret', publicKeyXml: PUBLIC_KEY_XML });
+      const first = service.encrypt({
+        data: 'secret',
+        publicKeyXml: PUBLIC_KEY_XML,
+      });
+      const second = service.encrypt({
+        data: 'secret',
+        publicKeyXml: PUBLIC_KEY_XML,
+      });
 
       expect(first).not.toBe(second);
     });
@@ -27,6 +33,15 @@ describe('AlFouadEncryptionService', () => {
       expect(() =>
         service.encrypt({ data: 'secret', publicKeyXml: '<RSAParameters />' }),
       ).toThrow('Invalid Al Fouad public key');
+    });
+
+    it('should throw a clear error when the public key is not XML', () => {
+      expect(() =>
+        service.encrypt({
+          data: 'secret',
+          publicKeyXml: 'AL_FOUAD_PUBLIC_KEY',
+        }),
+      ).toThrow('the public key must be in XML format');
     });
   });
 });

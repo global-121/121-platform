@@ -41,7 +41,15 @@ export class AlFouadEncryptionService {
     modulus: string;
     exponent: string;
   } {
-    const parsed = xml2js(publicKeyXml, { compact: true }) as RsaParametersXml;
+    let parsed: RsaParametersXml;
+    try {
+      parsed = xml2js(publicKeyXml, { compact: true }) as RsaParametersXml;
+    } catch (error) {
+      throw new Error(
+        'Invalid Al Fouad public key: the public key must be in XML format and cannot be any other value',
+        { cause: error },
+      );
+    }
 
     const modulus = parsed.RSAParameters?.Modulus?._text?.trim();
     const exponent = parsed.RSAParameters?.Exponent?._text?.trim();
