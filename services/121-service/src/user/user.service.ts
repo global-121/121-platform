@@ -191,6 +191,13 @@ export class UserService {
   public async addUserRole(
     userRoleData: CreateUserRoleDto,
   ): Promise<UserRoleResponseDTO> {
+    if (this.isDefaultUserRoleName({ roleName: userRoleData.role })) {
+      throw new HttpException(
+        `Role name '${userRoleData.role}' is reserved for a default role`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const existingRole = await this.userRoleRepository.findOne({
       where: { role: Equal(userRoleData.role) },
     });
@@ -267,16 +274,17 @@ export class UserService {
   }
 
   private throwIfDefaultUserRole(userRole: UserRoleEntity): void {
-    const isDefaultRole = Object.values(DefaultUserRole).includes(
-      userRole.role as DefaultUserRole,
-    );
-    if (!isDefaultRole) {
+    if (!this.isDefaultUserRoleName({ roleName: userRole.role })) {
       return;
     }
     throw new HttpException(
       `Role '${userRole.role}' is a default role and cannot be updated or deleted`,
       HttpStatus.BAD_REQUEST,
     );
+  }
+
+  private isDefaultUserRoleName({ roleName }: { roleName: string }): boolean {
+    return Object.values<string>(DefaultUserRole).includes(roleName);
   }
 
   private async findRoleOrThrow(userRoleId: number): Promise<UserRoleEntity> {

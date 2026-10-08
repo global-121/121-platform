@@ -4,10 +4,10 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { getUserRoles } from '@121-service/test/helpers/user.helper';
 import {
-  createRole,
-  getAccessToken,
-  getServer,
-  resetDB,
+    createRole,
+    getAccessToken,
+    getServer,
+    resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
 describe('/ Roles', () => {

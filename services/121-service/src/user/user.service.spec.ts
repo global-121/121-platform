@@ -279,6 +279,31 @@ describe('UserService', () => {
     });
   });
 
+  describe('addUserRole', () => {
+    it('should throw HttpException when the role name is a default role name', async () => {
+      // Arrange
+      const findOneSpy = jest.spyOn(userRoleRepository, 'findOne');
+      const saveSpy = jest.spyOn(userRoleRepository, 'save');
+
+      // Act & Assert
+      await expect(
+        service.addUserRole({
+          role: DefaultUserRole.Admin,
+          label: 'Admin',
+          description: 'Description',
+          permissions: [],
+        }),
+      ).rejects.toThrow(
+        new HttpException(
+          `Role name '${DefaultUserRole.Admin}' is reserved for a default role`,
+          HttpStatus.BAD_REQUEST,
+        ),
+      );
+      expect(findOneSpy).not.toHaveBeenCalled();
+      expect(saveSpy).not.toHaveBeenCalled();
+    });
+  });
+
   describe('updateUserRole', () => {
     const userRoleId = 1;
     const mockExistingRole: Partial<UserRoleEntity> = {
