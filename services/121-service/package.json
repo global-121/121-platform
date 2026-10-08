@@ -149,5 +149,15 @@
     "@swc/cli": {
       "piscina": "4.9.3"
     }
+  },
+  "allowScripts": {
+    "@automock/adapters.nestjs": false,
+    "@scarf/scarf": false,
+    "@swc/core": false,
+    "dtrace-provider": false,
+    "fsevents": false,
+    "msgpackr-extract": false,
+    "ssh2": false,
+    "unrs-resolver": false
   }
 }

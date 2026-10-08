@@ -124,5 +124,13 @@
       "@angular/core": "$@angular/core",
       "@angular/common": "$@angular/common"
     }
+  },
+  "allowScripts": {
+    "@parcel/watcher": false,
+    "esbuild": false,
+    "fsevents": false,
+    "keytar": false,
+    "lmdb": false,
+    "msgpackr-extract": false
   }
 }
