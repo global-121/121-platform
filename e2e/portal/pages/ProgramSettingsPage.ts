@@ -124,11 +124,17 @@ class ProgramSettingsPage extends BasePage {
     const budgetData = await this.budgetDataList.getData();
 
     expect(budgetData).toEqual({
-      'Funds available': programData.fundsAvailable,
+      'Funds available': Intl.NumberFormat('en-GB', {
+        style: 'currency',
+        currency: programData.currency,
+      }).format(Number(programData.fundsAvailable)),
       '*Currency': programData.currency,
       'Number of distributions per registration':
         programData.defaultNumberOfTransactions,
-      '*Fixed transfer value': programData.fixedTransferValue,
+      '*Fixed transfer value': Intl.NumberFormat('en-GB', {
+        style: 'currency',
+        currency: programData.currency,
+      }).format(Number(programData.fixedTransferValue)),
       'Financial service providers': programData.fsps?.join(''),
     });
   }
