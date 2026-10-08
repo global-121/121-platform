@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import crypto from 'node:crypto';
-import { DataSource, Equal, QueryFailedError } from 'typeorm';
+import { DataSource, QueryFailedError } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
