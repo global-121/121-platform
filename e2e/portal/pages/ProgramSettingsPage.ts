@@ -6,6 +6,7 @@ import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-cod
 
 import DataListComponent from '../components/DataListComponent';
 import { PrimeNGDatePicker } from '../components/PrimeNGDatePicker';
+import { formatValueBasedOnCurrency } from '../helpers/formatValueBasedOnCurrency';
 import BasePage from './BasePage';
 
 class ProgramSettingsPage extends BasePage {
@@ -125,21 +126,18 @@ class ProgramSettingsPage extends BasePage {
 
     const budgetData = await this.budgetDataList.getData();
 
-    const formatValueBasedOnCurrency = (value: string) =>
-      new Intl.NumberFormat('en-GB', {
-        style: 'currency',
-        currency: programData.currency,
-        currencyDisplay: 'narrowSymbol',
-      }).format(Number(value));
-
     expect(budgetData).toEqual({
-      'Funds available': formatValueBasedOnCurrency(programData.fundsAvailable),
+      'Funds available': formatValueBasedOnCurrency({
+        value: programData.fundsAvailable,
+        currency: programData.currency,
+      }),
       '*Currency': programData.currency,
       'Number of distributions per registration':
         programData.defaultNumberOfTransactions,
-      '*Fixed transfer value': formatValueBasedOnCurrency(
-        programData.fixedTransferValue,
-      ),
+      '*Fixed transfer value': formatValueBasedOnCurrency({
+        value: programData.fixedTransferValue,
+        currency: programData.currency,
+      }),
       'Financial service providers': programData.fsps?.join(''),
     });
   }
