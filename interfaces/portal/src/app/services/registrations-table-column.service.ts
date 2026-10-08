@@ -32,7 +32,7 @@ import {
 } from '~/services/registration-attribute.service';
 import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 import { TranslatableStringService } from '~/services/translatable-string.service';
-import { environment } from '~environment';
+import { getUserPreferredUILanguage } from '~/utils/locale';
 
 const FILTERABLE_ATTRIBUTES_LABELS: Record<string, string> = {
   paymentCount: $localize`:@@payment-count:Number of payments`,
@@ -305,7 +305,7 @@ export class RegistrationsTableColumnService {
 
             if (column.field === 'transferValue') {
               return (
-                new CurrencyPipe(environment.defaultLocale).transform(
+                new CurrencyPipe(getUserPreferredUILanguage()).transform(
                   registration.transferValue,
                   program.currency,
                   'symbol-narrow',

@@ -132,7 +132,7 @@ class RegistrationsPage extends BasePage {
     }
 
     for (const column of columns) {
-      await this.manageTableSidebar.getByLabel(column).check();
+      await this.manageTableSidebar.getByLabel(column, { exact: true }).check();
     }
 
     await this.manageTableSidebar

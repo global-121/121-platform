@@ -138,6 +138,22 @@ export class QueryTableFilterService<TData> {
     }
   }
 
+  getColumnMinFractionDigits(column: QueryTableColumn<TData>): number {
+    if (column.field !== 'transferValue') {
+      return 0;
+    }
+
+    return 2;
+  }
+
+  getColumnMaxFractionDigits(column: QueryTableColumn<TData>): number {
+    if (column.field !== 'transferValue') {
+      return 0;
+    }
+
+    return 2;
+  }
+
   onShowColumnFilter(name: string, type: QueryTableColumnType) {
     this.trackingService.trackEvent({
       category: TrackingCategory.manageTableSettings,

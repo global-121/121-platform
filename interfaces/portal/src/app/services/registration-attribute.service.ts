@@ -135,7 +135,11 @@ export class RegistrationAttributeService {
     attributeName: string;
     program: Program;
   }) {
-    const nonEditableAttributes = ['inclusionScore', 'paymentCountRemaining'];
+    const nonEditableAttributes = [
+      'inclusionScore',
+      'paymentCountRemaining',
+      'transferValue',
+    ];
 
     if (program.paymentAmountMultiplierFormula) {
       nonEditableAttributes.push('paymentAmountMultiplier');
