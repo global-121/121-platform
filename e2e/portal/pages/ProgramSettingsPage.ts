@@ -4,7 +4,6 @@ import { Locator, Page } from 'playwright';
 
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 
-import { getCurrencySymbol } from '../../../interfaces/portal/src/app/utils/get-currency-symbol';
 import DataListComponent from '../components/DataListComponent';
 import { PrimeNGDatePicker } from '../components/PrimeNGDatePicker';
 import BasePage from './BasePage';
@@ -127,7 +126,11 @@ class ProgramSettingsPage extends BasePage {
     const budgetData = await this.budgetDataList.getData();
 
     const formatValueBasedOnCurrency = (value: string) =>
-      `${getCurrencySymbol({ code: programData.currency })}${Number(value)}`;
+      new Intl.NumberFormat('en-GB', {
+        style: 'currency',
+        currency: programData.currency,
+        currencyDisplay: 'narrowSymbol',
+      }).format(Number(value));
 
     expect(budgetData).toEqual({
       'Funds available': formatValueBasedOnCurrency(programData.fundsAvailable),
