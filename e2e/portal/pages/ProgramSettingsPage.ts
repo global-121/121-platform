@@ -2,6 +2,9 @@ import { expect } from '@playwright/test';
 import { format } from 'date-fns';
 import { Locator, Page } from 'playwright';
 
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
+
+import { getCurrencySymbol } from '../../../interfaces/portal/src/app/utils/get-currency-symbol';
 import DataListComponent from '../components/DataListComponent';
 import { PrimeNGDatePicker } from '../components/PrimeNGDatePicker';
 import BasePage from './BasePage';
@@ -102,7 +105,7 @@ class ProgramSettingsPage extends BasePage {
       location: string;
       targetRegistrations: string;
       fundsAvailable: string;
-      currency: string;
+      currency: CurrencyCode;
       defaultNumberOfTransactions: string;
       fixedTransferValue: string;
       fsps?: string[];
@@ -123,18 +126,17 @@ class ProgramSettingsPage extends BasePage {
 
     const budgetData = await this.budgetDataList.getData();
 
+    const formatValueBasedOnCurrency = (value: string) =>
+      `${getCurrencySymbol({ code: programData.currency })}${Number(value)}`;
+
     expect(budgetData).toEqual({
-      'Funds available': Intl.NumberFormat('en-GB', {
-        style: 'currency',
-        currency: programData.currency,
-      }).format(Number(programData.fundsAvailable)),
+      'Funds available': formatValueBasedOnCurrency(programData.fundsAvailable),
       '*Currency': programData.currency,
       'Number of distributions per registration':
         programData.defaultNumberOfTransactions,
-      '*Fixed transfer value': Intl.NumberFormat('en-GB', {
-        style: 'currency',
-        currency: programData.currency,
-      }).format(Number(programData.fixedTransferValue)),
+      '*Fixed transfer value': formatValueBasedOnCurrency(
+        programData.fixedTransferValue,
+      ),
       'Financial service providers': programData.fsps?.join(''),
     });
   }
