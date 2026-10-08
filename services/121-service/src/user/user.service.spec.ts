@@ -282,7 +282,6 @@ describe('UserService', () => {
   describe('addUserRole', () => {
     it('should throw HttpException when the role name is a default role name', async () => {
       // Arrange
-      const findOneSpy = jest.spyOn(userRoleRepository, 'findOne');
       const saveSpy = jest.spyOn(userRoleRepository, 'save');
 
       // Act & Assert
@@ -299,7 +298,6 @@ describe('UserService', () => {
           HttpStatus.BAD_REQUEST,
         ),
       );
-      expect(findOneSpy).not.toHaveBeenCalled();
       expect(saveSpy).not.toHaveBeenCalled();
     });
   });

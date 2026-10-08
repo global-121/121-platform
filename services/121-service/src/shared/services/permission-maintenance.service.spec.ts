@@ -161,7 +161,7 @@ describe('PermissionMaintenanceService', () => {
     );
   });
 
-  it('creates missing supported permissions before continuing', async () => {
+  it('creates missing supported permissions', async () => {
     const { missingPermission, existingPermissions } =
       getMissingPermissionFixture();
 
@@ -240,5 +240,18 @@ describe('PermissionMaintenanceService', () => {
     });
 
     await expect(service.syncDefaultRoles()).resolves.toBeUndefined();
+  });
+
+  it('throws when saving a default role fails for another reason', async () => {
+    const existingPermissions = getAllSupportedPermissions();
+    const defaultRoles = createDefaultRoleEntities();
+    defaultRoles[0].label = 'Outdated label';
+    const saveError = new Error('Connection lost');
+
+    permissionRepository.find.mockResolvedValue(existingPermissions);
+    userRoleRepository.find.mockResolvedValue(defaultRoles);
+    userRoleRepository.save.mockRejectedValueOnce(saveError);
+
+    await expect(service.syncDefaultRoles()).rejects.toThrow(saveError);
   });
 });
