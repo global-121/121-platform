@@ -106,7 +106,7 @@
     "ufo": "^1.6.4",
     "uuid": "^14.0.1",
     "validator": "^13.15.35",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+    "xlsx": "file:../../packages/vendor/xlsx-0.20.3.tgz",
     "xml-js": "^1.6.11",
     "zod": "^4.4.3"
   },
