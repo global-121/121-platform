@@ -89,7 +89,7 @@ describe('Create program', () => {
     );
   });
 
-  it('should fallback to ["fullName"] as the fullnameNamingConvention if the mininum amount of attributes is provided', async () => {
+  it('should have an empty fullnameNamingConvention if the mininum amount of attributes is provided', async () => {
     // Arrange
     const minimalProgram = {
       titlePortal: {
@@ -107,41 +107,12 @@ describe('Create program', () => {
     // Assert
     expect(createProgramResponse.body).toEqual(
       expect.objectContaining({
-        fullnameNamingConvention: ['fullName'],
+        fullnameNamingConvention: [],
       }),
     );
   });
 
-  it('should add "fullName" to the programRegistrationAttributes if the mininum amount of attributes is provided', async () => {
-    // Arrange
-    const minimalProgram = {
-      titlePortal: {
-        en: 'Test Title',
-      },
-      currency: CurrencyCode.EUR,
-    };
-
-    // Act
-    const createProgramResponse = await postProgram(
-      minimalProgram,
-      accessToken,
-    );
-
-    // Assert
-    expect(createProgramResponse.body).toEqual(
-      expect.objectContaining({
-        programRegistrationAttributes: expect.arrayContaining([
-          expect.objectContaining({
-            name: 'fullName',
-            label: expect.objectContaining({ en: 'Full name' }),
-            type: 'text',
-          }),
-        ]),
-      }),
-    );
-  });
-
-  it('should not fallback to ["fullName"] if fullnameNamingConvention is provided', async () => {
+  it('should store the fullnameNamingConvention if it is provided', async () => {
     // Arrange
     const minimalProgram = {
       titlePortal: {

@@ -150,10 +150,7 @@ export class ProgramService {
 
     await this.validateProgram(programData);
 
-    const fullnameNamingConvention =
-      this.applyFullnameNamingConventionFallbackIfNecessary({
-        namingConventionData: programData.fullnameNamingConvention,
-      });
+    const fullnameNamingConvention = programData.fullnameNamingConvention ?? [];
     const programRegistrationAttributes =
       await this.programRegistrationAttributesService.applyProgramRegistrationAttributesFallbackIfNecessary(
         {
@@ -562,17 +559,5 @@ export class ProgramService {
       }
     }
     return wallets;
-  }
-
-  private applyFullnameNamingConventionFallbackIfNecessary({
-    namingConventionData,
-  }: {
-    namingConventionData: string[] | undefined;
-  }): string[] {
-    if (!namingConventionData || namingConventionData.length === 0) {
-      return ['fullName'];
-    }
-
-    return namingConventionData;
   }
 }
