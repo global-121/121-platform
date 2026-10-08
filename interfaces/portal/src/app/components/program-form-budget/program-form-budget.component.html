@@ -5,13 +5,20 @@
       i18n-label
       [errorMessage]="formFieldErrors()('budget')"
     >
-      <input
-        pInputText
-        type="number"
-        formControlName="budget"
-        placeholder="Funds available"
-        i18n-placeholder
-      />
+      <p-inputgroup>
+        <p-inputgroup-addon class="text-black">
+          {{ getCurrencySymbol({ code: formGroup.controls.currency.value }) }}
+        </p-inputgroup-addon>
+        <p-inputNumber
+          [locale]="locale"
+          [useGrouping]="true"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="0"
+          class="inline-full"
+          inputStyleClass="inline-full"
+          formControlName="budget"
+        />
+      </p-inputgroup>
     </app-form-field-wrapper>
     <app-form-field-wrapper
       label="Currency"
@@ -73,7 +80,7 @@
         [locale]="locale"
         [useGrouping]="true"
         [minFractionDigits]="0"
-        [maxFractionDigits]="0"
+        [maxFractionDigits]="2"
         class="inline-full"
         inputStyleClass="inline-full"
         formControlName="fixedTransferValue"
