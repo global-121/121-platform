@@ -100,7 +100,7 @@ export class DeduplicationCardComponent {
         value: this.selectedOptions().map((attr) => attr.name),
         options: this.selectedOptions().map((attr) => ({
           value: attr.name,
-          label: attr.label,
+          label: attr.labelToShow,
         })),
         type: 'tags',
       },
