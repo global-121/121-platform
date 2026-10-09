@@ -89,7 +89,7 @@ describe('Create program', () => {
     );
   });
 
-  it('should have an empty fullnameNamingConvention if the mininum amount of attributes is provided', async () => {
+  it('should have an empty fullnameNamingConvention if the minimum amount of attributes is provided', async () => {
     // Arrange
     const minimalProgram = {
       titlePortal: {
@@ -110,6 +110,26 @@ describe('Create program', () => {
         fullnameNamingConvention: [],
       }),
     );
+  });
+
+  it('should keep an explicitly provided empty fullnameNamingConvention empty', async () => {
+    // Arrange
+    const programWithEmptyNamingConvention = {
+      titlePortal: {
+        en: 'Test Title',
+      },
+      currency: CurrencyCode.EUR,
+    };
+
+    // Act
+    const createProgramResponse = await postProgram(
+      programWithEmptyNamingConvention,
+      accessToken,
+    );
+
+    // Assert
+    expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
+    expect(createProgramResponse.body.fullnameNamingConvention).toEqual([]);
   });
 
   it('should store the fullnameNamingConvention if it is provided', async () => {
