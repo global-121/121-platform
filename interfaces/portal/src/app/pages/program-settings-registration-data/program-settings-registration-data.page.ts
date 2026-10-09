@@ -19,6 +19,7 @@ import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-conf
 import { isKoboIntegrated } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { DeduplicationCardComponent } from '~/pages/program-settings-registration-data/components/deduplication-card/deduplication-card.component';
+import { FullNameCardComponent } from '~/pages/program-settings-registration-data/components/full-name-card/full-name-card.component';
 import { KoboIntegrationCardComponent } from '~/pages/program-settings-registration-data/components/kobo-integration-card/kobo-integration-card.component';
 import { RegistrationQuestionsCardComponent } from '~/pages/program-settings-registration-data/components/registration-questions-card/registration-questions-card.component';
 import { RequiredAttributesComponent } from '~/pages/program-settings-registration-data/components/required-attributes/required-attributes.component';
@@ -34,6 +35,7 @@ import { ColorVariant } from '~/utils/color-variant.enum';
     ManualLinkComponent,
     RegistrationQuestionsCardComponent,
     DeduplicationCardComponent,
+    FullNameCardComponent,
     NotificationBannerComponent,
   ],
   templateUrl: './program-settings-registration-data.page.html',
