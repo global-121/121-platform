@@ -20,8 +20,8 @@ import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-acti
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import {
-  DefaultRegistrationDataAttributeNames,
-  GenericRegistrationAttributes,
+    DefaultRegistrationDataAttributeNames,
+    GenericRegistrationAttributes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { StatusChangeHelper } from '@121-service/src/registration/helpers/status-change.helper';
@@ -31,8 +31,8 @@ import { RegistrationViewScopedRepository } from '@121-service/src/registration/
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import {
-  ScopedQueryBuilder,
-  ScopedRepository,
+    ScopedQueryBuilder,
+    ScopedRepository,
 } from '@121-service/src/scoped.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
@@ -295,7 +295,7 @@ export class RegistrationsBulkService {
     }
 
     return await this.getBaseQuery()
-      .andWhere('registration.id IN (:...registrationIds)', {
+      .andWhere('registration.id = ANY(:registrationIds)', {
         registrationIds,
       })
       .andWhere('registration."duplicateStatus" = :duplicateStatus', {

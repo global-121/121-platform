@@ -107,7 +107,7 @@ export class PaymentsHelperService {
         },
         queryBuilder: this.registrationsBulkService
           .getBaseQuery()
-          .andWhere('registration.id IN (:...registrationIds)', {
+          .andWhere('registration.id = ANY(:registrationIds)', {
             registrationIds,
           }),
       });
