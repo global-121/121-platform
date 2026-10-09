@@ -1,0 +1,51 @@
+<app-card-editable
+  header="Full name set up"
+  i18n-header
+  editPencilTitle="Edit"
+  i18n-editPencilTitle
+  [canEdit]="canEdit()"
+  [(isEditing)]="isEditing"
+  [formGroup]="formGroup"
+  [mutation]="updateFullnameNamingConventionMutation"
+  [mutationData]="formGroup.getRawValue()"
+  [dataTestId]="'full-name-card'"
+>
+  <p
+    i18n
+    class="mbe-4"
+  >
+    Select the field or fields that make up the full name of the registration.
+    This name will be shown in the registrations table and the profile page.
+  </p>
+
+  @if (isEditing()) {
+    <app-form-field-wrapper
+      label="Name fields:"
+      [isRequired]="false"
+      i18n-label
+    >
+      <p-multiselect
+        class="wrapped-chip-multiselect"
+        [options]="textAttributes()"
+        [optionLabel]="'labelToShow'"
+        [optionValue]="'name'"
+        formControlName="nameFields"
+        placeholder="Select 1 or more fields"
+        i18n-placeholder
+        [loading]="program.isPending()"
+        [maxSelectedLabels]="100"
+        [display]="'chip'"
+        [filter]="true"
+        [appendTo]="'body'"
+        data-testid="full-name-card-multiselect"
+      >
+      </p-multiselect>
+    </app-form-field-wrapper>
+  } @else {
+    <app-data-list
+      [data]="dataListData()"
+      [forceOneColumn]="true"
+      data-testid="full-name-card-datalist"
+    ></app-data-list>
+  }
+</app-card-editable>

@@ -246,6 +246,9 @@
       <trans-unit id="19569847887954644" datatype="html">
         <source>Included registrations</source>
       </trans-unit>
+      <trans-unit id="1967211753916603347" datatype="html">
+        <source>Select the field or fields that make up the full name of the registration. This name will be shown in the registrations table and the profile page.</source>
+      </trans-unit>
       <trans-unit id="1989930177949251804" datatype="html">
         <source>Your registration form must include the following required fields based on the program&apos;s FSPs:</source>
       </trans-unit>
@@ -959,6 +962,9 @@
       <trans-unit id="4580971846969755689" datatype="html">
         <source>You will then find the data column name in the &apos;Question Options&apos;</source>
       </trans-unit>
+      <trans-unit id="4584030243497510228" datatype="html">
+        <source>Full name set up</source>
+      </trans-unit>
       <trans-unit id="4594242528552515311" datatype="html">
         <source>The data in this report is based on data that is imported every night from Cooperative Bank of Oromia. If you changed data today this will not be reflected in the report.</source>
       </trans-unit>
@@ -1357,6 +1363,9 @@
       </trans-unit>
       <trans-unit id="6238291467288576076" datatype="html">
         <source>Contains</source>
+      </trans-unit>
+      <trans-unit id="6239908480786954058" datatype="html">
+        <source>Name fields:</source>
       </trans-unit>
       <trans-unit id="6245136461829083125" datatype="html">
         <source>Import existing registrations</source>
@@ -1917,6 +1926,9 @@
       <trans-unit id="8227576772021299128" datatype="html">
         <source>We couldn&apos;t find this form in Kobo. Check the URL to make sure the form is deployed.</source>
       </trans-unit>
+      <trans-unit id="8249091204340770733" datatype="html">
+        <source>No name field selected</source>
+      </trans-unit>
       <trans-unit id="8255959026836387530" datatype="html">
         <source>Email copied to clipboard</source>
       </trans-unit>
@@ -2001,6 +2013,9 @@
       <trans-unit id="863719556168006669" datatype="html">
         <source>The system will create registrations with the status <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;registeredChipData.chipVariant&quot; [label]=&quot;registeredChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;registeredChipData.chipVariant&quot; [label]=&quot;registeredChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/>.</source>
       </trans-unit>
+      <trans-unit id="8640584034813421127" datatype="html">
+        <source>Name fields</source>
+      </trans-unit>
       <trans-unit id="8670091824036050972" datatype="html">
         <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations.</source>
       </trans-unit>
@@ -2009,6 +2024,9 @@
       </trans-unit>
       <trans-unit id="8718149515078931594" datatype="html">
         <source>The label that will be shown in the registration page table header and registration&apos;s profile. The labels can be edited by clicking on the pencil icon above.</source>
+      </trans-unit>
+      <trans-unit id="8729845011959830442" datatype="html">
+        <source>Full name saved successfully.</source>
       </trans-unit>
       <trans-unit id="8733206904097373941" datatype="html">
         <source>This will download an Excel file with all unused voucher(s).</source>
