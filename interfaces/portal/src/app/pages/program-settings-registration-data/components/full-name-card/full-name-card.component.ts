@@ -93,8 +93,8 @@ export class FullNameCardComponent {
         {
           label,
           type: 'text',
-          value: $localize`Select name fields`,
-          icon: 'pi-exclamation-triangle text-orange-500 ms-1',
+          value: $localize`No name field selected`,
+          icon: 'pi-exclamation-triangle text-red-500 ms-1',
         },
       ];
     }

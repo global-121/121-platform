@@ -962,6 +962,9 @@
       <trans-unit id="4580971846969755689" datatype="html">
         <source>You will then find the data column name in the &apos;Question Options&apos;</source>
       </trans-unit>
+      <trans-unit id="4584030243497510228" datatype="html">
+        <source>Full name set up</source>
+      </trans-unit>
       <trans-unit id="4594242528552515311" datatype="html">
         <source>The data in this report is based on data that is imported every night from Cooperative Bank of Oromia. If you changed data today this will not be reflected in the report.</source>
       </trans-unit>
@@ -1078,9 +1081,6 @@
       </trans-unit>
       <trans-unit id="5004550577313573215" datatype="html">
         <source>Total amount</source>
-      </trans-unit>
-      <trans-unit id="5009215216195417678" datatype="html">
-        <source>Select name fields</source>
       </trans-unit>
       <trans-unit id="501769714612198671" datatype="html">
         <source>You&apos;re about to <x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/> <x equiv-text="{{ dryRunData.pendingApprovalCount }}" id="INTERPOLATION_1"/> registration(s) that are included in a payment that&apos;s waiting for approval.</source>
@@ -1427,9 +1427,6 @@
       </trans-unit>
       <trans-unit id="6430223777327451722" datatype="html">
         <source>Total payment amount</source>
-      </trans-unit>
-      <trans-unit id="6431869270730145638" datatype="html">
-        <source>Define full name</source>
       </trans-unit>
       <trans-unit id="6456009373504868195" datatype="html">
         <source>Please correct the errors in the form.</source>
@@ -1928,6 +1925,9 @@
       </trans-unit>
       <trans-unit id="8227576772021299128" datatype="html">
         <source>We couldn&apos;t find this form in Kobo. Check the URL to make sure the form is deployed.</source>
+      </trans-unit>
+      <trans-unit id="8249091204340770733" datatype="html">
+        <source>No name field selected</source>
       </trans-unit>
       <trans-unit id="8255959026836387530" datatype="html">
         <source>Email copied to clipboard</source>
