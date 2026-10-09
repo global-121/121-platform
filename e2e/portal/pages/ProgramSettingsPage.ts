@@ -2,8 +2,11 @@ import { expect } from '@playwright/test';
 import { format } from 'date-fns';
 import { Locator, Page } from 'playwright';
 
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
+
 import DataListComponent from '../components/DataListComponent';
 import { PrimeNGDatePicker } from '../components/PrimeNGDatePicker';
+import { formatValueBasedOnCurrency } from '../helpers/formatValueBasedOnCurrency';
 import BasePage from './BasePage';
 
 class ProgramSettingsPage extends BasePage {
@@ -85,7 +88,10 @@ class ProgramSettingsPage extends BasePage {
   }
 
   async editInformationFieldByLabel(label: string, value: string) {
-    await this.page.getByLabel(label).fill(value);
+    const field = this.page.getByLabel(label);
+    await field.fill(value);
+    // PrimeNG inputNumber only commits its value to the form control on blur
+    await field.blur();
   }
 
   async validateProgramDetails({
@@ -99,7 +105,7 @@ class ProgramSettingsPage extends BasePage {
       location: string;
       targetRegistrations: string;
       fundsAvailable: string;
-      currency: string;
+      currency: CurrencyCode;
       defaultNumberOfTransactions: string;
       fixedTransferValue: string;
       fsps?: string[];
@@ -121,11 +127,17 @@ class ProgramSettingsPage extends BasePage {
     const budgetData = await this.budgetDataList.getData();
 
     expect(budgetData).toEqual({
-      'Funds available': programData.fundsAvailable,
+      'Funds available': formatValueBasedOnCurrency({
+        value: programData.fundsAvailable,
+        currency: programData.currency,
+      }),
       '*Currency': programData.currency,
       'Number of distributions per registration':
         programData.defaultNumberOfTransactions,
-      '*Fixed transfer value': programData.fixedTransferValue,
+      '*Fixed transfer value': formatValueBasedOnCurrency({
+        value: programData.fixedTransferValue,
+        currency: programData.currency,
+      }),
       'Financial service providers': programData.fsps?.join(''),
     });
   }

@@ -46,9 +46,14 @@
     [isRequired]="true"
     [infoTooltipData]="PROGRAM_FORM_TOOLTIPS_CONFIG.targetRegistrations"
   >
-    <input
-      pInputText
-      type="number"
+    <p-inputNumber
+      mode="decimal"
+      [locale]="locale"
+      [useGrouping]="true"
+      [minFractionDigits]="0"
+      [maxFractionDigits]="0"
+      class="inline-full"
+      inputStyleClass="inline-full"
       formControlName="targetNrRegistrations"
       placeholder="Target registrations"
       i18n-placeholder

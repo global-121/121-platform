@@ -5,13 +5,20 @@
       i18n-label
       [errorMessage]="formFieldErrors()('budget')"
     >
-      <input
-        pInputText
-        type="number"
-        formControlName="budget"
-        placeholder="Funds available"
-        i18n-placeholder
-      />
+      <p-inputgroup>
+        <p-inputgroup-addon class="text-black">
+          {{ getCurrencySymbol({ code: formGroup.controls.currency.value }) }}
+        </p-inputgroup-addon>
+        <p-inputNumber
+          [locale]="locale"
+          [useGrouping]="true"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="0"
+          class="inline-full"
+          inputStyleClass="inline-full"
+          formControlName="budget"
+        />
+      </p-inputgroup>
     </app-form-field-wrapper>
     <app-form-field-wrapper
       label="Currency"
@@ -26,7 +33,21 @@
         [showClear]="false"
         class="inline-full"
         [filter]="true"
-      />
+      >
+        <ng-template
+          #item
+          let-option
+        >
+          <div class="flex justify-between pe-2 inline-full">
+            <span>
+              {{ option.value }}
+            </span>
+            <span class="text-grey-700/75">
+              {{ getCurrencySymbol({ code: option.value }) }}
+            </span>
+          </div>
+        </ng-template>
+      </p-select>
     </app-form-field-wrapper>
   </div>
   <app-form-field-wrapper
@@ -43,19 +64,28 @@
       i18n-placeholder
     />
   </app-form-field-wrapper>
+
   <app-form-field-wrapper
     label="Fixed transfer value"
     i18n-label
     [errorMessage]="formFieldErrors()('fixedTransferValue')"
     [isRequired]="true"
   >
-    <input
-      pInputText
-      type="number"
-      formControlName="fixedTransferValue"
-      placeholder="Fixed transfer value"
-      i18n-placeholder
-    />
+    <p-inputgroup>
+      <p-inputgroup-addon class="text-black">
+        {{ getCurrencySymbol({ code: formGroup.controls.currency.value }) }}
+      </p-inputgroup-addon>
+      <p-inputNumber
+        mode="decimal"
+        [locale]="locale"
+        [useGrouping]="true"
+        [minFractionDigits]="0"
+        [maxFractionDigits]="2"
+        class="inline-full"
+        inputStyleClass="inline-full"
+        formControlName="fixedTransferValue"
+      />
+    </p-inputgroup>
   </app-form-field-wrapper>
 
   <app-form-field-wrapper

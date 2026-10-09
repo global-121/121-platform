@@ -2,7 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   effect,
+  inject,
   input,
+  LOCALE_ID,
   output,
 } from '@angular/core';
 import {
@@ -13,6 +15,7 @@ import {
 } from '@angular/forms';
 
 import { DatePickerModule } from 'primeng/datepicker';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
@@ -26,6 +29,7 @@ import {
 } from '~/services/tracking/tracking.enums';
 import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
 import { generateFieldErrors, trackFieldErrors } from '~/utils/form-validation';
+import { Locale } from '~/utils/locale';
 
 export type ProgramInformationFormGroup =
   (typeof ProgramFormInformationComponent)['prototype']['formGroup'];
@@ -33,6 +37,7 @@ export type ProgramInformationFormGroup =
 @Component({
   selector: 'app-program-form-information',
   imports: [
+    InputNumberModule,
     FormFieldWrapperComponent,
     ReactiveFormsModule,
     InputTextModule,
@@ -44,6 +49,7 @@ export type ProgramInformationFormGroup =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgramFormInformationComponent {
+  protected readonly locale = inject<Locale>(LOCALE_ID);
   readonly program = input<Program>();
   readonly trackEvent = output<TrackingEvent>();
 
