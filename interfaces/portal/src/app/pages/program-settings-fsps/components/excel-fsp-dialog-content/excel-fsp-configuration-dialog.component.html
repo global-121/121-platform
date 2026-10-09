@@ -3,7 +3,7 @@
   [header]="configurationDialogHeader()"
   headerIcon="pi pi-money-bill"
   [formGroup]="formGroup()"
-  [mutation]="configureFsp"
+  [mutation]="configureExcelFsp"
   [mutationData]="formGroup().getRawValue()"
   [proceedLabel]="configurationProceedLabel()"
 >
@@ -16,12 +16,10 @@
   </p>
 
   <div data-testid="fsp-configuration-dialog-form">
-    @for (fspFormField of fspFormFields(); track fspFormField.name) {
-      <app-fsp-configuration-property-input
-        [programId]="programId()"
-        [formGroup]="formGroup()"
-        [fspFormField]="fspFormField"
-      />
-    }
+    <app-excel-fsp-dialog-content
+      [programId]="programId()"
+      [formGroup]="formGroup()"
+      [fspFormFields]="fspFormFields()"
+    />
   </div>
 </app-form-dialog>

@@ -191,7 +191,7 @@ class RegistrationsPage extends BasePage {
     }).toPass({ timeout: 5000 });
 
     const headerTexts = await this.table.getTextArrayFromHeader();
-    return headerTexts.findIndex((text) => text === headerText);
+    return headerTexts.indexOf(headerText);
   }
 
   async validateStatusOfFirstRegistration({ status }: { status: string }) {
@@ -268,7 +268,7 @@ class RegistrationsPage extends BasePage {
         throw new Error('Dialog text does not match expected format');
       }
 
-      const actualCount = parseInt(match[1], 10);
+      const actualCount = Number.parseInt(match[1], 10);
       expect(actualCount).toBe(count);
     }).toPass({ timeout: 2000 });
   }

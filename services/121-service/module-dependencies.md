@@ -34,6 +34,7 @@ graph LR
   CronjobModule-->NedbankReconciliationModule
   CronjobModule-->OnafriqReconciliationModule
   EmailsModule-->GraphModule
+  ExcelModule-->ProgramFspConfigurationsModule
   ExcelModule-->RegistrationsModule
   ExcelModule-->TransactionsModule
   ExcelReconcilicationModule-->ExcelModule

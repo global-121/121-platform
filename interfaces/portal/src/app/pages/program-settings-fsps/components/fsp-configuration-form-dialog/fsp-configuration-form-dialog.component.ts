@@ -23,7 +23,6 @@ import { ManualLinkComponent } from '~/components/manual-link/manual-link.compon
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { ExcelFspDialogContentComponent } from '~/pages/program-settings-fsps/components/excel-fsp-dialog-content/excel-fsp-dialog-content.component';
 import { FspConfigurationPropertyInputComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-property-input/fsp-configuration-property-input.component';
 import {
   FspConfigurationFormGroup,
@@ -36,7 +35,6 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   selector: 'app-fsp-configuration-form-dialog',
   imports: [
     FormDialogComponent,
-    ExcelFspDialogContentComponent,
     ReactiveFormsModule,
     ManualLinkComponent,
     FspConfigurationPropertyInputComponent,
@@ -70,8 +68,6 @@ export class FspConfigurationFormDialogComponent {
   readonly existingFspConfiguration = signal<FspConfiguration | undefined>(
     undefined,
   );
-
-  readonly isExcelFsp = computed(() => this.fspSetting().name === Fsps.excel);
 
   readonly fspLabel = computed(
     () =>
@@ -163,7 +159,7 @@ export class FspConfigurationFormDialogComponent {
   }: {
     fspSetting: FspSettingsDto;
     fspConfiguration?: FspConfiguration;
-  }) {
+  }): void {
     this.fspSetting.set(fspSetting);
     this.existingFspConfiguration.set(fspConfiguration);
     this.configurationDialog().show();
