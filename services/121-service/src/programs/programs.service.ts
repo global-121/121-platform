@@ -72,6 +72,7 @@ export class ProgramService {
     program.programRegistrationAttributes =
       await this.programRegistrationAttributeRepository.find({
         where: { program: { id: Equal(programId) } },
+        order: { created: 'ASC', id: 'ASC' },
       });
 
     program.editableAttributes =

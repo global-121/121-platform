@@ -312,25 +312,28 @@ export class RegistrationAttributeService {
           const programSpecificAttributes =
             await this.getProgramSpecificAttributes(program, registration);
 
-          const allNameFields = program.fullnameNamingConvention
-            ? this.translatableStringService.commaSeparatedList({
-                values: program.fullnameNamingConvention.map(
-                  (namingConvention) =>
-                    this.localizeAttribute({
-                      attributes: programSpecificAttributes,
-                      attributeName: namingConvention,
-                    }),
-                ),
-                style: 'long',
-                sortedAlphabetically: false,
-              })
-            : '';
+          const fullnameNamingConvention =
+            program.fullnameNamingConvention ?? [];
+          const allNameFields =
+            this.translatableStringService.commaSeparatedList({
+              values: fullnameNamingConvention.map((namingConvention) =>
+                this.localizeAttribute({
+                  attributes: programSpecificAttributes,
+                  attributeName: namingConvention,
+                }),
+              ),
+              style: 'long',
+              sortedAlphabetically: false,
+            });
 
           return [
             {
               name: 'name',
               label: $localize`:@@registration-full-name:Name`,
-              editInfo: $localize`:@@registration-full-name-edit-info:This field is dynamically generated based on the other name fields available below: ${allNameFields}:allNameFields:`,
+              editInfo:
+                fullnameNamingConvention.length > 0
+                  ? $localize`:@@registration-full-name-edit-info:This field is dynamically generated based on the other name fields available below: ${allNameFields}:allNameFields:`
+                  : undefined,
               editInfoTrackingName:
                 InfoTooltipTrackingName.attributeEditInfoFullName,
               value: registration?.name,
