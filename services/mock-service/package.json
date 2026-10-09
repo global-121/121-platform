@@ -63,5 +63,9 @@
     "@swc/cli": {
       "piscina": "4.9.3"
     }
+  },
+  "allowScripts": {
+    "@swc/core": false,
+    "@scarf/scarf": false
   }
 }
