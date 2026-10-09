@@ -127,10 +127,10 @@ describe('AccessGroupLevelsService', () => {
       expect(result).toEqual(['region', 'district']);
     });
 
-    it('should return null when no access group levels are configured', async () => {
+    it('should return an empty array when no access group levels are configured', async () => {
       // Arrange
       accessGroupLevelRepository.findOrderedAttributeNamesByProgramId.mockResolvedValue(
-        null,
+        [],
       );
 
       // Act
@@ -139,40 +139,12 @@ describe('AccessGroupLevelsService', () => {
       });
 
       // Assert
-      expect(result).toBeNull();
-    });
-  });
-
-  describe('Retrieving access group levels', () => {
-    it('should return the configured attribute names when access group levels exist', async () => {
-      // Arrange
-      accessGroupLevelRepository.findOrderedAttributeNamesByProgramId.mockResolvedValue(
-        ['region', 'district'],
-      );
-
-      // Act
-      const result = await service.getAccessGroupLevels({ programId });
-
-      // Assert
-      expect(result).toEqual(['region', 'district']);
-    });
-
-    it('should return an empty array when no access group levels are configured', async () => {
-      // Arrange
-      accessGroupLevelRepository.findOrderedAttributeNamesByProgramId.mockResolvedValue(
-        null,
-      );
-
-      // Act
-      const result = await service.getAccessGroupLevels({ programId });
-
-      // Assert
       expect(result).toEqual([]);
     });
   });
 
   describe('Validating access group registration attribute names', () => {
-    it('should return null when attributeNames is null', () => {
+    it('should return an empty array when attributeNames is null', () => {
       // Act
       const result = service.validateAccessGroupRegistrationAttributeNames({
         programId,
@@ -181,10 +153,10 @@ describe('AccessGroupLevelsService', () => {
       });
 
       // Assert
-      expect(result).toBeNull();
+      expect(result).toEqual([]);
     });
 
-    it('should return null when attributeNames is an empty array', () => {
+    it('should return an empty array when attributeNames is an empty array', () => {
       // Act
       const result = service.validateAccessGroupRegistrationAttributeNames({
         programId,
@@ -193,7 +165,7 @@ describe('AccessGroupLevelsService', () => {
       });
 
       // Assert
-      expect(result).toBeNull();
+      expect(result).toEqual([]);
     });
 
     it('should return the attribute names when all are valid dropdown attributes', () => {
@@ -317,65 +289,65 @@ describe('AccessGroupLevelsService', () => {
     });
   });
 
-  describe('Checking for an access group attribute type violation', () => {
-    it('should return a type violation when the attribute is locked and its type changes', () => {
+  describe('Checking whether an access group attribute type is violated', () => {
+    it('should return true when the attribute is locked and its type changes', () => {
       // Arrange
       const attribute = createAttributeEntity({ name: 'region' });
 
       // Act
-      const result = service.getAccessGroupAttributeTypeViolation({
+      const result = service.isAccessGroupAttributeTypeViolated({
         accessGroupRegistrationAttributeNames: ['region'],
         existingAttribute: attribute,
         type: RegistrationAttributeTypes.text,
       });
 
       // Assert
-      expect(result).toEqual({ reason: 'type' });
+      expect(result).toBe(true);
     });
 
-    it('should return undefined when the attribute is locked and its type is unchanged', () => {
+    it('should return false when the attribute is locked and its type is unchanged', () => {
       // Arrange
       const attribute = createAttributeEntity({ name: 'region' });
 
       // Act
-      const result = service.getAccessGroupAttributeTypeViolation({
+      const result = service.isAccessGroupAttributeTypeViolated({
         accessGroupRegistrationAttributeNames: ['region'],
         existingAttribute: attribute,
         type: RegistrationAttributeTypes.dropdown,
       });
 
       // Assert
-      expect(result).toBeUndefined();
+      expect(result).toBe(false);
     });
 
-    it('should return undefined when the attribute is locked and no type is provided', () => {
+    it('should return false when the attribute is locked and no type is provided', () => {
       // Arrange
       const attribute = createAttributeEntity({ name: 'region' });
 
       // Act
-      const result = service.getAccessGroupAttributeTypeViolation({
+      const result = service.isAccessGroupAttributeTypeViolated({
         accessGroupRegistrationAttributeNames: ['region'],
         existingAttribute: attribute,
         type: undefined,
       });
 
       // Assert
-      expect(result).toBeUndefined();
+      expect(result).toBe(false);
     });
 
-    it('should return undefined when the attribute is not locked', () => {
+    it('should return false when the attribute is not locked', () => {
       // Arrange
       const attribute = createAttributeEntity({ name: 'notes' });
 
       // Act
-      const result = service.getAccessGroupAttributeTypeViolation({
+      const result = service.isAccessGroupAttributeTypeViolated({
         accessGroupRegistrationAttributeNames: ['region'],
         existingAttribute: attribute,
         type: RegistrationAttributeTypes.text,
       });
 
       // Assert
-      expect(result).toBeUndefined();
+      expect(result).toBe(false);
     });
   });
 

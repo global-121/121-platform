@@ -3,8 +3,6 @@ import { Equal, In, Repository } from 'typeorm';
 
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 
-// Unscoped on purpose: checking whether an option value is in use must look across the whole
-// program, regardless of the calling user's own assigned scope.
 export class RegistrationAttributeDataRepository extends Repository<RegistrationAttributeDataEntity> {
   constructor(
     @InjectRepository(RegistrationAttributeDataEntity)

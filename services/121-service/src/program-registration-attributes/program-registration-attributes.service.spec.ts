@@ -14,7 +14,6 @@ import {
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
-import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import {
   DefaultRegistrationDataAttributeNames,
@@ -78,7 +77,7 @@ describe('ProgramRegistrationAttributesService', () => {
   };
 
   const mockProgramAccessGroupAttributeNames = (
-    accessGroupRegistrationAttributeNames: string[] | null,
+    accessGroupRegistrationAttributeNames: string[],
   ) => {
     jest
       .spyOn(
@@ -100,17 +99,11 @@ describe('ProgramRegistrationAttributesService', () => {
           },
         },
         {
-          provide: ProgramAidworkerAssignmentRepository,
-          useValue: {
-            findByProgramId: jest.fn().mockResolvedValue([]),
-          },
-        },
-        {
           provide: AccessGroupLevelRepository,
           useValue: {
             findOrderedAttributeNamesByProgramId: jest
               .fn()
-              .mockResolvedValue(null),
+              .mockResolvedValue([]),
           },
         },
         {
@@ -140,7 +133,7 @@ describe('ProgramRegistrationAttributesService', () => {
       );
 
     // By default, no access groups are configured. Individual tests override this if needed.
-    mockProgramAccessGroupAttributeNames(null);
+    mockProgramAccessGroupAttributeNames([]);
   });
 
   describe('getAttributes', () => {

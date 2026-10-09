@@ -395,58 +395,43 @@ export class KoboValidationService {
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
     programRegistrationAttributes: ProgramRegistrationAttributeEntity[];
-    accessGroupRegistrationAttributeNames: string[] | null;
+    accessGroupRegistrationAttributeNames: string[];
   }): KoboValidationError[] {
-    return programRegistrationAttributes
-      .map((existingAttribute) =>
-        this.findMatchingSurveyItemType({
+    const violatedAttributes = programRegistrationAttributes.filter(
+      (existingAttribute) =>
+        this.isAccessGroupLockViolatedBySurvey({
           existingAttribute,
           koboSurveyItems,
+          accessGroupRegistrationAttributeNames,
         }),
-      )
-      .filter(isDefined)
-      .map(({ existingAttribute, type }) => {
-        const violation =
-          this.accessGroupLevelsService.getAccessGroupAttributeTypeViolation({
-            accessGroupRegistrationAttributeNames,
-            existingAttribute,
-            type,
-          });
+    );
 
-        if (!violation) {
-          return undefined;
-        }
-
-        return this.buildAccessGroupAttributeLockedError({
-          attributeName: existingAttribute.name,
-        });
-      })
-      .filter(isDefined);
+    return violatedAttributes.map(({ name }) =>
+      this.buildAccessGroupAttributeLockedError({ attributeName: name }),
+    );
   }
 
-  private findMatchingSurveyItemType({
+  private isAccessGroupLockViolatedBySurvey({
     existingAttribute,
     koboSurveyItems,
+    accessGroupRegistrationAttributeNames,
   }: {
     existingAttribute: ProgramRegistrationAttributeEntity;
     koboSurveyItems: KoboSurveyItemCleaned[];
-  }):
-    | {
-        existingAttribute: ProgramRegistrationAttributeEntity;
-        type: RegistrationAttributeTypes;
-      }
-    | undefined {
+    accessGroupRegistrationAttributeNames: string[];
+  }): boolean {
     const surveyItem = koboSurveyItems.find(
       (item) => item.name === existingAttribute.name,
     );
     if (!surveyItem) {
-      return undefined;
+      return false;
     }
 
-    return {
+    return this.accessGroupLevelsService.isAccessGroupAttributeTypeViolated({
+      accessGroupRegistrationAttributeNames,
       existingAttribute,
       type: KOBO_TO_121_TYPE_MAPPING[surveyItem.type],
-    };
+    });
   }
 
   private buildAccessGroupAttributeLockedError({

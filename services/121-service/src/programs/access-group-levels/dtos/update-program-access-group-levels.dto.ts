@@ -7,6 +7,5 @@ export class UpdateProgramAccessGroupLevelsDto {
   })
   @IsArray()
   @IsString({ each: true })
-  @IsString({ each: true })
   public readonly accessGroupRegistrationAttributeNames: string[];
 }
