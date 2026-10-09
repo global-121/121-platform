@@ -114,10 +114,14 @@ export enum InfoTooltipTrackingName {
   programTargetRegistrations = 'Program: Target Registrations',
   programValidationProcess = 'Program: Use validation Process',
 
+  registrationPageTransferValue = 'Registration Page: Transfer Value Result',
   registrationQuestionDataColumnName = 'Registration Questions: Data Column Name',
-  registrationQuestionLabel = 'Registration Questions: Label',
 
+  registrationQuestionLabel = 'Registration Questions: Label',
+  registrationsTableTransferValue = 'Registrations Table: Transfer Value Result',
   requiredAttributeFspInfo = 'Kobo Required Attribute: Fsp Info',
+
   requiredAttributeScopeInfo = 'Kobo Required Attribute: Scope Info',
+
   unsupportedLanguageWarning = 'Registration Questions: Unsupported Language Warning',
 }

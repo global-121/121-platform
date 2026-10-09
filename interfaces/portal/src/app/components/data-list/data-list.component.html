@@ -43,7 +43,10 @@
         <div class="me-1">
           <strong>{{ item.label | translatableString }}:</strong>
           @if (item.infoTooltipData) {
-            <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
+            <app-info-tooltip
+              [infoTooltipData]="item.infoTooltipData"
+              class="mx-2"
+            />
           }
         </div>
         @if (item.chipLabel && item.chipVariant) {

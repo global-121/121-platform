@@ -2,6 +2,7 @@ import type { Type } from '@angular/core';
 import type { RouterLink } from '@angular/router';
 
 import type { ChipData } from '~/components/colored-chip/colored-chip.helper';
+import { InfoTooltipData } from '~/components/info-tooltip/info-tooltip.component';
 import type { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import type { Leaves } from '~/utils/leaves';
 
@@ -23,6 +24,7 @@ export type QueryTableColumn<TData, TField = Leaves<TData> & string> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- couldn't find a way to avoid any here
   component?: Type<TableCellComponent<TData, any>>;
   class?: string;
+  tooltip?: InfoTooltipData;
 } & (
   | {
       type: QueryTableColumnType.MULTISELECT;

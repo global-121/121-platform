@@ -639,6 +639,9 @@
       <trans-unit id="350646349607555710" datatype="html">
         <source>Registered:</source>
       </trans-unit>
+      <trans-unit id="3522287944515054993" datatype="html">
+        <source>The transfer value result is calculated by multiplying the base transfer value by a multiplier based on registration data, if applicable.</source>
+      </trans-unit>
       <trans-unit id="3543826049207263566" datatype="html">
         <source>Please wait before creating a new payment.</source>
       </trans-unit>
@@ -769,6 +772,9 @@
       </trans-unit>
       <trans-unit id="3934118952625564148" datatype="html">
         <source>We don&apos;t store your IP-address. We only use it to generate an anonymous identifier not linked to any personal information.</source>
+      </trans-unit>
+      <trans-unit id="3936604103139221632" datatype="html">
+        <source>For example, if the base transfer value is $50 and the multiplier is based on household size, a 3-person household would have a transfer value of $150.</source>
       </trans-unit>
       <trans-unit id="3948071530536352020" datatype="html">
         <source>Are you sure you want to delete this file?</source>
@@ -1327,6 +1333,9 @@
       </trans-unit>
       <trans-unit id="6001336690636833920" datatype="html">
         <source>Basic information details saved successfully.</source>
+      </trans-unit>
+      <trans-unit id="6008759864408963226" datatype="html">
+        <source>Transfer value result</source>
       </trans-unit>
       <trans-unit id="6011590435574005771" datatype="html">
         <source>Question label</source>
