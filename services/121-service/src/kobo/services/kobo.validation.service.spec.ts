@@ -34,7 +34,7 @@ describe('KoboValidationService', () => {
   let programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository;
   let accessGroupLevelsService: {
     getAccessGroupRegistrationAttributeNames: jest.Mock;
-    getAccessGroupAttributeTypeViolation: jest.Mock;
+    isAccessGroupAttributeTypeViolated: jest.Mock;
   };
 
   const startAndEndSurveyItems = [
@@ -130,10 +130,10 @@ describe('KoboValidationService', () => {
           useValue: {
             getAccessGroupRegistrationAttributeNames: jest
               .fn()
-              .mockResolvedValue(null),
-            getAccessGroupAttributeTypeViolation: jest
+              .mockResolvedValue([]),
+            isAccessGroupAttributeTypeViolated: jest
               .fn()
-              .mockReturnValue(undefined),
+              .mockReturnValue(false),
           },
         },
         {
@@ -816,8 +816,8 @@ describe('KoboValidationService', () => {
           },
         ],
       };
-      accessGroupLevelsService.getAccessGroupAttributeTypeViolation.mockReturnValue(
-        { reason: 'type' },
+      accessGroupLevelsService.isAccessGroupAttributeTypeViolated.mockReturnValue(
+        true,
       );
 
       // Act

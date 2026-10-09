@@ -433,7 +433,9 @@ export class ProgramService {
   }
 
   public async getAccessGroupLevels(programId: number): Promise<string[]> {
-    return this.accessGroupLevelsService.getAccessGroupLevels({ programId });
+    return this.accessGroupLevelsService.getAccessGroupRegistrationAttributeNames(
+      { programId },
+    );
   }
 
   public async updateAccessGroupLevels({

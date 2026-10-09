@@ -19,16 +19,12 @@ export class AccessGroupLevelRepository extends Repository<AccessGroupLevelEntit
     programId,
   }: {
     programId: number;
-  }): Promise<string[] | null> {
+  }): Promise<string[]> {
     const accessGroupLevels = await this.find({
       where: { programId: Equal(programId) },
       relations: { programRegistrationAttribute: true },
       order: { level: 'ASC' },
     });
-
-    if (accessGroupLevels.length === 0) {
-      return null;
-    }
 
     return accessGroupLevels.map(
       (accessGroupLevel) => accessGroupLevel.programRegistrationAttribute.name,

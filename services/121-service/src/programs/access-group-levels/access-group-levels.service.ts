@@ -39,32 +39,22 @@ export class AccessGroupLevelsService {
 
     await this.accessGroupLevelRepository.replaceForProgram({
       programId,
-      orderedProgramRegistrationAttributeIds: (validatedNames ?? []).map(
+      orderedProgramRegistrationAttributeIds: validatedNames.map(
         (name) => attributeIdByName.get(name) as number,
       ),
     });
 
-    return validatedNames ?? [];
+    return validatedNames;
   }
 
   public async getAccessGroupRegistrationAttributeNames({
     programId,
   }: {
     programId: number;
-  }): Promise<string[] | null> {
+  }): Promise<string[]> {
     return this.accessGroupLevelRepository.findOrderedAttributeNamesByProgramId(
       { programId },
     );
-  }
-
-  public async getAccessGroupLevels({
-    programId,
-  }: {
-    programId: number;
-  }): Promise<string[]> {
-    const accessGroupRegistrationAttributeNames =
-      await this.getAccessGroupRegistrationAttributeNames({ programId });
-    return accessGroupRegistrationAttributeNames ?? [];
   }
 
   public validateAccessGroupRegistrationAttributeNames({
@@ -78,9 +68,9 @@ export class AccessGroupLevelsService {
       'name' | 'type'
     >[];
     selectedAttributeNames: string[] | null;
-  }): string[] | null {
+  }): string[] {
     if (!selectedAttributeNames || selectedAttributeNames.length === 0) {
-      return null;
+      return [];
     }
 
     const duplicateName = selectedAttributeNames.find(
@@ -103,16 +93,11 @@ export class AccessGroupLevelsService {
       );
     }
 
-    const foundAttributeNames = this.filterProgramRegistrationAttributeByNames({
-      programRegistrationAttributeNames: activeRegistrationAttributes.map(
-        (attribute) => attribute.name,
-      ),
-      filterNames: selectedAttributeNames,
-    });
-
-    const foundNames = new Set(foundAttributeNames);
+    const activeAttributeNames = new Set(
+      activeRegistrationAttributes.map((attribute) => attribute.name),
+    );
     const missingName = selectedAttributeNames.find(
-      (name) => !foundNames.has(name),
+      (name) => !activeAttributeNames.has(name),
     );
     if (missingName) {
       throw new HttpException(
@@ -121,9 +106,10 @@ export class AccessGroupLevelsService {
       );
     }
 
+    const selectedNames = new Set(selectedAttributeNames);
     const nonDropdownAttribute = activeRegistrationAttributes.find(
       (attribute) =>
-        foundNames.has(attribute.name) &&
+        selectedNames.has(attribute.name) &&
         attribute.type !== RegistrationAttributeTypes.dropdown,
     );
     if (nonDropdownAttribute) {
@@ -136,38 +122,21 @@ export class AccessGroupLevelsService {
     return selectedAttributeNames;
   }
 
-  private filterProgramRegistrationAttributeByNames({
-    programRegistrationAttributeNames,
-    filterNames,
-  }: {
-    programRegistrationAttributeNames: string[];
-    filterNames: string[] | null;
-  }): string[] {
-    if (!filterNames || filterNames.length === 0) {
-      return [];
-    }
-
-    const accessGroupNames = new Set(filterNames);
-    return programRegistrationAttributeNames.filter((attributeName) =>
-      accessGroupNames.has(attributeName),
-    );
-  }
-
   public async validateAttributeUpdateAllowed({
     accessGroupRegistrationAttributeNames,
     existingAttribute,
     update,
   }: {
-    accessGroupRegistrationAttributeNames: string[] | null;
+    accessGroupRegistrationAttributeNames: string[];
     existingAttribute: AccessGroupRegistrationAttribute;
     update: AccessGroupAttributeUpdate;
   }): Promise<void> {
-    const typeViolation = this.getAccessGroupAttributeTypeViolation({
+    const isTypeViolated = this.isAccessGroupAttributeTypeViolated({
       accessGroupRegistrationAttributeNames,
       existingAttribute,
       type: update.type,
     });
-    if (typeViolation) {
+    if (isTypeViolated) {
       throw new HttpException(
         `The '${existingAttribute.name}' attribute's type cannot be changed while used for access group configuration.`,
         HttpStatus.BAD_REQUEST,
@@ -199,7 +168,7 @@ export class AccessGroupLevelsService {
     accessGroupRegistrationAttributeNames,
     existingAttribute,
   }: {
-    accessGroupRegistrationAttributeNames: string[] | null;
+    accessGroupRegistrationAttributeNames: string[];
     existingAttribute: Pick<AccessGroupRegistrationAttribute, 'name'>;
   }): void {
     if (
@@ -221,12 +190,10 @@ export class AccessGroupLevelsService {
     accessGroupRegistrationAttributeNames,
     attributeName,
   }: {
-    accessGroupRegistrationAttributeNames: string[] | null;
+    accessGroupRegistrationAttributeNames: string[];
     attributeName: string;
   }): boolean {
-    return (accessGroupRegistrationAttributeNames ?? []).includes(
-      attributeName,
-    );
+    return accessGroupRegistrationAttributeNames.includes(attributeName);
   }
 
   private getAccessGroupAttributeOptionsViolation({
@@ -235,7 +202,7 @@ export class AccessGroupLevelsService {
     update,
     optionValuesInUse,
   }: {
-    accessGroupRegistrationAttributeNames: string[] | null;
+    accessGroupRegistrationAttributeNames: string[];
     existingAttribute: AccessGroupRegistrationAttribute;
     update: AccessGroupAttributeUpdate;
     optionValuesInUse: Set<string>;
@@ -259,32 +226,24 @@ export class AccessGroupLevelsService {
       : undefined;
   }
 
-  public getAccessGroupAttributeTypeViolation({
+  public isAccessGroupAttributeTypeViolated({
     accessGroupRegistrationAttributeNames,
     existingAttribute,
     type,
   }: {
-    accessGroupRegistrationAttributeNames: string[] | null;
+    accessGroupRegistrationAttributeNames: string[];
     existingAttribute: Pick<AccessGroupRegistrationAttribute, 'name'>;
     type: RegistrationAttributeTypes | undefined;
-  }): { reason: 'type' } | undefined {
+  }): boolean {
     if (
       !this.isAttributeLockedByAccessGroup({
         accessGroupRegistrationAttributeNames,
         attributeName: existingAttribute.name,
       })
     ) {
-      return undefined;
+      return false;
     }
 
-    return this.isTypeViolation({ type }) ? { reason: 'type' } : undefined;
-  }
-
-  private isTypeViolation({
-    type,
-  }: {
-    type: RegistrationAttributeTypes | undefined;
-  }): boolean {
     return type !== undefined && type !== RegistrationAttributeTypes.dropdown;
   }
 
@@ -316,7 +275,7 @@ export class AccessGroupLevelsService {
     existingAttribute,
     update,
   }: {
-    accessGroupRegistrationAttributeNames: string[] | null;
+    accessGroupRegistrationAttributeNames: string[];
     existingAttribute: AccessGroupRegistrationAttribute;
     update: AccessGroupAttributeUpdate;
   }): Promise<Set<string>> {

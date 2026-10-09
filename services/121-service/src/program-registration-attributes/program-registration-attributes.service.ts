@@ -572,7 +572,7 @@ export class ProgramRegistrationAttributesService {
   }: {
     programId: number;
     programAttributesToUpdateChunk: UpdateProgramRegistrationAttributesBatchDto[];
-    accessGroupRegistrationAttributeNames: string[] | null;
+    accessGroupRegistrationAttributeNames: string[];
   }) {
     const updatedChunk: ProgramRegistrationAttributeEntity[] = [];
 
@@ -614,7 +614,7 @@ export class ProgramRegistrationAttributesService {
     programId,
   }: {
     programId: number;
-  }): Promise<string[] | null> {
+  }): Promise<string[]> {
     return this.accessGroupLevelsService.getAccessGroupRegistrationAttributeNames(
       { programId },
     );
@@ -627,7 +627,7 @@ export class ProgramRegistrationAttributesService {
   }: {
     programRegistrationAttributeFromRepo: ProgramRegistrationAttributeEntity;
     updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
-    accessGroupRegistrationAttributeNames: string[] | null;
+    accessGroupRegistrationAttributeNames: string[];
   }): Promise<ProgramRegistrationAttributeEntity> {
     await this.accessGroupLevelsService.validateAttributeUpdateAllowed({
       accessGroupRegistrationAttributeNames,
