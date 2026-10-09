@@ -1,8 +1,10 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { setTimeout } from 'node:timers/promises';
 import { DataSource } from 'typeorm';
 
+import { getBaseUrl } from '@121-service/src/config';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { MockSeedFactoryService } from '@121-service/src/scripts/factories/mock-seed-factory.service';
@@ -138,7 +140,7 @@ export class SeedMockHelperService {
     registrations: object[],
     accessToken: string,
   ): Promise<any> {
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations`;
+    const url = `${getBaseUrl()}/programs/${programId}/registrations`;
     const body = registrations;
     const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
 
@@ -162,7 +164,7 @@ export class SeedMockHelperService {
       }
     }
 
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations/status?${queryParams.slice(
+    const url = `${getBaseUrl()}/programs/${programId}/registrations/status?${queryParams.slice(
       0,
       -1,
     )}`;
@@ -211,7 +213,7 @@ export class SeedMockHelperService {
       ) {
         return;
       }
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await setTimeout(100);
     }
   }
 
@@ -228,7 +230,7 @@ export class SeedMockHelperService {
     reason: string;
     accessToken: string;
   }): Promise<any> {
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations/${referenceId}`;
+    const url = `${getBaseUrl()}/programs/${programId}/registrations/${referenceId}`;
     const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
     const body = {
       data,
@@ -258,7 +260,7 @@ export class SeedMockHelperService {
     if (limit) queryParams.append('limit', limit.toString());
     Object.keys(filter).forEach((key) => queryParams.append(key, filter[key]));
 
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations?${queryParams}`;
+    const url = `${getBaseUrl()}/programs/${programId}/registrations?${queryParams}`;
     const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
 
     return await this.httpService.get(url, headers);
@@ -290,7 +292,7 @@ export class SeedMockHelperService {
       queryParams += `filter.referenceId=$in:${referenceIds.join(',')}&`;
     }
 
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/payments?${queryParams.slice(
+    const url = `${getBaseUrl()}/programs/${programId}/payments?${queryParams.slice(
       0,
       -1,
     )}`;
@@ -312,7 +314,7 @@ export class SeedMockHelperService {
     paymentId: number;
     accessToken: string;
   }): Promise<any> {
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/payments/${paymentId}/approve`;
+    const url = `${getBaseUrl()}/programs/${programId}/payments/${paymentId}/approve`;
     const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
 
     await this.httpService.post(url, {}, headers);
@@ -327,7 +329,7 @@ export class SeedMockHelperService {
     paymentId: number;
     accessToken: string;
   }): Promise<any> {
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/payments/${paymentId}/start`;
+    const url = `${getBaseUrl()}/programs/${programId}/payments/${paymentId}/start`;
     const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
 
     await this.httpService.post(url, {}, headers);
@@ -356,7 +358,7 @@ export class SeedMockHelperService {
       const queryParams: Record<string, string> = {
         limit: '1000',
       };
-      const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/payments/${paymentId}/transactions?${new URLSearchParams(queryParams)}`;
+      const url = `${getBaseUrl()}/programs/${programId}/payments/${paymentId}/transactions?${new URLSearchParams(queryParams)}`;
       const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
 
       const response = await this.httpService.get<{ data: { data: unknown } }>(
@@ -375,7 +377,7 @@ export class SeedMockHelperService {
       }
 
       if (!allTransactionsComplete) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await setTimeout(1_000);
       }
     }
 

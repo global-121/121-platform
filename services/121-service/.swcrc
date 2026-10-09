@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json.schemastore.org/swcrc",
+  "$schema": "https://swc.rs/schema.json",
   "sourceMaps": true,
   "jsc": {
     "parser": {
@@ -21,7 +21,8 @@
   "module": {
     "type": "commonjs",
     "strict": true,
-    "noInterop": false
+    "ignoreDynamic": true,
+    "preserveImportMeta": true
   },
   "minify": false
 }

@@ -2,6 +2,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
+import { setTimeout } from 'node:timers/promises';
 
 import { env } from '@121-service/src/env';
 import { createRedisClient } from '@121-service/src/payments/redis/redis-client';
@@ -139,12 +140,16 @@ export class QueuesRegistryService implements OnModuleInit {
   }
 
   private async scheduleRetryFailedJobs(): Promise<void> {
+    const timeOutAbortController = new AbortController();
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      // await setTimeout(5_000);
+      await setTimeout(5_000, { signal: timeOutAbortController.signal });
       await this.retryFailedJobs();
     } catch (err) {
       console.error('Error in scheduleRetryFailedJobs: ', err);
       this.azureLogService.logError(err, true);
+    } finally {
+      timeOutAbortController.abort();
     }
   }
 

@@ -1,39 +1,45 @@
+import { setTimeout } from 'node:timers/promises';
+
+import { getRandomInt } from '@121-service/src/utils/random-value.helper';
 import {
   waitFor,
   waitForRandomDelay,
 } from '@121-service/src/utils/waitFor.helper';
 
+jest.mock('node:timers/promises', () => ({
+  setTimeout: jest.fn().mockResolvedValue(undefined),
+}));
+jest.mock('@121-service/src/utils/random-value.helper');
+
 describe('waitFor helpers', () => {
-  it('waitFor - should wait for the specified time', async () => {
-    // Arrange
-    const testTime = 122;
-    const start = Date.now();
-
-    // Act
-    const testPromise = waitFor(testTime);
-
-    await testPromise;
-
-    // Assert
-    const end = Date.now();
-    const elapsed = end - start;
-    expect(elapsed).toBeGreaterThanOrEqual(testTime - 1);
-    expect(elapsed).toBeLessThanOrEqual(testTime + 16); // With a few ms margin
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('waitForRandomDelay - should wait for a random delay between "min" and "max" milliseconds', async () => {
+  it('waitFor - should wait for the specified time', async () => {
+    // Arrange
+    const testTime = 121;
+
+    // Act
+    await waitFor(testTime);
+
+    // Assert
+    expect(setTimeout).toHaveBeenCalledTimes(1);
+    expect(setTimeout).toHaveBeenCalledWith(testTime);
+  });
+
+  it('waitForRandomDelay - should wait for the random value between "min" and "max"', async () => {
     // Arrange
     const testMin = 100;
     const testMax = 300;
-    const start = Date.now();
+    const randomValue = 121;
+    jest.mocked(getRandomInt).mockReturnValue(randomValue);
 
     // Act
     await waitForRandomDelay(testMin, testMax);
 
     // Assert
-    const end = Date.now();
-    const elapsed = end - start;
-    expect(elapsed).toBeGreaterThanOrEqual(testMin);
-    expect(elapsed).toBeLessThanOrEqual(testMax + 16); // With a few ms margin
+    expect(getRandomInt).toHaveBeenCalledWith(testMin, testMax);
+    expect(setTimeout).toHaveBeenCalledWith(randomValue);
   });
 });
