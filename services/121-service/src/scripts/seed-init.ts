@@ -107,6 +107,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.ProgramRegistrationAttributesCREATE,
           PermissionEnum.ProgramRegistrationAttributesDELETE,
           PermissionEnum.ProgramRegistrationAttributesUPDATE,
+          PermissionEnum.ProgramAccessGroupLevelsUPDATE,
           PermissionEnum.ProgramUPDATE,
           PermissionEnum.RegistrationREAD,
         ],
@@ -154,6 +155,7 @@ export class SeedInit implements InterfaceScript {
         permissions: [
           PermissionEnum.ProgramREAD,
           PermissionEnum.ProgramUPDATE,
+          PermissionEnum.ProgramAccessGroupLevelsUPDATE,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramAttachmentsREAD,
           PermissionEnum.ProgramAttachmentsCREATE,

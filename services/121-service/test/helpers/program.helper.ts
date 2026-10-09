@@ -11,6 +11,7 @@ import {
   UpdateTemplateBodyDto,
 } from '@121-service/src/notifications/message-template/dto/message-template.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { UpdateProgramAccessGroupLevelsDto } from '@121-service/src/programs/access-group-levels/dtos/update-program-access-group-levels.dto';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import {
   CreateProgramRegistrationAttributeDto,
@@ -73,6 +74,26 @@ export async function deleteProgram(
     .delete(`/programs/${programId}`)
     .set('Cookie', [accessToken])
     .send(secretDto);
+}
+
+export async function updateProgramAccessGroupLevels(
+  programId: number,
+  updateProgramAccessGroupLevelsDto: UpdateProgramAccessGroupLevelsDto,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .put(`/programs/${programId}/access-group-levels`)
+    .set('Cookie', [accessToken])
+    .send(updateProgramAccessGroupLevelsDto);
+}
+
+export async function getProgramAccessGroupLevels(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}/access-group-levels`)
+    .set('Cookie', [accessToken]);
 }
 
 export async function getProgram(
