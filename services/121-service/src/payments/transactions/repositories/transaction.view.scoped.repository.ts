@@ -11,6 +11,11 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { EntityClass } from '@121-service/src/shared/types/entity-class.type';
 
+type TransactionIdentifiers = Pick<
+  TransactionViewEntity,
+  'id' | 'registrationId' | 'programFspConfigurationId'
+>;
+
 export class TransactionViewScopedRepository extends ScopedRepository<TransactionViewEntity> {
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
@@ -328,7 +333,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     programId: number;
     paymentId: number;
     transactionStatus: TransactionStatusEnum;
-  }): Promise<TransactionViewEntity[]> {
+  }): Promise<TransactionIdentifiers[]> {
     return this.getTransactionsByStatusAndRegistrationStatus({
       programId,
       paymentId,
@@ -345,7 +350,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     programId: number;
     paymentId: number;
     transactionStatus: TransactionStatusEnum;
-  }): Promise<TransactionViewEntity[]> {
+  }): Promise<TransactionIdentifiers[]> {
     return this.getTransactionsByStatusAndRegistrationStatus({
       programId,
       paymentId,
@@ -364,8 +369,13 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     paymentId: number;
     transactionStatus: TransactionStatusEnum;
     registrationStatusCondition: FindOperator<RegistrationStatusEnum>;
-  }): Promise<TransactionViewEntity[]> {
+  }): Promise<TransactionIdentifiers[]> {
     return this.find({
+      select: {
+        id: true,
+        registrationId: true,
+        programFspConfigurationId: true,
+      },
       where: {
         payment: {
           id: Equal(paymentId),
