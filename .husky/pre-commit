@@ -27,7 +27,7 @@ if [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ]; then
 fi
 
 log "Running lint-staged"
-npx lint-staged
+npx  --no --offline lint-staged
 
 log "Checking for changes to .env.example"
 "$(dirname "$0")/scripts/warn-env-example-changes.sh"
