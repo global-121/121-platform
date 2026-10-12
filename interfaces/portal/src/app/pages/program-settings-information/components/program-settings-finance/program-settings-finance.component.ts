@@ -112,7 +112,7 @@ export class ProgramSettingsFinanceComponent {
     },
     onSuccess: () => {
       this.toastService.showToast({
-        detail: $localize`Budget details saved successfully.`,
+        detail: $localize`Finance details saved successfully.`,
       });
 
       // Reset trackSaveEventPayloads

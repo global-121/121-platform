@@ -48,7 +48,7 @@ test('Edit Program Information', async ({ programSettingsPage }) => {
     targetRegistrations: '200',
   };
 
-  const budgetInfo = {
+  const financeInfo = {
     fundsAvailable: '200',
     currency: CurrencyCode.CAD,
     paymentFrequency: '2-months',
@@ -120,45 +120,45 @@ test('Edit Program Information', async ({ programSettingsPage }) => {
     expect(program.body.titlePortal?.nl).toBeDefined();
   });
 
-  await test.step('Edit Budget information', async () => {
+  await test.step('Edit Finance information', async () => {
     await programSettingsPage.clickEditProgramInformationSectionByTitle(
-      'Budget',
+      'Finance',
     );
     await programSettingsPage.editInformationFieldByLabel(
       'Funds available',
-      budgetInfo.fundsAvailable,
+      financeInfo.fundsAvailable,
     );
-    await programSettingsPage.selectCurrency(budgetInfo.currency);
+    await programSettingsPage.selectCurrency(financeInfo.currency);
     await programSettingsPage.editInformationFieldByLabel(
       'Number of distributions per registration',
-      budgetInfo.defaultTransferValue,
+      financeInfo.defaultTransferValue,
     );
     await programSettingsPage.editInformationFieldByLabel(
       '*Fixed transfer value',
-      budgetInfo.fixedTransferValue,
+      financeInfo.fixedTransferValue,
     );
     await programSettingsPage.saveChanges();
     await programSettingsPage.validateToastMessageAndClose(
-      'Budget details saved successfully.',
+      'Finance details saved successfully.',
     );
 
     // expect with a timeout because we might need to wait for the cache to invalidate
     await expect(async () => {
-      const budgetData = await programSettingsPage.budgetDataList.getData();
+      const financeData = await programSettingsPage.financeDataList.getData();
 
-      expect(budgetData).toEqual({
+      expect(financeData).toEqual({
         'Funds available': formatValueBasedOnCurrency({
-          value: budgetInfo.fundsAvailable,
-          currency: budgetInfo.currency,
+          value: financeInfo.fundsAvailable,
+          currency: financeInfo.currency,
         }),
-        '*Currency': budgetInfo.currency,
+        '*Currency': financeInfo.currency,
         'Number of distributions per registration':
-          budgetInfo.defaultTransferValue,
+          financeInfo.defaultTransferValue,
         '*Fixed transfer value': formatValueBasedOnCurrency({
-          value: budgetInfo.fixedTransferValue,
-          currency: budgetInfo.currency,
+          value: financeInfo.fixedTransferValue,
+          currency: financeInfo.currency,
         }),
-        'Financial service providers': budgetInfo.fsps?.join(''),
+        'Financial service providers': financeInfo.fsps?.join(''),
       });
     }).toPass({ timeout: 2000 });
   });
