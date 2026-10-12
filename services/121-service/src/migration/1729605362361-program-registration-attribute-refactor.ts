@@ -396,25 +396,19 @@ export class ProgramRegistrationAttributeRefactor1729605362361 implements Migrat
       ON
         CONFLICT (name, "programId") DO NOTHING;`);
 
-    const [
-      programRegistrationAttributes,
-      programQuestions,
-      programCustomAttributes,
-      fspQuestions,
-    ] = await Promise.all([
-      queryRunner.query(
-        `SELECT id, name, "programId" FROM "121-service".program_registration_attribute`,
-      ),
-      queryRunner.query(
-        `SELECT id, name, "programId" FROM "121-service".program_question`,
-      ),
-      queryRunner.query(
-        `SELECT id, name, "programId" FROM "121-service".program_custom_attribute`,
-      ),
-      queryRunner.query(
-        `SELECT id, name FROM "121-service".financial_service_provider_question`,
-      ),
-    ]);
+    const programRegistrationAttributes = await queryRunner.query(
+      `SELECT id, name, "programId" FROM "121-service".program_registration_attribute`,
+    );
+    const programQuestions = await queryRunner.query(
+      `SELECT id, name, "programId" FROM "121-service".program_question`,
+    );
+    const programCustomAttributes = await queryRunner.query(
+      `SELECT id, name, "programId" FROM "121-service".program_custom_attribute`,
+    );
+    const fspQuestions = await queryRunner.query(
+      `SELECT id, name FROM "121-service".financial_service_provider_question`,
+    );
+
     for (const programRegistrationAttribute of programRegistrationAttributes) {
       const matchingProgramQuestion = programQuestions.find(
         (pq) =>

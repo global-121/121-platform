@@ -72,6 +72,13 @@ export const EXTERNAL_API = {
   imageCodeUrl: `${rootApi}/${API_PATHS.imageCode}`,
 };
 
+export const getBaseUrl = (): string => {
+  if (IS_DEVELOPMENT) {
+    return `http://localhost:${env.PORT_121_SERVICE}/api`;
+  }
+  return EXTERNAL_API.rootApi;
+};
+
 // Configure Public Twilio Settings:
 // ---------------------------------------------------------------------------
 export const TWILIO_SANDBOX_WHATSAPP_NUMBER = '+14155238886';

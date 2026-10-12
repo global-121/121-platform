@@ -7,7 +7,7 @@ import path from 'node:path';
 import readline from 'node:readline';
 import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
-import { IS_DEVELOPMENT } from '@121-service/src/config';
+import { getBaseUrl, IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
@@ -127,7 +127,7 @@ export class SeedHelperService {
       }
     }
 
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations/import`;
+    const url = `${getBaseUrl()}/programs/${programId}/registrations/import`;
     await this.httpService.post(url, form, headers);
   }
 

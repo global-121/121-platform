@@ -6,6 +6,7 @@ import { env } from '@121-service/src/env';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/fsp-management/fsp-attribute-type-mapping';
 import { getFspAttributeNames } from '@121-service/src/fsp-management/fsp-settings.helpers';
+import { FSP_QUESTION_NAME } from '@121-service/src/kobo/consts/fsp-question-name.const';
 import { KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES } from '@121-service/src/kobo/consts/kobo-allowed-registration-view-attributes.const';
 import { KOBO_TO_121_TYPE_MAPPING } from '@121-service/src/kobo/consts/kobo-survey-to-121-attribute-type.const';
 import { KoboValidationErrorType } from '@121-service/src/kobo/enum/kobo-validation-error-type';
@@ -13,7 +14,6 @@ import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-d
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
 import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 import { KoboLanguageMapper } from '@121-service/src/kobo/mappers/kobo-language.mapper';
-import { fspQuestionName } from '@121-service/src/kobo/services/kobo.service';
 import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
@@ -527,14 +527,14 @@ export class KoboValidationService {
     fspConfigs: { fspName: Fsps; name: string }[];
   }): KoboValidationError | undefined {
     const fspItem = koboSurveyItems.find(
-      (item) => item.name === fspQuestionName,
+      (item) => item.name === FSP_QUESTION_NAME,
     );
     if (!fspItem) {
       return {
         type: KoboValidationErrorType.missingField,
-        attributeName: fspQuestionName,
+        attributeName: FSP_QUESTION_NAME,
         error: `Field is missing from your form`,
-        solution: `Add a field named '${fspQuestionName}' to the Kobo form`,
+        solution: `Add a field named '${FSP_QUESTION_NAME}' to the Kobo form`,
       };
     }
 
@@ -546,8 +546,8 @@ export class KoboValidationService {
     if (!validTypes.has(fspItem.type)) {
       return {
         type: KoboValidationErrorType.typeMismatch,
-        attributeName: fspQuestionName,
-        error: `Attribute '${fspQuestionName}' has incompatible type '${fspItem.type}'`,
+        attributeName: FSP_QUESTION_NAME,
+        error: `Attribute '${FSP_QUESTION_NAME}' has incompatible type '${fspItem.type}'`,
         solution: `Change the field type to an accepted type`,
         info: `Expected one of: ${[...validTypes].map((t) => `'${t}'`).join(', ')}`,
       };
@@ -577,8 +577,8 @@ export class KoboValidationService {
     if (invalidChoices.length > 0) {
       return {
         type: KoboValidationErrorType.invalidChoice,
-        attributeName: fspQuestionName,
-        error: `Attribute '${fspQuestionName}' has invalid choices: ${invalidChoices.join(', ')}`,
+        attributeName: FSP_QUESTION_NAME,
+        error: `Attribute '${FSP_QUESTION_NAME}' has invalid choices: ${invalidChoices.join(', ')}`,
         solution: `Update choices to match FSP configuration names`,
         info: `Valid FSP configuration names: ${[...fspConfigNames].join(', ')}`,
       };

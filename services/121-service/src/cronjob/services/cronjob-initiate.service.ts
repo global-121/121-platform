@@ -2,7 +2,9 @@ import { HttpService } from '@nestjs/axios';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AxiosResponse } from 'axios';
+import { setTimeout } from 'node:timers/promises';
 
+import { getBaseUrl } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
@@ -124,7 +126,7 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'patch', headers);
   }
 
-  // Runs twice daily at 3:00 UTC and 9:00 UTC 
+  // Runs twice daily at 3:00 UTC and 9:00 UTC
   // This corresponds to 6:00 and 12:00 Syrian time
   @Cron('0 0 3,9 * * *', {
     disabled: !env.CRON_AL_FOUAD_RECONCILIATION,
@@ -216,7 +218,7 @@ export class CronjobInitiateService {
     }
     // Not a network operation so no try/catch.
     const cronPath = 'cronjobs';
-    const baseCronUrl = `${await this.axiosCallsService.getBaseUrl()}/${cronPath}`;
+    const baseCronUrl = `${getBaseUrl()}/${cronPath}`;
     return { baseCronUrl, headers };
   }
 
@@ -243,14 +245,17 @@ export class CronjobInitiateService {
     // the actual cronjob code)
     let response: AxiosResponse | undefined;
     const timeoutMs = 30_000;
+    const timeoutAbortController = new AbortController();
+
     try {
       const requestPromise =
         method === 'delete'
           ? this.httpService[method](url, headers)
           : this.httpService[method](url, {}, headers);
-      const timeoutPromise = new Promise<undefined>((resolve) => {
-        setTimeout(() => resolve(undefined), timeoutMs);
+      const timeoutPromise = setTimeout(timeoutMs, undefined, {
+        signal: timeoutAbortController.signal,
       });
+
       response = (await Promise.race([requestPromise, timeoutPromise])) as
         AxiosResponse | undefined;
     } catch (error) {
@@ -258,10 +263,13 @@ export class CronjobInitiateService {
         `While running cronjob "${this.currentlyRunningCronjobName}" an error occurred during a request.`,
         { cause: error },
       );
+    } finally {
+      timeoutAbortController.abort();
     }
     // We could move this to a separate function, but that makes each cronjob a
     // bit uglier.
     this.currentlyRunningCronjobName = '';
+
     // If no response, assume success (status 200)
     // Only reason we return something here is because we want to test it.
     return { url, responseStatus: response?.status ?? HttpStatus.OK };
