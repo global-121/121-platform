@@ -14,8 +14,12 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
+import { get } from 'radashi';
 
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
@@ -30,6 +34,7 @@ import {
 } from '~/services/tracking/tracking.enums';
 import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
 import { generateFieldErrors, trackFieldErrors } from '~/utils/form-validation';
+import { getCurrencySymbol } from '~/utils/get-currency-symbol';
 import { Locale } from '~/utils/locale';
 
 export type ProgramBudgetFormGroup =
@@ -40,19 +45,24 @@ export type ProgramBudgetFormGroup =
   imports: [
     FspMultiselectComponent,
     FormFieldWrapperComponent,
+    InputGroupModule,
     ReactiveFormsModule,
     InputTextModule,
     SelectModule,
+    InputGroupAddonModule,
+    InputNumberModule,
   ],
   templateUrl: './program-form-budget.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgramFormBudgetComponent {
-  private readonly locale = inject<Locale>(LOCALE_ID);
+  protected readonly locale = inject<Locale>(LOCALE_ID);
   readonly program = input<Program>();
   readonly programId = input<string>();
   readonly trackEvent = output<TrackingEvent>();
+
+  getCurrencySymbol = getCurrencySymbol;
 
   readonly currencies = Object.values(CurrencyCode)
     .map((code) => ({
@@ -91,7 +101,19 @@ export class ProgramFormBudgetComponent {
     }),
   });
 
-  formFieldErrors = generateFieldErrors(this.formGroup);
+  formFieldErrors = generateFieldErrors(this.formGroup, {
+    fixedTransferValue: (control) => {
+      if (control.errors?.min) {
+        const min = get(control.errors.min, 'min') ?? 0;
+        return $localize`This field needs to be at least ${min}.`;
+      }
+      if (control.errors?.required) {
+        return $localize`:@@generic-required-field:This field is required.`;
+      }
+      return undefined;
+    },
+  });
+
   updateFormGroup = effect(() => {
     const programData = this.program();
 

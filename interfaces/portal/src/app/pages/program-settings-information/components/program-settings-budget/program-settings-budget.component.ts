@@ -136,7 +136,8 @@ export class ProgramSettingsBudgetComponent {
       {
         label: $localize`Funds available`,
         value: programData?.budget,
-        type: 'number',
+        currencyCode: programData?.currency,
+        type: 'currency',
       },
       {
         label: '*' + $localize`Currency`,
@@ -154,7 +155,8 @@ export class ProgramSettingsBudgetComponent {
       {
         label: '*' + $localize`Fixed transfer value`,
         value: programData?.fixedTransferValue,
-        type: 'number',
+        currencyCode: programData?.currency,
+        type: 'currency',
         fullWidth: true,
       },
       {

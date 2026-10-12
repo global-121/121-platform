@@ -12,6 +12,7 @@ import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
+import { formatValueBasedOnCurrency } from '@121-e2e/portal/helpers/formatValueBasedOnCurrency';
 import { getFspLabels } from '@121-e2e/portal/helpers/get-fsp-labels';
 
 const todaysDate = new Date();
@@ -146,11 +147,17 @@ test('Edit Program Information', async ({ programSettingsPage }) => {
       const budgetData = await programSettingsPage.budgetDataList.getData();
 
       expect(budgetData).toEqual({
-        'Funds available': budgetInfo.fundsAvailable,
+        'Funds available': formatValueBasedOnCurrency({
+          value: budgetInfo.fundsAvailable,
+          currency: budgetInfo.currency,
+        }),
         '*Currency': budgetInfo.currency,
         'Number of distributions per registration':
           budgetInfo.defaultTransferValue,
-        '*Fixed transfer value': budgetInfo.fixedTransferValue,
+        '*Fixed transfer value': formatValueBasedOnCurrency({
+          value: budgetInfo.fixedTransferValue,
+          currency: budgetInfo.currency,
+        }),
         'Financial service providers': budgetInfo.fsps?.join(''),
       });
     }).toPass({ timeout: 2000 });
