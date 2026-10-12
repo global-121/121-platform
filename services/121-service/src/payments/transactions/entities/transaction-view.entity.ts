@@ -19,11 +19,37 @@ import { LastTransactionEventEntity } from '@121-service/src/payments/transactio
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
+
+// Correlated per transaction so Postgres only evaluates it for rows that are returned, instead of joining the full registration_view (which computes duplicates for all registrations).
+const registrationDuplicateStatusExpression = `
+  (CASE WHEN EXISTS (
+    SELECT 1
+    FROM "121-service".registration_attribute_data d1
+    INNER JOIN "121-service".program_registration_attribute pra
+      ON d1."programRegistrationAttributeId" = pra.id
+    INNER JOIN "121-service".registration_attribute_data d2
+      ON d1."programRegistrationAttributeId" = d2."programRegistrationAttributeId"
+      AND d1.value = d2.value
+      AND d1."registrationId" != d2."registrationId"
+    INNER JOIN "121-service".registration registration2
+      ON d2."registrationId" = registration2.id
+      AND registration2."registrationStatus" != '${RegistrationStatusEnum.declined}'
+    WHERE d1."registrationId" = t."registrationId"
+      AND registration."registrationStatus" != '${RegistrationStatusEnum.declined}'
+      AND d1.value != ''
+      AND pra."duplicateCheck" = true
+      AND NOT EXISTS (
+        SELECT 1
+        FROM "121-service".unique_registration_pair rup
+        WHERE rup."smallerRegistrationId" = LEAST(d1."registrationId", d2."registrationId")
+          AND rup."largerRegistrationId" = GREATEST(d1."registrationId", d2."registrationId")
+      )
+  ) THEN '${DuplicateStatus.duplicate}' ELSE '${DuplicateStatus.unique}' END)
+`;
 
 @ViewEntity({
   name: 'transaction_view',
@@ -48,7 +74,7 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
       .addSelect('registration.referenceId', 'registrationReferenceId')
       .addSelect('registration.scope', 'registrationScope')
       .addSelect(
-        'registrationview.duplicateStatus',
+        registrationDuplicateStatusExpression,
         'registrationDuplicateStatus',
       )
       .from(TransactionEntity, 't')
@@ -67,11 +93,6 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
         RegistrationEntity,
         'registration',
         't.registrationId = registration.id',
-      )
-      .leftJoin(
-        RegistrationViewEntity,
-        'registrationview',
-        't.registrationId = registrationview.id',
       ),
 })
 export class TransactionViewEntity {
