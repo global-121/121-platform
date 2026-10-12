@@ -95,7 +95,6 @@ export const intersolveVisaEnvVariablesSchema = {
     .url()
     .pipe(z.transform((url) => withoutTrailingSlash(url)))
     .optional(),
-  INTERSOLVE_VISA_PROD: z.stringbool().default(false),
   INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION: z
     .stringbool()
     .default(false),

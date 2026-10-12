@@ -5,6 +5,75 @@ const mockHttpService = {
   request: jest.fn(),
 };
 
+describe('IntersolveVisaApiService - production-compatible API paths', () => {
+  let service: IntersolveVisaApiService;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    service = new IntersolveVisaApiService(mockHttpService as any);
+    service.getAuthenticationToken = jest.fn().mockResolvedValue('token');
+    mockHttpService.request.mockResolvedValue({
+      status: 200,
+      statusText: 'OK',
+      data: { data: {} },
+    });
+  });
+
+  it('uses customer-payments for customer requests', async () => {
+    await service.updateCustomerPhoneNumber({
+      holderId: 'holder-123',
+      phoneNumber: '+31600000000',
+    });
+
+    expect(mockHttpService.request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: expect.stringContaining(
+          '/customer-payments/v1/customers/holder-123/contact-info/phone-numbers',
+        ),
+      }),
+    );
+  });
+
+  it('uses pointofsale-payments for token requests', async () => {
+    await service.getToken('token-123');
+
+    expect(mockHttpService.request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: expect.stringContaining(
+          '/pointofsale-payments/v1/tokens/token-123?includeBalances=true',
+        ),
+      }),
+    );
+  });
+
+  it('uses wallet-payments for wallet requests', async () => {
+    await service.registerHolder({
+      holderId: 'holder-123',
+      tokenCode: 'token-123',
+    });
+
+    expect(mockHttpService.request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: expect.stringContaining(
+          '/wallet-payments/v1/tokens/token-123/register-holder',
+        ),
+      }),
+    );
+  });
+
+  it('keeps payment-instrument-payment for card requests', async () => {
+    await service.closeCard({ tokenCode: 'token-123' });
+
+    expect(mockHttpService.request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: expect.stringContaining(
+          '/payment-instrument-payment/v1/tokens/token-123/change-status',
+        ),
+      }),
+    );
+  });
+});
+
 describe('IntersolveVisaApiService - intersolveApiRequest retry logic', () => {
   let service: IntersolveVisaApiService;
 
