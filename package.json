@@ -37,7 +37,7 @@
     "lint:121-service": "npm run lint --prefix=services/121-service/",
     "lint:mock-service": "npm run lint --prefix=services/mock-service/",
     "test": "echo 'See README.md#testing \\n\\n' && npm run test:all",
-    "test:all": "npx npm-run-all --npm-path npm --print-label --parallel test:lockfile test:prettier test:portal test:services",
+    "test:all": "npm run test:lockfile:all && npx npm-run-all --npm-path npm --print-label --parallel test:prettier test:portal test:services",
     "test:lockfile": "lockfile-lint",
     "test:lockfile:all": "npm run test:lockfile && npm run test:lockfile --prefix=packages/eslint-config-121-platform/ && npm run test:lockfile --prefix=services/121-service/ && npm run test:lockfile --prefix=services/mock-service/ && npm run test:lockfile --prefix=interfaces/portal/ && npm run test:lockfile --prefix=e2e/ && npm run test:lockfile --prefix=tools/",
     "test:prettier": "npx prettier --config=./.prettierrc.yml --check \"**/*.{md,json,yml,scss,css}\"",
