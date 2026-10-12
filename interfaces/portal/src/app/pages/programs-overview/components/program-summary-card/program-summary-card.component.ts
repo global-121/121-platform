@@ -143,7 +143,7 @@ export class ProgramSummaryCardComponent {
           'symbol-narrow',
           '1.0-0',
         ),
-        label: $localize`Budget`,
+        label: $localize`Funds available`,
       },
       {
         value: this.currencyPipe.transform(

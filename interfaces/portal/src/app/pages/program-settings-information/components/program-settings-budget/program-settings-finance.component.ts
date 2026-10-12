@@ -38,17 +38,17 @@ import {
 import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
 
 @Component({
-  selector: 'app-program-settings-budget',
+  selector: 'app-program-settings-finance',
   imports: [
     CardEditableComponent,
     DataListComponent,
     ProgramFormBudgetComponent,
   ],
-  templateUrl: './program-settings-budget.component.html',
+  templateUrl: './program-settings-finance.component.html',
   providers: [ToastService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProgramSettingsBudgetComponent {
+export class ProgramSettingsFinanceComponent {
   readonly programId = input.required<string>();
   readonly isEditing = signal(false);
 

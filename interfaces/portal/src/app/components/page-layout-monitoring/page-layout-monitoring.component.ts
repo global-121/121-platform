@@ -135,7 +135,7 @@ export class PageLayoutMonitoringComponent {
         })),
       },
       {
-        label: $localize`Budget`,
+        label: $localize`Funds available`,
         value: programData?.budget,
         type: 'currency',
         currencyCode: programData?.currency,

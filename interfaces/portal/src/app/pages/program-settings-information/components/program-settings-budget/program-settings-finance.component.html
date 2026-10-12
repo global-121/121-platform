@@ -1,7 +1,7 @@
 <app-card-editable
-  header="Budget"
-  i18n-header="@@card-title-program-settings-budget"
-  editPencilTitle="Edit budget"
+  header="Finance"
+  i18n-header="@@card-title-program-settings-finance"
+  editPencilTitle="Edit finance"
   i18n-editPencilTitle
   [canEdit]="canEdit()"
   [(isEditing)]="isEditing"
@@ -10,6 +10,14 @@
   [trackEventsOnSave]="trackSaveEventPayloads"
   [mutationData]="formGroup()?.getRawValue()"
 >
+  <p
+    i18n
+    class="mbe-4"
+  >
+    Define your program's funds, currency, transfer details and Financial
+    Service Providers
+  </p>
+
   @if (!isEditing()) {
     <app-data-list
       [data]="dataListData()"
