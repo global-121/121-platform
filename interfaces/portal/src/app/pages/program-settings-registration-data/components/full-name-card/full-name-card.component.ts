@@ -112,11 +112,13 @@ export class FullNameCardComponent {
     ];
   });
 
-  readonly canEdit = computed(() =>
-    this.authService.hasPermission({
-      programId: this.programId(),
-      requiredPermission: PermissionEnum.ProgramUPDATE,
-    }),
+  readonly canEdit = computed(
+    () =>
+      this.program.isSuccess() &&
+      this.authService.hasPermission({
+        programId: this.programId(),
+        requiredPermission: PermissionEnum.ProgramUPDATE,
+      }),
   );
 
   formGroup = new FormGroup({
@@ -146,6 +148,10 @@ export class FullNameCardComponent {
 
   constructor() {
     effect(() => {
+      if (this.isEditing()) {
+        return;
+      }
+
       this.formGroup.patchValue({
         nameFields: this.selectedNameFields().map(
           (attribute) => attribute.name,
