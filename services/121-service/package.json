@@ -128,7 +128,7 @@
     "@types/sanitize-html": "^2.16.1",
     "@types/ssh2-sftp-client": "^9.0.6",
     "@types/supertest": "^7.2.1",
-    "eslint": "^10.9.1",
+    "eslint": "^10.12.0",
     "eslint-config-121-platform": "file:../../packages/eslint-config-121-platform/",
     "eslint-plugin-jest": "^29.16.6",
     "eslint-plugin-no-relative-import-paths": "^1.7.3",
@@ -139,9 +139,9 @@
     "knip": "^6.34.0",
     "nodemon": "^3.1.14",
     "nyc": "^18.0.0",
-    "prettier": "^3.9.6",
+    "prettier": "^3.9.9",
     "supertest": "^7.2.2",
-    "typescript-eslint": "^8.69.0"
+    "typescript-eslint": "^8.71.0"
   },
   "overrides": {
     "@nestjs/platform-express": {
