@@ -21,6 +21,7 @@ import {
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';
+import { isStringEnumValue } from '@121-service/src/utils/is-string-enum-value.helper';
 
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { programHasInclusionScore } from '~/domains/program/program.helper';
@@ -254,10 +255,12 @@ export class RegistrationAttributeService {
           label: this.translatableStringService.translate(option.label),
         }));
       const value: unknown = registration?.[name];
-      const editTooltipData =
-        DEFAULT_ATTRIBUTE_EDIT_TOOLTIP_DATA[
-          name as DefaultRegistrationDataAttributeNames
-        ];
+      const editTooltipData = isStringEnumValue(
+        DefaultRegistrationDataAttributeNames,
+        name,
+      )
+        ? DEFAULT_ATTRIBUTE_EDIT_TOOLTIP_DATA[name]
+        : undefined;
 
       return {
         isRequired: isRequired ?? false,

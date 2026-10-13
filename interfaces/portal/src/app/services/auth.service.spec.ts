@@ -104,7 +104,7 @@ describe('AuthService - hasDeprecatedPermissions', () => {
       const userWithDeprecatedPermissions = createMockUser({
         1: [
           PermissionEnum.RegistrationREAD,
-          'DEPRECATED_PERMISSION' as PermissionEnum,
+          'DEPRECATED_PERMISSION' as unknown as PermissionEnum,
         ],
       });
       getItemSpy.mockReturnValue(JSON.stringify(userWithDeprecatedPermissions));

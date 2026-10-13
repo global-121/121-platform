@@ -2,6 +2,7 @@ import { isDevMode } from '@angular/core';
 
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 import { Language } from '@121-service/src/shared/types/language.type';
+import { isStringEnumValue } from '@121-service/src/utils/is-string-enum-value.helper';
 
 import { getLinguonym } from '~/utils/get-linguonym';
 import { environment } from '~environment';
@@ -69,7 +70,7 @@ export const getUILanguageFromLocale = (locale: Locale): UILanguage =>
   localeToUILanguageMap[locale];
 
 const isValidLocale = (locale: string): locale is Locale =>
-  Object.values(Locale).includes(locale as Locale);
+  isStringEnumValue(Locale, locale);
 
 export const getLocaleForInitialization = ({
   defaultLocale,
@@ -141,10 +142,17 @@ export const changeLocale = (desiredLocale: Locale): void => {
   window.location.pathname = pathnameArray.join('/');
 };
 
-export const getUserPreferredUILanguage = (
-  fallback: Locale = environment.defaultLocale as Locale,
-) => {
-  const preferredLocale =
-    localStorage.getItem(LOCAL_STORAGE_LOCALE_KEY) ?? fallback;
-  return preferredLocale as UILanguage;
+export const getUserPreferredUILanguage = () => {
+  // Check if the environment's default locale is valid and use it as fallback if necessary, or fall back to hard-coded Locale.en
+  const fallback = isStringEnumValue(UILanguage, environment.defaultLocale)
+    ? environment.defaultLocale
+    : UILanguage.en;
+
+  const preferredLocale = localStorage.getItem(LOCAL_STORAGE_LOCALE_KEY);
+
+  if (preferredLocale && isStringEnumValue(UILanguage, preferredLocale)) {
+    return preferredLocale;
+  }
+
+  return fallback;
 };
