@@ -2,6 +2,7 @@ import { inject, Injectable, LOCALE_ID } from '@angular/core';
 
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
+import { isStringEnumValue } from '@121-service/src/utils/is-string-enum-value.helper';
 
 import { getUILanguageFromLocale, Locale } from '~/utils/locale';
 
@@ -51,16 +52,16 @@ export class TranslatableStringService {
     }
 
     // Even the fallback-language is not available.
-    // I think TypeScript prevents us from ever reaching this point.
-    if (
-      typeof translationMapping !== 'object' ||
-      Object.keys(translationMapping).length === 0
-    ) {
-      return undefined;
+    // Just the first available language as a last resort.
+    const availableLanguages = Object.keys(translationMapping);
+    if (availableLanguages.length > 0) {
+      if (!isStringEnumValue(UILanguage, availableLanguages[0])) {
+        return undefined;
+      }
+      return translationMapping[availableLanguages[0]];
     }
 
-    // Just the first available language as a last resort.
-    return translationMapping[Object.keys(translationMapping)[0] as UILanguage];
+    return undefined;
   }
 
   commaSeparatedList({
