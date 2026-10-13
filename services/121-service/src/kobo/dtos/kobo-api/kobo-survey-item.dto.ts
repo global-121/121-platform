@@ -4,7 +4,7 @@
 export interface KoboSurveyItemDto {
   /** Question identifier used in data collection */
   name?: string;
-  /** Question type (e.g., 'text', 'integer', 'select_one', 'select_multiple') */
+  /** Question type (e.g., 'text', 'integer', 'select_one', 'select_multiple', 'calculate') */
   type: string;
   /** Kobo's unique identifier for this question */
   $kuid: string;
