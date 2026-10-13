@@ -232,6 +232,8 @@ export class RequiredAttributesComponent {
         return $localize`Checkbox`;
       case RegistrationAttributeTypes.koboImage:
         return $localize`Photo`;
+      case RegistrationAttributeTypes.calculate:
+        return $localize`Calculation`;
     }
   }
 }
