@@ -13,4 +13,5 @@ export enum KoboMockAssetUids {
   withExistingWebhook = 'asset-id-with-existing-webhook',
   overLimit = 'asset-id-over-limit',
   manyOptions = 'asset-id-many-options',
+  calculatedQuestion = 'asset-id-calculated-question',
 }
