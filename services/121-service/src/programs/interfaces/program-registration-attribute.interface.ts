@@ -10,6 +10,7 @@ export interface ProgramRegistrationAttribute {
   includeInTransactionExport?: boolean;
   isRequired?: boolean;
   koboLabel?: RegistrationPreferredLanguageTranslation | null;
+  koboType?: string;
   label?: RegistrationPreferredLanguageTranslation | null;
   name: string;
   options?: QuestionOption[];

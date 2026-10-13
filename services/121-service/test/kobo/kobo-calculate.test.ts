@@ -76,7 +76,6 @@ describe('Add calculate question', () => {
   });
 
   it('creates a numeric attribute for the numeric calculate question', async () => {
-    console.log('yolo');
     // fetch the program, find the attribute named "calculation",
     // and expect its type to be RegistrationAttributeTypes.numeric
   });
