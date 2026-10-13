@@ -68,6 +68,7 @@ export class KoboSurveyProcessorService {
     return {
       name,
       koboLabel: label,
+      koboType: koboSurveyItem.type,
       type: attributeType,
       options,
       // We do not use the 'required' property from Kobo because in Kobo a question can be conditionally required based on skip logic while still having the 'required' property set to true
