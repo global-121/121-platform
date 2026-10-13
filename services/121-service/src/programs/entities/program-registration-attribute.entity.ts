@@ -30,6 +30,9 @@ export class ProgramRegistrationAttributeEntity extends Base121Entity {
   @Column({ type: 'character varying' })
   public type: RegistrationAttributeTypes;
 
+  @Column({ type: 'character varying', nullable: true })
+  public koboType: string | null;
+
   @Column()
   public isRequired: boolean;
 
