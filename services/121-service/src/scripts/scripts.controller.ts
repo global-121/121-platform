@@ -10,7 +10,7 @@ import {
 import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-import { IS_PRODUCTION } from '@121-service/src/config';
+import { IS_DEVELOPMENT, IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { NoUserAuthenticationController } from '@121-service/src/guards/no-user-authentication.decorator';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
@@ -92,6 +92,8 @@ export class ScriptsController {
     summary: `Reset instance database.`,
     description: `When using the reset script: ${SeedScript.demoPrograms}. The reset can take a while, because of the large amount of data. This can result in a timeout on the client side, but the reset will still be done.`,
   })
+  // eslint-disable-next-line custom-rules/no-method-api-tags -- We only want to highlight this endpoint in development
+  @ApiTags(IS_DEVELOPMENT ? `⚠️ Reset` : 'instance')
   @Post('/reset')
   public async resetDb(
     @Body() body: SecretDto,
