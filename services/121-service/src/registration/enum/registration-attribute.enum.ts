@@ -49,4 +49,5 @@ export enum RegistrationAttributeTypes {
   multiSelect = 'multi-select',
   boolean = 'boolean',
   koboImage = 'kobo-image',
+  calculate = 'calculate',
 }
