@@ -240,10 +240,12 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   clearColumnFilter = this.filterService.clearColumnFilter.bind(
     this.filterService,
   );
-  getColumnMinFractionDigits =
-    this.filterService.getColumnMaxFractionDigits.bind(this.filterService);
-  getColumnMaxFractionDigits =
-    this.filterService.getColumnMinFractionDigits.bind(this.filterService);
+  getColumnMinFractionDigits = this.filterService.getColumnFractionDigits.bind(
+    this.filterService,
+  );
+  getColumnMaxFractionDigits = this.filterService.getColumnFractionDigits.bind(
+    this.filterService,
+  );
 
   getColumnSortField = this.cellService.getColumnSortField.bind(
     this.cellService,

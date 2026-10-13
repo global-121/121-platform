@@ -639,9 +639,6 @@
       <trans-unit id="350646349607555710" datatype="html">
         <source>Registered:</source>
       </trans-unit>
-      <trans-unit id="3522287944515054993" datatype="html">
-        <source>The transfer value result is calculated by multiplying the base transfer value by a multiplier based on registration data, if applicable.</source>
-      </trans-unit>
       <trans-unit id="3543826049207263566" datatype="html">
         <source>Please wait before creating a new payment.</source>
       </trans-unit>
@@ -772,9 +769,6 @@
       </trans-unit>
       <trans-unit id="3934118952625564148" datatype="html">
         <source>We don&apos;t store your IP-address. We only use it to generate an anonymous identifier not linked to any personal information.</source>
-      </trans-unit>
-      <trans-unit id="3936604103139221632" datatype="html">
-        <source>For example, if the base transfer value is $50 and the multiplier is based on household size, a 3-person household would have a transfer value of $150.</source>
       </trans-unit>
       <trans-unit id="3948071530536352020" datatype="html">
         <source>Are you sure you want to delete this file?</source>
@@ -1334,9 +1328,6 @@
       <trans-unit id="6001336690636833920" datatype="html">
         <source>Basic information details saved successfully.</source>
       </trans-unit>
-      <trans-unit id="6008759864408963226" datatype="html">
-        <source>Transfer value result</source>
-      </trans-unit>
       <trans-unit id="6011590435574005771" datatype="html">
         <source>Question label</source>
       </trans-unit>
@@ -1345,9 +1336,6 @@
       </trans-unit>
       <trans-unit id="6057281094654962766" datatype="html">
         <source>Validate</source>
-      </trans-unit>
-      <trans-unit id="6102855402615761891" datatype="html">
-        <source>The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
       </trans-unit>
       <trans-unit id="6151408429233480883" datatype="html">
         <source>Required fields not found</source>
@@ -1725,6 +1713,9 @@
       <trans-unit id="7500958067353650400" datatype="html">
         <source>Apply change</source>
       </trans-unit>
+      <trans-unit id="7501325363551730061" datatype="html">
+        <source>For example, if the fixed transfer value is $50 and the multiplier is based on household size, a 3-person household would have a transfer value of $150.</source>
+      </trans-unit>
       <trans-unit id="7509825160805284263" datatype="html">
         <source>Personal information: IP-address.</source>
       </trans-unit>
@@ -2079,6 +2070,9 @@
       <trans-unit id="8995474184079201011" datatype="html">
         <source>Use a clear name so users can easily recognize the file.</source>
       </trans-unit>
+      <trans-unit id="9002483961719373217" datatype="html">
+        <source>The fixed transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
+      </trans-unit>
       <trans-unit id="9015320956537592957" datatype="html">
         <source>Program not found. Please check the URL and try again.</source>
       </trans-unit>
@@ -2127,11 +2121,11 @@
       <trans-unit id="922512355272678698" datatype="html">
         <source>Learn more about updating selected registrations in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
       </trans-unit>
-      <trans-unit id="926636196686296455" datatype="html">
-        <source>Base transfer value</source>
-      </trans-unit>
       <trans-unit id="935187492052582731" datatype="html">
         <source>Submit</source>
+      </trans-unit>
+      <trans-unit id="940707556463089872" datatype="html">
+        <source>The transfer value result is calculated by multiplying the fixed transfer value by a multiplier based on registration data, if applicable.</source>
       </trans-unit>
       <trans-unit id="958505185210366652" datatype="html">
         <source>Replacing the data column name with the required name</source>

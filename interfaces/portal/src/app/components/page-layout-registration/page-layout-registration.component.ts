@@ -41,6 +41,7 @@ import { RegistrationMenuComponent } from '~/components/page-layout-registration
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { registrationTransferValueTooltipMessage } from '~/domains/registration/registration.helper';
 import { RegistrationStatusChangeTarget } from '~/domains/registration/registration.model';
 import { ChangeStatusDialogComponent } from '~/pages/program-registrations/components/change-status-dialog/change-status-dialog.component';
 import { SendMessageDialogComponent } from '~/pages/program-registrations/components/send-message-dialog/send-message-dialog.component';
@@ -175,9 +176,6 @@ export class PageLayoutRegistrationComponent {
     const phoneNumber =
       registrationRawData?.[DefaultRegistrationDataAttributeNames.phoneNumber];
 
-    const transferValueTooltipParagraph1 = $localize`The transfer value result is calculated by multiplying the base transfer value by a multiplier based on registration data, if applicable.`;
-    const transferValueTooltipParagraph2 = $localize`For example, if the base transfer value is $50 and the multiplier is based on household size, a 3-person household would have a transfer value of $150.`;
-
     const listData: DataListItem[] = [
       {
         label: $localize`:@@registration-status:Registration Status`,
@@ -198,12 +196,12 @@ export class PageLayoutRegistrationComponent {
         type: 'text',
       },
       {
-        label: $localize`Transfer value result`,
+        label: $localize`Transfer value`,
         type: 'currency',
         value: registrationRawData?.transferValue,
         currencyCode: this.program.data()?.currency,
         infoTooltipData: {
-          message: `${transferValueTooltipParagraph1}\n\n${transferValueTooltipParagraph2}`,
+          message: registrationTransferValueTooltipMessage(),
           inline: true,
           trackingName: InfoTooltipTrackingName.registrationPageTransferValue,
         },

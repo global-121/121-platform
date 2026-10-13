@@ -138,15 +138,7 @@ export class QueryTableFilterService<TData> {
     }
   }
 
-  getColumnMinFractionDigits(column: QueryTableColumn<TData>): number {
-    if (column.field !== 'transferValue') {
-      return 0;
-    }
-
-    return 2;
-  }
-
-  getColumnMaxFractionDigits(column: QueryTableColumn<TData>): number {
+  getColumnFractionDigits(column: QueryTableColumn<TData>): number {
     if (column.field !== 'transferValue') {
       return 0;
     }

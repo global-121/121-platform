@@ -98,7 +98,7 @@ export enum InfoTooltipTrackingName {
   koboImportSkippedSubmissions = 'Kobo: Import Skipped Submissions',
   koboMissingRequiredFields = 'Kobo: Missing Required Fields',
 
-  monitoringBaseTransferValue = 'Monitoring: Base Transfer Value',
+  monitoringFixedTransferValue = 'Monitoring: Fixed Transfer Value',
   monitoringIncludedRegistrations = 'Monitoring: Included Registrations',
   monitoringTotalRegistrations = 'Monitoring: Total Registrations',
 

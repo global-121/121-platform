@@ -7,7 +7,10 @@ import {
 } from '@tanstack/angular-query-experimental';
 
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
-import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  GenericRegistrationAttributes,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import {
@@ -24,6 +27,7 @@ import {
   DUPLICATE_STATUS_LABELS,
   REGISTRATION_STATUS_LABELS,
   registrationLink,
+  registrationTransferValueTooltipMessage,
 } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
 import {
@@ -283,11 +287,12 @@ export class RegistrationsTableColumnService {
   }): QueryTableColumn<Registration>[] {
     return columns
       .map((column) => {
-        if (column.field === 'transferValue') {
-          const transferValueTooltipParagraph1 = $localize`The transfer value result is calculated by multiplying the base transfer value by a multiplier based on registration data, if applicable.`;
-          const transferValueTooltipParagraph2 = $localize`For example, if the base transfer value is $50 and the multiplier is based on household size, a 3-person household would have a transfer value of $150.`;
+        if (
+          column.field ===
+          (GenericRegistrationAttributes.transferValue as string)
+        ) {
           column.tooltip = {
-            message: `${transferValueTooltipParagraph1}\n\n${transferValueTooltipParagraph2}`,
+            message: registrationTransferValueTooltipMessage(),
             inline: true,
             trackingName:
               InfoTooltipTrackingName.registrationsTableTransferValue,
