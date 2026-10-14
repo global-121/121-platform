@@ -70,7 +70,6 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
     const mockResponse = await duplicateRegistrationsAndPaymentData({
       powerNumberRegistration: duplicateNumber,
       numberOfPayments: 1,
-      skipIntroduceDuplicates: true,
       accessToken,
       body: {
         secret: env.RESET_SECRET,
