@@ -10,8 +10,8 @@ import { DataSource } from 'typeorm';
 import { ActivitiesModule } from '@121-service/src/activities/activities.module';
 import { AuthModule } from '@121-service/src/auth/auth.module';
 import {
-  BULL_STALLED_INTERVAL_MS,
-  THROTTLING_LIMIT_GENERIC,
+    BULL_STALLED_INTERVAL_MS,
+    THROTTLING_LIMIT_GENERIC,
 } from '@121-service/src/config';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
 import { EmailsModule } from '@121-service/src/emails/emails.module';
@@ -149,7 +149,7 @@ export class ApplicationModule implements OnApplicationBootstrap {
 
     // Any additional bootstrap tasks only AFTER successful migrations
     await this.permissionMaintenanceService.syncSupportedPermissions();
-    await this.permissionMaintenanceService.syncAdminRolePermissions();
+    await this.permissionMaintenanceService.syncDefaultRoles();
     await this.permissionMaintenanceService.removeExtraneousPermissions();
   }
 }

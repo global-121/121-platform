@@ -1,11 +1,13 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { getUserRoles } from '@121-service/test/helpers/user.helper';
 import {
-  getAccessToken,
-  getServer,
-  resetDB,
+    createRole,
+    getAccessToken,
+    getServer,
+    resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
 describe('/ Roles', () => {
@@ -15,6 +17,19 @@ describe('/ Roles', () => {
     await resetDB({ seedScript: SeedScript.testMultiple });
     accessToken = await getAccessToken();
   });
+
+  async function createCustomRole(): Promise<number> {
+    return createRole({
+      roleName: 'test-manager',
+      label: 'Do stuff with certain permissions',
+      description: 'This is a test role',
+      permissions: [
+        PermissionEnum.ProgramUPDATE,
+        PermissionEnum.ProgramMetricsREAD,
+      ],
+      adminAccessToken: accessToken,
+    });
+  }
 
   it('should create roles when using valid permissions', async () => {
     // Act
@@ -95,7 +110,7 @@ describe('/ Roles', () => {
 
   it('should update a role by userRoleId', async () => {
     // Arrange
-    const userRoleId = 1;
+    const userRoleId = await createCustomRole();
     const updateData = {
       label: 'Updated user role label',
       description: 'Updated user role description',
@@ -120,7 +135,7 @@ describe('/ Roles', () => {
 
   it('should delete a role by userRoleId', async () => {
     // Arrange
-    const userRoleId = 2;
+    const userRoleId = await createCustomRole();
     // Get user roles before delete
     const getUserRoleBeforeDelete = await getUserRoles(accessToken);
     expect(getUserRoleBeforeDelete.status).toBe(HttpStatus.OK);

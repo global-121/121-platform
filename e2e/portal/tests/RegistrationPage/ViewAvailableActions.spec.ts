@@ -7,8 +7,9 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { getRegistrationIdByReferenceId } from '@121-service/test/helpers/registration.helper';
 import {
-  addPermissionToRole,
+  createUserWithPermissions,
   getAccessToken,
+  getRole,
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
@@ -155,16 +156,24 @@ test.describe('User actions', () => {
       // Log out before the view-only user starts from the login page.
       await page.goto('/logout');
       await page.waitForURL((url) => url.pathname.startsWith('/en-GB/login'));
-      // Add UPDATE permission to "viewOnlyUser" so that the actions menu becomes visible
-      await addPermissionToRole(DefaultUserRole.View, [
-        PermissionEnum.RegistrationPersonalUPDATE,
-      ]);
-      // Login as "viewOnlyUser" before checking which actions are available.
+      // Create a user with the "view" permissions plus an UPDATE permission,
+      // so that the actions menu becomes visible.
+      const accessToken = await getAccessToken();
+      const viewRole = await getRole(DefaultUserRole.View);
+      const { username, password } = await createUserWithPermissions({
+        permissions: [
+          ...(viewRole.permissions ?? []),
+          PermissionEnum.RegistrationPersonalUPDATE,
+        ],
+        programId: programIdPV,
+        adminAccessToken: accessToken,
+      });
+      // Login as the newly created view-only user before checking which actions are available.
       await loginPage.login({
         skipNavigateToLogin: false,
         skipUrlCheck: false,
-        username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
-        password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+        username,
+        password,
       });
       // Navigate to the registration activity log page of the seeded registration
       await registrationActivityLogPage.goto(

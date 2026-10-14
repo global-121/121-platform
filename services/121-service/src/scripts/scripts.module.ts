@@ -16,11 +16,15 @@ import { ScriptsService } from '@121-service/src/scripts/services/scripts.servic
 import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper.service';
 import { SeedMockHelperService } from '@121-service/src/scripts/services/seed-mock-helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { PermissionMaintenanceService } from '@121-service/src/shared/services/permission-maintenance.service';
+import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
+import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(ORMConfig as TypeOrmModuleOptions),
+    TypeOrmModule.forFeature([PermissionEntity, UserRoleEntity]),
     MessageTemplateModule,
     QueuesRegistryModule,
     ProgramModule,
@@ -37,6 +41,7 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
     MockSeedFactoryService,
     AxiosCallsService,
     CustomHttpService,
+    PermissionMaintenanceService,
   ],
   controllers: [ScriptsController],
 })
