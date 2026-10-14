@@ -136,7 +136,7 @@ export class IntersolveVisaApiService {
         errorPrefix: IntersolveVisa121ErrorText.createCustomerError,
         method: 'POST',
         payload: createCustomerRequestDto,
-        apiPath: 'customer',
+        apiPath: 'customer-payments',
         endpoint: 'customers/create-individual',
       });
 
@@ -168,7 +168,7 @@ export class IntersolveVisaApiService {
         errorPrefix: IntersolveVisa121ErrorText.issueTokenError,
         method: 'POST',
         payload: issueTokenRequestDto,
-        apiPath: 'pointofsale',
+        apiPath: 'pointofsale-payments',
         endpoint: `brand-types/${brandCode}/issue-token`,
       });
 
@@ -189,7 +189,7 @@ export class IntersolveVisaApiService {
       await this.intersolveApiRequest<GetTokenResponseIntersolveApiDto>({
         errorPrefix: IntersolveVisa121ErrorText.getTokenError,
         method: 'GET',
-        apiPath: 'pointofsale',
+        apiPath: 'pointofsale-payments',
         endpoint: `tokens/${tokenCode}?includeBalances=true`,
       });
     let blocked;
@@ -309,7 +309,7 @@ export class IntersolveVisaApiService {
         {
           errorPrefix: IntersolveVisa121ErrorText.getTransactionError,
           method: 'GET',
-          apiPath: 'wallet',
+          apiPath: 'wallet-payments',
           endpoint: `tokens/${tokenCode}/transactions${
             fromDate ? `?dateFrom=${fromDate.toISOString()}` : ''
           }`,
@@ -380,7 +380,7 @@ export class IntersolveVisaApiService {
       errorPrefix: IntersolveVisa121ErrorText.registerHolderError,
       method: 'POST',
       payload: registerHolderRequest,
-      apiPath: 'wallet',
+      apiPath: 'wallet-payments',
       endpoint: `tokens/${tokenCode}/register-holder`,
     });
   }
@@ -403,7 +403,7 @@ export class IntersolveVisaApiService {
       errorPrefix: IntersolveVisa121ErrorText.linkTokenError,
       method: 'POST',
       payload: linkTokenRequest,
-      apiPath: 'wallet',
+      apiPath: 'wallet-payments',
       endpoint: `tokens/${parentTokenCode}/link-token`,
     });
   }
@@ -483,7 +483,7 @@ export class IntersolveVisaApiService {
       errorPrefix: IntersolveVisa121ErrorText.transferError,
       method: 'POST',
       payload: transferRequestDto,
-      apiPath: 'wallet',
+      apiPath: 'wallet-payments',
       endpoint: `tokens/${fromTokenCode}/transfer`,
     });
   }
@@ -506,7 +506,7 @@ export class IntersolveVisaApiService {
       errorPrefix: IntersolveVisa121ErrorText.substituteTokenError,
       method: 'POST',
       payload: substituteTokenRequestDto,
-      apiPath: 'wallet',
+      apiPath: 'wallet-payments',
       endpoint: `tokens/${oldTokenCode}/substitute-token`,
     });
   }
@@ -525,7 +525,7 @@ export class IntersolveVisaApiService {
       errorPrefix: IntersolveVisa121ErrorText.blockTokenError,
       method: 'POST',
       payload,
-      apiPath: 'pointofsale',
+      apiPath: 'pointofsale-payments',
       endpoint: `tokens/${tokenCode}/${blocked ? 'block' : 'unblock'}`,
     });
   }
@@ -549,7 +549,7 @@ export class IntersolveVisaApiService {
       errorPrefix: IntersolveVisa121ErrorText.updatePhoneNumberError,
       method: 'PUT',
       payload: requestBody,
-      apiPath: 'customer',
+      apiPath: 'customer-payments',
       endpoint: `customers/${holderId}/contact-info/phone-numbers`,
     });
   }
@@ -568,7 +568,7 @@ export class IntersolveVisaApiService {
       await this.intersolveApiRequest<GetCustomerIndividualIntersolveApiDto>({
         errorPrefix: IntersolveVisa121ErrorText.getCustomerIndividualError,
         method: 'GET',
-        apiPath: 'customer',
+        apiPath: 'customer-payments',
         endpoint: `customers/${holderId}/individual`,
       });
 
@@ -591,7 +591,7 @@ export class IntersolveVisaApiService {
       errorPrefix: IntersolveVisa121ErrorText.updateCustomerIndividualNameError,
       method: 'PUT',
       payload: customerIndividual,
-      apiPath: 'customer',
+      apiPath: 'customer-payments',
       endpoint: `customers/${holderId}/individual`,
     });
   }
@@ -625,7 +625,7 @@ export class IntersolveVisaApiService {
       errorPrefix: IntersolveVisa121ErrorText.updateCustomerAddressError,
       method: 'PUT',
       payload: requestBody,
-      apiPath: 'customer',
+      apiPath: 'customer-payments',
       endpoint: `customers/${holderId}/contact-info/addresses`,
     });
   }
@@ -697,7 +697,10 @@ export class IntersolveVisaApiService {
     method: 'GET' | 'POST' | 'PUT' | 'PATCH';
     endpoint: string;
     apiPath:
-      'customer' | 'pointofsale' | 'payment-instrument-payment' | 'wallet';
+      | 'customer-payments'
+      | 'pointofsale-payments'
+      | 'payment-instrument-payment'
+      | 'wallet-payments';
     payload?: unknown;
   }) {
     const authToken = await this.getAuthenticationToken();
@@ -705,25 +708,9 @@ export class IntersolveVisaApiService {
     headers.append('Authorization', `Bearer ${authToken}`);
     headers.append('Tenant-ID', env.INTERSOLVE_VISA_TENANT_ID ?? '');
 
-    let intersolveVisaApiPath: string = apiPath;
-
-    if (env.INTERSOLVE_VISA_PROD) {
-      switch (apiPath) {
-        case 'customer':
-          intersolveVisaApiPath = 'customer-payments';
-          break;
-        case 'pointofsale':
-          intersolveVisaApiPath = 'pointofsale-payments';
-          break;
-        case 'wallet':
-          intersolveVisaApiPath = 'wallet-payments';
-          break;
-      }
-    }
-
     const withArgs = {
       method,
-      url: `${intersolveVisaApiUrl}/${intersolveVisaApiPath}/v1/${endpoint}`,
+      url: `${intersolveVisaApiUrl}/${apiPath}/v1/${endpoint}`,
       payload,
       headers,
     };
