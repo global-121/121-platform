@@ -7,14 +7,18 @@ export interface DefaultUserRoleDefinition {
   readonly permissions: PermissionEnum[];
 }
 
-export const DEFAULT_USER_ROLES: DefaultUserRoleDefinition[] = [
-  {
-    role: DefaultUserRole.Admin,
+type DefaultUserRoleContent = Omit<DefaultUserRoleDefinition, 'role'>;
+
+// Typed as a Record so that DefaultUserRole is the source of truth
+const DEFAULT_USER_ROLE_CONTENT: Record<
+  DefaultUserRole,
+  DefaultUserRoleContent
+> = {
+  [DefaultUserRole.Admin]: {
     label: 'Admin',
     permissions: Object.values(PermissionEnum),
   },
-  {
-    role: DefaultUserRole.ProgramAdmin,
+  [DefaultUserRole.ProgramAdmin]: {
     label: 'Program Admin',
     permissions: [
       PermissionEnum.AidWorkerProgramREAD,
@@ -42,8 +46,7 @@ export const DEFAULT_USER_ROLES: DefaultUserRoleDefinition[] = [
       PermissionEnum.RegistrationREAD,
     ],
   },
-  {
-    role: DefaultUserRole.View,
+  [DefaultUserRole.View]: {
     label: 'Only view data, including Personally Identifiable Information',
     permissions: [
       PermissionEnum.PaymentREAD,
@@ -60,16 +63,14 @@ export const DEFAULT_USER_ROLES: DefaultUserRoleDefinition[] = [
       PermissionEnum.ProgramRegistrationAttributesREAD,
     ],
   },
-  {
-    role: DefaultUserRole.KoboRegistrationUser,
+  [DefaultUserRole.KoboRegistrationUser]: {
     label: 'Only CREATE registrations',
     permissions: [
       PermissionEnum.ProgramREAD,
       PermissionEnum.RegistrationCREATE,
     ],
   },
-  {
-    role: DefaultUserRole.KoboValidationUser,
+  [DefaultUserRole.KoboValidationUser]: {
     label: 'Only UPDATE registrations',
     permissions: [
       PermissionEnum.ProgramREAD,
@@ -79,8 +80,7 @@ export const DEFAULT_USER_ROLES: DefaultUserRoleDefinition[] = [
       PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
     ],
   },
-  {
-    role: DefaultUserRole.CvaManager,
+  [DefaultUserRole.CvaManager]: {
     label: 'Cash Assistance Program Manager',
     permissions: [
       PermissionEnum.ProgramREAD,
@@ -119,8 +119,7 @@ export const DEFAULT_USER_ROLES: DefaultUserRoleDefinition[] = [
       PermissionEnum.RegistrationBulkUPDATE,
     ],
   },
-  {
-    role: DefaultUserRole.CvaOfficer,
+  [DefaultUserRole.CvaOfficer]: {
     label: 'Cash Assistance Program Officer',
     permissions: [
       PermissionEnum.ProgramREAD,
@@ -146,8 +145,7 @@ export const DEFAULT_USER_ROLES: DefaultUserRoleDefinition[] = [
       PermissionEnum.RegistrationStatusPausedUPDATE,
     ],
   },
-  {
-    role: DefaultUserRole.FinanceManager,
+  [DefaultUserRole.FinanceManager]: {
     label: 'Finance Manager',
     permissions: [
       PermissionEnum.ProgramREAD,
@@ -173,8 +171,7 @@ export const DEFAULT_USER_ROLES: DefaultUserRoleDefinition[] = [
       PermissionEnum.RegistrationPaymentExport,
     ],
   },
-  {
-    role: DefaultUserRole.FinanceOfficer,
+  [DefaultUserRole.FinanceOfficer]: {
     label: 'Finance Officer',
     permissions: [
       PermissionEnum.ProgramREAD,
@@ -193,8 +190,7 @@ export const DEFAULT_USER_ROLES: DefaultUserRoleDefinition[] = [
       PermissionEnum.RegistrationPersonalREAD,
     ],
   },
-  {
-    role: DefaultUserRole.ViewWithoutPII,
+  [DefaultUserRole.ViewWithoutPII]: {
     label: 'Only view data, not including Personally Identifiable Information',
     permissions: [
       PermissionEnum.ProgramREAD,
@@ -208,8 +204,7 @@ export const DEFAULT_USER_ROLES: DefaultUserRoleDefinition[] = [
       PermissionEnum.RegistrationREAD,
     ],
   },
-  {
-    role: DefaultUserRole.Approver,
+  [DefaultUserRole.Approver]: {
     label: 'Approve payments',
     permissions: [
       PermissionEnum.ProgramMetricsREAD,
@@ -221,8 +216,7 @@ export const DEFAULT_USER_ROLES: DefaultUserRoleDefinition[] = [
       PermissionEnum.RegistrationPersonalREAD,
     ],
   },
-  {
-    role: DefaultUserRole.ProgramTeamManager,
+  [DefaultUserRole.ProgramTeamManager]: {
     label: 'Program Team Manager',
     permissions: [
       PermissionEnum.ProgramMetricsREAD,
@@ -234,4 +228,12 @@ export const DEFAULT_USER_ROLES: DefaultUserRoleDefinition[] = [
       PermissionEnum.AidWorkerProgramUPDATE,
     ],
   },
-];
+};
+
+export const DEFAULT_USER_ROLES: DefaultUserRoleDefinition[] = Object.entries(
+  DEFAULT_USER_ROLE_CONTENT,
+).map(([role, { label, permissions }]) => ({
+  role: role as DefaultUserRole,
+  label,
+  permissions,
+}));

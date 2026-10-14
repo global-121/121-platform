@@ -55,6 +55,9 @@ export class SyncDefaultRoles1790861746910 implements MigrationInterface {
 
     const reassignments: RoleReassignment[] = [];
     for (const driftedDefaultRole of driftedDefaultRoles) {
+      if (driftedDefaultRole.assignmentIds.length === 0) {
+        continue;
+      }
       reassignments.push(
         await this.createReassignment({
           queryRunner,
