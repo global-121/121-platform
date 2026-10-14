@@ -8,6 +8,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
@@ -17,6 +18,7 @@ import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/r
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
+import { AppRoutes } from '~/app.routes';
 import {
   DataListComponent,
   DataListItem,
@@ -25,6 +27,7 @@ import { ImageDialogsComponent } from '~/components/image/image-dialogs/image-di
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { registrationLink } from '~/domains/registration/registration.helper';
 import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
 import { EditPersonalInformationComponent } from '~/pages/program-registration-personal-information/components/edit-personal-information/edit-personal-information.component';
 import { AuthService } from '~/services/auth.service';
@@ -57,6 +60,7 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
   readonly registrationId = input.required<string>();
 
   readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
   readonly registrationApiService = inject(RegistrationApiService);
   readonly queryClient = inject(QueryClient);
   readonly metricApiService = inject(MetricApiService);
@@ -184,8 +188,27 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
     return editableAttributes;
   });
 
-  onRegistrationUpdated() {
+  enterEditMode() {
+    void this.router.navigate(
+      registrationLink({
+        programId: this.programId(),
+        registrationId: this.registrationId(),
+        editPersonalInfo: true,
+      }),
+    );
+  }
+
+  leaveEditMode() {
+    // Set before navigating, so the pending-changes guard lets us through
     this.isEditing.set(false);
+
+    void this.router.navigate([
+      ...registrationLink({
+        programId: this.programId(),
+        registrationId: this.registrationId(),
+      }),
+      AppRoutes.programRegistrationPersonalInformation,
+    ]);
   }
 
   canDeactivate() {

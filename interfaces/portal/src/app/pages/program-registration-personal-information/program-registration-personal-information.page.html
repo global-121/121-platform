@@ -11,7 +11,7 @@
           <p-button
             label="Edit information"
             i18n-label
-            (click)="isEditing.set(true)"
+            (click)="enterEditMode()"
             icon="pi pi-pencil"
             [iconPos]="rtlHelper.createPosition('start')()"
             outlined
@@ -26,8 +26,8 @@
         [programId]="programId()"
         [registrationId]="registrationId()"
         [attributeList]="editableAttributeList()"
-        (cancelEditing)="isEditing.set(false)"
-        (registrationUpdated)="onRegistrationUpdated()"
+        (cancelEditing)="leaveEditMode()"
+        (registrationUpdated)="leaveEditMode()"
       />
     }
   }
