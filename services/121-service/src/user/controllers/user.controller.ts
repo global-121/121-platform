@@ -89,6 +89,8 @@ export class UserController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Wrong username and/or password',
   })
+  // eslint-disable-next-line custom-rules/no-method-api-tags -- Only highlighting this for extra convenience
+  @ApiTags('🔐 Login')
   @Post('users/login')
   public async login(
     @Body() loginUserDto: LoginUserDto,
