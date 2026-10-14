@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   input,
+  linkedSignal,
   signal,
   viewChild,
 } from '@angular/core';
@@ -82,7 +83,8 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
     )?.referenceId;
   });
 
-  readonly isEditing = signal(false);
+  readonly startEditing = input<boolean>(false);
+  readonly isEditing = linkedSignal(() => this.startEditing());
   readonly editPersonalInformationComponent =
     viewChild.required<EditPersonalInformationComponent>(
       'editPersonalInformation',

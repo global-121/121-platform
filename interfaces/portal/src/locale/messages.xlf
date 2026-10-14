@@ -1479,6 +1479,9 @@
       <trans-unit id="6655432650609946987" datatype="html">
         <source>Are you sure you want to send this message?</source>
       </trans-unit>
+      <trans-unit id="6674386388481954763" datatype="html">
+        <source>Edit personal info</source>
+      </trans-unit>
       <trans-unit id="6678171760523373674" datatype="html">
         <source>New value</source>
       </trans-unit>
@@ -2693,6 +2696,9 @@
       </trans-unit>
       <trans-unit id="page-title-program-registration-details" datatype="html">
         <source>Registration details</source>
+      </trans-unit>
+      <trans-unit id="page-title-program-registration-personal-information-edit" datatype="html">
+        <source>Edit personal information</source>
       </trans-unit>
       <trans-unit id="page-title-program-registrations" datatype="html">
         <source>Registrations</source>
