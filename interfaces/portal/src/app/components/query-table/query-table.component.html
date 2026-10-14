@@ -123,10 +123,7 @@
           <div class="flex items-center text-nowrap">
             <ng-container>{{ column.header }}</ng-container>
             @if (column.tooltip) {
-              <app-info-tooltip
-                [infoTooltipData]="column.tooltip"
-                class="ms-2"
-              />
+              <app-info-tooltip [infoTooltipData]="column.tooltip" />
             }
 
             @if (columnSortField) {

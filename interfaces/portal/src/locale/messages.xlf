@@ -1803,6 +1803,9 @@
       <trans-unit id="7855962245426283369" datatype="html">
         <source>Pending reason</source>
       </trans-unit>
+      <trans-unit id="7858060057068625943" datatype="html">
+        <source>Message:</source>
+      </trans-unit>
       <trans-unit id="7893013905728176682" datatype="html">
         <source>Something went wrong with this import. Please fix the errors reported below and try again.</source>
       </trans-unit>
@@ -2045,9 +2048,6 @@
       </trans-unit>
       <trans-unit id="891683010392787907" datatype="html">
         <source>If the number is correct but this error persists, try a different card and inform your supervisor.</source>
-      </trans-unit>
-      <trans-unit id="8918915369134420822" datatype="html">
-        <source>Message:</source>
       </trans-unit>
       <trans-unit id="8934662076309331939" datatype="html">
         <source>Last payment:</source>

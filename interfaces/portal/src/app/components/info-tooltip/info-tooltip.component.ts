@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -22,12 +21,11 @@ const TRACK_EVENT_DELAY_MS = 1000;
 export interface InfoTooltipData {
   message: string;
   trackingName: InfoTooltipTrackingName;
-  inline?: boolean;
 }
 
 @Component({
   selector: 'app-info-tooltip',
-  imports: [TooltipModule, NgTemplateOutlet],
+  imports: [TooltipModule],
   templateUrl: './info-tooltip.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

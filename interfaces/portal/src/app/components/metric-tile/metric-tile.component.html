@@ -12,7 +12,7 @@
     />
   }
   <dt class="text-grey-700 txt-body-m mbs-auto mbe-2 pbs-11">
-    {{ metricLabel() }}
+    <span>{{ metricLabel() }}</span>
     @let metricTooltip = metricTooltipData();
     @if (metricTooltip) {
       <app-info-tooltip [infoTooltipData]="metricTooltip" />

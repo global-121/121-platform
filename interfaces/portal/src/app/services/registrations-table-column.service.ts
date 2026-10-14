@@ -293,7 +293,6 @@ export class RegistrationsTableColumnService {
         ) {
           column.tooltip = {
             message: registrationTransferValueTooltipMessage(),
-            inline: true,
             trackingName:
               InfoTooltipTrackingName.registrationsTableTransferValue,
           };

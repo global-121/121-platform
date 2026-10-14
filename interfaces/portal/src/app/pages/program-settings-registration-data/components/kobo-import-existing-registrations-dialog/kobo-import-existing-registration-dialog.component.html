@@ -92,7 +92,7 @@
             this.importExistingSubmissions.data()
               ?.numberOfSubmissionsSkipped !== 0
           ) {
-            <div class="flex items-center gap-1">
+            <div class="flex items-center">
               <app-colored-chip
                 [label]="`${getChipLabelBySubmissionKey(importExistingSubmissionsResultKey.numberOfSubmissionsSkipped)}: ${importExistingSubmissions.data()?.numberOfSubmissionsSkipped ?? 0}`"
                 [variant]="

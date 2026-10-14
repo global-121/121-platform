@@ -202,7 +202,6 @@ export class PageLayoutRegistrationComponent {
         currencyCode: this.program.data()?.currency,
         infoTooltipData: {
           message: registrationTransferValueTooltipMessage(),
-          inline: true,
           trackingName: InfoTooltipTrackingName.registrationPageTransferValue,
         },
       },
