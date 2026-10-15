@@ -43,7 +43,7 @@ Also report:
 - New code branches without a test.
 - Suppressed errors (`eslint-disable`, `@ts-ignore`, `@ts-expect-error`) or committed `.only`/`fit`/`fdescribe`.
 - New patterns or conventions that should be added to `AGENTS.md` or the guidelines.
-- Drift between a changed guideline and its summary: when a PR changes `docs/guidelines/*`, check that the matching file in `.github/instructions/` (rules are tagged with their section, for example `(C.4)`) and `AGENTS.md` still agree, and flag every difference.
+- Drift between a changed guideline and its summary: when a PR changes `docs/guidelines/*`, check that the matching file in `.github/instructions/` (rules are tagged with their guideline section, for example `(C.4)` or `(API Service Files)`) and `AGENTS.md` still agree, and flag every difference.
 
 # Output format
 

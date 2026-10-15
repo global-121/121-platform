@@ -5,42 +5,26 @@ applyTo: '**/*.spec.ts, **/*.test.ts'
 
 # Test instructions
 
-Summary of the testing section of the [Software Architecture Guidelines](../../docs/guidelines/software-architecture.md#l-testing) and of [Which tests to automate](../../docs/guidelines/which-tests-to-automate.md). Those documents are leading.
+Rules from section L of the [Software Architecture Guidelines](../../docs/guidelines/software-architecture.md#l-testing) and from [Which tests to automate](../../docs/guidelines/which-tests-to-automate.md) (W), tagged with their section. Those documents are leading and hold the examples.
 
-## Which tests to write
+## Rules
 
-- Every new code branch has at least one test.
-- Unit tests (`*.spec.ts`, mocked dependencies) cover business logic, branches and edge cases. Integration tests (`*.test.ts`, real API calls in `services/121-service/test/`) cover key paths and key error scenarios, not every variation.
-- End-to-end tests (`e2e/**/*.spec.ts`, Playwright) cover complete user flows; use `test.step` for each step. The structure and naming rules below apply to them too.
-- A unit test that is hard to write is a code smell: split the unit, or move stand-alone logic into a helper service with its own test file.
-- Only test public methods. Private methods are implementation details.
+- Every new code branch has at least one test (`AGENTS.md`).
+- Unit tests (`*.spec.ts`, mocked) cover logic, branches and edge cases; integration tests (`*.test.ts`, real API calls in `services/121-service/test/`) cover key paths and key error scenarios only (W.3, W.4).
+- A unit test that is hard to write is a code smell: split the unit or move stand-alone logic into a helper service with its own test file (W.7).
+- Test only public methods (L: Unit testing).
+- Assert on results, not on which internal functions were called. `toHaveBeenCalled(With)` is only right when the call itself is the behavior, such as sending a notification (L: Unit testing).
+- Delimit each test with `// Arrange`, `// Act`, `// Assert`. Skip `// Arrange` when there is no setup; `// Act & Assert` is fine for `toThrow` checks (L: Arrange, Act, Assert).
+- One act-plus-assert per test; do not chain them (L: Arrange, Act, Assert).
+- `describe`/`it` describe the scenario and behavior, never the function name (L: Test description naming).
+- Default to explicit assertions. Snapshots only when impractical; prefer inline, keep them small, mask dynamic values, review the diff instead of re-recording (L: Snapshot Testing).
+- End-to-end tests (`e2e/**/*.spec.ts`, Playwright) cover complete user flows with a `test.step` per step; the structure and naming rules above apply.
+- Never commit `fit`, `fdescribe` or `.only`. `any` is allowed only when proper typing makes the test very verbose (`AGENTS.md`).
 
-## Test WHAT, not HOW
+## Read the full section before
 
-- Assert on results and behavior, not on which internal functions were called. `toHaveBeenCalled(With)` is only right when the call itself is the behavior, for example sending a notification.
-
-```ts
-// ❌ breaks on refactor
-expect(getDiscountSpy).toHaveBeenCalledWith(150);
-
-// ✅ tests the behavior
-expect(calculateOrderPrice(150)).toBe(135);
-```
-
-## Structure
-
-- Delimit each test with `// Arrange`, `// Act`, `// Assert` comments. Skip `// Arrange` when there is no setup; `// Act & Assert` is fine for `expect(() => ...).toThrow()`.
-- One action-plus-assertion per test; do not chain act/assert steps.
-
-## Naming
-
-- `describe` and `it` describe the scenario and behavior, not the function name: `describe('Listing enabled Fsps')` with `it('should return all Fsps when none are disabled')`, not `describe('getEnabledFsps')`.
-
-## Snapshots
-
-- Default to explicit assertions. Use snapshots only when that is impractical, prefer `toMatchInlineSnapshot`, keep them small, mask dynamic values, and review the diff instead of re-recording.
-
-## Hygiene
-
-- Never commit `fit`, `fdescribe` or `.only`.
-- `any` is allowed in tests only when proper typing would make the test very verbose.
+| Task                                         | Read                |
+| -------------------------------------------- | ------------------- |
+| Deciding whether to write a unit or API test | W                   |
+| Using a spy or mock in an assertion          | L: Unit testing     |
+| Using a snapshot                             | L: Snapshot Testing |
