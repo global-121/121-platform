@@ -42,8 +42,7 @@ export class TestController {
     }
 
     console.log('Service is being killed...');
-    // eslint-disable-next-line n/no-process-exit -- Exiting the app is the literal purpose of this method/endpoint
-    process.exit(1);
+    process.exitCode = 1;
   }
 
   @AuthenticatedUser({ isAdmin: true })

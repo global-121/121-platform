@@ -24,7 +24,7 @@ if (!url || !url.startsWith('https')) {
   console.info(
     'Provide a valid URL as argument using: ` --url=https://example.org` or ` -u https://example.org`',
   );
-  process.exit(1);
+  process.exitCode = 1;
 }
 
 console.info('Verifying deployment configuration for URL:', url);

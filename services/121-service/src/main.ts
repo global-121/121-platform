@@ -211,8 +211,7 @@ async function bootstrap(): Promise<void> {
     logService.logError(error, true);
     logService.logError(new Error('Uncaught Exception: restarting'), true);
 
-    // eslint-disable-next-line n/no-process-exit -- Trigger a reboot, as the app is in an unknown state.
-    process.exit(1);
+    process.exitCode = 1;
   });
 }
 

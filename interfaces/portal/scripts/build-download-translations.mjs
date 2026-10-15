@@ -42,7 +42,7 @@ if (!shouldBeEnabled(process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD)) {
     console.info(`☑️  Mock created: ${filePath}`);
   }
 
-  process.exit(0);
+  process.exitCode = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ try {
   console.info(`Download done ✅`);
 } catch (error) {
   console.error(`Error downloading translations!`, error);
-  process.exit(1);
+  process.exitCode = 1;
 }
 
 /////////////////////////////////////////////////////////////////////////////
