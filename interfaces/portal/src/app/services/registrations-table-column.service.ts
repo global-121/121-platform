@@ -367,6 +367,8 @@ export class RegistrationsTableColumnService {
       case RegistrationAttributeTypes.dropdown:
       case RegistrationAttributeTypes.multiSelect:
         return QueryTableColumnType.MULTISELECT;
+      case RegistrationAttributeTypes.calculate:
+        return QueryTableColumnType.NUMERIC;
     }
   }
 }

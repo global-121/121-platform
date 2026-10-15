@@ -441,6 +441,7 @@ export class ProgramRegistrationAttributesService {
     programRegistrationAttribute.label = attribute.label ?? null;
     programRegistrationAttribute.koboLabel = attribute.koboLabel ?? null;
     programRegistrationAttribute.type = attribute.type;
+    programRegistrationAttribute.koboType = attribute.koboType ?? null;
     programRegistrationAttribute.options = attribute.options ?? null;
     programRegistrationAttribute.scoring = attribute.scoring ?? {};
     programRegistrationAttribute.pattern = attribute.pattern ?? null;

@@ -824,6 +824,9 @@
       <trans-unit id="4115849892665941110" datatype="html">
         <source>Copying revealed value</source>
       </trans-unit>
+      <trans-unit id="4123309725761687156" datatype="html">
+        <source>Calculation</source>
+      </trans-unit>
       <trans-unit id="4135275683761793881" datatype="html">
         <source><x equiv-text="this.importExistingSubmissions.data()?.numberOfSubmissionsOnForm ?? 0" id="count"/> total submission(s)</source>
       </trans-unit>
