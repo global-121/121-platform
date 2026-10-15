@@ -41,6 +41,7 @@ import { RegistrationMenuComponent } from '~/components/page-layout-registration
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { registrationTransferValueTooltipMessage } from '~/domains/registration/registration.helper';
 import { RegistrationStatusChangeTarget } from '~/domains/registration/registration.model';
 import { ChangeStatusDialogComponent } from '~/pages/program-registrations/components/change-status-dialog/change-status-dialog.component';
 import { SendMessageDialogComponent } from '~/pages/program-registrations/components/send-message-dialog/send-message-dialog.component';
@@ -48,6 +49,7 @@ import { AuthService } from '~/services/auth.service';
 import { PaginateQueryService } from '~/services/paginate-query.service';
 import { RegistrationActionMenuService } from '~/services/registration-action-menu.service';
 import { RegistrationLookupService } from '~/services/registration-lookup.service';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
@@ -192,6 +194,16 @@ export class PageLayoutRegistrationComponent {
           registrationRawData?.maxPayments,
         ),
         type: 'text',
+      },
+      {
+        label: $localize`Transfer value`,
+        type: 'currency',
+        value: registrationRawData?.transferValue,
+        currencyCode: this.program.data()?.currency,
+        infoTooltipData: {
+          message: registrationTransferValueTooltipMessage(),
+          trackingName: InfoTooltipTrackingName.registrationPageTransferValue,
+        },
       },
     ];
     if (this.program.data()?.enableScope) {

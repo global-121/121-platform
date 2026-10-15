@@ -147,7 +147,7 @@ export class PageLayoutMonitoringComponent {
           : undefined,
       },
       {
-        label: $localize`Base transfer value`,
+        label: $localize`Fixed transfer value`,
         value: programData?.fixedTransferValue,
         type: 'currency',
         currencyCode: programData?.currency,
@@ -171,8 +171,8 @@ export class PageLayoutMonitoringComponent {
       trackingName: InfoTooltipTrackingName.monitoringIncludedRegistrations,
     },
     monitoringBaseTransferValue: {
-      message: $localize`The base transfer value is multiplied by a set factor for each registration.\n\nFor example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.`,
-      trackingName: InfoTooltipTrackingName.monitoringBaseTransferValue,
+      message: $localize`The fixed transfer value is multiplied by a set factor for each registration.\n\nFor example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.`,
+      trackingName: InfoTooltipTrackingName.monitoringFixedTransferValue,
     },
   };
 }

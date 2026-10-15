@@ -1,3 +1,4 @@
+import { CurrencyPipe } from '@angular/common';
 import { inject, Injectable, Signal, signal } from '@angular/core';
 
 import {
@@ -6,7 +7,10 @@ import {
 } from '@tanstack/angular-query-experimental';
 
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
-import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  GenericRegistrationAttributes,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import {
@@ -23,13 +27,16 @@ import {
   DUPLICATE_STATUS_LABELS,
   REGISTRATION_STATUS_LABELS,
   registrationLink,
+  registrationTransferValueTooltipMessage,
 } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
 import {
   NormalizedRegistrationAttribute,
   RegistrationAttributeService,
 } from '~/services/registration-attribute.service';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { getUserPreferredUILanguage } from '~/utils/locale';
 
 const FILTERABLE_ATTRIBUTES_LABELS: Record<string, string> = {
   paymentCount: $localize`:@@payment-count:Number of payments`,
@@ -100,8 +107,7 @@ export class RegistrationsTableColumnService {
             ...scopeColumns,
             ...programSpecificColumns,
           ];
-
-          return this.processColumns(allColumns);
+          return this.processColumns({ columns: allColumns, program });
         },
       });
   }
@@ -272,11 +278,26 @@ export class RegistrationsTableColumnService {
     }));
   }
 
-  private processColumns(
-    columns: QueryTableColumn<Registration>[],
-  ): QueryTableColumn<Registration>[] {
+  private processColumns({
+    columns,
+    program,
+  }: {
+    columns: QueryTableColumn<Registration>[];
+    program: Program;
+  }): QueryTableColumn<Registration>[] {
     return columns
       .map((column) => {
+        if (
+          column.field ===
+          (GenericRegistrationAttributes.transferValue as string)
+        ) {
+          column.tooltip = {
+            message: registrationTransferValueTooltipMessage(),
+            trackingName:
+              InfoTooltipTrackingName.registrationsTableTransferValue,
+          };
+        }
+
         // undefined indicates: use default text rendering (used for non-numeric columns).
         let getCellText: ((registration: Registration) => string) | undefined;
 
@@ -284,6 +305,17 @@ export class RegistrationsTableColumnService {
           getCellText = (registration: Registration) => {
             if (registration[column.field] === null) {
               return '';
+            }
+
+            if (column.field === 'transferValue') {
+              return (
+                new CurrencyPipe(getUserPreferredUILanguage()).transform(
+                  registration.transferValue,
+                  program.currency,
+                  'symbol-narrow',
+                  '1.2-2',
+                ) ?? ''
+              );
             }
 
             return registration[column.field] as string;

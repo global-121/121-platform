@@ -138,3 +138,10 @@ export const registrationLink = ({
   AppRoutes.programRegistrations,
   registrationId,
 ];
+
+export const registrationTransferValueTooltipMessage = () => {
+  const paragraph1 = $localize`The transfer value result is calculated by multiplying the fixed transfer value by a multiplier based on registration data, if applicable.`;
+  const paragraph2 = $localize`For example, if the fixed transfer value is $50 and the multiplier is based on household size, a 3-person household would have a transfer value of $150.`;
+
+  return `${paragraph1}\n\n${paragraph2}`;
+};

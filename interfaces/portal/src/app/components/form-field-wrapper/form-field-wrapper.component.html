@@ -13,10 +13,7 @@
         <span class="ms-0">{{ label() | translatableString }}</span>
         @let tooltipData = infoTooltipData();
         @if (tooltipData) {
-          <app-info-tooltip
-            [infoTooltipData]="tooltipData"
-            class="ms-1"
-          />
+          <app-info-tooltip [infoTooltipData]="tooltipData" />
         }
       </span>
     </strong>

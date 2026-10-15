@@ -30,6 +30,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { QueryTableColumnManagementComponent } from '~/components/query-table/components/query-table-column-management/query-table-column-management.component';
 import { QueryTableGlobalSearchComponent } from '~/components/query-table/components/query-table-global-search/query-table-global-search.component';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
@@ -75,6 +76,7 @@ import { Locale } from '~/utils/locale';
     QueryTableColumnManagementComponent,
     NgTemplateOutlet,
     NgClass,
+    InfoTooltipComponent,
   ],
   providers: [
     ToastService,
@@ -236,6 +238,12 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     this.filterService,
   );
   clearColumnFilter = this.filterService.clearColumnFilter.bind(
+    this.filterService,
+  );
+  getColumnMinFractionDigits = this.filterService.getColumnFractionDigits.bind(
+    this.filterService,
+  );
+  getColumnMaxFractionDigits = this.filterService.getColumnFractionDigits.bind(
     this.filterService,
   );
 

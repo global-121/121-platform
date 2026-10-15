@@ -116,10 +116,15 @@
         @let columnMatchMode = getColumnMatchMode(column).toString();
         @let columnMatchModeOptions = getColumnMatchModeOptions(column);
         @let isColumnFiltered = getIsColumnFiltered(column);
+        @let columnMinFractionDigits = getColumnMinFractionDigits(column);
+        @let columnMaxFractionDigits = getColumnMaxFractionDigits(column);
 
         <th [pSortableColumn]="columnSortField">
           <div class="flex items-center text-nowrap">
             <ng-container>{{ column.header }}</ng-container>
+            @if (column.tooltip) {
+              <app-info-tooltip [infoTooltipData]="column.tooltip" />
+            }
 
             @if (columnSortField) {
               <p-sortIcon
@@ -147,6 +152,9 @@
                   '[&_.p-button]:text-purple [&_.p-button]:bg-purple-100':
                     isColumnFiltered,
                 }"
+                [minFractionDigits]="columnMinFractionDigits"
+                [maxFractionDigits]="columnMaxFractionDigits"
+                [locale]="locale"
               >
                 @if (column.type === 'multiselect') {
                   <ng-template

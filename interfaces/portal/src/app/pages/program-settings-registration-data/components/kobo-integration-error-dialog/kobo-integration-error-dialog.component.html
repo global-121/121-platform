@@ -22,7 +22,6 @@
         <h4 class="text-base! font-semibold">
           <span i18n>Required fields not found</span>
           <app-info-tooltip
-            class="ms-1"
             [infoTooltipData]="tooltipData.koboMissingRequiredFields"
           />
         </h4>
@@ -54,7 +53,6 @@
         <h4 class="text-base! font-semibold">
           <span i18n>Form setting errors</span>
           <app-info-tooltip
-            class="ms-1"
             [infoTooltipData]="tooltipData.koboFormSettingErrorsTooltipData"
           />
         </h4>
@@ -69,7 +67,6 @@
             {{ error.error }}, {{ error.solution }}
             @if (error.info) {
               <app-info-tooltip
-                class="ms-1"
                 [infoTooltipData]="{
                   message: error.info,
                   trackingName:
@@ -138,7 +135,6 @@
               {{ error.solution }}
               @if (error.info) {
                 <app-info-tooltip
-                  class="ms-1"
                   [infoTooltipData]="{
                     message: error.info,
                     trackingName:

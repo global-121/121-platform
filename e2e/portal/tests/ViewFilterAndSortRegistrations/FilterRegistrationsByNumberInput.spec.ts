@@ -113,4 +113,17 @@ test('Filter registrations by Input number', async ({
     await tableComponent.validateAllRecordsCount(4);
     await tableComponent.clearAllFilters();
   });
+
+  await test.step('Filter "Transfer value" with "Equal to" number input', async () => {
+    await registrationsPage.configureTableColumns({
+      columns: ['Transfer value'],
+    });
+
+    await tableComponent.filterColumnByNumber({
+      columnName: 'Transfer value',
+      filterNumber: 17.5,
+    });
+    await tableComponent.validateAllRecordsCount(5);
+    await tableComponent.clearAllFilters();
+  });
 });
