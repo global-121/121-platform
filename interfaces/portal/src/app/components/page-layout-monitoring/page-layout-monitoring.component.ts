@@ -135,7 +135,7 @@ export class PageLayoutMonitoringComponent {
         })),
       },
       {
-        label: $localize`Budget`,
+        label: $localize`Funds available`,
         value: programData?.budget,
         type: 'currency',
         currencyCode: programData?.currency,
@@ -151,7 +151,7 @@ export class PageLayoutMonitoringComponent {
         value: programData?.fixedTransferValue,
         type: 'currency',
         currencyCode: programData?.currency,
-        infoTooltipData: this.tooltipsData.monitoringBaseTransferValue,
+        infoTooltipData: this.tooltipsData.monitoringFixedTransferValue,
       },
     ];
 
@@ -170,8 +170,8 @@ export class PageLayoutMonitoringComponent {
       message: $localize`Registrations with the status “included”.`,
       trackingName: InfoTooltipTrackingName.monitoringIncludedRegistrations,
     },
-    monitoringBaseTransferValue: {
-      message: $localize`The fixed transfer value is multiplied by a set factor for each registration.\n\nFor example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.`,
+    monitoringFixedTransferValue: {
+      message: $localize`The fixed transfer value is multiplied by a set factor for each registration.\n\nFor example, if the fixed value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.`,
       trackingName: InfoTooltipTrackingName.monitoringFixedTransferValue,
     },
   };

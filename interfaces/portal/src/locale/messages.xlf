@@ -240,6 +240,9 @@
       <trans-unit id="1941641831210864467" datatype="html">
         <source>Replace visa card</source>
       </trans-unit>
+      <trans-unit id="194513373063077611" datatype="html">
+        <source>Define your program&apos;s funds, currency, transfer details and Financial Service Providers</source>
+      </trans-unit>
       <trans-unit id="1953762348939012822" datatype="html">
         <source>Revert to default</source>
       </trans-unit>
@@ -447,9 +450,6 @@
       <trans-unit id="2733926303398918070" datatype="html">
         <source>There are <x equiv-text="{{ duplicateCount() }}" id="INTERPOLATION"/> registration(s) that don&apos;t support this action.</source>
       </trans-unit>
-      <trans-unit id="2756397788360043544" datatype="html">
-        <source>Remaining budget</source>
-      </trans-unit>
       <trans-unit id="2772534939673815092" datatype="html">
         <source>Please allow pop-up windows in your browser settings to login</source>
       </trans-unit>
@@ -530,9 +530,6 @@
       </trans-unit>
       <trans-unit id="3005732335203491098" datatype="html">
         <source>The confirm password must be equal to the new password.</source>
-      </trans-unit>
-      <trans-unit id="3033425005384068594" datatype="html">
-        <source>Budget details saved successfully.</source>
       </trans-unit>
       <trans-unit id="3046019795799616878" datatype="html">
         <source>Registrations with the status “included”.</source>
@@ -986,6 +983,9 @@
       <trans-unit id="4671562292257026998" datatype="html">
         <source>API key</source>
       </trans-unit>
+      <trans-unit id="4680584902371363886" datatype="html">
+        <source>The fixed transfer value is multiplied by a set factor for each registration. For example, if the fixed value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
+      </trans-unit>
       <trans-unit id="4680756702302858333" datatype="html">
         <source>Import registrations</source>
       </trans-unit>
@@ -1374,9 +1374,6 @@
         <source>Change password</source>
         <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="631812235369405800" datatype="html">
-        <source>Edit budget</source>
-      </trans-unit>
       <trans-unit id="6342731461089211149" datatype="html">
         <source>Should be an ISO 4217 currency code (full list available on Wikipedia).</source>
       </trans-unit>
@@ -1529,9 +1526,6 @@
       </trans-unit>
       <trans-unit id="6846931882472220376" datatype="html">
         <source>Where do I find data column names?</source>
-      </trans-unit>
-      <trans-unit id="6885844978916799621" datatype="html">
-        <source>Budget</source>
       </trans-unit>
       <trans-unit id="6891284064706667841" datatype="html">
         <source>Enter reason</source>
@@ -1896,6 +1890,9 @@
       <trans-unit id="8158073155076214675" datatype="html">
         <source>Important Notice: The unused vouchers available for download are not in real-time. The report includes the date and time of each voucher&apos;s last external update.</source>
       </trans-unit>
+      <trans-unit id="8167869722766209662" datatype="html">
+        <source>Edit finance</source>
+      </trans-unit>
       <trans-unit id="8179681723030824196" datatype="html">
         <source>Edit payment approval settings</source>
       </trans-unit>
@@ -1992,6 +1989,9 @@
       <trans-unit id="856921700208045215" datatype="html">
         <source>This will download an Excel file showing the balance of every card. The export is limited to 100,000 records.</source>
       </trans-unit>
+      <trans-unit id="8596681732200300530" datatype="html">
+        <source>Remaining funds</source>
+      </trans-unit>
       <trans-unit id="8600722866221025144" datatype="html">
         <source>Step</source>
       </trans-unit>
@@ -2006,6 +2006,9 @@
       </trans-unit>
       <trans-unit id="8670091824036050972" datatype="html">
         <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations.</source>
+      </trans-unit>
+      <trans-unit id="8708918600046684584" datatype="html">
+        <source>Finance details saved successfully.</source>
       </trans-unit>
       <trans-unit id="8708938501870841219" datatype="html">
         <source>Approval flow</source>
@@ -2069,9 +2072,6 @@
       </trans-unit>
       <trans-unit id="8995474184079201011" datatype="html">
         <source>Use a clear name so users can easily recognize the file.</source>
-      </trans-unit>
-      <trans-unit id="9002483961719373217" datatype="html">
-        <source>The fixed transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
       </trans-unit>
       <trans-unit id="9015320956537592957" datatype="html">
         <source>Program not found. Please check the URL and try again.</source>
@@ -2232,8 +2232,8 @@
       <trans-unit id="card-title-program-settings-basic-information" datatype="html">
         <source>Basic information</source>
       </trans-unit>
-      <trans-unit id="card-title-program-settings-budget" datatype="html">
-        <source>Budget</source>
+      <trans-unit id="card-title-program-settings-finance" datatype="html">
+        <source>Finance</source>
       </trans-unit>
       <trans-unit id="change-status-decline-warning" datatype="html">
         <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Declined&quot; or &quot;Completed&quot; status.</source>

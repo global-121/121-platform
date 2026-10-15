@@ -21,7 +21,7 @@ class ProgramMonitoring extends BasePage {
   page: Page;
   readonly peopleRegisteredTile: Locator;
   readonly peopleIncludedTile: Locator;
-  readonly remainingBudgetTile: Locator;
+  readonly remainingFundsTile: Locator;
   readonly cashDisbursedTile: Locator;
   readonly programDescriptionTile: Locator;
   readonly metricTileComponent: Locator;
@@ -43,7 +43,7 @@ class ProgramMonitoring extends BasePage {
       'metric-people-registered',
     );
     this.peopleIncludedTile = this.page.getByTestId('metric-people-included');
-    this.remainingBudgetTile = this.page.getByTestId('metric-remaining-budget');
+    this.remainingFundsTile = this.page.getByTestId('metric-remaining-funds');
     this.cashDisbursedTile = this.page.getByTestId('metric-cash-disbursed');
     this.programDescriptionTile = this.page.getByTestId(
       'metric-program-description',
@@ -80,7 +80,7 @@ class ProgramMonitoring extends BasePage {
   }) {
     await expect(this.peopleRegisteredTile).toContainText('People registered');
     await expect(this.peopleIncludedTile).toContainText('People included');
-    await expect(this.remainingBudgetTile).toContainText('Remaining budget');
+    await expect(this.remainingFundsTile).toContainText('Remaining funds');
     await expect(this.cashDisbursedTile).toContainText('Cash disbursed');
     await expect(this.programDescriptionTile).toContainText(
       'Program description',
@@ -106,7 +106,7 @@ class ProgramMonitoring extends BasePage {
     peopleRegistered,
     peopleIncluded,
     lastPaymentAmount,
-    remainingBudget,
+    remainingFunds,
     cashDisbursed,
     paymentsDone,
     newRegistrations,
@@ -114,7 +114,7 @@ class ProgramMonitoring extends BasePage {
     peopleRegistered: number;
     peopleIncluded: number;
     lastPaymentAmount?: string;
-    remainingBudget: string;
+    remainingFunds: string;
     cashDisbursed: string;
     paymentsDone: number;
     newRegistrations?: number;
@@ -125,13 +125,13 @@ class ProgramMonitoring extends BasePage {
     const includedTileLocator = this.peopleIncludedTile.getByTestId(
       'metric-tile-component',
     );
-    const remainingBudgetTileLocator = this.remainingBudgetTile.getByTestId(
+    const remainingFundsTileLocator = this.remainingFundsTile.getByTestId(
       'metric-tile-component',
     );
     const cashDisbursedTileLocator = this.cashDisbursedTile.getByTestId(
       'metric-tile-component',
     );
-    const paymentsDoneChip = this.remainingBudgetTile.getByLabel(
+    const paymentsDoneChip = this.remainingFundsTile.getByLabel(
       `${paymentsDone.toString()} payment(s) done`,
     );
     const newPeopleRegisteredChip = this.peopleRegisteredTile.getByLabel(
@@ -157,8 +157,8 @@ class ProgramMonitoring extends BasePage {
       peopleRegistered.toString(),
     );
     await expect(includedTileLocator).toHaveText(peopleIncluded.toString());
-    await expect(remainingBudgetTileLocator).toHaveText(
-      remainingBudget.toString(),
+    await expect(remainingFundsTileLocator).toHaveText(
+      remainingFunds.toString(),
     );
     await expect(cashDisbursedTileLocator).toHaveText(cashDisbursed.toString());
   }

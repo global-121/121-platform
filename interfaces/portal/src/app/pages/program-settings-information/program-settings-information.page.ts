@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-program-settings/page-layout-program-settings.component';
 import { ProgramSettingsBasicInformationComponent } from '~/pages/program-settings-information/components/program-settings-basic-information/program-settings-basic-information.component';
-import { ProgramSettingsBudgetComponent } from '~/pages/program-settings-information/components/program-settings-budget/program-settings-budget.component';
+import { ProgramSettingsFinanceComponent } from '~/pages/program-settings-information/components/program-settings-finance/program-settings-finance.component';
 
 @Component({
   selector: 'app-program-settings-information',
   imports: [
     PageLayoutProgramSettingsComponent,
     ProgramSettingsBasicInformationComponent,
-    ProgramSettingsBudgetComponent,
+    ProgramSettingsFinanceComponent,
   ],
   providers: [],
   templateUrl: './program-settings-information.page.html',

@@ -68,7 +68,7 @@ test('Chip displays correct amount for second payment', async ({
       peopleRegistered: 4,
       lastPaymentAmount: `€${defaultMaxTransferValue.toString()}`,
       cashDisbursed: `€${totalCashValue.toString()}`,
-      remainingBudget: `-€${totalCashValue.toString()}`,
+      remainingFunds: `-€${totalCashValue.toString()}`,
       paymentsDone: 2,
     });
   });

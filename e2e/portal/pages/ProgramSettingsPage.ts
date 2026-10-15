@@ -15,7 +15,7 @@ class ProgramSettingsPage extends BasePage {
   readonly dateRangeStartInput: PrimeNGDatePicker;
   readonly dateRangeEndInput: PrimeNGDatePicker;
   readonly basicInformationDataList: DataListComponent;
-  readonly budgetDataList: DataListComponent;
+  readonly financeDataList: DataListComponent;
   readonly currencyDropdown: Locator;
 
   constructor(page: Page) {
@@ -33,8 +33,8 @@ class ProgramSettingsPage extends BasePage {
     this.basicInformationDataList = new DataListComponent(
       this.page.getByTestId('program-basic-information-data-list'),
     );
-    this.budgetDataList = new DataListComponent(
-      this.page.getByTestId('program-budget-data-list'),
+    this.financeDataList = new DataListComponent(
+      this.page.getByTestId('program-finance-data-list'),
     );
     this.currencyDropdown = this.page.locator(`[formControlName="currency"]`);
   }
@@ -60,7 +60,7 @@ class ProgramSettingsPage extends BasePage {
   }
 
   async changeFspSelectionForProgram({ fspNames }: { fspNames: string[] }) {
-    await this.clickEditProgramInformationSectionByTitle('Budget');
+    await this.clickEditProgramInformationSectionByTitle('Finance');
     await this.selectMultiselectOptions({
       dropdownTestId: 'fsp-multiselect',
       optionsToClick: fspNames,
@@ -68,7 +68,7 @@ class ProgramSettingsPage extends BasePage {
 
     await this.saveChanges();
     await this.validateToastMessageAndClose(
-      'Budget details saved successfully.',
+      'Finance details saved successfully.',
     );
   }
 
@@ -77,11 +77,11 @@ class ProgramSettingsPage extends BasePage {
   }
 
   async clickEditProgramInformationSectionByTitle(
-    title: 'Basic information' | 'Budget',
+    title: 'Basic information' | 'Finance',
   ) {
     const editLabelMap = {
       'Basic information': 'Edit basic information',
-      Budget: 'Edit budget',
+      Finance: 'Edit finance',
     };
 
     await this.page.getByLabel(editLabelMap[title]).click();
@@ -124,9 +124,9 @@ class ProgramSettingsPage extends BasePage {
       'Enable scope': 'No',
     });
 
-    const budgetData = await this.budgetDataList.getData();
+    const financeData = await this.financeDataList.getData();
 
-    expect(budgetData).toEqual({
+    expect(financeData).toEqual({
       'Funds available': formatValueBasedOnCurrency({
         value: programData.fundsAvailable,
         currency: programData.currency,

@@ -51,7 +51,7 @@ test('All elements of Monitoring page display correct data for NLRC OCW', async 
       peopleRegistered: 5,
       lastPaymentAmount: `€${defaultMaxTransferValue.toString()}`,
       cashDisbursed: `€${defaultMaxTransferValue.toString()}`,
-      remainingBudget: `-€${defaultMaxTransferValue.toString()}`,
+      remainingFunds: `-€${defaultMaxTransferValue.toString()}`,
       paymentsDone: 1,
       newRegistrations: 0,
     });
@@ -74,7 +74,7 @@ test('All elements of Monitoring page display correct data for NLRC PV', async (
       },
       0,
     );
-    const remainingBudget = NLRCProgramPv.budget - defaultMaxTransferValue;
+    const remainingFunds = NLRCProgramPv.budget - defaultMaxTransferValue;
 
     await programMonitoringPage.assertMonitoringTabElements({
       shouldHaveIframe: false,
@@ -83,7 +83,7 @@ test('All elements of Monitoring page display correct data for NLRC PV', async (
       peopleIncluded: 2,
       peopleRegistered: 2,
       cashDisbursed: `€${defaultMaxTransferValue.toString()}`,
-      remainingBudget: `€${remainingBudget.toLocaleString()}`,
+      remainingFunds: `€${remainingFunds.toLocaleString()}`,
       paymentsDone: 1,
       newRegistrations: 0,
     });
