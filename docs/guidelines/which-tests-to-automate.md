@@ -1,3 +1,5 @@
+# Guidelines: Which tests to automate?
+
 This page lists some considerations when deciding which Unit Test and Integration Tests to create for automatically testing newly added or updated functionality. These considerations focus on the 121 Service.
 
 1. Deciding which automated tests to create is more of an art than a science. Hence, these considerations should not be seen as hard rules.
