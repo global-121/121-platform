@@ -3,6 +3,31 @@ import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/r
 
 // TODO: Add more unit tests for this mapper class
 describe('RegistrationViewsMapper', () => {
+  describe('mapNameUsingNamingConvention', () => {
+    const registrationRow = {
+      firstName: 'Jane',
+      lastName: 'Doe',
+    } as any;
+
+    it('should join the name fields in the order of the naming convention', () => {
+      const result = RegistrationViewsMapper.mapNameUsingNamingConvention(
+        registrationRow,
+        ['lastName', 'firstName'],
+      );
+
+      expect(result).toBe('Doe Jane');
+    });
+
+    it('should return an empty string for an empty naming convention', () => {
+      const result = RegistrationViewsMapper.mapNameUsingNamingConvention(
+        registrationRow,
+        [],
+      );
+
+      expect(result).toBe('');
+    });
+  });
+
   describe('replaceDropdownValuesWithEnglishLabel', () => {
     it('should replace dropdown values with English label', () => {
       const colorAttrName = 'color';

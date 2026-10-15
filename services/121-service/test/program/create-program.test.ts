@@ -156,6 +156,34 @@ describe('Create program', () => {
     );
   });
 
+  it('should keep the order of the fullnameNamingConvention', async () => {
+    // Arrange
+    // Deliberately not in alphabetical order
+    const fullnameNamingConvention = ['lastName', 'firstName'];
+    const program = {
+      titlePortal: {
+        en: 'Test Title',
+      },
+      currency: CurrencyCode.EUR,
+      fullnameNamingConvention,
+    };
+
+    // Act
+    const createProgramResponse = await postProgram(program, accessToken);
+    const getProgramResponse = await getProgram(
+      createProgramResponse.body.id,
+      accessToken,
+    );
+
+    // Assert
+    expect(createProgramResponse.body.fullnameNamingConvention).toStrictEqual(
+      fullnameNamingConvention,
+    );
+    expect(getProgramResponse.body.fullnameNamingConvention).toStrictEqual(
+      fullnameNamingConvention,
+    );
+  });
+
   it('should add programRegistrationAttributes for all fullnameNamingConvention fields provided', async () => {
     // Arrange
     const minimalProgram = {
