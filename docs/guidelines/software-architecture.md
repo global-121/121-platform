@@ -11,18 +11,30 @@ A Financial Service Provider (Fsp) is an external organization or system integra
 
 ### A. NestJS Module Dependency Structure and Hierarchy
 
-1. **Single Responsibility Principle (SRP)**: Each module should have a single responsibility or purpose. This makes your code base more modular and easier to maintain.
-2. **Minimal Coupling**: Modules should be loosely coupled to promote re-usability and easier testing. Avoid tight coupling between modules, as it can lead to dependencies that are difficult to manage.
-3. **Hierarchical Structure**: Organize modules in a hierarchical manner, with higher-level modules depending on lower-level ones. This helps in maintaining a clear structure and promotes encapsulation.
-   1. **Higher-Level Modules**: These modules typically encapsulate broader functionality or business logic. They often depend on lower-level modules to provide specific implementations. Higher-level modules are usually closer to the application's entry point and orchestrate the interaction between different parts of the system.
-   2. **Lower-Level Modules**: These modules are more focused on specific tasks or functionalities and provide the building blocks for higher-level modules. They tend to have fewer external dependencies and can be reused across different parts of the application. Lower-level modules often implement generic functionalities, such as database access, logging, or utility functions. They are typically more abstract and independent of the application's specific domain logic.
+1. **Single Responsibility Principle (SRP)**:  
+   Each module should have a single responsibility or purpose. This makes your code base more modular and easier to maintain.
+2. **Minimal Coupling**:  
+   Modules should be loosely coupled to promote re-usability and easier testing. Avoid tight coupling between modules, as it can lead to dependencies that are difficult to manage.
+3. **Hierarchical Structure**:  
+   Organize modules in a hierarchical manner, with higher-level modules depending on lower-level ones. This helps in maintaining a clear structure and promotes encapsulation.
+   1. **Higher-Level Modules**:  
+      These modules typically encapsulate broader functionality or business logic. They often depend on lower-level modules to provide specific implementations. Higher-level modules are usually closer to the application's entry point and orchestrate the interaction between different parts of the system.
+   2. **Lower-Level Modules**:  
+      These modules are more focused on specific tasks or functionalities and provide the building blocks for higher-level modules. They tend to have fewer external dependencies and can be reused across different parts of the application. Lower-level modules often implement generic functionalities, such as database access, logging, or utility functions. They are typically more abstract and independent of the application's specific domain logic.
+
 4. Considerations to determine the hierarchical level of a module:
-   1. **Check Dependencies**: Modules with many dependencies are often higher level, as they rely on other modules to provide functionality.
-   2. **Abstraction Level**: Consider the level of abstraction the module provides. Lower-level modules tend to offer more generic functionality, while higher-level modules deal with specific application features or business logic.
-   3. **Responsibilities**: Modules with broader responsibilities, such as orchestrating interactions between multiple parts of the system or implementing complex business logic, are usually higher level. Modules with narrower responsibilities, such as handling data access or providing utility functions, are typically lower level.
-   4. **Application Context**: Analyze where the module fits within the overall architecture of the application. Modules closer to the entry point or responsible for coordinating interactions between different parts of the system are likely higher level.
-5. **Aim for Feature Modules**: Group related functionality into feature modules. This makes it easier to reason about the code and promotes re-usability.
-6. **Avoid Circular Dependencies**: Circular dependencies can lead to runtime errors and make the codebase difficult to understand. Keep an eye on module dependencies to avoid circular references.
+   1. **Check Dependencies**:  
+      Modules with many dependencies are often higher level, as they rely on other modules to provide functionality.
+   2. **Abstraction Level**:  
+      Consider the level of abstraction the module provides. Lower-level modules tend to offer more generic functionality, while higher-level modules deal with specific application features or business logic.
+   3. **Responsibilities**:  
+      Modules with broader responsibilities, such as orchestrating interactions between multiple parts of the system or implementing complex business logic, are usually higher level. Modules with narrower responsibilities, such as handling data access or providing utility functions, are typically lower level.
+   4. **Application Context**:  
+      Analyze where the module fits within the overall architecture of the application. Modules closer to the entry point or responsible for coordinating interactions between different parts of the system are likely higher level.
+5. **Aim for Feature Modules**:  
+   Group related functionality into feature modules. This makes it easier to reason about the code and promotes re-usability.
+6. **Avoid Circular Dependencies**:  
+   Circular dependencies can lead to runtime errors and make the codebase difficult to understand. Keep an eye on module dependencies to avoid circular references.
 
 ### B. NestJS Module Implementation
 
