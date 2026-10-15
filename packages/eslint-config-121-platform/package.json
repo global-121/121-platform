@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "eslint": "^10.11.0",
+    "lockfile-lint": "^5.0.1",
     "prettier": "^3.9.8"
   },
   "engines": {
@@ -29,7 +30,8 @@
     "npm": ">=11"
   },
   "scripts": {
-    "test": "npm run lint",
+    "test": "npm run lint && npm run test:lockfile",
+    "test:lockfile": "lockfile-lint",
     "lint": "eslint . --cache",
     "fix": "npm run lint -- --fix"
   }

@@ -7,7 +7,7 @@ Various development-tools that can be used 'standalone'.
 Any external dependencies should be installed with:
 
 ```shell
-npm install
+npm install && npm run setup
 ```
 
 ## Tools

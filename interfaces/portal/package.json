@@ -34,12 +34,13 @@
     "test:ci": "npm test -- --no-watch --no-progress",
     "test:coverage": "npm run test:ci -- --coverage",
     "test:browser": "npm test -- --no-headless --browsers=chromium --watch",
+    "test:lockfile": "lockfile-lint",
     "pretest": "npm run set-env-variables -- --env=development",
     "test": "ng test --headless",
     "upgrade:angular": "ng update @angular/core @angular/cli --create-commits",
     "verify:deployment-configuration": "node --env-file-if-exists=.env ./scripts/verify-deployment-configuration.mjs",
     "verify:build": "node --env-file-if-exists=.env ./scripts/verify-build.mjs",
-    "typecheck": "npx tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "extract-i18n": "ng extract-i18n",
     "extract-i18n:smart": "node --env-file-if-exists=.env ./scripts/extract-i18n-if-changed.mjs",
     "knip": "knip"
@@ -74,7 +75,7 @@
     "rxjs": "~7.8.2",
     "tslib": "^2.8.1",
     "ufo": "^1.6.4",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+    "xlsx": "file:../../packages/vendor/xlsx-0.20.3.tgz",
     "zone.js": "~0.15.1"
   },
   "devDependencies": {
@@ -104,6 +105,7 @@
     "eslint-plugin-sort-class-members": "^1.22.1",
     "jsdom": "^30.1.1",
     "knip": "^6.38.0",
+    "lockfile-lint": "^5.0.1",
     "ng-extract-i18n-merge": "^3.4.0",
     "postcss": "^8.5.28",
     "prettier": "^3.9.6",

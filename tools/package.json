@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "setup": "cp -i .env.example .env",
-    "postinstall": "npm run setup",
+    "test": "npm run test:lockfile",
+    "test:lockfile": "lockfile-lint",
     "check-versions": "node check-versions.mjs",
     "download-logs": "node --env-file-if-exists=.env download-logs.mjs",
     "find-failed-tests:API": "node find-failed-tests.mjs --workflow=test_service_api.yml",
@@ -12,6 +13,9 @@
   "dependencies": {
     "@azure/identity": "^4.13.1",
     "node-html-parser": "^6.1.13"
+  },
+  "devDependencies": {
+    "lockfile-lint": "^5.0.1"
   },
   "engines": {
     "node": ">=24",

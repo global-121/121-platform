@@ -19,6 +19,7 @@
 # 3. Re-include shared packages
 # ---------------------------
 !packages/eslint-config-121-platform/
+!packages/vendor/
 
 # ---------------------------
 # 4. Exclude generated/dependency files (even inside allowlisted folders)
