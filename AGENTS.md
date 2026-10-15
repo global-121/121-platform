@@ -37,6 +37,8 @@ npm run start:portal        # Start frontend (Angular dev server)
 
 ## Code Style & Standards
 
+The full architecture, naming, API, data model, and testing guidelines for the 121 Service are in [Software Architecture Guidelines](./docs/guidelines/software-architecture.md). The sections below are a summary; the guidelines document is leading.
+
 ### Domain Terminology
 
 **Standard Abbreviations:**
@@ -256,6 +258,9 @@ Before requesting a review, check all points in [the checklist](./docs/pull_requ
 
 - [Contributing Guidelines](./docs/CONTRIBUTING.md)
 - [Testing Guide](./guide-Writing-Tests.md)
+- [Software Architecture Guidelines](./docs/guidelines/software-architecture.md) (121 Service)
+- [Portal Development Guidelines](./docs/guidelines/portal-development.md)
+- [Which tests to automate](./docs/guidelines/which-tests-to-automate.md)
 
 ## Development Tools
 
