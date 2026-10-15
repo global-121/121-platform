@@ -249,9 +249,6 @@
       <trans-unit id="19569847887954644" datatype="html">
         <source>Included registrations</source>
       </trans-unit>
-      <trans-unit id="1967211753916603347" datatype="html">
-        <source>Select the field or fields that make up the full name of the registration. This name will be shown in the registrations table and the profile page.</source>
-      </trans-unit>
       <trans-unit id="1989930177949251804" datatype="html">
         <source>Your registration form must include the following required fields based on the program&apos;s FSPs:</source>
       </trans-unit>
@@ -938,6 +935,9 @@
       <trans-unit id="4493197211213914613" datatype="html">
         <source>Ordered On</source>
       </trans-unit>
+      <trans-unit id="4496151095424024510" datatype="html">
+        <source>Select the field or fields from your form that make up the full name of the registration, in the order you would like to see the name. This name will be shown in the registrations table and the profile page.</source>
+      </trans-unit>
       <trans-unit id="4513666009026562086" datatype="html">
         <source>Import existing reg.</source>
       </trans-unit>
@@ -958,9 +958,6 @@
       </trans-unit>
       <trans-unit id="4580971846969755689" datatype="html">
         <source>You will then find the data column name in the &apos;Question Options&apos;</source>
-      </trans-unit>
-      <trans-unit id="4584030243497510228" datatype="html">
-        <source>Full name setup</source>
       </trans-unit>
       <trans-unit id="4594242528552515311" datatype="html">
         <source>The data in this report is based on data that is imported every night from Cooperative Bank of Oromia. If you changed data today this will not be reflected in the report.</source>
@@ -1622,6 +1619,9 @@
       </trans-unit>
       <trans-unit id="7156619668472815007" datatype="html">
         <source>Other errors</source>
+      </trans-unit>
+      <trans-unit id="7168987519084642907" datatype="html">
+        <source>Full name setup</source>
       </trans-unit>
       <trans-unit id="718304168195158236" datatype="html">
         <source>Total registrations</source>
@@ -2417,6 +2417,12 @@
       </trans-unit>
       <trans-unit id="export-verification-cooperative-bank-of-oromia" datatype="html">
         <source>Coopbank verification report</source>
+      </trans-unit>
+      <trans-unit id="full-name-setup-needed" datatype="html">
+        <source>Set up needed</source>
+      </trans-unit>
+      <trans-unit id="full-name-setup-needed-tooltip" datatype="html">
+        <source>To see the full name of the registration, an admin must set up the full name in the program’s settings.</source>
       </trans-unit>
       <trans-unit id="general" datatype="html">
         <source>General</source>

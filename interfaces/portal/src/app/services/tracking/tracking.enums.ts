@@ -91,6 +91,7 @@ export enum InfoTooltipTrackingName {
 
   customMessageCharacterLimit = 'Message: Custom Message Character Limit',
   fspConfigurationSensitiveProperty = 'Fsp Configuration: Sensitive Property',
+  fullNameSetupNeeded = 'Registration: Full Name Setup Needed',
 
   koboConfigurationErrorInfo = 'Kobo: Configuration Error Info',
   koboFormSettingErrorInfo = 'Kobo: Form Setting Error Info',

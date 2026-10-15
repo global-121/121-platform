@@ -3,4 +3,12 @@
   [icon]="icon()"
   [pTooltip]="tooltip()"
   [class]="styleClass()"
-/>
+>
+  @if (infoTooltipData(); as infoTooltipData) {
+    <!-- p-chip renders projected content before its label, so move it to the end -->
+    <app-info-tooltip
+      class="order-last flex items-center [&_sup]:inset-bs-0"
+      [infoTooltipData]="infoTooltipData"
+    />
+  }
+</p-chip>

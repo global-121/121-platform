@@ -38,6 +38,14 @@ export const programHasInclusionScore = (program?: Program): boolean =>
     (attribute) => Object.keys(attribute.scoring).length > 0,
   ) ?? false;
 
+export const programNeedsFullNameSetup = (program?: Program): boolean => {
+  if (!program) {
+    return false;
+  }
+
+  return !program.fullnameNamingConvention?.length;
+};
+
 export const fspConfigurationNamesHaveIntegrationType = ({
   program,
   fspConfigurationNames,

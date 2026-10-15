@@ -17,11 +17,13 @@ import {
   getChipDataByDuplicateStatus,
   getChipDataByRegistrationStatus,
 } from '~/components/colored-chip/colored-chip.helper';
+import { TableCellFullNameSetupNeededComponent } from '~/components/full-name-setup-needed/table-cell-full-name-setup-needed.component';
 import {
   QueryTableColumn,
   QueryTableColumnType,
 } from '~/components/query-table/query-table.types';
 import { ProgramApiService } from '~/domains/program/program.api.service';
+import { programNeedsFullNameSetup } from '~/domains/program/program.helper';
 import { Program } from '~/domains/program/program.model';
 import {
   DUPLICATE_STATUS_LABELS,
@@ -136,6 +138,9 @@ export class RegistrationsTableColumnService {
       {
         field: 'name',
         header: $localize`:@@registration-full-name:Name`,
+        component: programNeedsFullNameSetup(program)
+          ? TableCellFullNameSetupNeededComponent
+          : undefined,
         getCellRouterLink: (registration) =>
           registrationLink({
             programId: program.id,
