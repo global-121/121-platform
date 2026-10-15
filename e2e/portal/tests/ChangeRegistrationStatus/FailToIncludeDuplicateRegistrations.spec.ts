@@ -21,7 +21,7 @@ test('Fail to include duplicate registrations', async ({
   await test.step('Import registrations', async () => {
     const registrationsDataFilePath = path.resolve(
       __dirname,
-      '../../../test-registration-data/test-registrations-PV.csv',
+      '../../../test-registration-data/test-registrations-PV-duplicates.csv',
     );
     const programTitle = NLRCProgramPV.titlePortal.en;
     await registrationsPage.selectProgram(programTitle);
@@ -29,10 +29,8 @@ test('Fail to include duplicate registrations', async ({
     await registrationsPage.validateToastMessageAndClose(
       'Registration(s) imported successfully',
     );
-    // Default display filter number
-    await tableComponent.validateWaitForTableRowCount({ expectedRowCount: 10 });
-    // Uploaded records count
-    await tableComponent.validateAllRecordsCount(20);
+    await tableComponent.validateWaitForTableRowCount({ expectedRowCount: 2 });
+    await tableComponent.validateAllRecordsCount(2);
   });
 
   await test.step('Include registrations and fail', async () => {
