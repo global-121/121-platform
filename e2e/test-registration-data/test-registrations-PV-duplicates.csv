@@ -1,3 +1,0 @@
-referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,fullName,phoneNumber,programFspConfigurationName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
-18dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-fail-create-order,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-19dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-address-city-fail,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
