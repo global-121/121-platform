@@ -373,6 +373,11 @@ export const routes: Routes = [
                   $localize`:@@page-title-program-registration-personal-information-edit:Edit personal information` +
                   ' | ' +
                   $localize`:@@page-title-program-registration-details:Registration details`,
+                canActivate: [
+                  programPermissionsGuard({
+                    permission: PermissionEnum.RegistrationAttributeUPDATE,
+                  }),
+                ],
                 canDeactivate: [pendingChangesGuard],
                 data: {
                   startEditing: true,

@@ -149,6 +149,10 @@ export class ProgramRegistrationsPageComponent {
     {
       label: $localize`Edit personal info`,
       icon: 'pi pi-user-edit',
+      visible: this.authService.hasPermission({
+        programId: this.programId(),
+        requiredPermission: PermissionEnum.RegistrationAttributeUPDATE,
+      }),
       command: () => {
         const registration =
           this.registrationsTable().contextMenuRegistration();
