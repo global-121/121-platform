@@ -3,7 +3,6 @@
   "private": true,
   "scripts": {
     "setup": "cp -i .env.example .env",
-    "postinstall": "npm run setup",
     "test": "npm run test:lockfile",
     "test:lockfile": "lockfile-lint",
     "check-versions": "node check-versions.mjs",
