@@ -8,10 +8,12 @@ import { AzureAdStrategy } from '@121-service/src/strategies/azure-ad.strategy';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
+import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 
 describe('AzureAdStrategy', () => {
   let strategy: AzureAdStrategy;
   let userService: jest.Mocked<UserService>;
+  let userAccessGroupAssignmentsService: jest.Mocked<UserAccessGroupAssignmentsService>;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -30,14 +32,20 @@ describe('AzureAdStrategy', () => {
 
     // Mock UserService
     userService = {
-      findByUsernameOrThrow: jest.fn(),
+      findUserAccessByUsernameOrThrow: jest.fn(),
       updateUser: jest.fn(),
       canActivate: jest.fn(),
       getScopeForUser: jest.fn(),
     } as any;
 
+    userAccessGroupAssignmentsService = {
+      getAccessGroupsForUser: jest.fn().mockReturnValue([]),
+    } as any;
+
     // Setup strategy's userService
     strategy['userService'] = userService;
+    strategy['userAccessGroupAssignmentsService'] =
+      userAccessGroupAssignmentsService;
   });
 
   describe('validate', () => {
@@ -49,6 +57,7 @@ describe('AzureAdStrategy', () => {
         isEntraUser: true,
         lastLogin: new Date('2025-12-10'),
         isOrganizationAdmin: false,
+        programAssignments: [],
         hashPassword: jest.fn(),
         ...overrides,
       }) as UserEntity;
@@ -115,7 +124,7 @@ describe('AzureAdStrategy', () => {
     describe('username processing', () => {
       beforeEach(() => {
         const mockUser = createMockUser();
-        userService.findByUsernameOrThrow.mockResolvedValue(mockUser);
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(mockUser);
       });
 
       it('should process unique_name correctly', async () => {
@@ -162,7 +171,9 @@ describe('AzureAdStrategy', () => {
         const nonEntraUser = createMockUser({ isEntraUser: false });
         const updatedUser = createMockUser({ isEntraUser: true });
 
-        userService.findByUsernameOrThrow.mockResolvedValue(nonEntraUser);
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(
+          nonEntraUser,
+        );
         userService.updateUser.mockResolvedValue(updatedUser);
 
         await strategy.validate(mockRequest, mockPayload);
@@ -175,7 +186,7 @@ describe('AzureAdStrategy', () => {
 
       it('should not update isEntraUser when already set', async () => {
         const mockUser = createMockUser();
-        userService.findByUsernameOrThrow.mockResolvedValue(mockUser);
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(mockUser);
 
         await strategy.validate(mockRequest, mockPayload);
 
@@ -189,7 +200,9 @@ describe('AzureAdStrategy', () => {
     describe('lastLogin updates', () => {
       it('should update lastLogin when user has never logged in', async () => {
         const userWithoutLogin = createMockUser({ lastLogin: null });
-        userService.findByUsernameOrThrow.mockResolvedValue(userWithoutLogin);
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(
+          userWithoutLogin,
+        );
         userService.updateUser.mockResolvedValue(userWithoutLogin);
 
         await strategy.validate(mockRequest, mockPayload);
@@ -205,7 +218,9 @@ describe('AzureAdStrategy', () => {
         yesterday.setDate(yesterday.getDate() - 1);
         const userWithOldLogin = createMockUser({ lastLogin: yesterday });
 
-        userService.findByUsernameOrThrow.mockResolvedValue(userWithOldLogin);
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(
+          userWithOldLogin,
+        );
         userService.updateUser.mockResolvedValue(userWithOldLogin);
 
         await strategy.validate(mockRequest, mockPayload);
@@ -220,7 +235,9 @@ describe('AzureAdStrategy', () => {
         const today = new Date();
         const userWithTodayLogin = createMockUser({ lastLogin: today });
 
-        userService.findByUsernameOrThrow.mockResolvedValue(userWithTodayLogin);
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(
+          userWithTodayLogin,
+        );
 
         await strategy.validate(mockRequest, mockPayload);
 
@@ -242,7 +259,7 @@ describe('AzureAdStrategy', () => {
         };
 
         const mockUser = createMockUser();
-        userService.findByUsernameOrThrow.mockResolvedValue(mockUser);
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(mockUser);
 
         await expect(
           strategy.validate(requestWithoutProgramId, mockPayload),
@@ -264,7 +281,7 @@ describe('AzureAdStrategy', () => {
         };
 
         const mockUser = createMockUser();
-        userService.findByUsernameOrThrow.mockResolvedValue(mockUser);
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(mockUser);
         userService.canActivate.mockResolvedValue(true);
         userService.getScopeForUser.mockReturnValue('test-scope');
 
@@ -279,6 +296,7 @@ describe('AzureAdStrategy', () => {
           exp: mockPayload.exp,
           admin: false,
           scope: 'test-scope',
+          accessGroups: [],
           isOrganizationAdmin: mockPayload.isOrganizationAdmin,
         });
       });
@@ -293,7 +311,7 @@ describe('AzureAdStrategy', () => {
         };
 
         const mockUser = createMockUser();
-        userService.findByUsernameOrThrow.mockResolvedValue(mockUser);
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(mockUser);
         userService.canActivate.mockResolvedValue(false);
 
         await expect(
@@ -311,7 +329,9 @@ describe('AzureAdStrategy', () => {
         };
 
         const adminUser = createMockUser({ admin: true });
-        userService.findByUsernameOrThrow.mockResolvedValue(adminUser);
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(
+          adminUser,
+        );
         userService.getScopeForUser.mockReturnValue('admin-scope');
 
         const result = await strategy.validate(adminRequest, mockPayload);
@@ -322,6 +342,7 @@ describe('AzureAdStrategy', () => {
           exp: mockPayload.exp,
           admin: true,
           scope: 'admin-scope',
+          accessGroups: [],
           isOrganizationAdmin: mockPayload.isOrganizationAdmin,
         });
       });
@@ -336,7 +357,7 @@ describe('AzureAdStrategy', () => {
         };
 
         const mockUser = createMockUser();
-        userService.findByUsernameOrThrow.mockResolvedValue(mockUser);
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(mockUser);
 
         await expect(
           strategy.validate(adminRequest, mockPayload),
@@ -353,7 +374,9 @@ describe('AzureAdStrategy', () => {
         };
 
         const orgAdminUser = createMockUser({ isOrganizationAdmin: true });
-        userService.findByUsernameOrThrow.mockResolvedValue(orgAdminUser);
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(
+          orgAdminUser,
+        );
         userService.getScopeForUser.mockReturnValue('org-admin-scope');
 
         const result = await strategy.validate(orgAdminRequest, mockPayload);
@@ -364,6 +387,7 @@ describe('AzureAdStrategy', () => {
           exp: mockPayload.exp,
           admin: false,
           scope: 'org-admin-scope',
+          accessGroups: [],
           isOrganizationAdmin: mockPayload.isOrganizationAdmin,
         });
       });
@@ -378,7 +402,7 @@ describe('AzureAdStrategy', () => {
         };
 
         const mockUser = createMockUser();
-        userService.findByUsernameOrThrow.mockResolvedValue(mockUser);
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(mockUser);
 
         await expect(
           strategy.validate(orgAdminRequest, mockPayload),
@@ -394,7 +418,7 @@ describe('AzureAdStrategy', () => {
         };
 
         const mockUser = createMockUser();
-        userService.findByUsernameOrThrow.mockResolvedValue(mockUser);
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(mockUser);
 
         const result = await strategy.validate(
           requestWithoutProgramId,
@@ -407,14 +431,24 @@ describe('AzureAdStrategy', () => {
           exp: mockPayload.exp,
           admin: false,
           scope: '',
+          accessGroups: [],
           isOrganizationAdmin: mockPayload.isOrganizationAdmin,
         });
+        expect(
+          userAccessGroupAssignmentsService.getAccessGroupsForUser,
+        ).not.toHaveBeenCalled();
       });
 
-      it('should return UserRequestData with correct scope when programId is provided', async () => {
+      it('should return UserRequestData with correct scope and access groups when programId is provided', async () => {
         const mockUser = createMockUser();
-        userService.findByUsernameOrThrow.mockResolvedValue(mockUser);
+        const accessGroups = [
+          { programRegistrationAttributeId: 7, value: 'kisumu' },
+        ];
+        userService.findUserAccessByUsernameOrThrow.mockResolvedValue(mockUser);
         userService.getScopeForUser.mockReturnValue('program-scope');
+        userAccessGroupAssignmentsService.getAccessGroupsForUser.mockReturnValue(
+          accessGroups,
+        );
 
         const result = await strategy.validate(mockRequest, mockPayload);
 
@@ -424,12 +458,13 @@ describe('AzureAdStrategy', () => {
           exp: mockPayload.exp,
           admin: false,
           scope: 'program-scope',
+          accessGroups,
           isOrganizationAdmin: mockPayload.isOrganizationAdmin,
         });
       });
 
       it('should throw HttpException when user is not found', async () => {
-        userService.findByUsernameOrThrow.mockRejectedValue(
+        userService.findUserAccessByUsernameOrThrow.mockRejectedValue(
           new Error('User not found'),
         );
 

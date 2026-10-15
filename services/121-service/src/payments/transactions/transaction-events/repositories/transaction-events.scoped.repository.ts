@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
@@ -7,6 +7,7 @@ import { TransactionEventEntity } from '@121-service/src/payments/transactions/t
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
+@Injectable({ scope: Scope.REQUEST })
 export class TransactionEventsScopedRepository extends ScopedRepository<TransactionEventEntity> {
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,

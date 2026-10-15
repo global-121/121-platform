@@ -12,6 +12,6 @@ import { RegistrationDataModule } from '@121-service/src/registration/modules/re
     RegistrationDataModule,
   ],
   providers: [AccessGroupLevelsService, AccessGroupLevelRepository],
-  exports: [AccessGroupLevelsService],
+  exports: [AccessGroupLevelsService, AccessGroupLevelRepository],
 })
 export class AccessGroupLevelsModule {}

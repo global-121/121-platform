@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { AccessGroupLevelsModule } from '@121-service/src/programs/access-group-levels/access-group-levels.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentsModule } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignments.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
@@ -11,6 +12,7 @@ import { PermissionEntity } from '@121-service/src/user/entities/permissions.ent
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { UserService } from '@121-service/src/user/user.service';
+import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 import { UserEmailsModule } from '@121-service/src/user/user-emails/user-emails.module';
 import { UserOtpModule } from '@121-service/src/user/user-otp/user-otp.module';
 
@@ -23,11 +25,12 @@ import { UserOtpModule } from '@121-service/src/user/user-otp/user-otp.module';
       PermissionEntity,
     ]),
     ProgramAidworkerAssignmentsModule,
+    AccessGroupLevelsModule,
     UserEmailsModule,
     UserOtpModule,
   ],
-  providers: [UserService, AzureLogService],
+  providers: [UserService, UserAccessGroupAssignmentsService, AzureLogService],
   controllers: [UserController, UserAssignmentsController, RolesController],
-  exports: [UserService],
+  exports: [UserService, UserAccessGroupAssignmentsService],
 })
 export class UserModule {}
