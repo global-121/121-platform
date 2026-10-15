@@ -146,6 +146,36 @@ export class ProgramRegistrationsPageComponent {
         });
       },
     },
+    {
+      label: $localize`Edit personal info`,
+      icon: 'pi pi-user-edit',
+      visible: this.authService.hasPermission({
+        programId: this.programId(),
+        requiredPermission: PermissionEnum.RegistrationAttributeUPDATE,
+      }),
+      command: () => {
+        const registration =
+          this.registrationsTable().contextMenuRegistration();
+
+        if (!registration) {
+          this.toastService.showGenericError();
+          return;
+        }
+        void this.router.navigate(
+          registrationLink({
+            programId: this.programId(),
+            registrationId: registration.id,
+            editPersonalInfo: true,
+          }),
+        );
+
+        this.trackingService.trackEvent({
+          category: TrackingCategory.manageRegistrations,
+          action: TrackingAction.selectContextMenuOption,
+          name: `edit-personal-info`,
+        });
+      },
+    },
     this.registrationMenuService.createContextItemForMessage({
       programId: this.programId(),
       command: () => {

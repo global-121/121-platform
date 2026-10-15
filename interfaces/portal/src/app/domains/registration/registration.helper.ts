@@ -128,13 +128,23 @@ export const ACTIVITY_LOG_ITEM_TYPE_ICONS: Record<ActivityTypeEnum, string> = {
 export const registrationLink = ({
   programId,
   registrationId,
+  editPersonalInfo,
 }: {
   programId: number | string;
   registrationId: number | string;
-}) => [
-  '/',
-  AppRoutes.program,
-  programId,
-  AppRoutes.programRegistrations,
-  registrationId,
-];
+  editPersonalInfo?: boolean;
+}) => {
+  const link = [
+    '/',
+    AppRoutes.program,
+    programId,
+    AppRoutes.programRegistrations,
+    registrationId,
+  ];
+
+  if (!editPersonalInfo) {
+    return link;
+  }
+
+  return [...link, AppRoutes.programRegistrationPersonalInformation, 'edit'];
+};

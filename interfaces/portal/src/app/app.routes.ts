@@ -368,6 +368,27 @@ export const routes: Routes = [
                   ),
               },
               {
+                path: `${AppRoutes.programRegistrationPersonalInformation}/edit`,
+                title:
+                  $localize`:@@page-title-program-registration-personal-information-edit:Edit personal information` +
+                  ' | ' +
+                  $localize`:@@page-title-program-registration-details:Registration details`,
+                canActivate: [
+                  programPermissionsGuard({
+                    permission: PermissionEnum.RegistrationAttributeUPDATE,
+                  }),
+                ],
+                canDeactivate: [pendingChangesGuard],
+                data: {
+                  startEditing: true,
+                },
+                loadComponent: () =>
+                  import('~/pages/program-registration-personal-information/program-registration-personal-information.page').then(
+                    (x) =>
+                      x.ProgramRegistrationPersonalInformationPageComponent,
+                  ),
+              },
+              {
                 path: AppRoutes.programRegistrationDebitCards,
                 title:
                   $localize`:@@page-title-program-registrations-debit-cards:Debit cards` +
