@@ -167,7 +167,7 @@ This is used to get data from an API endpoint (typically the 121-service). This 
   - Follow the Tailwind recommendations for [reusing styles](https://tailwindcss.com/docs/reusing-styles)
 - Keep (any) custom CSS (even with Tailwind) to a minimum
 - Make sure to use "`*-start`/`*-end`" instead of "`*-left`/`*-right`" in positioning/margin properties/classes
-  - This increases support for RTL in the future
+  - This is required for RTL-support
   - eg. `ms-0 ps-0` instead of `ml-0 pl-0`
 
 ### Theming
