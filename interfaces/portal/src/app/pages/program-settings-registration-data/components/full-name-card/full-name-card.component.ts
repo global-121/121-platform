@@ -25,10 +25,7 @@ import {
 } from '~/components/data-list/data-list.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import {
-  getNameFieldsInConventionOrder,
-  sortNameFieldsByAttributeOrder,
-} from '~/pages/program-settings-registration-data/components/full-name-card/full-name-card.helper';
+import { getNameFieldsInConventionOrder } from '~/pages/program-settings-registration-data/components/full-name-card/full-name-card.helper';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -132,10 +129,7 @@ export class FullNameCardComponent {
       this.programApiService.updateProgram({
         programId: this.programId,
         programPatch: {
-          fullnameNamingConvention: sortNameFieldsByAttributeOrder({
-            textAttributes: this.textAttributes(),
-            nameFields,
-          }),
+          fullnameNamingConvention: nameFields,
         },
       }),
     onSuccess: () => {

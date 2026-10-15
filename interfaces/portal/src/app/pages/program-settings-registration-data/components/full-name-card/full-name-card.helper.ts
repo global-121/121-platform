@@ -19,17 +19,3 @@ export const getNameFieldsInConventionOrder = <T extends { name: string }>({
 
   return nameFields;
 };
-
-export const sortNameFieldsByAttributeOrder = ({
-  textAttributes,
-  nameFields,
-}: {
-  textAttributes: { name: string }[];
-  nameFields: string[];
-}): string[] => {
-  const selectedNameFields = new Set(nameFields);
-
-  return textAttributes
-    .map((attribute) => attribute.name)
-    .filter((name) => selectedNameFields.has(name));
-};

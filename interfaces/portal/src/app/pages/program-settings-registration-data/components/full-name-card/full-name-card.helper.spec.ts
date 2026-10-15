@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  getNameFieldsInConventionOrder,
-  sortNameFieldsByAttributeOrder,
-} from '~/pages/program-settings-registration-data/components/full-name-card/full-name-card.helper';
+import { getNameFieldsInConventionOrder } from '~/pages/program-settings-registration-data/components/full-name-card/full-name-card.helper';
 
 const textAttributes = [
   { name: 'firstName', labelToShow: 'First name' },
@@ -43,25 +40,5 @@ describe('getNameFieldsInConventionOrder', () => {
     });
 
     expect(result).toEqual([]);
-  });
-});
-
-describe('sortNameFieldsByAttributeOrder', () => {
-  it('should sort the selected fields by the order of the attributes', () => {
-    const result = sortNameFieldsByAttributeOrder({
-      textAttributes,
-      nameFields: ['lastName', 'firstName'],
-    });
-
-    expect(result).toEqual(['firstName', 'lastName']);
-  });
-
-  it('should drop fields that are not text attributes', () => {
-    const result = sortNameFieldsByAttributeOrder({
-      textAttributes,
-      nameFields: ['age', 'middleName'],
-    });
-
-    expect(result).toEqual(['middleName']);
   });
 });
