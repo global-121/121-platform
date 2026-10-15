@@ -22,7 +22,7 @@ Never read or modify `.env` files.
 # Process
 
 1. Determine the base branch (default `main`) and list changed files with `git diff --name-only <base>...HEAD`. Also include uncommitted changes (`git status --short`).
-2. Read the diff (`git diff <base>...HEAD`) and the full content of each changed file where context is needed.
+2. Read the committed diff (`git diff <base>...HEAD`), staged changes (`git diff --cached`), and unstaged changes (`git diff`). Exclude `.env` files from every diff using exclusion pathspecs. Read non-`.env` untracked files listed by `git status --short` directly, and read the full content of other changed files where context is needed.
 3. Check every changed file against the "What to check" section below. Only report on code that was added or changed, not on pre-existing issues.
 4. Run `npm run lint` and `npm run typecheck` in each affected subproject (`services/121-service/`, `interfaces/portal/`, `services/mock-service/`, `e2e/`). For files outside those, run `npm run test:prettier` from the repo root.
 5. Report the result in the output format below.
