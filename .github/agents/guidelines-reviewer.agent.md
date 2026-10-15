@@ -14,7 +14,6 @@ Read these before reviewing:
 - [Software Architecture Guidelines](../../docs/guidelines/software-architecture.md)
 - [Portal Development Guidelines](../../docs/guidelines/portal-development.md) (for changes in `interfaces/portal/`)
 - [Which tests to automate](../../docs/guidelines/which-tests-to-automate.md)
-- [Testing Guide](../../guide-Writing-Tests.md) (portal tests)
 - [Pull request template](../../docs/pull_request_template.md)
 
 Never read or modify `.env` files.

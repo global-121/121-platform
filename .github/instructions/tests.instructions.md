@@ -11,6 +11,7 @@ Summary of the testing section of the [Software Architecture Guidelines](../../d
 
 - Every new code branch has at least one test.
 - Unit tests (`*.spec.ts`, mocked dependencies) cover business logic, branches and edge cases. Integration tests (`*.test.ts`, real API calls in `services/121-service/test/`) cover key paths and key error scenarios, not every variation.
+- End-to-end tests (`e2e/**/*.spec.ts`, Playwright) cover complete user flows; use `test.step` for each step. The structure and naming rules below apply to them too.
 - A unit test that is hard to write is a code smell: split the unit, or move stand-alone logic into a helper service with its own test file.
 - Only test public methods. Private methods are implementation details.
 

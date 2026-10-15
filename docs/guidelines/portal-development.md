@@ -196,7 +196,7 @@ Changes and additions to this css file should be kept to a minimum, because more
 
 ### API Service Files
 
-All API calls to the 121-service should go through an `.api.service.ts` file. These files typically export three kinds of functions:
+All API calls to the 121-service should go through an `.api.service.ts` file. These files typically export two kinds of functions:
 
 1. Functions that return `queryOptions`
    - These are to be used in conjuction with `injectQuery` in components, to `GET` data
@@ -204,8 +204,8 @@ All API calls to the 121-service should go through an `.api.service.ts` file. Th
 2. Functions that return a direct call to `httpWrapperService.perform121ServiceRequest`
    - These are to be used in conjuction with `injectMutation` in components, to perform `POST`/`PATCH`/`PUT`/`DELETE` operations
    - There are typically prefixed with the verb `create`/`edit`/`delete` etc.
-3. An `invalidateCache` function
-   - This is typically used in the `success` callback of mutations, to invalidate cache after performing an action in the backend
+
+Cache invalidation is done globally: the `MutationCache` in `app.config.ts` invalidates all queries after every successful mutation. Do not invalidate the cache manually in components or api services (enforced by the `custom-rules/tanstack-no-manual-cache-invalidation` lint rule). If the backend needs a moment before updated data is available, set `meta: { invalidateCacheAgainAfterDelay: <ms> }` on the mutation.
 
 ### Using types exported from the 121-service
 

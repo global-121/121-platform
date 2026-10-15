@@ -58,10 +58,7 @@ A Financial Service Provider (Fsp) is an external organization or system integra
    3. Use /interfaces folder.
    4. If there are many interfaces, consider dividing them logically into sub-folders.
    5. All attributes of an interface are defined as "readonly" => see AI for pros and cons.
-6. For "module internal" methods and private methods:
-   1. For 1 or 2 input params, define them in-line
-   2. For 3+ params, define them in-line as destructered object. See [function signature example here](https://github.com/global-121/121-platform/blob/5c85df8ccb845e1b76e7bc6b04e57afbda53d952/services/121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service.ts#L151). Note: do not add an "input." definition for the object.
-   3. Use common sense, sometimes for 2 params an object already makes sense, because that makes naming the parameters explicit for the caller.
+6. For "module internal" methods and private methods: also use a single destructured object as parameter, never naked parameters. Define the object type in-line, see [function signature example here](https://github.com/global-121/121-platform/blob/5c85df8ccb845e1b76e7bc6b04e57afbda53d952/services/121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service.ts#L151). Note: do not add an "input." definition for the object.
 
 ### D. Ordering functions in a class (Clean Code)
 

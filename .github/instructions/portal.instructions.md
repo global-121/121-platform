@@ -32,8 +32,8 @@ Summary of the [Portal Development Guidelines](../../docs/guidelines/portal-deve
 
 - All calls to the 121 Service go through a `*.api.service.ts` file in the domain, exporting:
   1. `get*` functions returning `queryOptions`, used with `injectQuery`;
-  2. `create*`/`edit*`/`delete*` functions returning `httpWrapperService.perform121ServiceRequest`, used with `injectMutation`;
-  3. an `invalidateCache` function, called in mutation `success` callbacks.
+  2. `create*`/`edit*`/`delete*` functions returning `httpWrapperService.perform121ServiceRequest`, used with `injectMutation`.
+- Never invalidate the query cache manually; `app.config.ts` invalidates all queries after every successful mutation. If the backend needs a moment before updated data is available, set `meta: { invalidateCacheAgainAfterDelay: <ms> }` on the mutation.
 
 ## Styling
 

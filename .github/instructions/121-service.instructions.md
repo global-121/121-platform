@@ -28,7 +28,7 @@ Summary of the [Software Architecture Guidelines](../../docs/guidelines/software
 ## Function signatures and interfaces
 
 - Public functions of exported services take an interface with a `Params` suffix and return an interface with a `Result` suffix. One interface per file in `interfaces/`, for example `contact-information-params.interface.ts`. All attributes are `readonly`.
-- Module-internal and private functions: 1–2 parameters may be in-line; 3 or more go in a destructured object.
+- Module-internal and private functions also take a single destructured object, never naked parameters. Define the object type in-line; do not name it `input`.
 
 ## DTOs
 
