@@ -9,6 +9,7 @@ import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
 import { getBaseUrl, IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
+import { ExcelFspConfigurationEntity } from '@121-service/src/fsp-integrations/integrations/excel/entities/excel-fsp-configuration.entity';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
@@ -409,6 +410,12 @@ export class SeedHelperService {
     const foundProgram = await programRepository.findOneOrFail({
       where: { id: Equal(programReturn.id) },
     });
+    const programAttributeNames = (
+      await programRegistrationAttributeRepo.find({
+        where: { programId: Equal(foundProgram.id) },
+        select: { name: true },
+      })
+    ).map(({ name }) => name);
     const fspConfigArrayFromJson = programFromJSON.programFspConfigurations;
     foundProgram.programFspConfigurations = [];
 
@@ -426,7 +433,33 @@ export class SeedHelperService {
         fspObject,
         foundProgram.id,
       );
-      await this.programFspConfigurationRepository.save(programFspConfig);
+      const savedConfiguration =
+        await this.programFspConfigurationRepository.save(programFspConfig);
+
+      if (fspName !== Fsps.excel || !fspConfigFromJson.uniqueIdentifierField) {
+        continue;
+      }
+
+      const exportFields =
+        fspConfigFromJson.exportFields ?? programAttributeNames;
+      const invalidFields = [
+        fspConfigFromJson.uniqueIdentifierField,
+        ...exportFields,
+      ].filter((field) => !programAttributeNames.includes(field));
+      if (invalidFields.length > 0) {
+        throw new HttpException(
+          `Excel seed configuration contains unknown registration attributes: ${[...new Set(invalidFields)].join(', ')}`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      await this.dataSource.getRepository(ExcelFspConfigurationEntity).save({
+        programFspConfigurationId: savedConfiguration.id,
+        uniqueIdentifierField: fspConfigFromJson.uniqueIdentifierField,
+        exportFields,
+      });
+      savedConfiguration.state = FspConfigurationStates.configured;
+      await this.programFspConfigurationRepository.save(savedConfiguration);
     }
 
     return programRepository.findOneByOrFail({ id: Equal(foundProgram.id) });
@@ -436,6 +469,8 @@ export class SeedHelperService {
     fspConfigFromJson: {
       fsp: Fsps;
       properties: { name: string; value: string }[] | undefined;
+      uniqueIdentifierField?: string;
+      exportFields?: string[];
       name?: string;
       label: UILanguageTranslation;
     },
@@ -444,9 +479,12 @@ export class SeedHelperService {
   ): ProgramFspConfigurationEntity {
     const fspConfigEntity = new ProgramFspConfigurationEntity();
     fspConfigEntity.fspName = fspConfigFromJson.fsp;
-    fspConfigEntity.properties = this.createProgramFspConfigurationProperties(
-      fspConfigFromJson.properties ?? [],
-    );
+    fspConfigEntity.properties =
+      fspConfigFromJson.fsp === Fsps.excel
+        ? []
+        : this.createProgramFspConfigurationProperties(
+            fspConfigFromJson.properties ?? [],
+          );
     fspConfigEntity.label = fspConfigFromJson.label
       ? fspConfigFromJson.label
       : fspObject.defaultLabel;
@@ -455,7 +493,10 @@ export class SeedHelperService {
       : fspObject.name;
     fspConfigEntity.transactionEvents = [];
     fspConfigEntity.programId = programId;
-    fspConfigEntity.state = FspConfigurationStates.configured;
+    fspConfigEntity.state =
+      fspConfigFromJson.fsp === Fsps.excel
+        ? FspConfigurationStates.configurationPending
+        : FspConfigurationStates.configured;
     return fspConfigEntity;
   }
 

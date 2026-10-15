@@ -12,7 +12,7 @@ import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configur
 export class ProgramFspConfigurationRepository extends Repository<ProgramFspConfigurationEntity> {
   constructor(
     @InjectRepository(ProgramFspConfigurationEntity)
-    private baseRepository: Repository<ProgramFspConfigurationEntity>,
+    private readonly baseRepository: Repository<ProgramFspConfigurationEntity>,
   ) {
     super(
       baseRepository.target,
@@ -35,6 +35,36 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
       },
       relations: { properties: true },
     });
+  }
+
+  public async getByProgramIdAndName({
+    programId,
+    name,
+  }: {
+    programId: number;
+    name: string;
+  }): Promise<ProgramFspConfigurationEntity | null> {
+    return this.baseRepository.findOne({
+      where: {
+        programId: Equal(programId),
+        name: Equal(name),
+      },
+    });
+  }
+
+  public async updateState({
+    programId,
+    name,
+    state,
+  }: {
+    programId: number;
+    name: string;
+    state: FspConfigurationStates;
+  }): Promise<void> {
+    await this.baseRepository.update(
+      { programId: Equal(programId), name: Equal(name) },
+      { state },
+    );
   }
 
   public async isFspConfiguredForProgram({
@@ -176,7 +206,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
     const properties = await this.getProperties(programFspConfigurationId);
 
     for (const name of names) {
-      if (!properties.find((property) => property.name === name)) {
+      if (!properties.some((property) => property.name === name)) {
         throw new Error(
           `Configuration with name ${name} not found for ProgramFspConfigurationEntity with id:  ${programFspConfigurationId}`,
         );

@@ -13,6 +13,7 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-program-settings/page-layout-program-settings.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
+import { ExcelFspConfigurationDialogComponent } from '~/pages/program-settings-fsps/components/excel-fsp-dialog-content/excel-fsp-configuration-dialog.component';
 import { FspConfigurationFormDialogComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-form-dialog/fsp-configuration-form-dialog.component';
 import { FspConfigurationListComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-list/fsp-configuration-list.component';
 import { ToastService } from '~/services/toast.service';
@@ -23,6 +24,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   imports: [
     PageLayoutProgramSettingsComponent,
     FspConfigurationListComponent,
+    ExcelFspConfigurationDialogComponent,
     FspConfigurationFormDialogComponent,
   ],
   templateUrl: './program-settings-fsps.page.html',
@@ -43,14 +45,32 @@ export class ProgramSettingsFspsPageComponent {
     viewChild.required<FspConfigurationFormDialogComponent>(
       'fspConfigurationFormDialog',
     );
+  readonly excelFspConfigurationDialog =
+    viewChild.required<ExcelFspConfigurationDialogComponent>(
+      'excelFspConfigurationDialog',
+    );
 
-  addFspConfiguration(fsp: Fsps) {
+  async addFspConfiguration(fsp: Fsps): Promise<void> {
+    if (fsp === Fsps.excel) {
+      await this.excelFspConfigurationDialog().show({});
+      return;
+    }
+
     this.fspConfigurationFormDialog().show({
       fspSetting: FSP_SETTINGS[fsp],
     });
   }
 
-  reconfigureFspConfiguration(configuration: FspConfiguration) {
+  async reconfigureFspConfiguration(
+    configuration: FspConfiguration,
+  ): Promise<void> {
+    if (configuration.fspName === Fsps.excel) {
+      await this.excelFspConfigurationDialog().show({
+        fspConfiguration: configuration,
+      });
+      return;
+    }
+
     this.fspConfigurationFormDialog().show({
       fspSetting: FSP_SETTINGS[configuration.fspName],
       fspConfiguration: configuration,

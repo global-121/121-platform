@@ -65,6 +65,22 @@ class FspSettingsPage extends BasePage {
     });
   }
 
+  async assertExcelIdentifierField({
+    expectedLabel,
+  }: {
+    expectedLabel: string;
+  }) {
+    const excelConfigurationDialog = this.page.getByTestId(
+      'fsp-configuration-dialog-form',
+    );
+    await expect(excelConfigurationDialog).toBeVisible();
+    await expect(
+      excelConfigurationDialog.getByTestId(
+        'fsp-configuration-field-columnToMatch',
+      ),
+    ).toContainText(expectedLabel);
+  }
+
   async clickFspIntegration() {
     await this.page.getByRole('link', { name: 'FSP integration' }).click();
   }

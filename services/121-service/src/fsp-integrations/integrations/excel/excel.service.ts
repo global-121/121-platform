@@ -1,24 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { ExcelFspInstructions } from '@121-service/src/fsp-integrations/integrations/excel/dto/excel-fsp-instructions.dto';
-import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { ExcelFspConfigurationRepository } from '@121-service/src/fsp-integrations/integrations/excel/excel-fsp-configuration.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 @Injectable()
 export class ExcelService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
-
   public constructor(
     //TODO: This should be refactored to not use the registrationPaginationService, maybe this entire service/module should be deleted and moved to the PaymentsExcelFspService
     private readonly registrationsPaginationService: RegistrationsPaginationService,
-    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly excelFspConfigurationRepository: ExcelFspConfigurationRepository,
   ) {}
 
   public async getFspInstructions({
@@ -30,11 +23,9 @@ export class ExcelService {
     programId: number;
     programFspConfigurationId: number;
   }): Promise<ExcelFspInstructions[]> {
-    const configuredExportColumns =
-      await this.getExportColumnsForProgramFspConfig(
-        programFspConfigurationId,
-        programId,
-      );
+    const configuredExportColumns = await this.getExportFieldsForConfiguration(
+      programFspConfigurationId,
+    );
     const matchColumn = await this.getImportMatchColumn(
       programFspConfigurationId,
     );
@@ -63,29 +54,24 @@ export class ExcelService {
     );
   }
 
-  private async getExportColumnsForProgramFspConfig(
+  private async getExportFieldsForConfiguration(
     programFspConfigurationId: number,
-    programId: number,
   ): Promise<string[]> {
-    const columnsToExportConfig =
-      await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId,
-        name: FspConfigurationProperties.columnsToExport,
-      });
+    const excelConfiguration =
+      await this.excelFspConfigurationRepository.getByProgramFspConfigurationId(
+        {
+          programFspConfigurationId,
+        },
+      );
 
-    if (columnsToExportConfig) {
-      return columnsToExportConfig;
+    if (!excelConfiguration) {
+      throw new HttpException(
+        `Excel FSP configuration is pending for program FSP configuration ${programFspConfigurationId}`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
-    const programWithAttributes = await this.programRepository.findOneOrFail({
-      where: { id: Equal(programId) },
-      relations: { programRegistrationAttributes: true },
-    });
-    // Default to using all program registration attributes names if columnsToExport is not specified
-    // So generic fields must be specified in the programFspConfiguration
-    return programWithAttributes.programRegistrationAttributes.map(
-      (q) => q.name,
-    );
+    return excelConfiguration.exportFields;
   }
 
   /**
@@ -152,14 +138,18 @@ export class ExcelService {
   public async getImportMatchColumn(
     programFspConfigurationId: number,
   ): Promise<string> {
-    const matchColumn =
-      await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
+    const excelConfiguration =
+      await this.excelFspConfigurationRepository.getByProgramFspConfigurationId(
         {
           programFspConfigurationId,
-          name: FspConfigurationProperties.columnToMatch,
         },
       );
-
-    return matchColumn;
+    if (!excelConfiguration) {
+      throw new HttpException(
+        `Excel FSP configuration is pending for program FSP configuration ${programFspConfigurationId}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return excelConfiguration.uniqueIdentifierField;
   }
 }

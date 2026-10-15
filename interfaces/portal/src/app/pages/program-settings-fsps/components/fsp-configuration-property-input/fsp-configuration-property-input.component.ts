@@ -69,6 +69,13 @@ export class FspConfigurationPropertyInputComponent {
       return $localize`Display name` + propertyIsOptional;
     }
 
+    if (
+      propertyName === 'columnToMatch' ||
+      propertyName === 'columnsToExport'
+    ) {
+      return '';
+    }
+
     return FSP_CONFIGURATION_PROPERTY_LABELS[propertyName] + propertyIsOptional;
   });
 

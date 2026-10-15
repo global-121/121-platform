@@ -1,0 +1,25 @@
+<app-form-dialog
+  #configurationDialog
+  [header]="configurationDialogHeader()"
+  headerIcon="pi pi-money-bill"
+  [formGroup]="formGroup()"
+  [mutation]="configureExcelFsp"
+  [mutationData]="formGroup().getRawValue()"
+  [proceedLabel]="configurationProceedLabel()"
+>
+  <p
+    i18n
+    class="mbe-4"
+  >
+    For more information about how to integrate this FSP see the
+    <app-manual-link />.
+  </p>
+
+  <div data-testid="fsp-configuration-dialog-form">
+    <app-excel-fsp-dialog-content
+      [programId]="programId()"
+      [formGroup]="formGroup()"
+      [fspFormFields]="fspFormFields()"
+    />
+  </div>
+</app-form-dialog>

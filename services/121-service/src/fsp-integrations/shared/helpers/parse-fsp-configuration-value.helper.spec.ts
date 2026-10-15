@@ -97,29 +97,4 @@ describe('parseFspConfigurationPropertyValue', () => {
       ).toThrow('Cannot parse value "" as number');
     });
   });
-
-  describe('array parsing', () => {
-    it('should parse valid JSON array values', () => {
-      expect(
-        parseFspConfigurationPropertyValue({
-          name: FspConfigurationProperties.columnsToExport,
-          value: '["a","b","c"]',
-        }),
-      ).toEqual(['a', 'b', 'c']);
-
-      expect(
-        parseFspConfigurationPropertyValue({
-          name: FspConfigurationProperties.columnsToExport,
-          value: '[]',
-        }),
-      ).toEqual([]);
-
-      expect(
-        parseFspConfigurationPropertyValue({
-          name: FspConfigurationProperties.columnsToExport,
-          value: '["single"]',
-        }),
-      ).toEqual(['single']);
-    });
-  });
 });

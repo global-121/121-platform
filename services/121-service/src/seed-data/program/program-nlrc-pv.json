@@ -180,12 +180,7 @@
     },
     {
       "fsp": "Excel",
-      "properties": [
-        {
-          "name": "columnToMatch",
-          "value": "phoneNumber"
-        }
-      ]
+      "uniqueIdentifierField": "phoneNumber"
     }
   ]
 }
