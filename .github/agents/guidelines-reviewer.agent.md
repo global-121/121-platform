@@ -14,7 +14,6 @@ Read these before reviewing:
 - [Software Architecture Guidelines](../../docs/guidelines/software-architecture.md)
 - [Portal Development Guidelines](../../docs/guidelines/portal-development.md) (for changes in `interfaces/portal/`)
 - [Which tests to automate](../../docs/guidelines/which-tests-to-automate.md)
-- [Testing Guide](../../guide-Writing-Tests.md) (portal tests)
 - [Pull request template](../../docs/pull_request_template.md)
 
 Never read or modify `.env` files.
@@ -29,7 +28,7 @@ Never read or modify `.env` files.
 
 # What to check
 
-`AGENTS.md` only summarizes the guidelines. Read the full guideline documents above, which take precedence, and apply them to the changed code. Use the scope below to decide which parts apply.
+`AGENTS.md` and the files in `.github/instructions/` only summarize the guidelines. Read the full guideline documents above, which take precedence, and apply them to the changed code. Use the scope below to decide which parts apply.
 
 | Changed files                           | Apply                                                                              |
 | --------------------------------------- | ---------------------------------------------------------------------------------- |

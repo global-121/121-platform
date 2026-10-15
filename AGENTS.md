@@ -37,7 +37,13 @@ npm run start:portal        # Start frontend (Angular dev server)
 
 ## Code Style & Standards
 
-The full architecture, naming, API, data model, and testing guidelines for the 121 Service are in [Software Architecture Guidelines](./docs/guidelines/software-architecture.md). The sections below are a summary; the guidelines document is leading.
+This section only holds the rules that apply to every change. The full guidelines are leading:
+
+- [Software Architecture Guidelines](./docs/guidelines/software-architecture.md) for the 121 Service and mock service
+- [Portal Development Guidelines](./docs/guidelines/portal-development.md) for the Portal
+- [Which tests to automate](./docs/guidelines/which-tests-to-automate.md) for tests
+
+Area-specific summaries of these guidelines are in [`.github/instructions/`](./.github/instructions/) and are loaded automatically when working on matching files (`services/**`, `interfaces/portal/src/**`, `*.spec.ts`/`*.test.ts`).
 
 ### Domain Terminology
 
@@ -127,33 +133,11 @@ if (mode === TwilioMode.disabled) {
 - Use `for...of` loops for iterating over arrays, sets, maps and other iterables.
 - Use `Array.filter`, `Array.map`, `Array.reduce` and other array methods for data transformation instead of manual loops when it improves readability.
 
-### URL and Header Construction
-
-**When using fetch API:**
-
-- Use native `URL` object for constructing URLs and parameters
-- Use native `Headers` object for HTTP headers
-- Pass URL object instance directly to fetch
-- Set Headers object as `headers` property value
-- Exception: Use framework-specific tooling when available (e.g., Angular HttpClient)
-
 ### Naming Conventions
 
-**General Rules:**
-
 - Use full names, no abbreviations (except "Fsp")
-- Class names are plural for Modules, Controllers, Services
-- Class names are singular for Entities and Repositories
-- Base folder names of modules are plural
-- Do not include "Enum" suffix for enums
-
-**Examples:**
-
-- Module: `ProgramsModule` → `programs.module.ts`
-- Service: `ProgramsService` → `programs.service.ts`
-- Entity: `ProgramEntity` → `program.entity.ts`
-- Repository: `FinancialServiceProviderRepository` → `fsp.repository.ts`
-- Enum: `DefaultUserRole` (not `DefaultUserRoleEnum`)
+- Do not include "Enum" suffix for enums: `DefaultUserRole`, not `DefaultUserRoleEnum`
+- NestJS-specific naming (modules, services, entities, repositories, DTOs) is in the 121 Service instructions
 
 ### General Function Practices
 
