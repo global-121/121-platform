@@ -11,6 +11,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
+import { KoboSurveyItemType } from '@121-service/src/kobo/enum/kobo-survey-item-type';
 import { CreateOptionsDto } from '@121-service/src/programs/dto/create-options.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
@@ -90,6 +91,11 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
     },
   })
   public readonly koboLabel?: RegistrationPreferredLanguageTranslation | null;
+
+  @ApiProperty({
+    example: KoboSurveyItemType.integer,
+  })
+  public readonly koboType?: KoboSurveyItemType | null;
 
   @ApiProperty({
     example: RegistrationAttributeTypes.text,
