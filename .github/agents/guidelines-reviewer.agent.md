@@ -29,7 +29,7 @@ Never read or modify `.env` files.
 
 # What to check
 
-`AGENTS.md` only summarizes the guidelines. Read the full guideline documents above, which take precedence, and apply them to the changed code. Use the scope below to decide which parts apply.
+`AGENTS.md` and the files in `.github/instructions/` only summarize the guidelines. Read the full guideline documents above, which take precedence, and apply them to the changed code. Use the scope below to decide which parts apply.
 
 | Changed files                           | Apply                                                                              |
 | --------------------------------------- | ---------------------------------------------------------------------------------- |
