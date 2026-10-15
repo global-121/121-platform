@@ -31,3 +31,6 @@ services/azurite_data
 
 # Claude Code
 .claude
+
+.agents/skills/*
+skills-lock.json
