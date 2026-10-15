@@ -25,6 +25,10 @@ import {
 } from '~/components/data-list/data-list.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
+import {
+  getNameFieldsInConventionOrder,
+  sortNameFieldsByAttributeOrder,
+} from '~/pages/program-settings-registration-data/components/full-name-card/full-name-card.helper';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -76,13 +80,11 @@ export class FullNameCardComponent {
       return [];
     }
 
-    const fullnameNamingConvention = new Set(
-      this.program.data().fullnameNamingConvention ?? [],
-    );
-
-    return this.textAttributes().filter((attribute) =>
-      fullnameNamingConvention.has(attribute.name),
-    );
+    return getNameFieldsInConventionOrder({
+      textAttributes: this.textAttributes(),
+      fullnameNamingConvention:
+        this.program.data().fullnameNamingConvention ?? [],
+    });
   });
 
   readonly dataListData = computed<DataListItem[]>(() => {
@@ -130,7 +132,10 @@ export class FullNameCardComponent {
       this.programApiService.updateProgram({
         programId: this.programId,
         programPatch: {
-          fullnameNamingConvention: this.sortByAttributeOrder({ nameFields }),
+          fullnameNamingConvention: sortNameFieldsByAttributeOrder({
+            textAttributes: this.textAttributes(),
+            nameFields,
+          }),
         },
       }),
     onSuccess: () => {
@@ -158,17 +163,5 @@ export class FullNameCardComponent {
         ),
       });
     });
-  }
-
-  private sortByAttributeOrder({
-    nameFields,
-  }: {
-    nameFields: string[];
-  }): string[] {
-    const selectedNameFields = new Set(nameFields);
-
-    return this.textAttributes()
-      .map((attribute) => attribute.name)
-      .filter((name) => selectedNameFields.has(name));
   }
 }

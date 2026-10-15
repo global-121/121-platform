@@ -6,14 +6,14 @@ import { CreateProgramRegistrationAttributeDto } from '@121-service/src/programs
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  getProgram,
-  patchProgramRegistrationAttribute,
-  postProgram,
-  postProgramRegistrationAttribute,
+    getProgram,
+    patchProgramRegistrationAttribute,
+    postProgram,
+    postProgramRegistrationAttribute,
 } from '@121-service/test/helpers/program.helper';
 import {
-  getAccessToken,
-  resetDB,
+    getAccessToken,
+    resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
 const createTextAttribute = ({
