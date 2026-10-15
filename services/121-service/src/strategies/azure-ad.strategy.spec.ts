@@ -8,10 +8,12 @@ import { AzureAdStrategy } from '@121-service/src/strategies/azure-ad.strategy';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
+import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 
 describe('AzureAdStrategy', () => {
   let strategy: AzureAdStrategy;
   let userService: jest.Mocked<UserService>;
+  let userAccessGroupAssignmentsService: jest.Mocked<UserAccessGroupAssignmentsService>;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -36,8 +38,14 @@ describe('AzureAdStrategy', () => {
       getScopeForUser: jest.fn(),
     } as any;
 
+    userAccessGroupAssignmentsService = {
+      getAccessGroupsForUser: jest.fn().mockReturnValue([]),
+    } as any;
+
     // Setup strategy's userService
     strategy['userService'] = userService;
+    strategy['userAccessGroupAssignmentsService'] =
+      userAccessGroupAssignmentsService;
   });
 
   describe('validate', () => {
@@ -279,6 +287,7 @@ describe('AzureAdStrategy', () => {
           exp: mockPayload.exp,
           admin: false,
           scope: 'test-scope',
+          accessGroups: [],
           isOrganizationAdmin: mockPayload.isOrganizationAdmin,
         });
       });
@@ -322,6 +331,7 @@ describe('AzureAdStrategy', () => {
           exp: mockPayload.exp,
           admin: true,
           scope: 'admin-scope',
+          accessGroups: [],
           isOrganizationAdmin: mockPayload.isOrganizationAdmin,
         });
       });
@@ -364,6 +374,7 @@ describe('AzureAdStrategy', () => {
           exp: mockPayload.exp,
           admin: false,
           scope: 'org-admin-scope',
+          accessGroups: [],
           isOrganizationAdmin: mockPayload.isOrganizationAdmin,
         });
       });
@@ -407,14 +418,21 @@ describe('AzureAdStrategy', () => {
           exp: mockPayload.exp,
           admin: false,
           scope: '',
+          accessGroups: [],
           isOrganizationAdmin: mockPayload.isOrganizationAdmin,
         });
       });
 
-      it('should return UserRequestData with correct scope when programId is provided', async () => {
+      it('should return UserRequestData with correct scope and access groups when programId is provided', async () => {
         const mockUser = createMockUser();
+        const accessGroups = [
+          { programRegistrationAttributeId: 7, value: 'kisumu' },
+        ];
         userService.findByUsernameOrThrow.mockResolvedValue(mockUser);
         userService.getScopeForUser.mockReturnValue('program-scope');
+        userAccessGroupAssignmentsService.getAccessGroupsForUser.mockReturnValue(
+          accessGroups,
+        );
 
         const result = await strategy.validate(mockRequest, mockPayload);
 
@@ -424,6 +442,7 @@ describe('AzureAdStrategy', () => {
           exp: mockPayload.exp,
           admin: false,
           scope: 'program-scope',
+          accessGroups,
           isOrganizationAdmin: mockPayload.isOrganizationAdmin,
         });
       });

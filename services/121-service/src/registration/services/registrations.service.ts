@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, FindOneOptions, FindOptionsRelations, In, Repository } from 'typeorm';
+import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
@@ -49,7 +49,6 @@ import { RegistrationEventsService } from '@121-service/src/registration-events/
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
-import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
 
 @Injectable()
 export class RegistrationsService {
@@ -673,21 +672,14 @@ export class RegistrationsService {
       );
 
       if (programIdScopeObject) {
-        // Filters out registrations of a program to which this user is assigned, but not to the scope of the registration
-        const findProgramOption = {
-          where: {
-            programId: Equal(registration.programId),
-            referenceId: Equal(registration.referenceId),
-          },
-        };
-        const findOption = convertToScopedOptions<
-          RegistrationEntity,
-          FindOneOptions<RegistrationEntity>
-        >(findProgramOption, [], programIdScopeObject.scope);
-        const foundRegistration =
-          await this.registrationScopedRepository.findOne(findOption);
-
-        if (foundRegistration) {
+        const isWithinScopeAndAccessGroups =
+          await this.registrationScopedRepository.isWithinScopeAndAccessGroups({
+            referenceId: registration.referenceId,
+            programId: registration.programId,
+            scope: programIdScopeObject.scope,
+            accessGroups: programIdScopeObject.accessGroups,
+          });
+        if (isWithinScopeAndAccessGroups) {
           filteredRegistrations.push(registration);
         }
       }
