@@ -20,7 +20,7 @@ let swaConfig = JSON.parse(readFileSync(sourcePath, 'utf8'));
 // Check source/base
 if (!existsSync(sourcePath) || !swaConfig) {
   console.error(`Source-file not found or readable: ${sourcePath}`);
-  process.exit(1);
+  process.exitCode = 1;
 }
 
 if (!swaConfig.globalHeaders) {

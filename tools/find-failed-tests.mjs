@@ -89,7 +89,7 @@ if (!workflowConfig) {
   console.error(
     `Missing or unsupported --workflow. Use one of: ${Object.keys(WORKFLOWS).join(', ')}`,
   );
-  process.exit(1);
+  process.exitCode = 1;
 }
 
 const repo = args.repo;
