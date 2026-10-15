@@ -3,6 +3,7 @@ import { FspIntegrationType } from '@121-service/src/fsp-integrations/shared/enu
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
+import { isStringEnumValue } from '@121-service/src/utils/is-string-enum-value.helper';
 
 import {
   FSPS_WITH_PHYSICAL_CARD_SUPPORT,
@@ -108,9 +109,8 @@ const isUILanguageTranslationObject = (
     return false;
   }
   const keys = Object.keys(objToValidate);
-  const uiLanguages = Object.values(UILanguage);
   for (const key of keys) {
-    if (!uiLanguages.includes(key as UILanguage)) {
+    if (!isStringEnumValue(UILanguage, key)) {
       return false;
     }
   }
