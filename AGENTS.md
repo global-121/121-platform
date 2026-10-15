@@ -255,6 +255,7 @@ Before requesting a review, check all points in [the checklist](./docs/pull_requ
 ## Additional Resources
 
 - [Contributing Guidelines](./docs/CONTRIBUTING.md)
+- [Software Architecture Guidelines (121 Service)](./docs/guidelines-software-architecture.md)
 - [Testing Guide](./guide-Writing-Tests.md)
 
 ## Development Tools
