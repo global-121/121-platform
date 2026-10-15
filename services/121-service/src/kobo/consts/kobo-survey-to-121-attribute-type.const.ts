@@ -1,35 +1,37 @@
+import { KoboSurveyItemType } from '@121-service/src/kobo/enum/kobo-survey-item-type';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 const { numeric, text, dropdown, koboImage } = RegistrationAttributeTypes;
-type TypeMapping = Record<string, RegistrationAttributeTypes>;
+type TypeMapping = Record<KoboSurveyItemType, RegistrationAttributeTypes>;
+
 export const KOBO_TO_121_TYPE_MAPPING: TypeMapping = {
   // numeric
-  decimal: numeric,
-  integer: numeric,
-  range: numeric,
+  [KoboSurveyItemType.decimal]: numeric,
+  [KoboSurveyItemType.integer]: numeric,
+  [KoboSurveyItemType.range]: numeric,
   // dropdown
-  select_one: dropdown,
+  [KoboSurveyItemType.select_one]: dropdown,
   // text
-  'background-audio': text,
-  'xml-external': text,
-  acknowledge: text,
-  audio: text,
-  barcode: text,
-  calculate: text,
-  date: text,
-  dateTime: text,
-  file: text,
-  geopoint: text,
-  geoshape: text,
-  geotrace: text,
-  hidden: text,
+  [KoboSurveyItemType['background-audio']]: text,
+  [KoboSurveyItemType['xml-external']]: text,
+  [KoboSurveyItemType.acknowledge]: text,
+  [KoboSurveyItemType.audio]: text,
+  [KoboSurveyItemType.barcode]: text,
+  [KoboSurveyItemType.calculate]: text,
+  [KoboSurveyItemType.date]: text,
+  [KoboSurveyItemType.dateTime]: text,
+  [KoboSurveyItemType.file]: text,
+  [KoboSurveyItemType.geopoint]: text,
+  [KoboSurveyItemType.geoshape]: text,
+  [KoboSurveyItemType.geotrace]: text,
+  [KoboSurveyItemType.hidden]: text,
   // Kobo image questions are stored as a koboImage attribute (a URL to the
   // attachment) so the portal can render the image via the proxy endpoint.
-  image: koboImage,
-  rank: text,
-  select_multiple_from_file: text,
-  select_multiple: text,
-  text,
-  time: text,
-  video: text,
+  [KoboSurveyItemType.image]: koboImage,
+  [KoboSurveyItemType.rank]: text,
+  [KoboSurveyItemType.select_multiple_from_file]: text,
+  [KoboSurveyItemType.select_multiple]: text,
+  [KoboSurveyItemType.text]: text,
+  [KoboSurveyItemType.time]: text,
+  [KoboSurveyItemType.video]: text,
 };

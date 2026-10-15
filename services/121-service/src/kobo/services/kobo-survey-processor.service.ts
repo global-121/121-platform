@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { KOBO_TO_121_TYPE_MAPPING } from '@121-service/src/kobo/consts/kobo-survey-to-121-attribute-type.const';
 import { KoboChoiceCleaned } from '@121-service/src/kobo/interfaces/kobo-choice-cleaned.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
+import { findKoboSurveyItemType } from '@121-service/src/kobo/utils/find-kobo-survey-item-type';
 import { ProgramRegistrationAttribute } from '@121-service/src/programs/interfaces/program-registration-attribute.interface';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { RegistrationPreferredLanguageTranslation } from '@121-service/src/shared/types/registration-preferred-language-translation.type';
@@ -43,14 +44,16 @@ export class KoboSurveyProcessorService {
     koboSurveyItem: KoboSurveyItemCleaned;
     languageIsoCodes: RegistrationPreferredLanguage[];
   }): ProgramRegistrationAttribute | undefined {
-    const attributeType = KOBO_TO_121_TYPE_MAPPING[koboSurveyItem.type];
+    const koboSurveyItemType = findKoboSurveyItemType({
+      rawType: koboSurveyItem.type,
+    });
 
-    if (!attributeType) {
-      // Only create program registration attributes for Kobo survey items with supported types
-      // survey items that are not supported which are relevant for the users are handled during the validation phase
-      // this part excludes survey items that are not relevant at all for the 121 system (e.g. note, (begin + end of) group, etc.)
+    // Skip items irrelevant to 121 (e.g. note, groups). Unsupported but relevant types are reported during validation.
+    if (!koboSurveyItemType) {
       return;
     }
+
+    const attributeType = KOBO_TO_121_TYPE_MAPPING[koboSurveyItemType];
 
     const name = koboSurveyItem.name;
 
@@ -68,8 +71,8 @@ export class KoboSurveyProcessorService {
     return {
       name,
       koboLabel: label,
-      koboType: koboSurveyItem.type,
       type: attributeType,
+      koboType: koboSurveyItemType,
       options,
       // We do not use the 'required' property from Kobo because in Kobo a question can be conditionally required based on skip logic while still having the 'required' property set to true
       isRequired: DEFAULT_ATTRIBUTE_CONFIG.isRequired,
