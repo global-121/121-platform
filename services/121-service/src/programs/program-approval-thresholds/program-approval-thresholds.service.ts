@@ -32,10 +32,15 @@ export class ProgramApprovalThresholdsService {
           programId: Equal(programId),
         },
       });
+    const userIdsWithAccessGroups =
+      await this.programAidworkerAssignmentRepository.getUserIdsWithAccessGroups(
+        { programId },
+      );
 
     await this.validateThresholds({
       thresholds,
       aidworkerAssignments,
+      userIdsWithAccessGroups,
       currentUserId,
     });
 
@@ -58,10 +63,12 @@ export class ProgramApprovalThresholdsService {
   private async validateThresholds({
     thresholds,
     aidworkerAssignments,
+    userIdsWithAccessGroups,
     currentUserId,
   }: {
     thresholds: CreateProgramApprovalThresholdDto[];
     aidworkerAssignments: ProgramAidworkerAssignmentEntity[];
+    userIdsWithAccessGroups: Set<number>;
     currentUserId: number;
   }): Promise<void> {
     this.validateNoSelfApprovalAssign(thresholds, currentUserId);
@@ -71,6 +78,10 @@ export class ProgramApprovalThresholdsService {
     this.validateUniqueApproverUserIds(thresholds);
     this.validateApproverUserIdsExist(thresholds, aidworkerAssignments);
     this.validateApproversHaveNoScope(thresholds, aidworkerAssignments);
+    this.validateApproversHaveNoAccessGroups({
+      thresholds,
+      userIdsWithAccessGroups,
+    });
   }
 
   private validateNoSelfApprovalAssign(
@@ -177,6 +188,26 @@ export class ProgramApprovalThresholdsService {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+
+  private validateApproversHaveNoAccessGroups({
+    thresholds,
+    userIdsWithAccessGroups,
+  }: {
+    thresholds: CreateProgramApprovalThresholdDto[];
+    userIdsWithAccessGroups: Set<number>;
+  }): void {
+    const approverUserIdsWithAccessGroups = thresholds
+      .flatMap((threshold) => threshold.userIds)
+      .filter((userId) => userIdsWithAccessGroups.has(userId));
+    if (approverUserIdsWithAccessGroups.length === 0) {
+      return;
+    }
+
+    throw new HttpException(
+      `Only users without access groups can be made approvers. The following user IDs have access groups and cannot be approvers: ${approverUserIdsWithAccessGroups.join(', ')}`,
+      HttpStatus.BAD_REQUEST,
+    );
   }
 
   private async removeProgramApprovalThresholdConfiguration({

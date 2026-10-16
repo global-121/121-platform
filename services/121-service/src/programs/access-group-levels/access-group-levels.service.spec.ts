@@ -13,7 +13,7 @@ describe('AccessGroupLevelsService', () => {
   let registrationAttributeDataRepository: RegistrationAttributeDataRepository;
   let accessGroupLevelRepository: {
     replaceForProgram: jest.Mock;
-    findOrderedAttributeNamesByProgramId: jest.Mock;
+    getOrderedAttributeNamesByProgramId: jest.Mock;
   };
 
   const programId = 1;
@@ -51,7 +51,7 @@ describe('AccessGroupLevelsService', () => {
           provide: AccessGroupLevelRepository,
           useValue: {
             replaceForProgram: jest.fn(),
-            findOrderedAttributeNamesByProgramId: jest.fn(),
+            getOrderedAttributeNamesByProgramId: jest.fn(),
           },
         },
         {
@@ -118,7 +118,7 @@ describe('AccessGroupLevelsService', () => {
   describe('Retrieving the configured access group registration attribute names', () => {
     it('should return the names in the order stored by the repository', async () => {
       // Arrange
-      accessGroupLevelRepository.findOrderedAttributeNamesByProgramId.mockResolvedValue(
+      accessGroupLevelRepository.getOrderedAttributeNamesByProgramId.mockResolvedValue(
         ['region', 'district'],
       );
 
@@ -133,7 +133,7 @@ describe('AccessGroupLevelsService', () => {
 
     it('should return an empty array when no access group levels are configured', async () => {
       // Arrange
-      accessGroupLevelRepository.findOrderedAttributeNamesByProgramId.mockResolvedValue(
+      accessGroupLevelRepository.getOrderedAttributeNamesByProgramId.mockResolvedValue(
         [],
       );
 
