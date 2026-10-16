@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ProgramRegistrationAttributesModule } from '@121-service/src/program-registration-attributes/program-registration-attributes.module';
+import { AccessGroupLevelsModule } from '@121-service/src/programs/access-group-levels/access-group-levels.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentsModule } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignments.module';
 import { RolesController } from '@121-service/src/user/controllers/roles.controller';
@@ -23,7 +23,7 @@ import { UserEmailsModule } from '@121-service/src/user/user-emails/user-emails.
       PermissionEntity,
     ]),
     ProgramAidworkerAssignmentsModule,
-    ProgramRegistrationAttributesModule,
+    AccessGroupLevelsModule,
     UserEmailsModule,
   ],
   providers: [UserService, UserAccessGroupAssignmentsService],

@@ -2,6 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import { AccessGroupLevelEntity } from '@121-service/src/programs/access-group-levels/access-group-level.entity';
+import { AccessGroupLevelAttribute } from '@121-service/src/programs/access-group-levels/interfaces/access-group-level-attribute.interface';
 
 export class AccessGroupLevelRepository extends Repository<AccessGroupLevelEntity> {
   constructor(
@@ -15,20 +16,38 @@ export class AccessGroupLevelRepository extends Repository<AccessGroupLevelEntit
     );
   }
 
-  public async findOrderedAttributeNamesByProgramId({
+  public async getOrderedAttributeNamesByProgramId({
     programId,
   }: {
     programId: number;
   }): Promise<string[]> {
+    const attributes = await this.getOrderedAttributesByProgramId({
+      programId,
+    });
+
+    return attributes.map(({ name }) => name);
+  }
+
+  public async getOrderedAttributesByProgramId({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<AccessGroupLevelAttribute[]> {
     const accessGroupLevels = await this.find({
       where: { programId: Equal(programId) },
       relations: { programRegistrationAttribute: true },
       order: { level: 'ASC' },
     });
 
-    return accessGroupLevels.map(
-      (accessGroupLevel) => accessGroupLevel.programRegistrationAttribute.name,
-    );
+    return accessGroupLevels.map(({ programRegistrationAttribute }) => ({
+      programRegistrationAttributeId: programRegistrationAttribute.id,
+      name: programRegistrationAttribute.name,
+      optionValues: new Set(
+        (programRegistrationAttribute.options ?? []).map(
+          ({ option }) => option,
+        ),
+      ),
+    }));
   }
 
   public async replaceForProgram({

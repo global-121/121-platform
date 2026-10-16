@@ -24,4 +24,20 @@ export class ProgramAidworkerAssignmentRepository extends Repository<ProgramAidw
     });
     return assignment !== null;
   }
+
+  public async getUserIdsWithAccessGroups({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<Set<number>> {
+    const assignments = await this.find({
+      where: {
+        programId: Equal(programId),
+        accessGroups: { id: Not(IsNull()) },
+      },
+      select: { userId: true },
+    });
+
+    return new Set(assignments.map(({ userId }) => userId));
+  }
 }
