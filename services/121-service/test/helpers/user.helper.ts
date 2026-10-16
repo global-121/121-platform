@@ -1,5 +1,6 @@
 import * as request from 'supertest';
 
+import { AssignedAccessGroupDto } from '@121-service/src/user/dto/assigned-access-group.dto';
 import { getServer } from '@121-service/test/helpers/utility.helper';
 
 export async function getUserRoles(
@@ -27,17 +28,33 @@ export async function getAllUsersByProgramId({
     .send();
 }
 
+export async function getUserProgramAssignment({
+  programId,
+  userId,
+  accessToken,
+}: {
+  programId: number;
+  userId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}/users/${userId}`)
+    .set('Cookie', [accessToken]);
+}
+
 export async function createUserProgramAssignment({
   programId,
   userId,
   roles,
   scope,
+  accessGroups,
   accessToken,
 }: {
   programId: number;
   userId: number;
   roles?: string[];
   scope?: string;
+  accessGroups?: AssignedAccessGroupDto[];
   accessToken: string;
 }): Promise<request.Response> {
   return await getServer()
@@ -46,6 +63,7 @@ export async function createUserProgramAssignment({
     .send({
       roles,
       scope,
+      accessGroups,
     });
 }
 
@@ -54,12 +72,14 @@ export async function updateUserProgramAssignment({
   userId,
   roles,
   scope,
+  accessGroups,
   accessToken,
 }: {
   programId: number;
   userId: number;
   roles?: string[];
   scope?: string;
+  accessGroups?: AssignedAccessGroupDto[];
   accessToken: string;
 }): Promise<request.Response> {
   return await getServer()
@@ -68,6 +88,7 @@ export async function updateUserProgramAssignment({
     .send({
       rolesToAdd: roles,
       scope,
+      accessGroups,
     });
 }
 

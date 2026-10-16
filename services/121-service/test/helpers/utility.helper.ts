@@ -434,11 +434,13 @@ export async function createUserAssignedToProgram({
   programId,
   roles,
   scope,
+  accessGroups,
   adminAccessToken,
 }: {
   programId: number;
   roles: DefaultUserRole[];
   scope?: string;
+  accessGroups?: AssignedAccessGroupDto[];
   adminAccessToken: string;
 }): Promise<number> {
   const uniqueId = generateUniqueTestId();
@@ -461,6 +463,7 @@ export async function createUserAssignedToProgram({
     userId,
     roles,
     scope,
+    accessGroups,
     adminAccessToken,
   });
 

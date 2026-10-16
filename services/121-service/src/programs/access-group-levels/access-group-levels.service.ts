@@ -3,6 +3,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AccessGroupLevelRepository } from '@121-service/src/programs/access-group-levels/access-group-level.repository';
 import { MAX_ACCESS_GROUP_LEVELS } from '@121-service/src/programs/access-group-levels/const/max-access-group-levels.const';
 import { AccessGroupAttributeUpdate } from '@121-service/src/programs/access-group-levels/interfaces/access-group-attribute-update.interface';
+import { AccessGroupLevelAttribute } from '@121-service/src/programs/access-group-levels/interfaces/access-group-level-attribute.interface';
 import { AccessGroupRegistrationAttribute } from '@121-service/src/programs/access-group-levels/interfaces/access-group-registration-attribute.interface';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationAttributeDataRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-attribute-data.repository';
@@ -51,9 +52,19 @@ export class AccessGroupLevelsService {
   }: {
     programId: number;
   }): Promise<string[]> {
-    return this.accessGroupLevelRepository.findOrderedAttributeNamesByProgramId(
+    return this.accessGroupLevelRepository.getOrderedAttributeNamesByProgramId(
       { programId },
     );
+  }
+
+  public async getAccessGroupLevelAttributes({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<AccessGroupLevelAttribute[]> {
+    return this.accessGroupLevelRepository.getOrderedAttributesByProgramId({
+      programId,
+    });
   }
 
   public validateAccessGroupRegistrationAttributeNames({
