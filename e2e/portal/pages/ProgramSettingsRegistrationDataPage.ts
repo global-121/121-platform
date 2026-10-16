@@ -24,6 +24,10 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
   readonly deduplicationCardEditButton: Locator;
   readonly deduplicationCardCancelButton: Locator;
   readonly deduplicationCardSaveButton: Locator;
+  readonly fullNameCardDatalist: Locator;
+  readonly fullNameCardMultiselect: Locator;
+  readonly fullNameCardEditButton: Locator;
+  readonly fullNameCardSaveButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -68,6 +72,18 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
     );
     this.deduplicationCardSaveButton = this.page.getByTestId(
       'deduplication-card-save-button',
+    );
+    this.fullNameCardDatalist = this.page.getByTestId(
+      'full-name-card-datalist',
+    );
+    this.fullNameCardMultiselect = this.page.getByTestId(
+      'full-name-card-multiselect',
+    );
+    this.fullNameCardEditButton = this.page.getByTestId(
+      'full-name-card-edit-button',
+    );
+    this.fullNameCardSaveButton = this.page.getByTestId(
+      'full-name-card-save-button',
     );
   }
 
@@ -417,6 +433,40 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
 
     await validateComponentVisibility({
       component: this.deduplicationCardMultiselect,
+      visible: false,
+    });
+  }
+
+  async validateFullNameCardNoFieldSelected() {
+    await expect(this.fullNameCardDatalist).toContainText(
+      'No name field selected',
+    );
+  }
+
+  // Also asserts the order of the fields
+  async validateFullNameCardFields({ nameFields }: { nameFields: string[] }) {
+    await expect(this.fullNameCardDatalist.locator('ol li')).toHaveText(
+      nameFields,
+    );
+  }
+
+  async editFullNameFields({ nameFields }: { nameFields: string[] }) {
+    await this.fullNameCardEditButton.click();
+
+    await validateComponentVisibility({
+      component: this.fullNameCardMultiselect,
+      visible: true,
+    });
+
+    await this.selectMultiselectOptions({
+      dropdownTestId: 'full-name-card-multiselect',
+      optionsToClick: nameFields,
+    });
+
+    await this.fullNameCardSaveButton.click();
+
+    await validateComponentVisibility({
+      component: this.fullNameCardMultiselect,
       visible: false,
     });
   }
