@@ -26,6 +26,36 @@ describe('RegistrationViewsMapper', () => {
 
       expect(result).toBe('');
     });
+
+    it('should skip empty name fields so the name has no stray spaces', () => {
+      const rowWithEmptyNameFields = {
+        firstName: 'Jane',
+        middleName: '',
+        lastName: null,
+        nickname: undefined,
+      } as any;
+
+      const result = RegistrationViewsMapper.mapNameUsingNamingConvention(
+        rowWithEmptyNameFields,
+        ['firstName', 'middleName', 'lastName', 'nickname'],
+      );
+
+      expect(result).toBe('Jane');
+    });
+
+    it('should trim whitespace around name fields', () => {
+      const rowWithPaddedNameFields = {
+        firstName: ' Jane ',
+        lastName: '  ',
+      } as any;
+
+      const result = RegistrationViewsMapper.mapNameUsingNamingConvention(
+        rowWithPaddedNameFields,
+        ['firstName', 'lastName'],
+      );
+
+      expect(result).toBe('Jane');
+    });
   });
 
   describe('replaceDropdownValuesWithEnglishLabel', () => {

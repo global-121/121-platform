@@ -90,4 +90,21 @@ describe('Update program', () => {
       fullnameNamingConvention,
     );
   });
+
+  it('should store a null fullnameNamingConvention as an empty array', async () => {
+    // Act
+    const updateProgramResponse = await patchProgram(
+      2,
+      { fullnameNamingConvention: null },
+      accessToken,
+    );
+    const getProgramResponse = await getProgram(2, accessToken);
+
+    // Assert
+    expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
+    expect(updateProgramResponse.body.fullnameNamingConvention).toStrictEqual(
+      [],
+    );
+    expect(getProgramResponse.body.fullnameNamingConvention).toStrictEqual([]);
+  });
 });

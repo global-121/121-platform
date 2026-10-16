@@ -2,8 +2,8 @@ import { omit } from 'lodash';
 
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import {
-  RegistrationDataInfo,
-  RegistrationDataRelation,
+    RegistrationDataInfo,
+    RegistrationDataRelation,
 } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -107,12 +107,15 @@ export class RegistrationViewsMapper {
     registrationRow: Partial<RegistrationViewEntity>,
     fullnameNamingConvention: string[],
   ): string {
-    const fullnameConcat: string[] = [];
-    const nameColumns = JSON.parse(JSON.stringify(fullnameNamingConvention));
-    for (const nameColumn of nameColumns) {
-      fullnameConcat.push(registrationRow[nameColumn]);
+    const rowValues = registrationRow as Record<string, unknown>;
+    const nameParts: string[] = [];
+    for (const nameColumn of fullnameNamingConvention) {
+      const namePart = String(rowValues[nameColumn] ?? '').trim();
+      if (namePart) {
+        nameParts.push(namePart);
+      }
     }
-    return fullnameConcat.join(' ');
+    return nameParts.join(' ');
   }
 
   static replaceDropdownValuesWithEnglishLabel({

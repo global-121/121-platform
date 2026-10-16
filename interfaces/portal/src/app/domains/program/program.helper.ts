@@ -43,7 +43,11 @@ export const programNeedsFullNameSetup = (program?: Program): boolean => {
     return false;
   }
 
-  return !program.fullnameNamingConvention?.length;
+  if (!program.fullnameNamingConvention) {
+    return true;
+  }
+
+  return program.fullnameNamingConvention.length === 0;
 };
 
 export const fspConfigurationNamesHaveIntegrationType = ({

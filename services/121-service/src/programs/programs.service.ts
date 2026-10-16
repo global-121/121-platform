@@ -423,6 +423,10 @@ export class ProgramService {
       program[key] = updateProgramDto[key];
     }
 
+    if (updateProgramDto.fullnameNamingConvention === null) {
+      program.fullnameNamingConvention = [];
+    }
+
     const savedProgram = await this.programRepository.save(program);
 
     const programDto: ProgramReturnDto =
