@@ -14,6 +14,7 @@ import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticat
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRequestData } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
+import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 
 const loggingLevel: 'error' | 'info' | 'warn' | undefined = 'error'; // Separate variable for typing purposes
 
@@ -42,6 +43,7 @@ export class AzureAdStrategy
   implements OnModuleInit
 {
   private userService: UserService;
+  private userAccessGroupAssignmentsService: UserAccessGroupAssignmentsService;
   constructor(private moduleRef: ModuleRef) {
     super({
       identityMetadata: `https://${config.metadata.authority}/common/${config.metadata.version}/${config.metadata.discovery}`,
@@ -59,6 +61,10 @@ export class AzureAdStrategy
     this.userService = await this.moduleRef.resolve(UserService, contextId, {
       strict: false,
     });
+    this.userAccessGroupAssignmentsService = this.moduleRef.get(
+      UserAccessGroupAssignmentsService,
+      { strict: false },
+    );
   }
 
   async validate(request: any, payload: any): Promise<any> {
@@ -91,7 +97,7 @@ export class AzureAdStrategy
     try {
       // Try to find user by username (this is an email address in our case)
       user = await this.userService.findByUsernameOrThrow(username, {
-        programAssignments: true,
+        programAssignments: { accessGroups: true },
       });
 
       if (!user.isEntraUser) {
@@ -154,6 +160,12 @@ export class AzureAdStrategy
       scope: request.params.programId
         ? this.userService.getScopeForUser(user, request.params.programId)
         : '',
+      accessGroups: request.params.programId
+        ? this.userAccessGroupAssignmentsService.getAccessGroupsForUser({
+            programAssignments: user.programAssignments,
+            programId: request.params.programId,
+          })
+        : [],
       isOrganizationAdmin: payload.isOrganizationAdmin,
     };
     return userToken;

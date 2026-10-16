@@ -167,7 +167,9 @@ export class RegistrationDataService {
   ): Promise<void> {
     const existingEntry = await this.registrationDataScopedRepository
       .createQueryBuilder('registrationData')
-      .andWhere('"registrationId" = :regId', { regId: registration.id })
+      .andWhere('registrationData.registrationId = :regId', {
+        regId: registration.id,
+      })
       .leftJoin(
         'registrationData.programRegistrationAttribute',
         'programRegistrationAttribute',

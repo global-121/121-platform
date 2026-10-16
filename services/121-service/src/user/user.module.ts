@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { ProgramRegistrationAttributesModule } from '@121-service/src/program-registration-attributes/program-registration-attributes.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentsModule } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignments.module';
 import { RolesController } from '@121-service/src/user/controllers/roles.controller';
@@ -10,6 +11,7 @@ import { PermissionEntity } from '@121-service/src/user/entities/permissions.ent
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { UserService } from '@121-service/src/user/user.service';
+import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 import { UserEmailsModule } from '@121-service/src/user/user-emails/user-emails.module';
 
 @Module({
@@ -21,10 +23,11 @@ import { UserEmailsModule } from '@121-service/src/user/user-emails/user-emails.
       PermissionEntity,
     ]),
     ProgramAidworkerAssignmentsModule,
+    ProgramRegistrationAttributesModule,
     UserEmailsModule,
   ],
-  providers: [UserService],
+  providers: [UserService, UserAccessGroupAssignmentsService],
   controllers: [UserController, UserAssignmentsController, RolesController],
-  exports: [UserService],
+  exports: [UserService, UserAccessGroupAssignmentsService],
 })
 export class UserModule {}
