@@ -3,6 +3,61 @@ import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/r
 
 // TODO: Add more unit tests for this mapper class
 describe('RegistrationViewsMapper', () => {
+  describe('mapNameUsingNamingConvention', () => {
+    const registrationRow = {
+      firstName: 'Jane',
+      lastName: 'Doe',
+    } as any;
+
+    it('should join the name fields in the order of the naming convention', () => {
+      const result = RegistrationViewsMapper.mapNameUsingNamingConvention(
+        registrationRow,
+        ['lastName', 'firstName'],
+      );
+
+      expect(result).toBe('Doe Jane');
+    });
+
+    it('should return an empty string for an empty naming convention', () => {
+      const result = RegistrationViewsMapper.mapNameUsingNamingConvention(
+        registrationRow,
+        [],
+      );
+
+      expect(result).toBe('');
+    });
+
+    it('should skip empty name fields so the name has no stray spaces', () => {
+      const rowWithEmptyNameFields = {
+        firstName: 'Jane',
+        middleName: '',
+        lastName: null,
+        nickname: undefined,
+      } as any;
+
+      const result = RegistrationViewsMapper.mapNameUsingNamingConvention(
+        rowWithEmptyNameFields,
+        ['firstName', 'middleName', 'lastName', 'nickname'],
+      );
+
+      expect(result).toBe('Jane');
+    });
+
+    it('should trim whitespace around name fields', () => {
+      const rowWithPaddedNameFields = {
+        firstName: ' Jane ',
+        lastName: '  ',
+      } as any;
+
+      const result = RegistrationViewsMapper.mapNameUsingNamingConvention(
+        rowWithPaddedNameFields,
+        ['firstName', 'lastName'],
+      );
+
+      expect(result).toBe('Jane');
+    });
+  });
+
   describe('replaceDropdownValuesWithEnglishLabel', () => {
     it('should replace dropdown values with English label', () => {
       const colorAttrName = 'color';

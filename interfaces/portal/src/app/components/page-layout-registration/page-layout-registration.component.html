@@ -23,6 +23,10 @@
     >
       <h1 data-testid="registration-title">
         {{ registrationTitle() }}
+        @if (isFullNameSetupNeeded()) {
+          -
+          <app-full-name-setup-needed-chip class="txt-body-m align-middle" />
+        }
       </h1>
 
       @if (registration.isSuccess() && canViewPersonalData()) {

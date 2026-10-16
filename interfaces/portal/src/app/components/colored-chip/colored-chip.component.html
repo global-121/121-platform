@@ -3,4 +3,12 @@
   [icon]="icon()"
   [pTooltip]="tooltip()"
   [class]="styleClass()"
-/>
+>
+  @let tooltipData = infoTooltipData();
+  @if (tooltipData) {
+    <app-info-tooltip
+      class="order-last flex items-center [&_sup]:inset-bs-0"
+      [infoTooltipData]="tooltipData"
+    />
+  }
+</p-chip>
