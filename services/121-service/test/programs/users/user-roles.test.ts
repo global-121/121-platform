@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
-import { createOrReplaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
+import { assignUserAsApprover } from '@121-service/test/helpers/program-approval-threshold.helper';
 import {
   createUserProgramAssignment,
   updateUserProgramAssignment,
@@ -131,16 +131,7 @@ describe('Programs / Users / Roles', () => {
 
     it('should throw when adding scope to assignment for user that is an approver in the program', async () => {
       // Arrange
-      await createOrReplaceProgramApprovalThresholds({
-        programId,
-        thresholds: [
-          {
-            thresholdAmount: 0,
-            userIds: [userId],
-          },
-        ],
-        accessToken,
-      });
+      await assignUserAsApprover({ programId, userId, accessToken });
 
       const testScope = 'test-scope';
       const testRoles = ['view']; // any role will do

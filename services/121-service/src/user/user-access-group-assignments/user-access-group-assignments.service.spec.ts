@@ -1,131 +1,300 @@
 import { HttpStatus } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 
-import { AccessGroupLevelRepository } from '@121-service/src/programs/access-group-levels/access-group-level.repository';
+import { AccessGroupLevelsService } from '@121-service/src/programs/access-group-levels/access-group-levels.service';
+import { AccessGroupLevelAttribute } from '@121-service/src/programs/access-group-levels/interfaces/access-group-level-attribute.interface';
+import { ProgramAidworkerAssignmentAccessGroupEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment-access-group.entity';
 import { ProgramAidworkerAssignmentAccessGroupRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment-access-group.repository';
 import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
-
-let mockIsProduction = false;
-jest.mock('@121-service/src/config', () => ({
-  ...jest.requireActual<Record<string, unknown>>('@121-service/src/config'),
-  get IS_PRODUCTION(): boolean {
-    return mockIsProduction;
-  },
-}));
 
 describe('UserAccessGroupAssignmentsService', () => {
   const programId = 5;
   const countyAttributeId = 11;
+  const subCountyAttributeId = 12;
+  const wardAttributeId = 13;
   const countyLevelId = 21;
   const subCountyLevelId = 22;
+  const wardLevelId = 23;
+
+  // Highest level first
+  const levels: AccessGroupLevelAttribute[] = [
+    {
+      id: countyLevelId,
+      programRegistrationAttributeId: countyAttributeId,
+      name: 'county',
+      optionValues: ['kisumu', 'nairobi'],
+    },
+    {
+      id: subCountyLevelId,
+      programRegistrationAttributeId: subCountyAttributeId,
+      name: 'subCounty',
+      optionValues: ['kisumu-west', 'kisumu-east'],
+    },
+    {
+      id: wardLevelId,
+      programRegistrationAttributeId: wardAttributeId,
+      name: 'ward',
+      optionValues: ['central'],
+    },
+  ];
 
   let service: UserAccessGroupAssignmentsService;
-  let assignmentAccessGroupRepository: jest.Mocked<ProgramAidworkerAssignmentAccessGroupRepository>;
+  let accessGroupLevelsService: jest.Mocked<
+    Pick<AccessGroupLevelsService, 'getAccessGroupLevelAttributes'>
+  >;
+  let assignmentAccessGroupRepository: jest.Mocked<
+    Pick<
+      ProgramAidworkerAssignmentAccessGroupRepository,
+      'replaceForAssignment' | 'find'
+    >
+  >;
 
   beforeEach(async () => {
-    mockIsProduction = false;
     const module = await Test.createTestingModule({
       providers: [
         UserAccessGroupAssignmentsService,
         {
-          provide: AccessGroupLevelRepository,
+          provide: AccessGroupLevelsService,
           useValue: {
-            getIdsByAttributeNames: jest.fn().mockResolvedValue(
-              new Map([
-                ['county', countyLevelId],
-                ['subCounty', subCountyLevelId],
-              ]),
-            ),
+            getAccessGroupLevelAttributes: jest.fn().mockResolvedValue(levels),
           },
         },
         {
           provide: ProgramAidworkerAssignmentAccessGroupRepository,
-          useValue: { replaceForAssignment: jest.fn() },
+          useValue: { replaceForAssignment: jest.fn(), find: jest.fn() },
         },
       ],
     }).compile();
 
     service = module.get(UserAccessGroupAssignmentsService);
+    accessGroupLevelsService = module.get(AccessGroupLevelsService);
     assignmentAccessGroupRepository = module.get(
       ProgramAidworkerAssignmentAccessGroupRepository,
     );
   });
 
-  describe('Getting the access groups of a program assignment with level ids', () => {
-    it('should return undefined when no access groups are given', async () => {
+  describe('Validating and resolving the access groups of a program assignment', () => {
+    const accessGroup = (name: string, value: string) => ({
+      programRegistrationAttributeName: name,
+      value,
+    });
+
+    it('should return undefined and not look up the levels when no access groups are given', async () => {
       // Act
-      const result = await service.getAccessGroupsWithLevelIdsOrThrow({
+      const result = await service.validateAndResolveAccessGroups({
         programId,
         accessGroups: undefined,
       });
 
       // Assert
       expect(result).toBeUndefined();
+      expect(
+        accessGroupLevelsService.getAccessGroupLevelAttributes,
+      ).not.toHaveBeenCalled();
     });
 
-    it('should replace the attribute names by level ids, keeping order and values', async () => {
+    it('should return no access groups and not look up the levels when an empty list is given', async () => {
       // Act
-      const result = await service.getAccessGroupsWithLevelIdsOrThrow({
+      const result = await service.validateAndResolveAccessGroups({
+        programId,
+        accessGroups: [],
+      });
+
+      // Assert
+      expect(result).toEqual([]);
+      expect(
+        accessGroupLevelsService.getAccessGroupLevelAttributes,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should replace the attribute names by level ids, keeping the order of the payload', async () => {
+      // Act
+      const result = await service.validateAndResolveAccessGroups({
         programId,
         accessGroups: [
-          { programRegistrationAttributeName: 'county', value: 'kisumu' },
-          {
-            programRegistrationAttributeName: 'subCounty',
-            value: 'kisumu-west',
-          },
+          accessGroup('subCounty', 'kisumu-west'),
+          accessGroup('county', 'kisumu'),
         ],
       });
 
       // Assert
       expect(result).toEqual([
-        { accessGroupLevelId: countyLevelId, value: 'kisumu' },
         { accessGroupLevelId: subCountyLevelId, value: 'kisumu-west' },
+        { accessGroupLevelId: countyLevelId, value: 'kisumu' },
       ]);
     });
 
-    it('should throw when an attribute is not configured as an access group level', async () => {
+    it('should throw when no access group levels are configured for the program', async () => {
+      // Arrange
+      accessGroupLevelsService.getAccessGroupLevelAttributes.mockResolvedValue(
+        [],
+      );
+
       // Act & Assert
       await expect(
-        service.getAccessGroupsWithLevelIdsOrThrow({
+        service.validateAndResolveAccessGroups({
+          programId,
+          accessGroups: [accessGroup('county', 'kisumu')],
+        }),
+      ).rejects.toMatchObject({
+        status: HttpStatus.BAD_REQUEST,
+        message: `No access group levels are configured for program ${programId}`,
+      });
+    });
+
+    it('should throw when an attribute is not an access group level of the program', async () => {
+      // Act & Assert
+      await expect(
+        service.validateAndResolveAccessGroups({
+          programId,
+          accessGroups: [accessGroup('unknown', 'kisumu')],
+        }),
+      ).rejects.toMatchObject({
+        status: HttpStatus.BAD_REQUEST,
+        message: `Registration attribute 'unknown' is not an access group level of program ${programId}`,
+      });
+    });
+
+    it('should throw when the same level is provided more than once', async () => {
+      // Act & Assert
+      await expect(
+        service.validateAndResolveAccessGroups({
           programId,
           accessGroups: [
-            { programRegistrationAttributeName: 'unknown', value: 'kisumu' },
+            accessGroup('county', 'kisumu'),
+            accessGroup('county', 'nairobi'),
           ],
         }),
       ).rejects.toMatchObject({
         status: HttpStatus.BAD_REQUEST,
-        message: `Registration attribute 'unknown' is not configured as an access group level in program ${programId}`,
+        message: "Access group level 'county' is provided more than once",
       });
     });
 
-    it('should refuse to set access groups in production', async () => {
-      // Arrange
-      mockIsProduction = true;
-
+    it('should throw when a level in between is skipped', async () => {
       // Act & Assert
       await expect(
-        service.getAccessGroupsWithLevelIdsOrThrow({
+        service.validateAndResolveAccessGroups({
           programId,
-          accessGroups: [],
+          accessGroups: [
+            accessGroup('county', 'kisumu'),
+            accessGroup('ward', 'central'),
+          ],
         }),
       ).rejects.toMatchObject({
         status: HttpStatus.BAD_REQUEST,
-        message: 'Setting access groups is not available yet',
+        message: expect.stringContaining("Missing level: 'subCounty'"),
       });
     });
 
-    it('should not refuse an assignment without access groups in production', async () => {
+    it('should throw when the value is not an option of the level', async () => {
+      // Act & Assert
+      await expect(
+        service.validateAndResolveAccessGroups({
+          programId,
+          accessGroups: [accessGroup('county', 'mombasa')],
+        }),
+      ).rejects.toMatchObject({
+        status: HttpStatus.BAD_REQUEST,
+        message:
+          "Value 'mombasa' is not an option of access group level 'county'",
+      });
+    });
+  });
+
+  describe('Getting the access groups of an assignment', () => {
+    const programAidworkerAssignmentId = 100;
+    const storedAccessGroup = (
+      name: string,
+      value: string,
+      assignmentId = programAidworkerAssignmentId,
+    ) => ({
+      programAidworkerAssignmentId: assignmentId,
+      value,
+      accessGroupLevel: { programRegistrationAttribute: { name } },
+    });
+
+    const mockStoredAccessGroups = (
+      storedAccessGroups: ReturnType<typeof storedAccessGroup>[],
+    ): void => {
+      assignmentAccessGroupRepository.find.mockResolvedValue(
+        storedAccessGroups as unknown as ProgramAidworkerAssignmentAccessGroupEntity[],
+      );
+    };
+
+    it('should return no access groups when the assignment has none', async () => {
       // Arrange
-      mockIsProduction = true;
+      mockStoredAccessGroups([]);
 
       // Act
-      const result = await service.getAccessGroupsWithLevelIdsOrThrow({
-        programId,
-        accessGroups: undefined,
+      const result = await service.getAccessGroupsOfAssignment({
+        programAidworkerAssignmentId,
       });
 
       // Assert
-      expect(result).toBeUndefined();
+      expect(result).toEqual([]);
+    });
+
+    it('should return the access groups in the order they are read, which is from the highest level down', async () => {
+      // Arrange
+      mockStoredAccessGroups([
+        storedAccessGroup('county', 'kisumu'),
+        storedAccessGroup('subCounty', 'kisumu-west'),
+      ]);
+
+      // Act
+      const result = await service.getAccessGroupsOfAssignment({
+        programAidworkerAssignmentId,
+      });
+
+      // Assert
+      expect(assignmentAccessGroupRepository.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          order: { accessGroupLevel: { level: 'ASC' } },
+        }),
+      );
+      expect(result).toEqual([
+        { programRegistrationAttributeName: 'county', value: 'kisumu' },
+        {
+          programRegistrationAttributeName: 'subCounty',
+          value: 'kisumu-west',
+        },
+      ]);
+    });
+
+    it('should get the access groups for multiple assignments in one lookup', async () => {
+      // Arrange
+      mockStoredAccessGroups([
+        storedAccessGroup('county', 'kisumu', 100),
+        storedAccessGroup('county', 'nairobi', 101),
+        storedAccessGroup('subCounty', 'kisumu-west', 100),
+      ]);
+
+      // Act
+      const result = await service.getAccessGroupsByAssignmentId({
+        programAidworkerAssignmentIds: [100, 101],
+      });
+
+      // Assert
+      expect(assignmentAccessGroupRepository.find).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(
+        new Map([
+          [
+            100,
+            [
+              { programRegistrationAttributeName: 'county', value: 'kisumu' },
+              {
+                programRegistrationAttributeName: 'subCounty',
+                value: 'kisumu-west',
+              },
+            ],
+          ],
+          [
+            101,
+            [{ programRegistrationAttributeName: 'county', value: 'nairobi' }],
+          ],
+        ]),
+      );
     });
   });
 
