@@ -26,6 +26,32 @@ export async function createOrReplaceProgramApprovalThresholds({
     .send(thresholds);
 }
 
+/**
+ * Replaces the thresholds with a single threshold of 0, with the user as the only approver.
+ * Throws when it fails, so it can be used to arrange a test.
+ */
+export async function assignUserAsApprover({
+  programId,
+  userId,
+  accessToken,
+}: {
+  programId: number;
+  userId: number;
+  accessToken: string;
+}): Promise<void> {
+  const response = await createOrReplaceProgramApprovalThresholds({
+    programId,
+    thresholds: [{ thresholdAmount: 0, userIds: [userId] }],
+    accessToken,
+  });
+
+  if (response.status !== HttpStatus.CREATED) {
+    throw new Error(
+      `Failed to assign user as approver: ${response.status} - ${JSON.stringify(response.body)}`,
+    );
+  }
+}
+
 export async function getProgramApprovalThresholds({
   programId,
   accessToken,
