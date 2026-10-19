@@ -260,6 +260,46 @@ describe('ProgramRegistrationAttributesService', () => {
       ]);
     });
 
+    it('should keep the type a user changed when the attribute is upserted from Kobo again', async () => {
+      // Arrange
+      const programId = 1;
+      const existingEntity = createAttributeEntity({
+        id: 10,
+        name: 'firstName',
+        type: RegistrationAttributeTypes.numeric, // changed by a user
+        label: { en: 'Old Label' },
+      });
+
+      const updateFromKobo = createAttributeDto({
+        name: 'firstName',
+        type: RegistrationAttributeTypes.text, // what Kobo reports
+        label: { en: 'Updated First Name' },
+      });
+
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'find')
+        .mockResolvedValue([existingEntity]);
+
+      const saveSpy = jest
+        .spyOn(programRegistrationAttributeRepository, 'save')
+        .mockImplementation(async (entities: any) => entities);
+
+      // Act
+      await programRegistrationAttributesService.upsertProgramRegistrationAttributes(
+        {
+          programId,
+          programRegistrationAttributes: [updateFromKobo],
+        },
+      );
+
+      // Assert
+      const savedEntities = saveSpy.mock.calls[0][0];
+      expect(savedEntities).toHaveLength(1);
+      expect(savedEntities[0].type).toBe(RegistrationAttributeTypes.numeric);
+      // Proves the refresh still applied the other changes
+      expect(savedEntities[0].label).toEqual({ en: 'Updated First Name' });
+    });
+
     it('should not remove options missing from the update when the update does include options', async () => {
       // Arrange
       const programId = 1;
