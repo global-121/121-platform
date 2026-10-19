@@ -1,6 +1,8 @@
 import { TestBed } from '@automock/jest';
 import { HttpStatus } from '@nestjs/common';
 
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
+import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.repository';
@@ -9,6 +11,7 @@ import { ProgramApprovalThresholdsService } from '@121-service/src/programs/prog
 describe('ProgramApprovalThresholdsService', () => {
   let service: ProgramApprovalThresholdsService;
   let programApprovalThresholdRepository: jest.Mocked<ProgramApprovalThresholdRepository>;
+  let programAidworkerAssignmentRepository: jest.Mocked<ProgramAidworkerAssignmentRepository>;
 
   const programId = 1;
 
@@ -32,6 +35,12 @@ describe('ProgramApprovalThresholdsService', () => {
     service = unit;
     programApprovalThresholdRepository = unitRef.get(
       ProgramApprovalThresholdRepository,
+    );
+    programAidworkerAssignmentRepository = unitRef.get(
+      ProgramAidworkerAssignmentRepository,
+    );
+    programAidworkerAssignmentRepository.getUserIdsWithAccessGroups.mockResolvedValue(
+      new Set(),
     );
   });
 
@@ -121,6 +130,35 @@ describe('ProgramApprovalThresholdsService', () => {
           currentUserId,
         }),
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should throw when an approver has access groups', async () => {
+      // Arrange
+      const userIdWithAccessGroups = 5;
+      programAidworkerAssignmentRepository.find.mockResolvedValue([
+        { userId: userIdWithAccessGroups, scope: '' },
+      ] as ProgramAidworkerAssignmentEntity[]);
+      programAidworkerAssignmentRepository.getUserIdsWithAccessGroups.mockResolvedValue(
+        new Set([userIdWithAccessGroups]),
+      );
+      const thresholds: CreateProgramApprovalThresholdDto[] = [
+        { thresholdAmount: 0, userIds: [userIdWithAccessGroups] },
+      ];
+
+      // Act
+      const result = service.createOrReplaceProgramApprovalThresholds({
+        programId,
+        thresholds,
+        currentUserId,
+      });
+
+      // Assert
+      await expect(result).rejects.toBeHttpExceptionWithStatus(
+        HttpStatus.BAD_REQUEST,
+      );
+      await expect(result).rejects.toThrow(
+        `Only users without access groups can be made approvers. The following user IDs have access groups and cannot be approvers: ${userIdWithAccessGroups}`,
+      );
     });
   });
 

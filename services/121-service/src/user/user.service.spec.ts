@@ -38,8 +38,10 @@ describe('UserService', () => {
         {
           provide: UserAccessGroupAssignmentsService,
           useValue: {
-            getAccessGroupsWithAttributeIdsOrThrow: jest.fn(),
+            validateAndResolveAccessGroups: jest.fn(),
             replaceAccessGroups: jest.fn(),
+            getAccessGroupsOfAssignment: jest.fn().mockResolvedValue([]),
+            getAccessGroupsByAssignmentId: jest.fn().mockResolvedValue(new Map()),
           },
         },
         {
@@ -1115,6 +1117,7 @@ describe('UserService', () => {
   describe('getUsersInProgram', () => {
     function createRawUser({ scope }: { scope: string }): {
       id: number;
+      assignmentid: number;
       username: string;
       admin: boolean;
       active: boolean;
@@ -1126,6 +1129,7 @@ describe('UserService', () => {
     } {
       return {
         id: 1,
+        assignmentid: 100,
         username: 'user@example.org',
         admin: false,
         active: true,
@@ -1146,6 +1150,7 @@ describe('UserService', () => {
         andWhere: jest.fn().mockReturnThis(),
         select: jest.fn().mockReturnThis(),
         groupBy: jest.fn().mockReturnThis(),
+        addGroupBy: jest.fn().mockReturnThis(),
         getRawMany: jest.fn().mockResolvedValue(rawUsers),
       };
 
@@ -1177,6 +1182,46 @@ describe('UserService', () => {
       // Assert
       expect(result[0].isEligiblePaymentApprover).toBe(false);
     });
+
+    it('should set isEligiblePaymentApprover=false for unscoped assignments with access groups', async () => {
+      // Arrange
+      mockQueryBuilder([createRawUser({ scope: '' })]);
+      jest
+        .spyOn(
+          userAccessGroupAssignmentsService,
+          'getAccessGroupsByAssignmentId',
+        )
+        .mockResolvedValue(
+          new Map([[100, [{ programRegistrationAttributeName: 'county', value: 'kisumu' }]]]),
+        );
+
+      // Act
+      const result = await service.getUsersInProgram(1);
+
+      // Assert
+      expect(result[0].isEligiblePaymentApprover).toBe(false);
+    });
+
+    it('should include the ordered access groups for each user', async () => {
+      // Arrange
+      mockQueryBuilder([createRawUser({ scope: '' })]);
+      const accessGroups = [
+        { programRegistrationAttributeName: 'county', value: 'kisumu' },
+        { programRegistrationAttributeName: 'subCounty', value: 'kisumu-west' },
+      ];
+      jest
+        .spyOn(
+          userAccessGroupAssignmentsService,
+          'getAccessGroupsByAssignmentId',
+        )
+        .mockResolvedValue(new Map([[100, accessGroups]]));
+
+      // Act
+      const result = await service.getUsersInProgram(1);
+
+      // Assert
+      expect(result[0].accessGroups).toEqual(accessGroups);
+    });
   });
 
   describe('access groups of a program assignment', () => {
@@ -1207,7 +1252,7 @@ describe('UserService', () => {
       jest
         .spyOn(assignmentRepository, 'save')
         .mockResolvedValue({ id: newAssignmentId } as never);
-      userAccessGroupAssignmentsService.getAccessGroupsWithAttributeIdsOrThrow.mockResolvedValue(
+      userAccessGroupAssignmentsService.validateAndResolveAccessGroups.mockResolvedValue(
         accessGroupsWithAttributeIds,
       );
     }
@@ -1253,7 +1298,7 @@ describe('UserService', () => {
     it('should save nothing when the access groups are invalid', async () => {
       // Arrange
       arrangeAssignment({ hasExistingAssignment: true });
-      userAccessGroupAssignmentsService.getAccessGroupsWithAttributeIdsOrThrow.mockRejectedValue(
+      userAccessGroupAssignmentsService.validateAndResolveAccessGroups.mockRejectedValue(
         new HttpException('Invalid access groups', HttpStatus.BAD_REQUEST),
       );
 
@@ -1265,6 +1310,118 @@ describe('UserService', () => {
         }),
       ).rejects.toThrow('Invalid access groups');
       expect(assignmentRepository.save).not.toHaveBeenCalled();
+    });
+
+    describe('for an approver', () => {
+      const approverWithAccessGroupsMessage =
+        'Cannot add access groups to assignment because user is an approver for this program. Remove approver from program first (if intended) and retry.';
+
+      beforeEach(() => {
+        arrangeAssignment({ hasExistingAssignment: true });
+        jest.spyOn(assignmentRepository, 'isApprover').mockResolvedValue(true);
+      });
+
+      it('should throw and save nothing when access groups are assigned to an approver', async () => {
+        // Arrange
+        const accessGroups = [
+          { programRegistrationAttributeName: 'county', value: 'kisumu' },
+        ];
+
+        // Act & Assert
+        await expect(
+          service.assignAidworkerToProgram(programId, userId, {
+            roles: [],
+            accessGroups,
+          }),
+        ).rejects.toMatchObject({
+          status: HttpStatus.BAD_REQUEST,
+          message: approverWithAccessGroupsMessage,
+        });
+        expect(assignmentRepository.save).not.toHaveBeenCalled();
+      });
+
+      it('should throw when access groups are added to an approver while updating the assignment', async () => {
+        // Arrange
+        const accessGroups = [
+          { programRegistrationAttributeName: 'county', value: 'kisumu' },
+        ];
+
+        // Act & Assert
+        await expect(
+          service.updateAidworkerProgramAssignment(programId, userId, {
+            accessGroups,
+          }),
+        ).rejects.toMatchObject({
+          status: HttpStatus.BAD_REQUEST,
+          message: approverWithAccessGroupsMessage,
+        });
+      });
+    });
+
+    describe('in the response', () => {
+      const storedAccessGroups = [
+        { programRegistrationAttributeName: 'county', value: 'kisumu' },
+      ];
+
+      it.each([
+        { scenario: 'an existing assignment', hasExistingAssignment: true },
+        { scenario: 'a new assignment', hasExistingAssignment: false },
+      ])(
+        'should contain the stored access groups of $scenario',
+        async ({ hasExistingAssignment }) => {
+          // Arrange
+          arrangeAssignment({ hasExistingAssignment });
+          userAccessGroupAssignmentsService.getAccessGroupsOfAssignment.mockResolvedValue(
+            storedAccessGroups,
+          );
+
+          // Act
+          const result = await service.assignAidworkerToProgram(
+            programId,
+            userId,
+            { roles: [], accessGroups: [] },
+          );
+
+          // Assert
+          expect(result.accessGroups).toEqual(storedAccessGroups);
+        },
+      );
+
+      it('should contain the stored access groups when only some roles are removed from the assignment', async () => {
+        // Arrange
+        const roleToDelete = { id: 1, role: 'role-a', label: 'Role A' };
+        const roleToKeep = { id: 2, role: 'role-b', label: 'Role B' };
+        jest.spyOn(userRepository, 'findOne').mockResolvedValue({
+          id: userId,
+          programAssignments: [
+            {
+              id: existingAssignmentId,
+              program: { id: programId },
+              roles: [roleToDelete, roleToKeep],
+              scope: '',
+            },
+          ],
+        } as unknown as UserEntity);
+        jest
+          .spyOn(programRepository, 'findOneBy')
+          .mockResolvedValue({ id: programId } as ProgramEntity);
+        jest
+          .spyOn(userRoleRepository, 'find')
+          .mockResolvedValue([roleToDelete] as UserRoleEntity[]);
+        userAccessGroupAssignmentsService.getAccessGroupsOfAssignment.mockResolvedValue(
+          storedAccessGroups,
+        );
+
+        // Act
+        const result = await service.deleteAidworkerRolesOrAssignment({
+          programId,
+          userId,
+          roleNamesToDelete: [roleToDelete.role],
+        });
+
+        // Assert
+        expect(result).toMatchObject({ accessGroups: storedAccessGroups });
+      });
     });
   });
 });

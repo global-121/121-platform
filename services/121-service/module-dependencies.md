@@ -208,8 +208,8 @@ graph LR
   TransactionsModule-->TransactionEventsModule
   TransactionsModule-->UserModule
   UserEmailsModule-->EmailsModule
+  UserModule-->AccessGroupLevelsModule
   UserModule-->ProgramAidworkerAssignmentsModule
-  UserModule-->ProgramRegistrationAttributesModule
   UserModule-->UserEmailsModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule

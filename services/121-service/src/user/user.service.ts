@@ -418,7 +418,7 @@ export class UserService {
     assignAidworkerToProgram: CreateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
     const accessGroups =
-      await this.userAccessGroupAssignmentsService.getAccessGroupsWithAttributeIdsOrThrow(
+      await this.userAccessGroupAssignmentsService.validateAndResolveAccessGroups(
         {
           programId,
           accessGroups: assignAidworkerToProgram.accessGroups,
@@ -466,11 +466,11 @@ export class UserService {
     // if already assigned: add roles and scope to program assignment
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === programId) {
-        if (scope) {
-          await this.checkNoApproverOrThrow({
-            programAssignmentId: programAssignment.id,
-          });
-        }
+        await this.checkApproverHasNoRestrictionsOrThrow({
+          programAssignmentId: programAssignment.id,
+          scope,
+          accessGroups,
+        });
         programAssignment.roles = newRoles;
         programAssignment.scope = scope;
         await this.assignmentRepository.save(programAssignment);
@@ -481,6 +481,10 @@ export class UserService {
         response.roles = programAssignment.roles.map((role) =>
           this.getUserRoleResponse(role),
         );
+        response.accessGroups =
+          await this.userAccessGroupAssignmentsService.getAccessGroupsOfAssignment(
+            { programAidworkerAssignmentId: programAssignment.id, programId },
+          );
         return response;
       }
     }
@@ -497,6 +501,11 @@ export class UserService {
       accessGroups,
     });
     response.roles = newRoles.map((role) => this.getUserRoleResponse(role));
+    response.accessGroups =
+      await this.userAccessGroupAssignmentsService.getAccessGroupsOfAssignment({
+        programAidworkerAssignmentId: newAssignment.id,
+        programId,
+      });
     return response;
   }
 
@@ -534,19 +543,37 @@ export class UserService {
     });
   }
 
-  private async checkNoApproverOrThrow({
+  // Approvers approve payments of the whole program, so they cannot be restricted to a scope or to access groups
+  private async checkApproverHasNoRestrictionsOrThrow({
     programAssignmentId,
+    scope,
+    accessGroups,
   }: {
     programAssignmentId: number;
+    scope: string | undefined;
+    accessGroups: AssignedAccessGroupResult[] | undefined;
   }): Promise<void> {
+    const restrictions: string[] = [];
+    if (scope) {
+      restrictions.push('scope');
+    }
+    if (accessGroups && accessGroups.length > 0) {
+      restrictions.push('access groups');
+    }
+    if (restrictions.length === 0) {
+      return;
+    }
+
     const isApprover =
       await this.assignmentRepository.isApprover(programAssignmentId);
-    if (isApprover) {
-      throw new HttpException(
-        'Cannot add scope to assignment because user is an approver for this program. Remove approver from program first (if intended) and retry.',
-        HttpStatus.BAD_REQUEST,
-      );
+    if (!isApprover) {
+      return;
     }
+
+    throw new HttpException(
+      `Cannot add ${restrictions.join(' and ')} to assignment because user is an approver for this program. Remove approver from program first (if intended) and retry.`,
+      HttpStatus.BAD_REQUEST,
+    );
   }
 
   public async deleteAidworkerRolesOrAssignment({
@@ -611,6 +638,10 @@ export class UserService {
           userId,
           scope: programAssignment.scope,
           roles: resultRoles.map((role) => this.getUserRoleResponse(role)),
+          accessGroups:
+            await this.userAccessGroupAssignmentsService.getAccessGroupsOfAssignment(
+              { programAidworkerAssignmentId: programAssignment.id, programId },
+            ),
         };
       }
     }
@@ -873,13 +904,24 @@ export class UserService {
         'user.admin AS admin',
         'user.active AS active',
         'user.lastLogin AS "lastLogin"',
+        'assignment.id AS assignmentid',
         'ARRAY_AGG(roles.id) AS rolesId',
         'ARRAY_AGG(roles.role) AS role',
         'ARRAY_AGG(roles.label) AS label',
         'MAX(assignment.scope) AS scope',
       ])
       .groupBy('user.id')
+      .addGroupBy('assignment.id')
       .getRawMany();
+    const accessGroupsByAssignmentId =
+      await this.userAccessGroupAssignmentsService.getAccessGroupsByAssignmentId(
+        {
+          programAidworkerAssignmentIds: users.map(
+            ({ assignmentid }) => assignmentid,
+          ),
+          programId,
+        },
+      );
 
     const result = users.map((user) => {
       const roles = user.rolesid.map((id, index) => ({
@@ -887,6 +929,8 @@ export class UserService {
         role: user.role[index],
         label: user.label[index],
       }));
+      const accessGroups =
+        accessGroupsByAssignmentId.get(user.assignmentid) ?? [];
 
       return {
         id: user.id,
@@ -896,7 +940,8 @@ export class UserService {
         lastLogin: user.lastLogin,
         roles,
         scope: user.scope,
-        isEligiblePaymentApprover: user.scope === '',
+        accessGroups,
+        isEligiblePaymentApprover: user.scope === '' && accessGroups.length === 0,
       };
     });
 
@@ -942,6 +987,10 @@ export class UserService {
       userId,
       scope: assignment.scope,
       roles: assignment.roles.map((role) => this.getUserRoleResponse(role)),
+      accessGroups:
+        await this.userAccessGroupAssignmentsService.getAccessGroupsOfAssignment(
+          { programAidworkerAssignmentId: assignment.id, programId },
+        ),
     };
   }
 
@@ -951,7 +1000,7 @@ export class UserService {
     assignAidworkerToProgram: UpdateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
     const accessGroups =
-      await this.userAccessGroupAssignmentsService.getAccessGroupsWithAttributeIdsOrThrow(
+      await this.userAccessGroupAssignmentsService.validateAndResolveAccessGroups(
         {
           programId,
           accessGroups: assignAidworkerToProgram.accessGroups,
@@ -990,11 +1039,11 @@ export class UserService {
     // if already assigned: add roles to program assignment
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === programId) {
-        if (assignAidworkerToProgram.scope) {
-          await this.checkNoApproverOrThrow({
-            programAssignmentId: programAssignment.id,
-          });
-        }
+        await this.checkApproverHasNoRestrictionsOrThrow({
+          programAssignmentId: programAssignment.id,
+          scope: assignAidworkerToProgram.scope,
+          accessGroups,
+        });
 
         // Get the existing roles
         const existingRoles = programAssignment.roles;
@@ -1027,6 +1076,10 @@ export class UserService {
           roles: programAssignment.roles.map((role) =>
             this.getUserRoleResponse(role),
           ),
+          accessGroups:
+            await this.userAccessGroupAssignmentsService.getAccessGroupsOfAssignment(
+              { programAidworkerAssignmentId: programAssignment.id, programId },
+            ),
         };
       }
     }
