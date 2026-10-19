@@ -27,7 +27,7 @@ import { Dialog } from 'primeng/dialog';
 import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { buildKoboFormUrl } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';

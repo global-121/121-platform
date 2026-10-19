@@ -17,7 +17,7 @@ import { FocusTrapModule } from 'primeng/focustrap';
 import { MenuModule } from 'primeng/menu';
 import { ToolbarModule } from 'primeng/toolbar';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
 import { LocaleSwitcherComponent } from '~/components/locale-switcher/locale-switcher.component';
 import { LogoComponent } from '~/components/logo/logo.component';

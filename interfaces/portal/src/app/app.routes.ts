@@ -3,53 +3,13 @@ import { Routes } from '@angular/router';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
+import { AppRoutes, ProgramMonitoringPaths } from '~/app-routes.const';
 import { authGuard } from '~/guards/auth.guard';
 import { authCapabilitiesGuard } from '~/guards/auth-capabilities.guard';
 import { foundResourceGuard } from '~/guards/found-resource.guard';
 import { pendingChangesGuard } from '~/guards/pending-changes.guard';
 import { programPermissionsGuard } from '~/guards/program-permissions-guard';
 import { AuthService } from '~/services/auth.service';
-
-export enum AppRoutes {
-  authCallback = 'auth-callback',
-  changePassword = 'change-password',
-  login = 'login',
-  privacy = 'privacy',
-  program = 'program',
-  programMonitoring = 'monitoring',
-  programPaymentLog = 'payment-log',
-  programPayments = 'payments',
-  programPaymentTransactionList = 'transaction-list',
-  programRegistrationActivityLog = 'activity-log',
-  programRegistrationDebitCards = 'debit-cards',
-  programRegistrationPersonalInformation = 'personal-information',
-  programRegistrations = 'registrations',
-  programs = 'programs',
-  programSettings = 'settings',
-  programSettingsFsps = 'fsps',
-  programSettingsInformation = 'information',
-  programSettingsPaymentApproval = 'payment-approval',
-  programSettingsRegistrationData = 'registration-data',
-  programSettingsTeam = 'team',
-  registrationByReferenceId = 'registration-by-reference-id',
-  registrationLookup = 'registration-lookup',
-  snake = 'snake',
-  userRoles = 'user-roles',
-  users = 'users',
-}
-
-// @TODO
-// ISSUE https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/42350
-// The AppRoutes enum makes little sense when we have nested routes, as we can't use it to define the nested paths (e.g. `${AppRoutes.programMonitoring}/dashboard` doesn't work).
-
-// Temporary 'fix' to avoid collisions in this 'AppRoutes' enum.
-export enum ProgramMonitoringPaths {
-  dashboard = 'dashboard',
-  dataChanges = 'data-changes',
-  debitCards = 'debit-cards',
-  files = 'files',
-  powerBI = 'powerbi',
-}
 
 /* eslint-disable promise/prefer-await-to-then -- We use the auto-generated pattern by Angular CLI, so no rewrite necessary */
 export const routes: Routes = [

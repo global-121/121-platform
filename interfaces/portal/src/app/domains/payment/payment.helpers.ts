@@ -1,7 +1,7 @@
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 
 export const FSPS_WITH_VOUCHER_SUPPORT = [
   Fsps.intersolveVoucherPaper,

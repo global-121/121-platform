@@ -12,7 +12,7 @@ import KonamiCode from 'konami-code-js';
 import { ToastModule, ToastPositionType } from 'primeng/toast';
 import { Subscription } from 'rxjs';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 import { SessionExpiredDialogComponent } from '~/components/session-expired-dialog/session-expired-dialog.component';
 import { UnsavedChangesDialogComponent } from '~/components/unsaved-changes-dialog/unsaved-changes-dialog.component';
 import { AuthService } from '~/services/auth.service';

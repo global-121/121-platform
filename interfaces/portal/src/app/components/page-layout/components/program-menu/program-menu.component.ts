@@ -10,7 +10,7 @@ import { MenuItem } from 'primeng/api';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 import { TabsMenuComponent } from '~/components/tabs-menu/tabs-menu.component';
 import { AuthService } from '~/services/auth.service';
 

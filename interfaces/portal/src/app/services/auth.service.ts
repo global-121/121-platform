@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { VALID_PERMISSIONS } from '~/services/auth/auth.constants';
 import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';

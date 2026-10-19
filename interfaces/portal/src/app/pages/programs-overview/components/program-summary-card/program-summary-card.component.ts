@@ -14,7 +14,7 @@ import { MenuItem } from 'primeng/api';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 import { CardSummaryMetricsContainerComponent } from '~/components/card-summary-metrics-container/card-summary-metrics-container.component';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';

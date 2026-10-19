@@ -9,7 +9,7 @@ import {
 import { MenuItem } from 'primeng/api';
 import { TabsModule } from 'primeng/tabs';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 import { TabsMenuComponent } from '~/components/tabs-menu/tabs-menu.component';
 import { AuthService } from '~/services/auth.service';
 

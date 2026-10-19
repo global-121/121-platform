@@ -37,7 +37,7 @@ import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
 import {

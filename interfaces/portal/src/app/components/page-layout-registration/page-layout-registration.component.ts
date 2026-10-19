@@ -22,7 +22,7 @@ import {
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import {
