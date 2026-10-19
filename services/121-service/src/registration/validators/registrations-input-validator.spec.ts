@@ -147,6 +147,7 @@ describe('RegistrationsInputValidator', () => {
           provide: UserService,
           useValue: {
             getUserScopeForProgram: jest.fn().mockResolvedValue('country'),
+            getUserAccessGroupsForProgram: jest.fn().mockResolvedValue([]),
           },
         },
         {
@@ -574,5 +575,165 @@ describe('RegistrationsInputValidator', () => {
       ]),
     );
     expect(validRegistrations.length).toBe(0);
+  });
+
+  describe('access groups of the user', () => {
+    const houseAttributeId = 5;
+    const userAccessGroupHouse = 'stark';
+
+    beforeEach(() => {
+      jest.spyOn(userService, 'getUserScopeForProgram').mockResolvedValue('');
+      jest
+        .spyOn(userService, 'getUserAccessGroupsForProgram')
+        .mockResolvedValue([
+          {
+            programRegistrationAttributeId: houseAttributeId,
+            value: userAccessGroupHouse,
+          },
+        ]);
+    });
+
+    it('should return an error when clearing it with null', async () => {
+      // Act
+      const { errors, validRegistrations } =
+        await validator.validateAndCleanInput({
+          registrationInputArray: [{ fullName: 'Updated name', house: null }],
+          programId,
+          userId,
+          typeOfInput: RegistrationValidationInputType.update,
+          validationConfig: { validateExistingReferenceId: false },
+        });
+
+      // Assert
+      expect(errors).toEqual([
+        expect.objectContaining({
+          column: 'house',
+          value: null,
+          error: `Cannot clear 'house', because you only have access to registrations where 'house' is '${userAccessGroupHouse}'.`,
+        }),
+      ]);
+      expect(validRegistrations).toEqual([]);
+    });
+
+    it('should return an error when clearing it with an empty string', async () => {
+      // Act
+      const { errors, validRegistrations } =
+        await validator.validateAndCleanInput({
+          registrationInputArray: [{ fullName: 'Updated name', house: '' }],
+          programId,
+          userId,
+          typeOfInput: RegistrationValidationInputType.update,
+          validationConfig: { validateExistingReferenceId: false },
+        });
+
+      // Assert
+      expect(errors).toEqual([
+        expect.objectContaining({
+          column: 'house',
+          value: '',
+          error: `Cannot clear 'house', because you only have access to registrations where 'house' is '${userAccessGroupHouse}'.`,
+        }),
+      ]);
+      expect(validRegistrations).toEqual([]);
+    });
+
+    it('should return an error when changing it to another option in a bulk update', async () => {
+      // Act
+      const { errors, validRegistrations } =
+        await validator.validateAndCleanInput({
+          registrationInputArray: [
+            { fullName: 'Updated name', house: 'lannister' },
+          ],
+          programId,
+          userId,
+          typeOfInput: RegistrationValidationInputType.bulkUpdate,
+          validationConfig: { validateExistingReferenceId: false },
+        });
+
+      // Assert
+      expect(errors).toEqual([
+        expect.objectContaining({
+          column: 'house',
+          value: 'lannister',
+          error: `Cannot change 'house' to 'lannister', because you only have access to registrations where 'house' is '${userAccessGroupHouse}'.`,
+        }),
+      ]);
+      expect(validRegistrations).toEqual([]);
+    });
+
+    it('should not return an error when it is set to its own value', async () => {
+      // Act
+      const { errors, validRegistrations } =
+        await validator.validateAndCleanInput({
+          registrationInputArray: [
+            { fullName: 'Updated name', house: userAccessGroupHouse },
+          ],
+          programId,
+          userId,
+          typeOfInput: RegistrationValidationInputType.update,
+          validationConfig: { validateExistingReferenceId: false },
+        });
+
+      // Assert
+      expect(errors).toEqual([]);
+      expect(validRegistrations.length).toBe(1);
+    });
+
+    it('should not return an error when it is left out', async () => {
+      // Act
+      const { errors, validRegistrations } =
+        await validator.validateAndCleanInput({
+          registrationInputArray: [{ fullName: 'Updated name' }],
+          programId,
+          userId,
+          typeOfInput: RegistrationValidationInputType.update,
+          validationConfig: { validateExistingReferenceId: false },
+        });
+
+      // Assert
+      expect(errors).toEqual([]);
+      expect(validRegistrations.length).toBe(1);
+    });
+
+    it('should not validate access groups when creating a registration', async () => {
+      // Act
+      const { errors } = await validator.validateAndCleanInput({
+        registrationInputArray: [
+          {
+            phoneNumber: '14155238880',
+            programFspConfigurationName: Fsps.excel,
+            house: 'lannister',
+          },
+        ],
+        programId,
+        userId,
+        typeOfInput: RegistrationValidationInputType.create,
+        validationConfig: { validateExistingReferenceId: true },
+      });
+
+      // Assert
+      expect(errors).toEqual([]);
+    });
+
+    it('should ignore an access group of an attribute that is not part of the program', async () => {
+      // Arrange
+      jest
+        .spyOn(userService, 'getUserAccessGroupsForProgram')
+        .mockResolvedValue([
+          { programRegistrationAttributeId: 999, value: 'x' },
+        ]);
+
+      // Act
+      const { errors } = await validator.validateAndCleanInput({
+        registrationInputArray: [{ house: null }],
+        programId,
+        userId,
+        typeOfInput: RegistrationValidationInputType.update,
+        validationConfig: { validateExistingReferenceId: false },
+      });
+
+      // Assert
+      expect(errors).toEqual([]);
+    });
   });
 });
