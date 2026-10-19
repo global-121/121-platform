@@ -18,4 +18,6 @@ export interface KoboSurveyItemDto {
   required?: boolean;
   /** For 'select_one'/'select_multiple': references the choice list name */
   select_from_list_name?: string;
+  /** For 'calculate' type questions: the calculation expression */
+  calculation?: string;
 }
