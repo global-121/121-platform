@@ -2,7 +2,7 @@ import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 
 export const REGISTRATION_STATUS_LABELS: Record<
   RegistrationStatusEnum,

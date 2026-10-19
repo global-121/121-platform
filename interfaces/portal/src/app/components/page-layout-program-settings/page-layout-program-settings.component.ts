@@ -11,7 +11,7 @@ import { MenuItem } from 'primeng/api';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { injectFspConfigurations } from '~/domains/fsp-configuration/fsp-configuration.helper';
 import { AuthService } from '~/services/auth.service';

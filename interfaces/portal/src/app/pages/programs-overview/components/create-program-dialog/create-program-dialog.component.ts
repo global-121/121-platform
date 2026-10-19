@@ -16,7 +16,7 @@ import { CardModule } from 'primeng/card';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';

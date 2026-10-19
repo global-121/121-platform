@@ -9,7 +9,7 @@ import {
 import { MatomoTracker, provideMatomo, withRouter } from 'ngx-matomo-client';
 import { parseMatomoConnectionString } from 'scripts/lib/matomo.utils.mjs';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 import { PrivacyCopyNoTrackingComponent } from '~/components/privacy/privacy-copy-no-tracking.component';
 import { PrivacyCopyTrackingComponent } from '~/components/privacy/privacy-copy-tracking.component';
 import { TrackingEvent } from '~/services/tracking/tracking-event.interface';
@@ -28,8 +28,6 @@ const IS_MATOMO_ENABLED = () =>
   providedIn: 'root',
 })
 export class TrackingService {
-  // Lazy getter to avoid reading `AppRoutes` at module-load time, which can be
-  // `undefined` due to circular imports and crash app bootstrap.
   public static get APP_PROVIDERS(): (EnvironmentProviders | Provider)[] {
     return IS_MATOMO_ENABLED()
       ? [

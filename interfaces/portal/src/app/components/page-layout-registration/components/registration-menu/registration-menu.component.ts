@@ -12,7 +12,7 @@ import { TabsModule } from 'primeng/tabs';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 import { TabsMenuComponent } from '~/components/tabs-menu/tabs-menu.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';

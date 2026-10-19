@@ -10,7 +10,7 @@ import {
 } from '@azure/msal-browser';
 import { QueryClient } from '@tanstack/angular-query-experimental';
 
-import { AppRoutes } from '~/app.routes';
+import { AppRoutes } from '~/app-routes.const';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
 import { AUTH_ERROR_IN_STATE_KEY } from '~/services/auth/auth.constants';

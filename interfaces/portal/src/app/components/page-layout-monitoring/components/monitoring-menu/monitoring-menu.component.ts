@@ -12,7 +12,7 @@ import { TabsModule } from 'primeng/tabs';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import { AppRoutes, ProgramMonitoringPaths } from '~/app.routes';
+import { AppRoutes, ProgramMonitoringPaths } from '~/app-routes.const';
 import { TabsMenuComponent } from '~/components/tabs-menu/tabs-menu.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { programHasPhysicalCardSupport } from '~/domains/program/program.helper';
