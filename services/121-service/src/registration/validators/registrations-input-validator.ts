@@ -23,6 +23,7 @@ import { ValidatedRegistrationInput } from '@121-service/src/registration/interf
 import { ValidationResult } from '@121-service/src/registration/interfaces/validation-result.interface';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { AssignedAccessGroupDto } from '@121-service/src/user/dto/assigned-access-group.dto';
 import { UserService } from '@121-service/src/user/user.service';
 import { ValidationPipelineOptionsWithoutWhiteList } from '@121-service/src/validation-options/validation-pipeline-options-without-white-list.const';
 
@@ -75,11 +76,16 @@ export class RegistrationsInputValidator {
 
     // If the registration was not created by the user we assume a scope that can access anything (like on a new kobo submission) therefore a ''
     let userScope = '';
+    let userAccessGroups: AssignedAccessGroupDto[] = [];
     if (userId) {
       userScope = await this.userService.getUserScopeForProgram(
         userId,
         programId,
       );
+      userAccessGroups = await this.userService.getUserAccessGroupsForProgram({
+        userId,
+        programId,
+      });
     }
 
     const program = await this.programRepository.findOneOrFail({
@@ -89,6 +95,13 @@ export class RegistrationsInputValidator {
         programRegistrationAttributes: true,
       },
     });
+
+    const allowedValueByAccessGroupAttribute = new Map(
+      userAccessGroups.map(({ programRegistrationAttributeName, value }) => [
+        programRegistrationAttributeName,
+        value,
+      ]),
+    );
 
     const languageMapping = this.createLanguageMapping(
       program.languages as unknown as string[],
@@ -167,6 +180,21 @@ export class RegistrationsInputValidator {
             row[AdditionalAttributes.scope] ?? '',
           );
         }
+      }
+
+      if (
+        [
+          RegistrationValidationInputType.update,
+          RegistrationValidationInputType.bulkUpdate,
+        ].includes(typeOfInput)
+      ) {
+        rowErrors.push(
+          ...this.validateRowAccessGroups({
+            row,
+            allowedValueByAccessGroupAttribute,
+            i,
+          }),
+        );
       }
 
       const {
@@ -636,6 +664,58 @@ export class RegistrationsInputValidator {
 
     // Check if scopeOfInput starts with userScope
     return scopeOfInput.startsWith(userScope);
+  }
+
+  private validateRowAccessGroups({
+    row,
+    allowedValueByAccessGroupAttribute,
+    i,
+  }: {
+    row: Record<string, InputAttributeType>;
+    allowedValueByAccessGroupAttribute: Map<string, string>;
+    i: number;
+  }): ValidateRegistrationErrorObject[] {
+    const errors: ValidateRegistrationErrorObject[] = [];
+    for (const [
+      attributeName,
+      allowedValue,
+    ] of allowedValueByAccessGroupAttribute) {
+      const requestedValue = row[attributeName];
+      if (requestedValue === undefined) {
+        continue;
+      }
+      if (String(requestedValue) === allowedValue) {
+        continue;
+      }
+
+      errors.push({
+        index: i,
+        column: attributeName,
+        value: requestedValue,
+        error: this.getAccessGroupErrorMessage({
+          attributeName,
+          allowedValue,
+          requestedValue,
+        }),
+      });
+    }
+    return errors;
+  }
+
+  private getAccessGroupErrorMessage({
+    attributeName,
+    allowedValue,
+    requestedValue,
+  }: {
+    attributeName: string;
+    allowedValue: string;
+    requestedValue: InputAttributeType;
+  }): string {
+    const reason = `you only have access to registrations where '${attributeName}' is '${allowedValue}'`;
+    if (requestedValue === null || requestedValue === '') {
+      return `Cannot clear '${attributeName}', because ${reason}.`;
+    }
+    return `Cannot change '${attributeName}' to '${requestedValue}', because ${reason}.`;
   }
 
   private async validateReferenceId({
