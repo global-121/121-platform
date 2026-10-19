@@ -859,11 +859,6 @@ export class RegistrationsInputValidator {
     let isValid: boolean | null = false;
     let message = '';
 
-    if (type === RegistrationAttributeTypes.calculate) {
-      console.log('I found this calculate type with value:', value);
-      isValid = typeof value === 'string';
-    }
-
     if (type === RegistrationAttributeTypes.date) {
       isValid =
         typeof value === 'string' &&
