@@ -20,7 +20,6 @@ export function createScopedRepositoryProvider<T extends ObjectLiteral>(
       const repository = dataSource.getRepository(entity);
       return new ScopedRepository(request, repository);
     },
-    durable: true,
     inject: [DataSource, REQUEST],
   };
 }

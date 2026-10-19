@@ -46,6 +46,15 @@ For FSP-specific instructions, see the README.md in each individual FSP-folder, 
 
 ## Development
 
+### Scoped repositories and request scope
+
+Scoped repositories (see [scoped.repository.ts](./src/scoped.repository.ts)) are
+`Scope.REQUEST` providers that read the user from the injected `REQUEST`.
+Do not mark them `durable`: for a controller whose dependency tree is purely
+durable, NestJS injects the context-id payload (which is `undefined` without a
+`ContextIdStrategy`) instead of the HTTP request, so scope filtering is silently
+skipped. Without a strategy, `durable` gives no caching benefit either.
+
 ### Testing
 
 To run the Unit-tests: (replace `:all` with `:watch` to run during development)
