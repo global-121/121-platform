@@ -7,13 +7,16 @@ import { CreateProgramRegistrationAttributeDto } from '@121-service/src/programs
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import {
   getProgramAccessGroupLevels,
   postProgram,
   postProgramRegistrationAttribute,
   updateProgramAccessGroupLevels,
 } from '@121-service/test/helpers/program.helper';
+import { createUserProgramAssignment } from '@121-service/test/helpers/user.helper';
 import {
+  createUserAssignedToProgram,
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
@@ -29,7 +32,7 @@ describe('Update program access group levels', () => {
   let accessToken: string;
 
   beforeAll(async () => {
-    await resetDB({ seedScript: SeedScript.productionInitialState });
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
   });
 
@@ -166,6 +169,74 @@ describe('Update program access group levels', () => {
     );
     expect(accessGroupLevels.body).toStrictEqual({
       accessGroupRegistrationAttributeNames: [],
+    });
+  });
+
+  it('should not allow replacing an access group level that is assigned to a user', async () => {
+    // Arrange
+    const createProgramResponse = await postProgram(baseProgram, accessToken);
+    const programId = createProgramResponse.body.id;
+    const provinceAttribute: CreateProgramRegistrationAttributeDto = {
+      name: 'province',
+      type: RegistrationAttributeTypes.dropdown,
+      label: { en: 'Province' },
+      options: [{ option: 'utrecht', label: { en: 'Utrecht' } }],
+    };
+    const districtAttribute: CreateProgramRegistrationAttributeDto = {
+      name: 'district',
+      type: RegistrationAttributeTypes.dropdown,
+      label: { en: 'District' },
+      options: [{ option: 'houten', label: { en: 'Houten' } }],
+    };
+    await postProgramRegistrationAttribute(
+      provinceAttribute,
+      programId,
+      accessToken,
+    );
+    await postProgramRegistrationAttribute(
+      districtAttribute,
+      programId,
+      accessToken,
+    );
+    await updateProgramAccessGroupLevels(
+      programId,
+      { accessGroupRegistrationAttributeNames: ['province'] },
+      accessToken,
+    );
+
+    const userId = await createUserAssignedToProgram({
+      programId,
+      roles: [DefaultUserRole.View],
+      adminAccessToken: accessToken,
+    });
+    await createUserProgramAssignment({
+      programId,
+      userId,
+      roles: [DefaultUserRole.View],
+      accessGroups: [
+        {
+          programRegistrationAttributeName: 'province',
+          value: 'utrecht',
+        },
+      ],
+      accessToken,
+    });
+
+    // Act
+    const response = await updateProgramAccessGroupLevels(
+      programId,
+      { accessGroupRegistrationAttributeNames: ['district'] },
+      accessToken,
+    );
+
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    const accessGroupLevels = await getProgramAccessGroupLevels(
+      programId,
+      accessToken,
+    );
+    expect(accessGroupLevels.body).toStrictEqual({
+      accessGroupRegistrationAttributeNames: ['province'],
     });
   });
 });

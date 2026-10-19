@@ -7,6 +7,7 @@ import { MAX_ACCESS_GROUP_LEVELS } from '@121-service/src/programs/access-group-
 import { AccessGroupAttributeUpdate } from '@121-service/src/programs/access-group-levels/interfaces/access-group-attribute-update.interface';
 import { AccessGroupLevelAttribute } from '@121-service/src/programs/access-group-levels/interfaces/access-group-level-attribute.interface';
 import { AccessGroupRegistrationAttribute } from '@121-service/src/programs/access-group-levels/interfaces/access-group-registration-attribute.interface';
+import { ProgramAidworkerAssignmentAccessGroupRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment-access-group.repository';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationAttributeDataRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-attribute-data.repository';
 
@@ -16,6 +17,7 @@ export class AccessGroupLevelsService {
     private readonly accessGroupLevelRepository: AccessGroupLevelRepository,
     private readonly registrationAttributeDataRepository: RegistrationAttributeDataRepository,
     private readonly dataSource: DataSource,
+    private readonly assignmentAccessGroupRepository: ProgramAidworkerAssignmentAccessGroupRepository,
   ) {}
 
   public async updateAccessGroupLevels({
@@ -31,6 +33,11 @@ export class AccessGroupLevelsService {
       programId,
       activeRegistrationAttributes,
       selectedAttributeNames: accessGroupRegistrationAttributeNames,
+    });
+
+    await this.throwIfChangedLevelsAreAssignedToUsers({
+      programId,
+      newLevelNames: validatedNames,
     });
 
     const attributeIdByName = new Map(
@@ -111,6 +118,37 @@ export class AccessGroupLevelsService {
       );
 
     return { levelsToRemove, levelsToCreate };
+  }
+
+  // Access groups of a user always start at the highest level without skipping levels,
+  // so only users with an access group at a level that is moved or removed are affected
+  private async throwIfChangedLevelsAreAssignedToUsers({
+    programId,
+    newLevelNames,
+  }: {
+    programId: number;
+    newLevelNames: string[];
+  }): Promise<void> {
+    const currentLevels =
+      await this.accessGroupLevelRepository.getOrderedAttributesByProgramId({
+        programId,
+      });
+    const changedLevels = currentLevels.filter(
+      ({ name }, index) => newLevelNames[index] !== name,
+    );
+
+    const assignedLevelIds =
+      await this.assignmentAccessGroupRepository.getAssignedAccessGroupLevelIds(
+        { accessGroupLevelIds: changedLevels.map(({ id }) => id) },
+      );
+    for (const { id, name } of changedLevels) {
+      if (assignedLevelIds.has(id)) {
+        throw new HttpException(
+          `Access group level '${name}' cannot be moved or removed because it is assigned to users in program ${programId}. Remove this access group from the users first.`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
   }
 
   public async getAccessGroupRegistrationAttributeNames({
