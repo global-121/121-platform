@@ -144,9 +144,6 @@
     "typescript-eslint": "^8.69.0"
   },
   "overrides": {
-    "@nestjs/platform-express": {
-      "multer": "2.2.0"
-    },
     "@swc/cli": {
       "piscina": "4.9.3"
     }
