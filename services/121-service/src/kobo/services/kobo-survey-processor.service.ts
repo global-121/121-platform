@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
 import { KOBO_TO_121_TYPE_MAPPING } from '@121-service/src/kobo/consts/kobo-survey-to-121-attribute-type.const';
+import { KoboSurveyItemType } from '@121-service/src/kobo/enum/kobo-survey-item-type';
 import { KoboChoiceCleaned } from '@121-service/src/kobo/interfaces/kobo-choice-cleaned.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
 import { findKoboSurveyItemType } from '@121-service/src/kobo/utils/find-kobo-survey-item-type';
+import { inferAttributeTypeFromCalculation } from '@121-service/src/kobo/utils/parse-kobo-survey-item-calculation';
 import { ProgramRegistrationAttribute } from '@121-service/src/programs/interfaces/program-registration-attribute.interface';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { RegistrationPreferredLanguageTranslation } from '@121-service/src/shared/types/registration-preferred-language-translation.type';
@@ -24,6 +26,7 @@ export class KoboSurveyProcessorService {
     languageIsoCodes: RegistrationPreferredLanguage[];
   }): ProgramRegistrationAttribute[] {
     const registrationAttributes: ProgramRegistrationAttribute[] = [];
+
     for (const item of surveyItems) {
       const attribute = this.surveyItemToProgramRegistrationAttribute({
         koboSurveyItem: item,
@@ -34,6 +37,7 @@ export class KoboSurveyProcessorService {
         registrationAttributes.push(attribute);
       }
     }
+
     return registrationAttributes;
   }
 
@@ -53,7 +57,12 @@ export class KoboSurveyProcessorService {
       return;
     }
 
-    const attributeType = KOBO_TO_121_TYPE_MAPPING[koboSurveyItemType];
+    const attributeType =
+      koboSurveyItemType === KoboSurveyItemType.calculate
+        ? inferAttributeTypeFromCalculation({
+            calculation: koboSurveyItem.calculation,
+          })
+        : KOBO_TO_121_TYPE_MAPPING[koboSurveyItemType];
 
     const name = koboSurveyItem.name;
 
