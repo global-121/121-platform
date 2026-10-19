@@ -102,6 +102,60 @@ describe('KoboSurveyProcessorService', () => {
       });
     });
 
+    it('should process a numeric calculate item into a numeric program registration attribute', () => {
+      const koboSurveyItems: KoboSurveyItemCleaned[] = [
+        {
+          name: 'calculatedField',
+          type: 'calculate',
+          label: ['Calculated Field'],
+          calculation: '${adults} + ${children}',
+          choices: [],
+        },
+        {
+          name: 'adults',
+          type: 'integer',
+          label: ['Adults'],
+          choices: [],
+        },
+        {
+          name: 'children',
+          type: 'integer',
+          label: ['Children'],
+          choices: [],
+        },
+      ];
+
+      const languageIsoCodes = [
+        RegistrationPreferredLanguage.en,
+        RegistrationPreferredLanguage.nl,
+      ];
+
+      // Act
+      const result = service.surveyToProgramRegistrationAttributes({
+        surveyItems: koboSurveyItems,
+        languageIsoCodes,
+      });
+
+      console.log('result', result);
+
+      expect(result[0]).toMatchObject({
+        name: 'calculatedField',
+        koboLabel: {
+          en: 'Calculated Field',
+        },
+        type: RegistrationAttributeTypes.numeric,
+        koboType: KoboSurveyItemType.calculate,
+      });
+    });
+
+    // it('should process a text calculate item into a text program registration attribute', () => {
+    //   // TEST HERE
+    // });
+
+    // it('should process empty calculate item into a text program registration attribute as a fallback', () => {
+    //   // TEST HERE
+    // });
+
     it('should fallback when no labels are provided', () => {
       // Arrange
       const fieldName = 'phoneNumber';
