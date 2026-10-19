@@ -363,7 +363,7 @@ export class PaymentsController {
     });
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationPaymentExport] })
   @ApiOperation({
     summary:
       '[SCOPED] Gets all transactions for a date range in json (default) or xlsx format',
