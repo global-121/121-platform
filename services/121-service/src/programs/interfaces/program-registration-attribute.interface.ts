@@ -11,7 +11,6 @@ export interface ProgramRegistrationAttribute {
   includeInTransactionExport?: boolean;
   isRequired?: boolean;
   koboLabel?: RegistrationPreferredLanguageTranslation | null;
-  koboType?: KoboSurveyItemType | null;
   label?: RegistrationPreferredLanguageTranslation | null;
   name: string;
   options?: QuestionOption[];
@@ -20,4 +19,5 @@ export interface ProgramRegistrationAttribute {
   scoring?: Record<string, unknown>;
   showInPeopleAffectedTable?: boolean;
   type: WrapperType<RegistrationAttributeTypes>;
+  koboType?: KoboSurveyItemType | null;
 }
