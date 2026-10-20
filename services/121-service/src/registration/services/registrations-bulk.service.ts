@@ -295,7 +295,7 @@ export class RegistrationsBulkService {
     }
 
     return await this.getBaseQuery()
-      .andWhere('registration.id IN (:...registrationIds)', {
+      .andWhere('registration.id = ANY(:registrationIds)', {
         registrationIds,
       })
       .andWhere('registration."duplicateStatus" = :duplicateStatus', {
