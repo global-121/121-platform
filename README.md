@@ -240,8 +240,8 @@ Make sure to add an extension to all (other) **relevant** `extensions.json`-file
 
 Workspace MCP servers are configured in [`.vscode/mcp.json`](.vscode/mcp.json) for tools such as GitHub Copilot:
 
-- **Azure DevOps (`ado`)**: Connects to the Red Cross Azure DevOps organization (`redcrossnl`), "121 Platform" project, and "121 Development Team" via `@azure-devops/mcp`. Authenticates using your local Azure credentials (e.g. `az login`)—no tokens or credentials are stored in the configuration.
-- **Figma (`figma`)**: Connects to the Figma remote MCP server (`https://mcp.figma.com/mcp`). Authenticates via OAuth in your browser upon first use. The primary Figma design file for the Portal is [121 - Portalicious](https://www.figma.com/design/77QfhqQ2ye51HJGD0mkBtJ/121---Portalicious) (file key: `77QfhqQ2ye51HJGD0mkBtJ`).
+- **Azure DevOps (`ado`)**: Connects to the Red Cross Azure DevOps-organization. Authenticates using your local Azure credentials (e.g. `az login`)—no tokens or credentials are stored in the configuration.
+- **Figma (`figma`)**: Connects to the Figma remote MCP server. Authenticates via OAuth in your browser upon first use.
 
 > **Note on permissions**: Both Azure DevOps and the Figma design project are internal Red Cross resources and are not publicly accessible. You will only be able to use these MCP servers if your account has been granted the appropriate permissions within the Netherlands Red Cross organization.
 
