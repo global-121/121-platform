@@ -2,6 +2,8 @@
 # IDE / Editor configurations
 **/.vscode/*
 !**/.vscode/extensions.json
+!**/.vscode/launch.json
+!**/.vscode/mcp.json
 !**/.vscode/settings.json
 .idea
 
