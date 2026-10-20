@@ -56,6 +56,7 @@ import { RegistrationViewEntity } from '@121-service/src/registration/entities/r
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { UserService } from '@121-service/src/user/user.service';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 
@@ -68,6 +69,7 @@ export class PaymentsController {
     private readonly paymentsExecutionService: PaymentsExecutionService,
     private readonly paymentsReportingService: PaymentsReportingService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
+    private readonly userService: UserService,
   ) {}
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })
@@ -363,7 +365,11 @@ export class PaymentsController {
     });
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationPaymentExport] })
+  @AuthenticatedUser()
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: `User does not have the required permission(s) to access this endpoint. \n (Required permissions: ${PermissionEnum.PaymentTransactionREAD} for format=json, ${PermissionEnum.RegistrationPaymentExport} for format=xlsx)`,
+  })
   @ApiOperation({
     summary:
       '[SCOPED] Gets all transactions for a date range in json (default) or xlsx format',
@@ -388,10 +394,26 @@ export class PaymentsController {
   // We tried to name this controller first 'programs/:programId/payments/transactions but than it conflicted with the getTransactions route
   @Get('programs/:programId/transactions')
   public async exportTransactionsUsingDateFilter(
+    @Req() req: ScopedUserRequest,
     @Res() res: Response,
     @Param('programId', ParseIntPipe) programId: number,
     @Query() query: GetTransactionsQueryDto,
   ): Promise<Response | void> {
+    const userId = RequestHelper.getUserId(req);
+    const requiredPermission =
+      query.format === ExportFileFormat.xlsx
+        ? PermissionEnum.RegistrationPaymentExport
+        : PermissionEnum.PaymentTransactionREAD;
+
+    const hasPermission = await this.userService.canActivate(
+      [requiredPermission],
+      programId,
+      userId,
+    );
+    if (!hasPermission) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+
     const result =
       await this.paymentsReportingService.exportTransactionsUsingDateFilter({
         programId,
