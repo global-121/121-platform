@@ -43,7 +43,11 @@ describe('Access groups - update registration', () => {
 
     await setupAccessGroupLevels({
       programId,
-      paths: [registrationPath, 'zuid-holland/rotterdam'],
+      paths: [
+        registrationPath,
+        'noord-holland/amsterdam',
+        'zuid-holland/rotterdam',
+      ],
       accessToken: accessTokenAdmin,
     });
     const importResponse = await importRegistrations(
