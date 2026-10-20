@@ -14,6 +14,7 @@ import {
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { ProgramAidworkerAssignmentAccessGroupRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment-access-group.repository';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import {
   DefaultRegistrationDataAttributeNames,
@@ -104,6 +105,14 @@ describe('ProgramRegistrationAttributesService', () => {
             getOrderedAttributeNamesByProgramId: jest
               .fn()
               .mockResolvedValue([]),
+          },
+        },
+        {
+          provide: ProgramAidworkerAssignmentAccessGroupRepository,
+          useValue: {
+            getAssignedProgramRegistrationAttributeIds: jest
+              .fn()
+              .mockResolvedValue(new Set()),
           },
         },
         {
