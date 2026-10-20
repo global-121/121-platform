@@ -52,9 +52,9 @@
     "eslint-config-121-platform": "file:../../packages/eslint-config-121-platform/",
     "eslint-plugin-no-relative-import-paths": "^1.7.3",
     "eslint-plugin-regexp": "^3.3.1",
-    "prettier": "^3.9.9",
+    "prettier": "^3.9.10",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.71.0"
+    "typescript-eslint": "^8.71.1"
   },
   "overrides": {
     "@nestjs/platform-express": {
