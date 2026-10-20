@@ -9,12 +9,15 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import {
+  getAccessGroupAssignments,
+  setupAccessGroupLevels,
+} from '@121-service/test/helpers/access-group.helper';
+import {
   getProgramAccessGroupLevels,
   postProgram,
   postProgramRegistrationAttribute,
   updateProgramAccessGroupLevels,
 } from '@121-service/test/helpers/program.helper';
-import { createUserProgramAssignment } from '@121-service/test/helpers/user.helper';
 import {
   createUserAssignedToProgram,
   getAccessToken,
@@ -176,50 +179,27 @@ describe('Update program access group levels', () => {
     // Arrange
     const createProgramResponse = await postProgram(baseProgram, accessToken);
     const programId = createProgramResponse.body.id;
-    const provinceAttribute: CreateProgramRegistrationAttributeDto = {
-      name: 'province',
-      type: RegistrationAttributeTypes.dropdown,
-      label: { en: 'Province' },
-      options: [{ option: 'utrecht', label: { en: 'Utrecht' } }],
-    };
-    const districtAttribute: CreateProgramRegistrationAttributeDto = {
-      name: 'district',
-      type: RegistrationAttributeTypes.dropdown,
-      label: { en: 'District' },
-      options: [{ option: 'houten', label: { en: 'Houten' } }],
-    };
-    await postProgramRegistrationAttribute(
-      provinceAttribute,
+    await setupAccessGroupLevels({
       programId,
+      paths: ['utrecht'],
       accessToken,
-    );
+    });
     await postProgramRegistrationAttribute(
-      districtAttribute,
+      {
+        name: 'district',
+        type: RegistrationAttributeTypes.dropdown,
+        label: { en: 'District' },
+        options: [{ option: 'houten', label: { en: 'Houten' } }],
+      },
       programId,
-      accessToken,
-    );
-    await updateProgramAccessGroupLevels(
-      programId,
-      { accessGroupRegistrationAttributeNames: ['province'] },
       accessToken,
     );
 
-    const userId = await createUserAssignedToProgram({
+    await createUserAssignedToProgram({
       programId,
       roles: [DefaultUserRole.View],
+      accessGroups: getAccessGroupAssignments({ path: 'utrecht' }),
       adminAccessToken: accessToken,
-    });
-    await createUserProgramAssignment({
-      programId,
-      userId,
-      roles: [DefaultUserRole.View],
-      accessGroups: [
-        {
-          programRegistrationAttributeName: 'province',
-          value: 'utrecht',
-        },
-      ],
-      accessToken,
     });
 
     // Act
