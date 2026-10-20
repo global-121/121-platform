@@ -34,3 +34,12 @@ Rules from the [Portal Development Guidelines](../../docs/guidelines/portal-deve
 | Choosing a signal kind              | Using signals                      |
 | Changing theming or global styles   | Styling, Theming                   |
 | Adding or changing an api service   | Interacting with the 121-service   |
+
+## Figma & Design System
+
+When querying Figma or using Figma MCP tools for Portal designs, components, or tokens, refer to the **121 - Portalicious** design file:
+
+- File URL: `https://www.figma.com/design/77QfhqQ2ye51HJGD0mkBtJ/121---Portalicious`
+- File key: `77QfhqQ2ye51HJGD0mkBtJ`
+
+> Note: Access to this design file requires an account with the appropriate permissions within the Netherlands Red Cross Figma organization.

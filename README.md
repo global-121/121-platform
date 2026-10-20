@@ -236,6 +236,15 @@ In VSCode, you can add a new recommended extension by selecting "_Add to Workspa
 
 Make sure to add an extension to all (other) **relevant** `extensions.json`-files, so that it is available in all components of the 121-platform. Angular/CSS-specific extensions don't need to be shared, but TypeScript/Formatting/Developer-convenience-related ones _do_.
 
+### Model Context Protocol (MCP) servers
+
+Workspace MCP servers are configured in [`.vscode/mcp.json`](.vscode/mcp.json) for tools such as GitHub Copilot:
+
+- **Azure DevOps (`ado`)**: Connects to the Red Cross Azure DevOps-organization. Authenticates using your local Azure credentials (e.g. `az login`)—no tokens or credentials are stored in the configuration.
+- **Figma (`figma`)**: Connects to the Figma remote MCP server. Authenticates via OAuth in your browser upon first use.
+
+> **Note on permissions**: Both Azure DevOps and the Figma design project are internal Red Cross resources and are not publicly accessible. You will only be able to use these MCP servers if your account has been granted the appropriate permissions within the Netherlands Red Cross organization.
+
 ## Common problems with Local Environment set-up
 
 ### Swagger-UI not accessible
