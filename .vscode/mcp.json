@@ -6,10 +6,12 @@
       "args": [
         "-y",
         "@azure-devops/mcp",
-        "redcrossnl",
-        "121 Platform",
-        "121 Development Team"
-      ]
+        "redcrossnl"
+      ],
+      "env": {
+        "ado_mcp_project": "121 Platform",
+        "ado_mcp_team": "121 Development Team"
+      }
     },
     "figma": {
       "type": "http",
