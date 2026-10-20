@@ -4,9 +4,8 @@ import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app-routes.const';
+import { PERMISSION_DENIED_QUERY_KEY } from '~/guards/permission-denied-query-key.const';
 import { AuthService } from '~/services/auth.service';
-
-export const PERMISSION_DENIED_QUERY_KEY = 'permissionDenied';
 
 type programPermissionsGuardType =
   | {

@@ -17,7 +17,7 @@ import { ProgramMenuComponent } from '~/components/page-layout/components/progra
 import { RegistrationLookupMenuComponent } from '~/components/page-layout/components/registration-lookup-menu/registration-lookup-menu.component';
 import { FoundResourceGuardType } from '~/guards/found-resource.guard';
 import { FOUND_RESOURCE_GUARD_QUERY_KEY } from '~/guards/found-resource-guard-query-key.const';
-import { PERMISSION_DENIED_QUERY_KEY } from '~/guards/program-permissions-guard';
+import { PERMISSION_DENIED_QUERY_KEY } from '~/guards/permission-denied-query-key.const';
 import { RegistrationLookupService } from '~/services/registration-lookup.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 
