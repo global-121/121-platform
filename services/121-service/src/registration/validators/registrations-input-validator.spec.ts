@@ -636,4 +636,94 @@ describe('RegistrationsInputValidator', () => {
     );
     expect(validRegistrations.length).toBe(0);
   });
+
+  // `addressHouseNumber` is an optional numeric attribute, just like a numeric Kobo calculate attribute (Kobo attributes are never required).
+  // Numeric validation is `!isNaN(+value)`, so whatever JavaScript can turn into a number is accepted and the original string is stored unchanged.
+  describe('optional numeric attribute', () => {
+    const validateNumericValue = async (value: string | null | undefined) =>
+      await validator.validateAndCleanInput({
+        registrationInputArray: [
+          {
+            preferredLanguage: RegistrationPreferredLanguage.en,
+            programFspConfigurationName: Fsps.excel,
+            addressHouseNumber: value,
+          },
+        ],
+        programId,
+        userId,
+        typeOfInput: RegistrationValidationInputType.create,
+        validationConfig: { validateExistingReferenceId: true },
+      });
+
+    it.each([
+      {
+        value: '1,5',
+        description:
+          'a comma decimal: +"1,5" is NaN, so only a dot is accepted as the decimal separator',
+      },
+      {
+        value: 'NaN',
+        description: 'the string "NaN": +"NaN" is NaN',
+      },
+    ])('should reject $description', async ({ value }) => {
+      // Act
+      const { errors, validRegistrations } = await validateNumericValue(value);
+
+      // Assert
+      expect(errors).toHaveLength(1);
+      expect(errors[0]).toMatchObject({
+        column: 'addressHouseNumber',
+        value,
+      });
+      expect(validRegistrations).toHaveLength(0);
+    });
+
+    it.each([
+      {
+        value: '',
+        expectedStoredValue: null,
+        description:
+          'an empty string: an empty value on an optional attribute is turned into null before the numeric check, so it is never stored as an empty string',
+      },
+      {
+        value: null,
+        expectedStoredValue: null,
+        description: 'null: stored as null',
+      },
+      {
+        value: '1e3',
+        expectedStoredValue: '1e3',
+        description:
+          'scientific notation: +"1e3" is 1000, so it is valid and stored as the original text, not as "1000"',
+      },
+      {
+        value: ' ',
+        expectedStoredValue: ' ',
+        description:
+          'a single space: +" " is 0, so it is valid and stored as a space, which is not a number for Postgres when filtering with ::numeric',
+      },
+    ])('should accept $description', async ({ value, expectedStoredValue }) => {
+      // Act
+      const { errors, validRegistrations } = await validateNumericValue(value);
+
+      // Assert
+      expect(errors).toHaveLength(0);
+      expect(validRegistrations).toHaveLength(1);
+      expect(validRegistrations[0].data.addressHouseNumber).toBe(
+        expectedStoredValue,
+      );
+    });
+
+    it('should leave out an attribute that is not in the input', async () => {
+      // Act
+      const { errors, validRegistrations } =
+        await validateNumericValue(undefined);
+
+      // Assert
+      expect(errors).toHaveLength(0);
+      expect(validRegistrations[0].data).not.toHaveProperty(
+        'addressHouseNumber',
+      );
+    });
+  });
 });
