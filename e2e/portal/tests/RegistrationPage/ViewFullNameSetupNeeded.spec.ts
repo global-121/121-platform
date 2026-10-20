@@ -24,7 +24,8 @@ const registrationOnafriq = {
 };
 
 const setUpNeededText = 'Set up needed';
-const setUpNeededTooltipText = 'an admin must set up the full name';
+const setUpNeededTooltipText =
+  'To see the full name of the registration, an admin must set up the full name in the program’s settings.';
 
 test('Registrations show "Set up needed" until the full name is set up', async ({
   page,
@@ -32,23 +33,34 @@ test('Registrations show "Set up needed" until the full name is set up', async (
   registrationsPage,
   resetDBAndSeedRegistrations,
 }) => {
-  await resetDBAndSeedRegistrations({
-    seedScript: SeedScript.onafriqProgram,
-    registrations: [registrationOnafriq],
-    programId,
-  });
-  const accessToken = await getAccessToken();
-  await patchProgram(programId, { fullnameNamingConvention: [] }, accessToken);
+  const accessToken =
+    await test.step('Seed a registration in a program without a full name set up', async () => {
+      await resetDBAndSeedRegistrations({
+        seedScript: SeedScript.onafriqProgram,
+        registrations: [registrationOnafriq],
+        programId,
+      });
+      const token = await getAccessToken();
+      await patchProgram(programId, { fullnameNamingConvention: [] }, token);
+      return token;
+    });
 
-  const searchRegistrationResponse = await searchRegistrationByReferenceId(
-    registrationOnafriq.referenceId,
-    programId,
-    accessToken,
-  );
-  const { id: registrationId, registrationProgramId } =
-    searchRegistrationResponse.body.data[0];
   const registrationsPageUrl = `/program/${programId}/registrations`;
-  const registrationPageUrl = `${registrationsPageUrl}/${registrationId}`;
+
+  const { registrationPageUrl, registrationProgramId } =
+    await test.step('Look up the seeded registration', async () => {
+      const searchRegistrationResponse = await searchRegistrationByReferenceId(
+        registrationOnafriq.referenceId,
+        programId,
+        accessToken,
+      );
+      const { id: registrationId, registrationProgramId } =
+        searchRegistrationResponse.body.data[0];
+      return {
+        registrationPageUrl: `${registrationsPageUrl}/${registrationId}`,
+        registrationProgramId,
+      };
+    });
 
   const getNameCellInTable = async () => {
     await registrationsPage.goto(registrationsPageUrl);

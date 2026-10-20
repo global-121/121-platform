@@ -14,15 +14,24 @@ test('Set the full name fields in the order they are selected', async ({
   programSettingsRegistrationDataPage,
   resetDBAndSeedRegistrations,
 }) => {
-  await resetDBAndSeedRegistrations({
-    seedScript: SeedScript.onafriqProgram,
-    skipSeedRegistrations: true,
+  await test.step('Seed a program without a full name set up', async () => {
+    await resetDBAndSeedRegistrations({
+      seedScript: SeedScript.onafriqProgram,
+      skipSeedRegistrations: true,
+    });
+    const accessToken = await getAccessToken();
+    await patchProgram(
+      programId,
+      { fullnameNamingConvention: [] },
+      accessToken,
+    );
   });
-  const accessToken = await getAccessToken();
-  await patchProgram(programId, { fullnameNamingConvention: [] }, accessToken);
-  await programSettingsRegistrationDataPage.goto(
-    `/program/${programId}/settings/registration-data`,
-  );
+
+  await test.step('Go to the registration data settings page', async () => {
+    await programSettingsRegistrationDataPage.goto(
+      `/program/${programId}/settings/registration-data`,
+    );
+  });
 
   await test.step('View the full name set up without name fields', async () => {
     await programSettingsRegistrationDataPage.validateFullNameCardNoFieldSelected();
