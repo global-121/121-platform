@@ -15,10 +15,8 @@ import { FooterComponent } from '~/components/page-layout/components/footer/foot
 import { HeaderComponent } from '~/components/page-layout/components/header/header.component';
 import { ProgramMenuComponent } from '~/components/page-layout/components/program-menu/program-menu.component';
 import { RegistrationLookupMenuComponent } from '~/components/page-layout/components/registration-lookup-menu/registration-lookup-menu.component';
-import {
-  FOUND_RESOURCE_GUARD_QUERY_KEY,
-  FoundResourceGuardType,
-} from '~/guards/found-resource.guard';
+import { FoundResourceGuardType } from '~/guards/found-resource.guard';
+import { FOUND_RESOURCE_GUARD_QUERY_KEY } from '~/guards/found-resource-guard-query-key.const';
 import { PERMISSION_DENIED_QUERY_KEY } from '~/guards/program-permissions-guard';
 import { RegistrationLookupService } from '~/services/registration-lookup.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';

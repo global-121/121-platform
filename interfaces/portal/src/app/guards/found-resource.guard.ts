@@ -6,10 +6,9 @@ import { QueryClient } from '@tanstack/angular-query-experimental';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { FOUND_RESOURCE_GUARD_QUERY_KEY } from '~/guards/found-resource-guard-query-key.const';
 
 export type FoundResourceGuardType = 'payment' | 'program' | 'registration';
-
-export const FOUND_RESOURCE_GUARD_QUERY_KEY = 'couldNotFindResource';
 
 export const foundResourceGuard: (
   resourceType: FoundResourceGuardType,
