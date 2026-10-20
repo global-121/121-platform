@@ -194,7 +194,7 @@ Also see [Things to Avoid](../../AGENTS.md#things-to-avoid)
 - Test real API interactions and component integration
 - Use SuperAgent for API testing
 - Place in `/test` folder
-- Run with: `npm run test:integration:base`
+- Run relevant test files with: `npm run test:integration:base -- <test-file>.test.ts` (replace `<test-file>` with the relevant test filename)
 
 **Testing Strategy:**
 
