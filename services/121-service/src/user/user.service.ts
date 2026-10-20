@@ -1104,6 +1104,20 @@ export class UserService {
     return assignment.scope;
   }
 
+  public async getUserAccessGroupsForProgram({
+    userId,
+    programId,
+  }: {
+    userId: number;
+    programId: number;
+  }): Promise<AssignedAccessGroupResult[]> {
+    const user = await this.findById(userId);
+    return this.userAccessGroupAssignmentsService.getAccessGroupsForUser({
+      programAssignments: user.programAssignments,
+      programId,
+    });
+  }
+
   public getScopeForUser(user: UserEntity, programId: number): string {
     programId = Number(programId);
     const assignment = user.programAssignments.find(
