@@ -13,7 +13,8 @@ Rules from the [Portal Development Guidelines](../../docs/guidelines/portal-deve
 - Create components, enums and directives next to where they are used; move them to a top-level folder only when a second page or domain uses them. Do not abstract by default (Where do I put it?).
 - `*.model.ts` in `domains/` is the only place that represents backend entities. Backend DTOs are imported only in `domains/`, wrapped in the `Dto` type (Using types exported from the 121-service).
 - Frontend names match backend names unless there is a very good reason not to (Naming Consistency).
-- Pages have no helper files (Creating components).
+- Keep TypeScript file imports acyclic. Services, guards, components, pages, directives and pipes must not export additional shared runtime constants or standalone helpers. Primary exported functions/consts (such as functional guards) and public service methods are allowed. Put shared constants in nearby `*.const.ts` files and pure helpers in `*.helpers.ts` files. Import directly. (Export Boundaries and Circular Dependencies).
+- Keep page-only implementation details in the page file and unexported; extract shared constants and pure helpers according to the export-boundary rule (Creating components).
 - Components are standalone and use `OnPush`; no (S)CSS file per component (Creating components).
 - Prefer PrimeNG components over custom ones; suggest design tweaks that make one fit (General component guidelines).
 - Use `@if`/`@for`, not `NgIf`/`NgFor` (General component guidelines).

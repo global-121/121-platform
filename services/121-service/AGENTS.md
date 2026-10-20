@@ -25,7 +25,7 @@ See the Code Style & Standards section of [root AGENTS.md](../../AGENTS.md).
 - **Minimal Coupling**: Modules should be loosely coupled for reusability and testing
 - **Hierarchical Structure**: Higher-level modules depend on lower-level ones
 - **Feature Modules**: Group related functionality into feature modules
-- **Avoid Circular Dependencies**: Keep module dependencies acyclic
+- **Avoid Circular Dependencies**: Keep both NestJS module dependencies and TypeScript file imports acyclic. Framework implementation files must not export additional shared runtime constants or standalone helpers. Check the resulting import paths after extraction (Software Architecture Guidelines, A.6).
 
 **Module Implementation Rules:**
 

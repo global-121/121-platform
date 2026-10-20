@@ -40,6 +40,7 @@ Never read or modify `.env` files.
 
 Also report:
 
+- Additional shared runtime constants or standalone helpers exported from framework implementation files (services, guards, components, pages, controllers, repositories, directives and pipes). Verify shared constants/helpers live in dedicated nearby files, are imported directly. Do not flag the primary exported implementation (including functional guards declared with `export const`) or public service methods.
 - New code branches without a test.
 - Suppressed errors (`eslint-disable`, `@ts-ignore`, `@ts-expect-error`) or committed `.only`/`fit`/`fdescribe`.
 - New patterns or conventions that should be added to `AGENTS.md` or the guidelines.

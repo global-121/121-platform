@@ -48,6 +48,13 @@ app
 - Create components close to where they're used
 - Move to top-level folders only when used by multiple domains
 
+### Export Boundaries and Circular Dependencies
+
+- Keep TypeScript file imports acyclic. Services, guards, components, pages, directives and pipes must not export additional shared runtime constants or standalone helpers alongside their primary implementation.
+- Primary exported functions/constants, such as functional guards, and public service methods are allowed.
+- Put shared constants in nearby `*.const.ts` files and shared pure functions in `*.helpers.ts` files. Import directly. Check the resulting import paths after extraction.
+- See [Export Boundaries and Circular Dependencies](../../docs/guidelines/portal-development.md#export-boundaries-and-circular-dependencies) for rationale and placement.
+
 ### Component Guidelines
 
 **Creation Requirements:**
