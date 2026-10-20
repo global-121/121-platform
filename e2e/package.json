@@ -11,12 +11,13 @@
   "private": true,
   "scripts": {
     "prepare": "npm run install:dependencies-for-portal --prefix=../services/121-service/",
-    "setup": "npm install && npx playwright install",
-    "typecheck": "npx tsc --noEmit",
+    "setup": "npm install && npx --no --offline playwright install",
+    "typecheck": "tsc --noEmit",
     "prelint": "npm run typecheck",
     "lint": "eslint \"**/*.{ts,js,mjs}\" --cache",
     "fix": "npm run lint -- --fix",
-    "test": "playwright test --config=playwright.config.ts",
+    "test": "npm run test:lockfile && playwright test --config=playwright.config.ts",
+    "test:lockfile": "lockfile-lint",
     "test:update-snapshots": "npm run test -- --update-snapshots",
     "test:update-snapshots:specific": "npm run test -- --update-snapshots --grep",
     "test:find-flaky": "npm run test -- --fail-on-flaky-tests --retries=0 --repeat-each 30 -x --trace retain-on-failure --reporter=html",
@@ -32,6 +33,7 @@
     "eslint": "^10.9.1",
     "eslint-config-121-platform": "file:../packages/eslint-config-121-platform/",
     "eslint-plugin-playwright": "^2.12.0",
+    "lockfile-lint": "^5.0.1",
     "prettier": "^3.9.6",
     "supertest": "^7.3.0",
     "typescript": "^5.9.3",
@@ -40,7 +42,7 @@
   "dependencies": {
     "date-fns": "^4.4.0",
     "playwright": "^1.63.0",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+    "xlsx": "file:../packages/vendor/xlsx-0.20.3.tgz"
   },
   "engines": {
     "node": ">=24",
