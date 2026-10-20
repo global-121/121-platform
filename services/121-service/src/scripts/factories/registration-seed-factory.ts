@@ -12,6 +12,9 @@ import { BaseSeedFactory } from '@121-service/src/scripts/factories/base-seed-fa
 import { RegistrationAttributeSeedFactory } from '@121-service/src/scripts/factories/registration-attribute-data-seed-factory';
 import { RegistrationEventSeedFactory } from '@121-service/src/scripts/factories/registration-event-seed-factory';
 
+const PHONE_NUMBER_COUNTRY_PREFIX = '254';
+const FIRST_PHONE_NUMBER_SUBSCRIBER_PART = 100_000_000;
+
 @Injectable()
 export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity> {
   private readonly attributeDataFactory: RegistrationAttributeSeedFactory;
@@ -121,14 +124,15 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
           DefaultRegistrationDataAttributeNames.phoneNumber,
         ],
       })
+      .orderBy('rad.id', 'ASC')
       .getRawMany();
 
     // Update each phone attribute with a new unique number
     const dataToUpdate: { id: number; value: string }[] = [];
-    for (const record of phoneAttributeRecords) {
+    for (const [index, record] of phoneAttributeRecords.entries()) {
       dataToUpdate.push({
         id: record.id,
-        value: this.generatePhoneNumber(),
+        value: this.generateUniquePhoneNumber({ index }),
       });
     }
 
@@ -214,7 +218,7 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
     return Math.random().toString(36).substring(2, 15);
   }
 
-  private generatePhoneNumber(): string {
-    return `254${Math.floor(Math.random() * 900000000) + 100000000}`;
+  private generateUniquePhoneNumber({ index }: { index: number }): string {
+    return `${PHONE_NUMBER_COUNTRY_PREFIX}${FIRST_PHONE_NUMBER_SUBSCRIBER_PART + index}`;
   }
 }
