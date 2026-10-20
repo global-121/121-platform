@@ -16,6 +16,7 @@ interface KoboSurveyItem {
   $autoname?: string;
   label?: string[];
   required?: boolean;
+  calculation?: string;
   constraint_message?: string;
   select_from_list_name?: string;
 }
@@ -318,6 +319,33 @@ const happyFlowFromDefinition: KoboAssetDeployment = {
           required: false,
           $autoname: 'driversLicensePhoto',
         },
+        {
+          name: 'adults',
+          type: 'integer',
+          $kuid: 'sk3sd00',
+          label: ['adults'],
+          $xpath: 'adults',
+          required: false,
+          $autoname: 'adults',
+        },
+        {
+          name: 'children',
+          type: 'integer',
+          $kuid: 'ow3cp06',
+          label: ['children'],
+          $xpath: 'children',
+          required: false,
+          $autoname: 'children',
+        },
+        {
+          name: 'inclusion_score',
+          type: 'calculate',
+          $kuid: 'fq3yb41',
+          $xpath: 'inclusion_score',
+          required: false,
+          $autoname: 'inclusion_score',
+          calculation: '${adults} + ${children}',
+        },
       ],
       choices: [
         {
@@ -397,45 +425,6 @@ const getHappyFlowWithChanges = (): KoboAssetDeployment => {
   return withChanges;
 };
 
-const getHappyFlowWithCalculatedQuestion = (): KoboAssetDeployment => {
-  const withCalculatedQuestion = structuredClone(happyFlowFromDefinition);
-
-  withCalculatedQuestion.version_id = KoboMockAssetUids.calculatedQuestion;
-  withCalculatedQuestion.asset.version_id =
-    KoboMockAssetUids.calculatedQuestion;
-
-  withCalculatedQuestion.asset.content.survey.push(
-    {
-      name: 'number_one',
-      type: 'integer',
-      $kuid: 'sk3sd00',
-      label: ['number_one'],
-      $xpath: 'number_one',
-      required: false,
-      $autoname: 'number_one',
-    },
-    {
-      name: 'number_two',
-      type: 'integer',
-      $kuid: 'ow3cp06',
-      label: ['number_two'],
-      $xpath: 'number_two',
-      required: false,
-      $autoname: 'number_two',
-    },
-    {
-      name: 'calculation',
-      type: 'calculate',
-      $kuid: 'fq3yb41',
-      $xpath: 'calculation',
-      required: false,
-      $autoname: 'calculation',
-    },
-  );
-
-  return withCalculatedQuestion;
-};
-
 const getHappyFlowAlwaysNewVersion = (): KoboAssetDeployment => {
   const withNewVersion = structuredClone(happyFlowFromDefinition);
   const newVersionId = `asset-id-happy-flow-${Date.now()}-${Math.random()
@@ -506,8 +495,6 @@ export class KoboMockService {
         return getHappyFlowAlwaysNewVersion();
       case KoboMockAssetUids.manyOptions:
         return getHappyFlowWithManyOptions();
-      case KoboMockAssetUids.calculatedQuestion:
-        return getHappyFlowWithCalculatedQuestion();
       default: {
         return happyFlowFromDefinition;
       }
@@ -593,9 +580,9 @@ export class KoboMockService {
         'group_ad8jk55/group_gz24g15/What_is_2_2_number': 4,
         nationalId: '123456789',
         phoneNumber: '+31612345678',
-        number_one: '2',
-        number_two: '2',
-        calculation: '4',
+        adults: '2',
+        children: '2',
+        inclusion_score: '4',
         'group_or1bl43/How_are_you_today_select_one': 'great',
         photo:
           'username/attachments/form-id/submission-uuid/important_photo.jpg',
@@ -713,9 +700,9 @@ export class KoboMockService {
         'group_ad8jk55/group_gz24g15/What_is_2_2_number': 4,
         nationalId: '123456789',
         phoneNumber: '+31612345678',
-        number_one: '2',
-        number_two: '2',
-        calculation: '4',
+        adults: '2',
+        children: '2',
+        inclusion_score: '4',
         'group_or1bl43/How_are_you_today_select_one': 'great',
         photo:
           'username/attachments/form-id/submission-uuid/important_photo.jpg',
@@ -869,9 +856,9 @@ export class KoboMockService {
       'group_ad8jk55/group_gz24g15/What_is_2_2_number': 4,
       nationalId: `${100000000 + optionNumber}`,
       phoneNumber: `+316${String(optionNumber).padStart(8, '0')}`,
-      number_one: '2',
-      number_two: '2',
-      calculation: '4',
+      adults: '2',
+      children: '2',
+      inclusion_score: '4',
       'group_or1bl43/How_are_you_today_select_one': `option_${optionNumber}`,
       photo: 'username/attachments/form-id/submission-uuid/important_photo.jpg',
       idPhoto:
