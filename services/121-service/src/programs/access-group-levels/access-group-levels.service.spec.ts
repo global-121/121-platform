@@ -52,34 +52,17 @@ describe('AccessGroupLevelsService', () => {
     return entity;
   };
 
-  const givenConfiguredLevelsAndAssignments = ({
-    configuredLevels,
-    assignedAttributeIds,
+  const createLevelAttribute = ({
+    id,
+    name,
   }: {
-    configuredLevels: { id: number; name: string }[];
-    assignedAttributeIds: number[];
-  }): void => {
-    accessGroupLevelRepository.getOrderedAttributesByProgramId.mockResolvedValue(
-      configuredLevels.map(({ id, name }) => ({
-        programRegistrationAttributeId: id,
-        name,
-        optionValues: new Set(),
-      })),
-    );
-    const assignedAttributeIdSet = new Set(assignedAttributeIds);
-    assignmentAccessGroupRepository.getAssignedProgramRegistrationAttributeIds.mockImplementation(
-      async ({
-        programRegistrationAttributeIds,
-      }: {
-        programRegistrationAttributeIds: number[];
-      }) =>
-        new Set(
-          programRegistrationAttributeIds.filter((id) =>
-            assignedAttributeIdSet.has(id),
-          ),
-        ),
-    );
-  };
+    id: number;
+    name: string;
+  }) => ({
+    programRegistrationAttributeId: id,
+    name,
+    optionValues: new Set<string>(),
+  });
 
   beforeEach(async () => {
     accessGroupLevelRepository = {
@@ -166,10 +149,15 @@ describe('AccessGroupLevelsService', () => {
 
     it('should throw an error naming the level when a level that is assigned to users is replaced', async () => {
       // Arrange
-      givenConfiguredLevelsAndAssignments({
-        configuredLevels: [regionAttribute, districtAttribute],
-        assignedAttributeIds: [regionAttribute.id, districtAttribute.id],
-      });
+      accessGroupLevelRepository.getOrderedAttributesByProgramId.mockResolvedValue(
+        [
+          createLevelAttribute(regionAttribute),
+          createLevelAttribute(districtAttribute),
+        ],
+      );
+      assignmentAccessGroupRepository.getAssignedProgramRegistrationAttributeIds.mockResolvedValue(
+        new Set([districtAttribute.id]),
+      );
       const activeRegistrationAttributes = [
         createAttributeEntity(regionAttribute),
         createAttributeEntity(wardAttribute),
@@ -185,14 +173,24 @@ describe('AccessGroupLevelsService', () => {
       ).rejects.toThrow(
         `Access group level 'district' cannot be moved or removed because it is assigned to users in program ${programId}. Remove this access group from the users first.`,
       );
+      expect(
+        assignmentAccessGroupRepository.getAssignedProgramRegistrationAttributeIds,
+      ).toHaveBeenCalledWith({
+        programRegistrationAttributeIds: [districtAttribute.id],
+      });
     });
 
     it('should throw an error when levels that are assigned to users are reordered', async () => {
       // Arrange
-      givenConfiguredLevelsAndAssignments({
-        configuredLevels: [regionAttribute, districtAttribute],
-        assignedAttributeIds: [regionAttribute.id],
-      });
+      accessGroupLevelRepository.getOrderedAttributesByProgramId.mockResolvedValue(
+        [
+          createLevelAttribute(regionAttribute),
+          createLevelAttribute(districtAttribute),
+        ],
+      );
+      assignmentAccessGroupRepository.getAssignedProgramRegistrationAttributeIds.mockResolvedValue(
+        new Set([regionAttribute.id]),
+      );
       const activeRegistrationAttributes = [
         createAttributeEntity(regionAttribute),
         createAttributeEntity(districtAttribute),
@@ -206,14 +204,25 @@ describe('AccessGroupLevelsService', () => {
           accessGroupRegistrationAttributeNames: ['district', 'region'],
         }),
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+      expect(
+        assignmentAccessGroupRepository.getAssignedProgramRegistrationAttributeIds,
+      ).toHaveBeenCalledWith({
+        programRegistrationAttributeIds: [
+          regionAttribute.id,
+          districtAttribute.id,
+        ],
+      });
     });
 
     it('should allow removing a lower level that is not assigned to users while a higher level is', async () => {
       // Arrange
-      givenConfiguredLevelsAndAssignments({
-        configuredLevels: [regionAttribute, districtAttribute, wardAttribute],
-        assignedAttributeIds: [regionAttribute.id, districtAttribute.id],
-      });
+      accessGroupLevelRepository.getOrderedAttributesByProgramId.mockResolvedValue(
+        [
+          createLevelAttribute(regionAttribute),
+          createLevelAttribute(districtAttribute),
+          createLevelAttribute(wardAttribute),
+        ],
+      );
       const activeRegistrationAttributes = [
         createAttributeEntity(regionAttribute),
         createAttributeEntity(districtAttribute),
@@ -227,6 +236,11 @@ describe('AccessGroupLevelsService', () => {
       });
 
       // Assert
+      expect(
+        assignmentAccessGroupRepository.getAssignedProgramRegistrationAttributeIds,
+      ).toHaveBeenCalledWith({
+        programRegistrationAttributeIds: [wardAttribute.id],
+      });
       expect(accessGroupLevelRepository.replaceForProgram).toHaveBeenCalledWith(
         {
           programId,
@@ -240,10 +254,9 @@ describe('AccessGroupLevelsService', () => {
 
     it('should allow adding a lower level while the existing levels are assigned to users', async () => {
       // Arrange
-      givenConfiguredLevelsAndAssignments({
-        configuredLevels: [regionAttribute],
-        assignedAttributeIds: [regionAttribute.id],
-      });
+      accessGroupLevelRepository.getOrderedAttributesByProgramId.mockResolvedValue(
+        [createLevelAttribute(regionAttribute)],
+      );
       const activeRegistrationAttributes = [
         createAttributeEntity(regionAttribute),
         createAttributeEntity(districtAttribute),
@@ -257,6 +270,11 @@ describe('AccessGroupLevelsService', () => {
       });
 
       // Assert
+      expect(
+        assignmentAccessGroupRepository.getAssignedProgramRegistrationAttributeIds,
+      ).toHaveBeenCalledWith({
+        programRegistrationAttributeIds: [],
+      });
       expect(accessGroupLevelRepository.replaceForProgram).toHaveBeenCalledWith(
         {
           programId,
