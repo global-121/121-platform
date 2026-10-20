@@ -130,7 +130,7 @@ describe('Import a Kobo form definition', () => {
       'How_are_you_today_select_one',
       'adults',
       'children',
-      'inclusion_score',
+      'calculated_question',
       'What_is_2_2_number',
       'driversLicensePhoto',
       'idPhoto',

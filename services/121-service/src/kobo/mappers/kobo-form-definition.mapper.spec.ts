@@ -98,10 +98,10 @@ describe('KoboFormDefinitionMapper', () => {
         content: {
           survey: [
             createSurveyItem({
-              name: 'inclusion_score',
+              name: 'calculated_question',
               type: 'calculate',
-              label: ['Inclusion Score'],
-              calculation: '${adults} + ${children}',
+              label: ['Calculated question'],
+              calculation: '${adults} div ${children}',
             }),
           ],
           choices: [],
@@ -114,10 +114,10 @@ describe('KoboFormDefinitionMapper', () => {
       });
 
       // Assert
-      expect(result.survey[0].name).toBe('inclusion_score');
+      expect(result.survey[0].name).toBe('calculated_question');
       expect(result.survey[0].type).toBe('calculate');
-      expect(result.survey[0].label).toEqual(['Inclusion Score']);
-      expect(result.survey[0].calculation).toBe('${adults} + ${children}');
+      expect(result.survey[0].label).toEqual(['Calculated question']);
+      expect(result.survey[0].calculation).toBe('${adults} div ${children}');
     });
 
     it('should not add a calculation to a question without one', () => {
