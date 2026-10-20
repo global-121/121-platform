@@ -10,8 +10,8 @@
     "find-failed-tests:E2E": "node find-failed-tests.mjs --workflow=test_e2e_portal.yml"
   },
   "dependencies": {
-    "@azure/identity": "^4.13.1",
-    "node-html-parser": "^6.1.13"
+    "@azure/identity": "^4.13.3",
+    "node-html-parser": "^9.0.4"
   },
   "engines": {
     "node": ">=24",
