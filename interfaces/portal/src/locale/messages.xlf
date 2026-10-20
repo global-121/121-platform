@@ -1995,6 +1995,9 @@
       <trans-unit id="8464511475019236506" datatype="html">
         <source>You are about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>delete<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ selectedFile()?.filename }}" id="INTERPOLATION"/>., <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>this action can not be undone.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/></source>
       </trans-unit>
+      <trans-unit id="8478808172257733199" datatype="html">
+        <source>Access group</source>
+      </trans-unit>
       <trans-unit id="8486771973563673732" datatype="html">
         <source>No PowerBI dashboard has been configured for this program, please contact <x ctype="x-a" equiv-text="&lt;a href=&quot;mailto:support@121.global&quot;&gt;" id="START_LINK"/>support@121.global<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/> to set this up</source>
       </trans-unit>
