@@ -123,6 +123,9 @@
       "@angular/animations": "$@angular/animations",
       "@angular/core": "$@angular/core",
       "@angular/common": "$@angular/common"
+    },
+    "@angular/build": {
+      "piscina": "5.3.2"
     }
   },
   "allowScripts": {

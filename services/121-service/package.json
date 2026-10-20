@@ -145,7 +145,7 @@
   },
   "overrides": {
     "@swc/cli": {
-      "piscina": "4.9.3"
+      "piscina": "4.9.4"
     }
   },
   "allowScripts": {
