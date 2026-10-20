@@ -3,11 +3,7 @@
     "ado": {
       "type": "stdio",
       "command": "npx",
-      "args": [
-        "-y",
-        "@azure-devops/mcp",
-        "redcrossnl"
-      ],
+      "args": ["-y", "@azure-devops/mcp", "redcrossnl"],
       "env": {
         "ado_mcp_project": "121 Platform",
         "ado_mcp_team": "121 Development Team"
