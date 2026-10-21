@@ -41,6 +41,9 @@ describe('RequiredAttributesComponent', () => {
     accessGroupRegistrationAttributeNames: string[];
   };
 
+  let mockFspConfigurations: unknown[];
+  let mockExcelFspConfigurations: unknown[];
+
   const mockProgramAttributes = [
     {
       name: 'fullName',
@@ -72,7 +75,15 @@ describe('RequiredAttributesComponent', () => {
           provide: FspConfigurationApiService,
           useValue: {
             getFspConfigurations: (_programId: Signal<number | string>) =>
-              mockQueryFactory(() => [], 'fspConfigurations'),
+              mockQueryFactory(
+                () => mockFspConfigurations,
+                'fspConfigurations',
+              ),
+            getExcelFspConfigurations: (_programId: Signal<number | string>) =>
+              mockQueryFactory(
+                () => mockExcelFspConfigurations,
+                'excelFspConfigurations',
+              ),
           },
         },
         {
@@ -119,6 +130,8 @@ describe('RequiredAttributesComponent', () => {
       enableScope: false,
       accessGroupRegistrationAttributeNames: [],
     };
+    mockFspConfigurations = [];
+    mockExcelFspConfigurations = [];
     await setupTestBed();
   });
 
@@ -174,6 +187,15 @@ describe('RequiredAttributesComponent', () => {
       enableScope: false,
       accessGroupRegistrationAttributeNames: ['region'],
     };
+    mockFspConfigurations = [
+      {
+        id: 1,
+        programId: 1,
+        fspName: 'Safaricom',
+        name: 'Safaricom',
+        label: { en: 'Safaricom' },
+      },
+    ];
     const fspConfigService = TestBed.inject(FspConfigurationService);
     vi.spyOn(fspConfigService, 'getRequiredFspAttributes').mockReturnValue([
       'region',

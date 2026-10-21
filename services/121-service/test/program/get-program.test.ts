@@ -114,7 +114,7 @@ describe('Get program', () => {
   });
 
   describe('accessGroupRegistrationAttributeNames', () => {
-    const programId = 1;
+    const programId = 2;
 
     it('should return empty array when no access group levels are configured', async () => {
       // Act
