@@ -3,7 +3,10 @@ import { HttpStatus } from '@nestjs/common';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { patchProgram } from '@121-service/test/helpers/program.helper';
+import {
+  getProgram,
+  patchProgram,
+} from '@121-service/test/helpers/program.helper';
 import {
   getAccessToken,
   resetDB,
@@ -63,5 +66,45 @@ describe('Update program', () => {
     expect(updateProgramResponse.body.languages).toStrictEqual(
       program.languages,
     );
+  });
+
+  it('should keep the order of the fullnameNamingConvention', async () => {
+    // Arrange
+    // Deliberately not in alphabetical order
+    const fullnameNamingConvention = ['lastName', 'firstName'];
+
+    // Act
+    const updateProgramResponse = await patchProgram(
+      2,
+      { fullnameNamingConvention },
+      accessToken,
+    );
+    const getProgramResponse = await getProgram(2, accessToken);
+
+    // Assert
+    expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
+    expect(updateProgramResponse.body.fullnameNamingConvention).toStrictEqual(
+      fullnameNamingConvention,
+    );
+    expect(getProgramResponse.body.fullnameNamingConvention).toStrictEqual(
+      fullnameNamingConvention,
+    );
+  });
+
+  it('should store a null fullnameNamingConvention as an empty array', async () => {
+    // Act
+    const updateProgramResponse = await patchProgram(
+      2,
+      { fullnameNamingConvention: null },
+      accessToken,
+    );
+    const getProgramResponse = await getProgram(2, accessToken);
+
+    // Assert
+    expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
+    expect(updateProgramResponse.body.fullnameNamingConvention).toStrictEqual(
+      [],
+    );
+    expect(getProgramResponse.body.fullnameNamingConvention).toStrictEqual([]);
   });
 });

@@ -74,6 +74,7 @@ export class ProgramService {
     program.programRegistrationAttributes =
       await this.programRegistrationAttributeRepository.find({
         where: { program: { id: Equal(programId) } },
+        order: { created: 'ASC', id: 'ASC' },
       });
 
     program.editableAttributes =
@@ -420,6 +421,10 @@ export class ProgramService {
 
     for (const key in updateProgramDto) {
       program[key] = updateProgramDto[key];
+    }
+
+    if (updateProgramDto.fullnameNamingConvention === null) {
+      program.fullnameNamingConvention = [];
     }
 
     const savedProgram = await this.programRepository.save(program);

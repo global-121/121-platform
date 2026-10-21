@@ -8,11 +8,15 @@ import {
 import { ChipModule } from 'primeng/chip';
 import { TooltipModule } from 'primeng/tooltip';
 
+import {
+  InfoTooltipComponent,
+  InfoTooltipData,
+} from '~/components/info-tooltip/info-tooltip.component';
 import { ColorVariant } from '~/utils/color-variant.enum';
 
 @Component({
   selector: 'app-colored-chip',
-  imports: [ChipModule, TooltipModule],
+  imports: [ChipModule, TooltipModule, InfoTooltipComponent],
   templateUrl: './colored-chip.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +26,7 @@ export class ColoredChipComponent {
   readonly label = input.required<string>();
   readonly icon = input<string>();
   readonly tooltip = input<string>();
+  readonly infoTooltipData = input<InfoTooltipData>();
   readonly wrapText = input(false);
 
   readonly styleClass = computed(() => {

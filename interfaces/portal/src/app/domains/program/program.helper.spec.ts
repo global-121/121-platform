@@ -2,8 +2,34 @@ import { describe, expect, it } from 'vitest';
 
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
-import { mergeUILanguageForProgramLanguageAttributes } from '~/domains/program/program.helper';
+import {
+  mergeUILanguageForProgramLanguageAttributes,
+  programNeedsFullNameSetup,
+} from '~/domains/program/program.helper';
 import { Program } from '~/domains/program/program.model';
+
+describe('programNeedsFullNameSetup', () => {
+  it('should be false while the program is not loaded yet', () => {
+    expect(programNeedsFullNameSetup(undefined)).toBe(false);
+  });
+
+  it.each([[[]], [null], [undefined]])(
+    'should be true when the naming convention is %j',
+    (fullnameNamingConvention) => {
+      const program = { fullnameNamingConvention } as unknown as Program;
+
+      expect(programNeedsFullNameSetup(program)).toBe(true);
+    },
+  );
+
+  it('should be false when the naming convention has fields', () => {
+    const program = {
+      fullnameNamingConvention: ['firstName', 'lastName'],
+    } as Program;
+
+    expect(programNeedsFullNameSetup(program)).toBe(false);
+  });
+});
 
 describe('mergeUILanguageForProgramLanguageAttributes', () => {
   const mockOriginalProgram: Partial<Program> = {

@@ -935,6 +935,9 @@
       <trans-unit id="4493197211213914613" datatype="html">
         <source>Ordered On</source>
       </trans-unit>
+      <trans-unit id="4496151095424024510" datatype="html">
+        <source>Select the field or fields from your form that make up the full name of the registration, in the order you would like to see the name. This name will be shown in the registrations table and the profile page.</source>
+      </trans-unit>
       <trans-unit id="4513666009026562086" datatype="html">
         <source>Import existing reg.</source>
       </trans-unit>
@@ -1355,6 +1358,9 @@
       <trans-unit id="6238291467288576076" datatype="html">
         <source>Contains</source>
       </trans-unit>
+      <trans-unit id="6239908480786954058" datatype="html">
+        <source>Name fields:</source>
+      </trans-unit>
       <trans-unit id="6245136461829083125" datatype="html">
         <source>Import existing registrations</source>
       </trans-unit>
@@ -1613,6 +1619,9 @@
       </trans-unit>
       <trans-unit id="7156619668472815007" datatype="html">
         <source>Other errors</source>
+      </trans-unit>
+      <trans-unit id="7168987519084642907" datatype="html">
+        <source>Full name setup</source>
       </trans-unit>
       <trans-unit id="718304168195158236" datatype="html">
         <source>Total registrations</source>
@@ -1917,6 +1926,9 @@
       <trans-unit id="8227576772021299128" datatype="html">
         <source>We couldn&apos;t find this form in Kobo. Check the URL to make sure the form is deployed.</source>
       </trans-unit>
+      <trans-unit id="8249091204340770733" datatype="html">
+        <source>No name field selected</source>
+      </trans-unit>
       <trans-unit id="8255959026836387530" datatype="html">
         <source>Email copied to clipboard</source>
       </trans-unit>
@@ -2004,6 +2016,9 @@
       <trans-unit id="863719556168006669" datatype="html">
         <source>The system will create registrations with the status <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;registeredChipData.chipVariant&quot; [label]=&quot;registeredChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;registeredChipData.chipVariant&quot; [label]=&quot;registeredChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/>.</source>
       </trans-unit>
+      <trans-unit id="8640584034813421127" datatype="html">
+        <source>Name fields</source>
+      </trans-unit>
       <trans-unit id="8670091824036050972" datatype="html">
         <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations.</source>
       </trans-unit>
@@ -2015,6 +2030,9 @@
       </trans-unit>
       <trans-unit id="8718149515078931594" datatype="html">
         <source>The label that will be shown in the registration page table header and registration&apos;s profile. The labels can be edited by clicking on the pencil icon above.</source>
+      </trans-unit>
+      <trans-unit id="8729845011959830442" datatype="html">
+        <source>Full name saved successfully.</source>
       </trans-unit>
       <trans-unit id="8733206904097373941" datatype="html">
         <source>This will download an Excel file with all unused voucher(s).</source>
@@ -2399,6 +2417,12 @@
       </trans-unit>
       <trans-unit id="export-verification-cooperative-bank-of-oromia" datatype="html">
         <source>Coopbank verification report</source>
+      </trans-unit>
+      <trans-unit id="full-name-setup-needed" datatype="html">
+        <source>Set up needed</source>
+      </trans-unit>
+      <trans-unit id="full-name-setup-needed-tooltip" datatype="html">
+        <source>To see the full name of the registration, an admin must set up the full name in the program’s settings.</source>
       </trans-unit>
       <trans-unit id="general" datatype="html">
         <source>General</source>

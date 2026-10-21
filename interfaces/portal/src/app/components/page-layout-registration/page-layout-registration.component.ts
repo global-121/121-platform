@@ -33,6 +33,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { FullNameSetupNeededChipComponent } from '~/components/full-name-setup-needed/full-name-setup-needed-chip.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { AddNoteDialogComponent } from '~/components/page-layout-registration/components/add-note-dialog/add-note-dialog.component';
 import { IgnoreDuplicationDialogComponent } from '~/components/page-layout-registration/components/ignore-duplicates-dialog/ignore-duplication-dialog.component';
@@ -40,6 +41,7 @@ import { RegistrationDuplicatesBannerComponent } from '~/components/page-layout-
 import { RegistrationMenuComponent } from '~/components/page-layout-registration/components/registration-menu/registration-menu.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
+import { programNeedsFullNameSetup } from '~/domains/program/program.helper';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { registrationTransferValueTooltipMessage } from '~/domains/registration/registration.helper';
 import { RegistrationStatusChangeTarget } from '~/domains/registration/registration.model';
@@ -67,6 +69,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     RegistrationMenuComponent,
     RegistrationDuplicatesBannerComponent,
     ColoredChipComponent,
+    FullNameSetupNeededChipComponent,
     SendMessageDialogComponent,
     ChangeStatusDialogComponent,
     IgnoreDuplicationDialogComponent,
@@ -239,10 +242,20 @@ export class PageLayoutRegistrationComponent {
       : $localize`All Registrations`,
   );
 
+  readonly isFullNameSetupNeeded = computed(() =>
+    programNeedsFullNameSetup(this.program.data()),
+  );
+
   readonly registrationTitle = computed(() => {
     const localized = $localize`Reg. #`;
+    const registrationProgramId =
+      this.registration.data()?.registrationProgramId.toString() ?? '';
 
-    return `${localized}${this.registration.data()?.registrationProgramId.toString() ?? ''} - ${this.registration.data()?.name ?? ''}`;
+    if (this.isFullNameSetupNeeded()) {
+      return `${localized}${registrationProgramId}`;
+    }
+
+    return `${localized}${registrationProgramId} - ${this.registration.data()?.name ?? ''}`;
   });
 
   readonly canViewPersonalData = computed(() =>
