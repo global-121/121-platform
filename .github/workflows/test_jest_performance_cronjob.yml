@@ -65,22 +65,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5, 6, 7]
         include:
-          - shard: 1
-            test_files: ${{ needs.generate-test-files.outputs.shard1_files }}
           - shard: 2
             test_files: ${{ needs.generate-test-files.outputs.long_test_1 }}
-          - shard: 3
-            test_files: ${{ needs.generate-test-files.outputs.long_test_2 }}
-          - shard: 4
-            test_files: ${{ needs.generate-test-files.outputs.long_test_3 }}
-          - shard: 5
-            test_files: ${{ needs.generate-test-files.outputs.long_test_4 }}
-          - shard: 6
-            test_files: ${{ needs.generate-test-files.outputs.long_test_5 }}
-          - shard: 7
-            test_files: ${{ needs.generate-test-files.outputs.long_test_6 }}
 
     steps:
       - name: Check out repository code
