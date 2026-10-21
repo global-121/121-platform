@@ -24,7 +24,7 @@ import { GetDuplicatesResult } from '@121-service/src/registration/interfaces/ge
 import { RegistrationScopedBaseRepository } from '@121-service/src/registration/repositories/registration-scoped-base.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
-@Injectable({ scope: Scope.REQUEST, durable: true })
+@Injectable({ scope: Scope.REQUEST })
 export class RegistrationScopedRepository extends RegistrationScopedBaseRepository<RegistrationEntity> {
   private readonly sequenceRepository: Repository<RegistrationProgramIdSequenceEntity>;
 

@@ -21,7 +21,7 @@ interface Filter {
 type ColumnsFilters = Record<string, Filter[]>;
 
 // TODO: Unit tests for this class should be created
-@Injectable({ scope: Scope.REQUEST, durable: true })
+@Injectable({ scope: Scope.REQUEST })
 export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepository<RegistrationViewEntity> {
   constructor(
     dataSource: DataSource,

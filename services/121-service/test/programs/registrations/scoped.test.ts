@@ -5,10 +5,12 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   registrationScopedKisumuEastPv,
   registrationScopedKisumuWestPv,
+  registrationScopedTurkanaNorthPv,
   registrationsPV,
 } from '@121-service/test/fixtures/scoped-registrations';
 import { getTransactionsByPaymentIdPaginated } from '@121-service/test/helpers/program.helper';
 import {
+  getTransactionEvents,
   importRegistrations,
   seedPaidRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -137,5 +139,39 @@ describe('Registrations - [Scoped]', () => {
     expect(sortedAllowedReferenceIds).toEqual(
       sortedReferenceIdsFromTransactions,
     );
+  });
+
+  // Transaction events are served by a dependency tree of only scoped repositories, which used to skip scope filtering
+  it('should not return transaction events of a registration outside the scope of the requesting user', async () => {
+    // Arrange
+    const paymentId = await seedPaidRegistrations({
+      registrations: registrationsPV,
+      programId: PvProgramId,
+    });
+    const transactionResponse = await getTransactionsByPaymentIdPaginated({
+      programId: PvProgramId,
+      paymentId,
+      registrationReferenceId: registrationScopedTurkanaNorthPv.referenceId,
+      accessToken,
+    });
+    const transactionId = transactionResponse.body.data[0].id;
+    const scopedAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
+
+    // Act
+    const adminResponse = await getTransactionEvents({
+      programId: PvProgramId,
+      transactionId,
+      accessToken,
+    });
+    const scopedResponse = await getTransactionEvents({
+      programId: PvProgramId,
+      transactionId,
+      accessToken: scopedAccessToken,
+    });
+
+    // Assert
+    expect(adminResponse.body.data.length).toBeGreaterThan(0);
+    expect(scopedResponse.status).toBe(HttpStatus.OK);
+    expect(scopedResponse.body.data).toEqual([]);
   });
 });

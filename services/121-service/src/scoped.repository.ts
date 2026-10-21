@@ -72,7 +72,7 @@ export function requestHasUser(
   return req?.user != undefined;
 }
 
-@Injectable({ scope: Scope.REQUEST, durable: true })
+@Injectable({ scope: Scope.REQUEST })
 export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
   // Use for entities that have an INDIRECT relation to registration
   // Else the relation is found automatically in the constructor
