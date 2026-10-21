@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { AccessGroupLevelRepository } from '@121-service/src/programs/access-group-levels/access-group-level.repository';
 import { AccessGroupLevelsService } from '@121-service/src/programs/access-group-levels/access-group-levels.service';
+import { MAX_ACCESS_GROUP_LEVELS } from '@121-service/src/programs/access-group-levels/const/max-access-group-levels.const';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationAttributeDataRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-attribute-data.repository';
@@ -16,6 +17,9 @@ describe('AccessGroupLevelsService', () => {
   };
 
   const programId = 1;
+
+  const createAttributeNames = ({ count }: { count: number }): string[] =>
+    Array.from({ length: count }, (_, index) => `attribute${index}`);
 
   const createAttributeEntity = (
     overrides: Partial<ProgramRegistrationAttributeEntity> = {},
@@ -203,14 +207,34 @@ describe('AccessGroupLevelsService', () => {
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
     });
 
-    it('should throw when more than 3 attribute names are provided', async () => {
+    it('should return the attribute names when exactly the maximum number of levels is provided', () => {
       // Arrange
-      const programRegistrationAttributes = [
-        createAttributeEntity({ name: 'region' }),
-        createAttributeEntity({ name: 'district' }),
-        createAttributeEntity({ name: 'subDistrict' }),
-        createAttributeEntity({ name: 'village' }),
-      ];
+      const attributeNames = createAttributeNames({
+        count: MAX_ACCESS_GROUP_LEVELS,
+      });
+      const programRegistrationAttributes = attributeNames.map((name) =>
+        createAttributeEntity({ name }),
+      );
+
+      // Act
+      const result = service.validateAccessGroupRegistrationAttributeNames({
+        programId,
+        activeRegistrationAttributes: programRegistrationAttributes,
+        selectedAttributeNames: attributeNames,
+      });
+
+      // Assert
+      expect(result).toEqual(attributeNames);
+    });
+
+    it('should throw when more than the maximum number of levels is provided', async () => {
+      // Arrange
+      const attributeNames = createAttributeNames({
+        count: MAX_ACCESS_GROUP_LEVELS + 1,
+      });
+      const programRegistrationAttributes = attributeNames.map((name) =>
+        createAttributeEntity({ name }),
+      );
 
       // Act + Assert
       await expect(
@@ -218,12 +242,7 @@ describe('AccessGroupLevelsService', () => {
           service.validateAccessGroupRegistrationAttributeNames({
             programId,
             activeRegistrationAttributes: programRegistrationAttributes,
-            selectedAttributeNames: [
-              'region',
-              'district',
-              'subDistrict',
-              'village',
-            ],
+            selectedAttributeNames: attributeNames,
           }))(),
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
     });

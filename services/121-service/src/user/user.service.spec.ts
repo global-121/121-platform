@@ -14,6 +14,7 @@ import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity'
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
+import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 
 describe('UserService', () => {
@@ -21,7 +22,9 @@ describe('UserService', () => {
   let userRepository: Repository<UserEntity>;
   let permissionRepository: Repository<PermissionEntity>;
   let userRoleRepository: Repository<UserRoleEntity>;
+  let programRepository: Repository<ProgramEntity>;
   let assignmentRepository: ProgramAidworkerAssignmentRepository;
+  let userAccessGroupAssignmentsService: jest.Mocked<UserAccessGroupAssignmentsService>;
   let userEmailsService: UserEmailsService;
 
   const mockRequest = {
@@ -32,6 +35,13 @@ describe('UserService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
+        {
+          provide: UserAccessGroupAssignmentsService,
+          useValue: {
+            getAccessGroupsWithAttributeIdsOrThrow: jest.fn(),
+            replaceAccessGroups: jest.fn(),
+          },
+        },
         {
           provide: getRepositoryToken(UserEntity),
           useClass: Repository,
@@ -55,6 +65,7 @@ describe('UserService', () => {
             findByUserId: jest.fn(),
             findOne: jest.fn(),
             createQueryBuilder: jest.fn(),
+            save: jest.fn(),
           },
         },
         {
@@ -83,6 +94,12 @@ describe('UserService', () => {
     );
     assignmentRepository = module.get<ProgramAidworkerAssignmentRepository>(
       ProgramAidworkerAssignmentRepository,
+    );
+    programRepository = module.get<Repository<ProgramEntity>>(
+      getRepositoryToken(ProgramEntity),
+    );
+    userAccessGroupAssignmentsService = module.get(
+      UserAccessGroupAssignmentsService,
     );
     userEmailsService = module.get<UserEmailsService>(UserEmailsService);
   });
@@ -1159,6 +1176,95 @@ describe('UserService', () => {
 
       // Assert
       expect(result[0].isEligiblePaymentApprover).toBe(false);
+    });
+  });
+
+  describe('access groups of a program assignment', () => {
+    const programId = 5;
+    const userId = 7;
+    const existingAssignmentId = 100;
+    const newAssignmentId = 200;
+    const accessGroupsWithAttributeIds = [
+      { programRegistrationAttributeId: 11, value: 'kisumu' },
+    ];
+
+    function arrangeAssignment({
+      hasExistingAssignment,
+    }: {
+      hasExistingAssignment: boolean;
+    }): void {
+      const programAssignments = hasExistingAssignment
+        ? [{ id: existingAssignmentId, program: { id: programId }, roles: [] }]
+        : [];
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue({
+        id: userId,
+        programAssignments,
+      } as unknown as UserEntity);
+      jest
+        .spyOn(programRepository, 'findOneBy')
+        .mockResolvedValue({ id: programId } as ProgramEntity);
+      jest.spyOn(userRoleRepository, 'find').mockResolvedValue([]);
+      jest
+        .spyOn(assignmentRepository, 'save')
+        .mockResolvedValue({ id: newAssignmentId } as never);
+      userAccessGroupAssignmentsService.getAccessGroupsWithAttributeIdsOrThrow.mockResolvedValue(
+        accessGroupsWithAttributeIds,
+      );
+    }
+
+    it('should store the access groups on the existing assignment when the user is already assigned to the program', async () => {
+      // Arrange
+      arrangeAssignment({ hasExistingAssignment: true });
+
+      // Act
+      await service.assignAidworkerToProgram(programId, userId, {
+        roles: [],
+        accessGroups: [],
+      });
+
+      // Assert
+      expect(
+        userAccessGroupAssignmentsService.replaceAccessGroups,
+      ).toHaveBeenCalledWith({
+        programAidworkerAssignmentId: existingAssignmentId,
+        accessGroups: accessGroupsWithAttributeIds,
+      });
+    });
+
+    it('should store the access groups on the new assignment when the user is not assigned to the program yet', async () => {
+      // Arrange
+      arrangeAssignment({ hasExistingAssignment: false });
+
+      // Act
+      await service.assignAidworkerToProgram(programId, userId, {
+        roles: [],
+        accessGroups: [],
+      });
+
+      // Assert
+      expect(
+        userAccessGroupAssignmentsService.replaceAccessGroups,
+      ).toHaveBeenCalledWith({
+        programAidworkerAssignmentId: newAssignmentId,
+        accessGroups: accessGroupsWithAttributeIds,
+      });
+    });
+
+    it('should save nothing when the access groups are invalid', async () => {
+      // Arrange
+      arrangeAssignment({ hasExistingAssignment: true });
+      userAccessGroupAssignmentsService.getAccessGroupsWithAttributeIdsOrThrow.mockRejectedValue(
+        new HttpException('Invalid access groups', HttpStatus.BAD_REQUEST),
+      );
+
+      // Act & Assert
+      await expect(
+        service.assignAidworkerToProgram(programId, userId, {
+          roles: [],
+          accessGroups: [],
+        }),
+      ).rejects.toThrow('Invalid access groups');
+      expect(assignmentRepository.save).not.toHaveBeenCalled();
     });
   });
 });

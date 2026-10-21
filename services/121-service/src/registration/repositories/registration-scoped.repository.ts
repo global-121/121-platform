@@ -15,6 +15,8 @@ import {
 import { type QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { ExportVisaCardDetailsRawData } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
+import { addAccessGroupFilter } from '@121-service/src/programs/access-group-levels/access-group-filter.helper';
+import { AssignedAccessGroupResult } from '@121-service/src/programs/access-group-levels/interfaces/assigned-access-group-result.interface';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationProgramIdSequenceEntity } from '@121-service/src/programs/entities/registration-program-id-sequence.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
@@ -23,6 +25,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { GetDuplicatesResult } from '@121-service/src/registration/interfaces/get-duplicates-result.interface';
 import { RegistrationScopedBaseRepository } from '@121-service/src/registration/repositories/registration-scoped-base.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { addScopeFilter } from '@121-service/src/utils/scope/scope-filter.helper';
 
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class RegistrationScopedRepository extends RegistrationScopedBaseRepository<RegistrationEntity> {
@@ -202,6 +205,38 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       },
       relations,
     });
+  }
+
+  // This is a helper to filter registrations by scope and access groups for endpoint that do not contain programId
+  public async isWithinScopeAndAccessGroups({
+    referenceId,
+    programId,
+    scope,
+    accessGroups,
+  }: {
+    referenceId: string;
+    programId: number;
+    scope: string;
+    accessGroups: AssignedAccessGroupResult[];
+  }): Promise<boolean> {
+    const queryBuilder = this.repository
+      .createQueryBuilder('registration')
+      .leftJoin('registration.program', 'program')
+      .where('registration.referenceId = :referenceId', { referenceId })
+      .andWhere('registration.programId = :programId', { programId });
+    addScopeFilter({
+      queryBuilder,
+      registrationAlias: 'registration',
+      programAlias: 'program',
+      scope,
+    });
+    addAccessGroupFilter({
+      queryBuilder,
+      registrationAlias: 'registration',
+      accessGroups,
+    });
+
+    return (await queryBuilder.getCount()) > 0;
   }
 
   public async getDuplicates({

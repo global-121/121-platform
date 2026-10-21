@@ -17,6 +17,7 @@ import {
 } from '@121-service/src/shared/enum/interface-names.enum';
 import { UserRequestData } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
+import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 
 @Injectable()
 export class CookieJwtStrategy
@@ -24,6 +25,7 @@ export class CookieJwtStrategy
   implements OnModuleInit
 {
   private userService: UserService;
+  private userAccessGroupAssignmentsService: UserAccessGroupAssignmentsService;
 
   constructor(private moduleRef: ModuleRef) {
     super({
@@ -58,6 +60,10 @@ export class CookieJwtStrategy
     this.userService = await this.moduleRef.resolve(UserService, contextId, {
       strict: false,
     });
+    this.userAccessGroupAssignmentsService = this.moduleRef.get(
+      UserAccessGroupAssignmentsService,
+      { strict: false },
+    );
   }
 
   async validate(request: any, payload: UserRequestData): Promise<any> {
@@ -97,7 +103,7 @@ export class CookieJwtStrategy
     }
     const username = (payload.username ?? '').toLowerCase();
     const user = await this.userService.findByUsernameOrThrow(username, {
-      programAssignments: true,
+      programAssignments: { accessGroups: true },
     });
 
     const userToken: UserRequestData = {
@@ -108,6 +114,12 @@ export class CookieJwtStrategy
       scope: request.params.programId
         ? this.userService.getScopeForUser(user, request.params.programId)
         : '',
+      accessGroups: request.params.programId
+        ? this.userAccessGroupAssignmentsService.getAccessGroupsForUser({
+            programAssignments: user.programAssignments,
+            programId: request.params.programId,
+          })
+        : [],
       isOrganizationAdmin: payload.isOrganizationAdmin,
     };
     return userToken;

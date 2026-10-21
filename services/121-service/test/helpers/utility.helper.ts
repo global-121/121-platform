@@ -9,6 +9,7 @@ import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { CreateProgramAssignmentDto } from '@121-service/src/user/dto/assign-aw-to-program.dto';
+import { AssignedAccessGroupDto } from '@121-service/src/user/dto/assigned-access-group.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { CreateUserRoleDto } from '@121-service/src/user/dto/create-user-role.dto';
 import { UserRoleResponseDTO } from '@121-service/src/user/dto/userrole-response.dto';
@@ -317,17 +318,20 @@ export async function assignUserToProgram({
   userId,
   roles,
   scope,
+  accessGroups,
   adminAccessToken,
 }: {
   programId: number;
   userId: number;
   roles: string[];
   scope?: string;
+  accessGroups?: AssignedAccessGroupDto[];
   adminAccessToken: string;
 }): Promise<void> {
   const assignmentDto: CreateProgramAssignmentDto = {
     roles: roles as DefaultUserRole[],
     scope,
+    accessGroups,
   };
 
   const assignmentResponse = await getServer()
@@ -376,12 +380,14 @@ export async function createUserWithPermissions({
   programId,
   adminAccessToken,
   scope,
+  accessGroups,
 }: {
   permissions: PermissionEnum[];
   programId: number;
   adminAccessToken: string;
   scope?: string;
-}): Promise<{ username: string; password: string }> {
+  accessGroups?: AssignedAccessGroupDto[];
+}): Promise<{ username: string; password: string; userId: number }> {
   // Generate unique identifiers
   const uniqueId = generateUniqueTestId();
   const roleName = `test_role_${uniqueId}`;
@@ -417,10 +423,11 @@ export async function createUserWithPermissions({
     userId,
     roles: [roleName],
     scope,
+    accessGroups,
     adminAccessToken,
   });
 
-  return { username, password };
+  return { username, password, userId };
 }
 
 export async function createUserAssignedToProgram({
@@ -465,17 +472,20 @@ export async function createAccessTokenWithPermissions({
   adminAccessToken,
   programId,
   scope,
+  accessGroups,
 }: {
   permissions: PermissionEnum[];
   adminAccessToken: string;
   programId: number;
   scope?: string;
+  accessGroups?: AssignedAccessGroupDto[];
 }): Promise<string> {
   const { username, password } = await createUserWithPermissions({
     permissions,
     programId,
     adminAccessToken,
     scope,
+    accessGroups,
   });
   return getAccessToken(username, password);
 }

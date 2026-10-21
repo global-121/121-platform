@@ -16,13 +16,14 @@ import {
 } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
+import { addAccessGroupFilter } from '@121-service/src/programs/access-group-levels/access-group-filter.helper';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import {
   ScopedUserRequest,
   ScopedUserRequestWithUser,
 } from '@121-service/src/shared/scoped-user-request';
 import { FindReturnType } from '@121-service/src/shared/types/find-return.type';
-import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
+import { addScopeFilter } from '@121-service/src/utils/scope/scope-filter.helper';
 
 export class ScopedQueryBuilder<
   T extends ObjectLiteral,
@@ -117,12 +118,14 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     if (!requestHasUser(this.request)) {
       return this.repository.find(options);
     }
-    const scopedOptions = convertToScopedOptions<T, Options>(
+    const scopedResult = await this.createFindQueryBuilder({
       options,
-      this.relationArrayToRegistration,
-      this.request.user.scope,
-    );
-    return this.repository.find(scopedOptions);
+    }).getMany();
+    return scopedResult as FindReturnType<
+      T,
+      Options['select'],
+      Options['relations']
+    >[];
   }
 
   public override async findAndCount(
@@ -142,12 +145,17 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
       return this.repository.findAndCount(options); // Pass undefined directly if no scope
     }
 
-    const scopedOptions = convertToScopedOptions<T, Options>(
+    const [scopedResult, totalCount] = await this.createFindQueryBuilder({
       options,
-      this.relationArrayToRegistration,
-      this.request.user.scope,
-    );
-    return this.repository.findAndCount(scopedOptions);
+    }).getManyAndCount();
+    return [
+      scopedResult as FindReturnType<
+        T,
+        Options['select'],
+        Options['relations']
+      >[],
+      totalCount,
+    ];
   }
 
   public override async findOne(options: FindOneOptions<T>): Promise<T | null>;
@@ -165,12 +173,14 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
       return this.repository.findOne(options);
     }
 
-    const scopedOptions = convertToScopedOptions<T, Options>(
-      options,
-      this.relationArrayToRegistration,
-      this.request.user.scope,
-    );
-    return this.repository.findOne(scopedOptions);
+    const scopedResult = await this.createFindQueryBuilder({
+      options: { ...options, take: 1 },
+    }).getOne();
+    return scopedResult as FindReturnType<
+      T,
+      Options['select'],
+      Options['relations']
+    > | null;
   }
 
   public override async findOneOrFail(options: FindOneOptions<T>): Promise<T>;
@@ -184,12 +194,14 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
       return this.repository.findOneOrFail(options);
     }
 
-    const scopedOptions = convertToScopedOptions<T, Options>(
-      options,
-      this.relationArrayToRegistration,
-      this.request.user.scope,
-    );
-    return this.repository.findOneOrFail(scopedOptions);
+    const scopedResult = await this.createFindQueryBuilder({
+      options: { ...options, take: 1 },
+    }).getOneOrFail();
+    return scopedResult as FindReturnType<
+      T,
+      Options['select'],
+      Options['relations']
+    >;
   }
 
   public override createQueryBuilder(
@@ -212,12 +224,17 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
         joinProperty = joinAlias;
       }
       qb = qb.leftJoin(`${joinProperty}.program`, 'scopedataprogramjoin');
-      qb = qb.andWhere(
-        `(scopedataprogramjoin."enableScope" = false OR ${joinProperty}.scope LIKE :scope)`,
-        {
-          scope: `${this.request.user.scope}%`,
-        },
-      );
+      addScopeFilter({
+        queryBuilder: qb,
+        registrationAlias: joinProperty,
+        programAlias: 'scopedataprogramjoin',
+        scope: this.request.user.scope,
+      });
+      addAccessGroupFilter({
+        queryBuilder: qb,
+        registrationAlias: joinProperty,
+        accessGroups: this.request.user.accessGroups,
+      });
     }
     return new ScopedQueryBuilder(qb);
   }
@@ -303,6 +320,16 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
   ////////////////////////////////////////////////////////////////
   // PRIVATE METHODS TO ENABLE SCOPED QUERIES ///////////////////
   //////////////////////////////////////////////////////////////
+
+  private createFindQueryBuilder({
+    options,
+  }: {
+    options?: FindManyOptions<T>;
+  }): ScopedQueryBuilder<T> {
+    return this.createQueryBuilder(
+      this.repository.metadata.name,
+    ).setFindOptions(options ?? {});
+  }
 
   private findDirectRelationToRegistration(
     metadata: EntityMetadata,
