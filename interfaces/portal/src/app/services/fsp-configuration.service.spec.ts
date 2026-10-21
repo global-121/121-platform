@@ -172,35 +172,6 @@ describe('FspConfigurationService', () => {
         '',
       );
     });
-
-    it('should default multi-select property to empty array when no existing value', () => {
-      const fspSetting = FSP_SETTINGS[Fsps.excel];
-      const formGroup = service.fspSettingToFormGroup({ fspSetting });
-      expect(
-        formGroup.get(FspConfigurationProperties.columnsToExport)?.value,
-      ).toEqual([]);
-    });
-
-    it('should default multi-select property to array when existing value', () => {
-      const fspSetting = FSP_SETTINGS[Fsps.excel];
-      const existing = createStubExistingConfiguration({
-        fspName: Fsps.excel,
-        properties: [
-          {
-            name: FspConfigurationProperties.columnsToExport,
-            value: ['COLUMN_A', 'COLUMN_B'],
-            updated: new Date().toISOString(),
-          },
-        ],
-      });
-      const formGroup = service.fspSettingToFormGroup({
-        fspSetting,
-        existingFspConfiguration: existing,
-      });
-      expect(
-        formGroup.get(FspConfigurationProperties.columnsToExport)?.value,
-      ).toEqual(['COLUMN_A', 'COLUMN_B']);
-    });
   });
 
   describe('fspSettingToFspFormFields', () => {
@@ -246,16 +217,14 @@ describe('FspConfigurationService', () => {
 
   describe('getPropertyFieldType', () => {
     it('should return select-attribute for columnToMatch', () => {
-      expect(
-        service.getPropertyFieldType(FspConfigurationProperties.columnToMatch),
-      ).toBe(FspConfigurationPropertyInputType.selectAttribute);
+      expect(service.getPropertyFieldType('columnToMatch')).toBe(
+        FspConfigurationPropertyInputType.selectAttribute,
+      );
     });
     it('should return select-attributes-multiple for columnsToExport', () => {
-      expect(
-        service.getPropertyFieldType(
-          FspConfigurationProperties.columnsToExport,
-        ),
-      ).toBe(FspConfigurationPropertyInputType.selectAttributeMultiple);
+      expect(service.getPropertyFieldType('columnsToExport')).toBe(
+        FspConfigurationPropertyInputType.selectAttributeMultiple,
+      );
     });
     it('should return toggle-switch for cardDistributionByMail', () => {
       expect(
@@ -281,11 +250,7 @@ describe('FspConfigurationService', () => {
   describe('getRequiredFspAttributes (non-Excel)', () => {
     it('should return required attribute names for a non-Excel FSP', () => {
       const fspSetting = FSP_SETTINGS[Fsps.intersolveVisa];
-      const existing = createStubExistingConfiguration();
-      const result = service.getRequiredFspAttributes({
-        fspSetting,
-        existingFspConfiguration: existing,
-      });
+      const result = service.getRequiredFspAttributes({ fspSetting });
       expect(result).toEqual([
         FspAttributes.fullName,
         FspAttributes.addressCity,
@@ -298,57 +263,48 @@ describe('FspConfigurationService', () => {
   });
 
   describe('getRequiredFspAttributes (Excel)', () => {
-    // For Excel FSP the required attributes are dynamic based on two configuration properties:
-    // columnsToExport (array|string) and columnToMatch (string). They are merged and deduplicated.
     const fspSetting = FSP_SETTINGS[Fsps.excel];
 
-    it('should merge and deduplicate attributes from both properties (array + string)', () => {
-      const existing = createStubExistingConfiguration({
-        fspName: Fsps.excel,
-        properties: [
-          {
-            name: FspConfigurationProperties.columnsToExport,
-            value: ['fullName', 'addressCity', 'phoneNumber'],
-            updated: new Date().toISOString(),
-          },
-          {
-            name: FspConfigurationProperties.columnToMatch,
-            value: 'phoneNumber',
-            updated: new Date().toISOString(),
-          },
-        ],
-      });
-
+    it('should merge and deduplicate export fields and the unique identifier field', () => {
       const result = service.getRequiredFspAttributes({
         fspSetting,
-        existingFspConfiguration: existing,
+        excelFspConfiguration: {
+          name: 'excel',
+          label: { en: 'Excel' },
+          uniqueIdentifierField: 'phoneNumber',
+          exportFields: ['fullName', 'addressCity', 'phoneNumber'],
+        },
       });
 
-      // Expect unique combined list
       expect(result).toEqual(['fullName', 'addressCity', 'phoneNumber']);
     });
 
-    it('should handle when columnsToExport is empty', () => {
-      const existing = createStubExistingConfiguration({
-        fspName: Fsps.excel,
-        properties: [
-          {
-            name: FspConfigurationProperties.columnsToExport,
-            value: [],
-            updated: new Date().toISOString(),
-          },
-          {
-            name: FspConfigurationProperties.columnToMatch,
-            value: 'fullName',
-            updated: new Date().toISOString(),
-          },
-        ],
-      });
+    it('should only return the unique identifier field when there are no export fields', () => {
       const result = service.getRequiredFspAttributes({
         fspSetting,
-        existingFspConfiguration: existing,
+        excelFspConfiguration: {
+          name: 'excel',
+          label: { en: 'Excel' },
+          uniqueIdentifierField: 'fullName',
+          exportFields: [],
+        },
       });
+
       expect(result).toEqual(['fullName']);
+    });
+
+    it('should return nothing while the Excel configuration is still pending', () => {
+      const result = service.getRequiredFspAttributes({
+        fspSetting,
+        excelFspConfiguration: {
+          name: 'excel',
+          label: { en: 'Excel' },
+          uniqueIdentifierField: '',
+          exportFields: [],
+        },
+      });
+
+      expect(result).toEqual([]);
     });
   });
 });

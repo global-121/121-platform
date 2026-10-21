@@ -76,11 +76,16 @@ export class RequiredAttributesComponent {
     }),
   );
 
+  readonly excelFspConfigurations = injectQuery(
+    this.fspConfigurationApiService.getExcelFspConfigurations(this.programId),
+  );
+
   readonly requiredAttributes = computed(() => {
     const fspConfigs = this.fspConfigurations.data();
     const attributes = this.programAttributes.data();
+    const excelFspConfigurations = this.excelFspConfigurations.data();
 
-    if (!fspConfigs || !attributes) {
+    if (!fspConfigs || !attributes || !excelFspConfigurations) {
       return [];
     }
 
@@ -98,17 +103,15 @@ export class RequiredAttributesComponent {
     for (const fspConfig of fspConfigs) {
       const fspSetting = FSP_SETTINGS[fspConfig.fspName];
 
-      try {
-        const required = this.fspConfigurationService.getRequiredFspAttributes({
-          fspSetting,
-          existingFspConfiguration: fspConfig,
-        });
+      const required = this.fspConfigurationService.getRequiredFspAttributes({
+        fspSetting,
+        excelFspConfiguration: excelFspConfigurations.find(
+          ({ name }) => name === fspConfig.name,
+        ),
+      });
 
-        for (const name of required) {
-          requiredAttributeNames.add(name);
-        }
-      } catch {
-        // Skip FSPs with incomplete configuration (e.g., Excel without columnsToExport set yet)
+      for (const name of required) {
+        requiredAttributeNames.add(name);
       }
     }
 

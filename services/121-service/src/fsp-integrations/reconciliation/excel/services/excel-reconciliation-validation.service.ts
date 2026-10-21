@@ -1,11 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
+import { ExcelFspConfigurationRepository } from '@121-service/src/fsp-integrations/integrations/excel/excel-fsp-configuration.repository';
 import { ExcelReconciliationDefaultColumns } from '@121-service/src/fsp-integrations/reconciliation/excel/enum/excel-reconciliation-default-columns.enum';
-import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { CsvContents } from '@121-service/src/utils/file-import/file-import.service';
@@ -13,7 +12,7 @@ import { CsvContents } from '@121-service/src/utils/file-import/file-import.serv
 @Injectable()
 export class ExcelReconciliationValidationService {
   public constructor(
-    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly excelFspConfigurationRepository: ExcelFspConfigurationRepository,
     private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
   ) {}
@@ -27,14 +26,21 @@ export class ExcelReconciliationValidationService {
   }): Promise<string> {
     const matchColumnsFromProgramFsps: string[] = [];
     for (const fspConfig of fspConfigs) {
-      const matchColumn =
-        await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
+      const excelConfiguration =
+        await this.excelFspConfigurationRepository.getByProgramFspConfigurationId(
           {
             programFspConfigurationId: fspConfig.id,
-            name: FspConfigurationProperties.columnToMatch,
           },
         );
-      matchColumnsFromProgramFsps.push(matchColumn);
+      if (!excelConfiguration) {
+        throw new HttpException(
+          `Excel FSP configuration ${fspConfig.name} has not been configured`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      matchColumnsFromProgramFsps.push(
+        excelConfiguration.uniqueIdentifierField,
+      );
     }
     const uniqueMatchColumns = new Set(matchColumnsFromProgramFsps);
 

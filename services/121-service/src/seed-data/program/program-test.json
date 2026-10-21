@@ -295,16 +295,8 @@
         "fr": "Banque de fer",
         "nl": "IJzeren Bank"
       },
-      "properties": [
-        {
-          "name": "columnsToExport",
-          "value": ["fullName", "dob", "dragon", "phoneNumber"]
-        },
-        {
-          "name": "columnToMatch",
-          "value": "phoneNumber"
-        }
-      ]
+      "uniqueIdentifierField": "phoneNumber",
+      "exportFields": ["fullName", "dob", "dragon", "phoneNumber"]
     },
     {
       "fsp": "Excel",
@@ -314,16 +306,8 @@
         "fr": "Gringotts",
         "nl": "Goudgrijp"
       },
-      "properties": [
-        {
-          "name": "columnsToExport",
-          "value": ["dob", "dragon", "personalId"]
-        },
-        {
-          "name": "columnToMatch",
-          "value": "phoneNumber"
-        }
-      ]
+      "uniqueIdentifierField": "phoneNumber",
+      "exportFields": ["dob", "dragon", "personalId"]
     }
   ]
 }

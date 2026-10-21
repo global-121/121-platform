@@ -221,14 +221,16 @@ export class ProgramFspConfigurationsService {
         },
       );
 
-      config.state =
-        this.programFspConfigurationsHelperService.computeFspConfigurationState(
-          {
-            fspName: config.fspName,
-            fspConfigurationProperties:
-              updateProgramFspConfigurationDto.properties,
-          },
-        );
+      if (config.fspName !== Fsps.excel) {
+        config.state =
+          this.programFspConfigurationsHelperService.computeFspConfigurationState(
+            {
+              fspName: config.fspName,
+              fspConfigurationProperties:
+                updateProgramFspConfigurationDto.properties,
+            },
+          );
+      }
     }
 
     const savedEntity =
@@ -429,6 +431,10 @@ export class ProgramFspConfigurationsService {
     programFspConfigurationId: number;
     fspName: Fsps;
   }): Promise<void> {
+    if (fspName === Fsps.excel) {
+      return;
+    }
+
     const properties =
       await this.programFspConfigurationPropertyRepository.find({
         where: {

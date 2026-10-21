@@ -451,6 +451,26 @@ describe('ProgramFspConfigurationsService', () => {
       expect(result[0].name).toEqual(validPropertyDto.name);
     });
 
+    it('should not recalculate the state of an Excel configuration', async () => {
+      const originalFspName = mockProgramFspConfigEntity.fspName;
+      mockProgramFspConfigEntity.fspName = Fsps.excel;
+      mockProgramFspConfigurationRepository.update.mockClear();
+
+      try {
+        await service.createProperties({
+          programId,
+          name: configName,
+          properties: [],
+        });
+
+        expect(
+          mockProgramFspConfigurationRepository.update,
+        ).not.toHaveBeenCalled();
+      } finally {
+        mockProgramFspConfigEntity.fspName = originalFspName;
+      }
+    });
+
     it('should throw an error if configuration does not exist', async () => {
       const nonExistingConfigName = 'Non existing config';
       await expect(

@@ -26,22 +26,14 @@
       "label": {
         "en": "Locale Bank"
       },
-      "properties": [
-        {
-          "name": "columnToMatch",
-          "value": "phoneNumber"
-        },
-        {
-          "name": "columnsToExport",
-          "value": [
-            "fullName",
-            "nationalId",
-            "phoneNumber",
-            "village",
-            "gender",
-            "age"
-          ]
-        }
+      "uniqueIdentifierField": "phoneNumber",
+      "exportFields": [
+        "fullName",
+        "nationalId",
+        "phoneNumber",
+        "village",
+        "gender",
+        "age"
       ]
     }
   ],

@@ -1,7 +1,10 @@
-import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
+import {
+  deleteProgramFspConfiguration,
+  postProgramFspConfiguration,
+} from '@121-service/test/helpers/program-fsp-configuration.helper';
+import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
@@ -13,19 +16,32 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
-    registrations: registrationsPvExcel,
+    skipSeedRegistrations: true,
     programId: programIdPV,
     navigateToPage: `/program/${programIdPV}/payments`,
   });
 
   const accessToken = await getAccessToken();
 
-  await deleteProgramFspConfigurationProperty({
+  await deleteProgramFspConfiguration({
     programId: programIdPV,
     accessToken,
-    configName: Fsps.excel,
-    propertyName: FspConfigurationProperties.columnToMatch,
+    name: Fsps.excel,
   });
+  await postProgramFspConfiguration({
+    programId: programIdPV,
+    accessToken,
+    body: {
+      name: Fsps.excel,
+      label: { en: 'Excel Payment Instructions' },
+      fspName: Fsps.excel,
+    },
+  });
+  await seedIncludedRegistrations(
+    registrationsPvExcel,
+    programIdPV,
+    accessToken,
+  );
 });
 
 test('[Excel fsp]: Error message should be shown in case no matching column was configured', async ({

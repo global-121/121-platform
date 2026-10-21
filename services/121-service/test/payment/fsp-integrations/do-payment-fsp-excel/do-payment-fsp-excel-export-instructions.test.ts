@@ -1,6 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -10,13 +9,10 @@ import {
   getFspInstructions,
   getTransactionsByPaymentIdPaginated,
 } from '@121-service/test/helpers/program.helper';
-import {
-  deleteProgramFspConfigurationProperty,
-  getProgramFspConfigurations,
-} from '@121-service/test/helpers/program-fsp-configuration.helper';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
+  getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
@@ -49,26 +45,12 @@ describe('Do payment with Excel FSP', () => {
   const gringotts = 'gringotts';
   const ironBank = 'ironBank';
 
-  const columnsToExportGringotts = (programTest.programFspConfigurations
-    .find((p) => p.name === gringotts)!
-    .properties.find(
-      (prop) => prop.name === FspConfigurationProperties.columnsToExport,
-    )?.value ?? []) as string[];
-  const columnsToExportIronBank = (programTest.programFspConfigurations
-    .find((p) => p.name === ironBank)!
-    .properties.find(
-      (prop) => prop.name === FspConfigurationProperties.columnsToExport,
-    )?.value ?? []) as string[];
-  const columnToMatchGringotts = programTest.programFspConfigurations
-    .find((p) => p.name === gringotts)!
-    .properties.find(
-      (prop) => prop.name === FspConfigurationProperties.columnToMatch,
-    )!.value as string;
-  const columnToMatchIronBank = programTest.programFspConfigurations
-    .find((p) => p.name === ironBank)!
-    .properties.find(
-      (prop) => prop.name === FspConfigurationProperties.columnToMatch,
-    )!.value as string;
+  const gringottsConfiguration = programTest.programFspConfigurations.find(
+    (configuration) => configuration.name === gringotts,
+  ) as { uniqueIdentifierField: string; exportFields: string[] };
+  const ironBankConfiguration = programTest.programFspConfigurations.find(
+    (configuration) => configuration.name === ironBank,
+  ) as { uniqueIdentifierField: string; exportFields: string[] };
 
   // Function for all seeding
   const seedPrograms = async () => {
@@ -131,7 +113,7 @@ describe('Do payment with Excel FSP', () => {
       await seedPrograms();
     });
 
-    it('Should return specified columns on Get FSP instruction with Excel-FSP when "columnsToExport" is set', async () => {
+    it('Should return specified fields on Get FSP instruction with Excel-FSP when export fields are set', async () => {
       // Arrange
 
       // Act
@@ -175,18 +157,21 @@ describe('Do payment with Excel FSP', () => {
       // Validate data per reference id
       const createFspInstructionObject = (
         registration: Record<string, unknown>,
-        columnsToExport: string[],
-        columnToMatch: string,
+        exportFields: string[],
+        uniqueIdentifierField: string,
       ): Record<string, unknown> => {
         // Any number for amount
         const obj: Record<string, unknown> = {
           amount: expect.any(Number), // Amount can differ per registration due payment amount calculation which is tested in different tests
           referenceId: registration.referenceId,
         };
-        for (const column of new Set([...columnsToExport, columnToMatch])) {
-          obj[column] =
-            registration[column] !== undefined
-              ? String(registration[column])
+        for (const field of new Set([
+          ...exportFields,
+          uniqueIdentifierField,
+        ])) {
+          obj[field] =
+            registration[field] !== undefined
+              ? String(registration[field])
               : '';
         }
         return obj;
@@ -198,8 +183,8 @@ describe('Do payment with Excel FSP', () => {
       expect(fspInstructionReg1).toEqual(
         createFspInstructionObject(
           registrationWesteros1,
-          columnsToExportIronBank,
-          columnToMatchIronBank,
+          ironBankConfiguration.exportFields,
+          ironBankConfiguration.uniqueIdentifierField,
         ),
       );
 
@@ -209,8 +194,8 @@ describe('Do payment with Excel FSP', () => {
       expect(fspInstructionReg2).toEqual(
         createFspInstructionObject(
           registrationWesteros2,
-          columnsToExportIronBank,
-          columnToMatchIronBank,
+          ironBankConfiguration.exportFields,
+          ironBankConfiguration.uniqueIdentifierField,
         ),
       );
 
@@ -220,15 +205,17 @@ describe('Do payment with Excel FSP', () => {
       expect(fspInstructionReg3).toEqual(
         createFspInstructionObject(
           registrationWesteros3,
-          columnsToExportGringotts,
-          columnToMatchGringotts,
+          gringottsConfiguration.exportFields,
+          gringottsConfiguration.uniqueIdentifierField,
         ),
       );
     });
 
-    it('Should include "columnToMatch" on Get FSP instruction with Excel-FSP when it is not part of "columnsToExport"', async () => {
+    it('Should include the unique identifier field when it is not part of the export fields', async () => {
       // Arrange
-      expect(columnsToExportGringotts).not.toContain(columnToMatchGringotts);
+      expect(gringottsConfiguration.exportFields).not.toContain(
+        gringottsConfiguration.uniqueIdentifierField,
+      );
 
       // Act
       const fspInstructionsResponse = await getFspInstructions(
@@ -245,29 +232,27 @@ describe('Do payment with Excel FSP', () => {
       const fspInstructionReg3 = fspInstructionsGringotts.data.find(
         (d) => d.referenceId === registrationWesteros3.referenceId,
       );
-      expect(fspInstructionReg3[columnToMatchGringotts]).toBe(
-        String(registrationWesteros3[columnToMatchGringotts]),
+      expect(
+        fspInstructionReg3[gringottsConfiguration.uniqueIdentifierField],
+      ).toBe(
+        String(
+          registrationWesteros3[gringottsConfiguration.uniqueIdentifierField],
+        ),
       );
     });
 
-    it('Should return all program-registration-attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set', async () => {
+    it('Should default to all registration attributes when export fields are omitted', async () => {
       // Arrange
-      const programAttributeColumns =
-        programTest.programRegistrationAttributes.map((pa) => pa.name);
-      programAttributeColumns.concat(['amount']);
-
-      const fspConfigurations = await getProgramFspConfigurations({
-        programId: programIdWesteros,
-        accessToken,
-      });
-
-      for (const fspConfiguration of fspConfigurations.body) {
-        await deleteProgramFspConfigurationProperty({
-          programId: programIdWesteros,
-          configName: fspConfiguration.name,
-          propertyName: FspConfigurationProperties.columnsToExport,
-          accessToken,
-        });
+      for (const [name, configuration] of [
+        [gringotts, gringottsConfiguration],
+        [ironBank, ironBankConfiguration],
+      ] as const) {
+        await getServer()
+          .put(
+            `/programs/${programIdWesteros}/fsp-configurations/${name}/excel`,
+          )
+          .set('Cookie', [accessToken])
+          .send({ uniqueIdentifierField: configuration.uniqueIdentifierField });
       }
 
       // Act
@@ -277,18 +262,22 @@ describe('Do payment with Excel FSP', () => {
         accessToken,
       );
       // Assert
-      const programRegistrationAttributeNames =
-        programTest.programRegistrationAttributes.map((pa) => pa.name);
-
       expect(fspInstructionsResponse.statusCode).toBe(HttpStatus.OK);
 
       const fspInstructions = fspInstructionsResponse.body;
-
-      const expectedKeysPerRow = programRegistrationAttributeNames.concat([
-        'amount',
-        GenericRegistrationAttributes.referenceId,
-      ]);
       for (const dataPerFsp of fspInstructions) {
+        const configuration =
+          dataPerFsp.fileNamePrefix === gringotts
+            ? gringottsConfiguration
+            : ironBankConfiguration;
+        const expectedKeysPerRow = [
+          ...new Set([
+            ...programTest.programRegistrationAttributes.map(({ name }) => name),
+            configuration.uniqueIdentifierField,
+            'amount',
+            GenericRegistrationAttributes.referenceId,
+          ]),
+        ].sort();
         for (const row of dataPerFsp.data) {
           const fspInstructionColumns = Object.keys(row);
           expect(fspInstructionColumns.sort()).toEqual(

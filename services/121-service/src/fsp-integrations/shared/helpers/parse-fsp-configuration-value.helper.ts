@@ -19,10 +19,6 @@ export function parseFspConfigurationPropertyValue({
     return parseBoolean(value);
   }
 
-  if (propType === 'array') {
-    return parseArray(value);
-  }
-
   return value;
 }
 
@@ -44,14 +40,4 @@ const parseBoolean = (value: string): boolean => {
   }
 
   return lowerCaseValue === 'true';
-};
-
-const parseArray = (value: string): string[] => {
-  const parsedValue = JSON.parse(value);
-
-  if (!Array.isArray(parsedValue)) {
-    throw new Error(`Cannot parse value "${value}" as array`);
-  }
-
-  return parsedValue;
 };

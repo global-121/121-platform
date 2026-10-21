@@ -1,8 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { castArray, unique } from 'radashi';
+import { unique } from 'radashi';
 
+import { ExcelFspConfigurationResponseDto } from '@121-service/src/fsp-integrations/integrations/excel/dto/excel-fsp-configuration-response.dto';
 import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-types.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
@@ -14,19 +15,25 @@ import {
   FspConfiguration,
   FspConfigurationPropertyInputType,
   FspFormField,
+  FspFormFieldName,
 } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { AttributeWithTranslatedLabel } from '~/domains/program/program.model';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { Dto } from '~/utils/dto-type';
 
 export type FspConfigurationFormGroup = FormGroup<
   {
     displayName: FormControl<string>;
-  } & Partial<
-    Record<
-      FspConfigurationProperties,
-      FormControl<FspConfigurationPropertyType>
+  } & Partial<{
+    columnToMatch: FormControl<string>;
+    columnsToExport: FormControl<string[]>;
+  }> &
+    Partial<
+      Record<
+        FspConfigurationProperties,
+        FormControl<FspConfigurationPropertyType>
+      >
     >
-  >
 >;
 
 @Injectable({
@@ -118,13 +125,13 @@ export class FspConfigurationService {
   }
 
   getPropertyFieldType(
-    propertyName: 'displayName' | FspConfigurationProperties,
+    propertyName: FspFormFieldName,
   ): FspConfigurationPropertyInputType {
     // Specific exceptions for excel fsp and the display name
     switch (propertyName) {
-      case FspConfigurationProperties.columnToMatch:
+      case 'columnToMatch':
         return FspConfigurationPropertyInputType.selectAttribute;
-      case FspConfigurationProperties.columnsToExport:
+      case 'columnsToExport':
         return FspConfigurationPropertyInputType.selectAttributeMultiple;
       case 'displayName':
         return FspConfigurationPropertyInputType.stringInput;
@@ -144,8 +151,6 @@ export class FspConfigurationService {
         return FspConfigurationPropertyInputType.toggleSwitch;
       case 'string':
         return FspConfigurationPropertyInputType.stringInput;
-      case 'array':
-        return FspConfigurationPropertyInputType.selectAttributeMultiple;
       default:
         throw new Error(`Unsupported type for property: ${name}`);
     }
@@ -153,34 +158,27 @@ export class FspConfigurationService {
 
   getRequiredFspAttributes({
     fspSetting,
-    existingFspConfiguration,
+    excelFspConfiguration,
   }: {
     fspSetting: FspSettingsDto;
-    existingFspConfiguration: FspConfiguration;
+    excelFspConfiguration?: Dto<ExcelFspConfigurationResponseDto>;
   }): string[] {
-    if (fspSetting.name !== Fsps.excel) {
-      return fspSetting.attributes
-        .filter((property) => property.isRequired)
-        .map((property) => property.name);
-    }
+    if (fspSetting.name === Fsps.excel) {
+      if (!excelFspConfiguration) {
+        return [];
+      }
 
-    const columnsToExport = this.getPropertyValue({
-      propertyName: FspConfigurationProperties.columnsToExport,
-      existingFspConfiguration,
-    });
-
-    const columnToMatch = this.getPropertyValue({
-      propertyName: FspConfigurationProperties.columnToMatch,
-      existingFspConfiguration,
-    });
-
-    if (!Array.isArray(columnsToExport) || typeof columnToMatch !== 'string') {
-      throw new Error(
-        'Expected columnsToExport and columnToMatch to be of type string[] or string',
+      return unique(
+        [
+          ...excelFspConfiguration.exportFields,
+          excelFspConfiguration.uniqueIdentifierField,
+        ].filter((attributeName) => attributeName !== ''),
       );
     }
 
-    return unique([...castArray(columnsToExport), ...castArray(columnToMatch)]);
+    return fspSetting.attributes
+      .filter((property) => property.isRequired)
+      .map((property) => property.name);
   }
 
   private getDisplayNameValue({
@@ -224,8 +222,6 @@ export class FspConfigurationService {
   ): FspConfigurationPropertyType {
     const propType = fspConfigurationPropertyTypes[propertyName];
     switch (propType) {
-      case 'array':
-        return [];
       case 'boolean':
         return true;
       case 'number':
