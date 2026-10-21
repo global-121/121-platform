@@ -101,7 +101,7 @@
     "sanitize-html": "^2.18.0",
     "ssh2-sftp-client": "^12.1.1",
     "twilio": "^6.1.2",
-    "typeorm": "1.1.0",
+    "typeorm": "1.1.2",
     "typescript": "^5.9.3",
     "ufo": "^1.6.4",
     "uuid": "^14.0.3",
