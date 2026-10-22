@@ -38,7 +38,6 @@ describe('ScriptsController - resetDb approverMode logic', () => {
     mockPowerNumberMessages = '',
     mockPv = true,
     mockOcw = true,
-    skipIntroduceDuplicates = false,
     isApiTests = false,
   }: {
     script: SeedScript;
@@ -50,7 +49,6 @@ describe('ScriptsController - resetDb approverMode logic', () => {
     mockPowerNumberMessages?: string;
     mockPv?: boolean;
     mockOcw?: boolean;
-    skipIntroduceDuplicates?: boolean;
     isApiTests?: boolean;
   }) {
     const res = { status: jest.fn().mockReturnThis(), send: jest.fn() };
@@ -65,7 +63,6 @@ describe('ScriptsController - resetDb approverMode logic', () => {
       mockPowerNumberMessages,
       mockPv,
       mockOcw,
-      skipIntroduceDuplicates,
       isApiTests,
       approverMode,
       res,
@@ -74,27 +71,6 @@ describe('ScriptsController - resetDb approverMode logic', () => {
 
   describe('script nlrcMultipleMock', () => {
     const script = SeedScript.nlrcMultipleMock;
-
-    it('should not skip introducing duplicates by default', async () => {
-      await callResetDb({
-        script,
-        approverMode: ApproverSeedMode.admin,
-      });
-      expect(scriptsService.loadSeedScenario).toHaveBeenCalledWith(
-        expect.objectContaining({ skipIntroduceDuplicates: false }),
-      );
-    });
-
-    it('should skip introducing duplicates when requested', async () => {
-      await callResetDb({
-        script,
-        approverMode: ApproverSeedMode.admin,
-        skipIntroduceDuplicates: true,
-      });
-      expect(scriptsService.loadSeedScenario).toHaveBeenCalledWith(
-        expect.objectContaining({ skipIntroduceDuplicates: true }),
-      );
-    });
 
     it('should accept admin for nlrcMultipleMock', async () => {
       const approverMode = ApproverSeedMode.admin;

@@ -64,12 +64,6 @@ export class ScriptsController {
     description: `Only for ${SeedScript.nlrcMultipleMock}: set to false to not mock OCW program`,
   })
   @ApiQuery({
-    name: 'skipIntroduceDuplicates',
-    required: false,
-    example: false,
-    description: `Only for ${SeedScript.nlrcMultipleMock}: set to true to skip introducing duplicates in the mock data`,
-  })
-  @ApiQuery({
     name: 'isApiTests',
     required: false,
     example: 'false',
@@ -112,7 +106,6 @@ export class ScriptsController {
     @Query('mockPowerNumberMessages') mockPowerNumberMessages: string,
     @Query('mockPv') mockPv: boolean,
     @Query('mockOcw') mockOcw: boolean,
-    @Query('skipIntroduceDuplicates') skipIntroduceDuplicates: boolean,
     @Query('isApiTests') isApiTests: boolean,
     @Query('approverMode') approverMode: string,
     @Res() res,
@@ -125,9 +118,6 @@ export class ScriptsController {
     includeRegistrationEvents =
       includeRegistrationEvents !== undefined &&
       includeRegistrationEvents.toString() === 'true';
-    skipIntroduceDuplicates =
-      skipIntroduceDuplicates !== undefined &&
-      skipIntroduceDuplicates.toString() === 'true';
 
     let approverModeToUse: ApproverSeedMode | undefined;
     const isEmpty = !approverMode;
@@ -160,7 +150,6 @@ export class ScriptsController {
         powerNrMessagesString: mockPowerNumberMessages,
         mockPv: booleanMockPv,
         mockOcw: booleanMockOcw,
-        skipIntroduceDuplicates,
         approverMode: approverModeToUse,
       });
     } else if (Object.values(SeedScript).includes(script)) {

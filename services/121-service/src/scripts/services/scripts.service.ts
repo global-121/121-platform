@@ -28,7 +28,6 @@ export class ScriptsService {
     powerNrMessagesString,
     mockPv = true,
     mockOcw = true,
-    skipIntroduceDuplicates = false,
     resetIdentifier,
   }: {
     resetIdentifier: string;
@@ -41,7 +40,6 @@ export class ScriptsService {
     powerNrMessagesString?: string;
     mockPv?: boolean;
     mockOcw?: boolean;
-    skipIntroduceDuplicates?: boolean;
   }) {
     console.log(
       `DB reset - Seed: ${seedScript} - Identifier: ${resetIdentifier}`,
@@ -64,7 +62,6 @@ export class ScriptsService {
         includeRegistrationEvents,
         mockPv,
         mockOcw,
-        skipIntroduceDuplicates,
         seedConfig,
         approverMode,
       });

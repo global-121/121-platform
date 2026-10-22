@@ -27,7 +27,6 @@ interface SeedMultipleNLRCRunParams {
   includeRegistrationEvents: boolean;
   mockPv: boolean;
   mockOcw: boolean;
-  skipIntroduceDuplicates: boolean;
   seedConfig: SeedConfigurationDto;
   approverMode: ApproverSeedMode;
 }
@@ -48,7 +47,6 @@ export class SeedMultipleNLRCMockData implements InterfaceScript<SeedMultipleNLR
     includeRegistrationEvents = false,
     mockPv = true,
     mockOcw = true,
-    skipIntroduceDuplicates = false,
     seedConfig,
     approverMode,
   }: SeedMultipleNLRCRunParams): Promise<void> {
@@ -113,9 +111,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript<SeedMultipleNLR
 
     // 6. Update all derived data (latest message, payment count, etc.)
     await this.seedMockHelper.updateDerivedData();
-    if (!skipIntroduceDuplicates) {
-      await this.seedMockHelper.introduceDuplicates();
-    }
+    await this.seedMockHelper.introduceDuplicates();
 
     // 7. Final clean-up: update sequence numbers and introduce duplicates
     await this.seedMockHelper.updateSequenceNumbers();
