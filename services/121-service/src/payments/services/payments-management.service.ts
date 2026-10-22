@@ -339,11 +339,13 @@ export class PaymentsManagementService {
     registrationsForPayment: MappedPaginatedRegistrationDto[];
     transferValue: number;
   }): TransactionCreationDetails[] {
-    return registrationsForPayment.map((registration) => ({
-      registrationId: registration.id,
-      transferValue: transferValue * registration.paymentAmountMultiplier,
-      programFspConfigurationId: registration.programFspConfigurationId,
-    }));
+    return registrationsForPayment
+      .map((registration) => ({
+        registrationId: registration.id,
+        transferValue: transferValue * registration.paymentAmountMultiplier,
+        programFspConfigurationId: registration.programFspConfigurationId,
+      }))
+      .sort((a, b) => a.registrationId - b.registrationId);
   }
 
   public async approvePayment({

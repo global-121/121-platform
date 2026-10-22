@@ -167,18 +167,18 @@ describe('PaymentsManagementService', () => {
         },
         registrationsForPayment: [
           {
-            id: 11,
-            referenceId: 'ref1',
-            paymentAmountMultiplier: 1,
-            programFspConfigurationId: 5,
-            programFspConfigurationName: 'fspA',
-          },
-          {
             id: 12,
             referenceId: 'ref2',
             paymentAmountMultiplier: 2.5,
             programFspConfigurationId: 6,
             programFspConfigurationName: 'fspB',
+          },
+          {
+            id: 11,
+            referenceId: 'ref1',
+            paymentAmountMultiplier: 1,
+            programFspConfigurationId: 5,
+            programFspConfigurationName: 'fspA',
           },
         ],
         programFspConfigurationNames: ['fspA', 'fspB'],
