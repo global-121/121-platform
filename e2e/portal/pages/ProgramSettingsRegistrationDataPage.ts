@@ -28,6 +28,11 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
   readonly fullNameCardMultiselect: Locator;
   readonly fullNameCardEditButton: Locator;
   readonly fullNameCardSaveButton: Locator;
+  readonly accessGroupsCard: Locator;
+  readonly accessGroupsCardEditButton: Locator;
+  readonly accessGroupsCardSaveButton: Locator;
+  readonly addAccessGroupLevelButton: Locator;
+  readonly configuredAccessGroupLevels: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -85,6 +90,45 @@ class ProgramSettingsRegistrationDataPage extends BasePage {
     this.fullNameCardSaveButton = this.page.getByTestId(
       'full-name-card-save-button',
     );
+    this.accessGroupsCard = this.page.getByTestId('access-groups-card');
+    this.accessGroupsCardEditButton = this.accessGroupsCard.getByTestId(
+      'access-groups-card-edit-button',
+    );
+    this.accessGroupsCardSaveButton = this.accessGroupsCard.getByTestId(
+      'access-groups-card-save-button',
+    );
+    this.addAccessGroupLevelButton = this.accessGroupsCard.getByRole('button', {
+      name: 'Add access level',
+    });
+    this.configuredAccessGroupLevels = this.accessGroupsCard
+      .getByTestId('access-groups-card-configured-levels')
+      .getByRole('listitem');
+  }
+
+  async selectAccessGroupLevel({
+    levelNumber,
+    label,
+  }: {
+    levelNumber: number;
+    label: string;
+  }): Promise<void> {
+    await this.accessGroupsCard
+      .getByRole('combobox', { name: `Level ${levelNumber}`, exact: true })
+      .click();
+    await this.page.getByRole('option', { name: label, exact: true }).click();
+  }
+
+  async removeAccessGroupLevel({
+    levelNumber,
+  }: {
+    levelNumber: number;
+  }): Promise<void> {
+    await this.accessGroupsCard
+      .getByRole('button', {
+        name: `Remove access level ${levelNumber}`,
+        exact: true,
+      })
+      .click();
   }
 
   async koboSuccessfullyLinkedDialog({
