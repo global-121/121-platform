@@ -1,0 +1,171 @@
+@if (canRead()) {
+  <app-card-editable
+    header="Access groups"
+    i18n-header
+    editPencilTitle="Edit access groups"
+    i18n-editPencilTitle
+    [canEdit]="canEdit()"
+    [(isEditing)]="isEditing"
+    [formGroup]="formGroup"
+    [mutation]="updateAccessGroupLevelsMutation"
+    [mutationData]="formGroup.getRawValue()"
+    [trackEventsOnSave]="trackSaveEventPayloads"
+    [dataTestId]="'access-groups-card'"
+  >
+    <p
+      class="mbe-2"
+      i18n
+    >
+      Limit which registrations a team member has access to by selecting
+      registration fields. When using multiple fields, define the access levels
+      from broadest to narrowest.
+    </p>
+    <p
+      class="text-grey-700 mbe-2"
+      i18n
+    >
+      For example - by location with hierarchy:
+    </p>
+    <ol class="mbe-4 flex list-none flex-wrap items-center gap-x-3 gap-y-2 p-0">
+      <li class="flex items-center gap-x-3">
+        <span
+          class="text-grey-700"
+          i18n
+          >Level 1:</span
+        >
+        <span
+          class="bg-grey-100 rounded-full px-4 py-1 font-semibold"
+          i18n
+        >
+          Province
+        </span>
+      </li>
+      <li class="flex items-center gap-x-3">
+        <span
+          class="text-grey-700"
+          i18n
+          >Level 2:</span
+        >
+        <span
+          class="bg-grey-100 rounded-full px-4 py-1 font-semibold"
+          i18n
+        >
+          City
+        </span>
+      </li>
+      <li class="flex items-center gap-x-3">
+        <span
+          class="text-grey-700"
+          i18n
+          >Level 3:</span
+        >
+        <span
+          class="bg-grey-100 rounded-full px-4 py-1 font-semibold"
+          i18n
+        >
+          Neighbourhood
+        </span>
+      </li>
+    </ol>
+
+    @if (isEditing()) {
+      @if (hasNoDropdownRegistrationAttributes()) {
+        <p
+          class="text-grey-700 mbe-2"
+          data-testid="access-groups-card-no-dropdown-fields"
+          i18n
+        >
+          No dropdown fields available
+        </p>
+      }
+      <div formArrayName="accessGroupRegistrationAttributeNames">
+        @for (
+          control of accessGroupLevelControls.controls;
+          track control;
+          let levelIndex = $index
+        ) {
+          <div class="flex items-end gap-2 py-2">
+            <app-form-field-wrapper
+              class="grow"
+              [label]="getLevelLabel({ levelIndex })"
+              [isRequired]="false"
+            >
+              <p-select
+                class="inline-full"
+                [options]="availableAttributesByLevel()[levelIndex]"
+                [optionLabel]="'labelToShow'"
+                optionValue="name"
+                [formControlName]="levelIndex"
+                placeholder="Select a field"
+                i18n-placeholder
+                emptyMessage="No dropdown fields available"
+                i18n-emptyMessage
+                [loading]="program.isPending()"
+                [inputId]="'access-group-level-' + levelIndex"
+                [appendTo]="'body'"
+                [ariaLabel]="getLevelAriaLabel({ levelIndex })"
+              />
+            </app-form-field-wrapper>
+            <p-button
+              class="mbe-2 self-end"
+              type="button"
+              icon="pi pi-trash"
+              [text]="true"
+              severity="secondary"
+              [ariaLabel]="getRemoveLevelAriaLabel({ levelIndex })"
+              (click)="removeAccessGroupLevel({ levelIndex })"
+            />
+          </div>
+        }
+      </div>
+      @if (canAddAccessGroupLevel()) {
+        <p-button
+          type="button"
+          label="Add access level"
+          i18n-label
+          icon="pi pi-plus"
+          [outlined]="true"
+          [rounded]="true"
+          (click)="addAccessGroupLevel()"
+        />
+      }
+    } @else {
+      @if (configuredAccessGroupAttributes().length === 0) {
+        <div class="divide-grey-300 border-grey-300 divide-y border-y">
+          <div
+            class="py-3"
+            i18n
+          >
+            <strong>Level 1:</strong> Select field by clicking on "Edit"
+          </div>
+        </div>
+      } @else {
+        <ol
+          data-testid="access-groups-card-configured-levels"
+          class="divide-grey-300 border-grey-300 m-0 list-none divide-y border-y p-0"
+        >
+          @for (
+            attribute of configuredAccessGroupAttributes();
+            track attribute.name;
+            let levelIndex = $index
+          ) {
+            <li
+              class="py-3"
+              [style.padding-inline-start.rem]="levelIndex * 1.5"
+            >
+              @if (levelIndex > 0) {
+                <span
+                  class="me-2"
+                  aria-hidden="true"
+                  >↳</span
+                >
+              }
+              <strong i18n>Level {{ levelIndex + 1 }}:</strong>
+              {{ attribute.labelToShow }}
+            </li>
+          }
+        </ol>
+      }
+    }
+  </app-card-editable>
+}

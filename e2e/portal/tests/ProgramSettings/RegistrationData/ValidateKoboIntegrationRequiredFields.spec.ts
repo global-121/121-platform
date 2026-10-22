@@ -1,5 +1,7 @@
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { patchProgram } from '@121-service/test/helpers/program.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationPV5,
@@ -81,33 +83,23 @@ test('Check if all required fields are updated when adding a FSP', async ({
 });
 
 test('Check if scope is not shown when scope is disabled', async ({
-  programSettingsPage,
-  programSettingsRegistrationDataPage,
   page,
+  programSettingsRegistrationDataPage,
 }) => {
   await test.step('Disable scope', async () => {
-    await programSettingsPage.navigateToProgramPage('Settings');
-    await programSettingsPage.clickEditProgramInformationSectionByTitle(
-      'Basic information',
-    );
+    // Arrange
+    const accessToken = await getAccessToken();
 
-    const scopeSwitch = page.getByRole('switch', {
-      name: 'Use "scope" in this program',
-    });
-
-    await programSettingsPage.setSwitch({
-      locator: scopeSwitch,
-      checked: false,
-    });
-
-    await programSettingsPage.saveChanges();
-    await programSettingsPage.validateToastMessageAndClose(
-      'Basic information details saved successfully.',
-    );
+    // Act
+    await patchProgram(programIdPV, { enableScope: false }, accessToken);
+    await page.reload();
   });
 
   await test.step('Validate scope not shown as required field', async () => {
+    // Act
     await programSettingsRegistrationDataPage.clickRegistrationDataSection();
+
+    // Assert
     await programSettingsRegistrationDataPage.validateKoboRequiredFieldsTable({
       requiredDataColumnNames: [
         ...allRequiredAttributesFromSeed.filter(
