@@ -200,7 +200,6 @@ Follow Conventional Commits with Angular format (strictly enforced):
 
 - Use imperative mood: "Add feature" not "Added feature" or "Adds feature"
 - Think: "This commit will..." + your commit message
-- Do not include Azure DevOps references in commits; add them to the PR description instead (see [the PR template](./docs/pull_request_template.md))
 - Use appropriate labels for release note generation
 
 **Examples**:
