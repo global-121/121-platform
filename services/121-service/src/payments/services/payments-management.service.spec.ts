@@ -180,7 +180,7 @@ describe('PaymentsManagementService', () => {
     ).mockResolvedValue(undefined);
     (service as any).getTransactionCreationDetails = jest
       .fn()
-      .mockResolvedValue([{ detail: 'test' }]);
+      .mockReturnValue([{ detail: 'test' }]);
     (
       transactionsService.createTransactionsAndEvents as jest.Mock
     ).mockResolvedValue(undefined);

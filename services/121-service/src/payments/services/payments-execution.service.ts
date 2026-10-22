@@ -38,18 +38,11 @@ export class PaymentsExecutionService {
     programId: number;
     paymentId: number;
   }): Promise<void> {
-    console.time('[perf] startPayment: total');
-    console.time(
-      '[perf] startPayment: throwIfPaymentHasDuplicateRegistrations',
-    );
     await this.paymentsHelperService.throwIfPaymentHasDuplicateRegistrations({
       programId,
       paymentId,
       action: 'start',
     });
-    console.timeEnd(
-      '[perf] startPayment: throwIfPaymentHasDuplicateRegistrations',
-    );
 
     await this.paymentsProgressService.checkAndLockPaymentProgressOrThrow({
       programId,
@@ -69,9 +62,6 @@ export class PaymentsExecutionService {
         );
       }
 
-      console.time(
-        '[perf] startPayment: getUniqueProgramFspConfigForApprovedTransactions',
-      );
       const uniqueFspConfigsForApprovedTransactions =
         await this.transactionViewScopedRepository.getUniqueProgramFspConfigForApprovedTransactions(
           {
@@ -79,9 +69,6 @@ export class PaymentsExecutionService {
             paymentId,
           },
         );
-      console.timeEnd(
-        '[perf] startPayment: getUniqueProgramFspConfigForApprovedTransactions',
-      );
       if (uniqueFspConfigsForApprovedTransactions.length === 0) {
         throw new HttpException(
           'No "approved" transactions found for this payment.',
@@ -106,18 +93,12 @@ export class PaymentsExecutionService {
       const fspConfigIds = uniqueFspConfigsForApprovedTransactions.map(
         (p) => p.programFspConfigurationId,
       );
-      console.time(
-        '[perf] startPayment: failTransactionsForNotIncludedRegistrations',
-      );
       await this.failTransactionsForNotIncludedRegistrations({
         fspConfigIds,
         userId,
         programId,
         paymentId,
       });
-      console.timeEnd(
-        '[perf] startPayment: failTransactionsForNotIncludedRegistrations',
-      );
 
       await this.startQueue({
         userId,
@@ -126,7 +107,6 @@ export class PaymentsExecutionService {
       });
     } finally {
       await this.paymentsProgressService.unlockPaymentsForProgram(programId);
-      console.timeEnd('[perf] startPayment: total');
     }
   }
 
@@ -139,9 +119,6 @@ export class PaymentsExecutionService {
     programId: number;
     paymentId: number;
   }) {
-    console.time(
-      '[perf] startPayment: startQueue getByStatusOfIncludedRegistrations',
-    );
     const transactionsToStart =
       await this.transactionViewScopedRepository.getByStatusOfIncludedRegistrations(
         {
@@ -150,17 +127,12 @@ export class PaymentsExecutionService {
           transactionStatus: TransactionStatusEnum.approved,
         },
       );
-    console.timeEnd(
-      '[perf] startPayment: startQueue getByStatusOfIncludedRegistrations',
-    );
-    console.time('[perf] startPayment: startQueue createTransactionJobs');
     await this.createTransactionJobs({
       programId,
       transactionIds: transactionsToStart.map((t) => t.id),
       userId,
       isRetry: false,
     });
-    console.timeEnd('[perf] startPayment: startQueue createTransactionJobs');
   }
 
   private async failTransactionsForNotIncludedRegistrations({

@@ -266,20 +266,16 @@ export class RegistrationsBulkService {
     programId: number,
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<BulkActionResultDto> {
-    console.time('[perf] getBulkActionResult: totalFilterCount');
     const totalFilterCount = await this.getFilteredCount({
       paginateQuery,
       programId,
     });
-    console.timeEnd('[perf] getBulkActionResult: totalFilterCount');
 
-    console.time('[perf] getBulkActionResult: applicableCount');
     const applicableCount = await this.getFilteredCount({
       paginateQuery,
       programId,
       queryBuilder,
     });
-    console.timeEnd('[perf] getBulkActionResult: applicableCount');
 
     return {
       totalFilterCount,

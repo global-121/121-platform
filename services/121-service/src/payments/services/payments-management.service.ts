@@ -23,7 +23,6 @@ import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bu
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
-import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
@@ -65,8 +64,6 @@ export class PaymentsManagementService {
     name: string;
     note?: string;
   }): Promise<BulkActionResultPaymentDto> {
-    console.time('[perf] createPayment: total');
-    console.time('[perf] createPayment: check or lock payment progress');
     if (dryRun) {
       await this.paymentsProgressService.checkPaymentInProgressAndThrow(
         programId,
@@ -77,12 +74,10 @@ export class PaymentsManagementService {
         programId,
       });
     }
-    console.timeEnd('[perf] createPayment: check or lock payment progress');
 
     // put all operations in try, to be able to always end with an unlock-payments action, also in case of failure
     try {
       // First run the logic that is needed in both dryRun and real payment scenario
-      console.time('[perf] createPayment: getPaymentDryRunDetailsOrThrow');
       const {
         bulkActionResultPaymentDto,
         registrationsForPayment,
@@ -92,7 +87,6 @@ export class PaymentsManagementService {
         transferValue,
         query,
       });
-      console.timeEnd('[perf] createPayment: getPaymentDryRunDetailsOrThrow');
 
       if (dryRun || !transferValue) {
         return bulkActionResultPaymentDto;
@@ -105,7 +99,6 @@ export class PaymentsManagementService {
         );
       }
 
-      console.time('[perf] createPayment: createPaymentAndEventsEntities');
       const paymentId = await this.createPaymentAndEventsEntities({
         userId,
         programId,
@@ -113,45 +106,27 @@ export class PaymentsManagementService {
         thresholds,
         name,
       });
-      console.timeEnd('[perf] createPayment: createPaymentAndEventsEntities');
       bulkActionResultPaymentDto.id = paymentId;
 
-      console.time('[perf] createPayment: map referenceIds');
-      const referenceIds = registrationsForPayment.map(
-        (registration) => registration.referenceId,
-      );
-      console.timeEnd('[perf] createPayment: map referenceIds');
+      const transactionCreationDetails = this.getTransactionCreationDetails({
+        registrationsForPayment,
+        transferValue,
+      });
 
-      console.time('[perf] createPayment: getTransactionCreationDetails');
-      const transactionCreationDetails =
-        await this.getTransactionCreationDetails({
-          referenceIds,
-          transferValue,
-          programId,
-        });
-      console.timeEnd('[perf] createPayment: getTransactionCreationDetails');
-
-      console.time('[perf] createPayment: createTransactionsAndEvents');
       await this.transactionsService.createTransactionsAndEvents({
         transactionCreationDetails,
         paymentId,
         userId,
       });
-      console.timeEnd('[perf] createPayment: createTransactionsAndEvents');
 
-      console.time('[perf] createPayment: sendPendingApprovalEmails');
       await this.sendPendingApprovalEmails({ paymentId, programId });
-      console.timeEnd('[perf] createPayment: sendPendingApprovalEmails');
 
       return bulkActionResultPaymentDto;
     } finally {
       if (!dryRun) {
         // make sure to unblock payments also in case of failure
-        console.time('[perf] createPayment: unlockPaymentsForProgram');
         await this.paymentsProgressService.unlockPaymentsForProgram(programId);
-        console.timeEnd('[perf] createPayment: unlockPaymentsForProgram');
       }
-      console.timeEnd('[perf] createPayment: total');
     }
   }
 
@@ -173,17 +148,16 @@ export class PaymentsManagementService {
       this.registrationsBulkService.setQueryPropertiesBulkAction({
         query,
         includePaymentAttributes: true,
+        selectColumns: ['id'],
       });
 
     // Fill bulkActionResultDto with meta data of the payment being done
-    console.time('[perf] dryRunDetails: getBulkActionResult');
     const bulkActionResultDto =
       await this.registrationsBulkService.getBulkActionResult(
         paginateQuery,
         programId,
         this.getPaymentBaseQuery(), // We need to create a separate queryBuilder object twice or it will be modified twice
       );
-    console.timeEnd('[perf] dryRunDetails: getBulkActionResult');
 
     // If amount is not defined do not calculate the totalMultiplierSum
     // This happens when you call the endpoint with dryRun=true
@@ -201,10 +175,8 @@ export class PaymentsManagementService {
     }
 
     // Get array of RegistrationViewEntity objects to be paid
-    console.time('[perf] dryRunDetails: getRegistrationsForPaymentChunked');
     const registrationsForPayment =
       await this.getRegistrationsForPaymentChunked(programId, paginateQuery);
-    console.timeEnd('[perf] dryRunDetails: getRegistrationsForPaymentChunked');
     if (registrationsForPayment.length < 1) {
       throw new HttpException(
         'No registrations found to create payment for',
@@ -214,30 +186,25 @@ export class PaymentsManagementService {
 
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
-    console.time('[perf] dryRunDetails: totalMultiplierSum loop');
     let totalMultiplierSum = 0;
     // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of registrationsForPayment) {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
     }
-    console.timeEnd('[perf] dryRunDetails: totalMultiplierSum loop');
 
     let totalPaymentAmount = totalMultiplierSum * transferValue;
     // Round to 2 decimals, thresholds are stored with 2 decimals, we want to
     // hit the thresholds correctly.
     totalPaymentAmount = Math.round(totalPaymentAmount * 100) / 100;
 
-    console.time('[perf] dryRunDetails: getThresholdsForPaymentAmount');
     const thresholds =
       await this.programApprovalThresholdRepository.getThresholdsForPaymentAmount(
         { programId, totalPaymentAmount },
       );
-    console.timeEnd('[perf] dryRunDetails: getThresholdsForPaymentAmount');
 
     // Get unique programFspConfigurationNames in payment
     // Getting unique programFspConfigurationNames is relatively: with 131k registrations it takes ~36ms locally
-    console.time('[perf] dryRunDetails: unique programFspConfigurationNames');
     const programFspConfigurationNames = Array.from(
       new Set(
         registrationsForPayment.map(
@@ -245,26 +212,19 @@ export class PaymentsManagementService {
         ),
       ),
     );
-    console.timeEnd(
-      '[perf] dryRunDetails: unique programFspConfigurationNames',
-    );
 
-    console.time('[perf] dryRunDetails: checkFspConfigurationsOrThrow');
     await this.paymentsHelperService.checkFspConfigurationsOrThrow(
       programId,
       programFspConfigurationNames,
     );
-    console.timeEnd('[perf] dryRunDetails: checkFspConfigurationsOrThrow');
 
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
-    console.time('[perf] dryRunDetails: duplicateCount reduce');
     const duplicateCount = registrationsForPayment.reduce(
       (count, registration) =>
         count +
         (registration.duplicateStatus === DuplicateStatus.duplicate ? 1 : 0),
       0,
     );
-    console.timeEnd('[perf] dryRunDetails: duplicateCount reduce');
 
     const bulkActionResultPaymentDto: BulkActionResultPaymentDto = {
       ...bulkActionResultDto,
@@ -372,45 +332,18 @@ export class PaymentsManagementService {
       });
   }
 
-  private async getTransactionCreationDetails({
-    referenceIds,
+  private getTransactionCreationDetails({
+    registrationsForPayment,
     transferValue,
-    programId,
   }: {
-    referenceIds: string[];
+    registrationsForPayment: MappedPaginatedRegistrationDto[];
     transferValue: number;
-    programId: number;
-  }): Promise<TransactionCreationDetails[]> {
-    const idColumn: keyof RegistrationViewEntity = 'id';
-    const programFspConfigurationIdColumn: keyof RegistrationViewEntity =
-      'programFspConfigurationId';
-    console.time(
-      '[perf] transactionCreationDetails: getRegistrationViewsByReferenceIds',
-    );
-    const registrations =
-      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
-        {
-          programId,
-          referenceIds,
-          select: [
-            idColumn,
-            GenericRegistrationAttributes.paymentAmountMultiplier,
-            programFspConfigurationIdColumn,
-          ],
-        },
-      );
-    console.timeEnd(
-      '[perf] transactionCreationDetails: getRegistrationViewsByReferenceIds',
-    );
-
-    console.time('[perf] transactionCreationDetails: map to details');
-    const details = registrations.map((row) => ({
-      registrationId: row.id,
-      transferValue: transferValue * row.paymentAmountMultiplier,
-      programFspConfigurationId: row.programFspConfigurationId,
+  }): TransactionCreationDetails[] {
+    return registrationsForPayment.map((registration) => ({
+      registrationId: registration.id,
+      transferValue: transferValue * registration.paymentAmountMultiplier,
+      programFspConfigurationId: registration.programFspConfigurationId,
     }));
-    console.timeEnd('[perf] transactionCreationDetails: map to details');
-    return details;
   }
 
   public async approvePayment({
@@ -434,17 +367,11 @@ export class PaymentsManagementService {
     });
 
     // Check for duplicate registrations before allowing approval
-    console.time(
-      '[perf] approvePayment: throwIfPaymentHasDuplicateRegistrations',
-    );
     await this.paymentsHelperService.throwIfPaymentHasDuplicateRegistrations({
       programId,
       paymentId,
       action: 'approve',
     });
-    console.timeEnd(
-      '[perf] approvePayment: throwIfPaymentHasDuplicateRegistrations',
-    );
 
     const totalApprovals = await this.paymentApprovalRepository.count({
       where: { paymentId: Equal(paymentId) },
@@ -472,13 +399,11 @@ export class PaymentsManagementService {
       },
     });
     if (notCompletedApprovals === 0) {
-      console.time('[perf] approvePayment: processFinalApproval');
       await this.processFinalApproval({
         userId,
         paymentId,
         programId,
       });
-      console.timeEnd('[perf] approvePayment: processFinalApproval');
       await this.sendApprovalConfirmationToPaymentCreator({
         paymentId,
         programId,
@@ -656,9 +581,6 @@ export class PaymentsManagementService {
     programId: number;
   }): Promise<void> {
     // get transactions to approve
-    console.time(
-      '[perf] processFinalApproval: getByStatusOfIncludedRegistrations',
-    );
     const transactionsToApprove =
       await this.transactionViewScopedRepository.getByStatusOfIncludedRegistrations(
         {
@@ -667,9 +589,6 @@ export class PaymentsManagementService {
           transactionStatus: TransactionStatusEnum.pendingApproval,
         },
       );
-    console.timeEnd(
-      '[perf] processFinalApproval: getByStatusOfIncludedRegistrations',
-    );
 
     if (transactionsToApprove.length === 0) {
       throw new HttpException(
@@ -691,9 +610,6 @@ export class PaymentsManagementService {
       if (fspConfigTransactions.length === 0) {
         continue;
       }
-      console.time(
-        `[perf] processFinalApproval: saveProgressBulk fsp ${programFspConfigurationId}`,
-      );
       await this.transactionsService.saveProgressBulk({
         newTransactionStatus: TransactionStatusEnum.approved,
         transactionIds: fspConfigTransactions.map((t) => t.id),
@@ -701,9 +617,6 @@ export class PaymentsManagementService {
         userId,
         programFspConfigurationId,
       });
-      console.timeEnd(
-        `[perf] processFinalApproval: saveProgressBulk fsp ${programFspConfigurationId}`,
-      );
     }
   }
 

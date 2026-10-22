@@ -57,10 +57,8 @@ export class RegistrationsPaginationService {
     const paginateConfigCopy = { ...PaginateConfigRegistrationView };
 
     const orignalSelect = query.select ? [...query.select] : [];
-    console.time('[perf] getPaginate: getFullNameNamingConvention');
     const fullnameNamingConvention =
       await this.getFullNameNamingConvention(programId);
-    console.timeEnd('[perf] getPaginate: getFullNameNamingConvention');
 
     if (query.select && query.select.includes('name')) {
       if (fullnameNamingConvention) {
@@ -84,10 +82,8 @@ export class RegistrationsPaginationService {
       programId,
     });
 
-    console.time('[perf] getPaginate: getAllRelationProgram');
     const programRegistrationAttributeRelations =
       await this.programService.getAllRelationProgram(programId);
-    console.timeEnd('[perf] getPaginate: getAllRelationProgram');
     const relationNames = programRegistrationAttributeRelations.map(
       (r) => r.name,
     );
@@ -140,23 +136,6 @@ export class RegistrationsPaginationService {
       }
     }
 
-    if (hasPersonalReadPermission) {
-      paginateConfigCopy.relations = { data: true };
-    } else {
-      paginateConfigCopy.relations = {};
-      paginateConfigCopy.searchableColumns = [];
-    }
-
-    // PaginateConfig.select and PaginateConfig.relations cannot be used in combination with each other
-    // That's why we wrote some manual code to do the selection
-    console.time('[perf] getPaginate: paginate query');
-    const result = await paginate<RegistrationViewEntity>(
-      query,
-      queryBuilder,
-      paginateConfigCopy,
-    );
-    console.timeEnd('[perf] getPaginate: paginate query');
-
     // Custom code is written here to filter on query.select since it does not work with query.relations
     let attributeRelationsSelect = [...programRegistrationAttributeRelations];
     const { select } = query;
@@ -166,7 +145,24 @@ export class RegistrationsPaginationService {
       );
     }
 
-    console.time('[perf] getPaginate: mapPaginatedEntity');
+    // Loading the attribute data of every registration is expensive and only needed when at least one attribute is selected
+    const shouldLoadAttributeData =
+      hasPersonalReadPermission && attributeRelationsSelect.length > 0;
+    if (shouldLoadAttributeData) {
+      paginateConfigCopy.relations = { data: true };
+    } else {
+      paginateConfigCopy.relations = {};
+      paginateConfigCopy.searchableColumns = [];
+    }
+
+    // PaginateConfig.select and PaginateConfig.relations cannot be used in combination with each other
+    // That's why we wrote some manual code to do the selection
+    const result = await paginate<RegistrationViewEntity>(
+      query,
+      queryBuilder,
+      paginateConfigCopy,
+    );
+
     const data = await this.mapPaginatedEntity({
       paginatedResult: result,
       attributeRelations: attributeRelationsSelect,
@@ -176,7 +172,6 @@ export class RegistrationsPaginationService {
       hasPersonalReadPermission,
       programId,
     });
-    console.timeEnd('[perf] getPaginate: mapPaginatedEntity');
 
     return {
       ...result,

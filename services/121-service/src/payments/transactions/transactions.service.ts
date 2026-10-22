@@ -36,7 +36,6 @@ export class TransactionsService {
     paymentId: number;
     userId: number;
   }): Promise<number[]> {
-    console.time('[perf] createTransactionsAndEvents: build entities');
     const transactionsToSave: TransactionEntity[] = [];
     for (const item of transactionCreationDetails) {
       const transactionToSave = new TransactionEntity();
@@ -56,16 +55,13 @@ export class TransactionsService {
 
       transactionsToSave.push(transactionToSave);
     }
-    console.timeEnd('[perf] createTransactionsAndEvents: build entities');
 
-    console.time('[perf] createTransactionsAndEvents: save transactions');
     const savedTransactions = await this.transactionScopedRepository.save(
       transactionsToSave,
       {
         chunk: 2000,
       },
     );
-    console.timeEnd('[perf] createTransactionsAndEvents: save transactions');
 
     const lastTransactionEventsToSave = savedTransactions.map(
       (transaction) => ({
@@ -74,11 +70,9 @@ export class TransactionsService {
       }),
     );
     const chunkSize = 2000;
-    console.time('[perf] createTransactionsAndEvents: insert last events');
     for (const chunked of chunk(lastTransactionEventsToSave, chunkSize)) {
       await this.lastTransactionEventRepository.insert(chunked);
     }
-    console.timeEnd('[perf] createTransactionsAndEvents: insert last events');
 
     return savedTransactions.map((t) => t.id);
   }
@@ -136,13 +130,16 @@ export class TransactionsService {
     description: TransactionEventDescription;
     errorMessage?: string;
     newTransactionStatus:
-      TransactionStatusEnum.waiting | TransactionStatusEnum.error;
+      | TransactionStatusEnum.waiting
+      | TransactionStatusEnum.error;
   }): Promise<void> {
     const wasTransactionStatusSet =
       await this.transactionRepository.updateStatusUnlessIn({
         transactionId: context.transactionId,
         newTransactionStatus,
-        excludedStatuses: [TransactionStatusEnum.error],
+        excludedStatuses: [
+          TransactionStatusEnum.error,
+        ],
       });
     if (!wasTransactionStatusSet) {
       return;
