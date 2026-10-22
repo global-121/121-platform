@@ -145,7 +145,6 @@ export class RegistrationsPaginationService {
       );
     }
 
-    // Loading the attribute data of every registration is expensive and only needed when at least one attribute is selected
     const shouldLoadAttributeData =
       hasPersonalReadPermission && attributeRelationsSelect.length > 0;
     if (shouldLoadAttributeData) {
