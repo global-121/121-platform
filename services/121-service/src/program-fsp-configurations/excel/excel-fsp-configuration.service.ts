@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { ExcelFspConfigurationResponseDto } from '@121-service/src/fsp-integrations/integrations/excel/dto/excel-fsp-configuration-response.dto';
-import { UpdateExcelFspConfigurationDto } from '@121-service/src/fsp-integrations/integrations/excel/dto/update-excel-fsp-configuration.dto';
-import { ExcelFspConfigurationRepository } from '@121-service/src/fsp-integrations/integrations/excel/excel-fsp-configuration.repository';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
-import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
+import { ExcelFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/excel/dtos/excel-fsp-configuration-response.dto';
+import { UpdateExcelFspConfigurationDto } from '@121-service/src/program-fsp-configurations/excel/dtos/update-excel-fsp-configuration.dto';
+import { ExcelFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/excel/repositories/excel-fsp-configuration.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 
 @Injectable()
@@ -14,6 +14,7 @@ export class ExcelFspConfigurationService {
   public constructor(
     private readonly excelFspConfigurationRepository: ExcelFspConfigurationRepository,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly programFspConfigurationsService: ProgramFspConfigurationsService,
     private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
     private readonly paymentsProgressService: PaymentsProgressService,
   ) {}
@@ -100,10 +101,9 @@ export class ExcelFspConfigurationService {
         uniqueIdentifierField: configuration.uniqueIdentifierField,
         exportFields,
       });
-    await this.programFspConfigurationRepository.updateState({
-      programId,
-      name: configurationName,
-      state: FspConfigurationStates.configured,
+    await this.programFspConfigurationsService.synchronizeFspConfigurationState({
+      programFspConfigurationId: programFspConfiguration.id,
+      fspName: programFspConfiguration.fspName,
     });
 
     return {

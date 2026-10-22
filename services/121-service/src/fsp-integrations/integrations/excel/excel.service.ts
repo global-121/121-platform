@@ -1,10 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { ExcelFspInstructions } from '@121-service/src/fsp-integrations/integrations/excel/dto/excel-fsp-instructions.dto';
-import { ExcelFspConfigurationRepository } from '@121-service/src/fsp-integrations/integrations/excel/excel-fsp-configuration.repository';
+import {
+  ExcelFspInstructions
+} from '@121-service/src/fsp-integrations/integrations/excel/dto/excel-fsp-instructions.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
+import {
+  ExcelFspConfigurationRepository
+} from '@121-service/src/program-fsp-configurations/excel/repositories/excel-fsp-configuration.repository';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import {
+  RegistrationsPaginationService
+} from '@121-service/src/registration/services/registrations-pagination.service';
 
 @Injectable()
 export class ExcelService {
@@ -93,15 +99,16 @@ export class ExcelService {
     // This method joins the registrations and transactions arrays based on the referenceId.
     // We sort both arrays by referenceId. This allows us to use a two-pointer
     // technique to join the arrays, which is more efficient than using a nested loop or the find method.
-    const transactionsOrdered = transactions.sort((a, b) =>
+    const transactionsOrdered = transactions.toSorted((a, b) =>
       a.registration.referenceId.localeCompare(b.registration.referenceId),
     );
     // Make sure registrations are also ordered by referenceId
-    const orderedRegistrations = registrations.sort((a, b) =>
+    const orderedRegistrations = registrations.toSorted((a, b) =>
       a.referenceId.localeCompare(b.referenceId),
     );
     let j = 0;
-    const excelFspInstructions = orderedRegistrations.map((registration) => {
+
+    return orderedRegistrations.map((registration) => {
       const fspInstructions: ExcelFspInstructions = {
         referenceId: registration.referenceId,
         id: registration.id,
@@ -123,16 +130,14 @@ export class ExcelService {
       }
 
       if (
-        transactionsOrdered[j] &&
-        transactionsOrdered[j].registration.referenceId ===
-          registration.referenceId
+        transactionsOrdered[j]?.registration.referenceId ===
+        registration.referenceId
       ) {
         fspInstructions.amount = transactionsOrdered[j].transferValue!;
       }
 
       return fspInstructions;
     });
-    return excelFspInstructions;
   }
 
   public async getImportMatchColumn(

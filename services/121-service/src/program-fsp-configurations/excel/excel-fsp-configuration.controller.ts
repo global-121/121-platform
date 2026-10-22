@@ -10,11 +10,11 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ExcelFspConfigurationResponseDto } from '@121-service/src/fsp-integrations/integrations/excel/dto/excel-fsp-configuration-response.dto';
-import { UpdateExcelFspConfigurationDto } from '@121-service/src/fsp-integrations/integrations/excel/dto/update-excel-fsp-configuration.dto';
-import { ExcelFspConfigurationService } from '@121-service/src/fsp-integrations/integrations/excel/excel-fsp-configuration.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { ExcelFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/excel/dtos/excel-fsp-configuration-response.dto';
+import { UpdateExcelFspConfigurationDto } from '@121-service/src/program-fsp-configurations/excel/dtos/update-excel-fsp-configuration.dto';
+import { ExcelFspConfigurationService } from '@121-service/src/program-fsp-configurations/excel/excel-fsp-configuration.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 @UseGuards(AuthenticatedUserGuard)
@@ -42,7 +42,7 @@ export class ExcelFspConfigurationController {
     description: 'Excel FSP-configuration not found for this program.',
   })
   @Get(':name/excel')
-  public async getConfiguration(
+  public getConfiguration(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('name') name: string,
   ): Promise<ExcelFspConfigurationResponseDto> {
@@ -61,7 +61,7 @@ export class ExcelFspConfigurationController {
     type: ExcelFspConfigurationResponseDto,
   })
   @Put(':name/excel')
-  public async createOrReplaceConfiguration(
+  public createOrReplaceConfiguration(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('name') name: string,
     @Body() configuration: UpdateExcelFspConfigurationDto,

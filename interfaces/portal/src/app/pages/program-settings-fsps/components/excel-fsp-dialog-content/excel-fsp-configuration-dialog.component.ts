@@ -18,9 +18,9 @@ import {
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { dash } from 'radashi';
 
-import { ExcelFspConfigurationResponseDto } from '@121-service/src/fsp-integrations/integrations/excel/dto/excel-fsp-configuration-response.dto';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { ExcelFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/excel/dtos/excel-fsp-configuration-response.dto';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';

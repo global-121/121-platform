@@ -11,6 +11,8 @@ import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/progr
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
+import { ExcelFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/excel/repositories/excel-fsp-configuration.repository';
 import { ProgramFspConfigurationsHelperService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.helper';
 import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
@@ -53,6 +55,7 @@ const validPropertyDto: CreateProgramFspConfigurationPropertyDto = {
 // Declaring mocks here so they are accessible through all files
 let mockProgramFspConfigurationRepository;
 let mockProgramFspConfigurationPropertyRepository;
+let mockExcelFspConfigurationRepository;
 let mockPaymentsProgressService: {
   checkPaymentInProgressAndThrow: jest.Mock;
 };
@@ -109,6 +112,10 @@ describe('ProgramFspConfigurationsService', () => {
       }),
     };
 
+    mockExcelFspConfigurationRepository = {
+      getByProgramFspConfigurationId: jest.fn().mockResolvedValue(null),
+    };
+
     mockPaymentsProgressService = {
       checkPaymentInProgressAndThrow: jest.fn().mockResolvedValue(undefined),
     };
@@ -123,6 +130,10 @@ describe('ProgramFspConfigurationsService', () => {
         {
           provide: getRepositoryToken(ProgramFspConfigurationPropertyEntity),
           useValue: mockProgramFspConfigurationPropertyRepository,
+        },
+        {
+          provide: ExcelFspConfigurationRepository,
+          useValue: mockExcelFspConfigurationRepository,
         },
         {
           provide: ProgramRegistrationAttributesService,
@@ -161,7 +172,7 @@ describe('ProgramFspConfigurationsService', () => {
         relations: { properties: true },
       });
       expect(Array.isArray(result)).toBe(true);
-      expect(result.length).toBe(1);
+      expect(result).toHaveLength(1);
     });
   });
 
@@ -451,7 +462,7 @@ describe('ProgramFspConfigurationsService', () => {
       expect(result[0].name).toEqual(validPropertyDto.name);
     });
 
-    it('should not recalculate the state of an Excel configuration', async () => {
+    it('should keep Excel pending until its details row exists', async () => {
       const originalFspName = mockProgramFspConfigEntity.fspName;
       mockProgramFspConfigEntity.fspName = Fsps.excel;
       mockProgramFspConfigurationRepository.update.mockClear();
@@ -463,9 +474,34 @@ describe('ProgramFspConfigurationsService', () => {
           properties: [],
         });
 
-        expect(
-          mockProgramFspConfigurationRepository.update,
-        ).not.toHaveBeenCalled();
+        expect(mockProgramFspConfigurationRepository.update).toHaveBeenCalledWith(
+          mockProgramFspConfigEntity.id,
+          { state: FspConfigurationStates.configurationPending },
+        );
+      } finally {
+        mockProgramFspConfigEntity.fspName = originalFspName;
+      }
+    });
+
+    it('should keep Excel configured when its details row exists', async () => {
+      const originalFspName = mockProgramFspConfigEntity.fspName;
+      mockProgramFspConfigEntity.fspName = Fsps.excel;
+      mockExcelFspConfigurationRepository.getByProgramFspConfigurationId.mockResolvedValue(
+        { programFspConfigurationId: mockProgramFspConfigEntity.id },
+      );
+      mockProgramFspConfigurationRepository.update.mockClear();
+
+      try {
+        await service.createProperties({
+          programId,
+          name: configName,
+          properties: [],
+        });
+
+        expect(mockProgramFspConfigurationRepository.update).toHaveBeenCalledWith(
+          mockProgramFspConfigEntity.id,
+          { state: FspConfigurationStates.configured },
+        );
       } finally {
         mockProgramFspConfigEntity.fspName = originalFspName;
       }
