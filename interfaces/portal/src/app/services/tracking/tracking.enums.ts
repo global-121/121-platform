@@ -60,6 +60,7 @@ export enum TrackingAction {
 
   hoverInformationIcon = 'hover: Information Icon',
 
+  programSettingsAccessGroupsSaveButtonClick = 'click: Program Settings Access Groups Save Button',
   programSettingsBasicInfoSaveButtonClick = 'click: Program Settings info Save Button',
   programSettingsBudgetSaveButtonClick = 'click: Program Settings Budget Save Button',
 
@@ -70,7 +71,6 @@ export enum TrackingAction {
   showHenryDunant = 'show: Henry Dunant!',
   showSnakeGameOver = 'show: Snake Game Over',
 
-  toggleProgramScope = 'toggle: Use Program Scope',
   toggleProgramValidation = 'toggle: Use Program Validation',
 }
 

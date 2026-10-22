@@ -102,6 +102,20 @@ export class ProgramApiService extends DomainApiService {
     });
   }
 
+  updateAccessGroupLevels({
+    programId,
+    accessGroupRegistrationAttributeNames,
+  }: {
+    programId: number | string;
+    accessGroupRegistrationAttributeNames: string[];
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<AccessGroupLevels>({
+      method: 'PUT',
+      endpoint: `${BASE_ENDPOINT}/${programId.toString()}/access-group-levels`,
+      body: { accessGroupRegistrationAttributeNames },
+    });
+  }
+
   getProgramUsers(programId: Signal<number | string>) {
     return this.generateQueryOptions<
       ProgramUser[],
