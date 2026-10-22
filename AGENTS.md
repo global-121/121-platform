@@ -120,6 +120,13 @@ if (mode === TwilioMode.disabled) {
 
 - Avoid hardcoded values; prefer configuration. Avoid "magic" numbers or strings.
 
+### Export Boundaries and Circular Dependencies
+
+- Keep TypeScript file imports acyclic, not just framework module dependencies.
+- Framework implementation files must not export additional shared runtime constants or standalone helpers alongside their primary implementation.
+- Put shared constants in nearby, descriptive `*.const.ts` files and shared pure functions in dedicated helper/utility files. Import them directly. Shared files must not import their consumers; check the resulting import paths after extraction.
+- Follow the [Software Architecture Guidelines, A.6](./docs/guidelines/software-architecture.md#a-nestjs-module-dependency-structure-and-hierarchy) and [Portal export-boundary guidelines](./docs/guidelines/portal-development.md#export-boundaries-and-circular-dependencies) for placement and rationale.
+
 ### Use modern data structures
 
 - By default use Maps instead of objects unless you have a write-once read-heavy workload with string keys.

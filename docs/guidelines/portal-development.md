@@ -51,6 +51,16 @@ Only move it to the equivalent top-level folder when
 
 In other words, do not abstract by default.
 
+### Export Boundaries and Circular Dependencies
+
+Keep TypeScript file imports acyclic.
+
+Framework implementation files, such as services, guards, components, pages, directives and pipes, must not export additional shared runtime constants or standalone helper functions alongside their primary implementation. This does not prohibit the primary implementation itself from being an exported function or `const`, such as a functional guard, or services from exposing public methods.
+
+Put shared constants in nearby, descriptive `*.const.ts` files and shared pure functions in dedicated `*.helpers.ts` files. Import them directly from those files; keep these files close to their consumers, following the existing file and folder structure.
+
+Shared constant/helper files must not import the implementation files that consume them. Extraction alone does not guarantee an acyclic dependency graph; check the resulting import paths.
+
 ### Naming Consistency Between Frontend and Backend
 
 To reduce confusion and avoid costly refactors, **frontend naming should closely match backend naming**, unless there is a very good reason not to. If a name differs in design vs. code, raise it early during refinement or development. A conscious decision should then be made to rename it in both the frontend and backend, based on the estimated effort. Consider third-party API integrations as part of this effort estimation.
@@ -65,7 +75,7 @@ Items with the 🤖 emoji happen automatically when using `ng generate component
 - 🤖 All components must be standalone
 - 🤖 All components must use the "OnPush" change detection strategy, to support [zoneless change detection](https://angular.dev/guide/experimental/zoneless)
 - 🤖 Do not create a (S)CSS file per component
-- Pages should **not** have helper files.
+- Keep page-only implementation details in the page file and un-exported. Shared constants and pure helpers belong in separate files as described in [Export Boundaries and Circular Dependencies](#export-boundaries-and-circular-dependencies).
 
 ### General component guidelines
 
@@ -196,7 +206,7 @@ Changes and additions to this css file should be kept to a minimum, because more
 
 ### API Service Files
 
-All API calls to the 121-service should go through an `.api.service.ts` file. These files typically export two kinds of functions:
+All API calls to the 121-service should go through an `.api.service.ts` file. These files export a service class, which typically exposes two kinds of public methods:
 
 1. Functions that return `queryOptions`
    - These are to be used in conjuction with `injectQuery` in components, to `GET` data

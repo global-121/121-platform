@@ -34,7 +34,13 @@ A Financial Service Provider (Fsp) is an external organization or system integra
 5. **Aim for Feature Modules**:  
    Group related functionality into feature modules. This makes it easier to reason about the code and promotes re-usability.
 6. **Avoid Circular Dependencies**:  
-   Circular dependencies can lead to runtime errors and make the codebase difficult to understand. Keep an eye on module dependencies to avoid circular references.
+   Circular dependencies can lead to runtime errors and make the codebase difficult to understand. Keep both NestJS module dependencies and TypeScript file imports acyclic.
+
+   Framework implementation files (services, guards, controllers, repositories and pipes), must not export additional shared runtime constants or standalone helper functions alongside their primary implementation.
+
+   Put shared constants in nearby, descriptive `*.const.ts` files and shared pure functions in dedicated helper/utility files. Import them directly from those files; keep these files close to their consumers and respect the module hierarchy.
+
+   Shared constant/helper files must not import the implementation files that consume them, directly or indirectly. Extraction alone does not guarantee an acyclic dependency graph; check the resulting import paths.
 
 ### B. NestJS Module Implementation
 

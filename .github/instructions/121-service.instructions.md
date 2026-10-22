@@ -10,6 +10,7 @@ Rules from the [Software Architecture Guidelines](../../docs/guidelines/software
 ## Rules
 
 - Modules depend only on modules lower in the hierarchy, never circularly (A.3, A.6). Import the full module under `imports`, not a single provider (B.8).
+- Keep TypeScript file imports acyclic too. Framework implementation files must not export additional shared runtime constants or standalone helpers. (A.6).
 - All database access goes through a Repository of the entity's own module; no TypeORM outside repositories except simple `find`/`count` clauses (B.2, J.4, J.5).
 - Functions do not accept or return Entities across modules (B.4). Only the owning module creates, updates or deletes an entity (J.6).
 - Related-entity queries go in the repository of the "base" entity (J.7).
