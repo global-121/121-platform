@@ -58,12 +58,12 @@ export class ProgramPaymentsPageComponent {
   );
 
   readonly canExport = computed(() =>
-    this.authService.hasAllPermissions({
+    this.authService.hasSomePermission({
       programId: this.programId(),
-      requiredPermissions: [
-        PermissionEnum.RegistrationPersonalEXPORT,
-        PermissionEnum.PaymentREAD,
-        PermissionEnum.PaymentTransactionREAD,
+      optionalPermissions: [
+        PermissionEnum.RegistrationPaymentExport,
+        PermissionEnum.PaymentVoucherExport,
+        PermissionEnum.FspDebitCardEXPORT,
       ],
     }),
   );
