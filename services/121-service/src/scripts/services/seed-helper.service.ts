@@ -9,7 +9,6 @@ import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
 import { getBaseUrl, IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
-import { ExcelFspConfigurationEntity } from '@121-service/src/fsp-integrations/integrations/excel/entities/excel-fsp-configuration.entity';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
@@ -20,7 +19,9 @@ import { MessageTemplateService } from '@121-service/src/notifications/message-t
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
+import { ExcelFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/excel/repositories/excel-fsp-configuration.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
@@ -40,12 +41,35 @@ import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
+type ProgramRegistrationAttributeSeed = DeepPartial<ProgramRegistrationAttributeEntity> & {
+  name: string;
+  answerType?: RegistrationAttributeTypes;
+  options: { option: string }[];
+  scoring: Record<string, unknown>;
+};
+
+interface ProgramFspConfigurationSeed {
+  fsp: string;
+  properties?: { name: string; value: string }[];
+  uniqueIdentifierField?: string;
+  exportFields?: string[];
+  name?: string;
+  label: UILanguageTranslation;
+}
+
+interface ValidatedProgramFspConfigurationSeed
+  extends Omit<ProgramFspConfigurationSeed, 'fsp'> {
+  fsp: Fsps;
+}
+
 @Injectable()
 export class SeedHelperService {
   public constructor(
-    private dataSource: DataSource,
+    private readonly dataSource: DataSource,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly excelFspConfigurationRepository: ExcelFspConfigurationRepository,
+    private readonly programFspConfigurationsService: ProgramFspConfigurationsService,
     private readonly httpService: CustomHttpService,
     private readonly axiosCallsService: AxiosCallsService,
     private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
@@ -123,7 +147,7 @@ export class SeedHelperService {
     const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
     const formHeaders = form.getHeaders();
     for (const key in formHeaders) {
-      if (Object.prototype.hasOwnProperty.call(formHeaders, key)) {
+      if (Object.hasOwn(formHeaders, key)) {
         headers.append(key, formHeaders[key]);
       }
     }
@@ -369,11 +393,6 @@ export class SeedHelperService {
 
   public async addProgram(programExample: any): Promise<ProgramEntity> {
     const programRepository = this.dataSource.getRepository(ProgramEntity);
-
-    const programRegistrationAttributeRepo = this.dataSource.getRepository(
-      ProgramRegistrationAttributeEntity,
-    );
-
     const programExampleDump = JSON.stringify(programExample);
     const programFromJSON = JSON.parse(programExampleDump);
     const programReturn = await programRepository.save(programFromJSON);
@@ -382,98 +401,179 @@ export class SeedHelperService {
       programId: programReturn.id,
     });
 
-    // Remove original program registration attributes and add it to a separate variable
     const programRegistrationAttributes =
       programFromJSON.programRegistrationAttributes;
     programFromJSON.programRegistrationAttibutes = [];
-    for (const attribute of programRegistrationAttributes) {
-      attribute.isRequired = attribute.isRequired || false;
-      if (attribute.answerType === RegistrationAttributeTypes.dropdown) {
-        const scoringKeys = Object.keys(attribute.scoring);
-        if (scoringKeys.length > 0) {
-          const optionKeys = attribute.options.map(({ option }) => option);
-          const areOptionScoringEqual =
-            JSON.stringify(scoringKeys.sort()) ==
-            JSON.stringify(optionKeys.sort());
-          if (!areOptionScoringEqual) {
-            throw new HttpException(
-              'Option and scoring is not equal of question  ' + attribute.name,
-              404,
-            );
-          }
-        }
-      }
-      attribute.programId = programReturn.id;
-      await programRegistrationAttributeRepo.save(attribute);
-    }
+    await this.saveProgramRegistrationAttributes({
+      programId: programReturn.id,
+      attributes: programRegistrationAttributes,
+    });
 
     const foundProgram = await programRepository.findOneOrFail({
       where: { id: Equal(programReturn.id) },
     });
     const programAttributeNames = (
-      await programRegistrationAttributeRepo.find({
-        where: { programId: Equal(foundProgram.id) },
-        select: { name: true },
+      await this.getProgramRegistrationAttributeNames({
+        programId: foundProgram.id,
       })
     ).map(({ name }) => name);
-    const fspConfigArrayFromJson = programFromJSON.programFspConfigurations;
     foundProgram.programFspConfigurations = [];
 
-    for (const fspConfigFromJson of fspConfigArrayFromJson) {
-      const fspName = fspConfigFromJson.fsp;
+    await this.saveProgramFspConfigurations({
+      program: foundProgram,
+      configurations: programFromJSON.programFspConfigurations,
+      programAttributeNames,
+    });
+
+    return programRepository.findOneByOrFail({ id: Equal(foundProgram.id) });
+  }
+
+  private async saveProgramRegistrationAttributes({
+    programId,
+    attributes,
+  }: {
+    programId: number;
+    attributes: ProgramRegistrationAttributeSeed[];
+  }): Promise<void> {
+    const programRegistrationAttributeRepository = this.dataSource.getRepository(
+      ProgramRegistrationAttributeEntity,
+    );
+
+    for (const attribute of attributes) {
+      attribute.isRequired = attribute.isRequired || false;
+      this.validateDropdownAttributeScoring({ attribute });
+      attribute.programId = programId;
+      await programRegistrationAttributeRepository.save(attribute);
+    }
+  }
+
+  private validateDropdownAttributeScoring({
+    attribute,
+  }: {
+    attribute: {
+      name: string;
+      answerType?: RegistrationAttributeTypes;
+      options: { option: string }[];
+      scoring: Record<string, unknown>;
+    };
+  }): void {
+    if (attribute.answerType !== RegistrationAttributeTypes.dropdown) {
+      return;
+    }
+
+    const scoringKeys = Object.keys(attribute.scoring);
+    if (scoringKeys.length === 0) {
+      return;
+    }
+
+    const optionKeys = attribute.options.map(({ option }) => option);
+    const areOptionScoringEqual =
+      JSON.stringify(scoringKeys.toSorted((a, b) => a.localeCompare(b))) ===
+      JSON.stringify(optionKeys.toSorted((a, b) => a.localeCompare(b)));
+    if (!areOptionScoringEqual) {
+      throw new HttpException(
+        `Option and scoring is not equal of question ${attribute.name}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
+
+  private async getProgramRegistrationAttributeNames({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<{ name: string }[]> {
+    const programRegistrationAttributeRepository = this.dataSource.getRepository(
+      ProgramRegistrationAttributeEntity,
+    );
+
+    return programRegistrationAttributeRepository.find({
+      where: { programId: Equal(programId) },
+      select: { name: true },
+    });
+  }
+
+  private async saveProgramFspConfigurations({
+    program,
+    configurations,
+    programAttributeNames,
+  }: {
+    program: ProgramEntity;
+    configurations: ProgramFspConfigurationSeed[];
+    programAttributeNames: string[];
+  }): Promise<void> {
+    for (const configuration of configurations) {
+      const fspName = configuration.fsp;
       if (!stringIsFsp(fspName)) {
         throw new HttpException(
           `FSP with name ${fspName} not found in FSP_SETTINGS`,
           HttpStatus.NOT_FOUND,
         );
       }
-      const fspObject = FSP_SETTINGS[fspName];
-      const programFspConfig = this.createProgramFspConfiguration(
-        fspConfigFromJson,
-        fspObject,
-        foundProgram.id,
+
+      const validatedConfiguration = { ...configuration, fsp: fspName };
+      const fspSettings = FSP_SETTINGS[fspName];
+      const programFspConfiguration = this.createProgramFspConfiguration(
+        validatedConfiguration,
+        fspSettings,
+        program.id,
       );
       const savedConfiguration =
-        await this.programFspConfigurationRepository.save(programFspConfig);
-
-      if (fspName !== Fsps.excel || !fspConfigFromJson.uniqueIdentifierField) {
-        continue;
-      }
-
-      const exportFields =
-        fspConfigFromJson.exportFields ?? programAttributeNames;
-      const invalidFields = [
-        fspConfigFromJson.uniqueIdentifierField,
-        ...exportFields,
-      ].filter((field) => !programAttributeNames.includes(field));
-      if (invalidFields.length > 0) {
-        throw new HttpException(
-          `Excel seed configuration contains unknown registration attributes: ${[...new Set(invalidFields)].join(', ')}`,
-          HttpStatus.BAD_REQUEST,
+        await this.programFspConfigurationRepository.save(
+          programFspConfiguration,
         );
-      }
 
-      await this.dataSource.getRepository(ExcelFspConfigurationEntity).save({
-        programFspConfigurationId: savedConfiguration.id,
-        uniqueIdentifierField: fspConfigFromJson.uniqueIdentifierField,
-        exportFields,
+      await this.saveExcelFspConfiguration({
+        configuration: validatedConfiguration,
+        savedProgramFspConfiguration: savedConfiguration,
+        programAttributeNames,
       });
-      savedConfiguration.state = FspConfigurationStates.configured;
-      await this.programFspConfigurationRepository.save(savedConfiguration);
+    }
+  }
+
+  private async saveExcelFspConfiguration({
+    configuration,
+    savedProgramFspConfiguration,
+    programAttributeNames,
+  }: {
+    configuration: ProgramFspConfigurationSeed;
+    savedProgramFspConfiguration: ProgramFspConfigurationEntity;
+    programAttributeNames: string[];
+  }): Promise<void> {
+    if (
+      configuration.fsp !== Fsps.excel ||
+      !configuration.uniqueIdentifierField
+    ) {
+      return;
     }
 
-    return programRepository.findOneByOrFail({ id: Equal(foundProgram.id) });
+    const exportFields = configuration.exportFields ?? programAttributeNames;
+    const invalidFields = [
+      configuration.uniqueIdentifierField,
+      ...exportFields,
+    ].filter((field) => !programAttributeNames.includes(field));
+    if (invalidFields.length > 0) {
+      throw new HttpException(
+        `Excel seed configuration contains unknown registration attributes: ${[...new Set(invalidFields)].join(', ')}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.excelFspConfigurationRepository.saveConfiguration({
+      programFspConfigurationId: savedProgramFspConfiguration.id,
+      uniqueIdentifierField: configuration.uniqueIdentifierField,
+      exportFields,
+    });
+    await this.programFspConfigurationsService.synchronizeFspConfigurationState(
+      {
+        programFspConfigurationId: savedProgramFspConfiguration.id,
+        fspName: Fsps.excel,
+      },
+    );
   }
 
   private createProgramFspConfiguration(
-    fspConfigFromJson: {
-      fsp: Fsps;
-      properties: { name: string; value: string }[] | undefined;
-      uniqueIdentifierField?: string;
-      exportFields?: string[];
-      name?: string;
-      label: UILanguageTranslation;
-    },
+    fspConfigFromJson: ValidatedProgramFspConfigurationSeed,
     fspObject: FspSettingsDto,
     programId: number,
   ): ProgramFspConfigurationEntity {
@@ -495,7 +595,10 @@ export class SeedHelperService {
     fspConfigEntity.programId = programId;
     fspConfigEntity.state =
       fspConfigFromJson.fsp === Fsps.excel
-        ? FspConfigurationStates.configurationPending
+        ? this.programFspConfigurationsService.getInitialFspConfigurationState({
+            fspName: fspConfigFromJson.fsp,
+            fspConfigurationProperties: [],
+          })
         : FspConfigurationStates.configured;
     return fspConfigEntity;
   }
@@ -616,9 +719,7 @@ export class SeedHelperService {
     const messageTemplateEntity = new MessageTemplateEntity();
     messageTemplateEntity.program = program;
     messageTemplateEntity.type = type;
-    messageTemplateEntity.label = label
-      ? JSON.parse(JSON.stringify(label))
-      : null;
+    messageTemplateEntity.label = label ? structuredClone(label) : null;
     messageTemplateEntity.language = language;
     messageTemplateEntity.message = message;
     messageTemplateEntity.contentSid = contentSid;

@@ -22,12 +22,16 @@ export class ProgramFspConfigurationsHelperService {
   public computeFspConfigurationState({
     fspName,
     fspConfigurationProperties,
+    excelConfigurationExists,
   }: {
     fspName: Fsps;
     fspConfigurationProperties: CreateProgramFspConfigurationPropertyDto[];
+    excelConfigurationExists: boolean;
   }): FspConfigurationStates {
     if (fspName === Fsps.excel) {
-      return FspConfigurationStates.configurationPending;
+      return excelConfigurationExists
+        ? FspConfigurationStates.configured
+        : FspConfigurationStates.configurationPending;
     }
 
     const requiredProperties = getFspConfigurationRequiredProperties(fspName);

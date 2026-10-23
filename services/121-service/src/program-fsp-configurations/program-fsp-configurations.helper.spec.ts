@@ -30,6 +30,7 @@ describe('ProgramFspConfigurationsHelperService', () => {
       const result = helper.computeFspConfigurationState({
         fspName: Fsps.safaricom,
         fspConfigurationProperties: [],
+        excelConfigurationExists: false,
       });
 
       expect(result).toBe(FspConfigurationStates.configured);
@@ -39,9 +40,20 @@ describe('ProgramFspConfigurationsHelperService', () => {
       const result = helper.computeFspConfigurationState({
         fspName: Fsps.excel,
         fspConfigurationProperties: [],
+        excelConfigurationExists: false,
       });
 
       expect(result).toBe(FspConfigurationStates.configurationPending);
+    });
+
+    it('should configure Excel when its details have been saved', () => {
+      const result = helper.computeFspConfigurationState({
+        fspName: Fsps.excel,
+        fspConfigurationProperties: [],
+        excelConfigurationExists: true,
+      });
+
+      expect(result).toBe(FspConfigurationStates.configured);
     });
   });
 

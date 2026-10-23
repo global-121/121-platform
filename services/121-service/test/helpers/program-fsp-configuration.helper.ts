@@ -1,7 +1,5 @@
 import * as request from 'supertest';
 
-import { ExcelFspConfigurationResponseDto } from '@121-service/src/fsp-integrations/integrations/excel/dto/excel-fsp-configuration-response.dto';
-import { UpdateExcelFspConfigurationDto } from '@121-service/src/fsp-integrations/integrations/excel/dto/update-excel-fsp-configuration.dto';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
@@ -10,6 +8,8 @@ import { ProgramFspConfigurationPropertyResponseDto } from '@121-service/src/pro
 import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
+import { ExcelFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/excel/dtos/excel-fsp-configuration-response.dto';
+import { UpdateExcelFspConfigurationDto } from '@121-service/src/program-fsp-configurations/excel/dtos/update-excel-fsp-configuration.dto';
 import { programIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { getServer } from '@121-service/test/helpers/utility.helper';
 

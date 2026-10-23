@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { ExcelFspConfigurationEntity } from '@121-service/src/fsp-integrations/integrations/excel/entities/excel-fsp-configuration.entity';
+import { ExcelFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/excel/entities/excel-fsp-configuration.entity';
 
 export class ExcelFspConfigurationRepository extends Repository<ExcelFspConfigurationEntity> {
   public constructor(

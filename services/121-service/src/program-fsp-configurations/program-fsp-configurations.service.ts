@@ -15,6 +15,8 @@ import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-c
 import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
+import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
+import { ExcelFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/excel/repositories/excel-fsp-configuration.repository';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramFspConfigurationsHelperService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.helper';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
@@ -33,6 +35,7 @@ export class ProgramFspConfigurationsService {
     private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
     private readonly paymentsProgressService: PaymentsProgressService,
     private readonly programFspConfigurationsHelperService: ProgramFspConfigurationsHelperService,
+    private readonly excelFspConfigurationRepository: ExcelFspConfigurationRepository,
   ) {}
 
   public async getByProgramId(
@@ -60,6 +63,22 @@ export class ProgramFspConfigurationsService {
     );
 
     return this.createEntity(programId, programFspConfigurationDto);
+  }
+
+  public getInitialFspConfigurationState({
+    fspName,
+    fspConfigurationProperties,
+  }: {
+    fspName: Fsps;
+    fspConfigurationProperties: CreateProgramFspConfigurationPropertyDto[];
+  }): FspConfigurationStates {
+    return this.programFspConfigurationsHelperService.computeFspConfigurationState(
+      {
+        fspName,
+        fspConfigurationProperties,
+        excelConfigurationExists: false,
+      },
+    );
   }
 
   private async validate(
@@ -154,11 +173,11 @@ export class ProgramFspConfigurationsService {
     programId: number,
     programFspConfigurationDto: CreateProgramFspConfigurationDto,
   ): Promise<ProgramFspConfigurationResponseDto> {
-    const configState =
-      this.programFspConfigurationsHelperService.computeFspConfigurationState({
-        fspName: programFspConfigurationDto.fspName,
-        fspConfigurationProperties: programFspConfigurationDto.properties ?? [],
-      });
+    const configState = this.getInitialFspConfigurationState({
+      fspName: programFspConfigurationDto.fspName,
+      fspConfigurationProperties:
+        programFspConfigurationDto.properties ?? [],
+    });
 
     const newConfigEntity = ProgramFspConfigurationMapper.mapDtoToEntity({
       dto: programFspConfigurationDto,
@@ -221,16 +240,6 @@ export class ProgramFspConfigurationsService {
         },
       );
 
-      if (config.fspName !== Fsps.excel) {
-        config.state =
-          this.programFspConfigurationsHelperService.computeFspConfigurationState(
-            {
-              fspName: config.fspName,
-              fspConfigurationProperties:
-                updateProgramFspConfigurationDto.properties,
-            },
-          );
-      }
     }
 
     const savedEntity =
@@ -241,6 +250,10 @@ export class ProgramFspConfigurationsService {
         savedEntity.id,
         updateProgramFspConfigurationDto.properties,
       );
+      savedEntity.state = await this.synchronizeFspConfigurationState({
+        programFspConfigurationId: savedEntity.id,
+        fspName: savedEntity.fspName,
+      });
     }
 
     return ProgramFspConfigurationMapper.mapEntityToDto(savedEntity);
@@ -317,7 +330,7 @@ export class ProgramFspConfigurationsService {
       config.id,
       inputProperties,
     );
-    await this.syncFspConfigurationState({
+    await this.synchronizeFspConfigurationState({
       programFspConfigurationId: config.id,
       fspName: config.fspName,
     });
@@ -418,39 +431,45 @@ export class ProgramFspConfigurationsService {
     await this.programFspConfigurationPropertyRepository.delete({
       id: existingProperty.id,
     });
-    await this.syncFspConfigurationState({
+    await this.synchronizeFspConfigurationState({
       programFspConfigurationId: config.id,
       fspName: config.fspName,
     });
   }
 
-  private async syncFspConfigurationState({
+  public async synchronizeFspConfigurationState({
     programFspConfigurationId,
     fspName,
   }: {
     programFspConfigurationId: number;
     fspName: Fsps;
-  }): Promise<void> {
-    if (fspName === Fsps.excel) {
-      return;
-    }
-
+  }): Promise<FspConfigurationStates> {
     const properties =
       await this.programFspConfigurationPropertyRepository.find({
         where: {
           programFspConfigurationId: Equal(programFspConfigurationId),
         },
       });
+    const excelConfiguration =
+      fspName === Fsps.excel
+        ? await this.excelFspConfigurationRepository.getByProgramFspConfigurationId(
+            {
+              programFspConfigurationId,
+            },
+          )
+        : null;
     const state =
       this.programFspConfigurationsHelperService.computeFspConfigurationState({
         fspName,
         fspConfigurationProperties: properties,
+        excelConfigurationExists: excelConfiguration !== null,
       });
 
     await this.programFspConfigurationRepository.update(
       programFspConfigurationId,
       { state },
     );
+    return state;
   }
 
   private async createPropertyEntities(

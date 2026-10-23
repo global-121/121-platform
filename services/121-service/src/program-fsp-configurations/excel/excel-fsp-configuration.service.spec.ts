@@ -1,14 +1,14 @@
 import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ExcelFspConfigurationEntity } from '@121-service/src/fsp-integrations/integrations/excel/entities/excel-fsp-configuration.entity';
-import { ExcelFspConfigurationRepository } from '@121-service/src/fsp-integrations/integrations/excel/excel-fsp-configuration.repository';
-import { ExcelFspConfigurationService } from '@121-service/src/fsp-integrations/integrations/excel/excel-fsp-configuration.service';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { PaymentsProgressService } from '@121-service/src/payments/services/payments-progress.service';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { FspConfigurationStates } from '@121-service/src/program-fsp-configurations/enum/fsp-configuration-states.enum';
+import { ExcelFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/excel/entities/excel-fsp-configuration.entity';
+import { ExcelFspConfigurationService } from '@121-service/src/program-fsp-configurations/excel/excel-fsp-configuration.service';
+import { ExcelFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/excel/repositories/excel-fsp-configuration.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 
 const programId = 1;
@@ -31,7 +31,9 @@ describe('ExcelFspConfigurationService', () => {
   };
   let programFspConfigurationRepository: {
     getByProgramIdAndName: jest.Mock;
-    updateState: jest.Mock;
+  };
+  let programFspConfigurationsService: {
+    synchronizeFspConfigurationState: jest.Mock;
   };
 
   beforeEach(async () => {
@@ -43,7 +45,9 @@ describe('ExcelFspConfigurationService', () => {
     };
     programFspConfigurationRepository = {
       getByProgramIdAndName: jest.fn().mockResolvedValue(excelFspConfiguration),
-      updateState: jest.fn(),
+    };
+    programFspConfigurationsService = {
+      synchronizeFspConfigurationState: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -58,17 +62,21 @@ describe('ExcelFspConfigurationService', () => {
           useValue: programFspConfigurationRepository,
         },
         {
-          provide: ProgramRegistrationAttributeRepository,
-          useValue: {
-            getNamesByProgramId: jest
-              .fn()
-              .mockResolvedValue(programAttributeNames),
-          },
+          provide: ProgramFspConfigurationsService,
+          useValue: programFspConfigurationsService,
         },
         {
           provide: PaymentsProgressService,
           useValue: {
             checkPaymentInProgressAndThrow: jest.fn(),
+          },
+        },
+        {
+          provide: ProgramRegistrationAttributeRepository,
+          useValue: {
+            getNamesByProgramId: jest
+              .fn()
+              .mockResolvedValue(programAttributeNames),
           },
         },
       ],
@@ -167,11 +175,10 @@ describe('ExcelFspConfigurationService', () => {
       });
       expect(result.exportFields).toEqual(programAttributeNames);
       expect(
-        programFspConfigurationRepository.updateState,
+        programFspConfigurationsService.synchronizeFspConfigurationState,
       ).toHaveBeenCalledWith({
-        programId,
-        name: configurationName,
-        state: FspConfigurationStates.configured,
+        programFspConfigurationId: excelFspConfiguration.id,
+        fspName: Fsps.excel,
       });
     });
 

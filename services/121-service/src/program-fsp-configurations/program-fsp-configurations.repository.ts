@@ -52,21 +52,6 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
     });
   }
 
-  public async updateState({
-    programId,
-    name,
-    state,
-  }: {
-    programId: number;
-    name: string;
-    state: FspConfigurationStates;
-  }): Promise<void> {
-    await this.baseRepository.update(
-      { programId: Equal(programId), name: Equal(name) },
-      { state },
-    );
-  }
-
   public async isFspConfiguredForProgram({
     programId,
     fspName,
