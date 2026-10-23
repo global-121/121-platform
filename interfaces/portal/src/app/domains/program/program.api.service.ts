@@ -18,6 +18,7 @@ import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/program
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
+  AccessGroupLevels,
   Attribute,
   AttributeWithTranslatedLabel,
   Program,
@@ -92,6 +93,12 @@ export class ProgramApiService extends DomainApiService {
 
         return program;
       },
+    });
+  }
+
+  getAccessGroupLevels({ programId }: { programId: Signal<number | string> }) {
+    return this.generateQueryOptions<AccessGroupLevels>({
+      path: [BASE_ENDPOINT, programId, 'access-group-levels'],
     });
   }
 
