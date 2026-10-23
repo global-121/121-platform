@@ -199,6 +199,15 @@ export class ProgramReturnDto {
   @IsBoolean()
   public readonly enableScope: boolean;
 
+  @ApiProperty({
+    example: ['region', 'district'],
+    description:
+      'Should be array of registration attribute names configured for access group calculation.',
+  })
+  @IsArray()
+  @IsOptional()
+  public readonly accessGroupRegistrationAttributeNames?: string[];
+
   @ApiProperty()
   @IsArray()
   public readonly fspConfigurations: ProgramFspConfigurationResponseDto[];
