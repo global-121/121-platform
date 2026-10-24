@@ -16,6 +16,7 @@ interface KoboSurveyItem {
   $autoname?: string;
   label?: string[];
   required?: boolean;
+  calculation?: string;
   constraint_message?: string;
   select_from_list_name?: string;
 }
@@ -318,6 +319,33 @@ const happyFlowFromDefinition: KoboAssetDeployment = {
           required: false,
           $autoname: 'driversLicensePhoto',
         },
+        {
+          name: 'adults',
+          type: 'integer',
+          $kuid: 'sk3sd00',
+          label: ['adults'],
+          $xpath: 'adults',
+          required: false,
+          $autoname: 'adults',
+        },
+        {
+          name: 'children',
+          type: 'integer',
+          $kuid: 'ow3cp06',
+          label: ['children'],
+          $xpath: 'children',
+          required: false,
+          $autoname: 'children',
+        },
+        {
+          name: 'calculated_question',
+          type: 'calculate',
+          $kuid: 'fq3yb41',
+          $xpath: 'calculated_question',
+          required: false,
+          $autoname: 'calculated_question',
+          calculation: '${adults} div ${children}',
+        },
       ],
       choices: [
         {
@@ -552,6 +580,9 @@ export class KoboMockService {
         'group_ad8jk55/group_gz24g15/What_is_2_2_number': 4,
         nationalId: '123456789',
         phoneNumber: '+31612345678',
+        adults: '5',
+        children: '2',
+        calculated_question: '2.5',
         'group_or1bl43/How_are_you_today_select_one': 'great',
         photo:
           'username/attachments/form-id/submission-uuid/important_photo.jpg',
@@ -669,6 +700,9 @@ export class KoboMockService {
         'group_ad8jk55/group_gz24g15/What_is_2_2_number': 4,
         nationalId: '123456789',
         phoneNumber: '+31612345678',
+        adults: '5',
+        children: '2',
+        calculated_question: '2.5',
         'group_or1bl43/How_are_you_today_select_one': 'great',
         photo:
           'username/attachments/form-id/submission-uuid/important_photo.jpg',
@@ -822,6 +856,9 @@ export class KoboMockService {
       'group_ad8jk55/group_gz24g15/What_is_2_2_number': 4,
       nationalId: `${100000000 + optionNumber}`,
       phoneNumber: `+316${String(optionNumber).padStart(8, '0')}`,
+      adults: '5',
+      children: '2',
+      calculated_question: '2.5',
       'group_or1bl43/How_are_you_today_select_one': `option_${optionNumber}`,
       photo: 'username/attachments/form-id/submission-uuid/important_photo.jpg',
       idPhoto:

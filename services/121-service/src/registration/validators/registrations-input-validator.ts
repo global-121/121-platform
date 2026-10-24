@@ -857,6 +857,7 @@ export class RegistrationsInputValidator {
   }): ValidateRegistrationErrorObject | undefined {
     let isValid: boolean | null = false;
     let message = '';
+
     if (type === RegistrationAttributeTypes.date) {
       const datePattern =
         /^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-(19[2-9][0-9]|20[0-1][0-9])$/;

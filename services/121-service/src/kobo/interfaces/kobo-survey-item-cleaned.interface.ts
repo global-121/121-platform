@@ -5,4 +5,5 @@ export interface KoboSurveyItemCleaned {
   type: string;
   label?: string[];
   choices: KoboChoiceCleaned[];
+  calculation?: string;
 }

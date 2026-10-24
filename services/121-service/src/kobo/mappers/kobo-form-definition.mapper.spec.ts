@@ -92,6 +92,52 @@ describe('KoboFormDefinitionMapper', () => {
       expect(result.survey).toEqual(expected);
     });
 
+    it('should keep the calculation of a calculate question', () => {
+      // Arrange
+      const asset = createAsset({
+        content: {
+          survey: [
+            createSurveyItem({
+              name: 'calculated_question',
+              type: 'calculate',
+              label: ['Calculated question'],
+              calculation: '${adults} div ${children}',
+            }),
+          ],
+          choices: [],
+        },
+      });
+
+      // Act
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
+        asset,
+      });
+
+      // Assert
+      expect(result.survey[0].name).toBe('calculated_question');
+      expect(result.survey[0].type).toBe('calculate');
+      expect(result.survey[0].label).toEqual(['Calculated question']);
+      expect(result.survey[0].calculation).toBe('${adults} div ${children}');
+    });
+
+    it('should not add a calculation to a question without one', () => {
+      // Arrange
+      const asset = createAsset({
+        content: {
+          survey: [createSurveyItem({ name: 'fullName', type: 'text' })],
+          choices: [],
+        },
+      });
+
+      // Act
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
+        asset,
+      });
+
+      // Assert
+      expect(result.survey[0].calculation).toBeUndefined();
+    });
+
     it('should parse names with forward slashes correctly', () => {
       // Arrange
       const asset = createAsset({
