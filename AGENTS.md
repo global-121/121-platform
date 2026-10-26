@@ -207,21 +207,16 @@ Follow Conventional Commits with Angular format (strictly enforced):
 
 - Use imperative mood: "Add feature" not "Added feature" or "Adds feature"
 - Think: "This commit will..." + your commit message
-- Always include Azure DevOps reference in commit body (not title)
 - Use appropriate labels for release note generation
 
 **Examples**:
 
 ```
 feat: Add transaction history to profile page
-
-See AB#123456
 ```
 
 ```
 fix: Prevent user from submitting empty form
-
-See AB#789012
 ```
 
 ### Branch Naming
@@ -238,6 +233,7 @@ Use pattern: `username/description-of-change` (strongly encouraged)
 - Separate frontend and backend changes when possible
 - **Draft PRs**: Use draft status until ready for review
 - **Content Guidelines**:
+  - Reference the Azure DevOps item (`AB#XXXX`) in the PR description
   - Prefer non-breaking changes when possible
   - Every PR should have a label: enhancement, bugfix, other, chore
 
@@ -257,7 +253,7 @@ Before requesting a review, check all points in [the checklist](./docs/pull_requ
 
 - **Code Quality**: ESLint, Prettier, Husky pre-commit hooks
 - **Package Management**: npm with workspaces
-- **Version Control**: Conventional Commits with Azure DevOps integration
+- **Version Control**: Conventional Commits, with Azure DevOps references in PR descriptions
 - **CI/CD**: GitHub Actions workflows
 
 ## Self-Improvement Protocol
