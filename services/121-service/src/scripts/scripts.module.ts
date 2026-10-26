@@ -13,12 +13,14 @@ import { ScriptsController } from '@121-service/src/scripts/scripts.controller';
 import { SeedInit } from '@121-service/src/scripts/seed-init';
 import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
 import { ScriptsService } from '@121-service/src/scripts/services/scripts.service';
+import { SeedAccessGroupService } from '@121-service/src/scripts/services/seed-access-group.service';
 import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper.service';
 import { SeedMockHelperService } from '@121-service/src/scripts/services/seed-mock-helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { PermissionMaintenanceService } from '@121-service/src/shared/services/permission-maintenance.service';
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
+import { UserModule } from '@121-service/src/user/user.module';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
 @Module({
@@ -31,10 +33,12 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
     HttpModule,
     ProgramFspConfigurationsModule,
     ProgramApprovalThresholdsModule,
+    UserModule,
   ],
   providers: [
     ScriptsService,
     SeedInit,
+    SeedAccessGroupService,
     SeedHelperService,
     SeedMultipleNLRCMockData,
     SeedMockHelperService,

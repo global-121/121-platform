@@ -6,6 +6,8 @@ export const registrationAHWhatsapp = {
   referenceId: '1234abcd5678efgh',
   preferredLanguage: RegistrationPreferredLanguage.nl,
   paymentAmountMultiplier: 1,
+  province: 'noord-holland',
+  municipality: 'haarlem',
   fullName: 'Juan Garcia',
   scope: 'utrecht.houten',
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '14155238888',
