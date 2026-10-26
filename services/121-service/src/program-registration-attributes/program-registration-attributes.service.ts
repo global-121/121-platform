@@ -325,8 +325,12 @@ export class ProgramRegistrationAttributesService {
     update: ProgramRegistrationAttribute;
   }): void {
     const existingOptions = existingAttribute.options ?? [];
+    const userConfiguredType = existingAttribute.type;
 
     Object.assign(existingAttribute, update);
+
+    // The 121 type leads over koboType, so a type changed by a user survives a Kobo refresh.
+    existingAttribute.type = userConfiguredType;
 
     // Kobo sync can only add choices, never remove ones already relied upon elsewhere.
     if (update.options !== undefined) {
