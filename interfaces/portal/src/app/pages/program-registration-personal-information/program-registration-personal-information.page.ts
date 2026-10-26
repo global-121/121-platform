@@ -29,6 +29,7 @@ import { EditPersonalInformationComponent } from '~/pages/program-registration-p
 import { AuthService } from '~/services/auth.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
+import { parseDateValue } from '~/utils/date';
 
 const normalizeKoboImageValue = (value: unknown): string =>
   typeof value === 'string' && value.trim().toLowerCase() !== 'null'
@@ -117,7 +118,10 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
             return {
               ...attribute,
               type: 'date',
-              value: value as Date,
+              value:
+                typeof value === 'string'
+                  ? parseDateValue({ value })
+                  : (value as Date),
             };
           case RegistrationAttributeTypes.boolean:
             return {

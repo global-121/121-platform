@@ -85,6 +85,8 @@
             @if (type === 'date') {
               <p-datepicker
                 [formControlName]="attribute.name"
+                [dataType]="'string'"
+                [dateFormat]="'dd-mm-yy'"
                 [showClear]="true"
                 appendTo="body"
               />

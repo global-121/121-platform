@@ -8,6 +8,7 @@ import {
   QueryTableColumnType,
 } from '~/components/query-table/query-table.types';
 import { QueryTableCellService } from '~/components/query-table/services/query-table-cell.service';
+import { parseDateValue } from '~/utils/date';
 
 interface TestCellItem {
   id: number;
@@ -112,6 +113,40 @@ describe('QueryTableCellService', () => {
     expect(typeof result).toBe('string');
     expect(result).toContain('25'); // Should contain the day part of the date
   });
+
+  it.each([
+    ['31-12-2025', new Date(2025, 11, 31)],
+    ['05-06-2026', new Date(2026, 5, 5)],
+    ['1-1-2026', new Date(2026, 0, 1)],
+    ['29-02-2024', new Date(2024, 1, 29)],
+    ['01-01-0099', new Date('0099-01-01T00:00:00')],
+  ])('should display date-only value %s in day-month order', (value, date) => {
+    const dateColumn: QueryTableColumn<TestCellItem> = {
+      header: 'Date',
+      field: 'dateString',
+      type: QueryTableColumnType.DATE,
+    };
+
+    expect(service.getCellText(dateColumn, { id: 1, dateString: value })).toBe(
+      service.getCellText(dateColumn, { id: 1, dateString: date }),
+    );
+  });
+
+  it.each(['31-02-2026', '29-02-2025', '31-04-2026'])(
+    'should reject impossible date-only input %s',
+    (value) => {
+      const result = parseDateValue({ value });
+      expect(result).toBeInstanceOf(Date);
+      expect(Number.isNaN(new Date(result).getTime())).toBe(true);
+    },
+  );
+
+  it.each(['', '2026-06-05', '2026-06-05T10:30:00Z'])(
+    'should preserve non-registration date input %s',
+    (value) => {
+      expect(parseDateValue({ value })).toBe(value);
+    },
+  );
 
   it('should return correct column type when specified', () => {
     const numericColumn: QueryTableColumn<TestCellItem> = {
