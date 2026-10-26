@@ -128,6 +128,7 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
         program: 'demo-program-mobile-money.json',
         messageTemplate: demoMessageTemplates,
         registrations: 'mobile-money-999.csv',
+        debugAccessGroupHierarchy: DebugAccessGroupHierarchy.kenya,
       },
       {
         program: 'demo-program-bank-transfer.json',
@@ -143,9 +144,11 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
         program: 'demo-program-excel.json',
         messageTemplate: demoMessageTemplates,
         registrations: 'excel-999.csv',
+        debugAccessGroupHierarchy: DebugAccessGroupHierarchy.kenya,
       },
     ],
     includeDebugScopes: true,
+    includeDebugAccessGroups: true,
   },
   {
     name: SeedScript.testMultiple,
