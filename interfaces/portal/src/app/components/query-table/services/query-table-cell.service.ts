@@ -8,6 +8,7 @@ import {
   QueryTableColumn,
   QueryTableColumnType,
 } from '~/components/query-table/query-table.types';
+import { parseDateValue } from '~/utils/date';
 import { Locale } from '~/utils/locale';
 
 export class QueryTableCellService<TData> {
@@ -76,7 +77,10 @@ export class QueryTableCellService<TData> {
           `Expected field ${column.field} to be a Date or string, but got ${typeof text}`,
         );
       }
-      return new DatePipe(this.locale).transform(new Date(text), 'short');
+      return new DatePipe(this.locale).transform(
+        new Date(parseDateValue({ value: text })),
+        'short',
+      );
     }
 
     if (typeof text !== 'string' && typeof text !== 'number') {

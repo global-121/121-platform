@@ -119,12 +119,18 @@ describe('RegistrationsInputValidator', () => {
   let validator: RegistrationsInputValidator;
   let mockProgramRepository: Partial<Repository<ProgramEntity>>;
   let mockRegistrationRepository: Partial<Repository<RegistrationEntity>>;
+  let mockRegistrationPaginationService: {
+    getRegistrationViewsByReferenceIds: jest.Mock;
+  };
   let userService: UserService;
 
   beforeEach(async () => {
     jest.clearAllMocks();
     mockProgramRepository = {};
     mockRegistrationRepository = {};
+    mockRegistrationPaginationService = {
+      getRegistrationViewsByReferenceIds: jest.fn().mockResolvedValue([]),
+    };
 
     const mockRegistrationViewScopedRepository = {
       createQueryBuilder: jest.fn().mockReturnValue({
@@ -157,9 +163,7 @@ describe('RegistrationsInputValidator', () => {
         },
         {
           provide: RegistrationsPaginationService,
-          useValue: {
-            getRegistrationViewsByReferenceIds: jest.fn().mockResolvedValue([]),
-          },
+          useValue: mockRegistrationPaginationService,
         },
         {
           provide: RegistrationViewScopedRepository,
@@ -175,6 +179,63 @@ describe('RegistrationsInputValidator', () => {
     userService = module.get<UserService>(UserService);
     mockRegistrationRepository.findOne = jest.fn().mockResolvedValue(null);
     mockProgramRepository.findOneOrFail = jest.fn().mockResolvedValue(program);
+  });
+
+  it.each([
+    ['01-01-2026', true],
+    ['1-1-2026', true],
+    ['31-12-2025', true],
+    ['29-02-2024', true],
+    ['01-01-1910', true],
+    ['01-01-2100', true],
+    ['29-02-2025', false],
+    ['29-02-2100', false],
+    ['31-02-2026', false],
+    ['31-04-2026', false],
+    ['00-01-2026', false],
+    ['01-13-2026', false],
+    ['2026-01-01', false],
+    ['2025-12-31T23:00:00.000Z', false],
+    ['01-01-26', false],
+    [2026, false],
+  ])('should validate date %s with validity %s', async (value, isValid) => {
+    mockRegistrationPaginationService.getRegistrationViewsByReferenceIds.mockResolvedValue(
+      [{ referenceId: '00dc9451-1273-484c-b2e8-ae21b51a96ab' }],
+    );
+    mockProgramRepository.findOneOrFail = jest.fn().mockResolvedValue({
+      ...program,
+      programRegistrationAttributes: [
+        ...dynamicAttributes,
+        {
+          name: 'sampleQuarter',
+          type: RegistrationAttributeTypes.date,
+          isRequired: false,
+        },
+      ],
+    });
+
+    const { errors, validRegistrations } =
+      await validator.validateAndCleanInput({
+        registrationInputArray: [
+          {
+            referenceId: '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+            sampleQuarter: value,
+          },
+        ],
+        programId,
+        userId,
+        typeOfInput: RegistrationValidationInputType.update,
+        validationConfig: { validateExistingReferenceId: false },
+      });
+
+    expect(errors).toHaveLength(isValid ? 0 : 1);
+    expect(errors.map((error) => error.column)).toEqual(
+      isValid ? [] : ['sampleQuarter'],
+    );
+    expect(validRegistrations).toHaveLength(isValid ? 1 : 0);
+    expect(validRegistrations[0]?.data.sampleQuarter).toBe(
+      isValid ? value : undefined,
+    );
   });
 
   it('should validate and clean registrations input without errors', async () => {

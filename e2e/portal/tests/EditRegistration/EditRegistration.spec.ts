@@ -1,4 +1,8 @@
+import { expect } from '@playwright/test';
+
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { postProgramRegistrationAttribute } from '@121-service/test/helpers/program.helper';
 import { getRegistrationIdByReferenceId } from '@121-service/test/helpers/registration.helper';
 import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
@@ -22,6 +26,19 @@ test.describe('Edit all the fields in registration Personal Information', () => 
       registrations: [registrationPV5],
       programId: programIdPV,
     });
+    const accessToken = await getAccessToken();
+    const response = await postProgramRegistrationAttribute(
+      {
+        name: 'sampleQuarter',
+        label: { en: 'Sample quarter' },
+        type: RegistrationAttributeTypes.date,
+        isRequired: false,
+        editableInPortal: true,
+      },
+      programIdPV,
+      accessToken,
+    );
+    expect(response.status).toBe(201);
   });
 
   test.beforeEach(async ({ login, registrationPersonalInformationPage }) => {
@@ -91,6 +108,31 @@ test.describe('Edit all the fields in registration Personal Information', () => 
     await registrationPersonalInformationPage.validateRegistrationTitle(
       textInputs.name.textInputValue,
     );
+  });
+
+  test('Edit: Date persists after reload', async ({
+    page,
+    registrationPersonalInformationPage,
+  }) => {
+    const dateInput = page
+      .getByTestId('edit-personal-information-sampleQuarter')
+      .getByRole('combobox');
+
+    await dateInput.pressSequentially('05-06-2026');
+    await dateInput.press('Tab');
+    await registrationPersonalInformationPage.saveChanges();
+    await registrationPersonalInformationPage.validateToastMessageAndClose(
+      'Personal information edited successfully.',
+    );
+
+    await page.reload();
+    await expect(
+      page
+        .locator('[data-testid-category="data-list-item"]')
+        .filter({ hasText: 'Sample quarter' }),
+    ).toContainText('5 June 2026');
+    await registrationPersonalInformationPage.clickEditInformationButton();
+    await expect(dateInput).toHaveValue('05-06-2026');
   });
 
   test('Edit: Number Input fields', async ({
