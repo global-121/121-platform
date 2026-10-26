@@ -5,10 +5,12 @@ import { env } from '@121-service/src/env';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FSP_QUESTION_NAME } from '@121-service/src/kobo/consts/fsp-question-name.const';
+import { KoboSurveyItemType } from '@121-service/src/kobo/enum/kobo-survey-item-type';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboValidationService } from '@121-service/src/kobo/services/kobo.validation.service';
 import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { AccessGroupLevelRepository } from '@121-service/src/programs/access-group-levels/access-group-level.repository';
 import { AccessGroupLevelsService } from '@121-service/src/programs/access-group-levels/access-group-levels.service';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
@@ -17,6 +19,7 @@ import {
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { RegistrationAttributeDataRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-attribute-data.repository';
 
 jest.mock('@121-service/src/env', () => ({
   env: {
@@ -802,48 +805,61 @@ describe('KoboValidationService', () => {
       ).resolves.not.toThrow();
     });
 
-    it('should throw when an access-group-locked attribute is no longer a select_one question', async () => {
-      // Arrange
-      const formDefinitionWithChangedType: KoboFormDefinition = {
-        ...baseFormDefinition,
-        survey: [
-          ...baseSurveyItems,
-          {
-            name: 'region',
-            type: 'text',
-            label: ['Region'],
-            choices: [],
-          },
-        ],
-      };
-      accessGroupLevelsService.isAccessGroupAttributeTypeViolated.mockReturnValue(
-        true,
-      );
+    const nonSelectOneSurveyItemTypes = Object.values(
+      KoboSurveyItemType,
+    ).filter((type) => type !== KoboSurveyItemType.select_one);
 
-      // Act
-      let error: HttpException | any;
-      try {
-        await service.validateKoboFormDefinition({
-          formDefinition: formDefinitionWithChangedType,
-          programId,
-        });
-      } catch (e) {
-        error = e;
-      }
+    it.each(nonSelectOneSurveyItemTypes)(
+      'should throw when an access-group-locked attribute is changed to a %s question',
+      async (surveyItemType) => {
+        // Arrange
+        const formDefinitionWithChangedType: KoboFormDefinition = {
+          ...baseFormDefinition,
+          survey: [
+            ...baseSurveyItems,
+            {
+              name: 'region',
+              type: surveyItemType,
+              label: ['Region'],
+              choices: [],
+              calculation: '${member-count} * 2',
+            },
+          ],
+        };
 
-      // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
-      expect(error.response.errors).toMatchInlineSnapshot(`
-         [
-           {
-             "attributeName": "region",
-             "error": "Attribute 'region' must stay a select_one question because it's used for access group configuration",
-             "solution": "Keep 'region' as a select_one question in the Kobo form, or remove it from the program's access group configuration first",
-             "type": "accessGroupAttributeLocked",
-           },
-         ]
-        `);
-    });
+        // Uses the real implementation so the Kobo-to-121 type mapping is exercised
+        const realAccessGroupLevelsService = new AccessGroupLevelsService(
+          {} as AccessGroupLevelRepository,
+          {} as RegistrationAttributeDataRepository,
+        );
+        accessGroupLevelsService.isAccessGroupAttributeTypeViolated.mockImplementation(
+          (args) =>
+            realAccessGroupLevelsService.isAccessGroupAttributeTypeViolated(
+              args,
+            ),
+        );
+
+        // Act
+        let error: HttpException | any;
+        try {
+          await service.validateKoboFormDefinition({
+            formDefinition: formDefinitionWithChangedType,
+            programId,
+          });
+        } catch (e) {
+          error = e;
+        }
+
+        // Assert
+        expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+        expect(error.response.errors).toEqual([
+          expect.objectContaining({
+            type: 'accessGroupAttributeLocked',
+            attributeName: 'region',
+          }),
+        ]);
+      },
+    );
 
     it('should pass validation when a Kobo question no longer exists for an access-group-locked attribute', async () => {
       // Arrange

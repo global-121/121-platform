@@ -858,7 +858,7 @@ export class KoboMockService {
       phoneNumber: `+316${String(optionNumber).padStart(8, '0')}`,
       adults: '5',
       children: '2',
-      calculated_question: '2.5',
+      calculated_question: String(optionNumber / 2),
       'group_or1bl43/How_are_you_today_select_one': `option_${optionNumber}`,
       photo: 'username/attachments/form-id/submission-uuid/important_photo.jpg',
       idPhoto:
