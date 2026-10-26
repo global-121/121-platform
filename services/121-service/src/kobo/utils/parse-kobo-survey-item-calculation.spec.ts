@@ -95,7 +95,9 @@ describe('inferAttributeTypeFromCalculation', () => {
       },
       {
         description:
-          'a conditional with numbers in both branches (could be numeric, but we cannot be sure)',
+          // the result here is always numeric, but detecting that requires parsing if branches,
+          // and a wrongly-text result is recoverable while wrongly-numeric loses registrations
+          'a conditional with numbers in both branches',
         calculation: 'if(${score} > 5, 1, 0)',
       },
       {
