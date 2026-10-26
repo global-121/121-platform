@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import type { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 import { environment } from '~environment';
 
@@ -8,21 +8,34 @@ import { environment } from '~environment';
   providedIn: 'root',
 })
 export class LogService {
-  private appInsights: ApplicationInsights;
-  private appInsightsInitialized: boolean;
+  // Holding the promise means events logged while the library loads are not lost
+  private appInsightsPromise?: Promise<ApplicationInsights>;
 
-  public setupApplicationInsights() {
+  public setupApplicationInsights(): void {
     if (
       !environment.applicationinsights_connection_string ||
-      this.appInsightsInitialized
+      this.appInsightsPromise
     ) {
       return;
     }
 
-    this.appInsights = new ApplicationInsights({
+    this.appInsightsPromise = this.createApplicationInsights({
+      connectionString: environment.applicationinsights_connection_string,
+    });
+  }
+
+  private async createApplicationInsights({
+    connectionString,
+  }: {
+    connectionString: string;
+  }): Promise<ApplicationInsights> {
+    const { ApplicationInsights } =
+      await import('@microsoft/applicationinsights-web');
+
+    const appInsights = new ApplicationInsights({
       config: {
         // All properties sorted alphabetically.
-        connectionString: environment.applicationinsights_connection_string,
+        connectionString,
         disableCookiesUsage: true,
         autoTrackPageVisitTime: true,
         enableAutoRouteTracking: true,
@@ -40,31 +53,29 @@ export class LogService {
       },
     });
 
-    this.appInsights.addTelemetryInitializer((envelope) => {
+    appInsights.addTelemetryInitializer((envelope) => {
       if (!envelope.tags) return;
       envelope.tags['ai.cloud.role'] = 'portal';
       envelope.tags['ai.cloud.roleInstance'] = window.location.hostname;
     });
-    this.appInsights.loadAppInsights();
-    this.appInsightsInitialized = true;
+    appInsights.loadAppInsights();
+    return appInsights;
   }
 
   public logEvent(
     name: string,
     properties?: Record<string, boolean | number | string>,
   ): void {
-    if (this.appInsightsInitialized) {
-      this.appInsights.trackEvent({ name }, properties);
-    }
+    void this.withAppInsights((appInsights) => {
+      appInsights.trackEvent({ name }, properties);
+    });
     console.info(`LOG Event: "${name}"`, properties);
   }
 
   public logException(exception: Error): void {
-    if (this.appInsightsInitialized) {
-      this.appInsights.trackException({
-        exception,
-      });
-    }
+    void this.withAppInsights((appInsights) => {
+      appInsights.trackException({ exception });
+    });
     console.error(`LOG Exception`, exception);
   }
 
@@ -72,9 +83,18 @@ export class LogService {
     message: string,
     properties?: Record<string, boolean | number | string>,
   ): void {
-    if (this.appInsightsInitialized) {
-      this.appInsights.trackTrace({ message }, properties);
-    }
+    void this.withAppInsights((appInsights) => {
+      appInsights.trackTrace({ message }, properties);
+    });
     console.error(`LOG Trace: "${message}"`, properties);
+  }
+
+  private async withAppInsights(
+    track: (appInsights: ApplicationInsights) => void,
+  ): Promise<void> {
+    if (!this.appInsightsPromise) {
+      return;
+    }
+    track(await this.appInsightsPromise);
   }
 }

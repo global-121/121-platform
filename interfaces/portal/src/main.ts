@@ -4,7 +4,6 @@ import { bootstrapApplication } from '@angular/platform-browser';
 
 import { AppComponent } from '~/app.component';
 import { getAppConfig } from '~/app.config';
-import { registerChartDefaults } from '~/utils/chart';
 import {
   changeLocale,
   getLocaleForInitialization,
@@ -12,8 +11,14 @@ import {
 } from '~/utils/locale';
 import { environment } from '~environment';
 
-const main = async () => {
+const registerChartDefaultsLazily = async () => {
+  const { registerChartDefaults } = await import('~/utils/chart');
   registerChartDefaults();
+};
+
+const main = async () => {
+  // Loaded lazily to keep chart.js out of the initial bundle; it is only needed once a chart renders
+  void registerChartDefaultsLazily();
 
   const localeInitialization = getLocaleForInitialization({
     defaultLocale: environment.defaultLocale,

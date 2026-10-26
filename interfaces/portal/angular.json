@@ -48,7 +48,7 @@
             "outputPath": "www",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": ["zone.js", "@angular/localize/init"],
+            "polyfills": ["@angular/localize/init"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "css",
             "assets": [
@@ -112,11 +112,7 @@
               ]
             },
             "unit-test": {
-              "polyfills": [
-                "zone.js",
-                "zone.js/testing",
-                "@angular/localize/init"
-              ],
+              "polyfills": ["@angular/localize/init"],
               "inlineStyleLanguage": "css",
               "assets": [
                 {
