@@ -2,6 +2,8 @@ import { HttpStatus } from '@nestjs/common';
 
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { getDebugAccessGroupLeafPaths } from '@121-service/src/scripts/const/debug-access-group.const';
+import { DebugAccessGroupHierarchy } from '@121-service/src/scripts/enum/debug-access-group-hierarchy.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { getVoucherBalance } from '@121-service/test/helpers/fsp-specific.helper';
 import {
@@ -55,6 +57,16 @@ describe('Mock registrations', () => {
     );
     expect(uniquePhoneNumbers.size).toBe(4);
     expect(uniqueWhatsappPhoneNumbers.size).toBe(4);
+
+    // Assert every registration is placed in one of the seeded access groups
+    const accessGroupLeafPaths = getDebugAccessGroupLeafPaths({
+      hierarchy: DebugAccessGroupHierarchy.netherlands,
+    });
+    for (const registration of registrationsResponse.body.data) {
+      expect(accessGroupLeafPaths).toContain(
+        `${registration.province}/${registration.municipality}`,
+      );
+    }
 
     const paymentsResponse = await getPayments(programId, accessToken);
     for (const paymentData of paymentsResponse.body) {

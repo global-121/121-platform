@@ -1,7 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, DeepPartial, Equal } from 'typeorm';
 
+import { AccessGroupLevelEntity } from '@121-service/src/programs/access-group-levels/access-group-level.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
+import {
+  findDebugAccessGroupHierarchy,
+  getAccessGroupValuesByAttributeName,
+  getDebugAccessGroupLeafPaths,
+} from '@121-service/src/scripts/const/debug-access-group.const';
+import { DebugAccessGroupHierarchy } from '@121-service/src/scripts/enum/debug-access-group-hierarchy.enum';
 import { BaseSeedFactory } from '@121-service/src/scripts/factories/base-seed-factory';
 
 @Injectable()
@@ -13,10 +20,13 @@ export class RegistrationAttributeSeedFactory extends BaseSeedFactory<Registrati
     );
   }
 
-  public async duplicateAttributeDataForRegistrations(
-    newRegistrationIds: number[],
-    programId: number,
-  ): Promise<void> {
+  public async duplicateAttributeDataForRegistrations({
+    newRegistrationIds,
+    programId,
+  }: {
+    newRegistrationIds: number[];
+    programId: number;
+  }): Promise<void> {
     console.log(
       `Creating registration attribute data for ${newRegistrationIds.length} new registrations`,
     );
@@ -48,6 +58,12 @@ export class RegistrationAttributeSeedFactory extends BaseSeedFactory<Registrati
       registrationIdMapping.set(oldRegistrationIds[i], newRegistrationIds[i]);
     }
 
+    const accessGroupValuesByRegistrationId =
+      await this.getRandomAccessGroupValuesByRegistrationId({
+        newRegistrationIds,
+        programId,
+      });
+
     // Create new attribute data entries
     const newAttributeDataEntries: DeepPartial<RegistrationAttributeDataEntity>[] =
       [];
@@ -60,7 +76,11 @@ export class RegistrationAttributeSeedFactory extends BaseSeedFactory<Registrati
           registrationId: newRegistrationId,
           programRegistrationAttributeId:
             attributeData.programRegistrationAttributeId,
-          value: attributeData.value,
+          value: this.getDuplicatedAttributeValue({
+            attributeData,
+            accessGroupValuesByAttributeId:
+              accessGroupValuesByRegistrationId.get(newRegistrationId),
+          }),
         });
       }
     }
@@ -76,5 +96,90 @@ export class RegistrationAttributeSeedFactory extends BaseSeedFactory<Registrati
       `Created ${insertedIds.length} new registration attribute data entries`,
     );
     return;
+  }
+
+  // Spreads the duplicated registrations over the debug access groups, similar to how scope is randomized
+  private async getRandomAccessGroupValuesByRegistrationId({
+    newRegistrationIds,
+    programId,
+  }: {
+    newRegistrationIds: number[];
+    programId: number;
+  }): Promise<Map<number, Map<number, string>>> {
+    const accessGroupLevels = await this.dataSource
+      .getRepository(AccessGroupLevelEntity)
+      .find({
+        where: { programId: Equal(programId) },
+        relations: { programRegistrationAttribute: true },
+        order: { level: 'ASC' },
+      });
+    const attributeIdByName = new Map(
+      accessGroupLevels.map(({ programRegistrationAttribute }) => [
+        programRegistrationAttribute.name,
+        programRegistrationAttribute.id,
+      ]),
+    );
+    const hierarchy = findDebugAccessGroupHierarchy({
+      registrationAttributeNames: [...attributeIdByName.keys()],
+    });
+    if (!hierarchy) {
+      return new Map();
+    }
+
+    const leafPaths = getDebugAccessGroupLeafPaths({ hierarchy });
+    return new Map(
+      newRegistrationIds.map((registrationId) => [
+        registrationId,
+        this.getRandomAccessGroupValuesByAttributeId({
+          hierarchy,
+          leafPaths,
+          attributeIdByName,
+        }),
+      ]),
+    );
+  }
+
+  private getRandomAccessGroupValuesByAttributeId({
+    hierarchy,
+    leafPaths,
+    attributeIdByName,
+  }: {
+    hierarchy: DebugAccessGroupHierarchy;
+    leafPaths: string[];
+    attributeIdByName: Map<string, number>;
+  }): Map<number, string> {
+    const randomLeafPath =
+      leafPaths[Math.floor(Math.random() * leafPaths.length)];
+    const valueByAttributeName = getAccessGroupValuesByAttributeName({
+      hierarchy,
+      path: randomLeafPath,
+    });
+
+    const valueByAttributeId = new Map<number, string>();
+    for (const [attributeName, value] of valueByAttributeName) {
+      const attributeId = attributeIdByName.get(attributeName);
+      if (attributeId) {
+        valueByAttributeId.set(attributeId, value);
+      }
+    }
+    return valueByAttributeId;
+  }
+
+  private getDuplicatedAttributeValue({
+    attributeData,
+    accessGroupValuesByAttributeId,
+  }: {
+    attributeData: RegistrationAttributeDataEntity;
+    accessGroupValuesByAttributeId: Map<number, string> | undefined;
+  }): string {
+    if (!accessGroupValuesByAttributeId) {
+      return attributeData.value;
+    }
+
+    return (
+      accessGroupValuesByAttributeId.get(
+        attributeData.programRegistrationAttributeId,
+      ) ?? attributeData.value
+    );
   }
 }

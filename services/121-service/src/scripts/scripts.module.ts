@@ -19,6 +19,7 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
 import { PermissionMaintenanceService } from '@121-service/src/shared/services/permission-maintenance.service';
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
+import { UserModule } from '@121-service/src/user/user.module';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
 @Module({
@@ -31,6 +32,7 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
     HttpModule,
     ProgramFspConfigurationsModule,
     ProgramApprovalThresholdsModule,
+    UserModule,
   ],
   providers: [
     ScriptsService,

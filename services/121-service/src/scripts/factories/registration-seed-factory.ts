@@ -89,10 +89,10 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
       .orUpdate(['lastRegistrationProgramId'], ['programId'])
       .execute();
 
-    await this.attributeDataFactory.duplicateAttributeDataForRegistrations(
+    await this.attributeDataFactory.duplicateAttributeDataForRegistrations({
       newRegistrationIds,
       programId,
-    );
+    });
     if (includeRegistrationEvents) {
       await this.eventDataFactory.duplicateRegistrationEvents(
         newRegistrationIds,
