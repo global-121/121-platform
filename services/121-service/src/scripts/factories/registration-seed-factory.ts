@@ -11,15 +11,20 @@ import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registra
 import { BaseSeedFactory } from '@121-service/src/scripts/factories/base-seed-factory';
 import { RegistrationAttributeSeedFactory } from '@121-service/src/scripts/factories/registration-attribute-data-seed-factory';
 import { RegistrationEventSeedFactory } from '@121-service/src/scripts/factories/registration-event-seed-factory';
+import { SeedAccessGroupService } from '@121-service/src/scripts/services/seed-access-group.service';
 
 @Injectable()
 export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity> {
   private readonly attributeDataFactory: RegistrationAttributeSeedFactory;
   private readonly eventDataFactory: RegistrationEventSeedFactory;
-  constructor(dataSource: DataSource) {
+  constructor(
+    dataSource: DataSource,
+    seedAccessGroupService: SeedAccessGroupService,
+  ) {
     super(dataSource, dataSource.getRepository(RegistrationEntity));
     this.attributeDataFactory = new RegistrationAttributeSeedFactory(
       dataSource,
+      seedAccessGroupService,
     );
     this.eventDataFactory = new RegistrationEventSeedFactory(dataSource);
   }
@@ -89,10 +94,10 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
       .orUpdate(['lastRegistrationProgramId'], ['programId'])
       .execute();
 
-    await this.attributeDataFactory.duplicateAttributeDataForRegistrations(
+    await this.attributeDataFactory.duplicateAttributeDataForRegistrations({
       newRegistrationIds,
       programId,
-    );
+    });
     if (includeRegistrationEvents) {
       await this.eventDataFactory.duplicateRegistrationEvents(
         newRegistrationIds,

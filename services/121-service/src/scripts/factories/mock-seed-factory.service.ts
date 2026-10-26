@@ -19,6 +19,7 @@ import { MessageSeedFactory } from '@121-service/src/scripts/factories/message-s
 import { RegistrationEventSeedFactory } from '@121-service/src/scripts/factories/registration-event-seed-factory';
 import { RegistrationSeedFactory } from '@121-service/src/scripts/factories/registration-seed-factory';
 import { TransactionSeedFactory } from '@121-service/src/scripts/factories/transaction-seed-factory';
+import { SeedAccessGroupService } from '@121-service/src/scripts/services/seed-access-group.service';
 import { formatDateIntl } from '@121-service/src/utils/formatDate';
 
 const readSqlFile = (filepath: string): string => {
@@ -37,8 +38,14 @@ export class MockSeedFactoryService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
   private readonly registrationEventFactory: RegistrationEventSeedFactory;
 
-  constructor(private readonly dataSource: DataSource) {
-    this.registrationFactory = new RegistrationSeedFactory(dataSource);
+  constructor(
+    private readonly dataSource: DataSource,
+    private readonly seedAccessGroupService: SeedAccessGroupService,
+  ) {
+    this.registrationFactory = new RegistrationSeedFactory(
+      dataSource,
+      seedAccessGroupService,
+    );
     this.messageFactory = new MessageSeedFactory(dataSource);
     this.transactionFactory = new TransactionSeedFactory(dataSource);
     this.programRepository = dataSource.getRepository(ProgramEntity);
