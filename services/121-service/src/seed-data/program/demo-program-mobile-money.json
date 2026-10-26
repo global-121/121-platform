@@ -99,18 +99,195 @@
       "placeholder": ""
     },
     {
+      "name": "county",
+      "label": {
+        "en": "County",
+        "es": "Condado",
+        "fr": "Comté"
+      },
+      "type": "dropdown",
+      "isRequired": false,
+      "options": [
+        {
+          "option": "kisumu",
+          "label": {
+            "en": "Kisumu"
+          }
+        },
+        {
+          "option": "turkana",
+          "label": {
+            "en": "Turkana"
+          }
+        }
+      ],
+      "scoring": {},
+      "pattern": "",
+      "showInPeopleAffectedTable": true,
+      "editableInPortal": true,
+      "export": ["payment"],
+      "duplicateCheck": false,
+      "placeholder": ""
+    },
+    {
+      "name": "subCounty",
+      "label": {
+        "en": "Sub-county",
+        "es": "Subcondado",
+        "fr": "Sous-comté"
+      },
+      "type": "dropdown",
+      "isRequired": false,
+      "options": [
+        {
+          "option": "kisumu-central",
+          "label": {
+            "en": "Kisumu Central"
+          }
+        },
+        {
+          "option": "kisumu-east",
+          "label": {
+            "en": "Kisumu East"
+          }
+        },
+        {
+          "option": "kisumu-west",
+          "label": {
+            "en": "Kisumu West"
+          }
+        },
+        {
+          "option": "turkana-central",
+          "label": {
+            "en": "Turkana Central"
+          }
+        },
+        {
+          "option": "turkana-north",
+          "label": {
+            "en": "Turkana North"
+          }
+        },
+        {
+          "option": "turkana-south",
+          "label": {
+            "en": "Turkana South"
+          }
+        },
+        {
+          "option": "turkana-west",
+          "label": {
+            "en": "Turkana West"
+          }
+        }
+      ],
+      "scoring": {},
+      "pattern": "",
+      "showInPeopleAffectedTable": true,
+      "editableInPortal": true,
+      "export": ["payment"],
+      "duplicateCheck": false,
+      "placeholder": ""
+    },
+    {
       "name": "village",
       "label": {
         "en": "Village",
         "es": "Pueblo",
         "fr": "Village"
       },
-      "type": "text",
+      "type": "dropdown",
       "isRequired": false,
-      "options": [],
+      "options": [
+        {
+          "option": "manyatta",
+          "label": {
+            "en": "Manyatta"
+          }
+        },
+        {
+          "option": "milimani",
+          "label": {
+            "en": "Milimani"
+          }
+        },
+        {
+          "option": "nyamasaria",
+          "label": {
+            "en": "Nyamasaria"
+          }
+        },
+        {
+          "option": "kajulu",
+          "label": {
+            "en": "Kajulu"
+          }
+        },
+        {
+          "option": "kondele",
+          "label": {
+            "en": "Kondele"
+          }
+        },
+        {
+          "option": "nyalenda",
+          "label": {
+            "en": "Nyalenda"
+          }
+        },
+        {
+          "option": "kisian",
+          "label": {
+            "en": "Kisian"
+          }
+        },
+        {
+          "option": "obunga",
+          "label": {
+            "en": "Obunga"
+          }
+        },
+        {
+          "option": "otonglo",
+          "label": {
+            "en": "Otonglo"
+          }
+        },
+        {
+          "option": "lodwar",
+          "label": {
+            "en": "Lodwar"
+          }
+        },
+        {
+          "option": "nakwamekwi",
+          "label": {
+            "en": "Nakwamekwi"
+          }
+        },
+        {
+          "option": "nariemet",
+          "label": {
+            "en": "Nariemet"
+          }
+        },
+        {
+          "option": "lokichar",
+          "label": {
+            "en": "Lokichar"
+          }
+        },
+        {
+          "option": "kakuma",
+          "label": {
+            "en": "Kakuma"
+          }
+        }
+      ],
       "scoring": {},
       "pattern": "",
-      "showInPeopleAffectedTable": false,
+      "showInPeopleAffectedTable": true,
       "editableInPortal": true,
       "export": ["payment"],
       "duplicateCheck": false,
