@@ -3,20 +3,27 @@ import { DataSource, DeepPartial, Equal } from 'typeorm';
 
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { BaseSeedFactory } from '@121-service/src/scripts/factories/base-seed-factory';
+import { SeedAccessGroupService } from '@121-service/src/scripts/services/seed-access-group.service';
 
 @Injectable()
 export class RegistrationAttributeSeedFactory extends BaseSeedFactory<RegistrationAttributeDataEntity> {
-  constructor(dataSource: DataSource) {
+  constructor(
+    dataSource: DataSource,
+    private readonly seedAccessGroupService: SeedAccessGroupService,
+  ) {
     super(
       dataSource,
       dataSource.getRepository(RegistrationAttributeDataEntity),
     );
   }
 
-  public async duplicateAttributeDataForRegistrations(
-    newRegistrationIds: number[],
-    programId: number,
-  ): Promise<void> {
+  public async duplicateAttributeDataForRegistrations({
+    newRegistrationIds,
+    programId,
+  }: {
+    newRegistrationIds: number[];
+    programId: number;
+  }): Promise<void> {
     console.log(
       `Creating registration attribute data for ${newRegistrationIds.length} new registrations`,
     );
@@ -48,6 +55,12 @@ export class RegistrationAttributeSeedFactory extends BaseSeedFactory<Registrati
       registrationIdMapping.set(oldRegistrationIds[i], newRegistrationIds[i]);
     }
 
+    const accessGroupValuesByRegistrationId =
+      await this.seedAccessGroupService.getRandomAccessGroupValuesByRegistrationId({
+        newRegistrationIds,
+        programId,
+      });
+
     // Create new attribute data entries
     const newAttributeDataEntries: DeepPartial<RegistrationAttributeDataEntity>[] =
       [];
@@ -60,7 +73,11 @@ export class RegistrationAttributeSeedFactory extends BaseSeedFactory<Registrati
           registrationId: newRegistrationId,
           programRegistrationAttributeId:
             attributeData.programRegistrationAttributeId,
-          value: attributeData.value,
+          value: this.getDuplicatedAttributeValue({
+            attributeData,
+            accessGroupValuesByAttributeId:
+              accessGroupValuesByRegistrationId.get(newRegistrationId),
+          }),
         });
       }
     }
@@ -76,5 +93,23 @@ export class RegistrationAttributeSeedFactory extends BaseSeedFactory<Registrati
       `Created ${insertedIds.length} new registration attribute data entries`,
     );
     return;
+  }
+
+  private getDuplicatedAttributeValue({
+    attributeData,
+    accessGroupValuesByAttributeId,
+  }: {
+    attributeData: RegistrationAttributeDataEntity;
+    accessGroupValuesByAttributeId: Map<number, string> | undefined;
+  }): string {
+    if (!accessGroupValuesByAttributeId) {
+      return attributeData.value;
+    }
+
+    return (
+      accessGroupValuesByAttributeId.get(
+        attributeData.programRegistrationAttributeId,
+      ) ?? attributeData.value
+    );
   }
 }
