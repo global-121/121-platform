@@ -858,7 +858,6 @@ export class RegistrationsInputValidator {
   }): ValidateRegistrationErrorObject | undefined {
     let isValid: boolean | null = false;
     let message = '';
-
     if (type === RegistrationAttributeTypes.date) {
       isValid =
         typeof value === 'string' &&
