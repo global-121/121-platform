@@ -1,4 +1,4 @@
-import { equal, deepEqual } from 'node:assert/strict';
+import { deepEqual, equal } from 'node:assert/strict';
 import { getDirectiveTokens, hasExactToken } from 'scripts/lib/csp.utils.mjs';
 import { describe, it } from 'vitest';
 
