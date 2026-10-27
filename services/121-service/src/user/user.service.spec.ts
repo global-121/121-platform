@@ -158,6 +158,18 @@ describe('UserService', () => {
       expect(userEmailsService.sendLoginOtp).not.toHaveBeenCalled();
     });
 
+    it('does not email an OTP while the previous one is within the cooldown', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
+      jest.spyOn(userOtpService, 'createOtp').mockResolvedValue(undefined);
+
+      // Act
+      await service.requestLoginOtp({ username: 'user@example.org' });
+
+      // Assert
+      expect(userEmailsService.sendLoginOtp).not.toHaveBeenCalled();
+    });
+
     it('does not create or email an OTP for a user who signs in with Entra', async () => {
       // Arrange
       jest.spyOn(userRepository, 'findOne').mockResolvedValue({

@@ -103,11 +103,17 @@ export class UserService {
       return;
     }
 
-    const { otp } = await this.userOtpService.createOtp({ userId: user.id });
+    const createOtpResult = await this.userOtpService.createOtp({
+      userId: user.id,
+    });
+    if (!createOtpResult) {
+      return;
+    }
+
     await this.sendLoginOtpEmail({
       email,
       recipientName: user.displayName,
-      otp,
+      otp: createOtpResult.otp,
     });
   }
 
