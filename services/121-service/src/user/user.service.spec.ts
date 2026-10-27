@@ -5,9 +5,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { LOGIN_OTP_REQUESTED_EVENT_NAME } from '@121-service/src/user/const/login-otp.const';
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
@@ -15,6 +18,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
+import { UserOtpService } from '@121-service/src/user/user-otp/user-otp.service';
 
 describe('UserService', () => {
   let service: UserService;
@@ -23,6 +27,8 @@ describe('UserService', () => {
   let userRoleRepository: Repository<UserRoleEntity>;
   let assignmentRepository: ProgramAidworkerAssignmentRepository;
   let userEmailsService: UserEmailsService;
+  let userOtpService: UserOtpService;
+  let azureLogService: AzureLogService;
 
   const mockRequest = {
     headers: {},
@@ -66,7 +72,16 @@ describe('UserService', () => {
           useValue: {
             send: jest.fn(),
             sendPasswordReset: jest.fn(),
+            sendLoginOtp: jest.fn(),
           },
+        },
+        {
+          provide: UserOtpService,
+          useValue: { createOtp: jest.fn() },
+        },
+        {
+          provide: AzureLogService,
+          useValue: { trackEvent: jest.fn(), logError: jest.fn() },
         },
       ],
     }).compile();
@@ -85,6 +100,110 @@ describe('UserService', () => {
       ProgramAidworkerAssignmentRepository,
     );
     userEmailsService = module.get<UserEmailsService>(UserEmailsService);
+    userOtpService = module.get<UserOtpService>(UserOtpService);
+    azureLogService = module.get<AzureLogService>(AzureLogService);
+  });
+
+  describe('requestLoginOtp', () => {
+    const otp = '4A1RQ9';
+    const existingUser = {
+      id: 1,
+      username: 'user@example.org',
+      displayName: 'Jane',
+    } as UserEntity;
+
+    beforeEach(() => {
+      jest
+        .spyOn(userOtpService, 'createOtp')
+        .mockResolvedValue({ otp, expiresAt: new Date() });
+    });
+
+    it('emails a new OTP to an existing user', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
+
+      // Act
+      await service.requestLoginOtp({ username: 'User@Example.org' });
+
+      // Assert
+      expect(userEmailsService.sendLoginOtp).toHaveBeenCalledWith({
+        email: 'user@example.org',
+        recipientName: 'Jane',
+        otp,
+        expirationMinutes: 10,
+      });
+    });
+
+    it('logs the request with the email and that the user exists', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
+
+      // Act
+      await service.requestLoginOtp({ username: 'user@example.org' });
+
+      // Assert
+      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
+        name: LOGIN_OTP_REQUESTED_EVENT_NAME,
+        properties: { email: 'user@example.org', userExists: 'true' },
+      });
+    });
+
+    it('does not create or email an OTP for an unknown user, without throwing', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
+
+      // Act
+      await service.requestLoginOtp({ username: 'unknown@example.org' });
+
+      // Assert
+      expect(userOtpService.createOtp).not.toHaveBeenCalled();
+      expect(userEmailsService.sendLoginOtp).not.toHaveBeenCalled();
+    });
+
+    it('logs the request with the email and that the user does not exist', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
+
+      // Act
+      await service.requestLoginOtp({ username: 'unknown@example.org' });
+
+      // Assert
+      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
+        name: LOGIN_OTP_REQUESTED_EVENT_NAME,
+        properties: { email: 'unknown@example.org', userExists: 'false' },
+      });
+    });
+
+    it('logs an email delivery failure instead of throwing', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
+      jest
+        .spyOn(userEmailsService, 'sendLoginOtp')
+        .mockRejectedValue(new EmailDeliveryError('Failed to send email'));
+
+      // Act
+      await service.requestLoginOtp({ username: 'user@example.org' });
+
+      // Assert
+      expect(azureLogService.logError).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'Failed to send login OTP email' }),
+        false,
+      );
+    });
+
+    it('rethrows errors other than email delivery failures', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
+      const unexpectedError = new Error('Unexpected');
+      jest
+        .spyOn(userEmailsService, 'sendLoginOtp')
+        .mockRejectedValue(unexpectedError);
+
+      // Act & Assert
+      await expect(
+        service.requestLoginOtp({ username: 'user@example.org' }),
+      ).rejects.toThrow(unexpectedError);
+    });
   });
 
   describe('canActivate', () => {

@@ -9,6 +9,7 @@ import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/emails.const';
+import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
 import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
@@ -18,6 +19,8 @@ import {
   InterfaceNames,
 } from '@121-service/src/shared/enum/interface-names.enum';
 import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { LOGIN_OTP_REQUESTED_EVENT_NAME } from '@121-service/src/user/const/login-otp.const';
 import {
   CreateProgramAssignmentDto,
   UpdateProgramAssignmentDto,
@@ -47,6 +50,8 @@ import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
+import { OTP_EXPIRATION_MINUTES } from '@121-service/src/user/user-otp/user-otp.const';
+import { UserOtpService } from '@121-service/src/user/user-otp/user-otp.service';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 const tokenExpirationHours = 33; // We picked a 33 hour window because it's 1 day + 8 hour working day + 1 hour buffer, to minimize the chance of a token expiring during a working day.
 const MS_PER_HOUR = 3_600_000;
@@ -65,6 +70,8 @@ export class UserService {
     @Inject(REQUEST) private readonly request: Request,
     private readonly userEmailsService: UserEmailsService,
     private readonly assignmentRepository: ProgramAidworkerAssignmentRepository,
+    private readonly userOtpService: UserOtpService,
+    private readonly azureLogService: AzureLogService,
   ) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
@@ -83,6 +90,60 @@ export class UserService {
     return { userRo: user, cookieSettings, token };
   }
 
+  public async requestLoginOtp({
+    username,
+  }: {
+    username: string;
+  }): Promise<void> {
+    const email = username.toLowerCase();
+    const user = await this.userRepository.findOne({
+      where: { username: Equal(email) },
+    });
+
+    this.azureLogService.trackEvent({
+      name: LOGIN_OTP_REQUESTED_EVENT_NAME,
+      properties: { email, userExists: String(!!user) },
+    });
+
+    if (!user) {
+      return;
+    }
+
+    const { otp } = await this.userOtpService.createOtp({ userId: user.id });
+    await this.sendLoginOtpEmail({
+      email,
+      recipientName: user.displayName,
+      otp,
+    });
+  }
+
+  private async sendLoginOtpEmail({
+    email,
+    recipientName,
+    otp,
+  }: {
+    email: string;
+    recipientName: string;
+    otp: string;
+  }): Promise<void> {
+    try {
+      await this.userEmailsService.sendLoginOtp({
+        email,
+        recipientName,
+        otp,
+        expirationMinutes: OTP_EXPIRATION_MINUTES,
+      });
+    } catch (error) {
+      if (!(error instanceof EmailDeliveryError)) {
+        throw error;
+      }
+      this.azureLogService.logError(
+        new Error('Failed to send login OTP email', { cause: error }),
+        false,
+      );
+    }
+  }
+
   public async canActivate(
     permissions: PermissionEnum[],
     programId: string | number,
@@ -91,7 +152,11 @@ export class UserService {
     // if programId is not a number then it is not a programId so a user does not have access
     const numericProgramId = Number(programId);
 
-    if (Number.isNaN(numericProgramId) || !permissions || permissions.length === 0) {
+    if (
+      Number.isNaN(numericProgramId) ||
+      !permissions ||
+      permissions.length === 0
+    ) {
       return false;
     }
 

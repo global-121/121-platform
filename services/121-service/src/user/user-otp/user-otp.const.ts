@@ -4,4 +4,6 @@ export const OTP_LENGTH = 6;
 
 const MS_PER_MINUTE = 60_000;
 
-export const OTP_EXPIRATION_MS = 10 * MS_PER_MINUTE;
+export const OTP_EXPIRATION_MINUTES = 10;
+
+export const OTP_EXPIRATION_MS = OTP_EXPIRATION_MINUTES * MS_PER_MINUTE;

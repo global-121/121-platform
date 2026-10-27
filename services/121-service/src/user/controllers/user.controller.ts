@@ -30,6 +30,7 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
+import { CreateLoginOtpDto } from '@121-service/src/user/dto/create-login-otp.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
 import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
@@ -116,6 +117,29 @@ export class UserController {
       isAdmin: loginResponse.userRo.user.isAdmin,
       isEntraUser: loginResponse.userRo.user.isEntraUser,
       isOrganizationAdmin: loginResponse.userRo.user.isOrganizationAdmin,
+    });
+  }
+
+  @NoUserAuthenticationEndpoint(
+    'OTP request endpoint must be publicly accessible, because it is used before logging in.',
+  )
+  @Throttle(THROTTLING_LIMIT_HIGH)
+  @ApiOperation({
+    summary:
+      'Request a login OTP by email. The response is the same whether or not the user exists.',
+  })
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description:
+      'Request accepted. If the user exists, an OTP is sent to their email address.',
+  })
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Post('users/login/otp')
+  public async requestLoginOtp(
+    @Body() createLoginOtpDto: CreateLoginOtpDto,
+  ): Promise<void> {
+    await this.userService.requestLoginOtp({
+      username: createLoginOtpDto.username,
     });
   }
 
