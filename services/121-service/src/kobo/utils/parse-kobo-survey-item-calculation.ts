@@ -41,9 +41,12 @@ const QUOTE_CHARACTERS = new Set(['"', "'"]);
 
 const DECIMAL_NUMBER_PATTERN = /^-?(\d+\.?\d*|\.\d+)$/;
 
+const QUOTED_LITERAL_PATTERN = /["']/;
+
 const BOOLEAN_OPERATOR_PATTERN = /[<>=]|\b(and|or)\b/i;
 
-const ARITHMETIC_OPERATOR_PATTERN = /[+*]|\s-\s|\b(div|mod)\b/i;
+// A "*" directly after "/", "@" or "::" is a wildcard node test (e.g. /data/*), not a multiplication
+const ARITHMETIC_OPERATOR_PATTERN = /(?<![/@:]\s*)\*|\+|\s-\s|\b(div|mod)\b/i;
 
 const toFunctionCallPattern = ({
   functionNames,
@@ -72,44 +75,38 @@ export const inferAttributeTypeFromCalculation = ({
     return RegistrationAttributeTypes.text;
   }
 
-  const trimmed = calculation.trim();
-  if (!trimmed) {
+  const formula = removeEnclosingParentheses({ formula: calculation.trim() });
+  if (!formula) {
     return RegistrationAttributeTypes.text;
   }
 
   // 1. A pure decimal number constant (e.g. "42", "3.14")
-  if (DECIMAL_NUMBER_PATTERN.test(trimmed)) {
+  if (DECIMAL_NUMBER_PATTERN.test(formula)) {
     return RegistrationAttributeTypes.numeric;
-  }
-
-  // 2. If it contains explicit string-producing functions, it's text
-  if (STRING_FUNCTION_PATTERN.test(trimmed)) {
-    return RegistrationAttributeTypes.text;
-  }
-
-  // 3. Check for quoted string literals (e.g., 'hello' or "world")
-  // In ODK, string literals inside calculations (e.g. in if() statements or default fallbacks)
-  // mean the expression returns text, unless they are purely inside an equality check condition.
-  // To be safe: if there are quotes, check whether they represent returned values rather than comparisons.
-  const containsQuotes = /["']/.test(trimmed);
-  if (containsQuotes) {
-    // If the calculation uses if(...) with string outcomes like if(${a} = 1, 'high', 'low'), it's text.
-    // If quotes are present, we conservatively treat it as text unless explicitly confirmed otherwise.
-    return RegistrationAttributeTypes.text;
   }
 
   // The result type is decided by the outermost operator or function.
   // Whatever is nested in brackets, references or quotes does not count.
-  const topLevel = keepOnlyTopLevel({ formula: trimmed });
+  const topLevel = keepOnlyTopLevel({ formula });
 
-  // 4. A comparison or logical operator makes the result true/false, whatever is calculated inside
+  // 2. A comparison or logical operator makes the result true/false, whatever is calculated inside
   if (BOOLEAN_OPERATOR_PATTERN.test(topLevel)) {
     return RegistrationAttributeTypes.text;
   }
 
-  // 5. A function that guarantees a numeric return (e.g. round(...), count-selected(...))
+  // 3. A function that guarantees a numeric return (e.g. round(...), count-selected(...))
   if (NUMERIC_FUNCTION_PATTERN.test(topLevel)) {
     return RegistrationAttributeTypes.numeric;
+  }
+
+  // 4. A function that guarantees a text return (e.g. concat(...))
+  if (STRING_FUNCTION_PATTERN.test(topLevel)) {
+    return RegistrationAttributeTypes.text;
+  }
+
+  // 5. Quoted string literals (e.g. if(${a} = 1, 'high', 'low')) are conservatively treated as text
+  if (QUOTED_LITERAL_PATTERN.test(formula)) {
+    return RegistrationAttributeTypes.text;
   }
 
   // 6. Arithmetic operators always return a number in XPath
@@ -119,6 +116,61 @@ export const inferAttributeTypeFromCalculation = ({
 
   // Default fallback to text if ambiguous
   return RegistrationAttributeTypes.text;
+};
+
+const removeEnclosingParentheses = ({
+  formula,
+}: {
+  formula: string;
+}): string => {
+  let unwrapped = formula;
+
+  while (encloseWholeFormula({ formula: unwrapped })) {
+    unwrapped = unwrapped.slice(1, -1).trim();
+  }
+
+  return unwrapped;
+};
+
+const encloseWholeFormula = ({ formula }: { formula: string }): boolean => {
+  if (!formula.startsWith('(') || !formula.endsWith(')')) {
+    return false;
+  }
+
+  let bracketDepth = 0;
+  let quoteCharacter: string | undefined;
+  let isInsideReference = false;
+
+  for (const [index, character] of [...formula].entries()) {
+    if (quoteCharacter) {
+      if (character === quoteCharacter) {
+        quoteCharacter = undefined;
+      }
+      continue;
+    }
+
+    if (isInsideReference) {
+      if (character === '}') {
+        isInsideReference = false;
+      }
+      continue;
+    }
+
+    if (QUOTE_CHARACTERS.has(character)) {
+      quoteCharacter = character;
+    } else if (character === '$') {
+      isInsideReference = true;
+    } else if (character === '(') {
+      bracketDepth += 1;
+    } else if (character === ')') {
+      bracketDepth -= 1;
+      if (bracketDepth === 0) {
+        return index === formula.length - 1;
+      }
+    }
+  }
+
+  return false;
 };
 
 const keepOnlyTopLevel = ({ formula }: { formula: string }): string => {

@@ -51,6 +51,46 @@ describe('inferAttributeTypeFromCalculation', () => {
         description: 'arithmetic on a question name that contains div',
         calculation: '${household-div} + 1',
       },
+      {
+        description: 'a numeric wrapper around a nested text function',
+        calculation: 'number(substr(${identifier}, 0, 3))',
+      },
+      {
+        description: 'a numeric wrapper around a quoted number',
+        calculation: "number('42')",
+      },
+      {
+        description: 'string-length around a nested concat',
+        calculation: 'string-length(concat(${first}, ${last}))',
+      },
+      {
+        description: 'a parenthesized addition',
+        calculation: '(${adults} + ${children})',
+      },
+      {
+        description: 'a doubly parenthesized addition',
+        calculation: '((${adults} + ${children}))',
+      },
+      {
+        description: 'a parenthesized constant',
+        calculation: '(42)',
+      },
+      {
+        description: 'a parenthesized numeric function',
+        calculation: '(round(${score}))',
+      },
+      {
+        description: 'two separate parenthesized groups multiplied',
+        calculation: '(${a} + 1) * (${b} + 2)',
+      },
+      {
+        description: 'a multiplication of two references',
+        calculation: '${a} * ${b}',
+      },
+      {
+        description: 'count of a wildcard path',
+        calculation: 'count(/data/*)',
+      },
     ])('should return numeric for $description', ({ calculation }) => {
       const result = inferAttributeTypeFromCalculation({ calculation });
 
@@ -79,6 +119,38 @@ describe('inferAttributeTypeFromCalculation', () => {
       {
         description: 'a quoted string that contains an operator',
         calculation: "'1 + 2'",
+      },
+      {
+        description: 'a text function with a nested numeric function',
+        calculation: "concat(string-length(${a}), 'x')",
+      },
+      {
+        description: 'a parenthesized comparison',
+        calculation: '(${a} = 1)',
+      },
+      {
+        description: 'a parenthesized text function',
+        calculation: '(concat(${a}, ${b}))',
+      },
+      {
+        description: 'a wildcard path: * is not a multiplication',
+        calculation: '/data/*',
+      },
+      {
+        description: 'a relative wildcard path',
+        calculation: '../*',
+      },
+      {
+        description: 'a wildcard path with spaces',
+        calculation: '/data/group/ *',
+      },
+      {
+        description: 'an attribute wildcard',
+        calculation: '@*',
+      },
+      {
+        description: 'an axis wildcard',
+        calculation: 'child::*',
       },
     ])('should return text for $description', ({ calculation }) => {
       const result = inferAttributeTypeFromCalculation({ calculation });
