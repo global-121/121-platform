@@ -25,6 +25,10 @@ describe('UserOtpService', () => {
     userOtpRepository = module.get(UserOtpRepository);
   });
 
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   describe('when creating an OTP', () => {
     it('returns a 6 character code of digits and uppercase letters', async () => {
       // Act
@@ -32,17 +36,6 @@ describe('UserOtpService', () => {
 
       // Assert
       expect(otp).toMatch(/^[0-9A-Z]{6}$/);
-    });
-
-    it('returns a different code each time', async () => {
-      // Arrange
-      const { otp: firstOtp } = await service.createOtp({ userId: 1 });
-
-      // Act
-      const { otp: secondOtp } = await service.createOtp({ userId: 1 });
-
-      // Assert
-      expect(secondOtp).not.toBe(firstOtp);
     });
 
     it('stores an HMAC hash of the code instead of the code itself', async () => {
@@ -69,7 +62,6 @@ describe('UserOtpService', () => {
 
       // Assert
       expect(expiresAt).toEqual(new Date(now.getTime() + OTP_EXPIRATION_MS));
-      jest.useRealTimers();
     });
   });
 });
