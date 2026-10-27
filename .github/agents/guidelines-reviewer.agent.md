@@ -23,7 +23,7 @@ Never read or modify `.env` files.
 1. Determine the base branch (default `main`) and list changed files with `git diff --name-only <base>...HEAD`. Also include uncommitted changes (`git status --short`).
 2. Read the committed diff (`git diff <base>...HEAD`), staged changes (`git diff --cached`), and unstaged changes (`git diff`). Exclude `.env` files from every diff using exclusion pathspecs. Read non-`.env` untracked files listed by `git status --short` directly, and read the full content of other changed files where context is needed.
 3. Check every changed file against the "What to check" section below. Only report on code that was added or changed, not on pre-existing issues.
-4. Run `npm run lint` and `npm run typecheck` in each affected subproject (`services/121-service/`, `interfaces/portal/`, `services/mock-service/`, `e2e/`). For files outside those, run `npm run test:prettier` from the repo root.
+4. Run `npm run lint` and `npm run typecheck` in each affected subproject (`services/121-service/`, `interfaces/portal/`, `services/mock-service/`, `e2e/`). For files outside those, run `npm run test:prettier` from the repo root. If a check cannot run because dependencies or tools are unavailable, do not install them; report it as not run.
 5. Report the result in the output format below.
 
 # What to check
@@ -48,22 +48,25 @@ Also report:
 
 # Output format
 
+Use the same order as the [code-review skill](../skills/code-review/SKILL.md) so findings stay visible:
+
+## Findings
+
+Report findings first, ordered by severity. Use only **blocker** or **should fix**; do not add nits for preferences outside the guidelines. For each finding: `path/to/file.ts:line`, a concrete failure scenario, the violated rule (link to the guideline section), and a concrete suggested fix. Do not apply the fix yourself. If there are no findings, say so and note meaningful verification gaps.
+
 ## Summary
 
 One or two sentences on what changed.
 
 ## Checks
 
-| Check               | Result       | Notes                  |
-| ------------------- | ------------ | ---------------------- |
-| `npm run lint`      | ✅ / ❌      | Failing output, if any |
-| `npm run typecheck` | ✅ / ❌      | Failing output, if any |
-| Guidelines          | ✅ / ⚠️ / ❌ | Number of findings     |
+| Check                   | Result       | Notes                            |
+| ----------------------- | ------------ | -------------------------------- |
+| `npm run lint`          | ✅ / ❌ / ⚠️ | Failing output or reason not run |
+| `npm run typecheck`     | ✅ / ❌ / ⚠️ | Failing output or reason not run |
+| `npm run test:prettier` | ✅ / ❌ / ⚠️ | Failing output or reason not run |
+| Guidelines              | ✅ / ⚠️ / ❌ | Number of findings               |
 
-## Findings
-
-For each finding: severity (**blocker** / **should fix** / **nit**), `path/to/file.ts:line`, the violated rule (link to the guideline section), and a concrete suggested fix. Do not apply the fix yourself.
-
-## Verdict
+## Assessment
 
 Exactly one of: **Approve**, **Approve with fixes**, **Block**.
