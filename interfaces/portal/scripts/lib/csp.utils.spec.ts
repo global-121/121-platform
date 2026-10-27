@@ -1,6 +1,7 @@
-import { deepEqual, equal } from 'node:assert/strict';
 import { getDirectiveTokens, hasExactToken } from 'scripts/lib/csp.utils.mjs';
-import { describe, it } from 'vitest';
+import { assert, describe, it } from 'vitest';
+
+const { deepEqual, strictEqual: equal } = assert;
 
 describe('CSP-Util: getDirectiveTokens', () => {
   it('should return an empty list for an empty CSP', () => {
