@@ -16,7 +16,6 @@ import { UserOtpRepository } from '@121-service/src/user/user-otp/user-otp.repos
 export class UserOtpService {
   public constructor(private readonly userOtpRepository: UserOtpRepository) {}
 
-  // Returns undefined when the user's current OTP was issued within the cooldown
   public async createOtp({
     userId,
   }: CreateOtpParams): Promise<CreateOtpResult | undefined> {

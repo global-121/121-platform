@@ -435,10 +435,11 @@ export class CustomHttpService {
 
     const isSensitiveProperty = (key: string | number | undefined): boolean =>
       typeof key === 'string' &&
-      sensitiveProperties.includes(key.toLowerCase());
+        sensitiveProperties.includes(key.toLowerCase());
 
     const isUsernameProperty = (key: string | number | undefined): boolean =>
-      typeof key === 'string' && key.toLowerCase() === 'username';
+      typeof key === 'string' && 
+        key.toLowerCase() === 'username';
 
     return cloneDeepWith(
       data,
@@ -460,7 +461,6 @@ export class CustomHttpService {
     );
   }
 
-  // Emails put passwords and login codes in <code> elements
   private redactCodeElementsInLoggedContent(content: string): string {
     return content.replace(
       /(<code[^>]*>)(.*?)(<\/code>)/gs,
