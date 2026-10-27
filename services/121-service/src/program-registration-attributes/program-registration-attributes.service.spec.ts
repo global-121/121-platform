@@ -313,6 +313,7 @@ describe('ProgramRegistrationAttributesService', () => {
         name: DefaultRegistrationDataAttributeNames.phoneNumber,
         type: RegistrationAttributeTypes.tel,
         koboType: null,
+        koboLabel: null,
       });
 
       const updateFromKobo: ProgramRegistrationAttribute = {
@@ -343,6 +344,7 @@ describe('ProgramRegistrationAttributesService', () => {
       expect(savedEntities).toHaveLength(1);
       expect(savedEntities[0].type).toBe(RegistrationAttributeTypes.text);
       expect(savedEntities[0].koboType).toBe(KoboSurveyItemType.text);
+      expect(savedEntities[0].koboLabel).toEqual({ en: 'Phone number' });
     });
 
     it('should update koboType and koboLabel from Kobo when an existing attribute is refreshed', async () => {
@@ -416,6 +418,49 @@ describe('ProgramRegistrationAttributesService', () => {
       expect(savedEntities).toHaveLength(1);
       expect(savedEntities[0].type).toBe(RegistrationAttributeTypes.numeric);
       expect(savedEntities[0].koboType).toBe(KoboSurveyItemType.calculate);
+    });
+
+    it('Should keep the existing type and adopt koboType when a legacy Kobo attribute without koboType is refreshed', async () => {
+      const programId = 1;
+
+      // Arrange existing entity and update from Kobo
+      const existingEntity = createAttributeEntity({
+        id: 10,
+        name: 'firstName',
+        type: RegistrationAttributeTypes.numeric,
+        koboLabel: { en: 'Old Kobo Label' },
+        koboType: null,
+      });
+
+      // Act - Prepare the update from Kobo
+      const updateFromKobo: ProgramRegistrationAttribute = {
+        name: 'firstName',
+        type: RegistrationAttributeTypes.text,
+        koboType: KoboSurveyItemType.text,
+      };
+
+      // Arrange the repository to return the existing entity
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'find')
+        .mockResolvedValue([existingEntity]);
+
+      const saveSpy = jest
+        .spyOn(programRegistrationAttributeRepository, 'save')
+        .mockImplementation(async (entities: any) => entities);
+
+      await programRegistrationAttributesService.upsertProgramRegistrationAttributes(
+        {
+          programId,
+          programRegistrationAttributes: [updateFromKobo],
+        },
+      );
+
+      const savedEntities = saveSpy.mock.calls[0][0];
+
+      // Assert that the saved entity has kept the existing type and adopted the koboType from the update
+      expect(savedEntities).toHaveLength(1);
+      expect(savedEntities[0].type).toBe(RegistrationAttributeTypes.numeric);
+      expect(savedEntities[0].koboType).toBe(KoboSurveyItemType.text);
     });
 
     it('should not remove options missing from the update when the update does include options', async () => {
