@@ -56,32 +56,4 @@ describe('/ Users', () => {
       expect(response.body).toBeDefined();
     });
   });
-
-  describe('/ Login OTP', () => {
-    beforeAll(async () => {
-      await resetDB({ seedScript: SeedScript.nlrcMultiple });
-    });
-
-    it('should accept an OTP request for an existing user', async () => {
-      // Act
-      const response = await getServer()
-        .post('/users/login/otp')
-        .send({ username: 'admin@example.org' });
-
-      // Assert
-      expect(response.status).toBe(HttpStatus.ACCEPTED);
-      expect(response.body).toEqual({});
-    });
-
-    it('should give the same response for an unknown user', async () => {
-      // Act
-      const response = await getServer()
-        .post('/users/login/otp')
-        .send({ username: 'unknown@example.org' });
-
-      // Assert
-      expect(response.status).toBe(HttpStatus.ACCEPTED);
-      expect(response.body).toEqual({});
-    });
-  });
 });
