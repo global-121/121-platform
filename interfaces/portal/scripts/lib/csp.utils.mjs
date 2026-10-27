@@ -8,8 +8,8 @@ export const getDirectiveTokens = (csp, directiveName) => {
     .map((part) => part.trim())
     .filter(Boolean);
 
-  const directive = directives.find((part) =>
-    part.startsWith(`${directiveName} `),
+  const directive = directives.find(
+    (part) => part.split(/\s+/)[0] === directiveName,
   );
 
   if (!directive) {
