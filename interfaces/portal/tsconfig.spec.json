@@ -7,5 +7,10 @@
     "types": ["@angular/localize"]
   },
   "exclude": ["dist/**"],
-  "include": ["src/**/*.spec.ts", "./*.spec.ts"] // NOTE: This must be 'in-syc' (but NOT exactly the same) with the "test"-section in angular.json
+  "include": [
+    // NOTE: This must be 'in-syc' (but NOT exactly the same) with the "test"-section in angular.json
+    // The relative location where each process 'starts looking for files' is different!
+    "src/**/*.spec.ts",
+    "scripts/**/*.spec.ts"
+  ]
 }

@@ -191,7 +191,7 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "tsconfig.spec.json",
-            "include": ["src/**/*.spec.ts", "./*.spec.ts"],
+            "include": ["src/**/*.spec.ts", "../scripts/**/*.spec.ts"],
             "progress": true,
             "runnerConfig": "vitest.config.ts",
             "buildTarget": "::unit-test"
@@ -210,7 +210,9 @@
               "src/**/*.mjs",
               "src/**/*.ts",
               "src/**/*.mts",
-              "src/**/*.html"
+              "src/**/*.html",
+              "scripts/**/*.mjs",
+              "scripts/**/*.ts"
             ]
           }
         }
