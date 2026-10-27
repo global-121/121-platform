@@ -77,7 +77,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "applicationinsights": "^2.9.8",
     "axios": "^1.20.0",
-    "body-parser": "^2.3.0",
+    "body-parser": "^2.4.0",
     "bull": "^4.16.5",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
