@@ -458,6 +458,7 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
+      "koboType": null,
       "label": {
         "am": "የመታውቂያ ቁጥር",
         "en": "ID Card number",
@@ -478,6 +479,7 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": true,
       "isRequired": true,
       "koboLabel": null,
+      "koboType": null,
       "label": {
         "am": "ስልክ ቁጥር",
         "en": "Phone number",
@@ -882,6 +884,7 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
+      "koboType": null,
       "label": {
         "en": "Address city",
       },
@@ -901,6 +904,7 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
+      "koboType": null,
       "label": {
         "en": "Address house number",
       },
@@ -920,6 +924,7 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
+      "koboType": null,
       "label": {
         "en": "Address house number addition",
       },
@@ -939,6 +944,7 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
+      "koboType": null,
       "label": {
         "en": "Address postal code",
       },
@@ -958,6 +964,7 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
+      "koboType": null,
       "label": {
         "en": "Address street",
       },
@@ -977,6 +984,7 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
+      "koboType": null,
       "label": {
         "en": "Full Name",
       },
@@ -996,6 +1004,7 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": false,
       "isRequired": true,
       "koboLabel": null,
+      "koboType": null,
       "label": {
         "en": "Phone Number",
       },
@@ -1017,6 +1026,7 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
+      "koboType": null,
       "label": {
         "en": "WhatsApp Nr.",
       },
