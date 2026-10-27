@@ -94,7 +94,7 @@
     "@vitest/coverage-v8": "^4.1.11",
     "angular-eslint": "^21.4.0",
     "autoprefixer": "^10.6.1",
-    "eslint": "^10.12.0",
+    "eslint": "^10.13.0",
     "eslint-config-121-platform": "file:../../packages/eslint-config-121-platform/",
     "eslint-plugin-better-tailwindcss": "^4.9.1",
     "eslint-plugin-no-relative-import-paths": "^1.7.3",
@@ -110,7 +110,7 @@
     "shx": "^0.4.0",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.71.1",
+    "typescript-eslint": "^8.71.2",
     "vitest": "^4.1.11"
   },
   "engines": {
