@@ -54,21 +54,4 @@ export class AzureLogService {
     this.defaultClient.trackTrace({ message });
     this.flushLogs();
   }
-
-  public trackEvent({
-    name,
-    properties,
-  }: {
-    name: string;
-    properties: Record<string, string>;
-  }): void {
-    if (!IS_PRODUCTION) {
-      console.log(`Event: ${name}`, properties);
-    }
-    if (!this.defaultClient) {
-      return;
-    }
-    this.defaultClient.trackEvent({ name, properties });
-    this.flushLogs();
-  }
 }
