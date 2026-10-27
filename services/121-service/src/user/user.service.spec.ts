@@ -6,11 +6,11 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
+import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
-import { LOGIN_OTP_REQUESTED_EVENT_NAME } from '@121-service/src/user/const/login-otp.const';
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
@@ -19,6 +19,13 @@ import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { UserOtpService } from '@121-service/src/user/user-otp/user-otp.service';
+
+jest.mock('@121-service/src/env', () => ({
+  env: {
+    ...jest.requireActual('@121-service/src/env').env,
+    USE_SSO_AZURE_ENTRA: false,
+  },
+}));
 
 describe('UserService', () => {
   let service: UserService;
@@ -81,7 +88,7 @@ describe('UserService', () => {
         },
         {
           provide: AzureLogService,
-          useValue: { trackEvent: jest.fn(), logError: jest.fn() },
+          useValue: { logError: jest.fn() },
         },
       ],
     }).compile();
@@ -110,12 +117,17 @@ describe('UserService', () => {
       id: 1,
       username: 'user@example.org',
       displayName: 'Jane',
+      isEntraUser: false,
     } as UserEntity;
 
     beforeEach(() => {
       jest
         .spyOn(userOtpService, 'createOtp')
         .mockResolvedValue({ otp, expiresAt: new Date() });
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
     });
 
     it('emails a new OTP to an existing user', async () => {
@@ -134,20 +146,6 @@ describe('UserService', () => {
       });
     });
 
-    it('logs the request with the email and that the user exists', async () => {
-      // Arrange
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
-
-      // Act
-      await service.requestLoginOtp({ username: 'user@example.org' });
-
-      // Assert
-      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
-        name: LOGIN_OTP_REQUESTED_EVENT_NAME,
-        properties: { email: 'user@example.org', userExists: 'true' },
-      });
-    });
-
     it('does not create or email an OTP for an unknown user, without throwing', async () => {
       // Arrange
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
@@ -160,18 +158,32 @@ describe('UserService', () => {
       expect(userEmailsService.sendLoginOtp).not.toHaveBeenCalled();
     });
 
-    it('logs the request with the email and that the user does not exist', async () => {
+    it('does not create or email an OTP for a user who signs in with Entra', async () => {
       // Arrange
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue({
+        ...existingUser,
+        isEntraUser: true,
+      } as UserEntity);
 
       // Act
-      await service.requestLoginOtp({ username: 'unknown@example.org' });
+      await service.requestLoginOtp({ username: 'user@example.org' });
 
       // Assert
-      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
-        name: LOGIN_OTP_REQUESTED_EVENT_NAME,
-        properties: { email: 'unknown@example.org', userExists: 'false' },
-      });
+      expect(userOtpService.createOtp).not.toHaveBeenCalled();
+      expect(userEmailsService.sendLoginOtp).not.toHaveBeenCalled();
+    });
+
+    it('does not create or email an OTP when the instance uses Entra SSO', async () => {
+      // Arrange
+      jest.replaceProperty(env, 'USE_SSO_AZURE_ENTRA', true);
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
+
+      // Act
+      await service.requestLoginOtp({ username: 'user@example.org' });
+
+      // Assert
+      expect(userOtpService.createOtp).not.toHaveBeenCalled();
+      expect(userEmailsService.sendLoginOtp).not.toHaveBeenCalled();
     });
 
     it('logs an email delivery failure instead of throwing', async () => {

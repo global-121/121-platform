@@ -20,7 +20,6 @@ import {
 } from '@121-service/src/shared/enum/interface-names.enum';
 import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
-import { LOGIN_OTP_REQUESTED_EVENT_NAME } from '@121-service/src/user/const/login-otp.const';
 import {
   CreateProgramAssignmentDto,
   UpdateProgramAssignmentDto,
@@ -100,12 +99,7 @@ export class UserService {
       where: { username: Equal(email) },
     });
 
-    this.azureLogService.trackEvent({
-      name: LOGIN_OTP_REQUESTED_EVENT_NAME,
-      properties: { email, userExists: String(!!user) },
-    });
-
-    if (!user) {
+    if (!user || this.signsInWithEntra({ isEntraUser: user.isEntraUser })) {
       return;
     }
 
@@ -115,6 +109,10 @@ export class UserService {
       recipientName: user.displayName,
       otp,
     });
+  }
+
+  private signsInWithEntra({ isEntraUser }: { isEntraUser: boolean }): boolean {
+    return env.USE_SSO_AZURE_ENTRA || isEntraUser;
   }
 
   private async sendLoginOtpEmail({
