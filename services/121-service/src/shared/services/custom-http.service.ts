@@ -438,7 +438,7 @@ export class CustomHttpService {
         sensitiveProperties.includes(key.toLowerCase());
 
     const isUsernameProperty = (key: string | number | undefined): boolean =>
-      typeof key === 'string' && 
+      typeof key === 'string' &&
         key.toLowerCase() === 'username';
 
     return cloneDeepWith(
