@@ -57,7 +57,7 @@ exports[`User email templates should render login OTP template 1`] = `
   "body": "
     <p>Hi Jane Doe,</p>
     <p>Use the code below to sign in to the 121 Portal:</p>
-    <p data-sensitive style="font-size: 2.5em; margin: 0.75em 0;">4A1RQ9</p>
+    <p style="font-size: 2.5em; margin: 0.75em 0;"><code>4A1RQ9</code></p>
     <p>This code will expire in 10 minutes.</p>
     <p>If you didn’t request this email, you can safely ignore it.</p>
   ",

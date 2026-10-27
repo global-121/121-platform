@@ -8,19 +8,12 @@ import https, { AgentOptions } from 'node:https';
 import { SecureContextOptions } from 'node:tls';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
 
-import { SENSITIVE_HTML_CONTENT_ATTRIBUTE } from '@121-service/src/shared/consts/sensitive-html-content-attribute.const';
 import { SensitivePiiValue } from '@121-service/src/shared/consts/sensitive-pii-value.class';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import {
   maskValueKeepEnd,
   maskValueKeepStart,
 } from '@121-service/src/utils/mask-value.helper';
-
-// Matches an HTML element marked as sensitive, capturing its opening tag, content and closing tag
-const SENSITIVE_HTML_ELEMENT_PATTERN = new RegExp(
-  `(<([a-z][a-z0-9]*)\\b[^>]*\\s${SENSITIVE_HTML_CONTENT_ATTRIBUTE}\\b[^>]*>)(.*?)(</\\2>)`,
-  'gis',
-);
 
 class Request {
   public headers?: Headers;
@@ -460,25 +453,17 @@ export class CustomHttpService {
           return maskValueKeepStart(value, 3);
         }
         if (typeof value === 'string') {
-          return this.redactSensitiveHtmlInLoggedContent(value);
+          return this.redactCodeElementsInLoggedContent(value);
         }
         return undefined;
       },
     );
   }
 
-  private redactSensitiveHtmlInLoggedContent(content: string): string {
-    const contentWithoutPasswords =
-      this.redactPasswordsInLoggedContent(content);
-    return contentWithoutPasswords.replace(
-      SENSITIVE_HTML_ELEMENT_PATTERN,
-      '$1**REDACTED**$4',
-    );
-  }
-
-  private redactPasswordsInLoggedContent(content: string): string {
+  // Emails put passwords and login codes in <code> elements
+  private redactCodeElementsInLoggedContent(content: string): string {
     return content.replace(
-      /(Password:\s*<code>)(.*?)(<\/code>)/gs,
+      /(<code[^>]*>)(.*?)(<\/code>)/gs,
       '$1**REDACTED**$3',
     );
   }
