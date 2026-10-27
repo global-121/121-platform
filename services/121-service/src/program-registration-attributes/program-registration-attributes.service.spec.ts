@@ -270,6 +270,7 @@ describe('ProgramRegistrationAttributesService', () => {
         name: 'firstName',
         type: RegistrationAttributeTypes.numeric,
         label: { en: 'Old Label' },
+        koboType: KoboSurveyItemType.integer,
       });
 
       const updateFromKobo = createAttributeDto({
@@ -297,9 +298,51 @@ describe('ProgramRegistrationAttributesService', () => {
       // Assert
       const savedEntities = saveSpy.mock.calls[0][0];
       expect(savedEntities).toHaveLength(1);
+      // Proves the existing koboType is preserved even if the type from Kobo differs
       expect(savedEntities[0].type).toBe(RegistrationAttributeTypes.numeric);
+      expect(savedEntities[0].koboType).toBe(KoboSurveyItemType.integer);
       // Proves the refresh still applied the other changes
       expect(savedEntities[0].label).toEqual({ en: 'Updated First Name' });
+    });
+
+    it("should take Kobo's type for an existing attribute that Kobo never defined before", async () => {
+      // Arrange: the phoneNumber fallback (added for Twilio) exists before the first Kobo sync
+      const programId = 1;
+      const existingEntity = createAttributeEntity({
+        id: 10,
+        name: DefaultRegistrationDataAttributeNames.phoneNumber,
+        type: RegistrationAttributeTypes.tel,
+        koboType: null,
+      });
+
+      const updateFromKobo: ProgramRegistrationAttribute = {
+        name: DefaultRegistrationDataAttributeNames.phoneNumber,
+        type: RegistrationAttributeTypes.text,
+        koboType: KoboSurveyItemType.text,
+        koboLabel: { en: 'Phone number' },
+      };
+
+      jest
+        .spyOn(programRegistrationAttributeRepository, 'find')
+        .mockResolvedValue([existingEntity]);
+
+      const saveSpy = jest
+        .spyOn(programRegistrationAttributeRepository, 'save')
+        .mockImplementation(async (entities: any) => entities);
+
+      // Act
+      await programRegistrationAttributesService.upsertProgramRegistrationAttributes(
+        {
+          programId,
+          programRegistrationAttributes: [updateFromKobo],
+        },
+      );
+
+      // Assert
+      const savedEntities = saveSpy.mock.calls[0][0];
+      expect(savedEntities).toHaveLength(1);
+      expect(savedEntities[0].type).toBe(RegistrationAttributeTypes.text);
+      expect(savedEntities[0].koboType).toBe(KoboSurveyItemType.text);
     });
 
     it('should update koboType and koboLabel from Kobo when an existing attribute is refreshed', async () => {
