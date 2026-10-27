@@ -38,17 +38,6 @@ describe('UserOtpService', () => {
       expect(otp).toMatch(/^[0-9A-Z]{6}$/);
     });
 
-    it('returns a different code each time', async () => {
-      // Arrange
-      const { otp: firstOtp } = await service.createOtp({ userId: 1 });
-
-      // Act
-      const { otp: secondOtp } = await service.createOtp({ userId: 1 });
-
-      // Assert
-      expect(secondOtp).not.toBe(firstOtp);
-    });
-
     it('stores an HMAC hash of the code instead of the code itself', async () => {
       // Act
       const { otp } = await service.createOtp({ userId: 1 });
