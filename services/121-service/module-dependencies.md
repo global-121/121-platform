@@ -211,6 +211,7 @@ graph LR
   UserEmailsModule-->EmailsModule
   UserModule-->ProgramAidworkerAssignmentsModule
   UserModule-->UserEmailsModule
+  UserModule-->UserOtpModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule
   WhatsappModule-->UserModule

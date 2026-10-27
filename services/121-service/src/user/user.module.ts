@@ -11,6 +11,7 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserEmailsModule } from '@121-service/src/user/user-emails/user-emails.module';
+import { UserOtpModule } from '@121-service/src/user/user-otp/user-otp.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserEmailsModule } from '@121-service/src/user/user-emails/user-emails.
     ]),
     ProgramAidworkerAssignmentsModule,
     UserEmailsModule,
+    UserOtpModule,
   ],
   providers: [UserService],
   controllers: [UserController, UserAssignmentsController, RolesController],
