@@ -326,7 +326,10 @@ export class ProgramRegistrationAttributesService {
   }): void {
     const existingOptions = existingAttribute.options ?? [];
     const userConfiguredType = existingAttribute.type;
-    const koboDefinedThisAttributeBefore = existingAttribute.koboType !== null;
+
+    const koboDefinedThisAttributeBefore =
+      existingAttribute.koboType !== null ||
+      existingAttribute.koboLabel !== null;
 
     Object.assign(existingAttribute, update);
 
