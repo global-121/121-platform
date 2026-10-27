@@ -128,7 +128,6 @@ updates:
         patterns:
           - '@angular*'
           - 'typescript'
-          - 'zone.js'
           - '*eslint*'
           - '*prettier*'
       AzureMSAL:
@@ -140,7 +139,6 @@ updates:
         exclude-patterns: # Make sure to exclude all of the groups defined above
           - '@angular*'
           - 'typescript'
-          - 'zone.js'
           - '@azure/msal*'
           - '*eslint*'
           - '*prettier*'
