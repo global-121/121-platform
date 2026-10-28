@@ -130,12 +130,12 @@ describe('Import a Kobo form definition', () => {
       'How_are_you_today_select_one',
       'adults',
       'children',
-      'calculated_question_numeric',
-      'calculated_question_text',
       'What_is_2_2_number',
       'driversLicensePhoto',
       'idPhoto',
       'photo',
+      'calculatedQuestionNumeric',
+      'calculatedQuestionText',
     ];
 
     expect(linkKoboResponse.body).toMatchInlineSnapshot(`
@@ -178,7 +178,8 @@ describe('Import a Kobo form definition', () => {
      {
        "isRequired": false,
        "koboLabel": {
-         "en": "adults",
+         "en": "Adults",
+         "nl": "Volwassenen",
        },
        "koboType": "integer",
        "label": null,
