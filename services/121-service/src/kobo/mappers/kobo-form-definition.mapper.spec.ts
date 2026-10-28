@@ -98,7 +98,7 @@ describe('KoboFormDefinitionMapper', () => {
         content: {
           survey: [
             createSurveyItem({
-              name: 'calculated_question_numeric',
+              name: 'calculatedQuestionNumeric',
               type: 'calculate',
               label: ['Calculated question'],
               calculation: '${adults} div ${children}',
@@ -114,7 +114,7 @@ describe('KoboFormDefinitionMapper', () => {
       });
 
       // Assert
-      expect(result.survey[0].name).toBe('calculated_question_numeric');
+      expect(result.survey[0].name).toBe('calculatedQuestionNumeric');
       expect(result.survey[0].type).toBe('calculate');
       expect(result.survey[0].label).toEqual(['Calculated question']);
       expect(result.survey[0].calculation).toBe('${adults} div ${children}');
