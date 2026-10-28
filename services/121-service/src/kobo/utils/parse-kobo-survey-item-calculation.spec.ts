@@ -91,6 +91,35 @@ describe('inferAttributeTypeFromCalculation', () => {
         description: 'count of a wildcard path',
         calculation: 'count(/data/*)',
       },
+      {
+        description: 'a conditional with numbers in both branches',
+        calculation: 'if(${score} > 5, 1, 0)',
+      },
+      {
+        description:
+          'a conditional returning a reference that the condition compares to a number',
+        calculation: 'if(${a} > 0, ${a}, 0)',
+      },
+      {
+        description: 'a conditional with a number on the left of the comparison',
+        calculation: 'if(0 < ${a}, ${a}, 0)',
+      },
+      {
+        description: 'a conditional with numeric calculations in both branches',
+        calculation: 'if(${a} = 1, ${b} + 1, round(${c}))',
+      },
+      {
+        description: 'a parenthesized conditional',
+        calculation: '(if(${a} > 0, ${a}, 0))',
+      },
+      {
+        description: 'a nested conditional with numbers',
+        calculation: 'if(${a} > 0, if(${b} > 0, 1, 2), 0)',
+      },
+      {
+        description: 'a conditional with a quoted comma in the condition',
+        calculation: "if(${a} = 'x,y', 1, 0)",
+      },
     ])('should return numeric for $description', ({ calculation }) => {
       const result = inferAttributeTypeFromCalculation({ calculation });
 
@@ -167,10 +196,24 @@ describe('inferAttributeTypeFromCalculation', () => {
       },
       {
         description:
-          // the result here is always numeric, but detecting that requires parsing if branches,
-          // and a wrongly-text result is recoverable while wrongly-numeric loses registrations
-          'a conditional with numbers in both branches',
-        calculation: 'if(${score} > 5, 1, 0)',
+          'a conditional returning a reference that is not compared to a number',
+        calculation: 'if(${a} > 0, ${b}, 0)',
+      },
+      {
+        description: 'a conditional returning a reference compared with =',
+        calculation: 'if(${a} = 0, ${a}, 0)',
+      },
+      {
+        description: 'a conditional with a text branch and a number branch',
+        calculation: "if(${score} > 5, 1, 'unknown')",
+      },
+      {
+        description: 'a conditional with too few arguments',
+        calculation: 'if(${a} > 0, 1)',
+      },
+      {
+        description: 'a conditional followed by more text',
+        calculation: "if(${a} > 0, 1, 0) = '1'",
       },
       {
         description: 'a conditional with a text and a number branch',
