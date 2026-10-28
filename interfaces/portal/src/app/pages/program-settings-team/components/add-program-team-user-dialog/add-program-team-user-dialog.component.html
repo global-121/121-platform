@@ -90,35 +90,12 @@
     }
   </app-form-field-wrapper>
 
-  @if (enableScope()) {
-    <app-form-field-wrapper
-      label="Assign scope*"
-      i18n-label
-      [errorMessage]="formFieldErrors()('scopeValue')"
-    >
-      <input
-        pInputText
-        type="text"
-        formControlName="scopeValue"
-        autocomplete="off"
-        class="font-mono"
-      />
-      <ng-container slot="details">
-        <p
-          i18n
-          class="text-grey-500 txt-system-s mbs-2 mbe-1"
-        >
-          * Leaving this field empty means the team member will have access to
-          <strong>all registrations</strong>
-        </p>
-        <p
-          i18n
-          class="text-grey-500 txt-system-s"
-        >
-          * To use a subscope type a dot between the scope and subscope (e.g.
-          <code>amsterdam.west</code>)
-        </p>
-      </ng-container>
-    </app-form-field-wrapper>
+  @if (!!accessGroupAttributes()) {
+    <app-user-access-group-form
+      [programId]="programId()"
+      [accessGroupAttributes]="accessGroupAttributes()"
+      [userIsUpdatingItself]="userIsUpdatingItself()"
+      formGroupName="accessGroups"
+    />
   }
 </app-form-dialog>
