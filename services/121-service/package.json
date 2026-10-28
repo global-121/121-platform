@@ -128,7 +128,7 @@
     "@types/sanitize-html": "^2.16.2",
     "@types/ssh2-sftp-client": "^9.0.6",
     "@types/supertest": "^7.2.1",
-    "eslint": "^10.12.0",
+    "eslint": "^10.13.0",
     "eslint-config-121-platform": "file:../../packages/eslint-config-121-platform/",
     "eslint-plugin-jest": "^29.17.0",
     "eslint-plugin-no-relative-import-paths": "^1.7.3",
@@ -141,7 +141,7 @@
     "nyc": "^18.0.0",
     "prettier": "^3.9.10",
     "supertest": "^7.2.2",
-    "typescript-eslint": "^8.71.1"
+    "typescript-eslint": "^8.71.2"
   },
   "overrides": {
     "@swc/cli": {
@@ -150,6 +150,7 @@
   },
   "allowScripts": {
     "@automock/adapters.nestjs": false,
+    "@parcel/watcher": false,
     "@scarf/scarf": false,
     "@swc/core": false,
     "cpu-features": false,
