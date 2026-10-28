@@ -124,6 +124,7 @@ describe('UserService', () => {
       jest
         .spyOn(userOtpService, 'createOtp')
         .mockResolvedValue({ otp, expiresAt: new Date() });
+      jest.spyOn(userEmailsService, 'sendLoginOtp').mockResolvedValue();
     });
 
     afterEach(() => {
@@ -198,7 +199,21 @@ describe('UserService', () => {
       expect(userEmailsService.sendLoginOtp).not.toHaveBeenCalled();
     });
 
-    it('logs an email delivery failure instead of throwing', async () => {
+    it('responds without waiting for the email to be sent', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
+      const neverSentEmail = new Promise<void>(() => undefined);
+      jest
+        .spyOn(userEmailsService, 'sendLoginOtp')
+        .mockReturnValue(neverSentEmail);
+
+      // Act & Assert
+      await expect(
+        service.requestLoginOtp({ username: 'user@example.org' }),
+      ).resolves.toBeUndefined();
+    });
+
+    it('logs a failed email send instead of throwing', async () => {
       // Arrange
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
       jest
@@ -207,26 +222,13 @@ describe('UserService', () => {
 
       // Act
       await service.requestLoginOtp({ username: 'user@example.org' });
+      await new Promise((resolve) => setImmediate(resolve));
 
       // Assert
       expect(azureLogService.logError).toHaveBeenCalledWith(
         expect.objectContaining({ message: 'Failed to send login OTP email' }),
         false,
       );
-    });
-
-    it('rethrows errors other than email delivery failures', async () => {
-      // Arrange
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
-      const unexpectedError = new Error('Unexpected');
-      jest
-        .spyOn(userEmailsService, 'sendLoginOtp')
-        .mockRejectedValue(unexpectedError);
-
-      // Act & Assert
-      await expect(
-        service.requestLoginOtp({ username: 'user@example.org' }),
-      ).rejects.toThrow(unexpectedError);
     });
   });
 
