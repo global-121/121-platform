@@ -1,3 +1,4 @@
+import { AccessGroupLevelsResponseDto } from '@121-service/src/programs/access-group-levels/dtos/access-group-levels-response.dto';
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
 import { GetProgramAttachmentResponseDto } from '@121-service/src/programs/program-attachments/dtos/get-program-attachment-response.dto';
 import { Attribute as AttributeFrom121Service } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -31,3 +32,5 @@ export type AttributeWithTranslatedLabel = { label: string } & Omit<
   Attribute,
   'koboLabel' | 'label'
 >;
+
+export type AccessGroupLevels = Dto<AccessGroupLevelsResponseDto>;
