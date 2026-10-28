@@ -18,6 +18,7 @@ import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/program
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
+  AccessGroupLevels as ProgramAccessGroupLevels,
   Attribute,
   AttributeWithTranslatedLabel,
   Program,
@@ -303,10 +304,12 @@ export class ProgramApiService extends DomainApiService {
       userId,
       roles,
       scope,
+      accessGroups,
     }: {
       userId: number;
       roles: Role['role'][];
       scope: string;
+      accessGroups: ProgramUserAssignment['accessGroups'];
     },
   ) {
     return this.httpWrapperService.perform121ServiceRequest<ProgramUserAssignment>(
@@ -316,6 +319,7 @@ export class ProgramApiService extends DomainApiService {
         body: {
           roles,
           scope,
+          accessGroups,
         },
       },
     );
@@ -327,10 +331,12 @@ export class ProgramApiService extends DomainApiService {
       userId,
       roles,
       scope,
+      accessGroups,
     }: {
       userId: number;
       roles: Role['role'][];
       scope: string;
+      accessGroups: ProgramUserAssignment['accessGroups'];
     },
   ) {
     return this.httpWrapperService.perform121ServiceRequest<ProgramUserAssignment>(
@@ -340,6 +346,7 @@ export class ProgramApiService extends DomainApiService {
         body: {
           rolesToAdd: roles,
           scope,
+          accessGroups,
         },
       },
     );
@@ -576,6 +583,16 @@ export class ProgramApiService extends DomainApiService {
       method: 'PATCH',
       endpoint: `${BASE_ENDPOINT}/${programId().toString()}/registration-attributes-batch`,
       body: attributesToUpdate,
+    });
+  }
+
+  getProgramAccessGroupLevels({
+    programId,
+  }: {
+    programId: Signal<number | string>;
+  }) {
+    return this.generateQueryOptions<ProgramAccessGroupLevels>({
+      path: [BASE_ENDPOINT, programId, 'access-group-levels'],
     });
   }
 }

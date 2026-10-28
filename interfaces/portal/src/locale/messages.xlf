@@ -462,6 +462,9 @@
       <trans-unit id="2786315343832067060" datatype="html">
         <source>Deduplication indicators saved successfully.</source>
       </trans-unit>
+      <trans-unit id="2786746895066621718" datatype="html">
+        <source>Choose which registrations this user can access, from broadest to narrowest level. “All” includes everything in the level above. For example, selecting Region A and leaving District on “All” gives access to every district in Region A.</source>
+      </trans-unit>
       <trans-unit id="279195665230166237" datatype="html">
         <source>Reg. #<x equiv-text="registrationId" id="PH"/></source>
       </trans-unit>
@@ -548,9 +551,6 @@
       </trans-unit>
       <trans-unit id="3069764081921374374" datatype="html">
         <source>Kobo form successfully integrated.</source>
-      </trans-unit>
-      <trans-unit id="3086423071988594984" datatype="html">
-        <source>Assign scope*</source>
       </trans-unit>
       <trans-unit id="3099882906994173432" datatype="html">
         <source>Linked</source>
@@ -788,9 +788,6 @@
       <trans-unit id="4026691210548476882" datatype="html">
         <source>Failed to load options</source>
       </trans-unit>
-      <trans-unit id="402937248192485030" datatype="html">
-        <source>* Leaving this field empty means the team member will have access to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>all registrations<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
-      </trans-unit>
       <trans-unit id="4031190280739566335" datatype="html">
         <source>Last updated</source>
       </trans-unit>
@@ -877,9 +874,6 @@
       </trans-unit>
       <trans-unit id="4251717932939684100" datatype="html">
         <source>Sender phone number</source>
-      </trans-unit>
-      <trans-unit id="4273825032754891897" datatype="html">
-        <source>* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.west<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</source>
       </trans-unit>
       <trans-unit id="4275051684912699373" datatype="html">
         <source>Amount sent per payment</source>
@@ -1126,6 +1120,9 @@
       </trans-unit>
       <trans-unit id="5189461683300981166" datatype="html">
         <source>You&apos;re about to unpause debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>.</source>
+      </trans-unit>
+      <trans-unit id="5233892402380223583" datatype="html">
+        <source>Users cannot change their own access group levels</source>
       </trans-unit>
       <trans-unit id="5236492962293730127" datatype="html">
         <source>Registration questions</source>
@@ -1982,6 +1979,9 @@
       </trans-unit>
       <trans-unit id="8464511475019236506" datatype="html">
         <source>You are about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>delete<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ selectedFile()?.filename }}" id="INTERPOLATION"/>., <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>this action can not be undone.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/></source>
+      </trans-unit>
+      <trans-unit id="8478808172257733199" datatype="html">
+        <source>Access group</source>
       </trans-unit>
       <trans-unit id="8486771973563673732" datatype="html">
         <source>No PowerBI dashboard has been configured for this program, please contact <x ctype="x-a" equiv-text="&lt;a href=&quot;mailto:support@121.global&quot;&gt;" id="START_LINK"/>support@121.global<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/> to set this up</source>

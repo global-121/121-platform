@@ -5,8 +5,10 @@
   <label
     class="block [&_.p-datepicker]:inline-full [&_input]:inline-full [&_textarea]:inline-full"
   >
-    <strong class="mbe-2 block">
-      <span class="inline-flex items-center gap-1 align-middle max-inline-full">
+    <div class="mbe-2 block">
+      <span
+        class="inline-flex items-center gap-1 align-middle font-bold max-inline-full"
+      >
         @if (isRequired()) {
           <span class="me-0">*</span>
         }
@@ -19,7 +21,10 @@
           />
         }
       </span>
-    </strong>
+      <span class="ms-1 inline-flex items-center align-middle max-inline-full"
+        ><ng-content select="[slot='label-extra-inline']"></ng-content
+      ></span>
+    </div>
 
     <!-- Additional label text -->
     <div
