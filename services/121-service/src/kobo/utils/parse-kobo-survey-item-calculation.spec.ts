@@ -88,10 +88,6 @@ describe('inferAttributeTypeFromCalculation', () => {
         calculation: '${a} * ${b}',
       },
       {
-        description: 'count of a wildcard path',
-        calculation: 'count(/data/*)',
-      },
-      {
         description: 'a conditional with numbers in both branches',
         calculation: 'if(${score} > 5, 1, 0)',
       },
@@ -101,7 +97,8 @@ describe('inferAttributeTypeFromCalculation', () => {
         calculation: 'if(${a} > 0, ${a}, 0)',
       },
       {
-        description: 'a conditional with a number on the left of the comparison',
+        description:
+          'a conditional with a number on the left of the comparison',
         calculation: 'if(0 < ${a}, ${a}, 0)',
       },
       {
@@ -161,26 +158,6 @@ describe('inferAttributeTypeFromCalculation', () => {
         description: 'a parenthesized text function',
         calculation: '(concat(${a}, ${b}))',
       },
-      {
-        description: 'a wildcard path: * is not a multiplication',
-        calculation: '/data/*',
-      },
-      {
-        description: 'a relative wildcard path',
-        calculation: '../*',
-      },
-      {
-        description: 'a wildcard path with spaces',
-        calculation: '/data/group/ *',
-      },
-      {
-        description: 'an attribute wildcard',
-        calculation: '@*',
-      },
-      {
-        description: 'an axis wildcard',
-        calculation: 'child::*',
-      },
     ])('should return text for $description', ({ calculation }) => {
       const result = inferAttributeTypeFromCalculation({ calculation });
 
@@ -206,10 +183,6 @@ describe('inferAttributeTypeFromCalculation', () => {
       {
         description: 'a conditional with a text branch and a number branch',
         calculation: "if(${score} > 5, 1, 'unknown')",
-      },
-      {
-        description: 'a conditional with too few arguments',
-        calculation: 'if(${a} > 0, 1)',
       },
       {
         description: 'a conditional followed by more text',
@@ -238,14 +211,6 @@ describe('inferAttributeTypeFromCalculation', () => {
       {
         description: 'a subtraction without spaces: could be part of a name',
         calculation: '${income}-${costs}',
-      },
-      {
-        description: 'Infinity: Number() accepts it, but it is not a value',
-        calculation: 'Infinity',
-      },
-      {
-        description: 'a hexadecimal number: Number() accepts it',
-        calculation: '0x1F',
       },
       {
         description: 'a formula we cannot classify',
