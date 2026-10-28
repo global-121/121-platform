@@ -19,11 +19,23 @@ describe('CSP-Util: getDirectiveTokens', () => {
     );
   });
 
-  it('should support multiple directives separated by " ; "', () => {
-    const csp = "default-src 'self' ; script-src https://a.example ; img-src *";
-    deepEqual(getDirectiveTokens(csp, 'script-src'), ['https://a.example']);
-    deepEqual(getDirectiveTokens(csp, 'img-src'), ['*']);
-  });
+  it.each([
+    'script-src https://a.example.net;img-src *',
+    ' script-src https://a.example.net ; img-src * ',
+    '; script-src https://a.example.net ; img-src * ;',
+    "\t script-src https://a.example.net \t ;\t img-src * ; object-src 'none'",
+    "default-src 'self' ; script-src https://a.example.net ; img-src *",
+    "; script-src https://a.example.net ; object-src 'none' ;; img-src * ;",
+    "script-src https://a.example.net ; img-src * ; object-src 'none'; script-src https://b.example.net",
+  ])(
+    'should support multiple directives separated by " ; " and various whitespace',
+    (csp) => {
+      deepEqual(getDirectiveTokens(csp, 'script-src'), [
+        'https://a.example.net',
+      ]);
+      deepEqual(getDirectiveTokens(csp, 'img-src'), ['*']);
+    },
+  );
 });
 
 describe('CSP-Util: hasExactToken', () => {
