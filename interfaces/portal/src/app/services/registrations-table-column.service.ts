@@ -263,6 +263,7 @@ export class RegistrationsTableColumnService {
               value: option.value,
             })) ?? [],
           defaultHidden: true,
+          debugSubHeader: `${foundAttribute.type} / ${foundAttribute.koboType ?? '-'}`,
         });
       }
     }
