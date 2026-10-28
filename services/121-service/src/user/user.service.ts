@@ -9,7 +9,6 @@ import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/emails.const';
-import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
 import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
@@ -110,7 +109,9 @@ export class UserService {
       return;
     }
 
-    await this.sendLoginOtpEmail({
+    // Send the login OTP email in the background without awaiting it, 
+    // so the response time does not reveal whether the user exists
+    this.sendLoginOtpEmailInBackground({
       email,
       recipientName: user.displayName,
       otp: createOtpResult.otp,
@@ -121,7 +122,7 @@ export class UserService {
     return env.USE_SSO_AZURE_ENTRA || isEntraUser;
   }
 
-  private async sendLoginOtpEmail({
+  private sendLoginOtpEmailInBackground({
     email,
     recipientName,
     otp,
@@ -129,23 +130,20 @@ export class UserService {
     email: string;
     recipientName: string;
     otp: string;
-  }): Promise<void> {
-    try {
-      await this.userEmailsService.sendLoginOtp({
+  }): void {
+    this.userEmailsService
+      .sendLoginOtp({
         email,
         recipientName,
         otp,
         expirationMinutes: OTP_EXPIRATION_MINUTES,
+      })
+      .catch((error) => {
+        this.azureLogService.logError(
+          new Error('Failed to send login OTP email', { cause: error }),
+          false,
+        );
       });
-    } catch (error) {
-      if (!(error instanceof EmailDeliveryError)) {
-        throw error;
-      }
-      this.azureLogService.logError(
-        new Error('Failed to send login OTP email', { cause: error }),
-        false,
-      );
-    }
   }
 
   public async canActivate(
