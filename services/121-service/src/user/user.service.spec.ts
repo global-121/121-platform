@@ -230,6 +230,27 @@ describe('UserService', () => {
         false,
       );
     });
+
+    it('responds normally and logs when sending fails with an unexpected error', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
+      jest
+        .spyOn(userEmailsService, 'sendLoginOtp')
+        .mockRejectedValue(new Error('Managed identity unavailable'));
+
+      // Act
+      const requestResult = service.requestLoginOtp({
+        username: 'user@example.org',
+      });
+
+      // Assert
+      await expect(requestResult).resolves.toBeUndefined();
+      await new Promise((resolve) => setImmediate(resolve));
+      expect(azureLogService.logError).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'Failed to send login OTP email' }),
+        false,
+      );
+    });
   });
 
   describe('canActivate', () => {
