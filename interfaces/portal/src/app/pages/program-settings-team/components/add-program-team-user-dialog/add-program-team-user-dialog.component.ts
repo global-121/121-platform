@@ -156,10 +156,6 @@ export class AddProgramTeamUserDialogComponent {
       validators: [Validators.required, Validators.minLength(1)],
       nonNullable: true,
     }),
-    scopeValue: new FormControl('', {
-      validators: [Validators.pattern(/^\S*$/)],
-      nonNullable: true,
-    }),
     accessGroupsValue: new FormGroup({
       accessGroup1Value: new FormControl<null | string>(null),
       accessGroup2Value: new FormControl<null | string>(null),
@@ -168,12 +164,6 @@ export class AddProgramTeamUserDialogComponent {
   });
 
   formFieldErrors = generateFieldErrors(this.formGroup, {
-    scopeValue: ({ invalid }) => {
-      if (!invalid) {
-        return;
-      }
-      return $localize`Enter a valid scope. No spaces are allowed.`;
-    },
     userValue: ({ invalid }) => {
       if (!invalid) {
         return;
@@ -227,12 +217,10 @@ export class AddProgramTeamUserDialogComponent {
     mutationFn: ({
       userValue,
       rolesValue,
-      scopeValue,
       accessGroupsValue,
     }: {
       userValue?: number; // this is undefined when editing because the field is disabled
       rolesValue: string[];
-      scopeValue: string;
       accessGroupsValue: {
         accessGroup1Value: null | string;
         accessGroup2Value: null | string;
@@ -262,7 +250,6 @@ export class AddProgramTeamUserDialogComponent {
           {
             userId,
             roles: rolesValue,
-            scope: scopeValue,
             accessGroups,
           },
         );
@@ -271,7 +258,6 @@ export class AddProgramTeamUserDialogComponent {
       return this.programApiService.assignProgramUser(this.programId, {
         userId: userValue,
         roles: rolesValue,
-        scope: scopeValue,
         accessGroups,
       });
     },
@@ -307,7 +293,6 @@ export class AddProgramTeamUserDialogComponent {
             this.formGroup.patchValue({
               userValue: user.id,
               rolesValue: user.roles.map(({ role }) => role),
-              scopeValue: user.scope,
               accessGroupsValue: {
                 accessGroup1Value: accessGroupValues[0] ?? null,
                 accessGroup2Value: accessGroupValues[1] ?? null,

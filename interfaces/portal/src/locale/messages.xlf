@@ -1184,9 +1184,6 @@
       <trans-unit id="5420760055917675082" datatype="html">
         <source>You&apos;re about to replace debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>. This will block the current card and a new card will be issued.</source>
       </trans-unit>
-      <trans-unit id="5438647545299330818" datatype="html">
-        <source>Enter a valid scope. No spaces are allowed.</source>
-      </trans-unit>
       <trans-unit id="5452570589103987928" datatype="html">
         <source>Payment status chart.</source>
       </trans-unit>
