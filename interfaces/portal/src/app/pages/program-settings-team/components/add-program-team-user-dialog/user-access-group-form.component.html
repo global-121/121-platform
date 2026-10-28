@@ -1,0 +1,120 @@
+<p
+  class="block [&_.p-datepicker]:inline-full [&_input]:inline-full [&_textarea]:inline-full"
+>
+  <strong class="mbe-2 block">
+    <span
+      i18n
+      class="ms-0"
+      >Access group</span
+    >
+    <span class="inline-flex items-center gap-1 align-middle max-inline-full">
+      <app-info-tooltip
+        [infoTooltipData]="accessGroupTooltip"
+        class="ms-1"
+      />
+    </span>
+  </strong>
+  @if (userIsUpdatingItself()) {
+    <p
+      i18n
+      class="my-2"
+    >
+      Users cannot change their own access group levels
+    </p>
+    <p
+      i18n
+      class="my-2"
+    ></p>
+  }
+</p>
+
+<ng-container [formGroup]="form">
+  <ng-container formGroupName="accessGroupsValue">
+    @if (!!accessGroupAttributes()[0]) {
+      @let attribute = accessGroupAttributes()[0];
+      <app-form-field-wrapper
+        [label]="'Level 1:'"
+        i18n-label
+      >
+        <ng-container slot="label-extra-inline">
+          <span>
+            {{ attribute.label }}
+          </span>
+        </ng-container>
+        <p-select
+          [options]="attribute.options"
+          [optionLabel]="'label'"
+          [optionValue]="'option'"
+          [filter]="true"
+          formControlName="accessGroup1Value"
+          placeholder="Type or select"
+          i18n-placeholder="@@generic-type-or-select"
+          [showClear]="true"
+          [disabled]="userIsUpdatingItself()"
+        >
+          <ng-template #emptyfilter>
+            <app-select-no-results-message />
+          </ng-template>
+        </p-select>
+      </app-form-field-wrapper>
+    }
+
+    @if (accessGroupAttributes()[1]) {
+      @let attribute = accessGroupAttributes()[1];
+      <app-form-field-wrapper
+        [label]="'Level 2:'"
+        i18n-label
+      >
+        <ng-container slot="label-extra-inline">
+          <span>
+            {{ attribute.label }}
+          </span>
+        </ng-container>
+        <p-select
+          [options]="attribute.options"
+          [optionLabel]="'label'"
+          [optionValue]="'option'"
+          [filter]="true"
+          formControlName="accessGroup2Value"
+          placeholder="Type or select"
+          i18n-placeholder="@@generic-type-or-select"
+          [showClear]="true"
+          [disabled]="userIsUpdatingItself()"
+        >
+          <ng-template #emptyfilter>
+            <app-select-no-results-message />
+          </ng-template>
+        </p-select>
+      </app-form-field-wrapper>
+    }
+
+    @if (accessGroupAttributes()[2]) {
+      @let attribute = accessGroupAttributes()[2];
+      <app-form-field-wrapper
+        [label]="'Level 3:'"
+        i18n-label
+      >
+        <ng-container slot="label-extra-inline">
+          <span>
+            {{ attribute.label }}
+          </span>
+        </ng-container>
+        <p-select
+          [options]="attribute.options"
+          [optionLabel]="'label'"
+          [optionValue]="'option'"
+          [filter]="true"
+          formControlName="accessGroup3Value"
+          placeholder="Type or select"
+          i18n-placeholder="@@generic-type-or-select"
+          [showClear]="true"
+          [disabled]="userIsUpdatingItself()"
+        >
+          <ng-template #emptyfilter>
+            <app-select-no-results-message />
+          </ng-template>
+        </p-select>
+      </app-form-field-wrapper>
+    }
+  </ng-container>
+</ng-container>
