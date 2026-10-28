@@ -43,6 +43,10 @@ const DECIMAL_NUMBER_PATTERN = /^-?(\d+\.?\d*|\.\d+)$/;
 
 const QUOTED_LITERAL_PATTERN = /["']/;
 
+const CONDITIONAL_PREFIX_PATTERN = /^if\s*\(/i;
+
+const REFERENCE_PATTERN = /^\$\{[^}]+\}$/;
+
 const BOOLEAN_OPERATOR_PATTERN = /[<>=]|\b(and|or)\b/i;
 
 // A "*" directly after "/", "@" or "::" is a wildcard node test (e.g. /data/*), not a multiplication
@@ -85,6 +89,14 @@ export const inferAttributeTypeFromCalculation = ({
     return RegistrationAttributeTypes.numeric;
   }
 
+  // A conditional returns one of its branches, so it is numeric when both branches are
+  const conditional = parseConditional({ formula });
+  if (conditional) {
+    return isNumericConditional({ conditional })
+      ? RegistrationAttributeTypes.numeric
+      : RegistrationAttributeTypes.text;
+  }
+
   // The result type is decided by the outermost operator or function.
   // Whatever is nested in brackets, references or quotes does not count.
   const topLevel = keepOnlyTopLevel({ formula });
@@ -116,6 +128,116 @@ export const inferAttributeTypeFromCalculation = ({
 
   // Default fallback to text if ambiguous
   return RegistrationAttributeTypes.text;
+};
+
+interface Conditional {
+  condition: string;
+  thenBranch: string;
+  elseBranch: string;
+}
+
+const parseConditional = ({
+  formula,
+}: {
+  formula: string;
+}): Conditional | undefined => {
+  const match = CONDITIONAL_PREFIX_PATTERN.exec(formula);
+  if (!match) {
+    return;
+  }
+
+  const callArguments = formula.slice(match[0].length - 1);
+  if (!encloseWholeFormula({ formula: callArguments })) {
+    return;
+  }
+
+  const [condition, thenBranch, elseBranch, ...rest] = splitTopLevelArguments({
+    formula: callArguments.slice(1, -1),
+  });
+  if (!condition || !thenBranch || !elseBranch || rest.length > 0) {
+    return;
+  }
+
+  return { condition, thenBranch, elseBranch };
+};
+
+const isNumericConditional = ({
+  conditional,
+}: {
+  conditional: Conditional;
+}): boolean =>
+  [conditional.thenBranch, conditional.elseBranch].every((branch) =>
+    isNumericBranch({ branch, condition: conditional.condition }),
+  );
+
+const isNumericBranch = ({
+  branch,
+  condition,
+}: {
+  branch: string;
+  condition: string;
+}): boolean => {
+  if (REFERENCE_PATTERN.test(branch)) {
+    return isComparedToNumber({ reference: branch, condition });
+  }
+
+  return (
+    inferAttributeTypeFromCalculation({ calculation: branch }) ===
+    RegistrationAttributeTypes.numeric
+  );
+};
+
+// A reference has no known type, unless the condition orders it against a number (e.g. ${a} > 0)
+const isComparedToNumber = ({
+  reference,
+  condition,
+}: {
+  reference: string;
+  condition: string;
+}): boolean => {
+  const escapedReference = reference.replace(/[$.*+?^{}()|[\]\\]/g, '\\$&');
+  const comparedToNumberPattern = new RegExp(
+    `${escapedReference}\\s*(<=|>=|<|>)\\s*-?[\\d.]|[\\d.]\\s*(<=|>=|<|>)\\s*${escapedReference}`,
+  );
+  return comparedToNumberPattern.test(condition);
+};
+
+const splitTopLevelArguments = ({ formula }: { formula: string }): string[] => {
+  const callArguments: string[] = [];
+  let currentArgument = '';
+  let bracketDepth = 0;
+  let quoteCharacter: string | undefined;
+  let isInsideReference = false;
+
+  for (const character of formula) {
+    if (quoteCharacter) {
+      if (character === quoteCharacter) {
+        quoteCharacter = undefined;
+      }
+    } else if (isInsideReference) {
+      if (character === '}') {
+        isInsideReference = false;
+      }
+    } else if (QUOTE_CHARACTERS.has(character)) {
+      quoteCharacter = character;
+    } else if (character === '$') {
+      isInsideReference = true;
+    } else if (character === '(') {
+      bracketDepth += 1;
+    } else if (character === ')') {
+      bracketDepth -= 1;
+    } else if (character === ',' && bracketDepth === 0) {
+      callArguments.push(currentArgument.trim());
+      currentArgument = '';
+      continue;
+    }
+
+    currentArgument += character;
+  }
+
+  callArguments.push(currentArgument.trim());
+
+  return callArguments;
 };
 
 const removeEnclosingParentheses = ({
