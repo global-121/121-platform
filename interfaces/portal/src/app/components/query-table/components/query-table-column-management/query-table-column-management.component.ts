@@ -18,6 +18,7 @@ import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DrawerModule } from 'primeng/drawer';
 import { FocusTrapModule } from 'primeng/focustrap';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { QueryTableColumn } from '~/components/query-table/query-table.types';
@@ -38,6 +39,7 @@ import { TrackingService } from '~/services/tracking/tracking.service';
     DrawerModule,
     FormErrorComponent,
     FocusTrapModule,
+    ScrollPanelModule,
   ],
   templateUrl: './query-table-column-management.component.html',
   styles: ``,

@@ -30,37 +30,44 @@
       [pFocusTrapDisabled]="!formVisible()"
     >
       <div class="flex grow flex-col gap-2">
-        <h2 class="mbe-5">
-          <span i18n="@@query-table-manage-table">Manage table</span>
-        </h2>
-        <p-button
-          label="Revert to default"
-          i18n-label
-          icon="pi pi-replay"
-          [iconPos]="rtlHelper.createPosition('start')()"
-          outlined
-          rounded
-          (click)="revertToDefault()"
-        />
-        <p
-          i18n
-          class="mbs-5 mbe-2 font-semibold"
-        >
-          Table columns:
-        </p>
+        <div>
+          <h2 class="mbe-5">
+            <span i18n="@@query-table-manage-table">Manage table</span>
+          </h2>
+          <p-button
+            label="Revert to default"
+            i18n-label
+            icon="pi pi-replay"
+            [iconPos]="rtlHelper.createPosition('start')()"
+            outlined
+            rounded
+            (click)="revertToDefault()"
+          />
+        </div>
 
-        @for (column of columns(); track $index) {
-          <div class="flex items-center gap-1 inline-full">
-            <label class="flex">
-              <p-checkbox
-                formControlName="selectedColumns"
-                [value]="column"
-                class="me-2"
-              />
-              <span>{{ column.header }}</span>
-            </label>
-          </div>
-        }
+        <div class="relative flex-1">
+          <p-scrollpanel
+            [style]="{ width: '100%', height: 'auto' }"
+            class="absolute inset-y-0 [&_.p-scrollpanel-bar]:opacity-20! hover:[&_.p-scrollpanel-bar]:opacity-100!"
+          >
+            <p
+              i18n
+              class="mbs-5 mbe-2 font-semibold"
+            >
+              Table columns:
+            </p>
+            @for (column of columns(); track $index) {
+              <label class="my-1.5 flex items-center">
+                <p-checkbox
+                  formControlName="selectedColumns"
+                  [value]="column"
+                  class="me-2 [&>checkbox]:block-4 [&>checkbox]:inline-4"
+                />
+                <span>{{ column.header }}</span>
+              </label>
+            }
+          </p-scrollpanel>
+        </div>
       </div>
       <app-form-error [error]="formError()" />
       <div
