@@ -6,13 +6,10 @@ import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/r
 const XPATH_STRING_FUNCTIONS = [
   'concat',
   'substr',
-  'substring',
   'substring-before',
   'substring-after',
   'translate',
   'normalize-space',
-  'lower-case',
-  'upper-case',
   'string',
   'pulldata',
   'join',
@@ -28,8 +25,6 @@ const XPATH_NUMERIC_FUNCTIONS = [
   'int',
   'number',
   'round',
-  'floor',
-  'ceiling',
   'abs',
   'pow',
   'min',
@@ -49,8 +44,7 @@ const REFERENCE_PATTERN = /^\$\{[^}]+\}$/;
 
 const BOOLEAN_OPERATOR_PATTERN = /[<>=]|\b(and|or)\b/i;
 
-// A "*" directly after "/", "@" or "::" is a wildcard node test (e.g. /data/*), not a multiplication
-const ARITHMETIC_OPERATOR_PATTERN = /(?<![/@:]\s*)\*|\+|\s-\s|\b(div|mod)\b/i;
+const ARITHMETIC_OPERATOR_PATTERN = /\*|\+|\s-\s|\b(div|mod)\b/i;
 
 const toFunctionCallPattern = ({
   functionNames,
@@ -151,12 +145,9 @@ const parseConditional = ({
     return;
   }
 
-  const [condition, thenBranch, elseBranch, ...rest] = splitTopLevelArguments({
+  const [condition, thenBranch, elseBranch] = splitTopLevelArguments({
     formula: callArguments.slice(1, -1),
   });
-  if (!condition || !thenBranch || !elseBranch || rest.length > 0) {
-    return;
-  }
 
   return { condition, thenBranch, elseBranch };
 };
