@@ -1431,6 +1431,9 @@
       <trans-unit id="6509003407758128100" datatype="html">
         <source>Cookie policy</source>
       </trans-unit>
+      <trans-unit id="6511164189902637101" datatype="html">
+        <source>This field is used to calculate access groups for the program and must be a &apos;select_one&apos; question in your form.</source>
+      </trans-unit>
       <trans-unit id="651664891309642077" datatype="html">
         <source>Failed transactions</source>
       </trans-unit>

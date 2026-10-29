@@ -6,10 +6,11 @@ import { CreateProgramRegistrationAttributeDto } from '@121-service/src/programs
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-    getProgram,
-    patchProgramRegistrationAttribute,
-    postProgram,
-    postProgramRegistrationAttribute,
+  getProgram,
+  patchProgramRegistrationAttribute,
+  postProgram,
+  postProgramRegistrationAttribute,
+  updateProgramAccessGroupLevels,
 } from '@121-service/test/helpers/program.helper';
 import {
     getAccessToken,
@@ -109,6 +110,49 @@ describe('Get program', () => {
       // Assert
       expect(patchAttributeResponse.statusCode).toBe(HttpStatus.OK);
       expect(attributeNames).toEqual(expectedAttributeNames);
+    });
+  });
+
+  describe('accessGroupRegistrationAttributeNames', () => {
+    const programId = 2;
+
+    it('should return empty array when no access group levels are configured', async () => {
+      // Act
+      const getProgramResponse = await getProgram(programId, accessToken);
+
+      // Assert
+      expect(getProgramResponse.statusCode).toBe(HttpStatus.OK);
+      expect(
+        getProgramResponse.body.accessGroupRegistrationAttributeNames,
+      ).toEqual([]);
+    });
+
+    it('should return configured access group level attribute names in order', async () => {
+      // Arrange
+      const provinceAttribute: CreateProgramRegistrationAttributeDto = {
+        name: 'province',
+        type: RegistrationAttributeTypes.dropdown,
+        label: { en: 'Province' },
+        options: [{ option: 'utrecht', label: { en: 'Utrecht' } }],
+      };
+      await postProgramRegistrationAttribute(
+        provinceAttribute,
+        programId,
+        accessToken,
+      );
+      await updateProgramAccessGroupLevels(
+        programId,
+        { accessGroupRegistrationAttributeNames: ['province'] },
+        accessToken,
+      );
+
+      // Act
+      const getProgramResponse = await getProgram(programId, accessToken);
+
+      // Assert
+      expect(
+        getProgramResponse.body.accessGroupRegistrationAttributeNames,
+      ).toEqual(['province']);
     });
   });
 });

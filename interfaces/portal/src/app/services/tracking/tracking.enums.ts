@@ -120,6 +120,7 @@ export enum InfoTooltipTrackingName {
 
   registrationQuestionLabel = 'Registration Questions: Label',
   registrationsTableTransferValue = 'Registrations Table: Transfer Value Result',
+  requiredAttributeAccessGroupInfo = 'Kobo Required Attribute: Access Group Info',
   requiredAttributeFspInfo = 'Kobo Required Attribute: Fsp Info',
 
   requiredAttributeScopeInfo = 'Kobo Required Attribute: Scope Info',
