@@ -9,7 +9,7 @@
     <div
       [attr.data-testid]="item?.dataTestId"
       [attr.data-testid-category]="'data-list-item'"
-      class="border-grey-300 flex items-center border-be px-2 py-4"
+      class="border-grey-300 flex flex-col border-be p-3.5"
       [ngClass]="{
         'col-span-2': item.fullWidth,
         'items-start': item.type === 'koboImage',
@@ -40,8 +40,8 @@
           </span>
         </div>
       } @else {
-        <div class="me-1">
-          <strong>{{ item.label | translatableString }}:</strong>
+        <div class="flex text-sm opacity-65">
+          <span>{{ item.label | translatableString }}:</span>
           @if (item.infoTooltipData) {
             <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
           }
@@ -59,21 +59,23 @@
               aria-hidden="true"
             ></i>
           }
-          <span class="me-1">
+          <span class="leading-tight font-semibold">
             @switch (item.type) {
               @case ('boolean') {
                 @if (item.value) {
                   <span
                     i18n="@@generic-boolean-true"
                     class="ms-1"
-                    >Yes</span
                   >
+                    Yes
+                  </span>
                 } @else {
                   <span
                     i18n="@@generic-boolean-false"
                     class="ms-1"
-                    >No</span
                   >
+                    No
+                  </span>
                 }
               }
               @case ('code') {

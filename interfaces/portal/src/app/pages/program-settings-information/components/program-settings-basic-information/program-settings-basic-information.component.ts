@@ -191,26 +191,22 @@ export class ProgramSettingsBasicInformationComponent {
       {
         label: $localize`Location`,
         value: programData?.location,
-        fullWidth: true,
       },
       {
         label: '*' + $localize`Target registrations`,
         value: programData?.targetNrRegistrations,
-        fullWidth: true,
         type: 'number',
         infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.targetRegistrations,
       },
       {
         label: $localize`Enable validation`,
         value: programData?.validation ?? false,
-        fullWidth: true,
         type: 'boolean',
         infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.validationProcess,
       },
       {
         label: $localize`Enable scope`,
         value: programData?.enableScope ?? false,
-        fullWidth: true,
         type: 'boolean',
         infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.enableScope,
       },

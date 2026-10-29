@@ -149,7 +149,6 @@ export class ProgramSettingsFinanceComponent {
         label: $localize`Number of distributions per registration`,
         value: programData?.distributionDuration,
         type: 'number',
-        fullWidth: true,
         infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.distributionDuration,
       },
       {
@@ -157,7 +156,6 @@ export class ProgramSettingsFinanceComponent {
         value: programData?.fixedTransferValue,
         currencyCode: programData?.currency,
         type: 'currency',
-        fullWidth: true,
       },
       {
         label: $localize`Financial service providers`,
