@@ -944,9 +944,9 @@ export class RegistrationsInputValidator {
         /^\d{1,2}-\d{1,2}-\d{4}$/.test(value) &&
         isMatch(value, 'd-M-yyyy');
     } else if (type === RegistrationAttributeTypes.numeric) {
-      isValid = value != null && !isNaN(+value);
+      isValid = value != null && this.isFiniteNumber({ value });
     } else if (type === RegistrationAttributeTypes.numericNullable) {
-      isValid = value == null || !isNaN(+value);
+      isValid = value == null || this.isFiniteNumber({ value });
     } else if (
       type === RegistrationAttributeTypes.text ||
       type === RegistrationAttributeTypes.koboImage
@@ -985,6 +985,16 @@ export class RegistrationsInputValidator {
   }): string {
     const valueString = Array.isArray(value) ? JSON.stringify(value) : value;
     return `The value '${valueString}' given for the attribute '${attribute}' does not have the correct format for type '${type}'`;
+  }
+
+  // Rejects NaN and (-)Infinity, which can be the result of a Kobo calculate question.
+  // Numeric strings like '42' are accepted.
+  private isFiniteNumber({
+    value,
+  }: {
+    value: string[] | string | number | boolean;
+  }): boolean {
+    return Number.isFinite(+value);
   }
 
   private valueIsBool(
