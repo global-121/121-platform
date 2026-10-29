@@ -47,8 +47,8 @@
 
         <div class="relative flex-1">
           <p-scrollpanel
-            [style]="{ width: '100%', height: 'auto' }"
-            class="absolute inset-y-0 [&_.p-scrollpanel-bar]:opacity-20! hover:[&_.p-scrollpanel-bar]:opacity-100!"
+            [pt]="{ barY: { class: 'opacity-20 group-hover:opacity-100' } }"
+            class="group absolute inset-y-0 block-auto inline-full"
           >
             <p
               i18n
@@ -61,7 +61,7 @@
                 <p-checkbox
                   formControlName="selectedColumns"
                   [value]="column"
-                  class="me-2 [&>checkbox]:block-4 [&>checkbox]:inline-4"
+                  class="me-2"
                 />
                 <span>{{ column.header }}</span>
               </label>
