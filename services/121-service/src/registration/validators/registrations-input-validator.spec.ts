@@ -541,6 +541,73 @@ describe('RegistrationsInputValidator', () => {
     expect(validRegistrations[0]).toEqual(expectedResult);
   });
 
+  describe('numeric values', () => {
+    const nonFiniteValues = ['NaN', 'Infinity', '-Infinity'];
+    const finiteValues = ['0', '-30', '3.14'];
+
+    const validateNumericValue = async ({
+      value,
+      attributeType,
+    }: {
+      value: string;
+      attributeType: RegistrationAttributeTypes;
+    }) => {
+      mockProgramRepository.findOneOrFail = jest.fn().mockResolvedValue({
+        ...program,
+        programRegistrationAttributes: [
+          {
+            id: 20,
+            name: 'calculatedScore',
+            type: attributeType,
+            isRequired: false,
+          },
+        ],
+      });
+
+      return validator.validateAndCleanInput({
+        registrationInputArray: [{ calculatedScore: value }],
+        programId,
+        userId,
+        typeOfInput: RegistrationValidationInputType.update,
+        validationConfig: {
+          validateExistingReferenceId: true,
+        },
+      });
+    };
+
+    describe.each([
+      RegistrationAttributeTypes.numeric,
+      RegistrationAttributeTypes.numericNullable,
+    ])('for an attribute of type %s', (attributeType) => {
+      it.each(nonFiniteValues)(
+        'should report an error for the non-finite value %s',
+        async (value) => {
+          const { errors, validRegistrations } = await validateNumericValue({
+            value,
+            attributeType,
+          });
+
+          expect(validRegistrations).toHaveLength(0);
+          expect(errors).toHaveLength(1);
+          expect(errors[0]).toMatchObject({ column: 'calculatedScore', value });
+        },
+      );
+
+      it.each(finiteValues)(
+        'should accept the finite value %s',
+        async (value) => {
+          const { errors, validRegistrations } = await validateNumericValue({
+            value,
+            attributeType,
+          });
+
+          expect(errors).toHaveLength(0);
+          expect(validRegistrations).toHaveLength(1);
+        },
+      );
+    });
+  });
+
   it.each([
     { scope: '', description: 'empty scope' },
     { scope: 'random.scope.value', description: 'random scope value' },
