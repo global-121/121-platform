@@ -139,10 +139,17 @@ export class UserService {
         expirationMinutes: OTP_EXPIRATION_MINUTES,
       })
       .catch((error) => {
-        this.azureLogService.logError(
-          new Error('Failed to send login OTP email', { cause: error }),
-          false,
-        );
+        try {
+          this.azureLogService.logError(
+            new Error('Failed to send login OTP email', { cause: error }),
+            false,
+          );
+        } catch (loggingError) {
+          console.error(
+            'Failed to log login OTP email delivery error',
+            loggingError,
+          );
+        }
       });
   }
 
