@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
 
+import { GetSentEmailResponseDto } from '@mock-service/src/email/dto/get-sent-email-response.dto';
 import { SendMailRequestDto } from '@mock-service/src/email/dto/send-mail-request.dto';
-import { SentEmailDto } from '@mock-service/src/email/dto/sent-email.dto';
 
 // Bounds memory usage, as the mock-service can run for a long time locally.
 const MAX_SENT_EMAILS_PER_RECIPIENT = 50;
 
 @Injectable()
 export class EmailMockService {
-  private readonly sentEmailsByRecipient = new Map<string, SentEmailDto[]>();
+  private readonly sentEmailsByRecipient = new Map<
+    string,
+    GetSentEmailResponseDto[]
+  >();
 
   public sendMail({
     sender,
@@ -17,13 +20,10 @@ export class EmailMockService {
     sender: string;
     request: SendMailRequestDto;
   }): void {
-    // Matches the real Microsoft Graph `sendMail` endpoint, which returns
-    // 202 Accepted with no body. The email is stored in memory, so tests can
-    // read it back via `getSentEmails`.
     console.log('Mock email sent:', { sender, request });
 
     const { subject, body, toRecipients } = request.message;
-    const sentEmail: SentEmailDto = {
+    const sentEmail: GetSentEmailResponseDto = {
       sender,
       recipients: toRecipients.map(
         (recipient) => recipient.emailAddress.address,
@@ -33,20 +33,35 @@ export class EmailMockService {
       sentAt: new Date().toISOString(),
     };
 
-    const recipientKeys = new Set(
-      sentEmail.recipients.map((recipient) => this.toRecipientKey(recipient)),
-    );
-    for (const recipientKey of recipientKeys) {
-      const sentEmails = this.sentEmailsByRecipient.get(recipientKey) ?? [];
-      this.sentEmailsByRecipient.set(
-        recipientKey,
-        [sentEmail, ...sentEmails].slice(0, MAX_SENT_EMAILS_PER_RECIPIENT),
-      );
+    for (const recipient of sentEmail.recipients) {
+      this.storeSentEmail({ recipient, sentEmail });
     }
   }
 
-  public getSentEmails({ recipient }: { recipient: string }): SentEmailDto[] {
-    return this.sentEmailsByRecipient.get(this.toRecipientKey(recipient)) ?? [];
+  private storeSentEmail({
+    recipient,
+    sentEmail,
+  }: {
+    recipient: string;
+    sentEmail: GetSentEmailResponseDto;
+  }): void {
+    const recipientKey = this.toRecipientKey({ recipient });
+    const sentEmails = this.sentEmailsByRecipient.get(recipientKey) ?? [];
+    const sentEmailsNewestFirst = [sentEmail, ...sentEmails];
+
+    this.sentEmailsByRecipient.set(
+      recipientKey,
+      sentEmailsNewestFirst.slice(0, MAX_SENT_EMAILS_PER_RECIPIENT),
+    );
+  }
+
+  public getSentEmails({
+    recipient,
+  }: {
+    recipient: string;
+  }): GetSentEmailResponseDto[] {
+    const recipientKey = this.toRecipientKey({ recipient });
+    return this.sentEmailsByRecipient.get(recipientKey) ?? [];
   }
 
   public deleteSentEmails({ recipient }: { recipient?: string }): void {
@@ -54,10 +69,12 @@ export class EmailMockService {
       this.sentEmailsByRecipient.clear();
       return;
     }
-    this.sentEmailsByRecipient.delete(this.toRecipientKey(recipient));
+
+    const recipientKey = this.toRecipientKey({ recipient });
+    this.sentEmailsByRecipient.delete(recipientKey);
   }
 
-  private toRecipientKey(recipient: string): string {
+  private toRecipientKey({ recipient }: { recipient: string }): string {
     return recipient.toLowerCase();
   }
 }

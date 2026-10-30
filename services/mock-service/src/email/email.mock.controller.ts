@@ -12,9 +12,9 @@ import {
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { DeleteSentEmailsQueryDto } from '@mock-service/src/email/dto/delete-sent-emails-query.dto';
+import { GetSentEmailResponseDto } from '@mock-service/src/email/dto/get-sent-email-response.dto';
 import { GetSentEmailsQueryDto } from '@mock-service/src/email/dto/get-sent-emails-query.dto';
 import { SendMailRequestDto } from '@mock-service/src/email/dto/send-mail-request.dto';
-import { SentEmailDto } from '@mock-service/src/email/dto/sent-email.dto';
 import { EmailMockService } from '@mock-service/src/email/email.mock.service';
 
 @ApiTags('email')
@@ -57,10 +57,12 @@ export class EmailMockController {
   @Get('messages')
   @ApiResponse({
     status: HttpStatus.OK,
-    type: [SentEmailDto],
+    type: [GetSentEmailResponseDto],
     description: 'The emails sent to the recipient. Empty if there are none.',
   })
-  public getSentEmails(@Query() query: GetSentEmailsQueryDto): SentEmailDto[] {
+  public getSentEmails(
+    @Query() query: GetSentEmailsQueryDto,
+  ): GetSentEmailResponseDto[] {
     return this.emailMockService.getSentEmails({ recipient: query.recipient });
   }
 

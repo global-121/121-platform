@@ -11,7 +11,7 @@ interface SentEmail {
 }
 
 /**
- * Gets the emails sent to a recipient via the mock-service, newest first.
+ * Returns the emails newest first.
  */
 export async function getSentEmails({
   recipient,
@@ -31,9 +31,6 @@ export async function getSentEmails({
   return response.body;
 }
 
-/**
- * Deletes the emails sent via the mock-service, for one recipient or for all recipients.
- */
 export async function deleteSentEmails({
   recipient,
 }: { recipient?: string } = {}): Promise<void> {
