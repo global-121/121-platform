@@ -12,7 +12,7 @@ export class UserOtpEntity extends Base121Entity {
   public userId: number;
 
   @Column({ type: 'character varying' })
-  public hash: string;
+  public otp: string;
 
   @Column({ type: 'timestamp' })
   public expiresAt: Date;

@@ -17,15 +17,15 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
 
   public async replaceForUser({
     userId,
-    hash,
+    otp,
     expiresAt,
   }: {
     userId: number;
-    hash: string;
+    otp: string;
     expiresAt: Date;
   }): Promise<void> {
     await this.baseRepository.upsert(
-      { userId, hash, expiresAt, consumedAt: null, failedAttempts: 0 },
+      { userId, otp, expiresAt, consumedAt: null, failedAttempts: 0 },
       { conflictPaths: ['userId'] },
     );
   }

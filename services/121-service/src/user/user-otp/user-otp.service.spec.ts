@@ -48,7 +48,7 @@ describe('UserOtpService', () => {
         .update(otp)
         .digest('hex');
       expect(userOtpRepository.replaceForUser).toHaveBeenCalledWith(
-        expect.objectContaining({ userId: 1, hash: expectedHash }),
+        expect.objectContaining({ userId: 1, otp: expectedHash }),
       );
     });
 

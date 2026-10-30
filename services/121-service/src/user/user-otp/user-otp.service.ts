@@ -19,11 +19,12 @@ export class UserOtpService {
     userId,
   }: CreateOtpParams): Promise<CreateOtpResult> {
     const otp = this.generateOtp();
+    const hashedOtp = this.hashOtp({ otp });
     const expiresAt = new Date(Date.now() + OTP_EXPIRATION_MS);
 
     await this.userOtpRepository.replaceForUser({
       userId,
-      hash: this.hashOtp({ otp }),
+      otp: hashedOtp,
       expiresAt,
     });
 
