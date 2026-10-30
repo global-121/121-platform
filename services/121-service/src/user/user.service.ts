@@ -79,6 +79,14 @@ export class UserService {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
+    return await this.buildLoginResponse({ userEntity });
+  }
+
+  private async buildLoginResponse({
+    userEntity,
+  }: {
+    userEntity: UserEntity;
+  }): Promise<LoginResponseDto> {
     const token = this.generateJWT(userEntity);
     const user = await this.buildUserRO(userEntity);
 
@@ -151,6 +159,36 @@ export class UserService {
           );
         }
       });
+  }
+
+  public async loginWithOtp({
+    username,
+    otp,
+  }: {
+    username: string;
+    otp: string;
+  }): Promise<LoginResponseDto> {
+    const userEntity = await this.userRepository.findOne({
+      where: { username: Equal(username.toLowerCase()) },
+    });
+
+    if (
+      !userEntity ||
+      this.signsInWithEntra({ isEntraUser: userEntity.isEntraUser })
+    ) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
+    const isOtpVerified = await this.userOtpService.verifyOtp({
+      userId: userEntity.id,
+      otp,
+    });
+
+    if (!isOtpVerified) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
+    return await this.buildLoginResponse({ userEntity });
   }
 
   public async canActivate(
