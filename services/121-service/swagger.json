@@ -107,7 +107,7 @@
   },
   {
     "method": "post",
-    "path": "/api/users/otps",
+    "path": "/api/users/otp",
     "params": []
   },
   {
