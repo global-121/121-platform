@@ -4,7 +4,6 @@ import { getMockServer } from '@121-service/test/helpers/utility.helper';
 
 interface SentEmail {
   readonly sender: string;
-  readonly recipients: string[];
   readonly subject: string;
   readonly body: string;
   readonly sentAt: string;
@@ -33,10 +32,12 @@ export async function getSentEmails({
 
 export async function deleteSentEmails({
   recipient,
-}: { recipient?: string } = {}): Promise<void> {
+}: {
+  recipient: string;
+}): Promise<void> {
   const response = await getMockServer()
     .delete('/email/messages')
-    .query(recipient === undefined ? {} : { recipient });
+    .query({ recipient });
 
   if (response.status !== HttpStatus.NO_CONTENT) {
     throw new Error(

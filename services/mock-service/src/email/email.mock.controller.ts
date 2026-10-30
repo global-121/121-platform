@@ -11,10 +11,9 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { DeleteSentEmailsQueryDto } from '@mock-service/src/email/dto/delete-sent-emails-query.dto';
 import { GetSentEmailResponseDto } from '@mock-service/src/email/dto/get-sent-email-response.dto';
-import { GetSentEmailsQueryDto } from '@mock-service/src/email/dto/get-sent-emails-query.dto';
 import { SendMailRequestDto } from '@mock-service/src/email/dto/send-mail-request.dto';
+import { SentEmailsQueryDto } from '@mock-service/src/email/dto/sent-emails-query.dto';
 import { EmailMockService } from '@mock-service/src/email/email.mock.service';
 
 @ApiTags('email')
@@ -60,15 +59,19 @@ export class EmailMockController {
     type: [GetSentEmailResponseDto],
     description: 'The emails sent to the recipient. Empty if there are none.',
   })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid input: `recipient` is not an email address.',
+  })
   public getSentEmails(
-    @Query() query: GetSentEmailsQueryDto,
+    @Query() query: SentEmailsQueryDto,
   ): GetSentEmailResponseDto[] {
     return this.emailMockService.getSentEmails({ recipient: query.recipient });
   }
 
   @ApiOperation({
     summary:
-      'Delete the sent emails of a recipient, or of all recipients (test-only, not part of the Graph API)',
+      'Delete the sent emails of a recipient (test-only, not part of the Graph API)',
   })
   @Delete('messages')
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -76,7 +79,11 @@ export class EmailMockController {
     status: HttpStatus.NO_CONTENT,
     description: 'Sent emails deleted.',
   })
-  public deleteSentEmails(@Query() query: DeleteSentEmailsQueryDto): void {
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid input: `recipient` is not an email address.',
+  })
+  public deleteSentEmails(@Query() query: SentEmailsQueryDto): void {
     this.emailMockService.deleteSentEmails({ recipient: query.recipient });
   }
 }

@@ -3,9 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { GetSentEmailResponseDto } from '@mock-service/src/email/dto/get-sent-email-response.dto';
 import { SendMailRequestDto } from '@mock-service/src/email/dto/send-mail-request.dto';
 
-// Bounds memory usage, as the mock-service can run for a long time locally.
-const MAX_SENT_EMAILS_PER_RECIPIENT = 50;
-
 @Injectable()
 export class EmailMockService {
   private readonly sentEmailsByRecipient = new Map<
@@ -25,16 +22,16 @@ export class EmailMockService {
     const { subject, body, toRecipients } = request.message;
     const sentEmail: GetSentEmailResponseDto = {
       sender,
-      recipients: toRecipients.map(
-        (recipient) => recipient.emailAddress.address,
-      ),
       subject,
       body: body.content,
       sentAt: new Date().toISOString(),
     };
 
-    for (const recipient of sentEmail.recipients) {
-      this.storeSentEmail({ recipient, sentEmail });
+    for (const toRecipient of toRecipients) {
+      this.storeSentEmail({
+        recipient: toRecipient.emailAddress.address,
+        sentEmail,
+      });
     }
   }
 
@@ -47,12 +44,7 @@ export class EmailMockService {
   }): void {
     const recipientKey = this.toRecipientKey({ recipient });
     const sentEmails = this.sentEmailsByRecipient.get(recipientKey) ?? [];
-    const sentEmailsNewestFirst = [sentEmail, ...sentEmails];
-
-    this.sentEmailsByRecipient.set(
-      recipientKey,
-      sentEmailsNewestFirst.slice(0, MAX_SENT_EMAILS_PER_RECIPIENT),
-    );
+    this.sentEmailsByRecipient.set(recipientKey, [sentEmail, ...sentEmails]);
   }
 
   public getSentEmails({
@@ -64,12 +56,7 @@ export class EmailMockService {
     return this.sentEmailsByRecipient.get(recipientKey) ?? [];
   }
 
-  public deleteSentEmails({ recipient }: { recipient?: string }): void {
-    if (recipient === undefined) {
-      this.sentEmailsByRecipient.clear();
-      return;
-    }
-
+  public deleteSentEmails({ recipient }: { recipient: string }): void {
     const recipientKey = this.toRecipientKey({ recipient });
     this.sentEmailsByRecipient.delete(recipientKey);
   }

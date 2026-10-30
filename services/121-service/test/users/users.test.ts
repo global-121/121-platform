@@ -88,7 +88,7 @@ describe('/ Users', () => {
     expect(userListAfterDelete).not.toEqual(userListBeforeDelete);
   });
 
-  it('should reset user password', async () => {
+  it('should reset user password and email the new password', async () => {
     // Arrange
     const resetPasswordPayload = { username: 'admin@example.org' };
     await deleteSentEmails({ recipient: resetPasswordPayload.username });
@@ -102,8 +102,9 @@ describe('/ Users', () => {
     const sentEmails = await getSentEmails({
       recipient: resetPasswordPayload.username,
     });
-    expect(sentEmails).toHaveLength(1);
-    expect(sentEmails[0].subject).toBe('121 Portal password reset');
+    expect(sentEmails).toMatchObject([
+      { subject: '121 Portal password reset' },
+    ]);
   });
 
   it('should update user properties (isOrganizationAdmin, displayName)', async () => {
