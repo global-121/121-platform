@@ -7,6 +7,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import test from 'node:test';
 
+import { hasExactToken } from './lib/csp.utils.mjs';
 import { shouldBeEnabled } from './lib/env.utils.mjs';
 import { parseMatomoConnectionString } from './lib/matomo.utils.mjs';
 
@@ -81,10 +82,10 @@ test('Content-Security-Policy configuration for loading as iframe in Twilio Flex
 test('Content-Security-Policy configuration for loading as iframe in AWS Connect', () => {
   if (process.env.AWS_CONNECT_IFRAME_URL) {
     const awsConnectUrl = new URL(process.env.AWS_CONNECT_IFRAME_URL);
-    const awsConnectCondition = new RegExp(
-      `frame-ancestors[^;]* ${awsConnectUrl.origin.replace(/\./g, '\\.')}`,
+    ok(
+      hasExactToken(csp, 'frame-ancestors', awsConnectUrl.origin),
+      `Expected frame-ancestors to include exact token: ${awsConnectUrl.origin}`,
     );
-    match(csp, awsConnectCondition);
   } else {
     doesNotMatch(csp, /frame-ancestors[^;]* https:\/\/[^;]*\.connect\.aws/);
   }
@@ -123,13 +124,15 @@ test(
     );
 
     const matomoApiOrigin = new URL(matomoConnectionInfo.api).origin;
-    const connectSrcCondition = new RegExp(
-      `connect-src[^;]* ${matomoApiOrigin}`,
+    ok(
+      hasExactToken(csp, 'connect-src', matomoApiOrigin),
+      `Expected connect-src to include exact token: ${matomoApiOrigin}`,
     );
-    match(csp, connectSrcCondition);
 
     const matomoSdkOrigin = new URL(matomoConnectionInfo.sdk).origin;
-    const scriptSrcCondition = new RegExp(`script-src[^;]* ${matomoSdkOrigin}`);
-    match(csp, scriptSrcCondition);
+    ok(
+      hasExactToken(csp, 'script-src', matomoSdkOrigin),
+      `Expected script-src to include exact token: ${matomoSdkOrigin}`,
+    );
   },
 );
