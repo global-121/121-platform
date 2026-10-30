@@ -30,10 +30,13 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
+import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto';
 import { CreateLoginOtpDto } from '@121-service/src/user/dto/create-login-otp.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
+import { LoginResponseDto } from '@121-service/src/user/dto/login-response.dto';
 import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
+import { LoginWithOtpDto } from '@121-service/src/user/dto/login-with-otp.dto';
 import {
   UpdateUserDto,
   UpdateUserPasswordDto,
@@ -102,22 +105,9 @@ export class UserController {
     res.cookie(
       loginResponse.cookieSettings.tokenKey,
       loginResponse.cookieSettings.tokenValue,
-      {
-        sameSite: loginResponse.cookieSettings.sameSite,
-        secure: loginResponse.cookieSettings.secure,
-        expires: loginResponse.cookieSettings.expires,
-        httpOnly: loginResponse.cookieSettings.httpOnly,
-      },
+      this.buildLoginCookieOptions({ loginResponse }),
     );
-    return res.send({
-      username: loginResponse.userRo.user.username,
-      permissions: loginResponse.userRo.user.permissions,
-      [CookieNames.general]: loginResponse.token,
-      expires: loginResponse.cookieSettings.expires,
-      isAdmin: loginResponse.userRo.user.isAdmin,
-      isEntraUser: loginResponse.userRo.user.isEntraUser,
-      isOrganizationAdmin: loginResponse.userRo.user.isOrganizationAdmin,
-    });
+    return res.send(this.buildLoginResponseBody({ loginResponse }));
   }
 
   @NoUserAuthenticationEndpoint(
@@ -134,13 +124,76 @@ export class UserController {
       'Request accepted. If the user exists, an OTP is sent to their email address.',
   })
   @HttpCode(HttpStatus.ACCEPTED)
-  @Post('users/login/otp')
+  @Post('users/otps')
   public async requestLoginOtp(
     @Body() createLoginOtpDto: CreateLoginOtpDto,
   ): Promise<void> {
     await this.userService.requestLoginOtp({
       username: createLoginOtpDto.username,
     });
+  }
+
+  @NoUserAuthenticationEndpoint(
+    'OTP login endpoint must be publicly accessible, to be able to authenticate further use.',
+  )
+  @Throttle(THROTTLING_LIMIT_HIGH)
+  @ApiOperation({ summary: 'Log in existing user with a login OTP' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Logged in successfully',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unknown username, or invalid, expired or locked OTP',
+  })
+  @Post('users/login/otp')
+  public async loginWithOtp(
+    @Body() loginWithOtpDto: LoginWithOtpDto,
+    @Res() res,
+  ): Promise<UserRO> {
+    const loginResponse = await this.userService.loginWithOtp({
+      username: loginWithOtpDto.username,
+      otp: loginWithOtpDto.otp,
+    });
+
+    res.cookie(
+      loginResponse.cookieSettings.tokenKey,
+      loginResponse.cookieSettings.tokenValue,
+      this.buildLoginCookieOptions({ loginResponse }),
+    );
+    return res.send(this.buildLoginResponseBody({ loginResponse }));
+  }
+
+  private buildLoginCookieOptions({
+    loginResponse,
+  }: {
+    loginResponse: LoginResponseDto;
+  }): Pick<
+    CookieSettingsDto,
+    'sameSite' | 'secure' | 'expires' | 'httpOnly'
+  > {
+    return {
+      sameSite: loginResponse.cookieSettings.sameSite,
+      secure: loginResponse.cookieSettings.secure,
+      expires: loginResponse.cookieSettings.expires,
+      httpOnly: loginResponse.cookieSettings.httpOnly,
+    };
+  }
+
+  private buildLoginResponseBody({
+    loginResponse,
+  }: {
+    loginResponse: LoginResponseDto;
+  }) {
+    return {
+      username: loginResponse.userRo.user.username,
+      permissions: loginResponse.userRo.user.permissions,
+      [CookieNames.general]: loginResponse.token,
+      expires: loginResponse.cookieSettings.expires,
+      isAdmin: loginResponse.userRo.user.isAdmin,
+      isEntraUser: loginResponse.userRo.user.isEntraUser,
+      isOrganizationAdmin: loginResponse.userRo.user.isOrganizationAdmin,
+    };
   }
 
   @AuthenticatedUser()

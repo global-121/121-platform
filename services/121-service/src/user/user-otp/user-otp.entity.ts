@@ -25,4 +25,7 @@ export class UserOtpEntity extends Base121Entity {
 
   @Column({ default: 0 })
   public failedAttempts: number;
+
+  @Column({ type: 'timestamp', nullable: true })
+  public lockedUntil: Date | null;
 }
