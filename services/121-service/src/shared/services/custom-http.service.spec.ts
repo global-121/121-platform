@@ -2,11 +2,12 @@ import { HttpService } from '@nestjs/axios';
 import { HttpStatus } from '@nestjs/common';
 import fs from 'node:fs';
 import https from 'node:https';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { SensitivePiiValue } from '@121-service/src/shared/consts/sensitive-pii-value.class';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { buildTemplateLoginOtp } from '@121-service/src/user/user-emails/templates/login-otp.template';
 
 jest.mock('fs');
 
@@ -20,12 +21,14 @@ describe('CustomHttpService', () => {
   describe('post data with SensitiveValue fields', () => {
     let httpServicePostMock: jest.Mock;
     let trackTraceMock: jest.Mock;
+    let trackExceptionMock: jest.Mock;
 
     beforeEach(() => {
       httpServicePostMock = jest
         .fn()
         .mockReturnValue(of({ status: 200, statusText: 'OK', data: {} }));
       trackTraceMock = jest.fn();
+      trackExceptionMock = jest.fn();
 
       service = new CustomHttpService({
         post: httpServicePostMock,
@@ -33,6 +36,7 @@ describe('CustomHttpService', () => {
 
       service.defaultClient = {
         trackTrace: trackTraceMock,
+        trackException: trackExceptionMock,
         flush: jest.fn(),
       } as any;
     });
@@ -97,6 +101,60 @@ describe('CustomHttpService', () => {
       const loggedMessage = trackTraceMock.mock.calls[0][0].message;
       expect(loggedMessage).not.toContain(password);
       expect(loggedMessage).toContain('Password: <code>**REDACTED**</code>');
+    });
+
+    describe('with a login OTP email payload', () => {
+      const otp = '4A1RQ9';
+      const { subject, body } = buildTemplateLoginOtp({
+        email: 'user@example.org',
+        recipientName: 'Jane',
+        otp,
+        expirationMinutes: 10,
+      });
+      const payload = {
+        message: {
+          subject,
+          body: { contentType: 'HTML', content: body },
+          toRecipients: [{ emailAddress: { address: 'user@example.org' } }],
+        },
+        saveToSentItems: false,
+      };
+
+      it('should send the OTP unmodified while redacting it in the success log', async () => {
+        // Act
+        await service.post('https://email.example.net/api/sendMail', payload);
+
+        // Assert
+        const sentPayload = httpServicePostMock.mock.calls[0][1];
+        expect(sentPayload.message.body.content).toContain(otp);
+        const loggedMessage = trackTraceMock.mock.calls[0][0].message;
+        expect(loggedMessage).not.toContain(otp);
+        expect(loggedMessage).toContain('**REDACTED**');
+      });
+
+      it('should send the OTP unmodified while redacting it in the failure log', async () => {
+        // Arrange
+        httpServicePostMock.mockReturnValue(
+          throwError(() => ({
+            response: {
+              status: HttpStatus.BAD_REQUEST,
+              statusText: 'Bad Request',
+              data: {},
+            },
+          })),
+        );
+
+        // Act
+        await service.post('https://email.example.net/api/sendMail', payload);
+
+        // Assert
+        const sentPayload = httpServicePostMock.mock.calls[0][1];
+        expect(sentPayload.message.body.content).toContain(otp);
+        const loggedMessage =
+          trackExceptionMock.mock.calls[0][0].exception.message;
+        expect(loggedMessage).not.toContain(otp);
+        expect(loggedMessage).toContain('**REDACTED**');
+      });
     });
   });
 
@@ -436,7 +494,9 @@ describe('CustomHttpService', () => {
 
       // Assert
       expect(getTracedMessage()).not.toContain(password);
-      expect(getTracedMessage()).toContain('Password: <code>**REDACTED**</code>');
+      expect(getTracedMessage()).toContain(
+        'Password: <code>**REDACTED**</code>',
+      );
     });
   });
 
@@ -610,7 +670,9 @@ describe('CustomHttpService', () => {
 
       // Assert
       expect(getExceptionMessage()).not.toContain(password);
-      expect(getExceptionMessage()).toContain('Password: <code>**REDACTED**</code>');
+      expect(getExceptionMessage()).toContain(
+        'Password: <code>**REDACTED**</code>',
+      );
     });
   });
 });

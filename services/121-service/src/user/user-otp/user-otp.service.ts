@@ -8,6 +8,7 @@ import {
   OTP_CHARACTERS,
   OTP_EXPIRATION_MS,
   OTP_LENGTH,
+  OTP_REISSUE_COOLDOWN_MS,
 } from '@121-service/src/user/user-otp/user-otp.const';
 import { UserOtpRepository } from '@121-service/src/user/user-otp/user-otp.repository';
 
@@ -17,16 +18,26 @@ export class UserOtpService {
 
   public async createOtp({
     userId,
-  }: CreateOtpParams): Promise<CreateOtpResult> {
+  }: CreateOtpParams): Promise<CreateOtpResult | undefined> {
     const otp = this.generateOtp();
     const hashedOtp = this.hashOtp({ otp });
-    const expiresAt = new Date(Date.now() + OTP_EXPIRATION_MS);
+    const issuedAt = new Date();
+    const expiresAt = new Date(issuedAt.getTime() + OTP_EXPIRATION_MS);
 
-    await this.userOtpRepository.replaceForUser({
-      userId,
-      otp: hashedOtp,
-      expiresAt,
-    });
+    const isReplaced =
+      await this.userOtpRepository.replaceForUserIfIssuedBefore({
+        userId,
+        otp: hashedOtp,
+        issuedAt,
+        expiresAt,
+        previousIssuedBefore: new Date(
+          issuedAt.getTime() - OTP_REISSUE_COOLDOWN_MS,
+        ),
+      });
+
+    if (!isReplaced) {
+      return;
+    }
 
     return { otp, expiresAt };
   }

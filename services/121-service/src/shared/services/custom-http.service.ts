@@ -454,16 +454,16 @@ export class CustomHttpService {
           return maskValueKeepStart(value, 3);
         }
         if (typeof value === 'string') {
-          return this.redactPasswordsInLoggedContent(value);
+          return this.redactCodeElementsInLoggedContent(value);
         }
         return undefined;
       },
     );
   }
 
-  private redactPasswordsInLoggedContent(content: string): string {
+  private redactCodeElementsInLoggedContent(content: string): string {
     return content.replace(
-      /(Password:\s*<code>)(.*?)(<\/code>)/gs,
+      /(<code[^>]*>)(.*?)(<\/code>)/gs,
       '$1**REDACTED**$3',
     );
   }

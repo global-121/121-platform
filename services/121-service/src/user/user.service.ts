@@ -18,6 +18,7 @@ import {
   InterfaceNames,
 } from '@121-service/src/shared/enum/interface-names.enum';
 import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import {
   CreateProgramAssignmentDto,
   UpdateProgramAssignmentDto,
@@ -47,6 +48,8 @@ import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
+import { OTP_EXPIRATION_MINUTES } from '@121-service/src/user/user-otp/user-otp.const';
+import { UserOtpService } from '@121-service/src/user/user-otp/user-otp.service';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 const tokenExpirationHours = 33; // We picked a 33 hour window because it's 1 day + 8 hour working day + 1 hour buffer, to minimize the chance of a token expiring during a working day.
 const MS_PER_HOUR = 3_600_000;
@@ -65,6 +68,8 @@ export class UserService {
     @Inject(REQUEST) private readonly request: Request,
     private readonly userEmailsService: UserEmailsService,
     private readonly assignmentRepository: ProgramAidworkerAssignmentRepository,
+    private readonly userOtpService: UserOtpService,
+    private readonly azureLogService: AzureLogService,
   ) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
@@ -83,6 +88,71 @@ export class UserService {
     return { userRo: user, cookieSettings, token };
   }
 
+  public async requestLoginOtp({
+    username,
+  }: {
+    username: string;
+  }): Promise<void> {
+    const email = username.toLowerCase();
+    const user = await this.userRepository.findOne({
+      where: { username: Equal(email) },
+    });
+
+    if (!user || this.signsInWithEntra({ isEntraUser: user.isEntraUser })) {
+      return;
+    }
+
+    const createOtpResult = await this.userOtpService.createOtp({
+      userId: user.id,
+    });
+    if (!createOtpResult) {
+      return;
+    }
+
+    // Send the login OTP email in the background without awaiting it, 
+    // so the response time does not reveal whether the user exists
+    this.sendLoginOtpEmailInBackground({
+      email,
+      recipientName: user.displayName,
+      otp: createOtpResult.otp,
+    });
+  }
+
+  private signsInWithEntra({ isEntraUser }: { isEntraUser: boolean }): boolean {
+    return env.USE_SSO_AZURE_ENTRA || isEntraUser;
+  }
+
+  private sendLoginOtpEmailInBackground({
+    email,
+    recipientName,
+    otp,
+  }: {
+    email: string;
+    recipientName: string;
+    otp: string;
+  }): void {
+    this.userEmailsService
+      .sendLoginOtp({
+        email,
+        recipientName,
+        otp,
+        expirationMinutes: OTP_EXPIRATION_MINUTES,
+      })
+      .catch((error) => {
+        try {
+          this.azureLogService.logError(
+            new Error('Failed to send login OTP email', { cause: error }),
+            false,
+          );
+        } catch (loggingError) {
+          console.error(
+            'Failed to log login OTP email delivery error',
+            loggingError,
+          );
+        }
+      });
+  }
+
   public async canActivate(
     permissions: PermissionEnum[],
     programId: string | number,
@@ -91,7 +161,11 @@ export class UserService {
     // if programId is not a number then it is not a programId so a user does not have access
     const numericProgramId = Number(programId);
 
-    if (Number.isNaN(numericProgramId) || !permissions || permissions.length === 0) {
+    if (
+      Number.isNaN(numericProgramId) ||
+      !permissions ||
+      permissions.length === 0
+    ) {
       return false;
     }
 
