@@ -91,11 +91,14 @@ export class ProgramFormBudgetComponent {
         validators: [Validators.min(0)],
       },
     ),
-    fixedTransferValue: new FormControl(0, {
-      nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-      validators: [Validators.required, Validators.min(0)],
-    }),
+    fixedTransferValue: new FormControl<number | undefined>(
+      { value: undefined, disabled: false },
+      {
+        nonNullable: true,
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+        validators: [Validators.required, Validators.min(1)],
+      },
+    ),
     fsps: new FormControl<Fsps[]>([], {
       nonNullable: true,
     }),
@@ -104,7 +107,7 @@ export class ProgramFormBudgetComponent {
   formFieldErrors = generateFieldErrors(this.formGroup, {
     fixedTransferValue: (control) => {
       if (control.errors?.min) {
-        const min = get(control.errors.min, 'min') ?? 0;
+        const min = get(control.errors.min, 'min') ?? 1;
         return $localize`This field needs to be at least ${min}.`;
       }
       if (control.errors?.required) {
