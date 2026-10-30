@@ -106,6 +106,446 @@
       "includeInTransactionExport": true,
       "type": "text",
       "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "extraAttribute01",
+      "label": {
+        "en": "Extra attribute 01 with a rather long label to test column widths"
+      },
+      "type": "numeric",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute02",
+      "label": {
+        "en": "Extra attribute 02 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute03",
+      "label": {
+        "en": "Extra attribute 03 with a rather long label to test column widths"
+      },
+      "type": "date",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute04",
+      "label": {
+        "en": "Extra attribute 04 with a rather long label to test column widths"
+      },
+      "type": "boolean",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute05",
+      "label": {
+        "en": "Extra attribute 05 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute06",
+      "label": {
+        "en": "Extra attribute 06 with a rather long label to test column widths"
+      },
+      "type": "numeric",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute07",
+      "label": {
+        "en": "Extra attribute 07 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute08",
+      "label": {
+        "en": "Extra attribute 08 with a rather long label to test column widths"
+      },
+      "type": "date",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute09",
+      "label": {
+        "en": "Extra attribute 09 with a rather long label to test column widths"
+      },
+      "type": "boolean",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute10",
+      "label": {
+        "en": "Extra attribute 10 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute11",
+      "label": {
+        "en": "Extra attribute 11 with a rather long label to test column widths"
+      },
+      "type": "numeric",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute12",
+      "label": {
+        "en": "Extra attribute 12 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute13",
+      "label": {
+        "en": "Extra attribute 13 with a rather long label to test column widths"
+      },
+      "type": "date",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute14",
+      "label": {
+        "en": "Extra attribute 14 with a rather long label to test column widths"
+      },
+      "type": "boolean",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute15",
+      "label": {
+        "en": "Extra attribute 15 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute16",
+      "label": {
+        "en": "Extra attribute 16 with a rather long label to test column widths"
+      },
+      "type": "numeric",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute17",
+      "label": {
+        "en": "Extra attribute 17 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute18",
+      "label": {
+        "en": "Extra attribute 18 with a rather long label to test column widths"
+      },
+      "type": "date",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute19",
+      "label": {
+        "en": "Extra attribute 19 with a rather long label to test column widths"
+      },
+      "type": "boolean",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute20",
+      "label": {
+        "en": "Extra attribute 20 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute21",
+      "label": {
+        "en": "Extra attribute 21 with a rather long label to test column widths"
+      },
+      "type": "numeric",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute22",
+      "label": {
+        "en": "Extra attribute 22 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute23",
+      "label": {
+        "en": "Extra attribute 23 with a rather long label to test column widths"
+      },
+      "type": "date",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute24",
+      "label": {
+        "en": "Extra attribute 24 with a rather long label to test column widths"
+      },
+      "type": "boolean",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute25",
+      "label": {
+        "en": "Extra attribute 25 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute26",
+      "label": {
+        "en": "Extra attribute 26 with a rather long label to test column widths"
+      },
+      "type": "numeric",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute27",
+      "label": {
+        "en": "Extra attribute 27 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute28",
+      "label": {
+        "en": "Extra attribute 28 with a rather long label to test column widths"
+      },
+      "type": "date",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute29",
+      "label": {
+        "en": "Extra attribute 29 with a rather long label to test column widths"
+      },
+      "type": "boolean",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute30",
+      "label": {
+        "en": "Extra attribute 30 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute31",
+      "label": {
+        "en": "Extra attribute 31 with a rather long label to test column widths"
+      },
+      "type": "numeric",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute32",
+      "label": {
+        "en": "Extra attribute 32 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute33",
+      "label": {
+        "en": "Extra attribute 33 with a rather long label to test column widths"
+      },
+      "type": "date",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute34",
+      "label": {
+        "en": "Extra attribute 34 with a rather long label to test column widths"
+      },
+      "type": "boolean",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute35",
+      "label": {
+        "en": "Extra attribute 35 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute36",
+      "label": {
+        "en": "Extra attribute 36 with a rather long label to test column widths"
+      },
+      "type": "numeric",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute37",
+      "label": {
+        "en": "Extra attribute 37 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute38",
+      "label": {
+        "en": "Extra attribute 38 with a rather long label to test column widths"
+      },
+      "type": "date",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute39",
+      "label": {
+        "en": "Extra attribute 39 with a rather long label to test column widths"
+      },
+      "type": "boolean",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "extraAttribute40",
+      "label": {
+        "en": "Extra attribute 40 with a rather long label to test column widths"
+      },
+      "type": "text",
+      "includeInTransactionExport": false,
+      "isRequired": false,
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
     }
   ],
   "fullnameNamingConvention": ["fullName"],
