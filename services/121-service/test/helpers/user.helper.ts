@@ -76,7 +76,7 @@ export function requestLoginOtp({
 }: {
   username: string;
 }): Promise<request.Response> {
-  return getServer().post('/users/otps').send({ username });
+  return getServer().post('/users/otp').send({ username });
 }
 
 export function loginWithOtp({
