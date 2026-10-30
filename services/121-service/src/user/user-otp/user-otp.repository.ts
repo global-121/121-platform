@@ -1,5 +1,12 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThan, Repository } from 'typeorm';
+import {
+  Equal,
+  IsNull,
+  LessThan,
+  LessThanOrEqual,
+  MoreThan,
+  Repository,
+} from 'typeorm';
 
 import { UserOtpEntity } from '@121-service/src/user/user-otp/user-otp.entity';
 
@@ -15,7 +22,7 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
     );
   }
 
-  public async replaceForUserIfIssuedBefore({
+  public async replaceForUserIfIssuedBeforeAndNotLocked({
     userId,
     otp,
     issuedAt,
@@ -38,13 +45,30 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
         expiresAt,
         consumedAt: null,
         failedAttempts: 0,
+        lockedUntil: null,
       })
       .orUpdate(
-        ['otp', 'issuedAt', 'expiresAt', 'consumedAt', 'failedAttempts'],
+        [
+          'otp',
+          'issuedAt',
+          'expiresAt',
+          'consumedAt',
+          'failedAttempts',
+          'lockedUntil',
+        ],
         ['userId'],
         {
           overwriteCondition: {
-            where: { issuedAt: LessThan(previousIssuedBefore) },
+            where: [
+              {
+                issuedAt: LessThan(previousIssuedBefore),
+                lockedUntil: IsNull(),
+              },
+              {
+                issuedAt: LessThan(previousIssuedBefore),
+                lockedUntil: LessThanOrEqual(issuedAt),
+              },
+            ],
           },
         },
       )
@@ -53,5 +77,66 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
 
     const isInsertedOrReplaced = result.raw.length > 0;
     return isInsertedOrReplaced;
+  }
+
+  public async getByUserId({
+    userId,
+  }: {
+    userId: number;
+  }): Promise<UserOtpEntity | null> {
+    return await this.baseRepository.findOne({
+      where: { userId: Equal(userId) },
+    });
+  }
+
+  public async consumeIfUsable({
+    userId,
+    otp,
+    consumedAt,
+    maxFailedAttempts,
+  }: {
+    userId: number;
+    otp: string;
+    consumedAt: Date;
+    maxFailedAttempts: number;
+  }): Promise<boolean> {
+    const result = await this.baseRepository.update(
+      {
+        userId: Equal(userId),
+        otp: Equal(otp),
+        consumedAt: IsNull(),
+        expiresAt: MoreThan(consumedAt),
+        failedAttempts: LessThan(maxFailedAttempts),
+      },
+      { consumedAt },
+    );
+
+    const isConsumed = result.affected === 1;
+    return isConsumed;
+  }
+
+  public async recordFailedAttempt({
+    userId,
+    maxFailedAttempts,
+    lockedUntil,
+  }: {
+    userId: number;
+    maxFailedAttempts: number;
+    lockedUntil: Date;
+  }): Promise<void> {
+    await this.baseRepository
+      .createQueryBuilder()
+      .update()
+      .set({
+        failedAttempts: () => '"failedAttempts" + 1',
+        lockedUntil: () =>
+          'CASE WHEN "failedAttempts" + 1 >= :maxFailedAttempts THEN :lockedUntil ELSE "lockedUntil" END',
+      })
+      .where({
+        userId: Equal(userId),
+        failedAttempts: LessThan(maxFailedAttempts),
+      })
+      .setParameters({ maxFailedAttempts, lockedUntil })
+      .execute();
   }
 }

@@ -76,7 +76,17 @@ export function requestLoginOtp({
 }: {
   username: string;
 }): Promise<request.Response> {
-  return getServer().post('/users/login/otp').send({ username });
+  return getServer().post('/users/otps').send({ username });
+}
+
+export function loginWithOtp({
+  username,
+  otp,
+}: {
+  username: string;
+  otp: string;
+}): Promise<request.Response> {
+  return getServer().post('/users/login/otp').send({ username, otp });
 }
 
 export async function getCurrentUser({

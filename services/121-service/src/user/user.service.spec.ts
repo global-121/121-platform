@@ -84,7 +84,7 @@ describe('UserService', () => {
         },
         {
           provide: UserOtpService,
-          useValue: { createOtp: jest.fn() },
+          useValue: { createOtp: jest.fn(), verifyOtp: jest.fn() },
         },
         {
           provide: AzureLogService,
@@ -249,6 +249,116 @@ describe('UserService', () => {
       expect(azureLogService.logError).toHaveBeenCalledWith(
         expect.objectContaining({ message: 'Failed to send login OTP email' }),
         false,
+      );
+    });
+  });
+
+  describe('Logging in with an OTP', () => {
+    const otp = '4A1RQ9';
+    const buildExistingUser = (overrides: Partial<UserEntity> = {}) =>
+      ({
+        id: 1,
+        username: 'user@example.org',
+        displayName: 'Jane',
+        isEntraUser: false,
+        admin: false,
+        isOrganizationAdmin: false,
+        ...overrides,
+      }) as UserEntity;
+
+    beforeEach(() => {
+      jest.spyOn(userOtpService, 'verifyOtp').mockResolvedValue(true);
+      jest
+        .spyOn(userRepository, 'findOneOrFail')
+        .mockResolvedValue(buildExistingUser({ programAssignments: [] }));
+      jest
+        .spyOn(userRepository, 'save')
+        .mockImplementation(async (user) => user as UserEntity);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('logs in an existing user with a valid OTP', async () => {
+      // Arrange
+      const existingUser = buildExistingUser();
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
+
+      // Act
+      const loginResponse = await service.loginWithOtp({
+        username: 'User@Example.org',
+        otp,
+      });
+
+      // Assert
+      expect(loginResponse.userRo.user.username).toBe(existingUser.username);
+      expect(loginResponse.token).toEqual(expect.any(String));
+      expect(loginResponse.cookieSettings.tokenValue).toBe(
+        loginResponse.token,
+      );
+      expect(userRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: existingUser.id,
+          lastLogin: expect.any(Date),
+        }),
+      );
+    });
+
+    it('rejects an invalid OTP', async () => {
+      // Arrange
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue(buildExistingUser());
+      jest.spyOn(userOtpService, 'verifyOtp').mockResolvedValue(false);
+
+      // Act & Assert
+      await expect(
+        service.loginWithOtp({ username: 'user@example.org', otp }),
+      ).rejects.toThrow(
+        new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED),
+      );
+      expect(userRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('rejects an unknown user', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(
+        service.loginWithOtp({ username: 'unknown@example.org', otp }),
+      ).rejects.toThrow(
+        new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED),
+      );
+    });
+
+    it('rejects a user who signs in with Entra, even with a valid OTP', async () => {
+      // Arrange
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue(buildExistingUser({ isEntraUser: true }));
+
+      // Act & Assert
+      await expect(
+        service.loginWithOtp({ username: 'user@example.org', otp }),
+      ).rejects.toThrow(
+        new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED),
+      );
+    });
+
+    it('rejects any user when the instance uses Entra SSO, even with a valid OTP', async () => {
+      // Arrange
+      jest.replaceProperty(env, 'USE_SSO_AZURE_ENTRA', true);
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue(buildExistingUser());
+
+      // Act & Assert
+      await expect(
+        service.loginWithOtp({ username: 'user@example.org', otp }),
+      ).rejects.toThrow(
+        new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED),
       );
     });
   });
