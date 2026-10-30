@@ -76,6 +76,7 @@ export interface NormalizedRegistrationAttribute {
   isEditable: boolean;
   pattern?: string;
   type: RegistrationAttributeTypes;
+  koboType?: null | string;
   value: unknown;
   options?: {
     value: string;
@@ -272,6 +273,9 @@ export class RegistrationAttributeService {
         options,
         value,
         type,
+        koboType: program.programRegistrationAttributes.find(
+          (a) => a.name === name,
+        )?.koboType,
         isEditable: this.isEditableAttribute({
           attributeName: attribute.name,
           program,

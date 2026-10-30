@@ -122,6 +122,11 @@
         <th [pSortableColumn]="columnSortField">
           <div class="flex items-center text-nowrap">
             <ng-container>{{ column.header }}</ng-container>
+            @if (column.debugSubHeader) {
+              <small class="ms-1 text-xs font-normal opacity-60">{{
+                column.debugSubHeader
+              }}</small>
+            }
             @if (column.tooltip) {
               <app-info-tooltip [infoTooltipData]="column.tooltip" />
             }

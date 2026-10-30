@@ -11,4 +11,12 @@ export const kobooAttributes = [
     name: 'How_are_you_today_select_one',
     label: 'How are you today (select one)?',
   },
+  {
+    name: 'calculatedQuestionNumeric',
+    label: 'Calculated question numeric',
+  },
+  {
+    name: 'calculatedQuestionText',
+    label: 'Calculated question text',
+  },
 ];
