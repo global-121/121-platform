@@ -75,20 +75,4 @@
       [infoTooltipData]="PROGRAM_FORM_TOOLTIPS_CONFIG.validationProcess"
     />
   </div>
-  <div class="mbs-4 flex justify-items-center">
-    <p-toggleSwitch
-      inputId="enableScope"
-      formControlName="enableScope"
-      (onChange)="trackUseScopeToggleEvent($event)"
-    />
-    <label
-      class="ms-2"
-      for="enableScope"
-      i18n
-      >Use "scope" in this program</label
-    >
-    <app-info-tooltip
-      [infoTooltipData]="PROGRAM_FORM_TOOLTIPS_CONFIG.enableScope"
-    />
-  </div>
 </ng-container>

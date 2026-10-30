@@ -131,14 +131,4 @@ export class ProgramFormInformationComponent {
       name: event.checked ? 'enabled' : 'disabled',
     });
   }
-
-  trackUseScopeToggleEvent(event: { checked: boolean }): void {
-    this.trackEvent.emit({
-      category: this.isCreateProgram
-        ? TrackingCategory.createNewProgram
-        : TrackingCategory.programSettings,
-      action: TrackingAction.toggleProgramScope,
-      name: event.checked ? 'enabled' : 'disabled',
-    });
-  }
 }

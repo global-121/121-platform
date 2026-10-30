@@ -203,13 +203,37 @@ describe('AccessGroupLevelsService', () => {
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
     });
 
-    it('should throw when more than 3 attribute names are provided', async () => {
+    it('should accept four dropdown attributes in the selected order', () => {
+      // Arrange
+      const selectedAttributeNames = [
+        'region',
+        'district',
+        'subDistrict',
+        'village',
+      ];
+      const activeRegistrationAttributes = selectedAttributeNames.map((name) =>
+        createAttributeEntity({ name }),
+      );
+
+      // Act
+      const result = service.validateAccessGroupRegistrationAttributeNames({
+        programId,
+        activeRegistrationAttributes,
+        selectedAttributeNames,
+      });
+
+      // Assert
+      expect(result).toEqual(selectedAttributeNames);
+    });
+
+    it('should throw when more than 4 attribute names are provided', async () => {
       // Arrange
       const programRegistrationAttributes = [
         createAttributeEntity({ name: 'region' }),
         createAttributeEntity({ name: 'district' }),
         createAttributeEntity({ name: 'subDistrict' }),
         createAttributeEntity({ name: 'village' }),
+        createAttributeEntity({ name: 'neighbourhood' }),
       ];
 
       // Act + Assert
@@ -223,6 +247,7 @@ describe('AccessGroupLevelsService', () => {
               'district',
               'subDistrict',
               'village',
+              'neighbourhood',
             ],
           }))(),
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
