@@ -41,7 +41,11 @@ import { RegistrationDuplicatesBannerComponent } from '~/components/page-layout-
 import { RegistrationMenuComponent } from '~/components/page-layout-registration/components/registration-menu/registration-menu.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { programNeedsFullNameSetup } from '~/domains/program/program.helper';
+import {
+  getAccessGroupValue,
+  programHasAccessGroups,
+  programNeedsFullNameSetup,
+} from '~/domains/program/program.helper';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { registrationTransferValueTooltipMessage } from '~/domains/registration/registration.helper';
 import { RegistrationStatusChangeTarget } from '~/domains/registration/registration.model';
@@ -102,6 +106,18 @@ export class PageLayoutRegistrationComponent {
     viewChild.required<AddNoteDialogComponent>('addNoteDialog');
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
+  readonly canReadAccessGroupLevels = computed(() =>
+    this.authService.hasPermission({
+      programId: this.programId(),
+      requiredPermission: PermissionEnum.ProgramREAD,
+    }),
+  );
+  readonly accessGroupLevels = injectQuery(() => ({
+    ...this.programApiService.getAccessGroupLevels({
+      programId: this.programId,
+    })(),
+    enabled: this.canReadAccessGroupLevels(),
+  }));
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(
       this.programId,
@@ -217,9 +233,16 @@ export class PageLayoutRegistrationComponent {
       });
     }
 
+    const accessGroupDataListItem = this.getAccessGroupDataListItem({
+      registration: registrationRawData,
+    });
+    if (accessGroupDataListItem) {
+      listData.push(accessGroupDataListItem);
+    }
+
     return listData.map((item) => ({
       ...item,
-      loading: this.registration.isPending(),
+      loading: item.loading ?? this.registration.isPending(),
     }));
   });
 
@@ -257,7 +280,6 @@ export class PageLayoutRegistrationComponent {
 
     return `${localized}${registrationProgramId} - ${this.registration.data()?.name ?? ''}`;
   });
-
   readonly canViewPersonalData = computed(() =>
     this.authService.hasPermission({
       programId: this.programId(),
@@ -270,7 +292,6 @@ export class PageLayoutRegistrationComponent {
       requiredPermission: PermissionEnum.RegistrationPersonalUPDATE,
     }),
   );
-
   readonly canIgnoreDuplication = computed(() =>
     this.authService.hasAllPermissions({
       programId: this.programId(),
@@ -280,11 +301,9 @@ export class PageLayoutRegistrationComponent {
       ],
     }),
   );
-
   readonly duplicateChipData = computed(() =>
     getChipDataByDuplicateStatus(this.registration.data()?.duplicateStatus),
   );
-
   sendMessage() {
     const registration = this.registration.data();
     if (!registration) {
@@ -307,6 +326,64 @@ export class PageLayoutRegistrationComponent {
       fieldForFilter: GenericRegistrationAttributes.referenceId,
     });
     this.changeStatusDialog().triggerAction(actionData, status);
+  }
+
+  private getAccessGroupDataListItem({
+    registration,
+  }: {
+    registration?: Record<string, unknown>;
+  }): DataListItem | undefined {
+    const accessGroupLevels = this.accessGroupLevels.data();
+    if (!accessGroupLevels) {
+      return;
+    }
+
+    const accessGroupAttributeNames =
+      accessGroupLevels.accessGroupRegistrationAttributeNames;
+    if (
+      !programHasAccessGroups({
+        accessGroupRegistrationAttributeNames: accessGroupAttributeNames,
+      })
+    ) {
+      return;
+    }
+
+    const programRegistrationAttributes =
+      this.program.data()?.programRegistrationAttributes ?? [];
+    const accessGroupValue = getAccessGroupValue({
+      accessGroupRegistrationAttributeNames: accessGroupAttributeNames,
+      registration,
+      localizeAttribute: ({ attributeName, attributeOptionValue }) => {
+        const attribute = programRegistrationAttributes.find(
+          (programAttribute) => programAttribute.name === attributeName,
+        );
+        if (!attribute) {
+          return attributeOptionValue;
+        }
+
+        const option = attribute.options?.find(
+          (programOption) => programOption.option === attributeOptionValue,
+        );
+        if (!option) {
+          return attributeOptionValue;
+        }
+
+        return (
+          this.translatableStringService.translate(option.label) ??
+          attributeOptionValue
+        );
+      },
+    });
+
+    return {
+      label: $localize`Access group`,
+      value: accessGroupValue,
+      type: 'text',
+      loading:
+        this.registration.isPending() ||
+        this.program.isPending() ||
+        this.accessGroupLevels.isPending(),
+    };
   }
 
   private getPaymentCountString(
