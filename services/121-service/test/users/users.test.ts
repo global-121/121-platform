@@ -2,6 +2,10 @@ import { HttpStatus } from '@nestjs/common';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
+  deleteSentEmails,
+  getSentEmails,
+} from '@121-service/test/helpers/email.helper';
+import {
   getAllUsers,
   getAllUsersByProgramId,
 } from '@121-service/test/helpers/user.helper';
@@ -87,6 +91,7 @@ describe('/ Users', () => {
   it('should reset user password', async () => {
     // Arrange
     const resetPasswordPayload = { username: 'admin@example.org' };
+    await deleteSentEmails({ recipient: resetPasswordPayload.username });
     // Act
     const resetPasswordResponse = await getServer()
       .patch('/users/password')
@@ -94,6 +99,11 @@ describe('/ Users', () => {
       .send(resetPasswordPayload);
     // Assert
     expect(resetPasswordResponse.status).toBe(HttpStatus.NO_CONTENT);
+    const sentEmails = await getSentEmails({
+      recipient: resetPasswordPayload.username,
+    });
+    expect(sentEmails).toHaveLength(1);
+    expect(sentEmails[0].subject).toBe('121 Portal password reset');
   });
 
   it('should update user properties (isOrganizationAdmin, displayName)', async () => {

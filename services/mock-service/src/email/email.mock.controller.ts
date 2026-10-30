@@ -1,14 +1,20 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { DeleteSentEmailsQueryDto } from '@mock-service/src/email/dto/delete-sent-emails-query.dto';
+import { GetSentEmailsQueryDto } from '@mock-service/src/email/dto/get-sent-emails-query.dto';
 import { SendMailRequestDto } from '@mock-service/src/email/dto/send-mail-request.dto';
+import { SentEmailDto } from '@mock-service/src/email/dto/sent-email.dto';
 import { EmailMockService } from '@mock-service/src/email/email.mock.service';
 
 @ApiTags('email')
@@ -43,5 +49,32 @@ export class EmailMockController {
   ): void {
     this.emailMockService.sendMail({ sender, request: body });
   }
-}
 
+  @ApiOperation({
+    summary:
+      'Get the emails sent to a recipient, newest first (test-only, not part of the Graph API)',
+  })
+  @Get('messages')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: [SentEmailDto],
+    description: 'The emails sent to the recipient. Empty if there are none.',
+  })
+  public getSentEmails(@Query() query: GetSentEmailsQueryDto): SentEmailDto[] {
+    return this.emailMockService.getSentEmails({ recipient: query.recipient });
+  }
+
+  @ApiOperation({
+    summary:
+      'Delete the sent emails of a recipient, or of all recipients (test-only, not part of the Graph API)',
+  })
+  @Delete('messages')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Sent emails deleted.',
+  })
+  public deleteSentEmails(@Query() query: DeleteSentEmailsQueryDto): void {
+    this.emailMockService.deleteSentEmails({ recipient: query.recipient });
+  }
+}
