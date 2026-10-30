@@ -2,6 +2,10 @@ import { HttpStatus } from '@nestjs/common';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
+  deleteSentEmails,
+  getSentEmails,
+} from '@121-service/test/helpers/email.helper';
+import {
   getAllUsers,
   getAllUsersByProgramId,
 } from '@121-service/test/helpers/user.helper';
@@ -84,9 +88,10 @@ describe('/ Users', () => {
     expect(userListAfterDelete).not.toEqual(userListBeforeDelete);
   });
 
-  it('should reset user password', async () => {
+  it('should reset user password and email the new password', async () => {
     // Arrange
     const resetPasswordPayload = { username: 'admin@example.org' };
+    await deleteSentEmails({ recipient: resetPasswordPayload.username });
     // Act
     const resetPasswordResponse = await getServer()
       .patch('/users/password')
@@ -94,6 +99,12 @@ describe('/ Users', () => {
       .send(resetPasswordPayload);
     // Assert
     expect(resetPasswordResponse.status).toBe(HttpStatus.NO_CONTENT);
+    const sentEmails = await getSentEmails({
+      recipient: resetPasswordPayload.username,
+    });
+    expect(sentEmails).toMatchObject([
+      { subject: '121 Portal password reset' },
+    ]);
   });
 
   it('should update user properties (isOrganizationAdmin, displayName)', async () => {
