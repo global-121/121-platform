@@ -124,7 +124,7 @@ export class UserController {
       'Request accepted. If the user exists, an OTP is sent to their email address.',
   })
   @HttpCode(HttpStatus.ACCEPTED)
-  @Post('users/otps')
+  @Post('users/otp')
   public async requestLoginOtp(
     @Body() createLoginOtpDto: CreateLoginOtpDto,
   ): Promise<void> {
