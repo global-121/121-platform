@@ -136,7 +136,18 @@ export class RegistrationsPaginationService {
       }
     }
 
-    if (hasPersonalReadPermission) {
+    // Custom code is written here to filter on query.select since it does not work with query.relations
+    let attributeRelationsSelect = [...programRegistrationAttributeRelations];
+    const { select } = query;
+    if (select !== undefined && select.length > 0) {
+      attributeRelationsSelect = attributeRelationsSelect.filter((relation) =>
+        select.includes(relation.name),
+      );
+    }
+
+    const shouldLoadAttributeData =
+      hasPersonalReadPermission && attributeRelationsSelect.length > 0;
+    if (shouldLoadAttributeData) {
       paginateConfigCopy.relations = { data: true };
     } else {
       paginateConfigCopy.relations = {};
@@ -150,15 +161,6 @@ export class RegistrationsPaginationService {
       queryBuilder,
       paginateConfigCopy,
     );
-
-    // Custom code is written here to filter on query.select since it does not work with query.relations
-    let attributeRelationsSelect = [...programRegistrationAttributeRelations];
-    const { select } = query;
-    if (select !== undefined && select.length > 0) {
-      attributeRelationsSelect = attributeRelationsSelect.filter((relation) =>
-        select.includes(relation.name),
-      );
-    }
 
     const data = await this.mapPaginatedEntity({
       paginatedResult: result,

@@ -23,7 +23,6 @@ import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bu
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
-import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
@@ -109,15 +108,10 @@ export class PaymentsManagementService {
       });
       bulkActionResultPaymentDto.id = paymentId;
 
-      const referenceIds = registrationsForPayment.map(
-        (registration) => registration.referenceId,
-      );
-      const transactionCreationDetails =
-        await this.getTransactionCreationDetails({
-          referenceIds,
-          transferValue,
-          programId,
-        });
+      const transactionCreationDetails = this.getTransactionCreationDetails({
+        registrationsForPayment,
+        transferValue,
+      });
 
       await this.transactionsService.createTransactionsAndEvents({
         transactionCreationDetails,
@@ -154,6 +148,7 @@ export class PaymentsManagementService {
       this.registrationsBulkService.setQueryPropertiesBulkAction({
         query,
         includePaymentAttributes: true,
+        selectColumns: ['id'],
       });
 
     // Fill bulkActionResultDto with meta data of the payment being done
@@ -337,36 +332,20 @@ export class PaymentsManagementService {
       });
   }
 
-  private async getTransactionCreationDetails({
-    referenceIds,
+  private getTransactionCreationDetails({
+    registrationsForPayment,
     transferValue,
-    programId,
   }: {
-    referenceIds: string[];
+    registrationsForPayment: MappedPaginatedRegistrationDto[];
     transferValue: number;
-    programId: number;
-  }): Promise<TransactionCreationDetails[]> {
-    const idColumn: keyof RegistrationViewEntity = 'id';
-    const programFspConfigurationIdColumn: keyof RegistrationViewEntity =
-      'programFspConfigurationId';
-    const registrations =
-      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
-        {
-          programId,
-          referenceIds,
-          select: [
-            idColumn,
-            GenericRegistrationAttributes.paymentAmountMultiplier,
-            programFspConfigurationIdColumn,
-          ],
-        },
-      );
-
-    return registrations.map((row) => ({
-      registrationId: row.id,
-      transferValue: transferValue * row.paymentAmountMultiplier,
-      programFspConfigurationId: row.programFspConfigurationId,
-    }));
+  }): TransactionCreationDetails[] {
+    return registrationsForPayment
+      .map((registration) => ({
+        registrationId: registration.id,
+        transferValue: transferValue * registration.paymentAmountMultiplier,
+        programFspConfigurationId: registration.programFspConfigurationId,
+      }))
+      .sort((a, b) => a.registrationId - b.registrationId);
   }
 
   public async approvePayment({
