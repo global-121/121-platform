@@ -25,7 +25,6 @@ export type QueryTableColumn<TData, TField = Leaves<TData> & string> = {
   component?: Type<TableCellComponent<TData, any>>;
   class?: string;
   tooltip?: InfoTooltipData;
-  debugSubHeader?: string;
 } & (
   | {
       type: QueryTableColumnType.MULTISELECT;
