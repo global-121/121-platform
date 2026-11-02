@@ -43,7 +43,7 @@ describe('UserOtpService', () => {
               .mockResolvedValue(true),
             getByUserId: jest.fn(),
             consumeIfUsable: jest.fn().mockResolvedValue(true),
-            recordFailedAttempt: jest.fn().mockResolvedValue(undefined),
+            recordFailedAttemptIfUsable: jest.fn().mockResolvedValue(undefined),
           },
         },
       ],
@@ -191,11 +191,15 @@ describe('UserOtpService', () => {
 
       // Assert
       expect(isVerified).toBe(false);
-      expect(userOtpRepository.recordFailedAttempt).toHaveBeenCalledWith({
-        userId,
-        maxFailedAttempts: OTP_MAX_FAILED_ATTEMPTS,
-        lockedUntil: new Date(now.getTime() + OTP_LOCKOUT_MS),
-      });
+      expect(userOtpRepository.recordFailedAttemptIfUsable).toHaveBeenCalledWith(
+        {
+          userId,
+          otp: hashOtp({ otp }),
+          now,
+          maxFailedAttempts: OTP_MAX_FAILED_ATTEMPTS,
+          lockedUntil: new Date(now.getTime() + OTP_LOCKOUT_MS),
+        },
+      );
     });
 
     it('returns false when the user has no code', async () => {
@@ -236,7 +240,9 @@ describe('UserOtpService', () => {
 
         // Assert
         expect(isVerified).toBe(false);
-        expect(userOtpRepository.recordFailedAttempt).not.toHaveBeenCalled();
+        expect(
+          userOtpRepository.recordFailedAttemptIfUsable,
+        ).not.toHaveBeenCalled();
       },
     );
 
@@ -251,7 +257,7 @@ describe('UserOtpService', () => {
 
       // Assert
       expect(isVerified).toBe(false);
-      expect(userOtpRepository.recordFailedAttempt).toHaveBeenCalled();
+      expect(userOtpRepository.recordFailedAttemptIfUsable).toHaveBeenCalled();
     });
   });
 });

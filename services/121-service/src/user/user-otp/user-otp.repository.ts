@@ -115,12 +115,16 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
     return isConsumed;
   }
 
-  public async recordFailedAttempt({
+  public async recordFailedAttemptIfUsable({
     userId,
+    otp,
+    now,
     maxFailedAttempts,
     lockedUntil,
   }: {
     userId: number;
+    otp: string;
+    now: Date;
     maxFailedAttempts: number;
     lockedUntil: Date;
   }): Promise<void> {
@@ -134,6 +138,9 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
       })
       .where({
         userId: Equal(userId),
+        otp: Equal(otp),
+        consumedAt: IsNull(),
+        expiresAt: MoreThan(now),
         failedAttempts: LessThan(maxFailedAttempts),
       })
       .setParameters({ maxFailedAttempts, lockedUntil })
