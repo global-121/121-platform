@@ -60,6 +60,20 @@ describe('UserOtpRepository', () => {
     }
   };
 
+  const consumeOtp = async ({
+    otp,
+    consumedAt,
+  }: {
+    otp: string;
+    consumedAt: Date;
+  }): Promise<boolean> =>
+    await userOtpRepository.consumeIfUsable({
+      userId,
+      otp,
+      consumedAt,
+      maxFailedAttempts,
+    });
+
   const getStoredOtpOrThrow = async (): Promise<UserOtpEntity> => {
     const userOtp = await userOtpRepository.getByUserId({ userId });
     if (!userOtp) {
@@ -165,6 +179,110 @@ describe('UserOtpRepository', () => {
       expect(isIssued).toBe(false);
       const storedOtp = await getStoredOtpOrThrow();
       expect(storedOtp.otp).toBe(firstOtp);
+    });
+  });
+
+  describe('when consuming a code', () => {
+    const duringValidity = new Date('2026-10-27T10:05:00.000Z');
+
+    it('consumes the current code while it is valid', async () => {
+      // Arrange
+      await issueOtp({ otp: firstOtp, issuedAt: issuedAtFirstOtp });
+
+      // Act
+      const isConsumed = await consumeOtp({
+        otp: firstOtp,
+        consumedAt: duringValidity,
+      });
+
+      // Assert
+      expect(isConsumed).toBe(true);
+      const storedOtp = await getStoredOtpOrThrow();
+      expect(storedOtp.consumedAt).toEqual(duringValidity);
+    });
+
+    it('refuses an expired code', async () => {
+      // Arrange
+      await issueOtp({ otp: firstOtp, issuedAt: issuedAtFirstOtp });
+      const { expiresAt } = await getStoredOtpOrThrow();
+
+      // Act
+      const isConsumed = await consumeOtp({
+        otp: firstOtp,
+        consumedAt: expiresAt,
+      });
+
+      // Assert
+      expect(isConsumed).toBe(false);
+      const storedOtp = await getStoredOtpOrThrow();
+      expect(storedOtp.consumedAt).toBeNull();
+    });
+
+    it('refuses a locked code, even when the code is correct', async () => {
+      // Arrange
+      await issueOtp({ otp: firstOtp, issuedAt: issuedAtFirstOtp });
+      await lockOtp({ now: issuedAtFirstOtp });
+
+      // Act
+      const isConsumed = await consumeOtp({
+        otp: firstOtp,
+        consumedAt: duringValidity,
+      });
+
+      // Assert
+      expect(isConsumed).toBe(false);
+      const storedOtp = await getStoredOtpOrThrow();
+      expect(storedOtp.consumedAt).toBeNull();
+    });
+
+    it('refuses a code that was already consumed', async () => {
+      // Arrange
+      await issueOtp({ otp: firstOtp, issuedAt: issuedAtFirstOtp });
+      await consumeOtp({ otp: firstOtp, consumedAt: duringValidity });
+      const laterDuringValidity = new Date(duringValidity.getTime() + 1000);
+
+      // Act
+      const isConsumedAgain = await consumeOtp({
+        otp: firstOtp,
+        consumedAt: laterDuringValidity,
+      });
+
+      // Assert
+      expect(isConsumedAgain).toBe(false);
+      const storedOtp = await getStoredOtpOrThrow();
+      expect(storedOtp.consumedAt).toEqual(duringValidity);
+    });
+
+    it('refuses a code that was replaced by a newer one', async () => {
+      // Arrange
+      await issueOtp({ otp: firstOtp, issuedAt: issuedAtFirstOtp });
+      await issueOtp({ otp: secondOtp, issuedAt: issuedAtSecondOtp });
+
+      // Act
+      const isConsumed = await consumeOtp({
+        otp: firstOtp,
+        consumedAt: issuedAtSecondOtp,
+      });
+
+      // Assert
+      expect(isConsumed).toBe(false);
+      const storedOtp = await getStoredOtpOrThrow();
+      expect(storedOtp.otp).toBe(secondOtp);
+      expect(storedOtp.consumedAt).toBeNull();
+    });
+
+    it('lets exactly one of two concurrent consumes of a valid code succeed', async () => {
+      // Arrange
+      await issueOtp({ otp: firstOtp, issuedAt: issuedAtFirstOtp });
+
+      // Act
+      const results = await Promise.all([
+        consumeOtp({ otp: firstOtp, consumedAt: duringValidity }),
+        consumeOtp({ otp: firstOtp, consumedAt: duringValidity }),
+      ]);
+
+      // Assert
+      expect(results.filter(Boolean)).toHaveLength(1);
     });
   });
 
