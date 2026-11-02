@@ -143,8 +143,18 @@ test('Create program validation checks on each step', async ({
     await createProgramDialog.fillInStep2(programData);
   });
 
-  await test.step('Should successfully proceed without filling in step 3', async () => {
+  await test.step('Should attempt proceed without filling in step 3', async () => {
     await createProgramDialog.submitButton.click();
+    await programOverviewPage.validateToastMessageAndClose(
+      'Please correct the errors in the form.',
+    );
+    // Fixed transfer value is mandatory
+    await expect(page.getByText('This field is required')).toBeVisible();
+    await expect(page.getByText('Step 3 of 3')).toBeVisible();
+  });
+
+  await test.step('Should successfully fill in step 3 and proceed', async () => {
+    await createProgramDialog.fillInStep3(programData);
     await programOverviewPage.validateToastMessageAndClose(
       'Program successfully created.',
     );

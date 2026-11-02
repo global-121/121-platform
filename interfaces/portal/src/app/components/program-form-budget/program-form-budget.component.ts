@@ -128,7 +128,7 @@ export class ProgramFormBudgetComponent {
       budget: programData.budget,
       currency: programData.currency ?? CurrencyCode.EUR,
       distributionDuration: programData.distributionDuration,
-      fixedTransferValue: programData.fixedTransferValue ?? 0,
+      fixedTransferValue: programData.fixedTransferValue,
     });
 
     if (!this.programId()) {
