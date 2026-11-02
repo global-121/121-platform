@@ -10,13 +10,20 @@ class LoginPage extends BasePage {
   readonly usernameInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
+  readonly loginWithPasswordButton: Locator;
 
   constructor(page: Page) {
     super(page);
     this.page = page;
     this.usernameInput = this.page.getByLabel('E-mail');
     this.passwordInput = this.page.getByLabel('Password');
-    this.loginButton = this.page.getByRole('button', { name: 'Log in' });
+    this.loginButton = this.page.getByRole('button', {
+      name: 'Log in',
+      exact: true,
+    });
+    this.loginWithPasswordButton = this.page.getByRole('button', {
+      name: 'Log in with password instead',
+    });
   }
 
   async loginAsAdmin({
@@ -55,6 +62,7 @@ class LoginPage extends BasePage {
       await super.goto('/login');
     }
 
+    await this.loginWithPasswordButton.click();
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
     await this.loginButton.click();

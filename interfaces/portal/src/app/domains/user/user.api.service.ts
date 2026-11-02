@@ -20,6 +20,27 @@ export class UserApiService extends DomainApiService {
     });
   }
 
+  createLoginOtp({ username }: { username: string }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'POST',
+      endpoint: `${BASE_ENDPOINT}/otp`,
+      body: {
+        username,
+      },
+    });
+  }
+
+  loginWithOtp({ username, otp }: { username: string; otp: string }) {
+    return this.httpWrapperService.perform121ServiceRequest<User>({
+      method: 'POST',
+      endpoint: `${BASE_ENDPOINT}/login/otp`,
+      body: {
+        username,
+        otp,
+      },
+    });
+  }
+
   logout() {
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
