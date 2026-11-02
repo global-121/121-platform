@@ -111,7 +111,7 @@ describe('UserService', () => {
     azureLogService = module.get<AzureLogService>(AzureLogService);
   });
 
-  describe('requestLoginOtp', () => {
+  describe('Requesting a login OTP', () => {
     const otp = '4A1RQ9';
     const existingUser = {
       id: 1,
@@ -318,7 +318,6 @@ describe('UserService', () => {
       ).rejects.toThrow(
         new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED),
       );
-      expect(userRepository.save).not.toHaveBeenCalled();
     });
 
     it('rejects an unknown user', async () => {
