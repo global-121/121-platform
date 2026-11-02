@@ -72,8 +72,10 @@ export class UserOtpService {
     const hashedOtp = this.hashOtp({ otp: this.normalizeOtp({ otp }) });
 
     if (!this.isSameHash({ hashedOtp, storedHashedOtp: userOtp.otp })) {
-      await this.userOtpRepository.recordFailedAttempt({
+      await this.userOtpRepository.recordFailedAttemptIfUsable({
         userId,
+        otp: userOtp.otp,
+        now,
         maxFailedAttempts: OTP_MAX_FAILED_ATTEMPTS,
         lockedUntil: new Date(now.getTime() + OTP_LOCKOUT_MS),
       });
