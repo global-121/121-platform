@@ -4,6 +4,7 @@ export const ValidationPipeOptions = {
   whitelist: true,
   forbidNonWhitelisted: false,
   forbidUnknownValues: true,
+  validationError: { target: true },
   exceptionFactory: (errors) => {
     for (const e of errors) {
       if (e.constraints && e.constraints['unknownValue']) {
