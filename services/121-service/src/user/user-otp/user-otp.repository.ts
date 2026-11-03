@@ -144,13 +144,11 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
         failedAttempts: LessThan(maxFailedAttempts),
       })
       .setParameters({ maxFailedAttempts, lockedUntil })
-      .returning(['failedAttempts'])
+      .returning(['lockedUntil'])
       .execute();
 
-    const updatedRows: { failedAttempts: number }[] = result.raw;
-    const isLocked = updatedRows.some(
-      (row) => row.failedAttempts >= maxFailedAttempts,
-    );
+    const updatedRows: { lockedUntil: Date | null }[] = result.raw;
+    const isLocked = updatedRows.some((row) => row.lockedUntil !== null);
     return { isLocked };
   }
 }
