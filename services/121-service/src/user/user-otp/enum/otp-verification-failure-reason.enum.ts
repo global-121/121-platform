@@ -3,5 +3,6 @@ export enum OtpVerificationFailureReason {
   locked = 'locked',
   consumed = 'consumed',
   expired = 'expired',
+  replaced = 'replaced',
   wrongCode = 'wrongCode',
 }

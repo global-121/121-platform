@@ -177,19 +177,41 @@ describe('UserOtpService', () => {
       expect(verifyOtpResult).toEqual({ isVerified: true });
     });
 
-    it('fails as consumed when the code was consumed concurrently', async () => {
-      // Arrange
-      userOtpRepository.consumeIfUsable.mockResolvedValue(false);
-
-      // Act
-      const verifyOtpResult = await service.verifyOtp({ userId, otp });
-
-      // Assert
-      expect(verifyOtpResult).toEqual({
-        isVerified: false,
+    it.each([
+      {
+        description: 'consumed',
+        changedUserOtp: buildUserOtp({ consumedAt: now }),
         failureReason: OtpVerificationFailureReason.consumed,
-      });
-    });
+      },
+      {
+        description: 'locked',
+        changedUserOtp: buildUserOtp({
+          failedAttempts: OTP_MAX_FAILED_ATTEMPTS,
+          lockedUntil: new Date(now.getTime() + OTP_LOCKOUT_MS),
+        }),
+        failureReason: OtpVerificationFailureReason.locked,
+      },
+      {
+        description: 'replaced',
+        changedUserOtp: buildUserOtp({ otp: hashOtp({ otp: 'NEW123' }) }),
+        failureReason: OtpVerificationFailureReason.replaced,
+      },
+    ])(
+      'fails as $description when the code was $description concurrently',
+      async ({ changedUserOtp, failureReason }) => {
+        // Arrange
+        userOtpRepository.getByUserId
+          .mockResolvedValueOnce(buildUserOtp())
+          .mockResolvedValueOnce(changedUserOtp);
+        userOtpRepository.consumeIfUsable.mockResolvedValue(false);
+
+        // Act
+        const verifyOtpResult = await service.verifyOtp({ userId, otp });
+
+        // Assert
+        expect(verifyOtpResult).toEqual({ isVerified: false, failureReason });
+      },
+    );
 
     it('records a failed attempt with a lockout time for a wrong code', async () => {
       // Act
