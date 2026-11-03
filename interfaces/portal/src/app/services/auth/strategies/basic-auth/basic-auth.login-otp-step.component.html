@@ -9,7 +9,7 @@
     <p-button
       i18n
       [link]="true"
-      (click)="changeEmail.emit(email())"
+      (click)="changeEmail.emit({ email: email() })"
       >Go back to the previous page</p-button
     >
   </p>
@@ -59,7 +59,7 @@
   <p-button
     i18n
     [link]="true"
-    (click)="passwordInstead.emit(email())"
+    (click)="passwordInstead.emit({ email: email() })"
     >Log in with password instead</p-button
   >
 </div>

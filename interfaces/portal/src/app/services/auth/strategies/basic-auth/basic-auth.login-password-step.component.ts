@@ -44,7 +44,7 @@ export class BasicAuthLoginPasswordStepComponent implements OnInit {
   private authService = inject(AuthService);
   readonly email = input.required<string>();
   readonly returnUrl = input<string | undefined>(undefined);
-  readonly otpInstead = output<string>();
+  readonly otpInstead = output<{ email: string }>();
 
   passWordResetSubject = `Request Password reset for 121 Platform: ${location.host}`; // NOTE: Not localized/translated, it's used by support-team only
 

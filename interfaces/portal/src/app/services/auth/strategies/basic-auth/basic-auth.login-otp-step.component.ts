@@ -61,9 +61,9 @@ export class BasicAuthLoginOtpStepComponent {
   readonly email = input.required<string>();
   readonly otpRequestedAt = input.required<number>();
   readonly returnUrl = input<string | undefined>(undefined);
-  readonly otpRequested = output<string>();
-  readonly changeEmail = output<string>();
-  readonly passwordInstead = output<string>();
+  readonly otpRequested = output<{ email: string }>();
+  readonly changeEmail = output<{ email: string }>();
+  readonly passwordInstead = output<{ email: string }>();
 
   readonly OTP_LENGTH = OTP_LENGTH;
 
@@ -109,7 +109,7 @@ export class BasicAuthLoginOtpStepComponent {
     onSuccess: () => {
       this.formGroup.reset();
       this.loginMutation.reset();
-      this.otpRequested.emit(this.email());
+      this.otpRequested.emit({ email: this.email() });
     },
   }));
 }

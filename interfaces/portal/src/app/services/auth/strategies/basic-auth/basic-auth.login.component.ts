@@ -42,14 +42,7 @@ export class BasicAuthLoginComponent {
   readonly email = signal('');
   readonly otpRequest = signal<OtpRequest | undefined>(undefined);
 
-  goToStep({ step, email }: { step: LoginStep; email: string }): void {
-    this.email.set(email);
-    this.step.set(step);
-  }
-
-  onOtpRequested(email: string): void {
-    // Within the cooldown the backend accepts the request without issuing a
-    // new code, so the previous code and its expiry still apply
+  onOtpRequested({ email }: { email: string }): void {
     if (!this.isWithinOtpCooldown({ email })) {
       this.otpRequest.set({ email, requestedAt: Date.now() });
     }
@@ -62,5 +55,10 @@ export class BasicAuthLoginComponent {
       otpRequest?.email === email &&
       Date.now() - otpRequest.requestedAt < OTP_REISSUE_COOLDOWN_MS
     );
+  }
+
+  goToStep({ step, email }: { step: LoginStep; email: string }): void {
+    this.email.set(email);
+    this.step.set(step);
   }
 }
