@@ -213,6 +213,23 @@ describe('UserOtpService', () => {
       },
     );
 
+    it('fails with no code when the code was deleted concurrently', async () => {
+      // Arrange
+      userOtpRepository.getByUserId
+        .mockResolvedValueOnce(buildUserOtp())
+        .mockResolvedValueOnce(null);
+      userOtpRepository.consumeIfUsable.mockResolvedValue(false);
+
+      // Act
+      const verifyOtpResult = await service.verifyOtp({ userId, otp });
+
+      // Assert
+      expect(verifyOtpResult).toEqual({
+        isVerified: false,
+        failureReason: OtpVerificationFailureReason.noCode,
+      });
+    });
+
     it('records a failed attempt with a lockout time for a wrong code', async () => {
       // Act
       const verifyOtpResult = await service.verifyOtp({
