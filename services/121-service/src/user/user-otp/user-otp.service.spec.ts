@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import crypto from 'node:crypto';
 
 import { env } from '@121-service/src/env';
+import { OtpVerificationFailureReason } from '@121-service/src/user/user-otp/enum/otp-verification-failure-reason.enum';
 import { CreateOtpResult } from '@121-service/src/user/user-otp/interfaces/create-otp-result.interface';
 import {
   OTP_EXPIRATION_MS,
@@ -43,7 +44,9 @@ describe('UserOtpService', () => {
               .mockResolvedValue(true),
             getByUserId: jest.fn(),
             consumeIfUsable: jest.fn().mockResolvedValue(true),
-            recordFailedAttemptIfUsable: jest.fn().mockResolvedValue(undefined),
+            recordFailedAttemptIfUsable: jest
+              .fn()
+              .mockResolvedValue({ isLocked: false }),
           },
         },
       ],
@@ -149,12 +152,12 @@ describe('UserOtpService', () => {
       userOtpRepository.getByUserId.mockResolvedValue(buildUserOtp());
     });
 
-    it('consumes a valid code and returns true', async () => {
+    it('consumes a valid code and returns that it is verified', async () => {
       // Act
-      const isVerified = await service.verifyOtp({ userId, otp });
+      const verifyOtpResult = await service.verifyOtp({ userId, otp });
 
       // Assert
-      expect(isVerified).toBe(true);
+      expect(verifyOtpResult).toEqual({ isVerified: true });
       expect(userOtpRepository.consumeIfUsable).toHaveBeenCalledWith({
         userId,
         otp: hashOtp({ otp }),
@@ -165,32 +168,41 @@ describe('UserOtpService', () => {
 
     it('accepts a code with surrounding whitespace and lowercase letters', async () => {
       // Act
-      const isVerified = await service.verifyOtp({
+      const verifyOtpResult = await service.verifyOtp({
         userId,
         otp: ` ${otp.toLowerCase()} `,
       });
 
       // Assert
-      expect(isVerified).toBe(true);
+      expect(verifyOtpResult).toEqual({ isVerified: true });
     });
 
-    it('returns false when the code was consumed concurrently', async () => {
+    it('fails as consumed when the code was consumed concurrently', async () => {
       // Arrange
       userOtpRepository.consumeIfUsable.mockResolvedValue(false);
 
       // Act
-      const isVerified = await service.verifyOtp({ userId, otp });
+      const verifyOtpResult = await service.verifyOtp({ userId, otp });
 
       // Assert
-      expect(isVerified).toBe(false);
+      expect(verifyOtpResult).toEqual({
+        isVerified: false,
+        failureReason: OtpVerificationFailureReason.consumed,
+      });
     });
 
     it('records a failed attempt with a lockout time for a wrong code', async () => {
       // Act
-      const isVerified = await service.verifyOtp({ userId, otp: 'WRONG1' });
+      const verifyOtpResult = await service.verifyOtp({
+        userId,
+        otp: 'WRONG1',
+      });
 
       // Assert
-      expect(isVerified).toBe(false);
+      expect(verifyOtpResult).toEqual({
+        isVerified: false,
+        failureReason: OtpVerificationFailureReason.wrongCode,
+      });
       expect(userOtpRepository.recordFailedAttemptIfUsable).toHaveBeenCalledWith(
         {
           userId,
@@ -202,25 +214,50 @@ describe('UserOtpService', () => {
       );
     });
 
-    it('returns false when the user has no code', async () => {
+    it('returns the end of the lock when a wrong code locks the code', async () => {
+      // Arrange
+      userOtpRepository.recordFailedAttemptIfUsable.mockResolvedValue({
+        isLocked: true,
+      });
+
+      // Act
+      const verifyOtpResult = await service.verifyOtp({
+        userId,
+        otp: 'WRONG1',
+      });
+
+      // Assert
+      expect(verifyOtpResult).toEqual({
+        isVerified: false,
+        failureReason: OtpVerificationFailureReason.wrongCode,
+        lockedUntil: new Date(now.getTime() + OTP_LOCKOUT_MS),
+      });
+    });
+
+    it('fails with no code when the user has no code', async () => {
       // Arrange
       userOtpRepository.getByUserId.mockResolvedValue(null);
 
       // Act
-      const isVerified = await service.verifyOtp({ userId, otp });
+      const verifyOtpResult = await service.verifyOtp({ userId, otp });
 
       // Assert
-      expect(isVerified).toBe(false);
+      expect(verifyOtpResult).toEqual({
+        isVerified: false,
+        failureReason: OtpVerificationFailureReason.noCode,
+      });
     });
 
     it.each([
       {
         description: 'already consumed',
         userOtp: buildUserOtp({ consumedAt: now }),
+        failureReason: OtpVerificationFailureReason.consumed,
       },
       {
         description: 'expired',
         userOtp: buildUserOtp({ expiresAt: now }),
+        failureReason: OtpVerificationFailureReason.expired,
       },
       {
         description: 'locked after too many failed attempts',
@@ -228,35 +265,39 @@ describe('UserOtpService', () => {
           failedAttempts: OTP_MAX_FAILED_ATTEMPTS,
           lockedUntil: new Date(now.getTime() + OTP_LOCKOUT_MS),
         }),
+        failureReason: OtpVerificationFailureReason.locked,
       },
     ])(
-      'returns false for a correct code that is $description, without recording a failed attempt',
-      async ({ userOtp }) => {
+      'fails with the reason for a correct code that is $description, without recording a failed attempt',
+      async ({ userOtp, failureReason }) => {
         // Arrange
         userOtpRepository.getByUserId.mockResolvedValue(userOtp);
 
         // Act
-        const isVerified = await service.verifyOtp({ userId, otp });
+        const verifyOtpResult = await service.verifyOtp({ userId, otp });
 
         // Assert
-        expect(isVerified).toBe(false);
+        expect(verifyOtpResult).toEqual({ isVerified: false, failureReason });
         expect(
           userOtpRepository.recordFailedAttemptIfUsable,
         ).not.toHaveBeenCalled();
       },
     );
 
-    it('returns false and records a failed attempt when the stored code is not a valid hash', async () => {
+    it('fails as a wrong code and records a failed attempt when the stored code is not a valid hash', async () => {
       // Arrange
       userOtpRepository.getByUserId.mockResolvedValue(
         buildUserOtp({ otp: 'not-a-hash' }),
       );
 
       // Act
-      const isVerified = await service.verifyOtp({ userId, otp });
+      const verifyOtpResult = await service.verifyOtp({ userId, otp });
 
       // Assert
-      expect(isVerified).toBe(false);
+      expect(verifyOtpResult).toEqual({
+        isVerified: false,
+        failureReason: OtpVerificationFailureReason.wrongCode,
+      });
       expect(userOtpRepository.recordFailedAttemptIfUsable).toHaveBeenCalled();
     });
   });
