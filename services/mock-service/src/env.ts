@@ -35,6 +35,9 @@ export const env = createEnv({
       )
       .pipe(z.transform((url) => withoutTrailingSlash(url))),
 
+    MAILPIT_SMTP_HOST: z.string().default('mailpit'),
+    MAILPIT_SMTP_PORT: z.coerce.number().default(1025),
+
     // FSP-specific configuration:
     INTERSOLVE_VISA_ASSET_CODE: z.string().default(''),
   },
