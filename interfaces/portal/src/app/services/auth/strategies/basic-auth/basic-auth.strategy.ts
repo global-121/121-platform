@@ -6,6 +6,7 @@ import {
   IAuthStrategy,
   LoginCredentials,
 } from '~/services/auth/auth-strategy.interface';
+import { LoginMethod } from '~/services/auth/login-method.enum';
 import { BasicAuthChangePasswordComponent } from '~/services/auth/strategies/basic-auth/basic-auth.change-password.component';
 import { BasicAuthLoginComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login.component';
 import {
@@ -30,17 +31,18 @@ export class BasicAuthStrategy implements IAuthStrategy {
   }
 
   public async login(credentials: LoginCredentials) {
-    if ('otp' in credentials) {
-      return await this.loginWithOtp(credentials);
+    if (!('method' in credentials)) {
+      throw new Error(
+        $localize`Invalid email or password. Double-check your credentials and try again.`,
+      );
     }
 
-    if ('password' in credentials) {
-      return await this.loginWithPassword(credentials);
+    switch (credentials.method) {
+      case LoginMethod.otp:
+        return await this.loginWithOtp(credentials);
+      case LoginMethod.password:
+        return await this.loginWithPassword(credentials);
     }
-
-    throw new Error(
-      $localize`Invalid email or password. Double-check your credentials and try again.`,
-    );
   }
 
   private async loginWithOtp(credentials: { username: string; otp: string }) {

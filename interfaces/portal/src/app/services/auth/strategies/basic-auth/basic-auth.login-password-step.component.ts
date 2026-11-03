@@ -21,6 +21,7 @@ import { PasswordModule } from 'primeng/password';
 import { FormDefaultComponent } from '~/components/form-default/form-default.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { AuthService } from '~/services/auth.service';
+import { LoginMethod } from '~/services/auth/login-method.enum';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 type LoginPasswordStepFormGroup =
@@ -68,7 +69,10 @@ export class BasicAuthLoginPasswordStepComponent implements OnInit {
       email,
       password,
     }: ReturnType<LoginPasswordStepFormGroup['getRawValue']>) =>
-      this.authService.login({ username: email, password }, this.returnUrl()),
+      this.authService.login(
+        { method: LoginMethod.password, username: email, password },
+        this.returnUrl(),
+      ),
   }));
 
   ngOnInit(): void {
