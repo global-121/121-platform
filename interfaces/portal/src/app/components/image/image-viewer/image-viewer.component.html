@@ -53,11 +53,10 @@
   >
     @if (!imageUrl()) {
       <p-progress-spinner
-        class="absolute"
-        ariaLabel="Loading image"
-        i18n-ariaLabel="@@image-viewer-loading"
+        class="absolute block-10 inline-10"
+        ariaLabel="Loading..."
+        i18n-ariaLabel="@@generic-loading"
         strokeWidth="4"
-        styleClass="block-10 inline-10"
       />
     }
     <img
