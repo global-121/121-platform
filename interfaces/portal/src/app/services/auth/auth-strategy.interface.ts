@@ -3,11 +3,12 @@ import { EnvironmentProviders, Provider, Type } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { User } from '~/domains/user/user.model';
+import { LoginMethod } from '~/services/auth/login-method.enum';
 import { LocalStorageUser } from '~/utils/local-storage';
 
 export type LoginCredentials =
-  | { username: string; otp: string }
-  | { username: string; password: string }
+  | { method: LoginMethod.otp; username: string; otp: string }
+  | { method: LoginMethod.password; username: string; password: string }
   | { username: string };
 
 export abstract class IAuthStrategy {

@@ -31,6 +31,7 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { AuthService } from '~/services/auth.service';
+import { LoginMethod } from '~/services/auth/login-method.enum';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
@@ -95,7 +96,10 @@ export class BasicAuthLoginOtpStepComponent {
 
   loginMutation = injectMutation(() => ({
     mutationFn: ({ otp }: ReturnType<LoginOtpStepFormGroup['getRawValue']>) =>
-      this.authService.login({ username: this.email(), otp }, this.returnUrl()),
+      this.authService.login(
+        { method: LoginMethod.otp, username: this.email(), otp },
+        this.returnUrl(),
+      ),
     onSuccess: () => {
       this.toastService.showToast({
         detail: $localize`Verification successful`,
