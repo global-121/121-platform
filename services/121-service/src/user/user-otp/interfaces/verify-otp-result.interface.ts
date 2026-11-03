@@ -5,6 +5,5 @@ export type VerifyOtpResult =
   | {
       readonly isVerified: false;
       readonly failureReason: OtpVerificationFailureReason;
-      // Only set when this failed attempt locked the code
       readonly lockedUntil?: Date;
     };

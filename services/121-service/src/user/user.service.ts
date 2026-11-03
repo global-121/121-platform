@@ -130,7 +130,6 @@ export class UserService {
       userId: user.id,
     });
     if (!createOtpResult) {
-      // Refused because of the reissue cooldown or an active lock
       this.trackLoginOtpEvent({
         name: LoginOtpAuditEventName.requested,
         userId: user.id,
