@@ -45,7 +45,7 @@
         </div>
       } @else {
         <div class="flex text-[14px] opacity-65">
-          <span>{{ item.label | translatableString }}:</span>
+          <div>{{ item.label | translatableString }}:</div>
           @if (item.infoTooltipData) {
             <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
           }
