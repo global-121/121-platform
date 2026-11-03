@@ -137,6 +137,18 @@ export class DataListComponent {
     return `${getRandomInt(42, 98).toString()}%`;
   }
 
+  hasValue({ value }: { value: unknown }): boolean {
+    if (value === undefined || value === null) {
+      return false;
+    }
+
+    if (typeof value === 'string') {
+      return value.trim() !== '';
+    }
+
+    return true;
+  }
+
   optionItemValue(item: { type: 'options' } & DataListItem) {
     const value = Array.isArray(item.value) ? item.value : [item.value];
 
