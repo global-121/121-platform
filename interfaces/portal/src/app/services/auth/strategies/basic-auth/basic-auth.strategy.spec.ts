@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
+import { LoginMethod } from '~/services/auth/login-method.enum';
 import { BasicAuthStrategy } from '~/services/auth/strategies/basic-auth/basic-auth.strategy';
 import {
   LOCAL_STORAGE_AUTH_USER_KEY,
@@ -47,6 +48,7 @@ describe('Logging in', () => {
 
     // Act
     const result = await strategy.login({
+      method: LoginMethod.otp,
       username: 'test@example.com',
       otp: 'ABC123',
     });
@@ -61,6 +63,7 @@ describe('Logging in', () => {
 
     // Act
     const loginPromise = strategy.login({
+      method: LoginMethod.otp,
       username: 'test@example.com',
       otp: 'ABC123',
     });
@@ -75,6 +78,7 @@ describe('Logging in', () => {
 
     // Act
     const result = await strategy.login({
+      method: LoginMethod.password,
       username: 'test@example.com',
       password: 'password',
     });
@@ -89,6 +93,7 @@ describe('Logging in', () => {
 
     // Act
     const loginPromise = strategy.login({
+      method: LoginMethod.password,
       username: 'test@example.com',
       password: 'wrong-password',
     });
@@ -97,7 +102,7 @@ describe('Logging in', () => {
     await expect(loginPromise).rejects.toThrow('Invalid email or password');
   });
 
-  it('should throw a credentials error when neither a password nor an OTP is given', async () => {
+  it('should throw a credentials error when no login method is given', async () => {
     // Act
     const loginPromise = strategy.login({ username: 'test@example.com' });
 
