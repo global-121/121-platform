@@ -2566,6 +2566,9 @@
       <trans-unit id="image-viewer-hide" datatype="html">
         <source>Hide</source>
       </trans-unit>
+      <trans-unit id="image-viewer-loading" datatype="html">
+        <source>Loading image</source>
+      </trans-unit>
       <trans-unit id="image-viewer-rotate-clockwise" datatype="html">
         <source>Rotate clockwise</source>
       </trans-unit>
