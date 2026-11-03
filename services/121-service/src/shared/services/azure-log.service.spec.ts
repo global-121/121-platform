@@ -11,6 +11,7 @@ jest.mock('applicationinsights', () => {
     defaultClient: {
       trackException: jest.fn(),
       trackTrace: jest.fn(),
+      trackEvent: jest.fn(),
       flush: jest.fn(),
     },
     SeverityLevel: actual.SeverityLevel,
@@ -297,6 +298,46 @@ describe('AzureLogService', () => {
 
       expect(mockTelemetryClient.trackTrace).not.toHaveBeenCalled();
       expect(mockTelemetryClient.flush).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('trackEvent', () => {
+    const testEvent = {
+      name: 'TestEvent',
+      properties: { userId: '1' },
+    };
+
+    it('should track the event with its properties in Azure when the client is available', () => {
+      // Arrange
+      setupServiceWithClient();
+
+      // Act
+      service.trackEvent(testEvent);
+
+      // Assert
+      expect(mockTelemetryClient.trackEvent).toHaveBeenCalledWith(testEvent);
+    });
+
+    it('should not call Azure client methods when the client is not available', () => {
+      // Arrange
+      setupServiceWithoutClient();
+
+      // Act
+      service.trackEvent(testEvent);
+
+      // Assert
+      expect(mockTelemetryClient.trackEvent).not.toHaveBeenCalled();
+    });
+
+    it('should not throw when Azure fails to track the event', () => {
+      // Arrange
+      setupServiceWithClient();
+      mockTelemetryClient.trackEvent.mockImplementationOnce(() => {
+        throw new Error('Azure unavailable');
+      });
+
+      // Act & Assert
+      expect(() => service.trackEvent(testEvent)).not.toThrow();
     });
   });
 

@@ -43,6 +43,11 @@ import {
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
+import {
+  LoginOtpAuditEventName,
+  LoginOtpRequestOutcome,
+  LoginOtpUserFailureReason,
+} from '@121-service/src/user/enum/login-otp-audit.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
@@ -106,7 +111,20 @@ export class UserService {
       where: { username: Equal(email) },
     });
 
-    if (!user || this.signsInWithEntra({ isEntraUser: user.isEntraUser })) {
+    if (!user) {
+      this.trackLoginOtpEvent({
+        name: LoginOtpAuditEventName.requested,
+        details: { outcome: LoginOtpRequestOutcome.unknownUser },
+      });
+      return;
+    }
+
+    if (this.signsInWithEntra({ isEntraUser: user.isEntraUser })) {
+      this.trackLoginOtpEvent({
+        name: LoginOtpAuditEventName.requested,
+        userId: user.id,
+        details: { outcome: LoginOtpRequestOutcome.entraUser },
+      });
       return;
     }
 
@@ -114,8 +132,20 @@ export class UserService {
       userId: user.id,
     });
     if (!createOtpResult) {
+      // Refused because of the reissue cooldown or an active lock
+      this.trackLoginOtpEvent({
+        name: LoginOtpAuditEventName.requested,
+        userId: user.id,
+        details: { outcome: LoginOtpRequestOutcome.refused },
+      });
       return;
     }
+
+    this.trackLoginOtpEvent({
+      name: LoginOtpAuditEventName.requested,
+      userId: user.id,
+      details: { outcome: LoginOtpRequestOutcome.issued },
+    });
 
     // Send the login OTP email in the background without awaiting it, 
     // so the response time does not reveal whether the user exists
@@ -128,6 +158,25 @@ export class UserService {
 
   private signsInWithEntra({ isEntraUser }: { isEntraUser: boolean }): boolean {
     return env.USE_SSO_AZURE_ENTRA || isEntraUser;
+  }
+
+  // Never include the OTP, its hash or the username in the event properties
+  private trackLoginOtpEvent({
+    name,
+    userId,
+    details,
+  }: {
+    name: LoginOtpAuditEventName;
+    userId?: number;
+    details?: Record<string, string>;
+  }): void {
+    this.azureLogService.trackEvent({
+      name,
+      properties: {
+        ...details,
+        ...(userId === undefined ? {} : { userId: String(userId) }),
+      },
+    });
   }
 
   private sendLoginOtpEmailInBackground({
@@ -172,23 +221,50 @@ export class UserService {
       where: { username: Equal(username.toLowerCase()) },
     });
 
-    if (
-      !userEntity ||
-      this.signsInWithEntra({ isEntraUser: userEntity.isEntraUser })
-    ) {
+    if (!userEntity) {
+      this.trackLoginOtpEvent({
+        name: LoginOtpAuditEventName.failed,
+        details: { reason: LoginOtpUserFailureReason.unknownUser },
+      });
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-    const isOtpVerified = await this.userOtpService.verifyOtp({
+    if (this.signsInWithEntra({ isEntraUser: userEntity.isEntraUser })) {
+      this.trackLoginOtpEvent({
+        name: LoginOtpAuditEventName.failed,
+        userId: userEntity.id,
+        details: { reason: LoginOtpUserFailureReason.entraUser },
+      });
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
+    const verifyOtpResult = await this.userOtpService.verifyOtp({
       userId: userEntity.id,
       otp,
     });
 
-    if (!isOtpVerified) {
+    if (!verifyOtpResult.isVerified) {
+      this.trackLoginOtpEvent({
+        name: LoginOtpAuditEventName.failed,
+        userId: userEntity.id,
+        details: { reason: verifyOtpResult.failureReason },
+      });
+      if (verifyOtpResult.lockedUntil) {
+        this.trackLoginOtpEvent({
+          name: LoginOtpAuditEventName.locked,
+          userId: userEntity.id,
+          details: { lockedUntil: verifyOtpResult.lockedUntil.toISOString() },
+        });
+      }
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-    return await this.buildLoginResponse({ userEntity });
+    const loginResponse = await this.buildLoginResponse({ userEntity });
+    this.trackLoginOtpEvent({
+      name: LoginOtpAuditEventName.succeeded,
+      userId: userEntity.id,
+    });
+    return loginResponse;
   }
 
   public async canActivate(

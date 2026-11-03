@@ -352,6 +352,28 @@ describe('UserOtpRepository', () => {
       expect(storedOtp.lockedUntil).toEqual(lockedUntil);
     });
 
+    it('reports the lock only for the attempt that reaches the maximum', async () => {
+      // Arrange
+      await issueOtp({ otp: firstOtp, issuedAt: issuedAtFirstOtp });
+      const lockResults: boolean[] = [];
+
+      // Act
+      for (let attempt = 0; attempt < maxFailedAttempts + 1; attempt++) {
+        const { isLocked } =
+          await userOtpRepository.recordFailedAttemptIfUsable({
+            userId,
+            otp: firstOtp,
+            now: issuedAtFirstOtp,
+            maxFailedAttempts,
+            lockedUntil,
+          });
+        lockResults.push(isLocked);
+      }
+
+      // Assert
+      expect(lockResults).toEqual([false, false, false, false, true, false]);
+    });
+
     it('does not count a failed attempt on an expired code', async () => {
       // Arrange
       await issueOtp({ otp: firstOtp, issuedAt: issuedAtFirstOtp });
