@@ -6,7 +6,6 @@ import {
   inject,
   input,
   output,
-  signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -60,14 +59,13 @@ export class BasicAuthLoginOtpStepComponent {
   private userApiService = inject(UserApiService);
   private toastService = inject(ToastService);
   readonly email = input.required<string>();
+  readonly otpRequestedAt = input.required<number>();
   readonly returnUrl = input<string | undefined>(undefined);
+  readonly otpRequested = output<string>();
   readonly changeEmail = output<string>();
   readonly passwordInstead = output<string>();
 
   readonly OTP_LENGTH = OTP_LENGTH;
-
-  // This step is only shown after a code was requested successfully
-  private readonly otpRequestedAt = signal(Date.now());
 
   private readonly now = toSignal(
     interval(CLOCK_TICK_MS).pipe(map(() => Date.now())),
@@ -109,9 +107,9 @@ export class BasicAuthLoginOtpStepComponent {
     mutationFn: () =>
       this.userApiService.createLoginOtp({ username: this.email() }),
     onSuccess: () => {
-      this.otpRequestedAt.set(Date.now());
       this.formGroup.reset();
       this.loginMutation.reset();
+      this.otpRequested.emit(this.email());
     },
   }));
 }
