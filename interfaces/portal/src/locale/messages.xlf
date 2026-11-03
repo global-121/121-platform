@@ -17,9 +17,6 @@
       <trans-unit id="1054469251797090110" datatype="html">
         <source>Add FSP(s) to your program to see all required data columns.</source>
       </trans-unit>
-      <trans-unit id="1061597182953948916" datatype="html">
-        <source>Use your work email to log in.</source>
-      </trans-unit>
       <trans-unit id="1070128073768279969" datatype="html">
         <source>Select a message from the template messages or write a custom message.</source>
       </trans-unit>
@@ -1250,6 +1247,9 @@
       <trans-unit id="5578681806481405422" datatype="html">
         <source>Select 1 or more users from your program team</source>
       </trans-unit>
+      <trans-unit id="5580731565219588947" datatype="html">
+        <source>Enter your work email and we&apos;ll send you a one-time code.</source>
+      </trans-unit>
       <trans-unit id="5587438863454126747" datatype="html">
         <source>New data</source>
       </trans-unit>
@@ -1318,9 +1318,6 @@
       </trans-unit>
       <trans-unit id="5833271673900301518" datatype="html">
         <source>Scope should be a &apos;hidden&apos; field in your form that has the &apos;default response&apos; set to the scope of the registration</source>
-      </trans-unit>
-      <trans-unit id="5874343770782366001" datatype="html">
-        <source>Enter your work email and we&apos;ll send you a one-time code.</source>
       </trans-unit>
       <trans-unit id="5906272961955453157" datatype="html">
         <source>Approved</source>
