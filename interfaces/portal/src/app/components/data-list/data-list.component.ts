@@ -23,7 +23,6 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
 import { getRandomInt } from '@121-service/src/utils/random-value.helper';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
-import { ImageDialogTriggerComponent } from '~/components/image/image-dialog-trigger/image-dialog-trigger.component';
 import {
   InfoTooltipComponent,
   InfoTooltipData,
@@ -121,7 +120,6 @@ export type DataListItem = (
     RouterLink,
     InputTextModule,
     TagModule,
-    ImageDialogTriggerComponent,
   ],
   templateUrl: './data-list.component.html',
   styles: ``,
@@ -173,6 +171,33 @@ export class DataListComponent {
 
   skeletonWidth() {
     return `${getRandomInt(42, 98).toString()}%`;
+  }
+
+  getChipProps({
+    item,
+  }: {
+    item: DataListItem;
+  }): { label: string; variant: ColorVariant } | undefined {
+    if (item.type === 'koboImage') {
+      return this.getKoboImageChipProps({ imageUrl: item.value });
+    }
+
+    if (!item.chipLabel || !item.chipVariant) {
+      return;
+    }
+
+    return { label: item.chipLabel, variant: item.chipVariant };
+  }
+
+  private getKoboImageChipProps({ imageUrl }: { imageUrl: string }) {
+    const isAvailable = !!imageUrl;
+
+    return {
+      label: isAvailable
+        ? $localize`:@@image-available:Available`
+        : $localize`:@@image-not-available:Not available`,
+      variant: isAvailable ? ColorVariant.Green : ColorVariant.Red,
+    };
   }
 
   hasValue({ value }: { value: unknown }): boolean {

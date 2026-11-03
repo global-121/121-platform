@@ -16,7 +16,6 @@
         'md:pbs-3.5': edge.isInFirstWideScreenRow,
         'mbe-0! border-be-0!': edge.isLastItem,
         'md:mbe-0! md:border-be-0!': edge.isInLastWideScreenRow,
-        'items-start': item.type === 'koboImage',
       }"
     >
       @if (item.loading) {
@@ -24,38 +23,40 @@
           [width]="skeletonWidth()"
           class="py-1"
         />
-      } @else if (item.type === 'koboImage') {
-        <div class="grid grid-cols-[auto_1fr] inline-full">
-          <div class="me-1">
-            <strong>
-              <i class="pi pi-image me-2"></i>
-              {{ item.label | translatableString }}:
-            </strong>
+      } @else {
+        <div class="relative flex items-center">
+          <div class="flex text-[14px] opacity-65 max-inline-[85%]">
+            @if (item.type === 'koboImage') {
+              <i class="pi pi-image relative inset-bs-1 me-1.5 opacity-80"></i>
+            }
+
+            <div>{{ item.label | translatableString }}:</div>
+            @if (item.infoTooltipData) {
+              <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
+            }
           </div>
-          <span class="relative ms-1">
-            <div class="absolute inset-x-0 inset-bs-1/2 -translate-y-1/2">
-              <app-image-dialog-trigger
-                [wrapperClassName]="'flex items-center justify-between inline-full'"
-                [label]="item.label | translatableString"
-                [includeColoredChip]="true"
-                [imageUrl]="item.value"
-              />
-            </div>
+
+          <span class="absolute inset-e-0 inset-bs-1/2 -translate-y-1/2">
+            @if (item.detailAction) {
+              <ng-container
+                *ngComponentOutlet="
+                  item.detailAction.component;
+                  inputs: item.detailAction.inputs
+                "
+              ></ng-container>
+            }
           </span>
         </div>
-      } @else {
-        <div class="flex text-[14px] opacity-65">
-          <div>{{ item.label | translatableString }}:</div>
-          @if (item.infoTooltipData) {
-            <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
-          }
-        </div>
-        @if (item.chipLabel && item.chipVariant) {
+
+        @let chip = getChipProps({ item });
+        @if (chip) {
           <app-colored-chip
-            [variant]="item.chipVariant"
-            [label]="item.chipLabel"
+            [variant]="chip.variant"
+            [label]="chip.label"
           />
-        } @else if (hasValue({ value: item.value })) {
+        } @else if (
+          item.type !== 'koboImage' && hasValue({ value: item.value })
+        ) {
           @if (item.icon) {
             <i
               class="pi me-1"
@@ -123,7 +124,6 @@
                   }
                 </ol>
               }
-
               @default {
                 @let routerLink = item.routerLink;
 
@@ -131,24 +131,15 @@
                   <a
                     [routerLink]="routerLink"
                     class="text-black"
-                    >{{ item.value | translatableString }}</a
                   >
+                    {{ item.value | translatableString }}
+                  </a>
                 } @else {
                   {{ item.value | translatableString }}
                 }
               }
             }
           </span>
-          @if (item.detailAction && item.detailAction.component) {
-            <span class="ms-auto">
-              <ng-container
-                *ngComponentOutlet="
-                  item.detailAction.component;
-                  inputs: item.detailAction.inputs
-                "
-              ></ng-container>
-            </span>
-          }
         } @else if (!item.chipLabel) {
           —
         }
