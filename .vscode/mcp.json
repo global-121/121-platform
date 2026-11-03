@@ -2,8 +2,8 @@
   "servers": {
     "ado": {
       "type": "stdio",
-      "command": "/bin/zsh",
-      "args": ["-ic", "npx -y @azure-devops/mcp redcrossnl"],
+      "command": "sh",
+      "args": ["${workspaceFolder}/tools/start-ado-mcp.sh", "redcrossnl"],
       "env": {
         "ado_mcp_project": "121 Platform",
         "ado_mcp_team": "121 Development Team"
