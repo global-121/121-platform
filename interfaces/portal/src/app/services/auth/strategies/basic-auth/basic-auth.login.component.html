@@ -1,173 +1,24 @@
 @switch (step()) {
   @case (LoginStep.email) {
-    <p
-      i18n
-      class="mbs-3 mbe-10"
-    >
-      Enter your work email and we'll send you a one-time code.
-    </p>
-    <app-form-default
-      [formGroup]="emailFormGroup"
-      submitButtonText="Send code"
-      i18n-submitButtonText
-      [mutation]="requestOtpMutation"
-    >
-      <app-form-field-wrapper
-        label="E-mail"
-        i18n-label
-        [errorMessage]="emailFormFieldErrors()('email')"
-      >
-        <!-- eslint-disable @angular-eslint/template/no-autofocus -- THE login-input allows for an exception. -->
-        <input
-          pInputText
-          type="email"
-          formControlName="email"
-          autocomplete="username"
-          placeholder="yourname@example.org"
-          i18n-placeholder
-          [pAutoFocus]="true"
-          autofocus
-        />
-        <!-- eslint-enable @angular-eslint/template/no-autofocus -- Only this input requires exception. -->
-      </app-form-field-wrapper>
-    </app-form-default>
-    <p class="mbs-4">
-      <p-button
-        i18n
-        [link]="true"
-        (click)="
-          goToPasswordStep({ email: emailFormGroup.getRawValue().email })
-        "
-        >Log in with password instead</p-button
-      >
-    </p>
+    <app-basic-auth-login-email-step
+      [email]="email()"
+      (otpRequested)="goToStep({ step: LoginStep.otp, email: $event })"
+      (passwordInstead)="goToStep({ step: LoginStep.password, email: $event })"
+    />
   }
   @case (LoginStep.otp) {
-    <div class="mbs-3 mbe-10">
-      <p i18n>Check your email. Might be in spam.</p>
-      <p i18n>
-        We've sent a {{ OTP_LENGTH }}-character code to
-        <strong>{{ email() }}</strong>
-      </p>
-      <p>
-        <ng-container i18n>Wrong email?</ng-container>&nbsp;
-        <p-button
-          i18n
-          [link]="true"
-          (click)="goToEmailStep({ email: email() })"
-          >Go back to the previous page</p-button
-        >
-      </p>
-    </div>
-    <app-form-default
-      [formGroup]="otpFormGroup"
-      submitButtonText="Log in"
-      i18n-submitButtonText
-      [mutation]="otpLoginMutation"
-    >
-      <app-form-field-wrapper
-        label="Enter your code"
-        i18n-label
-        [errorMessage]="otpFormFieldErrors()('otp')"
-      >
-        <p-inputotp
-          formControlName="otp"
-          [length]="OTP_LENGTH"
-          [autofocus]="true"
-          class="justify-center [&_input]:uppercase [&_input]:inline-10!"
-        />
-      </app-form-field-wrapper>
-    </app-form-default>
-    <div class="mbs-6 flex flex-col items-start gap-2">
-      @if (otpRemainingMs() > 0) {
-        <p i18n>
-          The code is valid for
-          {{ otpRemainingMs() | date: 'm:ss' : 'UTC' }} minutes.
-        </p>
-      } @else {
-        <p i18n>The code has expired. Request a new code to log in.</p>
-      }
-      <p-button
-        i18n
-        [link]="true"
-        [disabled]="!canRequestNewOtp()"
-        [loading]="requestOtpMutation.isPending()"
-        (click)="requestNewOtp()"
-        >Request new code</p-button
-      >
-      <app-form-error
-        [error]="
-          requestOtpMutation.isError() &&
-          requestOtpMutation.failureReason()?.message
-        "
-      />
-      <p-button
-        i18n
-        [link]="true"
-        (click)="goToPasswordStep({ email: email() })"
-        >Log in with password instead</p-button
-      >
-    </div>
+    <app-basic-auth-login-otp-step
+      [email]="email()"
+      [returnUrl]="returnUrl()"
+      (changeEmail)="goToStep({ step: LoginStep.email, email: $event })"
+      (passwordInstead)="goToStep({ step: LoginStep.password, email: $event })"
+    />
   }
   @case (LoginStep.password) {
-    <p
-      i18n
-      class="mbs-3 mbe-10"
-    >
-      Use your work email to log in.
-    </p>
-    <app-form-default
-      [formGroup]="passwordFormGroup"
-      submitButtonText="Log in"
-      i18n-submitButtonText
-      [mutation]="passwordLoginMutation"
-    >
-      <app-form-field-wrapper
-        label="E-mail"
-        i18n-label
-        [errorMessage]="passwordFormFieldErrors()('email')"
-      >
-        <input
-          pInputText
-          type="email"
-          formControlName="email"
-          autocomplete="username"
-          placeholder="yourname@example.org"
-          i18n-placeholder
-        />
-      </app-form-field-wrapper>
-      <app-form-field-wrapper
-        label="Password"
-        i18n-label
-        [errorMessage]="passwordFormFieldErrors()('password')"
-      >
-        <p-password
-          formControlName="password"
-          autocomplete="current-password"
-          [toggleMask]="true"
-          [feedback]="false"
-        />
-      </app-form-field-wrapper>
-    </app-form-default>
-    <p class="mbs-4">
-      <span i18n>Forgot your password?</span>&nbsp;
-
-      <a
-        i18n
-        [href]="'mailto:support@121.global?subject=' + passWordResetSubject"
-        target="_blank"
-        >Request a password reset</a
-      >
-    </p>
-    <p class="mbs-2">
-      <p-button
-        i18n
-        [link]="true"
-        (click)="
-          goToEmailStep({ email: passwordFormGroup.getRawValue().email })
-        "
-        >Log in with a one-time code instead</p-button
-      >
-    </p>
+    <app-basic-auth-login-password-step
+      [email]="email()"
+      [returnUrl]="returnUrl()"
+      (otpInstead)="goToStep({ step: LoginStep.email, email: $event })"
+    />
   }
 }
