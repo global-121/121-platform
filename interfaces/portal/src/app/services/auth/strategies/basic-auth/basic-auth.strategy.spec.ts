@@ -11,7 +11,7 @@ import {
   LocalStorageUser,
 } from '~/utils/local-storage';
 
-describe('BasicAuthStrategy - login', () => {
+describe('Logging in', () => {
   const user = { username: 'test@example.com' } as User;
   let strategy: BasicAuthStrategy;
   let userApiService: {

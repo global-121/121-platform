@@ -33,7 +33,7 @@
   <p-button
     i18n
     [link]="true"
-    (click)="passwordInstead.emit(formGroup.getRawValue().email)"
+    (click)="passwordInstead.emit({ email: formGroup.getRawValue().email })"
     >Log in with password instead</p-button
   >
 </p>

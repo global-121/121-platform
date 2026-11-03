@@ -43,8 +43,8 @@ type LoginEmailStepFormGroup =
 export class BasicAuthLoginEmailStepComponent implements OnInit {
   private userApiService = inject(UserApiService);
   readonly email = input.required<string>();
-  readonly otpRequested = output<string>();
-  readonly passwordInstead = output<string>();
+  readonly otpRequested = output<{ email: string }>();
+  readonly passwordInstead = output<{ email: string }>();
 
   formGroup = new FormGroup({
     email: new FormControl('', {
@@ -62,7 +62,7 @@ export class BasicAuthLoginEmailStepComponent implements OnInit {
     }: ReturnType<LoginEmailStepFormGroup['getRawValue']>) =>
       this.userApiService.createLoginOtp({ username: email }),
     onSuccess: (_, { email }) => {
-      this.otpRequested.emit(email);
+      this.otpRequested.emit({ email });
     },
   }));
 
