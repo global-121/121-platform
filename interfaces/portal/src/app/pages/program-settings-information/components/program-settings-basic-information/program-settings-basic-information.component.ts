@@ -165,7 +165,7 @@ export class ProgramSettingsBasicInformationComponent {
 
     const listData: DataListItem[] = [
       {
-        label: '*' + $localize`Program name`,
+        label: $localize`Program name`,
         value: this.translatableStringService.translate(
           programData?.titlePortal,
         ),
@@ -193,7 +193,7 @@ export class ProgramSettingsBasicInformationComponent {
         value: programData?.location,
       },
       {
-        label: '*' + $localize`Target registrations`,
+        label: $localize`Target registrations`,
         value: programData?.targetNrRegistrations,
         type: 'number',
         infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.targetRegistrations,

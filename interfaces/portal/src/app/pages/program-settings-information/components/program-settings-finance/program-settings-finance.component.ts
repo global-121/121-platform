@@ -140,7 +140,7 @@ export class ProgramSettingsFinanceComponent {
         type: 'currency',
       },
       {
-        label: '*' + $localize`Currency`,
+        label: $localize`Currency`,
         value: programData?.currency,
         infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.currency,
         type: 'text',
@@ -152,7 +152,7 @@ export class ProgramSettingsFinanceComponent {
         infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.distributionDuration,
       },
       {
-        label: '*' + $localize`Fixed transfer value`,
+        label: $localize`Fixed transfer value`,
         value: programData?.fixedTransferValue,
         currencyCode: programData?.currency,
         type: 'currency',

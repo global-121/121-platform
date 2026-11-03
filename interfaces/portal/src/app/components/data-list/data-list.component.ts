@@ -8,6 +8,7 @@ import {
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   Type,
@@ -128,10 +129,47 @@ export type DataListItem = (
 })
 export class DataListComponent {
   readonly data = input.required<DataListItem[]>();
-  readonly hideBottomBorder = input<boolean>();
   readonly forceOneColumn = input(false);
 
+  readonly itemEdgeFlags = computed(() => {
+    const rowIndexes = this.determineWideScreenRowIndexes();
+    const lastRowIndex = Math.max(...rowIndexes, 0);
+
+    return rowIndexes.map((rowIndex, index) => ({
+      isFirstItem: index === 0,
+      isLastItem: index === rowIndexes.length - 1,
+      isInFirstWideScreenRow: rowIndex === 0,
+      isInLastWideScreenRow: rowIndex === lastRowIndex,
+    }));
+  });
+
   readonly translatableStringService = inject(TranslatableStringService);
+  private determineWideScreenRowIndexes(): number[] {
+    const columnCount = this.forceOneColumn() ? 1 : 2;
+    const rowIndexes: number[] = [];
+    let rowIndex = 0;
+    let column = 0;
+
+    for (const item of this.data()) {
+      const isFullRow = item.fullWidth === true || columnCount === 1;
+
+      if (isFullRow && column !== 0) {
+        rowIndex++;
+        column = 0;
+      }
+
+      rowIndexes.push(rowIndex);
+
+      column = isFullRow ? columnCount : column + 1;
+
+      if (column >= columnCount) {
+        rowIndex++;
+        column = 0;
+      }
+    }
+
+    return rowIndexes;
+  }
 
   skeletonWidth() {
     return `${getRandomInt(42, 98).toString()}%`;

@@ -1,8 +1,5 @@
 @if (dataList()) {
-  <app-data-list
-    [data]="dataList()!"
-    [hideBottomBorder]="true"
-  ></app-data-list>
+  <app-data-list [data]="dataList()!"></app-data-list>
 } @else {
   <div class="whitespace-pre-line">{{ message() }}</div>
 }

@@ -1,17 +1,21 @@
 <div
-  class="grid grid-cols-1 gap-x-5 [&>div:last-child]:border-be-0"
+  class="grid grid-cols-1 gap-x-5"
   [ngClass]="{
-    'mbe-[-2px] [clip-path:inset(0_0_2px_0)]': hideBottomBorder(),
     'md:grid-cols-2': !forceOneColumn(),
   }"
 >
   @for (item of data(); track $index) {
+    @let edge = itemEdgeFlags()[$index];
     <div
       [attr.data-testid]="item?.dataTestId"
       [attr.data-testid-category]="'data-list-item'"
-      class="border-grey-300 flex flex-col border-be p-3.5"
+      class="border-grey-300 mbe-3.5 flex flex-col gap-1 border-be pbe-3.5"
       [ngClass]="{
         'col-span-2': item.fullWidth,
+        'pbs-3.5': edge.isFirstItem,
+        'md:pbs-3.5': edge.isInFirstWideScreenRow,
+        'mbe-0! border-be-0!': edge.isLastItem,
+        'md:mbe-0! md:border-be-0!': edge.isInLastWideScreenRow,
         'items-start': item.type === 'koboImage',
       }"
     >
@@ -40,19 +44,17 @@
           </span>
         </div>
       } @else {
-        <div class="flex text-sm opacity-65">
+        <div class="flex text-[14px] opacity-65">
           <span>{{ item.label | translatableString }}:</span>
           @if (item.infoTooltipData) {
             <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
           }
         </div>
         @if (item.chipLabel && item.chipVariant) {
-          <div class="relative inset-bs-0.5 [*]:text-sm">
-            <app-colored-chip
-              [variant]="item.chipVariant"
-              [label]="item.chipLabel"
-            />
-          </div>
+          <app-colored-chip
+            [variant]="item.chipVariant"
+            [label]="item.chipLabel"
+          />
         } @else if (hasValue({ value: item.value })) {
           @if (item.icon) {
             <i
@@ -61,7 +63,7 @@
               aria-hidden="true"
             ></i>
           }
-          <span class="leading-tight font-semibold">
+          <span class="text-lg/tight font-semibold">
             @switch (item.type) {
               @case ('boolean') {
                 @if (item.value) {
