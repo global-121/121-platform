@@ -16,7 +16,10 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { AppRoutes } from '~/app-routes.const';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { VALID_PERMISSIONS } from '~/services/auth/auth.constants';
-import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
+import {
+  IAuthStrategy,
+  LoginCredentials,
+} from '~/services/auth/auth-strategy.interface';
 import { BasicAuthStrategy } from '~/services/auth/strategies/basic-auth/basic-auth.strategy';
 import { MsalAuthStrategy } from '~/services/auth/strategies/msal-auth/msal-auth.strategy';
 import { startTokenExpirationMonitor } from '~/services/auth/token-expiration-monitor';
@@ -183,10 +186,7 @@ export class AuthService {
     return user;
   }
 
-  public async login(
-    credentials: { username: string; password?: string },
-    returnUrl?: string,
-  ) {
+  public async login(credentials: LoginCredentials, returnUrl?: string) {
     if (returnUrl) {
       setReturnUrlInLocalStorage(returnUrl);
     }

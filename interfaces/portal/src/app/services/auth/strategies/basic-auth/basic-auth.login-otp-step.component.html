@@ -1,0 +1,76 @@
+<div class="mbs-3 mbe-10">
+  <p i18n>Check your email. Might be in spam.</p>
+  <p i18n>
+    We've sent a {{ OTP_LENGTH }}-character code to
+    <strong>{{ email() }}</strong>
+  </p>
+  <p>
+    <ng-container i18n>Wrong email?</ng-container>&nbsp;<p-button
+      i18n
+      [link]="true"
+      (click)="changeEmail.emit({ email: email() })"
+      >Go back to the previous page</p-button
+    >
+  </p>
+</div>
+<app-form-default
+  [formGroup]="formGroup"
+  submitButtonText="Log in"
+  i18n-submitButtonText
+  [mutation]="loginMutation"
+>
+  <app-form-field-wrapper
+    label="Enter your code"
+    i18n-label
+    [errorMessage]="formFieldErrors()('otp')"
+  >
+    <p-inputotp
+      formControlName="otp"
+      [length]="OTP_LENGTH"
+      [autofocus]="true"
+      class="justify-center gap-[clamp(1.125rem,1.04vw,1.6rem)]!"
+      [pt]="{
+        pcInputText: {
+          root: {
+            class:
+              'uppercase inline-[clamp(2.5rem,2.3vw,3.5rem)]! block-[clamp(3.125rem,2.875vw,4.375rem)]! text-[clamp(1rem,0.92vw,1.4rem)]!',
+          },
+        },
+      }"
+    />
+  </app-form-field-wrapper>
+</app-form-default>
+<div class="mbs-8">
+  @if (otpRemainingMs() > 0) {
+    <p i18n>
+      The code is valid for
+      {{ otpRemainingMs() | date: 'm:ss' : 'UTC' }} minutes.
+    </p>
+  } @else {
+    <p i18n>The code has expired. Request a new code to log in.</p>
+  }
+  <p class="mbs-1">
+    <p-button
+      i18n
+      [link]="true"
+      [disabled]="!canRequestNewOtp()"
+      [loading]="requestNewOtpMutation.isPending()"
+      (click)="requestNewOtpMutation.mutate()"
+      >Request new code</p-button
+    >
+  </p>
+  <app-form-error
+    [error]="
+      requestNewOtpMutation.isError() &&
+      requestNewOtpMutation.failureReason()?.message
+    "
+  />
+  <p class="mbs-1">
+    <p-button
+      i18n
+      [link]="true"
+      (click)="passwordInstead.emit({ email: email() })"
+      >Log in with password instead</p-button
+    >
+  </p>
+</div>

@@ -1,69 +1,64 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  inject,
   input,
+  signal,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
 
-import { injectMutation } from '@tanstack/angular-query-experimental';
-import { AutoFocus } from 'primeng/autofocus';
-import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
+import { OTP_REISSUE_COOLDOWN_MS } from '@121-service/src/user/user-otp/user-otp.const';
 
-import { FormDefaultComponent } from '~/components/form-default/form-default.component';
-import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
-import { AuthService } from '~/services/auth.service';
-import { generateFieldErrors } from '~/utils/form-validation';
+import { BasicAuthLoginEmailStepComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login-email-step.component';
+import { BasicAuthLoginOtpStepComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login-otp-step.component';
+import { BasicAuthLoginPasswordStepComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login-password-step.component';
 
-type LoginFormGroup =
-  (typeof BasicAuthLoginComponent)['prototype']['formGroup'];
+enum LoginStep {
+  email = 'email',
+  otp = 'otp',
+  password = 'password',
+}
+
+interface OtpRequest {
+  email: string;
+  requestedAt: number;
+}
 
 @Component({
   selector: 'app-basic-auth-login',
   imports: [
-    InputTextModule,
-    PasswordModule,
-    AutoFocus,
-    FormDefaultComponent,
-    ReactiveFormsModule,
-    FormFieldWrapperComponent,
+    BasicAuthLoginEmailStepComponent,
+    BasicAuthLoginOtpStepComponent,
+    BasicAuthLoginPasswordStepComponent,
   ],
   templateUrl: './basic-auth.login.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BasicAuthLoginComponent {
-  private authService = inject(AuthService);
   readonly returnUrl = input<string | undefined>(undefined);
 
-  passWordResetSubject = `Request Password reset for 121 Platform: ${location.host}`; // NOTE: Not localized/translated, it's used by support-team only
+  readonly LoginStep = LoginStep;
 
-  formGroup = new FormGroup({
-    email: new FormControl('', {
-      nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-      validators: [Validators.required, Validators.email],
-    }),
-    password: new FormControl('', {
-      nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-      validators: [Validators.required],
-    }),
-  });
+  readonly step = signal(LoginStep.email);
+  readonly email = signal('');
+  readonly otpRequest = signal<OtpRequest | undefined>(undefined);
 
-  formFieldErrors = generateFieldErrors(this.formGroup);
+  onOtpRequested({ email }: { email: string }): void {
+    if (!this.isWithinOtpCooldown({ email })) {
+      this.otpRequest.set({ email, requestedAt: Date.now() });
+    }
+    this.goToStep({ step: LoginStep.otp, email });
+  }
 
-  loginMutation = injectMutation(() => ({
-    mutationFn: ({
-      email,
-      password,
-    }: ReturnType<LoginFormGroup['getRawValue']>) =>
-      this.authService.login({ username: email, password }, this.returnUrl()),
-  }));
+  private isWithinOtpCooldown({ email }: { email: string }): boolean {
+    const otpRequest = this.otpRequest();
+    return (
+      otpRequest?.email === email &&
+      Date.now() - otpRequest.requestedAt < OTP_REISSUE_COOLDOWN_MS
+    );
+  }
+
+  goToStep({ step, email }: { step: LoginStep; email: string }): void {
+    this.email.set(email);
+    this.step.set(step);
+  }
 }

@@ -2,7 +2,11 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { UserApiService } from '~/domains/user/user.api.service';
-import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
+import {
+  IAuthStrategy,
+  LoginCredentials,
+} from '~/services/auth/auth-strategy.interface';
+import { LoginMethod } from '~/services/auth/login-method.enum';
 import { BasicAuthChangePasswordComponent } from '~/services/auth/strategies/basic-auth/basic-auth.change-password.component';
 import { BasicAuthLoginComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login.component';
 import {
@@ -26,10 +30,37 @@ export class BasicAuthStrategy implements IAuthStrategy {
     return [];
   }
 
-  public async login(credentials: { username: string; password: string }) {
+  public async login(credentials: LoginCredentials) {
+    if (!('method' in credentials)) {
+      throw new Error(
+        $localize`Invalid email or password. Double-check your credentials and try again.`,
+      );
+    }
+
+    switch (credentials.method) {
+      case LoginMethod.otp:
+        return await this.loginWithOtp(credentials);
+      case LoginMethod.password:
+        return await this.loginWithPassword(credentials);
+    }
+  }
+
+  private async loginWithOtp(credentials: { username: string; otp: string }) {
     try {
-      const user = await this.userApiService.login(credentials);
-      return user;
+      return await this.userApiService.loginWithOtp(credentials);
+    } catch {
+      throw new Error(
+        $localize`Invalid or expired code. Double-check the code or request a new one.`,
+      );
+    }
+  }
+
+  private async loginWithPassword(credentials: {
+    username: string;
+    password: string;
+  }) {
+    try {
+      return await this.userApiService.login(credentials);
     } catch {
       throw new Error(
         $localize`Invalid email or password. Double-check your credentials and try again.`,
