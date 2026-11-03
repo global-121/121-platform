@@ -43,11 +43,9 @@ import {
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
-import {
-  LoginOtpAuditEventName,
-  LoginOtpRequestOutcome,
-  LoginOtpUserFailureReason,
-} from '@121-service/src/user/enum/login-otp-audit.enum';
+import { LoginOtpAuditEventName } from '@121-service/src/user/enum/login-otp-audit-event-name.enum';
+import { LoginOtpRequestOutcome } from '@121-service/src/user/enum/login-otp-request-outcome.enum';
+import { LoginOtpUserFailureReason } from '@121-service/src/user/enum/login-otp-user-failure-reason.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';

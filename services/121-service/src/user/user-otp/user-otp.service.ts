@@ -109,10 +109,13 @@ export class UserOtpService {
     });
 
     if (!isConsumed) {
-      // A concurrent request consumed the code after it was read
       return {
         isVerified: false,
-        failureReason: OtpVerificationFailureReason.consumed,
+        failureReason: await this.getConcurrentChangeReason({
+          userId,
+          hashedOtp,
+          now,
+        }),
       };
     }
 
@@ -157,5 +160,33 @@ export class UserOtpService {
     }
 
     return crypto.timingSafeEqual(hashedOtpBuffer, storedHashedOtpBuffer);
+  }
+
+  // The atomic consume only fails after a concurrent change to the code was
+  // committed, so re-reading the code reveals what that change was
+  private async getConcurrentChangeReason({
+    userId,
+    hashedOtp,
+    now,
+  }: {
+    userId: number;
+    hashedOtp: string;
+    now: Date;
+  }): Promise<OtpVerificationFailureReason> {
+    const userOtp = await this.userOtpRepository.getByUserId({ userId });
+
+    if (!userOtp) {
+      return OtpVerificationFailureReason.noCode;
+    }
+
+    const unusableReason = this.getUnusableReason({ userOtp, now });
+    if (
+      unusableReason &&
+      this.isSameHash({ hashedOtp, storedHashedOtp: userOtp.otp })
+    ) {
+      return unusableReason;
+    }
+
+    return OtpVerificationFailureReason.replaced;
   }
 }
