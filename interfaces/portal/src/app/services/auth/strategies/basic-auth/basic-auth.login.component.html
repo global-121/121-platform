@@ -2,17 +2,23 @@
   @case (LoginStep.email) {
     <app-basic-auth-login-email-step
       [email]="email()"
-      (otpRequested)="goToStep({ step: LoginStep.otp, email: $event })"
+      (otpRequested)="onOtpRequested($event)"
       (passwordInstead)="goToStep({ step: LoginStep.password, email: $event })"
     />
   }
   @case (LoginStep.otp) {
-    <app-basic-auth-login-otp-step
-      [email]="email()"
-      [returnUrl]="returnUrl()"
-      (changeEmail)="goToStep({ step: LoginStep.email, email: $event })"
-      (passwordInstead)="goToStep({ step: LoginStep.password, email: $event })"
-    />
+    @if (otpRequest(); as otpRequest) {
+      <app-basic-auth-login-otp-step
+        [email]="email()"
+        [otpRequestedAt]="otpRequest.requestedAt"
+        [returnUrl]="returnUrl()"
+        (otpRequested)="onOtpRequested($event)"
+        (changeEmail)="goToStep({ step: LoginStep.email, email: $event })"
+        (passwordInstead)="
+          goToStep({ step: LoginStep.password, email: $event })
+        "
+      />
+    }
   }
   @case (LoginStep.password) {
     <app-basic-auth-login-password-step
