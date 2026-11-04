@@ -1,4 +1,4 @@
-import { writeFile } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 
 import configFileTemplate from '../src/environments/environment.ts.template.mjs';
@@ -18,14 +18,15 @@ if (config.values.env === 'development') {
 
 const targetPath = `./src/environments/environment.${targetEnv}.ts`;
 
-writeFile(targetPath, configFileTemplate, (err) => {
-  if (shouldBeEnabled(process.env.DEBUG) || shouldBeEnabled(process.env.CI)) {
-    console.log(configFileTemplate);
-  }
+try {
+  writeFileSync(targetPath, configFileTemplate);
+} catch (err) {
+  console.error(err);
+  process.exit(1);
+}
 
-  if (err) {
-    console.error(err);
-  }
+if (shouldBeEnabled(process.env.DEBUG) || shouldBeEnabled(process.env.CI)) {
+  console.log(configFileTemplate);
+}
 
-  console.info(`Output generated at: ${targetPath}`);
-});
+console.info(`Output generated at: ${targetPath}`);
