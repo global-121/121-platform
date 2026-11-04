@@ -62,6 +62,17 @@ describe('DataListValueComponent', () => {
     expect(text).toBe('Not available');
   });
 
+  it.each(['   ', 'null', ' NULL '])(
+    'should render a "Not available" chip for the unavailable Kobo image value "%s"',
+    (value) => {
+      const text = renderItem({
+        item: { label: 'Photo', type: 'koboImage', value },
+      });
+
+      expect(text).toBe('Not available');
+    },
+  );
+
   it('should render a skeleton instead of the value while loading', () => {
     const text = renderItem({
       item: { label: 'Name', value: 'John', loading: true },

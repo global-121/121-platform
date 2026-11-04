@@ -21,6 +21,7 @@ import { getRandomInt } from '@121-service/src/utils/random-value.helper';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { DataListItem } from '~/components/data-list/data-list-item.type';
+import { isImageAvailable } from '~/components/image/utils/is-image-available';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
@@ -103,7 +104,7 @@ export class DataListValueComponent {
   }
 
   private getKoboImageChipProps({ imageUrl }: { imageUrl: string }) {
-    const isAvailable = !!imageUrl;
+    const isAvailable = isImageAvailable({ imageUrl });
 
     return {
       label: isAvailable
