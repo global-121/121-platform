@@ -47,7 +47,7 @@
     "@swc/core": "^1.16.20",
     "@types/express": "^4.17.25",
     "@types/node": "^24.x",
-    "chokidar": "^5.0.0",
+    "chokidar": "^6.0.0",
     "eslint": "^10.13.0",
     "eslint-config-121-platform": "file:../../packages/eslint-config-121-platform/",
     "eslint-plugin-no-relative-import-paths": "^1.7.3",
