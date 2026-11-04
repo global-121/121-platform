@@ -1,0 +1,45 @@
+<div
+  class="grid grid-cols-1 gap-x-5"
+  [ngClass]="{
+    'md:grid-cols-2': !forceOneColumn(),
+  }"
+>
+  @for (item of data(); track $index) {
+    @let edge = itemEdgeFlags()[$index];
+    <div
+      [attr.data-testid]="item.dataTestId"
+      [attr.data-testid-category]="'data-list-item'"
+      class="border-grey-300 mbe-3.5 flex flex-row items-center gap-2 border-be pbe-3.5"
+      [ngClass]="{
+        'col-span-2': item.fullWidth,
+        'pbs-3.5': edge.isFirstItem,
+        'md:pbs-3.5': edge.isInFirstWideScreenRow,
+        'mbe-0! border-be-0!': edge.isLastItem,
+        'md:mbe-0! md:border-be-0!': edge.isInLastWideScreenRow,
+      }"
+    >
+      <div class="flex text-base opacity-65">
+        <div>{{ item.label | translatableString }}:</div>
+        @if (item.infoTooltipData) {
+          <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
+        }
+      </div>
+
+      <app-data-list-value
+        [item]="item"
+        class="*:text-base!"
+      />
+
+      @if (item.detailAction && !item.loading) {
+        <span class="ms-auto">
+          <ng-container
+            *ngComponentOutlet="
+              item.detailAction.component;
+              inputs: item.detailAction.inputs
+            "
+          ></ng-container>
+        </span>
+      }
+    </div>
+  }
+</div>

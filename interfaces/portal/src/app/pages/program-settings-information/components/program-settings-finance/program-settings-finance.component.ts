@@ -17,10 +17,8 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
-import {
-  DataListComponent,
-  DataListItem,
-} from '~/components/data-list/data-list.component';
+import { DataListComponent } from '~/components/data-list/data-list.component';
+import { DataListItem } from '~/components/data-list/data-list-item.type';
 import { FspTagsComponent } from '~/components/fsp-tags/fsp-tags.component';
 import {
   ProgramBudgetFormGroup,

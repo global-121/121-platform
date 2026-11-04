@@ -1,125 +1,25 @@
-import {
-  CurrencyPipe,
-  DatePipe,
-  DecimalPipe,
-  NgClass,
-  NgComponentOutlet,
-} from '@angular/common';
+import { NgClass, NgComponentOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  inject,
   input,
-  Type,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
-import { InputTextModule } from 'primeng/inputtext';
-import { SkeletonModule } from 'primeng/skeleton';
-import { TagModule } from 'primeng/tag';
-
-import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
-import { getRandomInt } from '@121-service/src/utils/random-value.helper';
-
-import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
-import {
-  InfoTooltipComponent,
-  InfoTooltipData,
-} from '~/components/info-tooltip/info-tooltip.component';
+import { determineDataListItemEdgeFlags } from '~/components/data-list/data-list-edge-flags.helper';
+import { DataListItem } from '~/components/data-list/data-list-item.type';
+import { DataListValueComponent } from '~/components/data-list/data-list-value/data-list-value.component';
+import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
-import { TranslatableStringService } from '~/services/translatable-string.service';
-import { ColorVariant } from '~/utils/color-variant.enum';
-
-export type DataListItem = (
-  | {
-      infoTooltipData: InfoTooltipData;
-    }
-  | {
-      infoTooltipData?: undefined;
-    }
-) & {
-  label: string | UILanguageTranslation;
-  loading?: boolean;
-  chipLabel?: string;
-  chipVariant?: ColorVariant;
-  fullWidth?: boolean;
-  icon?: string;
-  detailAction?: {
-    component: Type<unknown>;
-    inputs: Record<string, unknown>;
-  };
-  dataTestId?: string;
-} & (
-    | {
-        type: 'boolean';
-        value: boolean;
-      }
-    | {
-        type: 'code';
-        value?: null | string;
-      }
-    | {
-        type: 'component';
-        value: Type<unknown>;
-        inputs?: Record<string, unknown>;
-      }
-    | {
-        type: 'currency';
-        value?: null | number;
-        currencyCode?: null | string;
-        currencyFormat?: string;
-      }
-    | {
-        type: 'date';
-        value?: Date | null | number | string;
-      }
-    | {
-        type: 'koboImage';
-        value: string;
-      }
-    | {
-        type: 'number';
-        value?: null | number;
-      }
-    | {
-        type: 'options';
-        value: string | string[];
-        options?: {
-          value: string;
-          label?: string | UILanguageTranslation;
-        }[];
-      }
-    | {
-        type: 'tags';
-        value: string | string[];
-        options: {
-          value: string;
-          label?: string | UILanguageTranslation;
-        }[];
-      }
-    | {
-        type?: 'text';
-        value?: null | string | UILanguageTranslation;
-        routerLink?: RouterLink['routerLink'];
-      }
-  );
 
 @Component({
   selector: 'app-data-list',
   imports: [
+    DataListValueComponent,
     InfoTooltipComponent,
-    CurrencyPipe,
-    DatePipe,
-    DecimalPipe,
-    SkeletonModule,
-    ColoredChipComponent,
-    TranslatableStringPipe,
     NgClass,
     NgComponentOutlet,
-    RouterLink,
-    InputTextModule,
-    TagModule,
+    TranslatableStringPipe,
   ],
   templateUrl: './data-list.component.html',
   styles: ``,
@@ -129,100 +29,10 @@ export class DataListComponent {
   readonly data = input.required<DataListItem[]>();
   readonly forceOneColumn = input(false);
 
-  readonly itemEdgeFlags = computed(() => {
-    const rowIndexes = this.determineWideScreenRowIndexes();
-    const lastRowIndex = Math.max(...rowIndexes, 0);
-
-    return rowIndexes.map((rowIndex, index) => ({
-      isFirstItem: index === 0,
-      isLastItem: index === rowIndexes.length - 1,
-      isInFirstWideScreenRow: rowIndex === 0,
-      isInLastWideScreenRow: rowIndex === lastRowIndex,
-    }));
-  });
-
-  readonly translatableStringService = inject(TranslatableStringService);
-  private determineWideScreenRowIndexes(): number[] {
-    const columnCount = this.forceOneColumn() ? 1 : 2;
-    const rowIndexes: number[] = [];
-    let rowIndex = 0;
-    let column = 0;
-
-    for (const item of this.data()) {
-      const isFullRow = item.fullWidth === true || columnCount === 1;
-
-      if (isFullRow && column !== 0) {
-        rowIndex++;
-        column = 0;
-      }
-
-      rowIndexes.push(rowIndex);
-
-      column = isFullRow ? columnCount : column + 1;
-
-      if (column >= columnCount) {
-        rowIndex++;
-        column = 0;
-      }
-    }
-
-    return rowIndexes;
-  }
-
-  skeletonWidth() {
-    return `${getRandomInt(42, 98).toString()}%`;
-  }
-
-  getChipProps({
-    item,
-  }: {
-    item: DataListItem;
-  }): { label: string; variant: ColorVariant } | undefined {
-    if (item.type === 'koboImage') {
-      return this.getKoboImageChipProps({ imageUrl: item.value });
-    }
-
-    if (!item.chipLabel || !item.chipVariant) {
-      return;
-    }
-
-    return { label: item.chipLabel, variant: item.chipVariant };
-  }
-
-  private getKoboImageChipProps({ imageUrl }: { imageUrl: string }) {
-    const isAvailable = !!imageUrl;
-
-    return {
-      label: isAvailable
-        ? $localize`:@@image-available:Available`
-        : $localize`:@@image-not-available:Not available`,
-      variant: isAvailable ? ColorVariant.Green : ColorVariant.Red,
-    };
-  }
-
-  hasValue({ value }: { value: unknown }): boolean {
-    if (value === undefined || value === null) {
-      return false;
-    }
-
-    if (typeof value === 'string') {
-      return value.trim() !== '';
-    }
-
-    return true;
-  }
-
-  optionItemValue(item: { type: 'options' } & DataListItem) {
-    const value = Array.isArray(item.value) ? item.value : [item.value];
-
-    const valueList = value.map((v) => {
-      const option = item.options?.find((o) => o.value === v);
-
-      return this.translatableStringService.translate(option?.label) ?? v;
-    });
-
-    return this.translatableStringService.commaSeparatedList({
-      values: valueList,
-    });
-  }
+  readonly itemEdgeFlags = computed(() =>
+    determineDataListItemEdgeFlags({
+      items: this.data(),
+      forceOneColumn: this.forceOneColumn(),
+    }),
+  );
 }

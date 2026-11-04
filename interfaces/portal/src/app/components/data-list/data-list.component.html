@@ -7,7 +7,7 @@
   @for (item of data(); track $index) {
     @let edge = itemEdgeFlags()[$index];
     <div
-      [attr.data-testid]="item?.dataTestId"
+      [attr.data-testid]="item.dataTestId"
       [attr.data-testid-category]="'data-list-item'"
       class="border-grey-300 mbe-3.5 flex flex-col gap-1 border-be pbe-3.5"
       [ngClass]="{
@@ -18,132 +18,31 @@
         'md:mbe-0! md:border-be-0!': edge.isInLastWideScreenRow,
       }"
     >
-      @if (item.loading) {
-        <p-skeleton
-          [width]="skeletonWidth()"
-          class="py-1"
-        />
-      } @else {
-        <div class="relative flex items-center">
-          <div class="flex text-[14px] opacity-65 max-inline-[85%]">
-            @if (item.type === 'koboImage') {
-              <i class="pi pi-image relative inset-bs-1 me-1.5 opacity-80"></i>
-            }
+      <div class="relative flex items-center">
+        <div class="flex text-base opacity-65 max-inline-[85%]">
+          @if (item.type === 'koboImage') {
+            <i class="pi pi-image relative inset-bs-1 me-1.5 opacity-80"></i>
+          }
 
-            <div>{{ item.label | translatableString }}:</div>
-            @if (item.infoTooltipData) {
-              <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
-            }
-          </div>
-
-          <span class="absolute inset-e-0 inset-bs-1/2 -translate-y-1/2">
-            @if (item.detailAction) {
-              <ng-container
-                *ngComponentOutlet="
-                  item.detailAction.component;
-                  inputs: item.detailAction.inputs
-                "
-              ></ng-container>
-            }
-          </span>
+          <div>{{ item.label | translatableString }}:</div>
+          @if (item.infoTooltipData) {
+            <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
+          }
         </div>
 
-        @let chip = getChipProps({ item });
-        @if (chip) {
-          <app-colored-chip
-            [variant]="chip.variant"
-            [label]="chip.label"
-          />
-        } @else if (
-          item.type !== 'koboImage' && hasValue({ value: item.value })
-        ) {
-          @if (item.icon) {
-            <i
-              class="pi me-1"
-              [ngClass]="item.icon"
-              aria-hidden="true"
-            ></i>
-          }
-          <span class="text-lg/tight font-semibold">
-            @switch (item.type) {
-              @case ('boolean') {
-                @if (item.value) {
-                  <span
-                    i18n="@@generic-boolean-true"
-                    class="ms-1"
-                  >
-                    Yes
-                  </span>
-                } @else {
-                  <span
-                    i18n="@@generic-boolean-false"
-                    class="ms-1"
-                  >
-                    No
-                  </span>
-                }
-              }
-              @case ('code') {
-                <code>{{ item.value }}</code>
-              }
-              @case ('currency') {
-                {{
-                  item.value
-                    | currency
-                      : item.currencyCode ?? undefined
-                      : 'symbol-narrow'
-                      : item.currencyFormat
-                }}
-              }
-              @case ('date') {
-                {{ item.value | date: 'longDate' }}
-              }
-              @case ('number') {
-                {{ item.value | number }}
-              }
-              @case ('options') {
-                {{ optionItemValue(item) }}
-              }
-              @case ('component') {
-                <ng-container
-                  *ngComponentOutlet="item.value; inputs: item.inputs"
-                />
-              }
-              @case ('tags') {
-                <ol class="flex flex-wrap gap-2">
-                  @for (option of item.options; track $index) {
-                    <li>
-                      <p-tag
-                        [value]="
-                          (option.label | translatableString) ?? option.value
-                        "
-                        class="bg-blue-100 text-blue-700"
-                        [rounded]="true"
-                      />
-                    </li>
-                  }
-                </ol>
-              }
-              @default {
-                @let routerLink = item.routerLink;
-
-                @if (routerLink) {
-                  <a
-                    [routerLink]="routerLink"
-                    class="text-black"
-                  >
-                    {{ item.value | translatableString }}
-                  </a>
-                } @else {
-                  {{ item.value | translatableString }}
-                }
-              }
-            }
+        @if (item.detailAction && !item.loading) {
+          <span class="absolute inset-e-0 inset-bs-1/2 -translate-y-1/2">
+            <ng-container
+              *ngComponentOutlet="
+                item.detailAction.component;
+                inputs: item.detailAction.inputs
+              "
+            ></ng-container>
           </span>
-        } @else if (!item.chipLabel) {
-          —
         }
-      }
+      </div>
+
+      <app-data-list-value [item]="item" />
     </div>
   }
 </div>

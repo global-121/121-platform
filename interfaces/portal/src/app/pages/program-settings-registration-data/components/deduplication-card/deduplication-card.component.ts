@@ -20,10 +20,8 @@ import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/r
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
-import {
-  DataListComponent,
-  DataListItem,
-} from '~/components/data-list/data-list.component';
+import { DataListComponent } from '~/components/data-list/data-list.component';
+import { DataListItem } from '~/components/data-list/data-list-item.type';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { AuthService } from '~/services/auth.service';
