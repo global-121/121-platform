@@ -228,7 +228,7 @@ svg-icon svg {
     }
 
     &.p-button-outlined {
-      &:not(:hover):not(:focus):not(:focus-within) {
+      &:not(:hover) {
         @apply bg-white;
       }
     }

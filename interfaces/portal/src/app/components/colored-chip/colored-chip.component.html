@@ -3,6 +3,7 @@
   [icon]="icon()"
   [pTooltip]="tooltip()"
   [class]="styleClass()"
+  [pt]="{ root: { class: infoTooltipData() ? 'pe-2' : '' } }"
 >
   @let tooltipData = infoTooltipData();
   @if (tooltipData) {
