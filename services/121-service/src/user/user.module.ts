@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentsModule } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignments.module';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { RolesController } from '@121-service/src/user/controllers/roles.controller';
 import { UserController } from '@121-service/src/user/controllers/user.controller';
 import { UserAssignmentsController } from '@121-service/src/user/controllers/user-assignments.controller';
@@ -25,7 +26,7 @@ import { UserOtpModule } from '@121-service/src/user/user-otp/user-otp.module';
     UserEmailsModule,
     UserOtpModule,
   ],
-  providers: [UserService],
+  providers: [UserService, AzureLogService],
   controllers: [UserController, UserAssignmentsController, RolesController],
   exports: [UserService],
 })

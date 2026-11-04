@@ -15,6 +15,9 @@ export class UserOtpEntity extends Base121Entity {
   public otp: string;
 
   @Column({ type: 'timestamp' })
+  public issuedAt: Date;
+
+  @Column({ type: 'timestamp' })
   public expiresAt: Date;
 
   @Column({ type: 'timestamp', nullable: true })

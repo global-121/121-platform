@@ -71,6 +71,14 @@ export async function updateUserProgramAssignment({
     });
 }
 
+export function requestLoginOtp({
+  username,
+}: {
+  username: string;
+}): Promise<request.Response> {
+  return getServer().post('/users/login/otp').send({ username });
+}
+
 export async function getCurrentUser({
   accessToken,
 }: {
