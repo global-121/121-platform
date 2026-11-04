@@ -1,5 +1,5 @@
 import { TestBed } from '@automock/jest';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { ForbiddenException } from '@nestjs/common';
 import { Response } from 'express';
 
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
@@ -28,7 +28,7 @@ describe('PaymentsController', () => {
     paymentsReportingService = unitRef.get(PaymentsReportingService);
   });
 
-  describe('exportTransactionsUsingDateFilter', () => {
+  describe('transaction export', () => {
     const programId = 1;
     const mockRequest = {
       user: {
@@ -58,12 +58,13 @@ describe('PaymentsController', () => {
         format: ExportFileFormat.xlsx,
       };
 
-      it('should throw FORBIDDEN when user lacks RegistrationPaymentExport permission', async () => {
-        userService.canActivate.mockImplementation(
-          async (permissions) =>
-            !permissions.includes(PermissionEnum.RegistrationPaymentExport),
-        );
+      it(`should throw FORBIDDEN when user lacks ${PermissionEnum.RegistrationPaymentExport} permission`, async () => {
+        // Arrange
+        mockUserPermissions({
+          permissions: [PermissionEnum.PaymentTransactionREAD],
+        });
 
+        // Act & Assert
         await expect(
           controller.exportTransactionsUsingDateFilter(
             mockRequest,
@@ -71,14 +72,16 @@ describe('PaymentsController', () => {
             programId,
             query,
           ),
-        ).rejects.toThrow(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
+        ).rejects.toThrow(ForbiddenException);
       });
 
-      it('should successfully send XLSX when user has RegistrationPaymentExport permission', async () => {
-        userService.canActivate.mockImplementation(async (permissions) =>
-          permissions.includes(PermissionEnum.RegistrationPaymentExport),
-        );
+      it(`should successfully send XLSX when user has ${PermissionEnum.RegistrationPaymentExport} permission`, async () => {
+        // Arrange
+        mockUserPermissions({
+          permissions: [PermissionEnum.RegistrationPaymentExport],
+        });
 
+        // Act
         await controller.exportTransactionsUsingDateFilter(
           mockRequest,
           mockResponse,
@@ -86,6 +89,7 @@ describe('PaymentsController', () => {
           query,
         );
 
+        // Assert
         expect(sendXlsxReponse).toHaveBeenCalledWith(
           exportResult.data,
           exportResult.fileName,
@@ -94,17 +98,23 @@ describe('PaymentsController', () => {
       });
     });
 
-    describe('when format is json (default)', () => {
-      const query: GetTransactionsQueryDto = {
-        format: ExportFileFormat.json,
-      };
+    describe.each([
+      {
+        formatDescription: 'json',
+        query: { format: ExportFileFormat.json },
+      },
+      {
+        formatDescription: 'not specified',
+        query: {},
+      },
+    ])('when format is $formatDescription', ({ query }) => {
+      it(`should throw FORBIDDEN when user lacks ${PermissionEnum.PaymentTransactionREAD} permission`, async () => {
+        // Arrange
+        mockUserPermissions({
+          permissions: [PermissionEnum.RegistrationPaymentExport],
+        });
 
-      it('should throw FORBIDDEN when user lacks PaymentTransactionREAD permission', async () => {
-        userService.canActivate.mockImplementation(
-          async (permissions) =>
-            !permissions.includes(PermissionEnum.PaymentTransactionREAD),
-        );
-
+        // Act & Assert
         await expect(
           controller.exportTransactionsUsingDateFilter(
             mockRequest,
@@ -112,14 +122,16 @@ describe('PaymentsController', () => {
             programId,
             query,
           ),
-        ).rejects.toThrow(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
+        ).rejects.toThrow(ForbiddenException);
       });
 
-      it('should successfully send JSON when user has PaymentTransactionREAD permission', async () => {
-        userService.canActivate.mockImplementation(async (permissions) =>
-          permissions.includes(PermissionEnum.PaymentTransactionREAD),
-        );
+      it(`should successfully send JSON when user has ${PermissionEnum.PaymentTransactionREAD} permission`, async () => {
+        // Arrange
+        mockUserPermissions({
+          permissions: [PermissionEnum.PaymentTransactionREAD],
+        });
 
+        // Act
         await controller.exportTransactionsUsingDateFilter(
           mockRequest,
           mockResponse,
@@ -127,8 +139,23 @@ describe('PaymentsController', () => {
           query,
         );
 
+        // Assert
         expect(mockResponse.send).toHaveBeenCalledWith(exportResult);
       });
     });
+
+    function mockUserPermissions({
+      permissions,
+    }: {
+      permissions: PermissionEnum[];
+    }): void {
+      userService.canActivate.mockImplementation(
+        async (requiredPermissions) =>
+          requiredPermissions.length > 0 &&
+          requiredPermissions.every((permission) =>
+            permissions.includes(permission),
+          ),
+      );
+    }
   });
 });

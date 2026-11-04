@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpException,
@@ -411,7 +412,7 @@ export class PaymentsController {
       userId,
     );
     if (!hasPermission) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      throw new ForbiddenException();
     }
 
     const result =
