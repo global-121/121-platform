@@ -64,7 +64,7 @@
     "date-fns": "^4.4.0",
     "filesize": "^9.0.11",
     "konami-code-js": "^0.8.3",
-    "lokalise-file-exchange": "^6.0.1",
+    "lokalise-file-exchange": "^5.2.0",
     "ngx-filesize": "^3.0.8",
     "ngx-matomo-client": "^9.1.0",
     "papaparse": "^5.7.0",
