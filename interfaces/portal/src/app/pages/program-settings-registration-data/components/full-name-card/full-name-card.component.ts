@@ -38,7 +38,6 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     ReactiveFormsModule,
   ],
   templateUrl: './full-name-card.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FullNameCardComponent {

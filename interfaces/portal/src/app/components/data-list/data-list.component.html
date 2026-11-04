@@ -24,10 +24,12 @@
             <i class="pi pi-image relative inset-bs-1 me-1.5 opacity-80"></i>
           }
 
-          <div>{{ item.label | translatableString }}:</div>
-          @if (item.infoTooltipData) {
-            <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
-          }
+          <div>
+            {{ item.label | translatableString }}:
+            @if (item.infoTooltipData) {
+              <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
+            }
+          </div>
         </div>
 
         @if (item.detailAction && !item.loading) {

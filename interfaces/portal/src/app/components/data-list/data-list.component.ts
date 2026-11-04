@@ -15,14 +15,13 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 @Component({
   selector: 'app-data-list',
   imports: [
+    TranslatableStringPipe,
     DataListValueComponent,
     InfoTooltipComponent,
-    NgClass,
     NgComponentOutlet,
-    TranslatableStringPipe,
+    NgClass,
   ],
   templateUrl: './data-list.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataListComponent {
