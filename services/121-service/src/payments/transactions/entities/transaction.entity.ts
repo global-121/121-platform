@@ -27,6 +27,17 @@ export class TransactionEntity extends Base121AuditedEntity {
   @Column({ nullable: true, type: 'real' })
   public transferValue: number | null;
 
+  @Column({
+    nullable: true,
+    type: 'numeric',
+    transformer: {
+      to: (value: number | null) => value,
+      from: (value: string | null) =>
+        value === null ? null : Number.parseFloat(value),
+    },
+  })
+  public transferValueNumeric?: number | null;
+
   @Column()
   @Index()
   public status: string;
