@@ -86,7 +86,7 @@
     "@eslint/js": "^10.0.1",
     "@prettier/plugin-xml": "^3.4.2",
     "@tailwindcss/postcss": "^4.3.3",
-    "@tanstack/eslint-plugin-query": "^5.104.5",
+    "@tanstack/eslint-plugin-query": "^5.105.0",
     "@types/konami-code-js": "^0.8.3",
     "@types/node": "^24.x",
     "@types/papaparse": "^5.5.2",
