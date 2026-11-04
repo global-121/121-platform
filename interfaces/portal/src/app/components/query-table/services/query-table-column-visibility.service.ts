@@ -1,106 +1,65 @@
-import { effect, signal, WritableSignal } from '@angular/core';
-
 import { QueryTableColumn } from '~/components/query-table/query-table.types';
 
 export class QueryTableColumnVisibilityService<TData> {
-  readonly visibleColumns: WritableSignal<QueryTableColumn<TData>[]> = signal(
-    [],
-  );
-
-  private getStoredColumns(stateKey: string): null | QueryTableColumn<TData>[] {
-    const storedColumns = localStorage.getItem(stateKey);
-    if (!storedColumns) return null;
-
-    return JSON.parse(storedColumns) as QueryTableColumn<TData>[];
-  }
-
-  private getMatchingColumns(
-    storedColumns: QueryTableColumn<TData>[],
-    allColumns: QueryTableColumn<TData>[],
-  ): QueryTableColumn<TData>[] {
-    return storedColumns
-      .map((column) => allColumns.find((c) => c.field === column.field))
-      .filter((column) => column !== undefined);
-  }
-
-  private getDefaultColumns(
-    columns: QueryTableColumn<TData>[],
-  ): QueryTableColumn<TData>[] {
-    return columns.filter((column) => !column.defaultHidden);
-  }
-
-  updateColumnVisibility(options: {
-    columns: QueryTableColumn<TData>[];
-    selectedColumnsStateKey: string | undefined;
-    revertToDefault?: boolean;
-  }): void {
-    const {
-      columns,
-      selectedColumnsStateKey,
-      revertToDefault = false,
-    } = options;
-    const stateKey = selectedColumnsStateKey;
+  getStoredFields(stateKey: string | undefined): string[] | undefined {
     if (!stateKey) {
-      this.visibleColumns.set(this.getDefaultColumns(columns));
-      return;
+      return undefined;
     }
 
-    if (revertToDefault) {
-      localStorage.removeItem(stateKey);
-      this.visibleColumns.set(this.getDefaultColumns(columns));
-      return;
+    const storedColumns = localStorage.getItem(stateKey);
+    if (!storedColumns) {
+      return undefined;
     }
 
-    const storedColumns = this.getStoredColumns(stateKey);
-    this.visibleColumns.set(
-      storedColumns
-        ? this.getMatchingColumns(storedColumns, columns)
-        : this.getDefaultColumns(columns),
+    return (JSON.parse(storedColumns) as { field: string }[]).map(
+      (column) => column.field,
     );
   }
 
-  createColumnVisibilityEffect(options: {
-    columns: () => QueryTableColumn<TData>[];
-    enableColumnManagement: () => boolean;
-    selectedColumnsStateKey: () => string | undefined;
-  }) {
-    const { columns, enableColumnManagement, selectedColumnsStateKey } =
-      options;
-    return effect(() => {
-      const allColumns = columns();
+  storeFields({
+    stateKey,
+    fields,
+  }: {
+    stateKey: string | undefined;
+    fields: string[];
+  }): void {
+    if (!stateKey) {
+      return;
+    }
 
-      if (allColumns.length === 0) {
-        return;
-      }
+    localStorage.setItem(
+      stateKey,
+      JSON.stringify(fields.map((field) => ({ field }))),
+    );
+  }
 
-      if (!enableColumnManagement()) {
-        this.updateColumnVisibility({
-          columns: allColumns,
-          selectedColumnsStateKey: selectedColumnsStateKey(),
-        });
-        return;
-      }
+  clearStoredFields(stateKey: string | undefined): void {
+    if (!stateKey) {
+      return;
+    }
 
-      const visibleColumns = this.visibleColumns();
+    localStorage.removeItem(stateKey);
+  }
 
-      if (visibleColumns.length === 0) {
-        this.updateColumnVisibility({
-          columns: allColumns,
-          selectedColumnsStateKey: selectedColumnsStateKey(),
-        });
-        return;
-      }
+  /**
+   * Always resolves the columns from the given (latest) `columns`,
+   * so that changes to the column definitions are reflected.
+   */
+  getVisibleColumns({
+    columns,
+    selectedFields,
+  }: {
+    columns: QueryTableColumn<TData>[];
+    selectedFields: string[] | undefined;
+  }): QueryTableColumn<TData>[] {
+    const selectedColumns = (selectedFields ?? []).flatMap(
+      (field) => columns.find((column) => column.field === field) ?? [],
+    );
 
-      // Keep the visible columns in sync when the column definitions change (e.g. refreshed data),
-      // while preserving the current selection and order.
-      const refreshedColumns = visibleColumns.map(
-        (visibleColumn) =>
-          allColumns.find((column) => column.field === visibleColumn.field) ??
-          visibleColumn,
-      );
-      if (refreshedColumns.some((column, i) => column !== visibleColumns[i])) {
-        this.visibleColumns.set(refreshedColumns);
-      }
-    });
+    if (selectedColumns.length > 0) {
+      return selectedColumns;
+    }
+
+    return columns.filter((column) => !column.defaultHidden);
   }
 }
