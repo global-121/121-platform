@@ -99,7 +99,18 @@ export class UserService {
     return { userRo: user, cookieSettings, token };
   }
 
-  public async requestLoginOtp({
+  // Process the request in the background without awaiting it,
+  // so the response time does not reveal whether the user exists
+  public requestLoginOtp({ username }: { username: string }): void {
+    void this.processLoginOtpRequest({ username }).catch((error: unknown) => {
+      this.logBackgroundError({
+        message: 'Failed to process login OTP request',
+        cause: error,
+      });
+    });
+  }
+
+  private async processLoginOtpRequest({
     username,
   }: {
     username: string;
@@ -144,8 +155,6 @@ export class UserService {
       details: { outcome: LoginOtpRequestOutcome.issued },
     });
 
-    // Send the login OTP email in the background without awaiting it, 
-    // so the response time does not reveal whether the user exists
     this.sendLoginOtpEmailInBackground({
       email,
       recipientName: user.displayName,
@@ -192,19 +201,28 @@ export class UserService {
         otp,
         expirationMinutes: OTP_EXPIRATION_MINUTES,
       })
-      .catch((error) => {
-        try {
-          this.azureLogService.logError(
-            new Error('Failed to send login OTP email', { cause: error }),
-            false,
-          );
-        } catch (loggingError) {
-          console.error(
-            'Failed to log login OTP email delivery error',
-            loggingError,
-          );
-        }
+      .catch((error: unknown) => {
+        this.logBackgroundError({
+          message: 'Failed to send login OTP email',
+          cause: error,
+        });
       });
+  }
+
+  // Background work has no caller to throw to, and logError itself throws
+  // when Azure is not configured, so a failure here must never escape
+  private logBackgroundError({
+    message,
+    cause,
+  }: {
+    message: string;
+    cause: unknown;
+  }): void {
+    try {
+      this.azureLogService.logError(new Error(message, { cause }), false);
+    } catch (loggingError) {
+      console.error(`${message}, and logging it failed`, loggingError);
+    }
   }
 
   public async loginWithOtp({
