@@ -47,6 +47,17 @@ export class ProgramEntity extends Base121Entity {
   @Column({ nullable: true, type: 'real' })
   public fixedTransferValue: number | null;
 
+  @Column({
+    nullable: true,
+    type: 'numeric',
+    transformer: {
+      to: (value: number | null) => value,
+      from: (value: string | null) =>
+        value === null ? null : Number.parseFloat(value),
+    },
+  })
+  public fixedTransferValueNumeric?: number | null;
+
   @Column({ type: 'character varying', nullable: true })
   public paymentAmountMultiplierFormula: string | null;
 
@@ -100,6 +111,17 @@ export class ProgramEntity extends Base121Entity {
 
   @Column({ nullable: true, default: null, type: 'integer' })
   public budget: number | null;
+
+  @Column({
+    nullable: true,
+    type: 'numeric',
+    transformer: {
+      to: (value: number | null) => value,
+      from: (value: string | null) =>
+        value === null ? null : Number.parseFloat(value),
+    },
+  })
+  public budgetNumeric?: number | null;
 
   @OneToMany(() => PaymentEntity, (payment) => payment.program)
   public payments: Relation<PaymentEntity[]>;
