@@ -78,6 +78,8 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: 'applicationinsights'
         update-types: ['version-update:semver-major']
+      - dependency-name: 'chokidar'
+        update-types: ['version-update:semver-major'] # Reconsider after @swc/@nestjs CLI updates
       - dependency-name: 'ioredis'
         update-types: ['version-update:semver-major'] # Depends on `@nestjs/bull` (and related)
       - dependency-name: 'jimp'
@@ -109,6 +111,8 @@ updates:
       # Dependencies below are ordered alphabetically!
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
+      - dependency-name: 'chokidar'
+        update-types: ['version-update:semver-major'] # Reconsider after @swc/@nestjs CLI updates
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
 
