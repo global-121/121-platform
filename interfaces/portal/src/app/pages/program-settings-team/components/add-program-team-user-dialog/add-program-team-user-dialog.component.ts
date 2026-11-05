@@ -7,7 +7,6 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -23,7 +22,6 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
-import { tap } from 'rxjs';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
@@ -74,7 +72,9 @@ export class AddProgramTeamUserDialogComponent {
   readonly programId = input.required<string>();
   readonly enableScope = input.required<boolean>();
 
-  readonly userToEdit = input<ProgramUserWithRolesLabel | undefined>();
+  readonly userToEdit = signal<ProgramUserWithRolesLabel | undefined>(
+    undefined,
+  );
 
   private programApiService = inject(ProgramApiService);
   private roleApiService = inject(RoleApiService);
@@ -281,41 +281,42 @@ export class AddProgramTeamUserDialogComponent {
     title: $localize`No users found.`,
   };
 
-  constructor() {
-    toObservable(this.userToEdit)
-      .pipe(
-        tap((user) => {
-          if (user) {
-            const accessGroupValues = user.accessGroups.map(
-              (accessGroup) => accessGroup.value,
-            );
+  show({ userToEdit }: { userToEdit?: ProgramUserWithRolesLabel } = {}) {
+    this.userToEdit.set(userToEdit);
 
-            this.formGroup.patchValue({
-              userValue: user.id,
-              rolesValue: user.roles.map(({ role }) => role),
-              accessGroupsValue: {
-                accessGroup1Value: accessGroupValues[0] ?? null,
-                accessGroup2Value: accessGroupValues[1] ?? null,
-                accessGroup3Value: accessGroupValues[2] ?? null,
-              },
-            });
-
-            this.formGroup.controls.userValue.disable();
-          } else {
-            this.formGroup.patchValue({
-              userValue: -1,
-            });
-            this.formGroup.controls.userValue.enable();
-          }
-        }),
-        takeUntilDestroyed(),
-      )
-      .subscribe();
-  }
-
-  show() {
+    // The form dialog resets the form group on show, so the form must be
+    // pre-filled only after that
     this.formDialog().show({
       resetMutation: true,
     });
+
+    this.prefillForm({ userToEdit });
+  }
+
+  private prefillForm({
+    userToEdit,
+  }: {
+    userToEdit?: ProgramUserWithRolesLabel;
+  }) {
+    if (!userToEdit) {
+      this.formGroup.controls.userValue.enable();
+      return;
+    }
+
+    const accessGroupValues = userToEdit.accessGroups.map(
+      (accessGroup) => accessGroup.value,
+    );
+
+    this.formGroup.patchValue({
+      userValue: userToEdit.id,
+      rolesValue: userToEdit.roles.map(({ role }) => role),
+      accessGroupsValue: {
+        accessGroup1Value: accessGroupValues[0] ?? null,
+        accessGroup2Value: accessGroupValues[1] ?? null,
+        accessGroup3Value: accessGroupValues[2] ?? null,
+      },
+    });
+
+    this.formGroup.controls.userValue.disable();
   }
 }

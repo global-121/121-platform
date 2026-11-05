@@ -90,7 +90,7 @@
     }
   </app-form-field-wrapper>
 
-  @if (!!accessGroupAttributes()) {
+  @if (accessGroupAttributes().length > 0) {
     <app-user-access-group-form
       [programId]="programId()"
       [accessGroupAttributes]="accessGroupAttributes()"
