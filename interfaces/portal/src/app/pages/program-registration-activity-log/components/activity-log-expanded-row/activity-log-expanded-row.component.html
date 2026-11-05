@@ -1,5 +1,8 @@
 @if (dataList()) {
-  <app-data-list-horizontal [data]="dataList()!"></app-data-list-horizontal>
+  <app-data-list
+    [data]="dataList()!"
+    [horizontal]="true"
+  />
 } @else {
   <div class="py-6 whitespace-pre-line">{{ message() }}</div>
 }

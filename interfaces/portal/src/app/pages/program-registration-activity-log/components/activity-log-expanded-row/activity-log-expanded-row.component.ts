@@ -17,7 +17,7 @@ import { GenericRegistrationAttributes } from '@121-service/src/registration/enu
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
-import { DataListHorizontalComponent } from '~/components/data-list/data-list-horizontal/data-list-horizontal.component';
+import { DataListComponent } from '~/components/data-list/data-list.component';
 import { DataListItem } from '~/components/data-list/data-list-item.type';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import { paymentLink } from '~/domains/payment/payment.helpers';
@@ -32,9 +32,8 @@ import { Locale } from '~/utils/locale';
 
 @Component({
   selector: 'app-activity-log-expanded-row',
-  imports: [DataListHorizontalComponent],
+  imports: [DataListComponent],
   templateUrl: './activity-log-expanded-row.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActivityLogExpandedRowComponent implements TableCellComponent<

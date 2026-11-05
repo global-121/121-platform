@@ -9,8 +9,10 @@
     <div
       [attr.data-testid]="item.dataTestId"
       [attr.data-testid-category]="'data-list-item'"
-      class="border-grey-300 mbe-3.5 flex flex-col gap-1 border-be pbe-3.5"
+      class="border-grey-300 mbe-3.5 flex border-be pbe-3.5"
       [ngClass]="{
+        'flex-col gap-1': !horizontal(),
+        'flex-row items-center gap-2': horizontal(),
         'col-span-2': item.fullWidth,
         'pbs-3.5': edge.isFirstItem,
         'md:pbs-3.5': edge.isInFirstWideScreenRow,
@@ -18,33 +20,77 @@
         'md:mbe-0! md:border-be-0!': edge.isInLastWideScreenRow,
       }"
     >
-      <div class="relative flex items-center">
-        <div class="flex flex-1 text-base opacity-65">
-          @if (item.type === 'koboImage') {
-            <i class="pi pi-image relative inset-bs-1 me-1.5 opacity-80"></i>
-          }
-
-          <div>
-            {{ item.label | translatableString }}:
-            @if (item.infoTooltipData) {
-              <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
-            }
-          </div>
-        </div>
-
-        @if (item.detailAction && !item.loading) {
-          <span class="absolute inset-e-0 inset-bs-1/2 -translate-y-1/2">
-            <ng-container
-              *ngComponentOutlet="
-                item.detailAction.component;
-                inputs: item.detailAction.inputs
-              "
-            ></ng-container>
-          </span>
-        }
-      </div>
-
-      <app-data-list-value [item]="item" />
+      <ng-container
+        *ngTemplateOutlet="
+          horizontal() ? horizontalLabel : verticalLabel;
+          context: { $implicit: item }
+        "
+      ></ng-container>
     </div>
   }
 </div>
+
+<!-- HORIZONTAL LABEL -->
+
+<ng-template
+  #horizontalLabel
+  let-item
+>
+  <div class="flex text-base opacity-65">
+    <div>{{ item.label | translatableString }}:</div>
+    @if (item.infoTooltipData) {
+      <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
+    }
+  </div>
+
+  <app-data-list-value
+    [item]="item"
+    class="*:text-base!"
+  />
+
+  @if (item.detailAction && !item.loading) {
+    <span class="ms-auto">
+      <ng-container
+        *ngComponentOutlet="
+          item.detailAction.component;
+          inputs: item.detailAction.inputs
+        "
+      ></ng-container>
+    </span>
+  }
+</ng-template>
+
+<!-- VERTICAL LABEL -->
+
+<ng-template
+  #verticalLabel
+  let-item
+>
+  <div class="relative flex items-center">
+    <div class="flex flex-1 text-base opacity-65">
+      @if (item.type === 'koboImage') {
+        <i class="pi pi-image relative inset-bs-1 me-1.5 opacity-80"></i>
+      }
+
+      <div>
+        {{ item.label | translatableString }}:
+        @if (item.infoTooltipData) {
+          <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
+        }
+      </div>
+    </div>
+
+    @if (item.detailAction && !item.loading) {
+      <span class="absolute inset-e-0 inset-bs-1/2 -translate-y-1/2">
+        <ng-container
+          *ngComponentOutlet="
+            item.detailAction.component;
+            inputs: item.detailAction.inputs
+          "
+        ></ng-container>
+      </span>
+    }
+  </div>
+
+  <app-data-list-value [item]="item" />
+</ng-template>

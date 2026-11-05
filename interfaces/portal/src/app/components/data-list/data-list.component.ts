@@ -1,4 +1,4 @@
-import { NgClass, NgComponentOutlet } from '@angular/common';
+import { NgClass, NgComponentOutlet, NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,6 +19,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
     DataListValueComponent,
     InfoTooltipComponent,
     NgComponentOutlet,
+    NgTemplateOutlet,
     NgClass,
   ],
   templateUrl: './data-list.component.html',
@@ -27,6 +28,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 export class DataListComponent {
   readonly data = input.required<DataListItem[]>();
   readonly forceOneColumn = input(false);
+  readonly horizontal = input(false);
 
   readonly itemEdgeFlags = computed(() =>
     determineDataListItemEdgeFlags({
