@@ -1,10 +1,16 @@
 import { test as base, TestInfo } from '@playwright/test';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { UpdateProgramAccessGroupLevelsDto } from '@121-service/src/programs/access-group-levels/dtos/update-program-access-group-levels.dto';
+import { CreateProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import {
+  postProgramRegistrationAttribute,
+  updateProgramAccessGroupLevels,
+} from '@121-service/test/helpers/program.helper';
 import {
   seedIncludedRegistrations,
   seedPaidRegistrations,
@@ -83,6 +89,16 @@ interface Fixtures {
   registrationsPage: RegistrationsPage;
   tableComponent: TableComponent;
   usersPage: UsersPage;
+  createRegistrationAttribute: (params: {
+    programRegistrationAttribute: CreateProgramRegistrationAttributeDto;
+    programId: number;
+    accessToken: string;
+  }) => Promise<void>;
+  updateAccessGroupLevels: (params: {
+    programId: number;
+    updateProgramAccessGroupLevelsDto: UpdateProgramAccessGroupLevelsDto;
+    accessToken: string;
+  }) => Promise<void>;
 }
 
 /**
@@ -159,6 +175,38 @@ const seedRegistrations = async ({
       accessToken,
     );
   }
+};
+
+const createRegistrationAttribute = async ({
+  programRegistrationAttribute,
+  programId,
+  accessToken,
+}: {
+  programRegistrationAttribute: CreateProgramRegistrationAttributeDto;
+  programId: number;
+  accessToken: string;
+}) => {
+  await postProgramRegistrationAttribute(
+    programRegistrationAttribute,
+    programId,
+    accessToken,
+  );
+};
+
+const updateAccessGroupLevels = async ({
+  programId,
+  updateProgramAccessGroupLevelsDto,
+  accessToken,
+}: {
+  programId: number;
+  updateProgramAccessGroupLevelsDto: UpdateProgramAccessGroupLevelsDto;
+  accessToken: string;
+}) => {
+  await updateProgramAccessGroupLevels(
+    programId,
+    updateProgramAccessGroupLevelsDto,
+    accessToken,
+  );
 };
 
 export const customSharedFixture = base.extend<Fixtures>({
@@ -340,5 +388,30 @@ export const customSharedFixture = base.extend<Fixtures>({
 
   usersPage: async ({ page }, use) => {
     await use(new UsersPage(page));
+  },
+
+  // eslint-disable-next-line no-empty-pattern -- The page-object is not needed in this fixture, but is required by the fixture function signature.
+  createRegistrationAttribute: async ({}, use) => {
+    const fn = async (params) => {
+      await createRegistrationAttribute({
+        programRegistrationAttribute: params.programRegistrationAttribute,
+        programId: params.programId,
+        accessToken: params.accessToken,
+      });
+    };
+    await use(fn);
+  },
+
+  // eslint-disable-next-line no-empty-pattern -- The page-object is not needed in this fixture, but is required by the fixture function signature.
+  updateAccessGroupLevels: async ({}, use) => {
+    const fn = async (params) => {
+      await updateAccessGroupLevels({
+        programId: params.programId,
+        updateProgramAccessGroupLevelsDto:
+          params.updateProgramAccessGroupLevelsDto,
+        accessToken: params.accessToken,
+      });
+    };
+    await use(fn);
   },
 });

@@ -309,10 +309,17 @@ class BasePage {
         await target.fill(searchPhrase);
       }
     }
-    const optionLocator = this.page
-      .getByRole('option', { name: option, exact })
-      .or(this.page.getByText(option, { exact }))
+
+    const openListbox = this.page
+      .getByRole('listbox')
+      .filter({ visible: true })
       .first();
+    await expect(openListbox).toBeVisible();
+    const optionLocator = openListbox
+      .getByRole('option', { name: option, exact })
+      .or(openListbox.getByText(option, { exact }))
+      .first();
+    await expect(optionLocator).toBeVisible();
     await optionLocator.click();
     await this.closeOpenSelectOrMultiselectWithRetries();
   }
