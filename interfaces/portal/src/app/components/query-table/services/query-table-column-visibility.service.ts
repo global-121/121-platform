@@ -1,81 +1,82 @@
-import { effect, signal, WritableSignal } from '@angular/core';
-
 import { QueryTableColumn } from '~/components/query-table/query-table.types';
 
 export class QueryTableColumnVisibilityService<TData> {
-  readonly visibleColumns: WritableSignal<QueryTableColumn<TData>[]> = signal(
-    [],
-  );
-
-  private getStoredColumns(stateKey: string): null | QueryTableColumn<TData>[] {
-    const storedColumns = localStorage.getItem(stateKey);
-    if (!storedColumns) return null;
-
-    return JSON.parse(storedColumns) as QueryTableColumn<TData>[];
-  }
-
-  private getMatchingColumns(
-    storedColumns: QueryTableColumn<TData>[],
-    allColumns: QueryTableColumn<TData>[],
-  ): QueryTableColumn<TData>[] {
-    return storedColumns
-      .map((column) => allColumns.find((c) => c.field === column.field))
-      .filter((column) => column !== undefined);
-  }
-
-  private getDefaultColumns(
-    columns: QueryTableColumn<TData>[],
-  ): QueryTableColumn<TData>[] {
-    return columns.filter((column) => !column.defaultHidden);
-  }
-
-  updateColumnVisibility(options: {
-    columns: QueryTableColumn<TData>[];
-    selectedColumnsStateKey: string | undefined;
-    revertToDefault?: boolean;
-  }): void {
-    const {
-      columns,
-      selectedColumnsStateKey,
-      revertToDefault = false,
-    } = options;
-    const stateKey = selectedColumnsStateKey;
+  getStoredFields(stateKey: string | undefined): string[] | undefined {
     if (!stateKey) {
-      this.visibleColumns.set(this.getDefaultColumns(columns));
+      return undefined;
+    }
+
+    const storedColumns = localStorage.getItem(stateKey);
+    if (!storedColumns) {
+      return undefined;
+    }
+
+    try {
+      const parsed: unknown = JSON.parse(storedColumns);
+      if (!Array.isArray(parsed)) {
+        return undefined;
+      }
+
+      const fields = parsed.flatMap((column: unknown) =>
+        typeof column === 'object' &&
+        column !== null &&
+        'field' in column &&
+        typeof column.field === 'string'
+          ? [column.field]
+          : [],
+      );
+
+      return fields.length > 0 ? fields : undefined;
+    } catch {
+      // Corrupt or unexpected data: fall back to the default columns
+      return undefined;
+    }
+  }
+
+  storeFields({
+    stateKey,
+    fields,
+  }: {
+    stateKey: string | undefined;
+    fields: string[];
+  }): void {
+    if (!stateKey) {
       return;
     }
 
-    if (revertToDefault) {
-      localStorage.removeItem(stateKey);
-      this.visibleColumns.set(this.getDefaultColumns(columns));
-      return;
-    }
-
-    const storedColumns = this.getStoredColumns(stateKey);
-    this.visibleColumns.set(
-      storedColumns
-        ? this.getMatchingColumns(storedColumns, columns)
-        : this.getDefaultColumns(columns),
+    localStorage.setItem(
+      stateKey,
+      JSON.stringify(fields.map((field) => ({ field }))),
     );
   }
 
-  createColumnVisibilityEffect(options: {
-    columns: () => QueryTableColumn<TData>[];
-    enableColumnManagement: () => boolean;
-    selectedColumnsStateKey: () => string | undefined;
-  }) {
-    const { columns, enableColumnManagement, selectedColumnsStateKey } =
-      options;
-    return effect(() => {
-      if (
-        (!enableColumnManagement() || this.visibleColumns().length === 0) &&
-        columns().length > 0
-      ) {
-        this.updateColumnVisibility({
-          columns: columns(),
-          selectedColumnsStateKey: selectedColumnsStateKey(),
-        });
-      }
-    });
+  clearStoredFields(stateKey: string | undefined): void {
+    if (!stateKey) {
+      return;
+    }
+
+    localStorage.removeItem(stateKey);
+  }
+
+  /**
+   * Always resolves the columns from the given (latest) `columns`,
+   * so that changes to the column definitions are reflected.
+   */
+  getVisibleColumns({
+    columns,
+    selectedFields,
+  }: {
+    columns: QueryTableColumn<TData>[];
+    selectedFields: string[] | undefined;
+  }): QueryTableColumn<TData>[] {
+    const selectedColumns = (selectedFields ?? []).flatMap(
+      (field) => columns.find((column) => column.field === field) ?? [],
+    );
+
+    if (selectedColumns.length > 0) {
+      return selectedColumns;
+    }
+
+    return columns.filter((column) => !column.defaultHidden);
   }
 }

@@ -74,9 +74,9 @@
       @if (enableColumnManagement()) {
         <app-query-table-column-management
           [columns]="columns()"
-          [(visibleColumns)]="visibleColumns"
-          (resetColumnVisibility)="updateColumnVisibility(true)"
-          [selectedColumnsStateKey]="selectedColumnsStateKey()"
+          [visibleColumns]="visibleColumns()"
+          (visibleColumnsChange)="updateVisibleColumns($event)"
+          (resetColumnVisibility)="resetVisibleColumns()"
         />
       }
     </div>

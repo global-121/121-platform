@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  input,
   LOCALE_ID,
   signal,
   Type,
@@ -104,6 +105,16 @@ class TestExpandableCellComponent extends TableCellComponent<
   TestRow,
   TestContext
 > {}
+
+@Component({
+  selector: 'app-test-cell',
+  template: '<span data-testid="custom-cell"></span>',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class TestCellComponent implements TableCellComponent<TestRow> {
+  readonly value = input.required<TestRow>();
+  readonly context = input<never>();
+}
 
 class RtlHelperServiceStub {
   createPosition() {
@@ -477,6 +488,120 @@ describe('QueryTableComponent', () => {
 
       fixture.componentInstance.collapseAll();
       expect(rowExpansionService.expandedRowKeys()).toEqual({});
+    });
+  });
+
+  describe('column visibility', () => {
+    const STATE_KEY = 'query-table-test-selected-columns';
+    const ALL_COLUMNS: QueryTableColumn<TestRow>[] = [
+      { header: 'Registration ID', field: 'registrationProgramId' },
+      { header: 'Status', field: 'status' },
+      { header: 'Created', field: 'created', defaultHidden: true },
+    ];
+    const headersOf = (columns: QueryTableColumn<TestRow>[]) =>
+      columns.map((column) => column.header);
+
+    beforeEach(() => {
+      setComponentInputs({
+        columns: ALL_COLUMNS,
+        enableColumnManagement: true,
+        localStorageKey: 'query-table-test',
+      });
+      fixture.detectChanges();
+    });
+
+    it('shows the non-hidden columns by default', () => {
+      expect(headersOf(fixture.componentInstance.visibleColumns())).toEqual([
+        'Registration ID',
+        'Status',
+      ]);
+    });
+
+    it('renders the updated definitions of the selected columns after the columns input is replaced', () => {
+      // Select a subset: "Created" (hidden by default) and "Status"
+      fixture.componentInstance.updateVisibleColumns([
+        ALL_COLUMNS[1],
+        ALL_COLUMNS[2],
+      ]);
+      fixture.detectChanges();
+
+      const getHeaderTexts = () =>
+        Array.from(
+          (fixture.nativeElement as HTMLElement).querySelectorAll('thead th'),
+        ).map((th) => th.textContent.trim());
+      const getCustomCells = () =>
+        (fixture.nativeElement as HTMLElement).querySelectorAll(
+          '[data-testid="custom-cell"]',
+        );
+
+      expect(getHeaderTexts()).toEqual(['Status', 'Created']);
+      expect(getCustomCells()).toHaveLength(0);
+
+      // Replace the columns with updated definitions (new header + new cell component)
+      const updatedColumns: QueryTableColumn<TestRow>[] = [
+        { header: 'Registration ID', field: 'registrationProgramId' },
+        {
+          header: 'Status (updated)',
+          field: 'status',
+          component: TestCellComponent,
+        },
+        { header: 'Created (updated)', field: 'created', defaultHidden: true },
+      ];
+      setComponentInputs({
+        columns: updatedColumns,
+        enableColumnManagement: true,
+        localStorageKey: 'query-table-test',
+      });
+      fixture.detectChanges();
+
+      // Selection is preserved ("Registration ID" is still not shown)...
+      expect(headersOf(fixture.componentInstance.visibleColumns())).toEqual([
+        'Status (updated)',
+        'Created (updated)',
+      ]);
+      // ...and the rendered table uses the new definitions
+      expect(getHeaderTexts()).toEqual([
+        'Status (updated)',
+        'Created (updated)',
+      ]);
+      expect(getCustomCells()).toHaveLength(DEFAULT_ITEMS.length);
+    });
+
+    it('stores the selected columns and restores them on a new table', () => {
+      fixture.componentInstance.updateVisibleColumns([ALL_COLUMNS[2]]);
+
+      expect(JSON.parse(localStorage.getItem(STATE_KEY) ?? '[]')).toEqual([
+        { field: 'created' },
+      ]);
+
+      const newFixture = TestBed.createComponent(
+        QueryTableComponent<TestRow, TestContext>,
+      );
+      newFixture.componentRef.setInput('items', DEFAULT_ITEMS);
+      newFixture.componentRef.setInput('columns', ALL_COLUMNS);
+      newFixture.componentRef.setInput('isPending', false);
+      newFixture.componentRef.setInput('enableColumnManagement', true);
+      newFixture.componentRef.setInput('localStorageKey', 'query-table-test');
+      newFixture.detectChanges();
+
+      expect(headersOf(newFixture.componentInstance.visibleColumns())).toEqual([
+        'Created',
+      ]);
+    });
+
+    it('restores the default columns and clears the storage when reset', () => {
+      fixture.componentInstance.updateVisibleColumns([ALL_COLUMNS[2]]);
+      expect(headersOf(fixture.componentInstance.visibleColumns())).toEqual([
+        'Created',
+      ]);
+
+      fixture.componentInstance.resetVisibleColumns();
+
+      expect(localStorage.getItem(STATE_KEY)).toBeNull();
+      expect(headersOf(fixture.componentInstance.visibleColumns())).toEqual([
+        'Registration ID',
+        'Status',
+      ]);
     });
   });
 

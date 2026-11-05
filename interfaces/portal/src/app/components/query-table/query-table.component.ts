@@ -7,6 +7,7 @@ import {
   effect,
   inject,
   input,
+  linkedSignal,
   LOCALE_ID,
   model,
   output,
@@ -162,7 +163,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
 
   readonly totalColumnCount = computed(
     () =>
-      this.columnVisibilityService.visibleColumns().length +
+      this.visibleColumns().length +
       (this.contextMenuItems() ? 1 : 0) +
       (this.expandableRowTemplate() ? 1 : 0) +
       (this.enableSelection() ? 1 : 0),
@@ -315,7 +316,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       tableFilteredValue: this.table().filteredValue as null | TData[],
       items: this.items(),
       totalRecords: this.totalRecords(),
-      visibleColumns: this.columnVisibilityService.visibleColumns(),
+      visibleColumns: this.visibleColumns(),
     });
   }
 
@@ -337,22 +338,35 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   /**
    * COLUMN VISIBILITY
    */
-  readonly visibleColumns = model<QueryTableColumn<TData>[]>([]);
+  // `undefined` means: use the default columns
+  private readonly selectedFields = linkedSignal(() =>
+    this.columnVisibilityService.getStoredFields(
+      this.selectedColumnsStateKey(),
+    ),
+  );
 
-  updateColumnVisibility = (revertToDefault = false) => {
-    this.columnVisibilityService.updateColumnVisibility({
+  readonly visibleColumns = computed(() =>
+    this.columnVisibilityService.getVisibleColumns({
       columns: this.columns(),
-      selectedColumnsStateKey: this.selectedColumnsStateKey(),
-      revertToDefault,
-    });
-  };
+      selectedFields: this.selectedFields(),
+    }),
+  );
 
-  columnVisibilityEffect =
-    this.columnVisibilityService.createColumnVisibilityEffect({
-      columns: this.columns,
-      enableColumnManagement: this.enableColumnManagement,
-      selectedColumnsStateKey: this.selectedColumnsStateKey,
+  updateVisibleColumns(selectedColumns: QueryTableColumn<TData>[]) {
+    const fields = selectedColumns.map((column) => column.field);
+    this.columnVisibilityService.storeFields({
+      stateKey: this.selectedColumnsStateKey(),
+      fields,
     });
+    this.selectedFields.set(fields);
+  }
+
+  resetVisibleColumns() {
+    this.columnVisibilityService.clearStoredFields(
+      this.selectedColumnsStateKey(),
+    );
+    this.selectedFields.set(undefined);
+  }
 
   constructor() {
     // Set up service dependencies with provider functions
@@ -367,12 +381,6 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   }
 
   private syncModelsWithServices() {
-    effect(() => {
-      this.visibleColumns.set(this.columnVisibilityService.visibleColumns());
-    });
-    effect(() => {
-      this.columnVisibilityService.visibleColumns.set(this.visibleColumns());
-    });
     effect(() => {
       this.selectedItems.set(this.selectionService.selectedItems());
     });
