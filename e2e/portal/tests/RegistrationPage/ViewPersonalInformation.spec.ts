@@ -52,7 +52,7 @@ test('User can view the registration data of registration that has all data type
     'Birth date': '—', // TODO: Add birth date to registration data for now this is skipped because type 'date' has a known bug
     'Dragon count': '1',
     Motto: 'Winter is coming',
-    'Personal ID': '',
+    'Personal ID': '—',
     Date: '—', // TODO: Add birth date to registration data for now this is skipped because type 'date' has a known bug
     Choice: 'No',
   };
@@ -91,22 +91,22 @@ test('User can view the registration data of registration that has only the requ
   });
 
   const expectedRegistrationData = {
-    Name: '',
+    Name: '—',
     FSP: 'Iron Bank',
     'Preferred Language': 'English',
     House: 'Stark',
     'Knows nothing': '—',
     'WhatsApp Nr.': '—',
     'Account Nr.': '—',
-    'Open Answer': '',
-    'Health area': '',
+    'Open Answer': '—',
+    'Health area': '—',
     'Phone Nr.': '14155235554',
     'Transfer value multiplier': '1',
     'Inclusion Score': '6',
     'Birth date': '—',
     'Dragon count': '—',
-    Motto: '',
-    'Personal ID': '',
+    Motto: '—',
+    'Personal ID': '—',
     Date: '—',
     Choice: '—',
   };
