@@ -8,7 +8,6 @@ import {
 import {
   ChangeDetectionStrategy,
   Component,
-  effect,
   inject,
   input,
 } from '@angular/core';
@@ -25,7 +24,6 @@ import { isImageAvailable } from '~/components/image/utils/is-image-available';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { ColorVariant } from '~/utils/color-variant.enum';
-import { debugLog, LOCAL_STORAGE_DEBUG_DATA_LIST_KEY } from '~/utils/debug-log';
 
 @Component({
   selector: 'app-data-list-value',
@@ -49,43 +47,9 @@ export class DataListValueComponent {
 
   readonly skeletonWidth = `${getRandomInt(42, 98).toString()}%`;
 
-  private skeletonShownAt?: number;
-
   private readonly translatableStringService = inject(
     TranslatableStringService,
   );
-
-  constructor() {
-    effect(() => {
-      this.logSkeletonVisibility({ item: this.item() });
-    });
-  }
-
-  private logSkeletonVisibility({ item }: { item: DataListItem }): void {
-    if (item.loading && this.skeletonShownAt === undefined) {
-      this.skeletonShownAt = performance.now();
-      debugLog({
-        localStorageKey: LOCAL_STORAGE_DEBUG_DATA_LIST_KEY,
-        message: 'Skeleton shown',
-        details: { label: item.label },
-      });
-      return;
-    }
-
-    if (!item.loading && this.skeletonShownAt !== undefined) {
-      debugLog({
-        localStorageKey: LOCAL_STORAGE_DEBUG_DATA_LIST_KEY,
-        message: 'Skeleton hidden',
-        details: {
-          label: item.label,
-          visibleForMilliseconds: Math.round(
-            performance.now() - this.skeletonShownAt,
-          ),
-        },
-      });
-      this.skeletonShownAt = undefined;
-    }
-  }
 
   getChipProps({
     item,

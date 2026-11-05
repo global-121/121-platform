@@ -1,12 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { DataListItem } from '~/components/data-list/data-list-item.type';
 import { DataListValueComponent } from '~/components/data-list/data-list-value/data-list-value.component';
 import { ColorVariant } from '~/utils/color-variant.enum';
-import { LOCAL_STORAGE_DEBUG_DATA_LIST_KEY } from '~/utils/debug-log';
 
 describe('DataListValueComponent', () => {
   let fixture: ComponentFixture<DataListValueComponent>;
@@ -25,11 +24,6 @@ describe('DataListValueComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(DataListValueComponent);
-  });
-
-  afterEach(() => {
-    localStorage.removeItem(LOCAL_STORAGE_DEBUG_DATA_LIST_KEY);
-    vi.restoreAllMocks();
   });
 
   it('should render the chip when chip label and variant are set', () => {
@@ -104,41 +98,6 @@ describe('DataListValueComponent', () => {
     renderItem({ item: { ...loadingItem } });
 
     expect(fixture.componentInstance.skeletonWidth).toBe(widthBefore);
-  });
-
-  it('should not log skeleton visibility when the debug flag is disabled', () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {
-      // silence output
-    });
-    const loadingItem: DataListItem = {
-      label: 'Name',
-      value: 'John',
-      loading: true,
-    };
-
-    renderItem({ item: loadingItem });
-    renderItem({ item: { ...loadingItem, loading: false } });
-
-    expect(debugSpy).not.toHaveBeenCalled();
-  });
-
-  it('should log skeleton visibility when the debug flag is enabled', () => {
-    localStorage.setItem(LOCAL_STORAGE_DEBUG_DATA_LIST_KEY, 'true');
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {
-      // silence output
-    });
-    const loadingItem: DataListItem = {
-      label: 'Name',
-      value: 'John',
-      loading: true,
-    };
-
-    renderItem({ item: loadingItem });
-    renderItem({ item: { ...loadingItem, loading: false } });
-
-    expect(debugSpy).toHaveBeenCalledTimes(2);
-    expect(String(debugSpy.mock.calls[0][0])).toContain('Skeleton shown');
-    expect(String(debugSpy.mock.calls[1][0])).toContain('Skeleton hidden');
   });
 
   it('should render a dash when there is no value and no chip', () => {
