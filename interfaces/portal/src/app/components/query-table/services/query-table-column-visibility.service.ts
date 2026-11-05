@@ -11,9 +11,26 @@ export class QueryTableColumnVisibilityService<TData> {
       return undefined;
     }
 
-    return (JSON.parse(storedColumns) as { field: string }[]).map(
-      (column) => column.field,
-    );
+    try {
+      const parsed: unknown = JSON.parse(storedColumns);
+      if (!Array.isArray(parsed)) {
+        return undefined;
+      }
+
+      const fields = parsed.flatMap((column: unknown) =>
+        typeof column === 'object' &&
+        column !== null &&
+        'field' in column &&
+        typeof column.field === 'string'
+          ? [column.field]
+          : [],
+      );
+
+      return fields.length > 0 ? fields : undefined;
+    } catch {
+      // Corrupt or unexpected data: fall back to the default columns
+      return undefined;
+    }
   }
 
   storeFields({

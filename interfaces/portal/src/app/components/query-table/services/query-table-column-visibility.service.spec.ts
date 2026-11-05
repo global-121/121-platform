@@ -93,6 +93,32 @@ describe('QueryTableColumnVisibilityService', () => {
     expect(service.getStoredFields('test-key')).toBeUndefined();
   });
 
+  it.each([
+    ['invalid JSON', 'not-json'],
+    ['a non-array value', JSON.stringify({ field: 'id' })],
+    ['null', 'null'],
+    ['an empty array', '[]'],
+    ['entries without a string field', JSON.stringify([{ field: 1 }, 'id'])],
+  ])('should ignore stored data that is %s', (_description, storedValue) => {
+    localStorage.setItem('test-key', storedValue);
+
+    expect(service.getStoredFields('test-key')).toBeUndefined();
+  });
+
+  it('should skip malformed entries but keep valid ones', () => {
+    localStorage.setItem(
+      'test-key',
+      JSON.stringify([
+        { field: 'id' },
+        null,
+        { header: 'x' },
+        { field: 'name' },
+      ]),
+    );
+
+    expect(service.getStoredFields('test-key')).toEqual(['id', 'name']);
+  });
+
   it('should not use localStorage without a state key', () => {
     service.storeFields({ stateKey: undefined, fields: ['id'] });
 
