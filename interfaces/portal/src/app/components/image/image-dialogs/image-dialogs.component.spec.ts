@@ -8,6 +8,7 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
 import { ImageDialogsComponent } from '~/components/image/image-dialogs/image-dialogs.component';
 import { ImageViewerService } from '~/components/image/services/image-viewer.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { ToastService } from '~/services/toast.service';
 
 interface KoboImageItem {
   label: string | UILanguageTranslation;
@@ -57,6 +58,7 @@ describe('ImageDialogsComponent', () => {
   let imageViewerService: ImageViewerService;
   const downloadedBlob = new Blob(['image-file']);
   const downloadKoboImage = vi.fn().mockResolvedValue(downloadedBlob);
+  const showGenericError = vi.fn();
   const createObjectUrl = vi
     .spyOn(URL, 'createObjectURL')
     .mockReturnValue('blob:https://example.org/kobo-image');
@@ -74,6 +76,7 @@ describe('ImageDialogsComponent', () => {
             downloadKoboImage,
           },
         },
+        { provide: ToastService, useValue: { showGenericError } },
       ],
     }).compileComponents();
 
@@ -85,6 +88,7 @@ describe('ImageDialogsComponent', () => {
     fixture.detectChanges();
 
     downloadKoboImage.mockClear();
+    showGenericError.mockClear();
     createObjectUrl.mockClear();
     revokeObjectUrl.mockClear();
   });
@@ -159,6 +163,18 @@ describe('ImageDialogsComponent', () => {
     await fixture.whenStable();
 
     expect(downloadKoboImage).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows an error toast when the download fails', async () => {
+    downloadKoboImage.mockRejectedValueOnce(new Error('Not found'));
+
+    imageViewerService.open({ imageUrl: firstImageUrl });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(showGenericError).toHaveBeenCalledTimes(1);
+    expect(createObjectUrl).not.toHaveBeenCalled();
+    expect(imageDialogsComponent.downloadedImageObjectUrls()[0]).toBeNull();
   });
 
   it('closes the dialog via the shared service', () => {

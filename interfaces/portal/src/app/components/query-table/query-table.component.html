@@ -225,7 +225,7 @@
   >
     <tr
       [pContextMenuRow]="item"
-      [ngClass]="{ 'bg-purple-50': expanded }"
+      [ngClass]="{ 'bg-purple-100': expanded }"
     >
       @if (enableSelection()) {
         <td style="width: 0">
@@ -418,10 +418,13 @@
       #expandedrow
       let-item
     >
-      <tr>
+      <tr class="bg-purple-50">
         <td></td>
-        <td [attr.colspan]="totalColumnCount() - 1">
-          @defer {
+        <td
+          [attr.colspan]="totalColumnCount() - 1"
+          class="py-0"
+        >
+          @defer (on immediate) {
             <ng-container
               *ngComponentOutlet="
                 expandableRowTemplate()!;

@@ -23,10 +23,8 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { getChipDataByVisaCardStatus } from '~/components/colored-chip/colored-chip.helper';
-import {
-  DataListComponent,
-  DataListItem,
-} from '~/components/data-list/data-list.component';
+import { DataListComponent } from '~/components/data-list/data-list.component';
+import { DataListItem } from '~/components/data-list/data-list-item.type';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { IntersolveVisaApiService } from '~/domains/fsp-account-management/intersolve-visa.api.service';
