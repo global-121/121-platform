@@ -23,6 +23,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app-routes.const';
+import { AccessGroupPathComponent } from '~/components/access-group-path/access-group-path.component';
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import {
@@ -42,7 +43,7 @@ import { RegistrationMenuComponent } from '~/components/page-layout-registration
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import {
-  getAccessGroupValue,
+  getAccessGroupLabels,
   programHasAccessGroups,
   programNeedsFullNameSetup,
 } from '~/domains/program/program.helper';
@@ -350,7 +351,7 @@ export class PageLayoutRegistrationComponent {
 
     const programRegistrationAttributes =
       this.program.data()?.programRegistrationAttributes ?? [];
-    const accessGroupValue = getAccessGroupValue({
+    const accessGroupLabels = getAccessGroupLabels({
       accessGroupRegistrationAttributeNames: accessGroupAttributeNames,
       registration,
       localizeAttribute: ({ attributeName, attributeOptionValue }) => {
@@ -375,10 +376,15 @@ export class PageLayoutRegistrationComponent {
       },
     });
 
+    if (accessGroupLabels.length === 0) {
+      return;
+    }
+
     return {
       label: $localize`Access group`,
-      value: accessGroupValue,
-      type: 'text',
+      value: AccessGroupPathComponent,
+      inputs: { labels: accessGroupLabels },
+      type: 'component',
       loading:
         this.registration.isPending() ||
         this.program.isPending() ||
