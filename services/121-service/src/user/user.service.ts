@@ -25,6 +25,7 @@ import {
   CreateProgramAssignmentDto,
   UpdateProgramAssignmentDto,
 } from '@121-service/src/user/dto/assign-aw-to-program.dto';
+import { AssignedAccessGroupDto } from '@121-service/src/user/dto/assigned-access-group.dto';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
@@ -1196,6 +1197,25 @@ export class UserService {
       );
     }
     return assignment.scope;
+  }
+
+  public async getUserAccessGroupsForProgram({
+    userId,
+    programId,
+  }: {
+    userId: number;
+    programId: number;
+  }): Promise<AssignedAccessGroupDto[]> {
+    const user = await this.findById(userId);
+    const assignment = user.programAssignments.find(
+      (programAssignment) => programAssignment.programId === programId,
+    );
+    if (!assignment) {
+      return [];
+    }
+    return this.userAccessGroupAssignmentsService.getAccessGroupsOfAssignment({
+      programAidworkerAssignmentId: assignment.id,
+    });
   }
 
   public getScopeForUser(
