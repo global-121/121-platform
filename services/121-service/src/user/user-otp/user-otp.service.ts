@@ -2,9 +2,11 @@ import { Injectable } from '@nestjs/common';
 import crypto from 'node:crypto';
 
 import { env } from '@121-service/src/env';
+import { OtpVerificationFailureReason } from '@121-service/src/user/user-otp/enum/otp-verification-failure-reason.enum';
 import { CreateOtpParams } from '@121-service/src/user/user-otp/interfaces/create-otp-params.interface';
 import { CreateOtpResult } from '@121-service/src/user/user-otp/interfaces/create-otp-result.interface';
 import { VerifyOtpParams } from '@121-service/src/user/user-otp/interfaces/verify-otp-params.interface';
+import { VerifyOtpResult } from '@121-service/src/user/user-otp/interfaces/verify-otp-result.interface';
 import {
   OTP_CHARACTERS,
   OTP_EXPIRATION_MS,
@@ -61,48 +63,82 @@ export class UserOtpService {
       .digest('hex');
   }
 
-  public async verifyOtp({ userId, otp }: VerifyOtpParams): Promise<boolean> {
+  public async verifyOtp({
+    userId,
+    otp,
+  }: VerifyOtpParams): Promise<VerifyOtpResult> {
     const now = new Date();
     const userOtp = await this.userOtpRepository.getByUserId({ userId });
 
-    if (!userOtp || !this.isUsable({ userOtp, now })) {
-      return false;
+    if (!userOtp) {
+      return {
+        isVerified: false,
+        failureReason: OtpVerificationFailureReason.noCode,
+      };
+    }
+
+    const unusableReason = this.getUnusableReason({ userOtp, now });
+    if (unusableReason) {
+      return { isVerified: false, failureReason: unusableReason };
     }
 
     const hashedOtp = this.hashOtp({ otp: this.normalizeOtp({ otp }) });
 
     if (!this.isSameHash({ hashedOtp, storedHashedOtp: userOtp.otp })) {
-      await this.userOtpRepository.recordFailedAttemptIfUsable({
-        userId,
-        otp: userOtp.otp,
-        now,
-        maxFailedAttempts: OTP_MAX_FAILED_ATTEMPTS,
-        lockedUntil: new Date(now.getTime() + OTP_LOCKOUT_MS),
-      });
-      return false;
+      const lockedUntil = new Date(now.getTime() + OTP_LOCKOUT_MS);
+      const { isLocked } =
+        await this.userOtpRepository.recordFailedAttemptIfUsable({
+          userId,
+          otp: userOtp.otp,
+          now,
+          maxFailedAttempts: OTP_MAX_FAILED_ATTEMPTS,
+          lockedUntil,
+        });
+      return {
+        isVerified: false,
+        failureReason: OtpVerificationFailureReason.wrongCode,
+        lockedUntil: isLocked ? lockedUntil : undefined,
+      };
     }
 
-    return await this.userOtpRepository.consumeIfUsable({
+    const isConsumed = await this.userOtpRepository.consumeIfUsable({
       userId,
       otp: hashedOtp,
       consumedAt: now,
       maxFailedAttempts: OTP_MAX_FAILED_ATTEMPTS,
     });
+
+    if (!isConsumed) {
+      return {
+        isVerified: false,
+        failureReason: await this.getConcurrentChangeReason({
+          userId,
+          hashedOtp,
+          now,
+        }),
+      };
+    }
+
+    return { isVerified: true };
   }
 
-  private isUsable({
+  private getUnusableReason({
     userOtp,
     now,
   }: {
     userOtp: UserOtpEntity;
     now: Date;
-  }): boolean {
-    const isConsumed = userOtp.consumedAt !== null;
-    const isExpired = userOtp.expiresAt <= now;
-    const hasReachedMaxFailedAttempts =
-      userOtp.failedAttempts >= OTP_MAX_FAILED_ATTEMPTS;
-
-    return !isConsumed && !isExpired && !hasReachedMaxFailedAttempts;
+  }): OtpVerificationFailureReason | undefined {
+    if (userOtp.failedAttempts >= OTP_MAX_FAILED_ATTEMPTS) {
+      return OtpVerificationFailureReason.locked;
+    }
+    if (userOtp.consumedAt !== null) {
+      return OtpVerificationFailureReason.consumed;
+    }
+    if (userOtp.expiresAt <= now) {
+      return OtpVerificationFailureReason.expired;
+    }
+    return undefined;
   }
 
   private normalizeOtp({ otp }: { otp: string }): string {
@@ -124,5 +160,33 @@ export class UserOtpService {
     }
 
     return crypto.timingSafeEqual(hashedOtpBuffer, storedHashedOtpBuffer);
+  }
+
+  // The atomic consume only fails after a concurrent change to the code was
+  // committed, so re-reading the code reveals what that change was
+  private async getConcurrentChangeReason({
+    userId,
+    hashedOtp,
+    now,
+  }: {
+    userId: number;
+    hashedOtp: string;
+    now: Date;
+  }): Promise<OtpVerificationFailureReason> {
+    const userOtp = await this.userOtpRepository.getByUserId({ userId });
+
+    if (!userOtp) {
+      return OtpVerificationFailureReason.noCode;
+    }
+
+    const unusableReason = this.getUnusableReason({ userOtp, now });
+    if (
+      unusableReason &&
+      this.isSameHash({ hashedOtp, storedHashedOtp: userOtp.otp })
+    ) {
+      return unusableReason;
+    }
+
+    return OtpVerificationFailureReason.replaced;
   }
 }
