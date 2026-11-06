@@ -40,8 +40,7 @@ export class EmailMockController {
   public sendMail(
     @Param('sender') sender: string,
     @Body() body: SendMailRequestDto,
-  ): void {
-    this.emailMockService.sendMail({ sender, request: body });
+  ): Promise<void> {
+    return this.emailMockService.sendMail({ sender, request: body });
   }
 }
-

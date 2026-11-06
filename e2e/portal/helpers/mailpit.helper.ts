@@ -1,0 +1,88 @@
+import { expect } from '@playwright/test';
+
+// eslint-disable-next-line n/no-process-env -- This environment variable `MAILPIT_API_URL` is NOT used in the 121-service, thus not managed via the env.ts file.
+const MAILPIT_API_URL = process.env.MAILPIT_API_URL ?? 'http://localhost:8025';
+const EMAIL_WAIT_TIMEOUT_MS = 10_000;
+
+interface MailpitMessageSummary {
+  readonly ID: string;
+}
+
+interface MailpitSearchResponse {
+  readonly messages: MailpitMessageSummary[];
+}
+
+export interface MailpitMessage {
+  readonly Subject: string;
+  readonly HTML: string;
+  readonly Text: string;
+}
+
+export const deleteAllEmails = async (): Promise<void> => {
+  const response = await fetch(new URL('/api/v1/messages', MAILPIT_API_URL), {
+    method: 'DELETE',
+  });
+
+  expect(response.ok).toBe(true);
+};
+
+export const waitForEmail = async ({
+  recipient,
+  subject,
+}: {
+  recipient: string;
+  subject: string;
+}): Promise<MailpitMessage> => {
+  let messageId: string | undefined;
+
+  await expect
+    .poll(
+      async () => {
+        messageId = await findLatestMessageId({ recipient, subject });
+        return messageId;
+      },
+      {
+        message: `Email "${subject}" to ${recipient} did not arrive in Mailpit`,
+        timeout: EMAIL_WAIT_TIMEOUT_MS,
+      },
+    )
+    .toBeDefined();
+
+  if (!messageId) {
+    throw new Error(`No email "${subject}" found for ${recipient}`);
+  }
+
+  return getMessage({ messageId });
+};
+
+const findLatestMessageId = async ({
+  recipient,
+  subject,
+}: {
+  recipient: string;
+  subject: string;
+}): Promise<string | undefined> => {
+  const url = new URL('/api/v1/search', MAILPIT_API_URL);
+  url.searchParams.set('query', `to:"${recipient}" subject:"${subject}"`);
+
+  const response = await fetch(url);
+  const { messages } = (await response.json()) as MailpitSearchResponse;
+
+  if (!messages.length) {
+    return;
+  }
+
+  return messages[0].ID;
+};
+
+const getMessage = async ({
+  messageId,
+}: {
+  messageId: string;
+}): Promise<MailpitMessage> => {
+  const response = await fetch(
+    new URL(`/api/v1/message/${messageId}`, MAILPIT_API_URL),
+  );
+
+  return (await response.json()) as MailpitMessage;
+};
