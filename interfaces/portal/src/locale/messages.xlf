@@ -549,6 +549,9 @@
       <trans-unit id="3069764081921374374" datatype="html">
         <source>Kobo form successfully integrated.</source>
       </trans-unit>
+      <trans-unit id="3086423071988594984" datatype="html">
+        <source>Assign scope*</source>
+      </trans-unit>
       <trans-unit id="3099882906994173432" datatype="html">
         <source>Linked</source>
       </trans-unit>
@@ -785,6 +788,9 @@
       <trans-unit id="4026691210548476882" datatype="html">
         <source>Failed to load options</source>
       </trans-unit>
+      <trans-unit id="402937248192485030" datatype="html">
+        <source>* Leaving this field empty means the team member will have access to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>all registrations<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
+      </trans-unit>
       <trans-unit id="4031190280739566335" datatype="html">
         <source>Last updated</source>
       </trans-unit>
@@ -871,6 +877,9 @@
       </trans-unit>
       <trans-unit id="4251717932939684100" datatype="html">
         <source>Sender phone number</source>
+      </trans-unit>
+      <trans-unit id="4273825032754891897" datatype="html">
+        <source>* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.west<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</source>
       </trans-unit>
       <trans-unit id="4275051684912699373" datatype="html">
         <source>Amount sent per payment</source>
@@ -1186,6 +1195,9 @@
       </trans-unit>
       <trans-unit id="5420760055917675082" datatype="html">
         <source>You&apos;re about to replace debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>. This will block the current card and a new card will be issued.</source>
+      </trans-unit>
+      <trans-unit id="5438647545299330818" datatype="html">
+        <source>Enter a valid scope. No spaces are allowed.</source>
       </trans-unit>
       <trans-unit id="5452570589103987928" datatype="html">
         <source>Payment status chart.</source>

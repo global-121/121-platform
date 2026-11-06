@@ -7,6 +7,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -45,6 +46,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
 import { generateFieldErrors } from '~/utils/form-validation';
 
 export interface AccessGroupAttribute {
+  level: number;
   name: string;
   label: string | undefined;
   options: { option: string; label: string | undefined }[] | undefined;
@@ -124,13 +126,17 @@ export class AddProgramTeamUserDialogComponent {
     const registrationAttributes =
       this.program.data().programRegistrationAttributes;
 
-    for (const accessGroupAttributeName of accessGroupAttributeNames) {
+    for (const [
+      index,
+      accessGroupAttributeName,
+    ] of accessGroupAttributeNames.entries()) {
       const registrationAttribute = registrationAttributes.find(
         (attr) => attr.name === accessGroupAttributeName,
       );
 
       if (registrationAttribute) {
         accessGroupAttributes.push({
+          level: index + 1,
           name: registrationAttribute.name,
           label: this.translatableStringService.translate(
             registrationAttribute.label,
@@ -156,10 +162,20 @@ export class AddProgramTeamUserDialogComponent {
       validators: [Validators.required, Validators.minLength(1)],
       nonNullable: true,
     }),
+    scopeValue: new FormControl('', {
+      validators: [Validators.pattern(/^\S*$/)],
+      nonNullable: true,
+    }),
     accessGroupsValue: new FormGroup({
       accessGroup1Value: new FormControl<null | string>(null),
-      accessGroup2Value: new FormControl<null | string>(null),
-      accessGroup3Value: new FormControl<null | string>(null),
+      accessGroup2Value: new FormControl<null | string>({
+        value: null,
+        disabled: true,
+      }),
+      accessGroup3Value: new FormControl<null | string>({
+        value: null,
+        disabled: true,
+      }),
     }),
   });
 
@@ -169,6 +185,12 @@ export class AddProgramTeamUserDialogComponent {
         return;
       }
       return $localize`Selecting a user is required`;
+    },
+    scopeValue: ({ invalid }) => {
+      if (!invalid) {
+        return;
+      }
+      return $localize`Enter a valid scope. No spaces are allowed.`;
     },
   });
   readonly dialogHeader = computed(() =>
@@ -217,10 +239,12 @@ export class AddProgramTeamUserDialogComponent {
     mutationFn: ({
       userValue,
       rolesValue,
+      scopeValue,
       accessGroupsValue,
     }: {
       userValue?: number; // this is undefined when editing because the field is disabled
       rolesValue: string[];
+      scopeValue: string;
       accessGroupsValue: {
         accessGroup1Value: null | string;
         accessGroup2Value: null | string;
@@ -250,6 +274,7 @@ export class AddProgramTeamUserDialogComponent {
           {
             userId,
             roles: rolesValue,
+            scope: scopeValue,
             accessGroups,
           },
         );
@@ -258,6 +283,7 @@ export class AddProgramTeamUserDialogComponent {
       return this.programApiService.assignProgramUser(this.programId, {
         userId: userValue,
         roles: rolesValue,
+        scope: scopeValue,
         accessGroups,
       });
     },
@@ -280,6 +306,46 @@ export class AddProgramTeamUserDialogComponent {
     message: $localize`This 121 portal doesn't have users to be added. Add users on the Users page, then assign them to this program.`,
     title: $localize`No users found.`,
   };
+  readonly confirmButtonDisabled = computed(() => {
+    if (!this.program.isSuccess() || !this.accessGroupLevels.isSuccess()) {
+      return true;
+    }
+
+    return false;
+  });
+  constructor() {
+    const { accessGroup1Value, accessGroup2Value, accessGroup3Value } =
+      this.formGroup.controls.accessGroupsValue.controls;
+
+    this.enableAccessGroupControlOnlyWhenPreviousLevelIsSelected({
+      previousLevelControl: accessGroup1Value,
+      control: accessGroup2Value,
+    });
+    this.enableAccessGroupControlOnlyWhenPreviousLevelIsSelected({
+      previousLevelControl: accessGroup2Value,
+      control: accessGroup3Value,
+    });
+  }
+
+  private enableAccessGroupControlOnlyWhenPreviousLevelIsSelected({
+    previousLevelControl,
+    control,
+  }: {
+    previousLevelControl: FormControl<null | string>;
+    control: FormControl<null | string>;
+  }) {
+    previousLevelControl.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((previousLevelValue) => {
+        if (previousLevelValue) {
+          control.enable();
+          return;
+        }
+
+        control.setValue(null);
+        control.disable();
+      });
+  }
 
   show({ userToEdit }: { userToEdit?: ProgramUserWithRolesLabel } = {}) {
     this.userToEdit.set(userToEdit);
@@ -303,17 +369,26 @@ export class AddProgramTeamUserDialogComponent {
       return;
     }
 
-    const accessGroupValues = userToEdit.accessGroups.map(
-      (accessGroup) => accessGroup.value,
-    );
+    const accessGroupValues = new Map<number, string>();
+
+    for (const userAccessGroup of userToEdit.accessGroups) {
+      const attribute = this.accessGroupAttributes().find(
+        (attr) =>
+          attr.name === userAccessGroup.programRegistrationAttributeName,
+      );
+      if (attribute) {
+        accessGroupValues.set(attribute.level, userAccessGroup.value);
+      }
+    }
 
     this.formGroup.patchValue({
       userValue: userToEdit.id,
       rolesValue: userToEdit.roles.map(({ role }) => role),
+      scopeValue: userToEdit.scope,
       accessGroupsValue: {
-        accessGroup1Value: accessGroupValues[0] ?? null,
-        accessGroup2Value: accessGroupValues[1] ?? null,
-        accessGroup3Value: accessGroupValues[2] ?? null,
+        accessGroup1Value: accessGroupValues.get(1) ?? null,
+        accessGroup2Value: accessGroupValues.get(2) ?? null,
+        accessGroup3Value: accessGroupValues.get(3) ?? null,
       },
     });
 
