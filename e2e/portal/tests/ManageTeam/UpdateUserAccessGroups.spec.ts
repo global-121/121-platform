@@ -134,7 +134,7 @@ test('Update and clear the access groups of a program team member', async ({
 
   await test.step('Clear all access groups', async () => {
     await programTeamPage.setAccessGroupLevels({
-      accessGroupLevels: { 1: null, 2: null },
+      accessGroupLevels: { 1: null },
     });
     await programTeamPage.saveEditedUser();
     await programTeamPage.validateToastMessageAndClose('User updated');
