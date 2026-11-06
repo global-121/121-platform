@@ -174,7 +174,7 @@
   "fullnameNamingConvention": ["fullName"],
   "languages": ["ar", "en", "es", "fr", "id", "nl", "pt", "tl", "uk"],
   "enableMaxPayments": true,
-  "enableScope": true,
+  "enableScope": false,
   "programFspConfigurations": [
     {
       "fsp": "Intersolve-voucher-whatsapp",
