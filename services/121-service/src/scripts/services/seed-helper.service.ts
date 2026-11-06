@@ -341,7 +341,7 @@ export class SeedHelperService {
     })) {
       const accessGroupUser = await this.getOrSaveUser({
         type: 'debugAccessGroupUser',
-        username: `${accessGroupPath.replaceAll(ACCESS_GROUP_PATH_SEPARATOR, '-')}@example.org`,
+        username: `debug-access-group-${accessGroupPath.replaceAll(ACCESS_GROUP_PATH_SEPARATOR, '-')}@example.org`,
         password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
       });
       if (!accessGroupUser) {
