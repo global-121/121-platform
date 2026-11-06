@@ -3,7 +3,9 @@ import { describe, expect, it } from 'vitest';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import {
+  getAccessGroupValue,
   mergeUILanguageForProgramLanguageAttributes,
+  programHasAccessGroups,
   programNeedsFullNameSetup,
 } from '~/domains/program/program.helper';
 import { Program } from '~/domains/program/program.model';
@@ -28,6 +30,90 @@ describe('programNeedsFullNameSetup', () => {
     } as Program;
 
     expect(programNeedsFullNameSetup(program)).toBe(false);
+  });
+});
+
+describe('Access group display helpers', () => {
+  it('detects whether any access group levels are configured', () => {
+    // Act & Assert
+    expect(
+      programHasAccessGroups({
+        accessGroupRegistrationAttributeNames: ['region'],
+      }),
+    ).toBe(true);
+    expect(
+      programHasAccessGroups({
+        accessGroupRegistrationAttributeNames: [],
+      }),
+    ).toBe(false);
+    expect(programHasAccessGroups({})).toBe(false);
+  });
+
+  it('joins localized access group values in configured order', () => {
+    // Arrange
+    const attributeLabels: Record<string, Record<string, string>> = {
+      region: { north: 'North' },
+      district: { 'north-central': 'North Central' },
+    };
+
+    // Act
+    const value = getAccessGroupValue({
+      accessGroupRegistrationAttributeNames: ['region', 'district'],
+      registration: { region: 'north', district: 'north-central' },
+      localizeAttribute: ({ attributeName, attributeOptionValue }) =>
+        attributeLabels[attributeName][attributeOptionValue],
+    });
+
+    // Assert
+    expect(value).toBe('North > North Central');
+  });
+
+  it('skips missing and non-string access group values', () => {
+    // Arrange
+    const registration = {
+      region: 'north',
+      district: null,
+      village: 42,
+    };
+
+    // Act
+    const value = getAccessGroupValue({
+      accessGroupRegistrationAttributeNames: [
+        'region',
+        'district',
+        'village',
+        'subVillage',
+      ],
+      registration,
+      localizeAttribute: ({ attributeOptionValue }) => attributeOptionValue,
+    });
+
+    // Assert
+    expect(value).toBe('north');
+  });
+
+  it('falls back to the stored value when the localized label is empty', () => {
+    // Act
+    const value = getAccessGroupValue({
+      accessGroupRegistrationAttributeNames: ['region', 'district'],
+      registration: { region: 'north', district: 'north-central' },
+      localizeAttribute: () => '',
+    });
+
+    // Assert
+    expect(value).toBe('north > north-central');
+  });
+
+  it('returns no value when registration has no valid access group values', () => {
+    // Act
+    const value = getAccessGroupValue({
+      accessGroupRegistrationAttributeNames: ['region'],
+      registration: { region: '' },
+      localizeAttribute: ({ attributeOptionValue }) => attributeOptionValue,
+    });
+
+    // Assert
+    expect(value).toBeUndefined();
   });
 });
 
