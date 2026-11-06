@@ -14,6 +14,7 @@ import { DEFAULT_USER_ROLES } from '@121-service/src/user/const/default-user-rol
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 
+import { AccessGroupPathComponent } from '~/components/access-group-path/access-group-path.component';
 import { DataListComponent } from '~/components/data-list/data-list.component';
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
@@ -154,7 +155,7 @@ describe('Registration profile access group', () => {
     return fixture;
   };
 
-  it('shows option labels in configured level order, separated by >', () => {
+  it('shows option labels in configured level order in an access group path', () => {
     // Arrange
     const fixture = createFixture();
 
@@ -165,8 +166,9 @@ describe('Registration profile access group', () => {
 
     // Assert
     expect(row).toMatchObject({
-      type: 'text',
-      value: 'Turkana > Turkana North',
+      type: 'component',
+      value: AccessGroupPathComponent,
+      inputs: { labels: ['Turkana', 'Turkana North'] },
       loading: false,
     });
   });
@@ -177,10 +179,15 @@ describe('Registration profile access group', () => {
     const fixture = createFixture();
 
     // Act
-    const text = (fixture.nativeElement as HTMLElement).textContent;
+    const labels = (fixture.nativeElement as HTMLElement).querySelectorAll(
+      'app-access-group-path bdi',
+    );
 
     // Assert
-    expect(text).toContain('Turkana (NL) > Noord-Turkana');
+    expect(Array.from(labels, (label) => label.textContent)).toEqual([
+      'Turkana (NL)',
+      'Noord-Turkana',
+    ]);
   });
 
   it('shows labels for ViewWithoutPII without requesting protected attribute metadata', () => {
@@ -196,7 +203,10 @@ describe('Registration profile access group', () => {
     expect(userPermissions).not.toContain(
       PermissionEnum.ProgramRegistrationAttributesREAD,
     );
-    expect(accessGroup?.value).toBe('Turkana > Turkana North');
+    expect(accessGroup).toMatchObject({
+      value: AccessGroupPathComponent,
+      inputs: { labels: ['Turkana', 'Turkana North'] },
+    });
   });
 
   it.each([DefaultUserRole.Approver, DefaultUserRole.ProgramTeamManager])(
@@ -245,17 +255,17 @@ describe('Registration profile access group', () => {
     expect(rows.map((item) => item.label)).not.toContain('Access group');
   });
 
-  it('shows a dash when configured access group values are missing', () => {
+  it('hides the access group row when configured values are missing', () => {
     // Arrange
     registration.region = null;
     registration.district = undefined;
     const fixture = createFixture();
 
     // Act
-    const text = (fixture.nativeElement as HTMLElement).textContent;
+    const rows = fixture.componentInstance.registrationData();
 
     // Assert
-    expect(text).toMatch(/Access group:\s*—/);
+    expect(rows.map((item) => item.label)).not.toContain('Access group');
   });
 
   it.each([null, undefined, '', 42, false, []])(
@@ -271,7 +281,7 @@ describe('Registration profile access group', () => {
         .find((item) => item.label === 'Access group');
 
       // Assert
-      expect(row?.value).toBe('Turkana');
+      expect(row).toMatchObject({ inputs: { labels: ['Turkana'] } });
     },
   );
 
@@ -286,7 +296,9 @@ describe('Registration profile access group', () => {
       .find((item) => item.label === 'Access group');
 
     // Assert
-    expect(row?.value).toBe('Turkana > unknown-district');
+    expect(row).toMatchObject({
+      inputs: { labels: ['Turkana', 'unknown-district'] },
+    });
   });
 
   it.each([{}, { en: '' }])(
@@ -304,7 +316,9 @@ describe('Registration profile access group', () => {
         .find((item) => item.label === 'Access group');
 
       // Assert
-      expect(row?.value).toBe('Turkana > turkana-north');
+      expect(row).toMatchObject({
+        inputs: { labels: ['Turkana', 'turkana-north'] },
+      });
     },
   );
 
@@ -333,12 +347,11 @@ describe('Registration profile access group', () => {
     );
     // Act & Assert
     await expect
-      .poll(
-        () =>
-          fixture.componentInstance
-            .registrationData()
-            .find((item) => item.label === 'Access group')?.value,
+      .poll(() =>
+        fixture.componentInstance
+          .registrationData()
+          .find((item) => item.label === 'Access group'),
       )
-      .toBe('Turkana');
+      .toMatchObject({ inputs: { labels: ['Turkana'] } });
   });
 });

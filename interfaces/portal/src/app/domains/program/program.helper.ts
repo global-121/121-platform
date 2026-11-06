@@ -63,7 +63,7 @@ export const programHasAccessGroups = ({
   return accessGroupRegistrationAttributeNames.length > 0;
 };
 
-export const getAccessGroupValue = ({
+export const getAccessGroupLabels = ({
   accessGroupRegistrationAttributeNames,
   registration,
   localizeAttribute,
@@ -77,7 +77,7 @@ export const getAccessGroupValue = ({
     attributeName: string;
     attributeOptionValue: string;
   }) => string;
-}): string | undefined => {
+}): string[] => {
   const accessGroupLabels: string[] = [];
   for (const attributeName of accessGroupRegistrationAttributeNames) {
     if (!registration) {
@@ -101,11 +101,7 @@ export const getAccessGroupValue = ({
     accessGroupLabels.push(label);
   }
 
-  if (accessGroupLabels.length === 0) {
-    return;
-  }
-
-  return accessGroupLabels.join(' > ');
+  return accessGroupLabels;
 };
 
 export const fspConfigurationNamesHaveIntegrationType = ({

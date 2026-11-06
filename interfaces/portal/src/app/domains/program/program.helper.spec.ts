@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import {
-  getAccessGroupValue,
+  getAccessGroupLabels,
   mergeUILanguageForProgramLanguageAttributes,
   programHasAccessGroups,
   programNeedsFullNameSetup,
@@ -49,7 +49,7 @@ describe('Access group display helpers', () => {
     expect(programHasAccessGroups({})).toBe(false);
   });
 
-  it('joins localized access group values in configured order', () => {
+  it('returns localized access group labels in configured order', () => {
     // Arrange
     const attributeLabels: Record<string, Record<string, string>> = {
       region: { north: 'North' },
@@ -57,7 +57,7 @@ describe('Access group display helpers', () => {
     };
 
     // Act
-    const value = getAccessGroupValue({
+    const labels = getAccessGroupLabels({
       accessGroupRegistrationAttributeNames: ['region', 'district'],
       registration: { region: 'north', district: 'north-central' },
       localizeAttribute: ({ attributeName, attributeOptionValue }) =>
@@ -65,7 +65,7 @@ describe('Access group display helpers', () => {
     });
 
     // Assert
-    expect(value).toBe('North > North Central');
+    expect(labels).toEqual(['North', 'North Central']);
   });
 
   it('skips missing and non-string access group values', () => {
@@ -77,7 +77,7 @@ describe('Access group display helpers', () => {
     };
 
     // Act
-    const value = getAccessGroupValue({
+    const labels = getAccessGroupLabels({
       accessGroupRegistrationAttributeNames: [
         'region',
         'district',
@@ -89,31 +89,31 @@ describe('Access group display helpers', () => {
     });
 
     // Assert
-    expect(value).toBe('north');
+    expect(labels).toEqual(['north']);
   });
 
   it('falls back to the stored value when the localized label is empty', () => {
     // Act
-    const value = getAccessGroupValue({
+    const labels = getAccessGroupLabels({
       accessGroupRegistrationAttributeNames: ['region', 'district'],
       registration: { region: 'north', district: 'north-central' },
       localizeAttribute: () => '',
     });
 
     // Assert
-    expect(value).toBe('north > north-central');
+    expect(labels).toEqual(['north', 'north-central']);
   });
 
-  it('returns no value when registration has no valid access group values', () => {
+  it('returns no labels when registration has no valid access group values', () => {
     // Act
-    const value = getAccessGroupValue({
+    const labels = getAccessGroupLabels({
       accessGroupRegistrationAttributeNames: ['region'],
       registration: { region: '' },
       localizeAttribute: ({ attributeOptionValue }) => attributeOptionValue,
     });
 
     // Assert
-    expect(value).toBeUndefined();
+    expect(labels).toEqual([]);
   });
 });
 
