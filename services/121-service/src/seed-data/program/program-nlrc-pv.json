@@ -120,6 +120,55 @@
       "type": "text",
       "pattern": ".+",
       "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "province",
+      "label": {
+        "en": "Province"
+      },
+      "type": "dropdown",
+      "options": [
+        { "option": "noord-holland", "label": { "en": "Noord-Holland" } },
+        { "option": "zuid-holland", "label": { "en": "Zuid-Holland" } },
+        { "option": "utrecht", "label": { "en": "Utrecht" } },
+        { "option": "gelderland", "label": { "en": "Gelderland" } },
+        { "option": "noord-brabant", "label": { "en": "Noord-Brabant" } }
+      ],
+      "includeInTransactionExport": true,
+      "scoring": {},
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "municipality",
+      "label": {
+        "en": "Municipality"
+      },
+      "type": "dropdown",
+      "options": [
+        { "option": "haarlem", "label": { "en": "Haarlem" } },
+        { "option": "amsterdam", "label": { "en": "Amsterdam" } },
+        { "option": "alkmaar", "label": { "en": "Alkmaar" } },
+        { "option": "hoorn", "label": { "en": "Hoorn" } },
+        { "option": "rotterdam", "label": { "en": "Rotterdam" } },
+        { "option": "den-haag", "label": { "en": "The Hague" } },
+        { "option": "leiden", "label": { "en": "Leiden" } },
+        { "option": "delft", "label": { "en": "Delft" } },
+        { "option": "utrecht", "label": { "en": "Utrecht" } },
+        { "option": "amersfoort", "label": { "en": "Amersfoort" } },
+        { "option": "zeist", "label": { "en": "Zeist" } },
+        { "option": "veenendaal", "label": { "en": "Veenendaal" } },
+        { "option": "arnhem", "label": { "en": "Arnhem" } },
+        { "option": "nijmegen", "label": { "en": "Nijmegen" } },
+        { "option": "apeldoorn", "label": { "en": "Apeldoorn" } },
+        { "option": "ede", "label": { "en": "Ede" } },
+        { "option": "eindhoven", "label": { "en": "Eindhoven" } },
+        { "option": "tilburg", "label": { "en": "Tilburg" } },
+        { "option": "breda", "label": { "en": "Breda" } },
+        { "option": "s-hertogenbosch", "label": { "en": "'s-Hertogenbosch" } }
+      ],
+      "includeInTransactionExport": true,
+      "scoring": {},
+      "showInPeopleAffectedTable": true
     }
   ],
   "fullnameNamingConvention": ["fullName"],
