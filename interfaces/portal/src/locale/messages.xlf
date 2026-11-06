@@ -122,6 +122,9 @@
       <trans-unit id="1504719396709458010" datatype="html">
         <source>Continue to registration</source>
       </trans-unit>
+      <trans-unit id="1522446839756641081" datatype="html">
+        <source>Edit access groups</source>
+      </trans-unit>
       <trans-unit id="1525830536540578989" datatype="html">
         <source>Please adjust your search or filter to find results.</source>
       </trans-unit>
@@ -185,6 +188,9 @@
       <trans-unit id="1782658553741372004" datatype="html">
         <source>They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings.</source>
         <note priority="1" from="description">They=&apos;Necessary cookies&apos;</note>
+      </trans-unit>
+      <trans-unit id="1790830753386982043" datatype="html">
+        <source>Access groups</source>
       </trans-unit>
       <trans-unit id="1791177283103909849" datatype="html">
         <source>Duplication fields:</source>
@@ -306,6 +312,9 @@
       <trans-unit id="2224540478181897692" datatype="html">
         <source>All Payments</source>
       </trans-unit>
+      <trans-unit id="2225846327777442642" datatype="html">
+        <source>City</source>
+      </trans-unit>
       <trans-unit id="2233560223291461480" datatype="html">
         <source>Manual</source>
       </trans-unit>
@@ -405,6 +414,9 @@
       <trans-unit id="2484327586042742796" datatype="html">
         <source>Date is after</source>
       </trans-unit>
+      <trans-unit id="2487838913524119042" datatype="html">
+        <source>Neighbourhood</source>
+      </trans-unit>
       <trans-unit id="2511966165374777397" datatype="html">
         <source>This might take a few minutes. The file will be automatically downloaded when ready. Closing this notification will not cancel the export.</source>
       </trans-unit>
@@ -443,6 +455,9 @@
       </trans-unit>
       <trans-unit id="2701527640285744987" datatype="html">
         <source>Rename payment</source>
+      </trans-unit>
+      <trans-unit id="2710194014504963782" datatype="html">
+        <source>Level 2:</source>
       </trans-unit>
       <trans-unit id="2717935367210661025" datatype="html">
         <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>). Note: <x equiv-text="event.attributes.note" id="PH_3"/></source>
@@ -510,6 +525,9 @@
       <trans-unit id="2948202815374708667" datatype="html">
         <source>General information</source>
       </trans-unit>
+      <trans-unit id="2963496324252943632" datatype="html">
+        <source>Access groups saved successfully.</source>
+      </trans-unit>
       <trans-unit id="2976767115406008475" datatype="html">
         <source>Registration out of scope or not found - please check URL or contact your supervisor</source>
       </trans-unit>
@@ -549,6 +567,9 @@
       <trans-unit id="3086423071988594984" datatype="html">
         <source>Assign scope*</source>
       </trans-unit>
+      <trans-unit id="3094542725503005663" datatype="html">
+        <source>Level <x equiv-text="levelNumber" id="PH"/></source>
+      </trans-unit>
       <trans-unit id="3099882906994173432" datatype="html">
         <source>Linked</source>
       </trans-unit>
@@ -567,11 +588,11 @@
       <trans-unit id="3176639329668271224" datatype="html">
         <source>Link card</source>
       </trans-unit>
+      <trans-unit id="3188734229423974938" datatype="html">
+        <source>Select a field</source>
+      </trans-unit>
       <trans-unit id="3195834407708667843" datatype="html">
         <source>The status column in the file should contain one of the following values:</source>
-      </trans-unit>
-      <trans-unit id="3197779733407994120" datatype="html">
-        <source>Use &quot;scope&quot; in this program</source>
       </trans-unit>
       <trans-unit id="3206588778935189186" datatype="html">
         <source>Upload the updated CSV below</source>
@@ -582,8 +603,14 @@
       <trans-unit id="3241357959735682038" datatype="html">
         <source>Confirm Password</source>
       </trans-unit>
+      <trans-unit id="3254862033403190547" datatype="html">
+        <source>Province</source>
+      </trans-unit>
       <trans-unit id="3271775381612841661" datatype="html">
         <source>This enables an additional registration status: &quot;<x equiv-text="REGISTRATION_STATUS_LABELS[RegistrationStatusEnum.validated]" id="PH"/>&quot;.</source>
+      </trans-unit>
+      <trans-unit id="3276373786243928018" datatype="html">
+        <source>No dropdown fields available</source>
       </trans-unit>
       <trans-unit id="3301086086650990787" datatype="html">
         <source>Register</source>
@@ -635,6 +662,9 @@
       </trans-unit>
       <trans-unit id="350646349607555710" datatype="html">
         <source>Registered:</source>
+      </trans-unit>
+      <trans-unit id="3516047324909076587" datatype="html">
+        <source>Add access level</source>
       </trans-unit>
       <trans-unit id="3543826049207263566" datatype="html">
         <source>Please wait before creating a new payment.</source>
@@ -926,6 +956,9 @@
       <trans-unit id="4421433274861560863" datatype="html">
         <source>Add a user to the 121 platform. Fill in the fields below to create a new user account.</source>
       </trans-unit>
+      <trans-unit id="4463107665570790434" datatype="html">
+        <source>Level <x equiv-text="{{ levelIndex + 1 }}" id="INTERPOLATION"/>:</source>
+      </trans-unit>
       <trans-unit id="4478569469579904965" datatype="html">
         <source>The note will be visible to other 121 users who are permitted to view personal profiles.</source>
       </trans-unit>
@@ -958,6 +991,9 @@
       </trans-unit>
       <trans-unit id="4580971846969755689" datatype="html">
         <source>You will then find the data column name in the &apos;Question Options&apos;</source>
+      </trans-unit>
+      <trans-unit id="4589421135849382997" datatype="html">
+        <source><x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>Level 1:<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> Select field by clicking on &quot;Edit&quot;</source>
       </trans-unit>
       <trans-unit id="4594242528552515311" datatype="html">
         <source>The data in this report is based on data that is imported every night from Cooperative Bank of Oromia. If you changed data today this will not be reflected in the report.</source>
@@ -1012,6 +1048,9 @@
       </trans-unit>
       <trans-unit id="4788150502649502085" datatype="html">
         <source>You&apos;re about to update <x equiv-text="{{ this.registration.data()?.name }}" id="INTERPOLATION"/>&apos;s details.</source>
+      </trans-unit>
+      <trans-unit id="4788664763418985094" datatype="html">
+        <source>Limit which registrations a team member has access to by selecting registration fields. When using multiple fields, define the access levels from broadest to narrowest.</source>
       </trans-unit>
       <trans-unit id="4803523554231687262" datatype="html">
         <source>Delete payment</source>
@@ -1229,6 +1268,9 @@
       <trans-unit id="5578681806481405422" datatype="html">
         <source>Select 1 or more users from your program team</source>
       </trans-unit>
+      <trans-unit id="5578782332459975558" datatype="html">
+        <source>Remove access level <x equiv-text="levelNumber" id="PH"/></source>
+      </trans-unit>
       <trans-unit id="5587438863454126747" datatype="html">
         <source>New data</source>
       </trans-unit>
@@ -1337,6 +1379,9 @@
       <trans-unit id="6041115344061899387" datatype="html">
         <source>Rename</source>
       </trans-unit>
+      <trans-unit id="604620400436672622" datatype="html">
+        <source>Level 1:</source>
+      </trans-unit>
       <trans-unit id="6057281094654962766" datatype="html">
         <source>Validate</source>
       </trans-unit>
@@ -1403,6 +1448,9 @@
       </trans-unit>
       <trans-unit id="6381578200008167206" datatype="html">
         <source>Include</source>
+      </trans-unit>
+      <trans-unit id="6392054863318745845" datatype="html">
+        <source>Level 3:</source>
       </trans-unit>
       <trans-unit id="6400478456082901749" datatype="html">
         <source>Add approval step</source>
@@ -1692,6 +1740,9 @@
       <trans-unit id="7410432243549869948" datatype="html">
         <source>Duration</source>
       </trans-unit>
+      <trans-unit id="743562490549674987" datatype="html">
+        <source>No dropdown fields available</source>
+      </trans-unit>
       <trans-unit id="7450324673386885301" datatype="html">
         <source>Postal code</source>
       </trans-unit>
@@ -1757,6 +1808,9 @@
       </trans-unit>
       <trans-unit id="7720922626568764421" datatype="html">
         <source>Learn more in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/></source>
+      </trans-unit>
+      <trans-unit id="7721778488407235706" datatype="html">
+        <source>For example - by location with hierarchy:</source>
       </trans-unit>
       <trans-unit id="7724483709075923163" datatype="html">
         <source>Downloading file</source>

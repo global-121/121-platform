@@ -18,6 +18,7 @@ import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-pro
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { isKoboIntegrated } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
+import { AccessGroupsCardComponent } from '~/pages/program-settings-registration-data/components/access-groups-card/access-groups-card.component';
 import { DeduplicationCardComponent } from '~/pages/program-settings-registration-data/components/deduplication-card/deduplication-card.component';
 import { FullNameCardComponent } from '~/pages/program-settings-registration-data/components/full-name-card/full-name-card.component';
 import { KoboIntegrationCardComponent } from '~/pages/program-settings-registration-data/components/kobo-integration-card/kobo-integration-card.component';
@@ -34,6 +35,7 @@ import { ColorVariant } from '~/utils/color-variant.enum';
     RequiredAttributesComponent,
     ManualLinkComponent,
     RegistrationQuestionsCardComponent,
+    AccessGroupsCardComponent,
     DeduplicationCardComponent,
     FullNameCardComponent,
     NotificationBannerComponent,

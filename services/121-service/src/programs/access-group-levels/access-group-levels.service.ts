@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { AccessGroupLevelRepository } from '@121-service/src/programs/access-group-levels/access-group-level.repository';
+import { MAX_ACCESS_GROUP_LEVELS } from '@121-service/src/programs/access-group-levels/const/max-access-group-levels.const';
 import { AccessGroupAttributeUpdate } from '@121-service/src/programs/access-group-levels/interfaces/access-group-attribute-update.interface';
 import { AccessGroupRegistrationAttribute } from '@121-service/src/programs/access-group-levels/interfaces/access-group-registration-attribute.interface';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -8,8 +9,6 @@ import { RegistrationAttributeDataRepository } from '@121-service/src/registrati
 
 @Injectable()
 export class AccessGroupLevelsService {
-  private static readonly MAX_ACCESS_GROUP_LEVELS = 3;
-
   public constructor(
     private readonly accessGroupLevelRepository: AccessGroupLevelRepository,
     private readonly registrationAttributeDataRepository: RegistrationAttributeDataRepository,
@@ -83,12 +82,9 @@ export class AccessGroupLevelsService {
       );
     }
 
-    if (
-      selectedAttributeNames.length >
-      AccessGroupLevelsService.MAX_ACCESS_GROUP_LEVELS
-    ) {
+    if (selectedAttributeNames.length > MAX_ACCESS_GROUP_LEVELS) {
       throw new HttpException(
-        `Access group calculation cannot have more than ${AccessGroupLevelsService.MAX_ACCESS_GROUP_LEVELS} attributes`,
+        `Access group calculation cannot have more than ${MAX_ACCESS_GROUP_LEVELS} attributes`,
         HttpStatus.BAD_REQUEST,
       );
     }
