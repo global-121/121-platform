@@ -1,3 +1,4 @@
+import { KoboSurveyItemType } from '@121-service/src/kobo/enum/kobo-survey-item-type';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 import { RegistrationPreferredLanguageTranslation } from '@121-service/src/shared/types/registration-preferred-language-translation.type';
@@ -18,4 +19,5 @@ export interface ProgramRegistrationAttribute {
   scoring?: Record<string, unknown>;
   showInPeopleAffectedTable?: boolean;
   type: WrapperType<RegistrationAttributeTypes>;
+  koboType?: KoboSurveyItemType | null;
 }

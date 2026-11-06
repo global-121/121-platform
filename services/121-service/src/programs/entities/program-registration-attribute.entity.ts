@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
+import { KoboSurveyItemType } from '@121-service/src/kobo/enum/kobo-survey-item-type';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -29,6 +30,9 @@ export class ProgramRegistrationAttributeEntity extends Base121Entity {
 
   @Column({ type: 'character varying' })
   public type: RegistrationAttributeTypes;
+
+  @Column({ type: 'character varying', nullable: true })
+  public koboType: KoboSurveyItemType | null;
 
   @Column()
   public isRequired: boolean;
