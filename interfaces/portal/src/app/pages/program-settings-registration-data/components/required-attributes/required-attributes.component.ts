@@ -31,6 +31,16 @@ import {
   ExplainerTrackingName,
   InfoTooltipTrackingName,
 } from '~/services/tracking/tracking.enums';
+interface RequiredAttribute {
+  name: string;
+  label: string;
+  type?: RegistrationAttributeTypes;
+  infoTooltipData?: {
+    message: string;
+    trackingName: InfoTooltipTrackingName;
+  };
+}
+
 @Component({
   selector: 'app-required-attributes',
   imports: [
@@ -68,6 +78,9 @@ export class RequiredAttributesComponent {
     this.programApiService.getProgram(this.programId),
   );
   readonly enableScope = computed(() => this.program.data()?.enableScope);
+  readonly accessGroupRegistrationAttributeNames = computed(
+    () => this.program.data()?.accessGroupRegistrationAttributeNames ?? [],
+  );
 
   readonly programAttributes = injectQuery(
     this.programApiService.getProgramAttributes({
@@ -117,13 +130,13 @@ export class RequiredAttributesComponent {
 
     // The FSP is a hidden field that is always required, so we hardcode it to the list of required attributes
     // until we do not require it anymore for programs with only one FSP configured.
-    const fspEntry = {
+    const fspEntry: RequiredAttribute = {
       name: 'fsp',
       label: 'FSP',
     };
 
     // Scope is a field that is independent from the FSPs, so we hardcode it to the list of required attributes if the program has scope enabled.
-    const scope = {
+    const scope: RequiredAttribute = {
       name: 'scope',
       label: 'Scope',
       infoTooltipData: {
@@ -132,11 +145,36 @@ export class RequiredAttributesComponent {
       },
     };
 
-    return [
+    const accessGroupAttributeNames = new Set(
+      this.accessGroupRegistrationAttributeNames(),
+    );
+
+    const requiredAttributesList: RequiredAttribute[] = [
       fspEntry,
       ...(this.enableScope() ? [scope] : []),
-      ...attributes.filter((attr) => requiredAttributeNames.has(attr.name)),
+      ...attributes
+        .filter(
+          (attr) =>
+            requiredAttributeNames.has(attr.name) ||
+            accessGroupAttributeNames.has(attr.name),
+        )
+        .map((attr) => {
+          if (accessGroupAttributeNames.has(attr.name)) {
+            return {
+              ...attr,
+              infoTooltipData: {
+                message: $localize`This field is used to calculate access groups for the program and must be a 'select_one' question in your form.`,
+                trackingName:
+                  InfoTooltipTrackingName.requiredAttributeAccessGroupInfo,
+              },
+            };
+          }
+
+          return attr;
+        }),
     ];
+
+    return requiredAttributesList;
   });
 
   readonly accordionValue = computed(() =>
@@ -203,7 +241,7 @@ export class RequiredAttributesComponent {
     attribute,
   }: {
     attribute: {
-      type: RegistrationAttributeTypes;
+      type?: RegistrationAttributeTypes;
       name: string;
     };
   }) {
@@ -232,6 +270,8 @@ export class RequiredAttributesComponent {
         return $localize`Checkbox`;
       case RegistrationAttributeTypes.koboImage:
         return $localize`Photo`;
+      default:
+        return '';
     }
   }
 }

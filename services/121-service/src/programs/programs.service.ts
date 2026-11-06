@@ -100,6 +100,11 @@ export class ProgramService {
       );
     const outputProgram: FoundProgramDto = program;
 
+    outputProgram.accessGroupRegistrationAttributeNames =
+      await this.accessGroupLevelsService.getAccessGroupRegistrationAttributeNames(
+        { programId: program.id },
+      );
+
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     if (!includeMetricsUrl) {
       delete outputProgram.monitoringDashboardUrl;
@@ -428,6 +433,8 @@ export class ProgramService {
     }
 
     const savedProgram = await this.programRepository.save(program);
+    savedProgram['accessGroupRegistrationAttributeNames'] =
+      program.accessGroupRegistrationAttributeNames;
 
     const programDto: ProgramReturnDto =
       this.fillProgramReturnDto(savedProgram);
@@ -489,6 +496,8 @@ export class ProgramService {
       languages: program.languages,
       enableMaxPayments: program.enableMaxPayments,
       enableScope: program.enableScope,
+      accessGroupRegistrationAttributeNames:
+        program.accessGroupRegistrationAttributeNames ?? undefined,
     };
     if (program.monitoringDashboardUrl) {
       programDto.monitoringDashboardUrl = program.monitoringDashboardUrl;
