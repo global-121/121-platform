@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { Equal, In, Repository } from 'typeorm';
 
 import { AccessGroupLevelAssignment } from '@121-service/src/programs/program-aidworker-assignments/interfaces/access-group-level-assignment.interface';
 import { ProgramAidworkerAssignmentAccessGroupEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment-access-group.entity';
@@ -41,5 +41,24 @@ export class ProgramAidworkerAssignmentAccessGroupRepository extends Repository<
       );
       await transactionalEntityManager.save(accessGroupEntities);
     });
+  }
+
+  public async getAssignedAccessGroupLevelIds({
+    accessGroupLevelIds,
+  }: {
+    accessGroupLevelIds: number[];
+  }): Promise<Set<number>> {
+    if (accessGroupLevelIds.length === 0) {
+      return new Set();
+    }
+
+    const accessGroups = await this.find({
+      where: { accessGroupLevelId: In(accessGroupLevelIds) },
+      select: { accessGroupLevelId: true },
+    });
+
+    return new Set(
+      accessGroups.map(({ accessGroupLevelId }) => accessGroupLevelId),
+    );
   }
 }
