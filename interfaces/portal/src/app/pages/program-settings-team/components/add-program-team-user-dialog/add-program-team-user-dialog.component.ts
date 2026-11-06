@@ -2,12 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   input,
   signal,
   viewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -29,8 +29,12 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { SelectNoResultsMessageComponent } from '~/components/select-empty-message/select-no-results-message.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { ProgramUserWithRolesLabel } from '~/domains/program/program.model';
+import {
+  ProgramUserAssignment,
+  ProgramUserWithRolesLabel,
+} from '~/domains/program/program.model';
 import { RoleApiService } from '~/domains/role/role.api.service';
+import { UserAccessGroupFormComponent } from '~/pages/program-settings-team/components/add-program-team-user-dialog/user-access-group-form.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import {
@@ -38,7 +42,15 @@ import {
   TrackingCategory,
 } from '~/services/tracking/tracking.enums';
 import { TrackingService } from '~/services/tracking/tracking.service';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 import { generateFieldErrors } from '~/utils/form-validation';
+
+export interface AccessGroupAttribute {
+  level: number;
+  name: string;
+  label: string | undefined;
+  options: { option: string; label: string | undefined }[] | undefined;
+}
 
 @Component({
   selector: 'app-add-program-team-user-dialog',
@@ -55,22 +67,29 @@ import { generateFieldErrors } from '~/utils/form-validation';
     ReactiveFormsModule,
     ManualLinkComponent,
     SelectNoResultsMessageComponent,
+    UserAccessGroupFormComponent,
   ],
 })
 export class AddProgramTeamUserDialogComponent {
   readonly programId = input.required<string>();
   readonly enableScope = input.required<boolean>();
-  readonly userToEdit = input<ProgramUserWithRolesLabel | undefined>();
+
+  readonly userToEdit = signal<ProgramUserWithRolesLabel | undefined>(
+    undefined,
+  );
 
   private programApiService = inject(ProgramApiService);
   private roleApiService = inject(RoleApiService);
   private toastService = inject(ToastService);
   private authService = inject(AuthService);
   private trackingService = inject(TrackingService);
+  private translatableStringService = inject(TranslatableStringService);
 
   readonly formDialog = viewChild.required<FormDialogComponent>('formDialog');
 
   readonly isEditing = computed(() => !!this.userToEdit());
+
+  program = injectQuery(this.programApiService.getProgram(this.programId));
 
   roles = injectQuery(this.roleApiService.getRoles());
   userSearchResults = injectQuery(
@@ -83,6 +102,54 @@ export class AddProgramTeamUserDialogComponent {
   programUsers = injectQuery(
     this.programApiService.getProgramUsers(this.programId),
   );
+
+  accessGroupLevels = injectQuery(
+    this.programApiService.getProgramAccessGroupLevels({
+      programId: this.programId,
+    }),
+  );
+
+  readonly accessGroupAttributes = computed<AccessGroupAttribute[]>(() => {
+    const accessGroupAttributes: AccessGroupAttribute[] = [];
+
+    if (!this.program.isSuccess() || !this.accessGroupLevels.isSuccess()) {
+      return [];
+    }
+
+    const accessGroupAttributeNames =
+      this.accessGroupLevels.data().accessGroupRegistrationAttributeNames;
+
+    if (accessGroupAttributeNames.length === 0) {
+      return [];
+    }
+
+    const registrationAttributes =
+      this.program.data().programRegistrationAttributes;
+
+    for (const [
+      index,
+      accessGroupAttributeName,
+    ] of accessGroupAttributeNames.entries()) {
+      const registrationAttribute = registrationAttributes.find(
+        (attr) => attr.name === accessGroupAttributeName,
+      );
+
+      if (registrationAttribute) {
+        accessGroupAttributes.push({
+          level: index + 1,
+          name: registrationAttribute.name,
+          label: this.translatableStringService.translate(
+            registrationAttribute.label,
+          ),
+          options: registrationAttribute.options?.map((option) => ({
+            option: option.option,
+            label: this.translatableStringService.translate(option.label),
+          })),
+        });
+      }
+    }
+    return accessGroupAttributes;
+  });
 
   formGroup = new FormGroup({
     userValue: new FormControl(-1, {
@@ -99,37 +166,44 @@ export class AddProgramTeamUserDialogComponent {
       validators: [Validators.pattern(/^\S*$/)],
       nonNullable: true,
     }),
+    accessGroupsValue: new FormGroup({
+      accessGroup1Value: new FormControl<null | string>(null),
+      accessGroup2Value: new FormControl<null | string>({
+        value: null,
+        disabled: true,
+      }),
+      accessGroup3Value: new FormControl<null | string>({
+        value: null,
+        disabled: true,
+      }),
+    }),
   });
 
   formFieldErrors = generateFieldErrors(this.formGroup, {
-    scopeValue: ({ invalid }) => {
-      if (!invalid) {
-        return;
-      }
-      return $localize`Enter a valid scope. No spaces are allowed.`;
-    },
     userValue: ({ invalid }) => {
       if (!invalid) {
         return;
       }
       return $localize`Selecting a user is required`;
     },
+    scopeValue: ({ invalid }) => {
+      if (!invalid) {
+        return;
+      }
+      return $localize`Enter a valid scope. No spaces are allowed.`;
+    },
   });
-
   readonly dialogHeader = computed(() =>
     this.isEditing() ? $localize`Edit user` : $localize`Add user to team`,
   );
-
   readonly dialogHeaderIcon = computed(() =>
     this.isEditing() ? 'pi pi-pencil' : 'pi pi-plus',
   );
-
   readonly dialogProceedLabel = computed(() =>
     this.isEditing()
       ? $localize`:@@generic-save-changes:Save changes`
       : $localize`Add to team`,
   );
-
   readonly userIsUpdatingItself = computed(() => {
     const user = this.userToEdit();
     if (!user) {
@@ -137,13 +211,11 @@ export class AddProgramTeamUserDialogComponent {
     }
     return this.authService.user?.username === user.username;
   });
-
   readonly availableUsersIsLoading = computed(
     () =>
       this.userSearchResults.isPending() ||
       (!this.isEditing() && this.programUsers.isPending()),
   );
-
   readonly availableUsers = computed(() => {
     const userSearchResults = this.userSearchResults.data();
     const programUsers = this.programUsers.data();
@@ -163,17 +235,32 @@ export class AddProgramTeamUserDialogComponent {
         ),
     );
   });
-
   assignUserMutation = injectMutation(() => ({
     mutationFn: ({
       userValue,
       rolesValue,
       scopeValue,
+      accessGroupsValue,
     }: {
       userValue?: number; // this is undefined when editing because the field is disabled
       rolesValue: string[];
       scopeValue: string;
+      accessGroupsValue: {
+        accessGroup1Value: null | string;
+        accessGroup2Value: null | string;
+        accessGroup3Value: null | string;
+      };
     }) => {
+      const accessGroups: ProgramUserAssignment['accessGroups'] = [];
+
+      for (const [index, value] of Object.values(accessGroupsValue).entries()) {
+        const attribute = this.accessGroupAttributes()[index];
+        if (value) {
+          const programRegistrationAttributeName = attribute.name;
+          accessGroups.push({ programRegistrationAttributeName, value });
+        }
+      }
+
       if (!userValue) {
         const userId = this.userToEdit()?.id;
         if (!userId) {
@@ -188,6 +275,7 @@ export class AddProgramTeamUserDialogComponent {
             userId,
             roles: rolesValue,
             scope: scopeValue,
+            accessGroups,
           },
         );
       }
@@ -196,6 +284,7 @@ export class AddProgramTeamUserDialogComponent {
         userId: userValue,
         roles: rolesValue,
         scope: scopeValue,
+        accessGroups,
       });
     },
     onSuccess: () => {
@@ -213,34 +302,96 @@ export class AddProgramTeamUserDialogComponent {
       }
     },
   }));
-
   noUsersFoundMessage = {
     message: $localize`This 121 portal doesn't have users to be added. Add users on the Users page, then assign them to this program.`,
     title: $localize`No users found.`,
   };
+  readonly confirmButtonDisabled = computed(() => {
+    if (!this.program.isSuccess() || !this.accessGroupLevels.isSuccess()) {
+      return true;
+    }
 
+    return false;
+  });
   constructor() {
-    effect(() => {
-      const user = this.userToEdit();
-      if (user) {
-        this.formGroup.patchValue({
-          userValue: user.id,
-          rolesValue: user.roles.map(({ role }) => role),
-          scopeValue: user.scope,
-        });
-        this.formGroup.controls.userValue.disable();
-      } else {
-        this.formGroup.patchValue({
-          userValue: -1,
-        });
-        this.formGroup.controls.userValue.enable();
-      }
+    const { accessGroup1Value, accessGroup2Value, accessGroup3Value } =
+      this.formGroup.controls.accessGroupsValue.controls;
+
+    this.enableAccessGroupControlOnlyWhenPreviousLevelIsSelected({
+      previousLevelControl: accessGroup1Value,
+      control: accessGroup2Value,
+    });
+    this.enableAccessGroupControlOnlyWhenPreviousLevelIsSelected({
+      previousLevelControl: accessGroup2Value,
+      control: accessGroup3Value,
     });
   }
 
-  show() {
+  private enableAccessGroupControlOnlyWhenPreviousLevelIsSelected({
+    previousLevelControl,
+    control,
+  }: {
+    previousLevelControl: FormControl<null | string>;
+    control: FormControl<null | string>;
+  }) {
+    previousLevelControl.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((previousLevelValue) => {
+        if (previousLevelValue) {
+          control.enable();
+          return;
+        }
+
+        control.setValue(null);
+        control.disable();
+      });
+  }
+
+  show({ userToEdit }: { userToEdit?: ProgramUserWithRolesLabel } = {}) {
+    this.userToEdit.set(userToEdit);
+
+    // The form dialog resets the form group on show, so the form must be
+    // pre-filled only after that
     this.formDialog().show({
       resetMutation: true,
     });
+
+    this.prefillForm({ userToEdit });
+  }
+
+  private prefillForm({
+    userToEdit,
+  }: {
+    userToEdit?: ProgramUserWithRolesLabel;
+  }) {
+    if (!userToEdit) {
+      this.formGroup.controls.userValue.enable();
+      return;
+    }
+
+    const accessGroupValues = new Map<number, string>();
+
+    for (const userAccessGroup of userToEdit.accessGroups) {
+      const attribute = this.accessGroupAttributes().find(
+        (attr) =>
+          attr.name === userAccessGroup.programRegistrationAttributeName,
+      );
+      if (attribute) {
+        accessGroupValues.set(attribute.level, userAccessGroup.value);
+      }
+    }
+
+    this.formGroup.patchValue({
+      userValue: userToEdit.id,
+      rolesValue: userToEdit.roles.map(({ role }) => role),
+      scopeValue: userToEdit.scope,
+      accessGroupsValue: {
+        accessGroup1Value: accessGroupValues.get(1) ?? null,
+        accessGroup2Value: accessGroupValues.get(2) ?? null,
+        accessGroup3Value: accessGroupValues.get(3) ?? null,
+      },
+    });
+
+    this.formGroup.controls.userValue.disable();
   }
 }
