@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { DebugAccessGroupHierarchy } from '@121-service/src/scripts/enum/debug-access-group-hierarchy.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { SeedMessageTemplateConfig } from '@121-service/src/seed-data/message-template/interfaces/seed-message-template-config.interface';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -20,6 +21,9 @@ export class SeedConfigurationDto {
   @ApiProperty({ default: false })
   readonly includeDebugScopes?: boolean;
 
+  @ApiProperty({ default: false })
+  readonly includeDebugAccessGroups?: boolean;
+
   @ApiProperty({ default: 1 })
   readonly firstProgramId?: number;
 }
@@ -33,4 +37,7 @@ class SeedConfigurationProgramDto {
 
   @ApiProperty({ example: 'mobile-money-999.csv' })
   readonly registrations?: string;
+
+  @ApiProperty({ required: false, enum: DebugAccessGroupHierarchy })
+  readonly debugAccessGroupHierarchy?: DebugAccessGroupHierarchy;
 }

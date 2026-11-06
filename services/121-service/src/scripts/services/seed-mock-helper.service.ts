@@ -13,12 +13,13 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
 
 @Injectable()
 export class SeedMockHelperService {
-  private readonly mockDataFactory: MockSeedFactoryService;
   private readonly httpService: CustomHttpService;
   private readonly axiosCallsService: AxiosCallsService;
 
-  constructor(private readonly dataSource: DataSource) {
-    this.mockDataFactory = new MockSeedFactoryService(dataSource);
+  constructor(
+    private readonly dataSource: DataSource,
+    private readonly mockDataFactory: MockSeedFactoryService,
+  ) {
     this.httpService = new CustomHttpService(new HttpService());
     this.axiosCallsService = new AxiosCallsService();
   }

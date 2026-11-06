@@ -4,6 +4,7 @@ import path from 'node:path';
 import { env } from '@121-service/src/env';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { getDebugScopeUsername } from '@121-service/src/scripts/helpers/debug-scope-username.helper';
 import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
@@ -24,7 +25,7 @@ const uploadImageAttachment = async ({ programMonitoringPage }) => {
 
 const loginAsScopedUserCvaManager = async ({ login, scope }) => {
   await login({
-    username: `${scope}@example.org`,
+    username: getDebugScopeUsername({ scope }),
     password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
   });
 };

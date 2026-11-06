@@ -7,6 +7,7 @@ import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { getDebugScopeUsername } from '@121-service/src/scripts/helpers/debug-scope-username.helper';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { CreateProgramAssignmentDto } from '@121-service/src/user/dto/assign-aw-to-program.dto';
 import { AssignedAccessGroupDto } from '@121-service/src/user/dto/assigned-access-group.dto';
@@ -143,7 +144,7 @@ export async function getAccessTokenScoped(
   defaultScope: DebugScope,
 ): Promise<string> {
   return await getAccessToken(
-    `${defaultScope}@example.org`,
+    getDebugScopeUsername({ scope: defaultScope }),
     env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
   );
 }

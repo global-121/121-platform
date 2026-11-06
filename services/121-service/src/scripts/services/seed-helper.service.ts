@@ -27,11 +27,16 @@ import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/en
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
+import { ProgramService } from '@121-service/src/programs/programs.service';
 import { RegistrationProgramIdSequenceRepository } from '@121-service/src/programs/repositories/registration-program-id-sequence.repository';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { ACCESS_GROUP_PATH_SEPARATOR } from '@121-service/src/scripts/const/access-group-path.const';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
+import { DebugAccessGroupHierarchy } from '@121-service/src/scripts/enum/debug-access-group-hierarchy.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
+import { getDebugScopeUsername } from '@121-service/src/scripts/helpers/debug-scope-username.helper';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
+import { SeedAccessGroupService } from '@121-service/src/scripts/services/seed-access-group.service';
 import { SeedMessageTemplateConfig } from '@121-service/src/seed-data/message-template/interfaces/seed-message-template-config.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
@@ -39,14 +44,16 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
+import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
-type ProgramRegistrationAttributeSeed = DeepPartial<ProgramRegistrationAttributeEntity> & {
-  name: string;
-  answerType?: RegistrationAttributeTypes;
-  options: { option: string }[];
-  scoring: Record<string, unknown>;
-};
+type ProgramRegistrationAttributeSeed =
+  DeepPartial<ProgramRegistrationAttributeEntity> & {
+    name: string;
+    answerType?: RegistrationAttributeTypes;
+    options: { option: string }[];
+    scoring: Record<string, unknown>;
+  };
 
 interface ProgramFspConfigurationSeed {
   fsp: string;
@@ -57,8 +64,10 @@ interface ProgramFspConfigurationSeed {
   label: UILanguageTranslation;
 }
 
-interface ValidatedProgramFspConfigurationSeed
-  extends Omit<ProgramFspConfigurationSeed, 'fsp'> {
+interface ValidatedProgramFspConfigurationSeed extends Omit<
+  ProgramFspConfigurationSeed,
+  'fsp'
+> {
   fsp: Fsps;
 }
 
@@ -74,6 +83,9 @@ export class SeedHelperService {
     private readonly axiosCallsService: AxiosCallsService,
     private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
     private readonly registrationProgramIdSequenceRepository: RegistrationProgramIdSequenceRepository,
+    private readonly programService: ProgramService,
+    private readonly userAccessGroupAssignmentsService: UserAccessGroupAssignmentsService,
+    private readonly seedAccessGroupService: SeedAccessGroupService,
   ) {}
 
   public async seedData({
@@ -100,6 +112,16 @@ export class SeedHelperService {
       const programData = await this.importData(programPath);
       const programEntity = await this.addProgram(programData);
 
+      if (program.debugAccessGroupHierarchy) {
+        await this.programService.updateAccessGroupLevels({
+          programId: programEntity.id,
+          accessGroupRegistrationAttributeNames:
+            this.seedAccessGroupService.getRegistrationAttributeNames({
+              hierarchy: program.debugAccessGroupHierarchy,
+            }),
+        });
+      }
+
       await this.addMessageTemplate(program.messageTemplate, programEntity);
 
       // Add default users
@@ -107,6 +129,9 @@ export class SeedHelperService {
       await this.addDefaultUsers({
         program: programEntity,
         debugScopeUsers: seedConfig.includeDebugScopes ? debugScopes : [],
+        debugAccessGroupHierarchy: seedConfig.includeDebugAccessGroups
+          ? program.debugAccessGroupHierarchy
+          : undefined,
         approverMode,
       });
 
@@ -189,10 +214,12 @@ export class SeedHelperService {
   public async addDefaultUsers({
     program,
     debugScopeUsers,
+    debugAccessGroupHierarchy,
     approverMode,
   }: {
     program: ProgramEntity;
     debugScopeUsers: string[];
+    debugAccessGroupHierarchy?: DebugAccessGroupHierarchy;
     approverMode: ApproverSeedMode;
   }): Promise<void> {
     const users = [
@@ -271,7 +298,7 @@ export class SeedHelperService {
       for (const debugScopeUser of debugScopeUsers) {
         const scopedUser = await this.getOrSaveUser({
           type: 'debugScopedUser',
-          username: `${debugScopeUser}@example.org`,
+          username: getDebugScopeUsername({ scope: debugScopeUser }),
           password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
         });
         if (scopedUser) {
@@ -285,6 +312,13 @@ export class SeedHelperService {
       }
     }
 
+    if (debugAccessGroupHierarchy && IS_DEVELOPMENT) {
+      await this.addDebugAccessGroupUsers({
+        program,
+        hierarchy: debugAccessGroupHierarchy,
+      });
+    }
+
     await this.assignAdminUserToProgram({
       programId: program.id,
     });
@@ -293,6 +327,50 @@ export class SeedHelperService {
       programId: program.id,
       approverMode,
     });
+  }
+
+  private async addDebugAccessGroupUsers({
+    program,
+    hierarchy,
+  }: {
+    program: ProgramEntity;
+    hierarchy: DebugAccessGroupHierarchy;
+  }): Promise<void> {
+    for (const accessGroupPath of this.seedAccessGroupService.getPaths({
+      hierarchy,
+    })) {
+      const accessGroupUser = await this.getOrSaveUser({
+        type: 'debugAccessGroupUser',
+        username: `${accessGroupPath.replaceAll(ACCESS_GROUP_PATH_SEPARATOR, '-')}@example.org`,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
+      });
+      if (!accessGroupUser) {
+        continue;
+      }
+
+      const assignment = await this.assignAidworker(
+        accessGroupUser.id,
+        program.id,
+        [DefaultUserRole.CvaManager],
+      );
+      const accessGroups =
+        await this.userAccessGroupAssignmentsService.validateAndResolveAccessGroups(
+          {
+            programId: program.id,
+            accessGroups: this.seedAccessGroupService.getAccessGroupAssignments(
+              {
+                hierarchy,
+                path: accessGroupPath,
+              },
+            ),
+          },
+        );
+
+      await this.userAccessGroupAssignmentsService.replaceAccessGroups({
+        programAidworkerAssignmentId: assignment.id,
+        accessGroups,
+      });
+    }
   }
 
   private async configureApproversForProgram({
@@ -435,9 +513,8 @@ export class SeedHelperService {
     programId: number;
     attributes: ProgramRegistrationAttributeSeed[];
   }): Promise<void> {
-    const programRegistrationAttributeRepository = this.dataSource.getRepository(
-      ProgramRegistrationAttributeEntity,
-    );
+    const programRegistrationAttributeRepository =
+      this.dataSource.getRepository(ProgramRegistrationAttributeEntity);
 
     for (const attribute of attributes) {
       attribute.isRequired = attribute.isRequired || false;
@@ -483,9 +560,8 @@ export class SeedHelperService {
   }: {
     programId: number;
   }): Promise<{ name: string }[]> {
-    const programRegistrationAttributeRepository = this.dataSource.getRepository(
-      ProgramRegistrationAttributeEntity,
-    );
+    const programRegistrationAttributeRepository =
+      this.dataSource.getRepository(ProgramRegistrationAttributeEntity);
 
     return programRegistrationAttributeRepository.find({
       where: { programId: Equal(programId) },
@@ -630,7 +706,7 @@ export class SeedHelperService {
     programId: number,
     roles: DefaultUserRole[] | string[],
     scope?: string,
-  ): Promise<void> {
+  ): Promise<ProgramAidworkerAssignmentEntity> {
     const userRepository = this.dataSource.getRepository(UserEntity);
     const programRepository = this.dataSource.getRepository(ProgramEntity);
     const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
@@ -640,7 +716,7 @@ export class SeedHelperService {
     const user = await userRepository.findOneBy({
       id: userId,
     });
-    await assignmentRepository.save({
+    return assignmentRepository.save({
       scope,
       user,
       program: await programRepository.findOne({
