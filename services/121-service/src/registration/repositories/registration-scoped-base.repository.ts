@@ -7,13 +7,14 @@ import {
   Repository,
 } from 'typeorm';
 
+import { addAccessGroupFilter } from '@121-service/src/programs/access-group-levels/access-group-filter.helper';
 import {
   requestHasUser,
   ScopedQueryBuilder,
 } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { FindReturnType } from '@121-service/src/shared/types/find-return.type';
-import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
+import { addScopeFilter } from '@121-service/src/utils/scope/scope-filter.helper';
 
 export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
   public readonly repository: Repository<T>;
@@ -29,12 +30,14 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
     if (!requestHasUser(this.request)) {
       return this.repository.find(options);
     }
-    const scopedOptions = convertToScopedOptions<T, Options>(
+    const scopedResult = await this.createFindQueryBuilder({
       options,
-      [],
-      this.request.user.scope,
-    );
-    return this.repository.find(scopedOptions);
+    }).getMany();
+    return scopedResult as FindReturnType<
+      T,
+      Options['select'],
+      Options['relations']
+    >[];
   }
 
   public async findOne<Options extends FindOneOptions<T>>(
@@ -47,12 +50,14 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
     if (!requestHasUser(this.request)) {
       return this.repository.findOne(options);
     }
-    const scopedOptions = convertToScopedOptions<T, Options>(
-      options,
-      [],
-      this.request.user.scope,
-    );
-    return this.repository.findOne(scopedOptions);
+    const scopedResult = await this.createFindQueryBuilder({
+      options: { ...options, take: 1 },
+    }).getOne();
+    return scopedResult as FindReturnType<
+      T,
+      Options['select'],
+      Options['relations']
+    > | null;
   }
 
   public async findOneOrFail<Options extends FindOneOptions<T>>(
@@ -61,12 +66,14 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
     if (!requestHasUser(this.request)) {
       return this.repository.findOneOrFail(options);
     }
-    const scopedOptions = convertToScopedOptions<T, Options>(
-      options,
-      [],
-      this.request.user.scope,
-    );
-    return this.repository.findOneOrFail(scopedOptions);
+    const scopedResult = await this.createFindQueryBuilder({
+      options: { ...options, take: 1 },
+    }).getOneOrFail();
+    return scopedResult as FindReturnType<
+      T,
+      Options['select'],
+      Options['relations']
+    >;
   }
 
   public async count<Options extends FindManyOptions<T>>(
@@ -75,29 +82,37 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
     if (!requestHasUser(this.request)) {
       return this.repository.count(options);
     }
-
-    const scopedOptions = convertToScopedOptions<T, Options>(
-      options,
-      [],
-      this.request.user.scope,
-    );
-
-    return this.repository.count(scopedOptions);
+    return await this.createFindQueryBuilder({ options }).getCount();
   }
 
   public createQueryBuilder(alias: string): ScopedQueryBuilder<T> {
+    const queryBuilder = this.repository.createQueryBuilder(alias);
     if (!requestHasUser(this.request)) {
-      return new ScopedQueryBuilder(this.repository.createQueryBuilder(alias));
+      return new ScopedQueryBuilder(queryBuilder);
     }
-    const qb = this.repository
-      .createQueryBuilder(alias)
-      .leftJoin(`${alias}.program`, 'program')
-      .andWhere(
-        `(program."enableScope" = false OR ${alias}.scope LIKE :scope)`,
-        {
-          scope: `${this.request.user.scope}%`,
-        },
-      );
-    return new ScopedQueryBuilder(qb);
+
+    queryBuilder.leftJoin(`${alias}.program`, 'program');
+    addScopeFilter({
+      queryBuilder,
+      registrationAlias: alias,
+      programAlias: 'program',
+      scope: this.request.user.scope,
+    });
+    addAccessGroupFilter({
+      queryBuilder,
+      registrationAlias: alias,
+      accessGroups: this.request.user.accessGroups,
+    });
+    return new ScopedQueryBuilder(queryBuilder);
+  }
+
+  private createFindQueryBuilder({
+    options,
+  }: {
+    options?: FindManyOptions<T>;
+  }): ScopedQueryBuilder<T> {
+    return this.createQueryBuilder(
+      this.repository.metadata.name,
+    ).setFindOptions(options ?? {});
   }
 }

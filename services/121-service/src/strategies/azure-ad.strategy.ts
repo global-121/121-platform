@@ -11,9 +11,9 @@ import { BearerStrategy } from 'passport-azure-ad';
 
 import { env } from '@121-service/src/env';
 import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
-import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRequestData } from '@121-service/src/user/user.interface';
-import { UserService } from '@121-service/src/user/user.service';
+import { UserAccess, UserService } from '@121-service/src/user/user.service';
+import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 
 const loggingLevel: 'error' | 'info' | 'warn' | undefined = 'error'; // Separate variable for typing purposes
 
@@ -42,6 +42,7 @@ export class AzureAdStrategy
   implements OnModuleInit
 {
   private userService: UserService;
+  private userAccessGroupAssignmentsService: UserAccessGroupAssignmentsService;
   constructor(private moduleRef: ModuleRef) {
     super({
       identityMetadata: `https://${config.metadata.authority}/common/${config.metadata.version}/${config.metadata.discovery}`,
@@ -59,6 +60,10 @@ export class AzureAdStrategy
     this.userService = await this.moduleRef.resolve(UserService, contextId, {
       strict: false,
     });
+    this.userAccessGroupAssignmentsService = this.moduleRef.get(
+      UserAccessGroupAssignmentsService,
+      { strict: false },
+    );
   }
 
   async validate(request: any, payload: any): Promise<any> {
@@ -70,7 +75,7 @@ export class AzureAdStrategy
       throw new UnauthorizedException();
     }
 
-    let user: UserEntity;
+    let user: UserAccess;
     const usernamePayload: string =
       payload.unique_name?.toLowerCase() ||
       payload.preferred_username?.toLowerCase();
@@ -90,12 +95,12 @@ export class AzureAdStrategy
 
     try {
       // Try to find user by username (this is an email address in our case)
-      user = await this.userService.findByUsernameOrThrow(username, {
-        programAssignments: true,
+      user = await this.userService.findUserAccessByUsernameOrThrow({
+        username,
       });
 
       if (!user.isEntraUser) {
-        user = await this.userService.updateUser({
+        await this.userService.updateUser({
           id: user.id,
           isEntraUser: true,
         });
@@ -154,6 +159,12 @@ export class AzureAdStrategy
       scope: request.params.programId
         ? this.userService.getScopeForUser(user, request.params.programId)
         : '',
+      accessGroups: request.params.programId
+        ? this.userAccessGroupAssignmentsService.getAccessGroupsForUser({
+            programAssignments: user.programAssignments,
+            programId: request.params.programId,
+          })
+        : [],
       isOrganizationAdmin: payload.isOrganizationAdmin,
     };
     return userToken;

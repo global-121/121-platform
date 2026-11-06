@@ -1,8 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { DataSource, EntityManager } from 'typeorm';
 
+import { AccessGroupLevelEntity } from '@121-service/src/programs/access-group-levels/access-group-level.entity';
 import { AccessGroupLevelRepository } from '@121-service/src/programs/access-group-levels/access-group-level.repository';
 import { AccessGroupLevelsService } from '@121-service/src/programs/access-group-levels/access-group-levels.service';
+import { MAX_ACCESS_GROUP_LEVELS } from '@121-service/src/programs/access-group-levels/const/max-access-group-levels.const';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationAttributeDataRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-attribute-data.repository';
@@ -11,11 +14,33 @@ describe('AccessGroupLevelsService', () => {
   let service: AccessGroupLevelsService;
   let registrationAttributeDataRepository: RegistrationAttributeDataRepository;
   let accessGroupLevelRepository: {
-    replaceForProgram: jest.Mock;
+    find: jest.Mock;
+    create: jest.Mock;
     findOrderedAttributeNamesByProgramId: jest.Mock;
   };
+  let transactionManager: jest.Mocked<Pick<EntityManager, 'remove' | 'save'>>;
 
   const programId = 1;
+
+  const createAttributeNames = ({ count }: { count: number }): string[] =>
+    Array.from({ length: count }, (_, index) => `attribute${index}`);
+
+  const createAccessGroupLevel = ({
+    id,
+    level,
+    programRegistrationAttributeId,
+  }: {
+    id: number;
+    level: number;
+    programRegistrationAttributeId: number;
+  }): AccessGroupLevelEntity => {
+    const entity = new AccessGroupLevelEntity();
+    entity.id = id;
+    entity.programId = programId;
+    entity.level = level;
+    entity.programRegistrationAttributeId = programRegistrationAttributeId;
+    return entity;
+  };
 
   const createAttributeEntity = (
     overrides: Partial<ProgramRegistrationAttributeEntity> = {},
@@ -40,13 +65,16 @@ describe('AccessGroupLevelsService', () => {
   };
 
   beforeEach(async () => {
+    transactionManager = { remove: jest.fn(), save: jest.fn() };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AccessGroupLevelsService,
         {
           provide: AccessGroupLevelRepository,
           useValue: {
-            replaceForProgram: jest.fn(),
+            find: jest.fn().mockResolvedValue([]),
+            create: jest.fn((accessGroupLevel) => accessGroupLevel),
             findOrderedAttributeNamesByProgramId: jest.fn(),
           },
         },
@@ -54,6 +82,15 @@ describe('AccessGroupLevelsService', () => {
           provide: RegistrationAttributeDataRepository,
           useValue: {
             getValuesInUse: jest.fn().mockResolvedValue(new Set()),
+          },
+        },
+        {
+          provide: DataSource,
+          useValue: {
+            transaction: jest.fn(
+              (work: (manager: EntityManager) => Promise<void>) =>
+                work(transactionManager as unknown as EntityManager),
+            ),
           },
         },
       ],
@@ -68,7 +105,7 @@ describe('AccessGroupLevelsService', () => {
   });
 
   describe('updateAccessGroupLevels', () => {
-    it('should validate the names, replace the levels with the matching attribute ids and return the validated names', async () => {
+    it('should validate the names, store the levels with the matching attribute ids and return the validated names', async () => {
       // Arrange
       const activeRegistrationAttributes = [
         createAttributeEntity({ id: 1, name: 'region' }),
@@ -83,16 +120,30 @@ describe('AccessGroupLevelsService', () => {
       });
 
       // Assert
-      expect(accessGroupLevelRepository.replaceForProgram).toHaveBeenCalledWith(
-        {
-          programId,
-          orderedProgramRegistrationAttributeIds: [1, 2],
-        },
-      );
+      expect(transactionManager.remove).toHaveBeenCalledWith([]);
+      expect(transactionManager.save).toHaveBeenCalledWith([
+        { programId, programRegistrationAttributeId: 1, level: 0 },
+        { programId, programRegistrationAttributeId: 2, level: 1 },
+      ]);
       expect(result).toEqual(['region', 'district']);
     });
 
     it('should clear the levels when the selection is empty', async () => {
+      // Arrange
+      const existingLevels = [
+        createAccessGroupLevel({
+          id: 10,
+          level: 0,
+          programRegistrationAttributeId: 1,
+        }),
+        createAccessGroupLevel({
+          id: 11,
+          level: 1,
+          programRegistrationAttributeId: 2,
+        }),
+      ];
+      accessGroupLevelRepository.find.mockResolvedValue(existingLevels);
+
       // Act
       const result = await service.updateAccessGroupLevels({
         programId,
@@ -101,13 +152,88 @@ describe('AccessGroupLevelsService', () => {
       });
 
       // Assert
-      expect(accessGroupLevelRepository.replaceForProgram).toHaveBeenCalledWith(
-        {
-          programId,
-          orderedProgramRegistrationAttributeIds: [],
-        },
-      );
+      expect(transactionManager.remove).toHaveBeenCalledWith(existingLevels);
+      expect(transactionManager.save).toHaveBeenCalledWith([]);
       expect(result).toEqual([]);
+    });
+
+    describe('keeping existing levels', () => {
+      const activeRegistrationAttributes = [
+        createAttributeEntity({ id: 1, name: 'region' }),
+        createAttributeEntity({ id: 2, name: 'district' }),
+      ];
+      const regionLevel = createAccessGroupLevel({
+        id: 10,
+        level: 0,
+        programRegistrationAttributeId: 1,
+      });
+      const districtLevel = createAccessGroupLevel({
+        id: 11,
+        level: 1,
+        programRegistrationAttributeId: 2,
+      });
+
+      it('should keep the levels when the same attributes are sent in the same order', async () => {
+        // Arrange
+        accessGroupLevelRepository.find.mockResolvedValue([
+          regionLevel,
+          districtLevel,
+        ]);
+
+        // Act
+        await service.updateAccessGroupLevels({
+          programId,
+          activeRegistrationAttributes,
+          accessGroupRegistrationAttributeNames: ['region', 'district'],
+        });
+
+        // Assert
+        expect(transactionManager.remove).toHaveBeenCalledWith([]);
+        expect(transactionManager.save).toHaveBeenCalledWith([]);
+      });
+
+      it('should recreate the levels that change position', async () => {
+        // Arrange
+        accessGroupLevelRepository.find.mockResolvedValue([
+          regionLevel,
+          districtLevel,
+        ]);
+
+        // Act
+        await service.updateAccessGroupLevels({
+          programId,
+          activeRegistrationAttributes,
+          accessGroupRegistrationAttributeNames: ['district', 'region'],
+        });
+
+        // Assert
+        expect(transactionManager.remove).toHaveBeenCalledWith([
+          regionLevel,
+          districtLevel,
+        ]);
+        expect(transactionManager.save).toHaveBeenCalledWith([
+          { programId, programRegistrationAttributeId: 2, level: 0 },
+          { programId, programRegistrationAttributeId: 1, level: 1 },
+        ]);
+      });
+
+      it('should only add the new level when a lower level is appended', async () => {
+        // Arrange
+        accessGroupLevelRepository.find.mockResolvedValue([regionLevel]);
+
+        // Act
+        await service.updateAccessGroupLevels({
+          programId,
+          activeRegistrationAttributes,
+          accessGroupRegistrationAttributeNames: ['region', 'district'],
+        });
+
+        // Assert
+        expect(transactionManager.remove).toHaveBeenCalledWith([]);
+        expect(transactionManager.save).toHaveBeenCalledWith([
+          { programId, programRegistrationAttributeId: 2, level: 1 },
+        ]);
+      });
     });
   });
 
@@ -203,14 +329,34 @@ describe('AccessGroupLevelsService', () => {
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
     });
 
-    it('should throw when more than 3 attribute names are provided', async () => {
+    it('should return the attribute names when exactly the maximum number of levels is provided', () => {
       // Arrange
-      const programRegistrationAttributes = [
-        createAttributeEntity({ name: 'region' }),
-        createAttributeEntity({ name: 'district' }),
-        createAttributeEntity({ name: 'subDistrict' }),
-        createAttributeEntity({ name: 'village' }),
-      ];
+      const attributeNames = createAttributeNames({
+        count: MAX_ACCESS_GROUP_LEVELS,
+      });
+      const programRegistrationAttributes = attributeNames.map((name) =>
+        createAttributeEntity({ name }),
+      );
+
+      // Act
+      const result = service.validateAccessGroupRegistrationAttributeNames({
+        programId,
+        activeRegistrationAttributes: programRegistrationAttributes,
+        selectedAttributeNames: attributeNames,
+      });
+
+      // Assert
+      expect(result).toEqual(attributeNames);
+    });
+
+    it('should throw when more than the maximum number of levels is provided', async () => {
+      // Arrange
+      const attributeNames = createAttributeNames({
+        count: MAX_ACCESS_GROUP_LEVELS + 1,
+      });
+      const programRegistrationAttributes = attributeNames.map((name) =>
+        createAttributeEntity({ name }),
+      );
 
       // Act + Assert
       await expect(
@@ -218,12 +364,7 @@ describe('AccessGroupLevelsService', () => {
           service.validateAccessGroupRegistrationAttributeNames({
             programId,
             activeRegistrationAttributes: programRegistrationAttributes,
-            selectedAttributeNames: [
-              'region',
-              'district',
-              'subDistrict',
-              'village',
-            ],
+            selectedAttributeNames: attributeNames,
           }))(),
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
     });

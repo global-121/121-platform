@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { DataSource, Equal, Repository } from 'typeorm';
 
 import { env } from '@121-service/src/env';
 import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
@@ -105,6 +105,10 @@ describe('ProgramRegistrationAttributesService', () => {
               .fn()
               .mockResolvedValue([]),
           },
+        },
+        {
+          provide: DataSource,
+          useValue: {},
         },
         {
           provide: programRegistrationAttributeToken,
