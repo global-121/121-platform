@@ -303,10 +303,12 @@ export class ProgramApiService extends DomainApiService {
     {
       userId,
       roles,
+      scope,
       accessGroups,
     }: {
       userId: number;
       roles: Role['role'][];
+      scope: string;
       accessGroups: ProgramUserAssignment['accessGroups'];
     },
   ) {
@@ -316,6 +318,7 @@ export class ProgramApiService extends DomainApiService {
         endpoint: `${BASE_ENDPOINT}/${programId().toString()}/users/${userId.toString()}`,
         body: {
           roles,
+          scope,
           accessGroups,
         },
       },
@@ -327,10 +330,12 @@ export class ProgramApiService extends DomainApiService {
     {
       userId,
       roles,
+      scope,
       accessGroups,
     }: {
       userId: number;
       roles: Role['role'][];
+      scope: string;
       accessGroups: ProgramUserAssignment['accessGroups'];
     },
   ) {
@@ -340,6 +345,7 @@ export class ProgramApiService extends DomainApiService {
         endpoint: `${BASE_ENDPOINT}/${programId().toString()}/users/${userId.toString()}`,
         body: {
           rolesToAdd: roles,
+          scope,
           accessGroups,
         },
       },
