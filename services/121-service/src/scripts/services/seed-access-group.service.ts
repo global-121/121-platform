@@ -2,14 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { DataSource, Equal } from 'typeorm';
 
 import { AccessGroupLevelEntity } from '@121-service/src/programs/access-group-levels/access-group-level.entity';
+import { ACCESS_GROUP_PATH_SEPARATOR } from '@121-service/src/scripts/const/access-group-path.const';
 import {
   DEBUG_ACCESS_GROUP_HIERARCHIES,
   DebugAccessGroupHierarchyDefinition,
 } from '@121-service/src/scripts/const/debug-access-group-hierarchies.const';
 import { DebugAccessGroupHierarchy } from '@121-service/src/scripts/enum/debug-access-group-hierarchy.enum';
 import type { AssignedAccessGroupDto } from '@121-service/src/user/dto/assigned-access-group.dto';
-
-const ACCESS_GROUP_PATH_SEPARATOR = '/';
 
 @Injectable()
 export class SeedAccessGroupService {
@@ -80,7 +79,7 @@ export class SeedAccessGroupService {
     });
   }
 
-  public getAccessGroupValuesByAttributeName({
+  private getAccessGroupValuesByAttributeName({
     hierarchy,
     path,
   }: {
@@ -172,7 +171,7 @@ export class SeedAccessGroupService {
     const valueByAttributeId = new Map<number, string>();
     for (const [attributeName, value] of valueByAttributeName) {
       const attributeId = attributeIdByName.get(attributeName);
-      if (attributeId) {
+      if (attributeId !== undefined) {
         valueByAttributeId.set(attributeId, value);
       }
     }

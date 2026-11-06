@@ -61,15 +61,3 @@ export const DEBUG_ACCESS_GROUP_HIERARCHIES = new Map<
     },
   ],
 ]);
-
-export function getDebugAccessGroupLeafPaths({
-  hierarchy,
-}: {
-  hierarchy: DebugAccessGroupHierarchy;
-}): string[] {
-  const definition = DEBUG_ACCESS_GROUP_HIERARCHIES.get(hierarchy);
-  if (!definition) {
-    throw new Error(`Unknown debug access group hierarchy "${hierarchy}"`);
-  }
-  return [...definition.leafPaths];
-}

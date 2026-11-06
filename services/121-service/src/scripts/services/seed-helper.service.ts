@@ -30,6 +30,7 @@ import { ProgramApprovalThresholdsService } from '@121-service/src/programs/prog
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { RegistrationProgramIdSequenceRepository } from '@121-service/src/programs/repositories/registration-program-id-sequence.repository';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { ACCESS_GROUP_PATH_SEPARATOR } from '@121-service/src/scripts/const/access-group-path.const';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { DebugAccessGroupHierarchy } from '@121-service/src/scripts/enum/debug-access-group-hierarchy.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
@@ -336,7 +337,7 @@ export class SeedHelperService {
     })) {
       const accessGroupUser = await this.getOrSaveUser({
         type: 'debugAccessGroupUser',
-        username: `debug-access-group-${accessGroupPath.replaceAll('/', '-')}@example.org`,
+        username: `debug-access-group-${accessGroupPath.replaceAll(ACCESS_GROUP_PATH_SEPARATOR, '-')}@example.org`,
         password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
       });
       if (!accessGroupUser) {
