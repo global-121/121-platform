@@ -180,7 +180,7 @@ describe('Registration profile access group', () => {
 
     // Act
     const labels = (fixture.nativeElement as HTMLElement).querySelectorAll(
-      'app-access-group-path bdi',
+      'app-access-group-path bdi:not([dir="ltr"])',
     );
 
     // Assert

@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
 } from '@angular/core';
@@ -13,10 +14,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
     <span class="inline-flex items-center gap-1">
       @for (label of labels(); track $index) {
         @if (!$first) {
-          <i
-            [class]="chevronIcon()"
-            aria-hidden="true"
-          ></i>
+          <bdi dir="ltr">{{ separator() }}</bdi>
         }
         <bdi>{{ label }}</bdi>
       }
@@ -26,6 +24,6 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
 })
 export class AccessGroupPathComponent {
   readonly labels = input.required<string[]>();
-  readonly chevronIcon =
-    inject(RtlHelperService).createRtlFriendlyChevronIcon('forward');
+  private readonly rtlHelper = inject(RtlHelperService);
+  readonly separator = computed(() => (this.rtlHelper.isRtl() ? '<' : '>'));
 }

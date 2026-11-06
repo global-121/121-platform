@@ -23,7 +23,7 @@ describe('Access group path', () => {
     { labels: ['North-Holland'] },
     { labels: ['North-Holland', 'Haarlem', 'Centrum'] },
   ])(
-    'isolates each label and renders a chevron only between labels ($labels)',
+    'isolates each label and renders a separator only between labels ($labels)',
     ({ labels }) => {
       // Arrange
       const fixture = TestBed.createComponent(AccessGroupPathComponent);
@@ -36,23 +36,20 @@ describe('Access group path', () => {
       // Assert
       expect(
         Array.from(
-          element.querySelectorAll('bdi'),
+          element.querySelectorAll('bdi:not([dir="ltr"])'),
           (label) => label.textContent,
         ),
       ).toEqual(labels);
-      expect(element.querySelectorAll('i')).toHaveLength(
-        Math.max(0, labels.length - 1),
-      );
-      expect(element.querySelectorAll('i[aria-hidden="true"]')).toHaveLength(
+      expect(element.querySelectorAll('bdi[dir="ltr"]')).toHaveLength(
         Math.max(0, labels.length - 1),
       );
     },
   );
 
   it.each([
-    { direction: 'ltr', chevronClass: 'pi-chevron-right' },
-    { direction: 'rtl', chevronClass: 'pi-chevron-left' },
-  ])('points chevrons forward in $direction', ({ direction, chevronClass }) => {
+    { direction: 'ltr', separator: '>' },
+    { direction: 'rtl', separator: '<' },
+  ])('uses the correct separator in $direction', ({ direction, separator }) => {
     // Arrange
     document.documentElement.dir = direction;
     const fixture = TestBed.createComponent(AccessGroupPathComponent);
@@ -63,6 +60,8 @@ describe('Access group path', () => {
     const element = fixture.nativeElement as HTMLElement;
 
     // Assert
-    expect(element.querySelector('i')?.classList).toContain(chevronClass);
+    expect(element.querySelector('bdi[dir="ltr"]')?.textContent).toBe(
+      separator,
+    );
   });
 });
