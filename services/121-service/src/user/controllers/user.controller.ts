@@ -125,10 +125,8 @@ export class UserController {
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Post('users/otp')
-  public async requestLoginOtp(
-    @Body() createLoginOtpDto: CreateLoginOtpDto,
-  ): Promise<void> {
-    await this.userService.requestLoginOtp({
+  public requestLoginOtp(@Body() createLoginOtpDto: CreateLoginOtpDto): void {
+    this.userService.requestLoginOtp({
       username: createLoginOtpDto.username,
     });
   }

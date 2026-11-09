@@ -127,8 +127,8 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
     now: Date;
     maxFailedAttempts: number;
     lockedUntil: Date;
-  }): Promise<void> {
-    await this.baseRepository
+  }): Promise<{ isLocked: boolean }> {
+    const result = await this.baseRepository
       .createQueryBuilder()
       .update()
       .set({
@@ -144,6 +144,11 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
         failedAttempts: LessThan(maxFailedAttempts),
       })
       .setParameters({ maxFailedAttempts, lockedUntil })
+      .returning(['lockedUntil'])
       .execute();
+
+    const updatedRows: { lockedUntil: Date | null }[] = result.raw;
+    const isLocked = updatedRows.some((row) => row.lockedUntil !== null);
+    return { isLocked };
   }
 }

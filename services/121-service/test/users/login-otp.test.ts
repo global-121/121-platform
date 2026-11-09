@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   loginWithOtp,
   requestLoginOtp,
@@ -47,6 +48,9 @@ describe('/ Users', () => {
     it('should reject a wrong OTP without setting a cookie', async () => {
       // Arrange
       await requestLoginOtp({ username: knownUsername });
+      // The otp-code is created in the background after the request is accepted
+      // this risk of flakiness is acceptable here since it provides security
+      await waitFor(500);
 
       // Act
       const response = await loginWithOtp({
