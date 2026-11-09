@@ -462,6 +462,48 @@ describe('UserService', () => {
     });
   });
 
+  describe('Reading program access for a permission', () => {
+    it('should retain scope and access groups only for permitted assignments', async () => {
+      // Arrange
+      const permission = PermissionEnum.RegistrationPersonalREAD;
+      const accessGroups = [
+        { programRegistrationAttributeId: 11, value: 'kisumu' },
+      ];
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue({
+        programAssignments: [
+          {
+            programId: 5,
+            scope: 'legacy-scope',
+            accessGroups: [
+              {
+                value: 'kisumu',
+                accessGroupLevel: { programRegistrationAttributeId: 11 },
+              },
+            ],
+            roles: [{ permissions: [{ name: permission }] }],
+          },
+          {
+            programId: 6,
+            scope: 'other-scope',
+            accessGroups: [],
+            roles: [{ permissions: [] }],
+          },
+        ],
+      } as UserEntity);
+
+      // Act
+      const result = await service.getProgramScopeIdsUserHasPermission(
+        123,
+        permission,
+      );
+
+      // Assert
+      expect(result).toEqual([
+        { programId: 5, scope: 'legacy-scope', accessGroups },
+      ]);
+    });
+  });
+
   describe('addUserRole', () => {
     it('should throw HttpException when the role name is a default role name', async () => {
       // Arrange

@@ -20,7 +20,13 @@ export function addAccessGroupFilter({
 
   const accessGroupConditions: string[] = [];
   const parameters: Record<string, string | number> = {};
-  for (const [index, accessGroup] of accessGroups.entries()) {
+  let index = 0;
+  for (const accessGroup of accessGroups) {
+    index = getNextAvailableAccessGroupParameterIndex({
+      queryBuilder,
+      startIndex: index,
+    });
+
     const dataAlias = `accessGroupData${index}`;
     const attributeParameterName = `accessGroupAttributeId${index}`;
     const valueParameterName = `accessGroupValue${index}`;
@@ -39,7 +45,26 @@ export function addAccessGroupFilter({
     parameters[attributeParameterName] =
       accessGroup.programRegistrationAttributeId;
     parameters[valueParameterName] = accessGroup.value;
+    index++;
   }
 
   queryBuilder.andWhere(accessGroupConditions.join(' AND '), parameters);
+}
+
+function getNextAvailableAccessGroupParameterIndex({
+  queryBuilder,
+  startIndex,
+}: {
+  queryBuilder: SelectQueryBuilder<ObjectLiteral>;
+  startIndex: number;
+}): number {
+  let index = startIndex;
+  while (
+    queryBuilder.hasParameter(`accessGroupAttributeId${index}`) ||
+    queryBuilder.hasParameter(`accessGroupValue${index}`)
+  ) {
+    index++;
+  }
+
+  return index;
 }

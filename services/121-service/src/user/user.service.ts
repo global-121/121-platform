@@ -227,11 +227,13 @@ export class UserService {
           const programIdScopeObject = {
             programId: assignment.programId,
             scope: assignment.scope,
-            accessGroups:
-              this.userAccessGroupAssignmentsService.getAccessGroupsForUser({
-                programAssignments: user.programAssignments,
-                programId: assignment.programId,
+            accessGroups: assignment.accessGroups.map(
+              ({ accessGroupLevel, value }) => ({
+                programRegistrationAttributeId:
+                  accessGroupLevel.programRegistrationAttributeId,
+                value,
               }),
+            ),
           };
 
           programIdScopeObjects.push(programIdScopeObject);
@@ -752,7 +754,6 @@ export class UserService {
             value: true,
             accessGroupLevel: {
               id: true,
-              level: true,
               programRegistrationAttributeId: true,
             },
           },

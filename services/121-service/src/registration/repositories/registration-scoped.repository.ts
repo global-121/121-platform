@@ -207,7 +207,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     });
   }
 
-  // This is a helper to filter registrations by scope and access groups for endpoint that do not contain programId
+  // This is a helper to filter registrations by scope and access groups for endpoints that do not contain programId
   public async isWithinScopeAndAccessGroups({
     referenceId,
     programId,

@@ -72,26 +72,42 @@ export class AccessGroupLevelsService {
     levelsToRemove: AccessGroupLevelEntity[];
     levelsToCreate: AccessGroupLevelEntity[];
   } {
-    const isUnchanged = (existingLevel: AccessGroupLevelEntity): boolean =>
-      orderedProgramRegistrationAttributeIds[existingLevel.level] ===
-      existingLevel.programRegistrationAttributeId;
+    const isSameLevel = ({
+      existing,
+      target,
+    }: {
+      existing: Pick<
+        AccessGroupLevelEntity,
+        'level' | 'programRegistrationAttributeId'
+      >;
+      target: Pick<
+        AccessGroupLevelEntity,
+        'level' | 'programRegistrationAttributeId'
+      >;
+    }): boolean =>
+      existing.level === target.level &&
+      existing.programRegistrationAttributeId ===
+        target.programRegistrationAttributeId;
+
+    const targetLevels = orderedProgramRegistrationAttributeIds.map(
+      (programRegistrationAttributeId, level) => ({
+        level,
+        programRegistrationAttributeId,
+      }),
+    );
 
     const levelsToRemove = existingLevels.filter(
-      (existingLevel) => !isUnchanged(existingLevel),
+      (existing) =>
+        !targetLevels.some((target) => isSameLevel({ existing, target })),
     );
-
-    const unchangedLevels = new Set(
-      existingLevels.filter(isUnchanged).map(({ level }) => level),
-    );
-    const levelsToCreate = orderedProgramRegistrationAttributeIds
-      .map((programRegistrationAttributeId, level) =>
-        this.accessGroupLevelRepository.create({
-          programId,
-          programRegistrationAttributeId,
-          level,
-        }),
+    const levelsToCreate = targetLevels
+      .filter(
+        (target) =>
+          !existingLevels.some((existing) => isSameLevel({ existing, target })),
       )
-      .filter(({ level }) => !unchangedLevels.has(level));
+      .map((target) =>
+        this.accessGroupLevelRepository.create({ programId, ...target }),
+      );
 
     return { levelsToRemove, levelsToCreate };
   }

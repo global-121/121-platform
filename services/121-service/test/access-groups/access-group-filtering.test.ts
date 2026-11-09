@@ -264,7 +264,7 @@ describe('Access groups - filtering', () => {
   });
 
   describe('transaction events, which relate to the registration through the transaction', () => {
-    // This is mostly a spot check, that checks also entitiies with an indirect relation with registrations are correctly filtered
+    // This is mostly a spot check, that checks also entities with an indirect relation with registrations are correctly filtered
     it('should only return events of transactions of registrations within the access group of the user', async () => {
       // Arrange
       const accessToken = getAccessTokenOfUser({

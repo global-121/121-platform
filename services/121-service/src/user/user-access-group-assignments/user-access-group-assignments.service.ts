@@ -8,7 +8,7 @@ import { AccessGroupLevelAssignment } from '@121-service/src/programs/program-ai
 import { ProgramAidworkerAssignmentAccessGroupRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment-access-group.repository';
 import { AssignedAccessGroupDto } from '@121-service/src/user/dto/assigned-access-group.dto';
 import { GetAccessGroupsForUserParams } from '@121-service/src/user/user-access-group-assignments/interfaces/get-access-groups-for-user-params.interface';
-import { GetAccessGroupsWithAttributeIdsParams } from '@121-service/src/user/user-access-group-assignments/interfaces/get-access-groups-with-attribute-ids-params.interface';
+import { GetAccessGroupsWithLevelIdsParams } from '@121-service/src/user/user-access-group-assignments/interfaces/get-access-groups-with-level-ids-params.interface';
 import { ReplaceAccessGroupsParams } from '@121-service/src/user/user-access-group-assignments/interfaces/replace-access-groups-params.interface';
 
 @Injectable()
@@ -21,10 +21,10 @@ export class UserAccessGroupAssignmentsService {
   public async getAccessGroupsWithLevelIdsOrThrow({
     programId,
     accessGroups,
-  }: GetAccessGroupsWithAttributeIdsParams): Promise<
+  }: GetAccessGroupsWithLevelIdsParams): Promise<
     AccessGroupLevelAssignment[] | undefined
   > {
-    this.throwIfNotProduction({ accessGroups });
+    this.throwIfProduction({ accessGroups });
     if (accessGroups === undefined) {
       return undefined;
     }
@@ -87,7 +87,7 @@ export class UserAccessGroupAssignmentsService {
 
   // TODO: Setting access groups is not validated yet (value must be one of the level's options, levels must be a prefix). Until then it is disabled in production.
   // It will follow in a new PR
-  private throwIfNotProduction({
+  private throwIfProduction({
     accessGroups,
   }: {
     accessGroups: AssignedAccessGroupDto[] | undefined;

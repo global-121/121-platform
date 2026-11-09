@@ -21,10 +21,10 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
-// This just a sanity check to see if scope and accessgroup filter can be applied together correctyly
-// I don't think users should ever set a program like this on production, but in case it does happen, this test ensures the filters work correctly
-// When gradually releasing access groups in paralel to scope we only show to configuration for one of either in the interface
-// so none power users will never realize that both can be configured simultaneously
+// This is a sanity check that scope and access-group filters can be applied together correctly.
+// Although users should not normally configure a program this way in production, this test ensures both filters work if they are enabled.
+// While access groups are gradually released alongside scope, the interface shows configuration for only one or the other,
+// so power users may not realize that both can be configured simultaneously.
 describe('Access groups - combined with scope', () => {
   const programId = 1;
   const userScope = DebugScope.Turkana;

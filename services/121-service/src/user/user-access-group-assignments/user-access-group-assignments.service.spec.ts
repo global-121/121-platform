@@ -201,5 +201,60 @@ describe('UserAccessGroupAssignmentsService', () => {
       // Assert
       expect(result).toEqual([]);
     });
+
+    it('should find the assignment when the program id is a string', () => {
+      // Act
+      const result = service.getAccessGroupsForUser({
+        programAssignments,
+        programId: String(programId),
+      });
+
+      // Assert
+      expect(result).toEqual([
+        { programRegistrationAttributeId: countyAttributeId, value: 'kisumu' },
+      ]);
+    });
+    it('should return attribute ids and values in assignment order', () => {
+      // Act
+      const result = service.getAccessGroupsForUser({
+        programId,
+        programAssignments: [
+          {
+            programId,
+            accessGroups: [
+              {
+                value: 'kisumu',
+                accessGroupLevel: {
+                  programRegistrationAttributeId: countyAttributeId,
+                },
+              },
+              {
+                value: 'kisumu-west',
+                accessGroupLevel: {
+                  programRegistrationAttributeId: 12,
+                },
+              },
+            ],
+          },
+        ],
+      });
+
+      // Assert
+      expect(result).toEqual([
+        { programRegistrationAttributeId: countyAttributeId, value: 'kisumu' },
+        { programRegistrationAttributeId: 12, value: 'kisumu-west' },
+      ]);
+    });
+
+    it('should return no access groups for an unrestricted assignment', () => {
+      // Act
+      const result = service.getAccessGroupsForUser({
+        programId,
+        programAssignments: [{ programId, accessGroups: [] }],
+      });
+
+      // Assert
+      expect(result).toEqual([]);
+    });
   });
 });
