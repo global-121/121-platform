@@ -23,12 +23,14 @@ describe('User email templates', () => {
   });
 
   it('should render login OTP template', () => {
-    expect(
-      buildTemplateLoginOtp({
-        ...baseInput,
-        otp: '4A1RQ9',
-        expirationMinutes: 10,
-      }),
-    ).toMatchSnapshot();
+    // Act
+    const template = buildTemplateLoginOtp({
+      ...baseInput,
+      otp: '4A1RQ9',
+      expirationMinutes: 10,
+    });
+
+    // Assert
+    expect(template).toMatchSnapshot();
   });
 });
