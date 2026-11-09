@@ -54,7 +54,7 @@ export class FormDialogComponent<TMutationData = unknown> {
 
   readonly formGroup = input<FormGroup>();
 
-  readonly confirmButtonDisabled = input<boolean>(true);
+  readonly confirmButtonDisabled = input<boolean>(false);
 
   readonly confirmDialog = viewChild.required<ConfirmDialog>('confirmDialog');
 
