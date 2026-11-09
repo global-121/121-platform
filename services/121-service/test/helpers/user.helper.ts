@@ -71,22 +71,22 @@ export async function updateUserProgramAssignment({
     });
 }
 
-export function requestLoginOtp({
+export function requestLoginOneTimePassword({
   username,
 }: {
   username: string;
 }): Promise<request.Response> {
-  return getServer().post('/users/otp').send({ username });
+  return getServer().post('/users/one-time-password').send({ username });
 }
 
-export function loginWithOtp({
+export function loginWithOneTimePassword({
   username,
-  otp,
+  oneTimePassword,
 }: {
   username: string;
-  otp: string;
+  oneTimePassword: string;
 }): Promise<request.Response> {
-  return getServer().post('/users/login/otp').send({ username, otp });
+  return getServer().post('/users/login/one-time-password').send({ username, oneTimePassword });
 }
 
 export async function getCurrentUser({

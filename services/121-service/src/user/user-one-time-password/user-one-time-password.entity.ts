@@ -3,8 +3,8 @@ import { Column, Entity, JoinColumn, OneToOne, Relation } from 'typeorm';
 import { Base121Entity } from '@121-service/src/base.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
-@Entity('user_otp')
-export class UserOtpEntity extends Base121Entity {
+@Entity('user_one_time_password')
+export class UserOneTimePasswordEntity extends Base121Entity {
   @OneToOne(() => UserEntity, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
@@ -12,7 +12,7 @@ export class UserOtpEntity extends Base121Entity {
   public userId: number;
 
   @Column({ type: 'character varying' })
-  public otp: string;
+  public oneTimePassword: string;
 
   @Column({ type: 'timestamp' })
   public issuedAt: Date;

@@ -1,4 +1,4 @@
-export enum OtpVerificationFailureReason {
+export enum OneTimePasswordVerificationFailureReason {
   noCode = 'noCode',
   locked = 'locked',
   consumed = 'consumed',

@@ -107,12 +107,12 @@
   },
   {
     "method": "post",
-    "path": "/api/users/otp",
+    "path": "/api/users/one-time-password",
     "params": []
   },
   {
     "method": "post",
-    "path": "/api/users/login/otp",
+    "path": "/api/users/login/one-time-password",
     "params": []
   },
   {

@@ -7,7 +7,7 @@ import { of, throwError } from 'rxjs';
 import { SensitivePiiValue } from '@121-service/src/shared/consts/sensitive-pii-value.class';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { buildTemplateLoginOtp } from '@121-service/src/user/user-emails/templates/login-otp.template';
+import { buildTemplateLoginOneTimePassword } from '@121-service/src/user/user-emails/templates/login-one-time-password.template';
 
 jest.mock('fs');
 
@@ -103,12 +103,12 @@ describe('CustomHttpService', () => {
       expect(loggedMessage).toContain('Password: <code>**REDACTED**</code>');
     });
 
-    describe('with a login OTP email payload', () => {
-      const otp = '4A1RQ9';
-      const { subject, body } = buildTemplateLoginOtp({
+    describe('with a login one-time password email payload', () => {
+      const oneTimePassword = '4A1RQ9';
+      const { subject, body } = buildTemplateLoginOneTimePassword({
         email: 'user@example.org',
         recipientName: 'Jane',
-        otp,
+        oneTimePassword,
         expirationMinutes: 10,
       });
       const payload = {
@@ -120,19 +120,19 @@ describe('CustomHttpService', () => {
         saveToSentItems: false,
       };
 
-      it('should send the OTP unmodified while redacting it in the success log', async () => {
+      it('should send the one-time password unmodified while redacting it in the success log', async () => {
         // Act
         await service.post('https://email.example.net/api/sendMail', payload);
 
         // Assert
         const sentPayload = httpServicePostMock.mock.calls[0][1];
-        expect(sentPayload.message.body.content).toContain(otp);
+        expect(sentPayload.message.body.content).toContain(oneTimePassword);
         const loggedMessage = trackTraceMock.mock.calls[0][0].message;
-        expect(loggedMessage).not.toContain(otp);
+        expect(loggedMessage).not.toContain(oneTimePassword);
         expect(loggedMessage).toContain('**REDACTED**');
       });
 
-      it('should send the OTP unmodified while redacting it in the failure log', async () => {
+      it('should send the one-time password unmodified while redacting it in the failure log', async () => {
         // Arrange
         httpServicePostMock.mockReturnValue(
           throwError(() => ({
@@ -149,10 +149,10 @@ describe('CustomHttpService', () => {
 
         // Assert
         const sentPayload = httpServicePostMock.mock.calls[0][1];
-        expect(sentPayload.message.body.content).toContain(otp);
+        expect(sentPayload.message.body.content).toContain(oneTimePassword);
         const loggedMessage =
           trackExceptionMock.mock.calls[0][0].exception.message;
-        expect(loggedMessage).not.toContain(otp);
+        expect(loggedMessage).not.toContain(oneTimePassword);
         expect(loggedMessage).toContain('**REDACTED**');
       });
     });

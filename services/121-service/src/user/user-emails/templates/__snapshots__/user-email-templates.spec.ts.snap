@@ -52,7 +52,7 @@ exports[`User email templates should render account created template 1`] = `
 }
 `;
 
-exports[`User email templates should render login OTP template 1`] = `
+exports[`User email templates should render login one-time password template 1`] = `
 {
   "body": "
     <p>Hi Jane Doe,</p>

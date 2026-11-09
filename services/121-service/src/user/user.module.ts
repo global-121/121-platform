@@ -14,7 +14,7 @@ import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity'
 import { UserService } from '@121-service/src/user/user.service';
 import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 import { UserEmailsModule } from '@121-service/src/user/user-emails/user-emails.module';
-import { UserOtpModule } from '@121-service/src/user/user-otp/user-otp.module';
+import { UserOneTimePasswordModule } from '@121-service/src/user/user-one-time-password/user-one-time-password.module';
 
 @Module({
   imports: [
@@ -27,7 +27,7 @@ import { UserOtpModule } from '@121-service/src/user/user-otp/user-otp.module';
     ProgramAidworkerAssignmentsModule,
     AccessGroupLevelsModule,
     UserEmailsModule,
-    UserOtpModule,
+    UserOneTimePasswordModule,
   ],
   providers: [UserService, UserAccessGroupAssignmentsService, AzureLogService],
   controllers: [UserController, UserAssignmentsController, RolesController],

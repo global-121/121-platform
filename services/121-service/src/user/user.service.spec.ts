@@ -14,16 +14,16 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
-import { LoginOtpAuditEventName } from '@121-service/src/user/enum/login-otp-audit-event-name.enum';
-import { LoginOtpRequestOutcome } from '@121-service/src/user/enum/login-otp-request-outcome.enum';
-import { LoginOtpUserFailureReason } from '@121-service/src/user/enum/login-otp-user-failure-reason.enum';
+import { LoginOneTimePasswordAuditEventName } from '@121-service/src/user/enum/login-one-time-password-audit-event-name.enum';
+import { LoginOneTimePasswordRequestOutcome } from '@121-service/src/user/enum/login-one-time-password-request-outcome.enum';
+import { LoginOneTimePasswordUserFailureReason } from '@121-service/src/user/enum/login-one-time-password-user-failure-reason.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
-import { OtpVerificationFailureReason } from '@121-service/src/user/user-otp/enum/otp-verification-failure-reason.enum';
-import { UserOtpService } from '@121-service/src/user/user-otp/user-otp.service';
+import { OneTimePasswordVerificationFailureReason } from '@121-service/src/user/user-one-time-password/enum/one-time-password-verification-failure-reason.enum';
+import { UserOneTimePasswordService } from '@121-service/src/user/user-one-time-password/user-one-time-password.service';
 
 jest.mock('@121-service/src/env', () => ({
   env: {
@@ -41,7 +41,7 @@ describe('UserService', () => {
   let assignmentRepository: ProgramAidworkerAssignmentRepository;
   let userAccessGroupAssignmentsService: jest.Mocked<UserAccessGroupAssignmentsService>;
   let userEmailsService: UserEmailsService;
-  let userOtpService: UserOtpService;
+  let userOneTimePasswordService: UserOneTimePasswordService;
   let azureLogService: AzureLogService;
 
   const mockRequest = {
@@ -94,12 +94,12 @@ describe('UserService', () => {
           useValue: {
             send: jest.fn(),
             sendPasswordReset: jest.fn(),
-            sendLoginOtp: jest.fn(),
+            sendLoginOneTimePassword: jest.fn(),
           },
         },
         {
-          provide: UserOtpService,
-          useValue: { createOtp: jest.fn(), verifyOtp: jest.fn() },
+          provide: UserOneTimePasswordService,
+          useValue: { createOneTimePassword: jest.fn(), verifyOneTimePassword: jest.fn() },
         },
         {
           provide: AzureLogService,
@@ -128,12 +128,12 @@ describe('UserService', () => {
       UserAccessGroupAssignmentsService,
     );
     userEmailsService = module.get<UserEmailsService>(UserEmailsService);
-    userOtpService = module.get<UserOtpService>(UserOtpService);
+    userOneTimePasswordService = module.get<UserOneTimePasswordService>(UserOneTimePasswordService);
     azureLogService = module.get<AzureLogService>(AzureLogService);
   });
 
-  describe('Requesting a login OTP', () => {
-    const otp = '4A1RQ9';
+  describe('Requesting a login one-time password', () => {
+    const oneTimePassword = '4A1RQ9';
     const existingUser = {
       id: 1,
       username: 'user@example.org',
@@ -141,67 +141,67 @@ describe('UserService', () => {
       isEntraUser: false,
     } as UserEntity;
 
-    const requestLoginOtpAndWait = async ({
+    const requestLoginOneTimePasswordAndWait = async ({
       username,
     }: {
       username: string;
     }): Promise<void> => {
-      service.requestLoginOtp({ username });
+      service.requestLoginOneTimePassword({ username });
       await new Promise((resolve) => setImmediate(resolve));
     };
 
     beforeEach(() => {
       jest
-        .spyOn(userOtpService, 'createOtp')
-        .mockResolvedValue({ otp, expiresAt: new Date() });
-      jest.spyOn(userEmailsService, 'sendLoginOtp').mockResolvedValue();
+        .spyOn(userOneTimePasswordService, 'createOneTimePassword')
+        .mockResolvedValue({ oneTimePassword, expiresAt: new Date() });
+      jest.spyOn(userEmailsService, 'sendLoginOneTimePassword').mockResolvedValue();
     });
 
     afterEach(() => {
       jest.restoreAllMocks();
     });
 
-    it('emails a new OTP to an existing user', async () => {
+    it('emails a new one-time password to an existing user', async () => {
       // Arrange
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
 
       // Act
-      await requestLoginOtpAndWait({ username: 'User@Example.org' });
+      await requestLoginOneTimePasswordAndWait({ username: 'User@Example.org' });
 
       // Assert
-      expect(userEmailsService.sendLoginOtp).toHaveBeenCalledWith({
+      expect(userEmailsService.sendLoginOneTimePassword).toHaveBeenCalledWith({
         email: 'user@example.org',
         recipientName: 'Jane',
-        otp,
+        oneTimePassword,
         expirationMinutes: 10,
       });
     });
 
-    it('does not create or email an OTP for an unknown user, without throwing', async () => {
+    it('does not create or email a one-time password for an unknown user, without throwing', async () => {
       // Arrange
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
 
       // Act
-      await requestLoginOtpAndWait({ username: 'unknown@example.org' });
+      await requestLoginOneTimePasswordAndWait({ username: 'unknown@example.org' });
 
       // Assert
-      expect(userOtpService.createOtp).not.toHaveBeenCalled();
-      expect(userEmailsService.sendLoginOtp).not.toHaveBeenCalled();
+      expect(userOneTimePasswordService.createOneTimePassword).not.toHaveBeenCalled();
+      expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
     });
 
-    it('does not email an OTP while the previous one is within the cooldown', async () => {
+    it('does not email a one-time password while the previous one is within the cooldown', async () => {
       // Arrange
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
-      jest.spyOn(userOtpService, 'createOtp').mockResolvedValue(undefined);
+      jest.spyOn(userOneTimePasswordService, 'createOneTimePassword').mockResolvedValue(undefined);
 
       // Act
-      await requestLoginOtpAndWait({ username: 'user@example.org' });
+      await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
 
       // Assert
-      expect(userEmailsService.sendLoginOtp).not.toHaveBeenCalled();
+      expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
     });
 
-    it('does not create or email an OTP for a user who signs in with Entra', async () => {
+    it('does not create or email a one-time password for a user who signs in with Entra', async () => {
       // Arrange
       jest.spyOn(userRepository, 'findOne').mockResolvedValue({
         ...existingUser,
@@ -209,39 +209,39 @@ describe('UserService', () => {
       } as UserEntity);
 
       // Act
-      await requestLoginOtpAndWait({ username: 'user@example.org' });
+      await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
 
       // Assert
-      expect(userOtpService.createOtp).not.toHaveBeenCalled();
-      expect(userEmailsService.sendLoginOtp).not.toHaveBeenCalled();
+      expect(userOneTimePasswordService.createOneTimePassword).not.toHaveBeenCalled();
+      expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
     });
 
-    it('does not create or email an OTP when the instance uses Entra SSO', async () => {
+    it('does not create or email a one-time password when the instance uses Entra SSO', async () => {
       // Arrange
       jest.replaceProperty(env, 'USE_SSO_AZURE_ENTRA', true);
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
 
       // Act
-      await requestLoginOtpAndWait({ username: 'user@example.org' });
+      await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
 
       // Assert
-      expect(userOtpService.createOtp).not.toHaveBeenCalled();
-      expect(userEmailsService.sendLoginOtp).not.toHaveBeenCalled();
+      expect(userOneTimePasswordService.createOneTimePassword).not.toHaveBeenCalled();
+      expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
     });
 
     it('logs a failed email send instead of throwing', async () => {
       // Arrange
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
       jest
-        .spyOn(userEmailsService, 'sendLoginOtp')
+        .spyOn(userEmailsService, 'sendLoginOneTimePassword')
         .mockRejectedValue(new EmailDeliveryError('Failed to send email'));
 
       // Act
-      await requestLoginOtpAndWait({ username: 'user@example.org' });
+      await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
 
       // Assert
       expect(azureLogService.logError).toHaveBeenCalledWith(
-        expect.objectContaining({ message: 'Failed to send login OTP email' }),
+        expect.objectContaining({ message: 'Failed to send login one-time password email' }),
         false,
       );
     });
@@ -253,12 +253,12 @@ describe('UserService', () => {
         .mockRejectedValue(new Error('Database unavailable'));
 
       // Act
-      await requestLoginOtpAndWait({ username: 'user@example.org' });
+      await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
 
       // Assert
       expect(azureLogService.logError).toHaveBeenCalledWith(
         expect.objectContaining({
-          message: 'Failed to process login OTP request',
+          message: 'Failed to process login one-time password request',
           cause: new Error('Database unavailable'),
         }),
         false,
@@ -278,42 +278,42 @@ describe('UserService', () => {
         .mockImplementation(() => undefined);
 
       // Act
-      await requestLoginOtpAndWait({ username: 'user@example.org' });
+      await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
 
       // Assert
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Failed to process login OTP request, and logging it failed',
+        'Failed to process login one-time password request, and logging it failed',
         new Error('Azure is not configured'),
       );
     });
 
     describe('audit logging', () => {
-      it('logs an issued OTP with the user id', async () => {
+      it('logs an issued one-time password with the user id', async () => {
         // Arrange
         jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
 
         // Act
-        await requestLoginOtpAndWait({ username: 'user@example.org' });
+        await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
 
         // Assert
         expect(azureLogService.trackEvent).toHaveBeenCalledWith({
-          name: LoginOtpAuditEventName.requested,
-          properties: { outcome: LoginOtpRequestOutcome.issued, userId: '1' },
+          name: LoginOneTimePasswordAuditEventName.requested,
+          properties: { outcome: LoginOneTimePasswordRequestOutcome.issued, userId: '1' },
         });
       });
 
-      it('logs a refused OTP request with the user id', async () => {
+      it('logs a refused one-time password request with the user id', async () => {
         // Arrange
         jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
-        jest.spyOn(userOtpService, 'createOtp').mockResolvedValue(undefined);
+        jest.spyOn(userOneTimePasswordService, 'createOneTimePassword').mockResolvedValue(undefined);
 
         // Act
-        await requestLoginOtpAndWait({ username: 'user@example.org' });
+        await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
 
         // Assert
         expect(azureLogService.trackEvent).toHaveBeenCalledWith({
-          name: LoginOtpAuditEventName.requested,
-          properties: { outcome: LoginOtpRequestOutcome.refused, userId: '1' },
+          name: LoginOneTimePasswordAuditEventName.requested,
+          properties: { outcome: LoginOneTimePasswordRequestOutcome.refused, userId: '1' },
         });
       });
 
@@ -322,12 +322,12 @@ describe('UserService', () => {
         jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
 
         // Act
-        await requestLoginOtpAndWait({ username: 'unknown@example.org' });
+        await requestLoginOneTimePasswordAndWait({ username: 'unknown@example.org' });
 
         // Assert
         expect(azureLogService.trackEvent).toHaveBeenCalledWith({
-          name: LoginOtpAuditEventName.requested,
-          properties: { outcome: LoginOtpRequestOutcome.unknownUser },
+          name: LoginOneTimePasswordAuditEventName.requested,
+          properties: { outcome: LoginOneTimePasswordRequestOutcome.unknownUser },
         });
       });
 
@@ -339,13 +339,13 @@ describe('UserService', () => {
         } as UserEntity);
 
         // Act
-        await requestLoginOtpAndWait({ username: 'user@example.org' });
+        await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
 
         // Assert
         expect(azureLogService.trackEvent).toHaveBeenCalledWith({
-          name: LoginOtpAuditEventName.requested,
+          name: LoginOneTimePasswordAuditEventName.requested,
           properties: {
-            outcome: LoginOtpRequestOutcome.entraUser,
+            outcome: LoginOneTimePasswordRequestOutcome.entraUser,
             userId: '1',
           },
         });
@@ -353,8 +353,8 @@ describe('UserService', () => {
     });
   });
 
-  describe('Logging in with an OTP', () => {
-    const otp = '4A1RQ9';
+  describe('Logging in with a one-time password', () => {
+    const oneTimePassword = '4A1RQ9';
     const buildExistingUser = (overrides: Partial<UserEntity> = {}) =>
       ({
         id: 1,
@@ -368,7 +368,7 @@ describe('UserService', () => {
 
     beforeEach(() => {
       jest
-        .spyOn(userOtpService, 'verifyOtp')
+        .spyOn(userOneTimePasswordService, 'verifyOneTimePassword')
         .mockResolvedValue({ isVerified: true });
       jest
         .spyOn(userRepository, 'findOneOrFail')
@@ -382,15 +382,15 @@ describe('UserService', () => {
       jest.restoreAllMocks();
     });
 
-    it('logs in an existing user with a valid OTP', async () => {
+    it('logs in an existing user with a valid one-time password', async () => {
       // Arrange
       const existingUser = buildExistingUser();
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
 
       // Act
-      const loginResponse = await service.loginWithOtp({
+      const loginResponse = await service.loginWithOneTimePassword({
         username: 'User@Example.org',
-        otp,
+        oneTimePassword,
       });
 
       // Assert
@@ -407,19 +407,19 @@ describe('UserService', () => {
       );
     });
 
-    it('rejects an invalid OTP', async () => {
+    it('rejects an invalid one-time password', async () => {
       // Arrange
       jest
         .spyOn(userRepository, 'findOne')
         .mockResolvedValue(buildExistingUser());
-      jest.spyOn(userOtpService, 'verifyOtp').mockResolvedValue({
+      jest.spyOn(userOneTimePasswordService, 'verifyOneTimePassword').mockResolvedValue({
         isVerified: false,
-        failureReason: OtpVerificationFailureReason.wrongCode,
+        failureReason: OneTimePasswordVerificationFailureReason.wrongCode,
       });
 
       // Act & Assert
       await expect(
-        service.loginWithOtp({ username: 'user@example.org', otp }),
+        service.loginWithOneTimePassword({ username: 'user@example.org', oneTimePassword }),
       ).rejects.toThrow(
         new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED),
       );
@@ -431,13 +431,13 @@ describe('UserService', () => {
 
       // Act & Assert
       await expect(
-        service.loginWithOtp({ username: 'unknown@example.org', otp }),
+        service.loginWithOneTimePassword({ username: 'unknown@example.org', oneTimePassword }),
       ).rejects.toThrow(
         new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED),
       );
     });
 
-    it('rejects a user who signs in with Entra, even with a valid OTP', async () => {
+    it('rejects a user who signs in with Entra, even with a valid one-time password', async () => {
       // Arrange
       jest
         .spyOn(userRepository, 'findOne')
@@ -445,13 +445,13 @@ describe('UserService', () => {
 
       // Act & Assert
       await expect(
-        service.loginWithOtp({ username: 'user@example.org', otp }),
+        service.loginWithOneTimePassword({ username: 'user@example.org', oneTimePassword }),
       ).rejects.toThrow(
         new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED),
       );
     });
 
-    it('rejects any user when the instance uses Entra SSO, even with a valid OTP', async () => {
+    it('rejects any user when the instance uses Entra SSO, even with a valid one-time password', async () => {
       // Arrange
       jest.replaceProperty(env, 'USE_SSO_AZURE_ENTRA', true);
       jest
@@ -460,16 +460,16 @@ describe('UserService', () => {
 
       // Act & Assert
       await expect(
-        service.loginWithOtp({ username: 'user@example.org', otp }),
+        service.loginWithOneTimePassword({ username: 'user@example.org', oneTimePassword }),
       ).rejects.toThrow(
         new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED),
       );
     });
 
     describe('audit logging', () => {
-      const loginWithOtpIgnoringRejection = async (): Promise<void> => {
+      const loginWithOneTimePasswordIgnoringRejection = async (): Promise<void> => {
         await service
-          .loginWithOtp({ username: 'user@example.org', otp })
+          .loginWithOneTimePassword({ username: 'user@example.org', oneTimePassword })
           .catch(() => undefined);
       };
 
@@ -480,11 +480,11 @@ describe('UserService', () => {
           .mockResolvedValue(buildExistingUser());
 
         // Act
-        await service.loginWithOtp({ username: 'user@example.org', otp });
+        await service.loginWithOneTimePassword({ username: 'user@example.org', oneTimePassword });
 
         // Assert
         expect(azureLogService.trackEvent).toHaveBeenCalledWith({
-          name: LoginOtpAuditEventName.succeeded,
+          name: LoginOneTimePasswordAuditEventName.succeeded,
           properties: { userId: '1' },
         });
       });
@@ -494,19 +494,19 @@ describe('UserService', () => {
         jest
           .spyOn(userRepository, 'findOne')
           .mockResolvedValue(buildExistingUser());
-        jest.spyOn(userOtpService, 'verifyOtp').mockResolvedValue({
+        jest.spyOn(userOneTimePasswordService, 'verifyOneTimePassword').mockResolvedValue({
           isVerified: false,
-          failureReason: OtpVerificationFailureReason.expired,
+          failureReason: OneTimePasswordVerificationFailureReason.expired,
         });
 
         // Act
-        await loginWithOtpIgnoringRejection();
+        await loginWithOneTimePasswordIgnoringRejection();
 
         // Assert
         expect(azureLogService.trackEvent).toHaveBeenCalledWith({
-          name: LoginOtpAuditEventName.failed,
+          name: LoginOneTimePasswordAuditEventName.failed,
           properties: {
-            reason: OtpVerificationFailureReason.expired,
+            reason: OneTimePasswordVerificationFailureReason.expired,
             userId: '1',
           },
         });
@@ -518,18 +518,18 @@ describe('UserService', () => {
         jest
           .spyOn(userRepository, 'findOne')
           .mockResolvedValue(buildExistingUser());
-        jest.spyOn(userOtpService, 'verifyOtp').mockResolvedValue({
+        jest.spyOn(userOneTimePasswordService, 'verifyOneTimePassword').mockResolvedValue({
           isVerified: false,
-          failureReason: OtpVerificationFailureReason.wrongCode,
+          failureReason: OneTimePasswordVerificationFailureReason.wrongCode,
           lockedUntil,
         });
 
         // Act
-        await loginWithOtpIgnoringRejection();
+        await loginWithOneTimePasswordIgnoringRejection();
 
         // Assert
         expect(azureLogService.trackEvent).toHaveBeenCalledWith({
-          name: LoginOtpAuditEventName.locked,
+          name: LoginOneTimePasswordAuditEventName.locked,
           properties: { lockedUntil: lockedUntil.toISOString(), userId: '1' },
         });
       });
@@ -539,17 +539,17 @@ describe('UserService', () => {
         jest
           .spyOn(userRepository, 'findOne')
           .mockResolvedValue(buildExistingUser());
-        jest.spyOn(userOtpService, 'verifyOtp').mockResolvedValue({
+        jest.spyOn(userOneTimePasswordService, 'verifyOneTimePassword').mockResolvedValue({
           isVerified: false,
-          failureReason: OtpVerificationFailureReason.wrongCode,
+          failureReason: OneTimePasswordVerificationFailureReason.wrongCode,
         });
 
         // Act
-        await loginWithOtpIgnoringRejection();
+        await loginWithOneTimePasswordIgnoringRejection();
 
         // Assert
         expect(azureLogService.trackEvent).not.toHaveBeenCalledWith(
-          expect.objectContaining({ name: LoginOtpAuditEventName.locked }),
+          expect.objectContaining({ name: LoginOneTimePasswordAuditEventName.locked }),
         );
       });
 
@@ -558,12 +558,12 @@ describe('UserService', () => {
         jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
 
         // Act
-        await loginWithOtpIgnoringRejection();
+        await loginWithOneTimePasswordIgnoringRejection();
 
         // Assert
         expect(azureLogService.trackEvent).toHaveBeenCalledWith({
-          name: LoginOtpAuditEventName.failed,
-          properties: { reason: LoginOtpUserFailureReason.unknownUser },
+          name: LoginOneTimePasswordAuditEventName.failed,
+          properties: { reason: LoginOneTimePasswordUserFailureReason.unknownUser },
         });
       });
 
@@ -574,13 +574,13 @@ describe('UserService', () => {
           .mockResolvedValue(buildExistingUser({ isEntraUser: true }));
 
         // Act
-        await loginWithOtpIgnoringRejection();
+        await loginWithOneTimePasswordIgnoringRejection();
 
         // Assert
         expect(azureLogService.trackEvent).toHaveBeenCalledWith({
-          name: LoginOtpAuditEventName.failed,
+          name: LoginOneTimePasswordAuditEventName.failed,
           properties: {
-            reason: LoginOtpUserFailureReason.entraUser,
+            reason: LoginOneTimePasswordUserFailureReason.entraUser,
             userId: '1',
           },
         });
