@@ -1,4 +1,5 @@
-# See: https://docs.github.com/en/github/administering-a-repository/configuration-options-for-dependency-updates#configuration-options-for-dependabotyml
+# See: https://docs.github.com/en/code-security/concepts/supply-chain-security/about-the-dependabot-yml-file
+# See: https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference#configuration-options-for-dependabotyml
 version: 2
 
 updates:
@@ -51,6 +52,34 @@ updates:
       # Dependencies below are ordered alphabetically!
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
+
+  - directories:
+      - '/'
+      - '/packages/eslint-config-121-platform/'
+      - '/e2e/'
+      - '/interfaces/portal/'
+      - '/services/121-service/'
+      - '/services/mock-service/'
+    commit-message:
+      prefix: '[shared] '
+    package-ecosystem: npm
+    schedule:
+      interval: monthly
+      day: tuesday
+    cooldown:
+      default-days: 8 # See: .npmrc
+    open-pull-requests-limit: 5
+    versioning-strategy: increase
+    groups:
+      dependencies:
+        group-by: dependency-name
+        update-types: ['minor', 'patch']
+        patterns:
+          - '*'
+    allow:
+      # Dependencies below are ordered alphabetically!
+      - dependency-name: 'eslint'
+      - dependency-name: 'prettier'
 
   - directory: '/services/121-service'
     commit-message:
