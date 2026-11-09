@@ -1,9 +1,8 @@
-import { setTimeout as delay } from 'node:timers/promises';
+import { expect } from '@playwright/test';
 
 // eslint-disable-next-line n/no-process-env -- This environment variable `MAILPIT_API_URL` is NOT used in the 121-service, thus not managed via the env.ts file.
 const MAILPIT_API_URL = process.env.MAILPIT_API_URL ?? 'http://localhost:8025';
 const EMAIL_WAIT_TIMEOUT_MS = 10_000;
-const EMAIL_POLL_INTERVAL_MS = 300;
 
 interface MailpitMessageSummary {
   readonly ID: string;
@@ -47,39 +46,26 @@ export const waitForEmail = async ({
   recipient: string;
   subject: string;
 }): Promise<MailpitMessage> => {
-  const messageId = await pollForMessageId({
-    recipient,
-    subject,
-    deadline: Date.now() + EMAIL_WAIT_TIMEOUT_MS,
-  });
+  let messageId: string | undefined;
+
+  await expect
+    .poll(
+      async () => {
+        messageId = await findLatestMessageId({ recipient, subject });
+        return messageId;
+      },
+      {
+        message: `Email "${subject}" to ${recipient} did not arrive in Mailpit`,
+        timeout: EMAIL_WAIT_TIMEOUT_MS,
+      },
+    )
+    .toBeDefined();
+
+  if (!messageId) {
+    throw new Error(`No email "${subject}" found for ${recipient}`);
+  }
 
   return getMessage({ messageId });
-};
-
-const pollForMessageId = async ({
-  recipient,
-  subject,
-  deadline,
-}: {
-  recipient: string;
-  subject: string;
-  deadline: number;
-}): Promise<string> => {
-  const messageId = await findLatestMessageId({ recipient, subject });
-
-  if (messageId) {
-    return messageId;
-  }
-
-  if (Date.now() >= deadline) {
-    throw new Error(
-      `Timed out after ${EMAIL_WAIT_TIMEOUT_MS}ms waiting for email "${subject}" to ${recipient}`,
-    );
-  }
-
-  await delay(EMAIL_POLL_INTERVAL_MS);
-
-  return pollForMessageId({ recipient, subject, deadline });
 };
 
 const findLatestMessageId = async ({
