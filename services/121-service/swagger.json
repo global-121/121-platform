@@ -230,6 +230,44 @@
     "returnType": "UserRoleResponseDTO"
   },
   {
+    "method": "post",
+    "path": "/api/programs/{programId}/attachments",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/attachments",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/attachments/{attachmentId}",
+    "params": [
+      "programId",
+      "attachmentId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/attachments/{attachmentId}",
+    "params": [
+      "programId",
+      "attachmentId"
+    ]
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}/attachments/{attachmentId}",
+    "params": [
+      "programId",
+      "attachmentId"
+    ]
+  },
+  {
     "method": "get",
     "path": "/api/programs/{programId}/fsps/intersolve-voucher/voucher/image-paper",
     "params": [
@@ -619,44 +657,6 @@
       "fspName"
     ],
     "returnType": "FspSettingsDto"
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/attachments",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/attachments",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/attachments/{attachmentId}",
-    "params": [
-      "programId",
-      "attachmentId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/attachments/{attachmentId}",
-    "params": [
-      "programId",
-      "attachmentId"
-    ]
-  },
-  {
-    "method": "delete",
-    "path": "/api/programs/{programId}/attachments/{attachmentId}",
-    "params": [
-      "programId",
-      "attachmentId"
-    ]
   },
   {
     "method": "get",

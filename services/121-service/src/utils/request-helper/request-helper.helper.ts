@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 
+import { AssignedAccessGroupResult } from '@121-service/src/programs/access-group-levels/interfaces/assigned-access-group-result.interface';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
 export class RequestHelper {
@@ -34,5 +35,17 @@ export class RequestHelper {
     }
 
     return userScope;
+  }
+
+  static getUserAccessGroups(
+    req: ScopedUserRequest,
+  ): AssignedAccessGroupResult[] {
+    const accessGroups = req.user?.accessGroups;
+
+    if (accessGroups === undefined) {
+      throw new Error('User access groups are not defined');
+    }
+
+    return accessGroups;
   }
 }

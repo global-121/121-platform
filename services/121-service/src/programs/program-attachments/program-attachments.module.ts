@@ -5,14 +5,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { env } from '@121-service/src/env';
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
 import { ProgramAttachmentRepository } from '@121-service/src/programs/program-attachments/program-attachment.repository';
+import { ProgramAttachmentAccessGroupEntity } from '@121-service/src/programs/program-attachments/program-attachment-access-group.entity';
+import { ProgramAttachmentAccessGroupRepository } from '@121-service/src/programs/program-attachments/program-attachment-access-group.repository';
 import { ProgramAttachmentsController } from '@121-service/src/programs/program-attachments/program-attachments.controller';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProgramAttachmentEntity])],
+  imports: [
+    TypeOrmModule.forFeature([
+      ProgramAttachmentEntity,
+      ProgramAttachmentAccessGroupEntity,
+    ]),
+  ],
   providers: [
     ProgramAttachmentsService,
     ProgramAttachmentRepository,
+    ProgramAttachmentAccessGroupRepository,
     {
       provide: ContainerClient,
       useFactory: async () => {
@@ -31,6 +39,6 @@ import { ProgramAttachmentsService } from '@121-service/src/programs/program-att
     },
   ],
   controllers: [ProgramAttachmentsController],
-  exports: [ProgramAttachmentsService],
+  exports: [ProgramAttachmentsService, ProgramAttachmentAccessGroupRepository],
 })
 export class ProgramAttachmentsModule {}

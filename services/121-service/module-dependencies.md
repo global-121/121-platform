@@ -3,6 +3,7 @@
 ```mermaid
 graph LR
   AccessGroupLevelsModule-->ProgramAidworkerAssignmentsModule
+  AccessGroupLevelsModule-->ProgramAttachmentsModule
   AccessGroupLevelsModule-->RegistrationDataModule
   ActivitiesModule-->MessageModule
   ActivitiesModule-->NoteModule

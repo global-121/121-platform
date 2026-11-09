@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { DataSource, Equal } from 'typeorm';
+import { Equal } from 'typeorm';
 
 import { AccessGroupLevelEntity } from '@121-service/src/programs/access-group-levels/access-group-level.entity';
 import { AccessGroupLevelRepository } from '@121-service/src/programs/access-group-levels/access-group-level.repository';
@@ -8,6 +8,7 @@ import { AccessGroupAttributeUpdate } from '@121-service/src/programs/access-gro
 import { AccessGroupLevelAttribute } from '@121-service/src/programs/access-group-levels/interfaces/access-group-level-attribute.interface';
 import { AccessGroupRegistrationAttribute } from '@121-service/src/programs/access-group-levels/interfaces/access-group-registration-attribute.interface';
 import { ProgramAidworkerAssignmentAccessGroupRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment-access-group.repository';
+import { ProgramAttachmentAccessGroupRepository } from '@121-service/src/programs/program-attachments/program-attachment-access-group.repository';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationAttributeDataRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-attribute-data.repository';
 
@@ -16,8 +17,8 @@ export class AccessGroupLevelsService {
   public constructor(
     private readonly accessGroupLevelRepository: AccessGroupLevelRepository,
     private readonly registrationAttributeDataRepository: RegistrationAttributeDataRepository,
-    private readonly dataSource: DataSource,
     private readonly assignmentAccessGroupRepository: ProgramAidworkerAssignmentAccessGroupRepository,
+    private readonly programAttachmentAccessGroupRepository: ProgramAttachmentAccessGroupRepository,
   ) {}
 
   public async updateAccessGroupLevels({
@@ -63,14 +64,14 @@ export class AccessGroupLevelsService {
       orderedProgramRegistrationAttributeIds,
     });
 
-    await this.throwIfLevelsAreAssignedToUsers({
+    await this.throwIfLevelsAreInUse({
       programId,
       levels: levelsToRemove,
     });
 
-    await this.dataSource.transaction(async (manager) => {
-      await manager.remove(levelsToRemove);
-      await manager.save(levelsToCreate);
+    await this.accessGroupLevelRepository.applyLevelChanges({
+      levelIdsToRemove: levelsToRemove.map(({ id }) => id),
+      levelsToCreate,
     });
 
     return validatedNames;
@@ -92,7 +93,10 @@ export class AccessGroupLevelsService {
     orderedProgramRegistrationAttributeIds: number[];
   }): {
     levelsToRemove: ExistingLevel[];
-    levelsToCreate: AccessGroupLevelEntity[];
+    levelsToCreate: Pick<
+      AccessGroupLevelEntity,
+      'programId' | 'programRegistrationAttributeId' | 'level'
+    >[];
   } {
     const isSameLevel = ({
       existing,
@@ -127,16 +131,14 @@ export class AccessGroupLevelsService {
         (target) =>
           !existingLevels.some((existing) => isSameLevel({ existing, target })),
       )
-      .map((target) =>
-        this.accessGroupLevelRepository.create({ programId, ...target }),
-      );
+      .map((target) => ({ programId, ...target }));
 
     return { levelsToRemove, levelsToCreate };
   }
 
-  // Access groups of a user always start at the highest level without skipping levels,
-  // so only users with an access group at a level that is moved or removed are affected
-  private async throwIfLevelsAreAssignedToUsers({
+  // Access groups of users and attachments always start at the highest level without skipping levels,
+  // so only users and attachments with an access group at a level that is moved or removed are affected
+  private async throwIfLevelsAreInUse({
     programId,
     levels,
   }: {
@@ -146,14 +148,26 @@ export class AccessGroupLevelsService {
       programRegistrationAttribute: { name: string };
     }[];
   }): Promise<void> {
-    const assignedLevelIds =
-      await this.assignmentAccessGroupRepository.getAssignedAccessGroupLevelIds(
-        { accessGroupLevelIds: levels.map(({ id }) => id) },
-      );
+    const changedLevelIds = levels.map(({ id }) => id);
+
+    const [assignedLevelIds, attachmentLevelIds] = await Promise.all([
+      this.assignmentAccessGroupRepository.getAssignedAccessGroupLevelIds({
+        accessGroupLevelIds: changedLevelIds,
+      }),
+      this.programAttachmentAccessGroupRepository.getAccessGroupLevelIdsInUse({
+        accessGroupLevelIds: changedLevelIds,
+      }),
+    ]);
     for (const { id, programRegistrationAttribute } of levels) {
       if (assignedLevelIds.has(id)) {
         throw new HttpException(
           `Access group level '${programRegistrationAttribute.name}' cannot be moved or removed because it is assigned to users in program ${programId}. Remove this access group from the users first.`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (attachmentLevelIds.has(id)) {
+        throw new HttpException(
+          `Access group level '${programRegistrationAttribute.name}' cannot be moved or removed because it is used by files in program ${programId}.`,
           HttpStatus.BAD_REQUEST,
         );
       }
@@ -165,9 +179,9 @@ export class AccessGroupLevelsService {
   }: {
     programId: number;
   }): Promise<string[]> {
-    return this.accessGroupLevelRepository.getOrderedAttributeNamesByProgramId(
-      { programId },
-    );
+    return this.accessGroupLevelRepository.getOrderedAttributeNamesByProgramId({
+      programId,
+    });
   }
 
   public async getAccessGroupLevelAttributes({
