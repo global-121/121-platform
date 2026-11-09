@@ -35,11 +35,6 @@ export class AccessGroupLevelsService {
       selectedAttributeNames: accessGroupRegistrationAttributeNames,
     });
 
-    await this.throwIfChangedLevelsAreAssignedToUsers({
-      programId,
-      newLevelNames: validatedNames,
-    });
-
     const attributeIdByName = new Map(
       activeRegistrationAttributes.map((attribute) => [
         attribute.name,
@@ -52,11 +47,25 @@ export class AccessGroupLevelsService {
 
     const existingLevels = await this.accessGroupLevelRepository.find({
       where: { programId: Equal(programId) },
+      relations: { programRegistrationAttribute: true },
+      select: {
+        id: true,
+        programId: true,
+        level: true,
+        programRegistrationAttributeId: true,
+        programRegistrationAttribute: { id: true, name: true },
+      },
+      order: { level: 'ASC' },
     });
     const { levelsToRemove, levelsToCreate } = this.diffAccessGroupLevels({
       programId,
       existingLevels,
       orderedProgramRegistrationAttributeIds,
+    });
+
+    await this.throwIfLevelsAreAssignedToUsers({
+      programId,
+      levels: levelsToRemove,
     });
 
     await this.dataSource.transaction(async (manager) => {
@@ -68,16 +77,21 @@ export class AccessGroupLevelsService {
   }
 
   // A level is identified by its attribute and its position. Unchanged levels keep their row (and id), so assignments referencing them remain valid.
-  private diffAccessGroupLevels({
+  private diffAccessGroupLevels<
+    ExistingLevel extends Pick<
+      AccessGroupLevelEntity,
+      'level' | 'programRegistrationAttributeId'
+    >,
+  >({
     programId,
     existingLevels,
     orderedProgramRegistrationAttributeIds,
   }: {
     programId: number;
-    existingLevels: AccessGroupLevelEntity[];
+    existingLevels: ExistingLevel[];
     orderedProgramRegistrationAttributeIds: number[];
   }): {
-    levelsToRemove: AccessGroupLevelEntity[];
+    levelsToRemove: ExistingLevel[];
     levelsToCreate: AccessGroupLevelEntity[];
   } {
     const isSameLevel = ({
@@ -122,29 +136,24 @@ export class AccessGroupLevelsService {
 
   // Access groups of a user always start at the highest level without skipping levels,
   // so only users with an access group at a level that is moved or removed are affected
-  private async throwIfChangedLevelsAreAssignedToUsers({
+  private async throwIfLevelsAreAssignedToUsers({
     programId,
-    newLevelNames,
+    levels,
   }: {
     programId: number;
-    newLevelNames: string[];
+    levels: {
+      id: number;
+      programRegistrationAttribute: { name: string };
+    }[];
   }): Promise<void> {
-    const currentLevels =
-      await this.accessGroupLevelRepository.getOrderedAttributesByProgramId({
-        programId,
-      });
-    const changedLevels = currentLevels.filter(
-      ({ name }, index) => newLevelNames[index] !== name,
-    );
-
     const assignedLevelIds =
       await this.assignmentAccessGroupRepository.getAssignedAccessGroupLevelIds(
-        { accessGroupLevelIds: changedLevels.map(({ id }) => id) },
+        { accessGroupLevelIds: levels.map(({ id }) => id) },
       );
-    for (const { id, name } of changedLevels) {
+    for (const { id, programRegistrationAttribute } of levels) {
       if (assignedLevelIds.has(id)) {
         throw new HttpException(
-          `Access group level '${name}' cannot be moved or removed because it is assigned to users in program ${programId}. Remove this access group from the users first.`,
+          `Access group level '${programRegistrationAttribute.name}' cannot be moved or removed because it is assigned to users in program ${programId}. Remove this access group from the users first.`,
           HttpStatus.BAD_REQUEST,
         );
       }

@@ -76,12 +76,20 @@ describe('AccessGroupLevelsService', () => {
   // The level id is derived from the attribute id, so the tests can refer to levels by their attribute
   const toLevelId = (attributeId: number): number => attributeId + 100;
 
-  const createLevelAttribute = ({ id, name }: { id: number; name: string }) => ({
-    id: toLevelId(id),
-    programRegistrationAttributeId: id,
-    name,
-    optionValues: [],
-  });
+  const createExistingLevels = ({
+    attributes,
+  }: {
+    attributes: { id: number; name: string }[];
+  }): AccessGroupLevelEntity[] =>
+    attributes.map((attribute, level) => {
+      const entity = createAccessGroupLevel({
+        id: toLevelId(attribute.id),
+        level,
+        programRegistrationAttributeId: attribute.id,
+      });
+      entity.programRegistrationAttribute = createAttributeEntity(attribute);
+      return entity;
+    });
 
   beforeEach(async () => {
     transactionManager = { remove: jest.fn(), save: jest.fn() };
@@ -264,13 +272,16 @@ describe('AccessGroupLevelsService', () => {
       });
     });
 
-    it('should throw an error naming the level when a level that is assigned to users is replaced', async () => {
+    it.each([
+      { change: 'replaced', selectedNames: ['region', 'ward'] },
+      { change: 'removed', selectedNames: ['region'] },
+      { change: 'cleared', selectedNames: [] },
+    ])('should throw an error naming the assigned level when it is $change', async ({ selectedNames }) => {
       // Arrange
-      accessGroupLevelRepository.getOrderedAttributesByProgramId.mockResolvedValue(
-        [
-          createLevelAttribute(regionAttribute),
-          createLevelAttribute(districtAttribute),
-        ],
+      accessGroupLevelRepository.find.mockResolvedValue(
+        createExistingLevels({
+          attributes: [regionAttribute, districtAttribute],
+        }),
       );
       assignmentAccessGroupRepository.getAssignedAccessGroupLevelIds.mockResolvedValue(
         new Set([toLevelId(districtAttribute.id)]),
@@ -285,25 +296,21 @@ describe('AccessGroupLevelsService', () => {
         service.updateAccessGroupLevels({
           programId,
           activeRegistrationAttributes,
-          accessGroupRegistrationAttributeNames: ['region', 'ward'],
+          accessGroupRegistrationAttributeNames: selectedNames,
         }),
       ).rejects.toThrow(
         `Access group level 'district' cannot be moved or removed because it is assigned to users in program ${programId}. Remove this access group from the users first.`,
       );
-      expect(
-        assignmentAccessGroupRepository.getAssignedAccessGroupLevelIds,
-      ).toHaveBeenCalledWith({
-        accessGroupLevelIds: [toLevelId(districtAttribute.id)],
-      });
+      expect(transactionManager.remove).not.toHaveBeenCalled();
+      expect(transactionManager.save).not.toHaveBeenCalled();
     });
 
     it('should throw an error when levels that are assigned to users are reordered', async () => {
       // Arrange
-      accessGroupLevelRepository.getOrderedAttributesByProgramId.mockResolvedValue(
-        [
-          createLevelAttribute(regionAttribute),
-          createLevelAttribute(districtAttribute),
-        ],
+      accessGroupLevelRepository.find.mockResolvedValue(
+        createExistingLevels({
+          attributes: [regionAttribute, districtAttribute],
+        }),
       );
       assignmentAccessGroupRepository.getAssignedAccessGroupLevelIds.mockResolvedValue(
         new Set([toLevelId(regionAttribute.id)]),
@@ -321,24 +328,23 @@ describe('AccessGroupLevelsService', () => {
           accessGroupRegistrationAttributeNames: ['district', 'region'],
         }),
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
-      expect(
-        assignmentAccessGroupRepository.getAssignedAccessGroupLevelIds,
-      ).toHaveBeenCalledWith({
-        accessGroupLevelIds: [
-          toLevelId(regionAttribute.id),
-          toLevelId(districtAttribute.id),
-        ],
-      });
+      expect(transactionManager.remove).not.toHaveBeenCalled();
+      expect(transactionManager.save).not.toHaveBeenCalled();
     });
 
     it('should allow removing a lower level that is not assigned to users while a higher level is', async () => {
       // Arrange
-      accessGroupLevelRepository.getOrderedAttributesByProgramId.mockResolvedValue(
-        [
-          createLevelAttribute(regionAttribute),
-          createLevelAttribute(districtAttribute),
-          createLevelAttribute(wardAttribute),
-        ],
+      const existingLevels = createExistingLevels({
+        attributes: [regionAttribute, districtAttribute, wardAttribute],
+      });
+      accessGroupLevelRepository.find.mockResolvedValue(existingLevels);
+      assignmentAccessGroupRepository.getAssignedAccessGroupLevelIds.mockImplementation(
+        async ({ accessGroupLevelIds }: { accessGroupLevelIds: number[] }) =>
+          new Set(
+            accessGroupLevelIds.filter(
+              (id) => id === toLevelId(regionAttribute.id),
+            ),
+          ),
       );
       const activeRegistrationAttributes = [
         createAttributeEntity(regionAttribute),
@@ -353,25 +359,18 @@ describe('AccessGroupLevelsService', () => {
       });
 
       // Assert
-      expect(
-        assignmentAccessGroupRepository.getAssignedAccessGroupLevelIds,
-      ).toHaveBeenCalledWith({
-        accessGroupLevelIds: [toLevelId(wardAttribute.id)],
-      });
-      expect(transactionManager.save).toHaveBeenCalledWith([
-        { programId, programRegistrationAttributeId: regionAttribute.id, level: 0 },
-        {
-          programId,
-          programRegistrationAttributeId: districtAttribute.id,
-          level: 1,
-        },
-      ]);
+      expect(transactionManager.remove).toHaveBeenCalledWith([existingLevels[2]]);
+      expect(transactionManager.save).toHaveBeenCalledWith([]);
     });
 
     it('should allow adding a lower level while the existing levels are assigned to users', async () => {
       // Arrange
-      accessGroupLevelRepository.getOrderedAttributesByProgramId.mockResolvedValue(
-        [createLevelAttribute(regionAttribute)],
+      accessGroupLevelRepository.find.mockResolvedValue(
+        createExistingLevels({ attributes: [regionAttribute] }),
+      );
+      assignmentAccessGroupRepository.getAssignedAccessGroupLevelIds.mockImplementation(
+        async ({ accessGroupLevelIds }: { accessGroupLevelIds: number[] }) =>
+          new Set(accessGroupLevelIds),
       );
       const activeRegistrationAttributes = [
         createAttributeEntity(regionAttribute),
@@ -386,11 +385,8 @@ describe('AccessGroupLevelsService', () => {
       });
 
       // Assert
-      expect(
-        assignmentAccessGroupRepository.getAssignedAccessGroupLevelIds,
-      ).toHaveBeenCalledWith({ accessGroupLevelIds: [] });
+      expect(transactionManager.remove).toHaveBeenCalledWith([]);
       expect(transactionManager.save).toHaveBeenCalledWith([
-        { programId, programRegistrationAttributeId: regionAttribute.id, level: 0 },
         {
           programId,
           programRegistrationAttributeId: districtAttribute.id,
