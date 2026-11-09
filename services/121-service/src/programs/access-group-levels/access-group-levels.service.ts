@@ -1,6 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { DataSource, Equal } from 'typeorm';
 
+import { AccessGroupLevelEntity } from '@121-service/src/programs/access-group-levels/access-group-level.entity';
 import { AccessGroupLevelRepository } from '@121-service/src/programs/access-group-levels/access-group-level.repository';
+import { MAX_ACCESS_GROUP_LEVELS } from '@121-service/src/programs/access-group-levels/const/max-access-group-levels.const';
 import { AccessGroupAttributeUpdate } from '@121-service/src/programs/access-group-levels/interfaces/access-group-attribute-update.interface';
 import { AccessGroupRegistrationAttribute } from '@121-service/src/programs/access-group-levels/interfaces/access-group-registration-attribute.interface';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -8,11 +11,10 @@ import { RegistrationAttributeDataRepository } from '@121-service/src/registrati
 
 @Injectable()
 export class AccessGroupLevelsService {
-  private static readonly MAX_ACCESS_GROUP_LEVELS = 3;
-
   public constructor(
     private readonly accessGroupLevelRepository: AccessGroupLevelRepository,
     private readonly registrationAttributeDataRepository: RegistrationAttributeDataRepository,
+    private readonly dataSource: DataSource,
   ) {}
 
   public async updateAccessGroupLevels({
@@ -36,15 +38,78 @@ export class AccessGroupLevelsService {
         attribute.id,
       ]),
     );
+    const orderedProgramRegistrationAttributeIds = validatedNames.map(
+      (name) => attributeIdByName.get(name) as number,
+    );
 
-    await this.accessGroupLevelRepository.replaceForProgram({
+    const existingLevels = await this.accessGroupLevelRepository.find({
+      where: { programId: Equal(programId) },
+    });
+    const { levelsToRemove, levelsToCreate } = this.diffAccessGroupLevels({
       programId,
-      orderedProgramRegistrationAttributeIds: validatedNames.map(
-        (name) => attributeIdByName.get(name) as number,
-      ),
+      existingLevels,
+      orderedProgramRegistrationAttributeIds,
+    });
+
+    await this.dataSource.transaction(async (manager) => {
+      await manager.remove(levelsToRemove);
+      await manager.save(levelsToCreate);
     });
 
     return validatedNames;
+  }
+
+  // A level is identified by its attribute and its position. Unchanged levels keep their row (and id), so assignments referencing them remain valid.
+  private diffAccessGroupLevels({
+    programId,
+    existingLevels,
+    orderedProgramRegistrationAttributeIds,
+  }: {
+    programId: number;
+    existingLevels: AccessGroupLevelEntity[];
+    orderedProgramRegistrationAttributeIds: number[];
+  }): {
+    levelsToRemove: AccessGroupLevelEntity[];
+    levelsToCreate: AccessGroupLevelEntity[];
+  } {
+    const isSameLevel = ({
+      existing,
+      target,
+    }: {
+      existing: Pick<
+        AccessGroupLevelEntity,
+        'level' | 'programRegistrationAttributeId'
+      >;
+      target: Pick<
+        AccessGroupLevelEntity,
+        'level' | 'programRegistrationAttributeId'
+      >;
+    }): boolean =>
+      existing.level === target.level &&
+      existing.programRegistrationAttributeId ===
+        target.programRegistrationAttributeId;
+
+    const targetLevels = orderedProgramRegistrationAttributeIds.map(
+      (programRegistrationAttributeId, level) => ({
+        level,
+        programRegistrationAttributeId,
+      }),
+    );
+
+    const levelsToRemove = existingLevels.filter(
+      (existing) =>
+        !targetLevels.some((target) => isSameLevel({ existing, target })),
+    );
+    const levelsToCreate = targetLevels
+      .filter(
+        (target) =>
+          !existingLevels.some((existing) => isSameLevel({ existing, target })),
+      )
+      .map((target) =>
+        this.accessGroupLevelRepository.create({ programId, ...target }),
+      );
+
+    return { levelsToRemove, levelsToCreate };
   }
 
   public async getAccessGroupRegistrationAttributeNames({
@@ -83,12 +148,9 @@ export class AccessGroupLevelsService {
       );
     }
 
-    if (
-      selectedAttributeNames.length >
-      AccessGroupLevelsService.MAX_ACCESS_GROUP_LEVELS
-    ) {
+    if (selectedAttributeNames.length > MAX_ACCESS_GROUP_LEVELS) {
       throw new HttpException(
-        `Access group calculation cannot have more than ${AccessGroupLevelsService.MAX_ACCESS_GROUP_LEVELS} attributes`,
+        `Access group calculation cannot have more than ${MAX_ACCESS_GROUP_LEVELS} attributes`,
         HttpStatus.BAD_REQUEST,
       );
     }

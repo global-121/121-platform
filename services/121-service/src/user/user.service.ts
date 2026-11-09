@@ -5,11 +5,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
-import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
+import { Equal, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/emails.const';
 import { env } from '@121-service/src/env';
+import { AssignedAccessGroupResult } from '@121-service/src/programs/access-group-levels/interfaces/assigned-access-group-result.interface';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
@@ -50,6 +51,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
+import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { OTP_EXPIRATION_MINUTES } from '@121-service/src/user/user-otp/user-otp.const';
 import { UserOtpService } from '@121-service/src/user/user-otp/user-otp.service';
@@ -70,6 +72,7 @@ export class UserService {
   public constructor(
     @Inject(REQUEST) private readonly request: Request,
     private readonly userEmailsService: UserEmailsService,
+    private readonly userAccessGroupAssignmentsService: UserAccessGroupAssignmentsService,
     private readonly assignmentRepository: ProgramAidworkerAssignmentRepository,
     private readonly userOtpService: UserOtpService,
     private readonly azureLogService: AzureLogService,
@@ -334,15 +337,32 @@ export class UserService {
   public async getProgramScopeIdsUserHasPermission(
     userId: number,
     permission: PermissionEnum,
-  ): Promise<{ programId: number; scope: string }[]> {
+  ): Promise<
+    {
+      programId: number;
+      scope: string;
+      accessGroups: AssignedAccessGroupResult[];
+    }[]
+  > {
     const user = await this.findUserProgramAssignmentsOrThrow(userId);
-    const programIdScopeObjects: { programId: number; scope: string }[] = [];
+    const programIdScopeObjects: {
+      programId: number;
+      scope: string;
+      accessGroups: AssignedAccessGroupResult[];
+    }[] = [];
     for (const assignment of user.programAssignments) {
       for (const role of assignment.roles) {
         if (role.permissions.map((p) => p.name).includes(permission)) {
           const programIdScopeObject = {
             programId: assignment.programId,
             scope: assignment.scope,
+            accessGroups: assignment.accessGroups.map(
+              ({ accessGroupLevel, value }) => ({
+                programRegistrationAttributeId:
+                  accessGroupLevel.programRegistrationAttributeId,
+                value,
+              }),
+            ),
           };
 
           programIdScopeObjects.push(programIdScopeObject);
@@ -362,6 +382,7 @@ export class UserService {
         programAssignments: {
           program: true,
           roles: { permissions: true },
+          accessGroups: { accessGroupLevel: true },
         },
       },
     });
@@ -597,6 +618,14 @@ export class UserService {
     userId: number,
     assignAidworkerToProgram: CreateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
+    const accessGroups =
+      await this.userAccessGroupAssignmentsService.getAccessGroupsWithLevelIdsOrThrow(
+        {
+          programId,
+          accessGroups: assignAidworkerToProgram.accessGroups,
+        },
+      );
+
     const user = await this.userRepository.findOne({
       where: { id: Equal(userId) },
       relations: {
@@ -646,6 +675,10 @@ export class UserService {
         programAssignment.roles = newRoles;
         programAssignment.scope = scope;
         await this.assignmentRepository.save(programAssignment);
+        await this.userAccessGroupAssignmentsService.replaceAccessGroups({
+          programAidworkerAssignmentId: programAssignment.id,
+          accessGroups,
+        });
         response.roles = programAssignment.roles.map((role) =>
           this.getUserRoleResponse(role),
         );
@@ -654,11 +687,15 @@ export class UserService {
     }
 
     // if not assigned to program: create new assignment
-    await this.assignmentRepository.save({
+    const newAssignment = await this.assignmentRepository.save({
       user: { id: user.id },
       program: { id: program.id },
       roles: newRoles,
       scope,
+    });
+    await this.userAccessGroupAssignmentsService.replaceAccessGroups({
+      programAidworkerAssignmentId: newAssignment.id,
+      accessGroups,
     });
     response.roles = newRoles.map((role) => this.getUserRoleResponse(role));
     return response;
@@ -807,7 +844,7 @@ export class UserService {
     const user = await this.userRepository.findOne({
       where: { id: Equal(id) },
       relations: {
-        programAssignments: { roles: true },
+        programAssignments: { roles: true, accessGroups: true },
         registrations: true,
       },
     });
@@ -820,13 +857,37 @@ export class UserService {
     return user;
   }
 
-  public async findByUsernameOrThrow(
-    username: string,
-    relations?: FindOptionsRelations<UserEntity>,
-  ): Promise<UserEntity> {
+  public async findUserAccessByUsernameOrThrow({
+    username,
+  }: {
+    username: string;
+  }) {
     const user = await this.userRepository.findOne({
       where: { username: Equal(username) },
-      relations,
+      relations: {
+        programAssignments: { accessGroups: { accessGroupLevel: true } },
+      },
+      select: {
+        id: true,
+        username: true,
+        admin: true,
+        isOrganizationAdmin: true,
+        isEntraUser: true,
+        lastLogin: true,
+        programAssignments: {
+          id: true,
+          programId: true,
+          scope: true,
+          accessGroups: {
+            id: true,
+            value: true,
+            accessGroupLevel: {
+              id: true,
+              programRegistrationAttributeId: true,
+            },
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -1114,6 +1175,14 @@ export class UserService {
     userId: number,
     assignAidworkerToProgram: UpdateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
+    const accessGroups =
+      await this.userAccessGroupAssignmentsService.getAccessGroupsWithLevelIdsOrThrow(
+        {
+          programId,
+          accessGroups: assignAidworkerToProgram.accessGroups,
+        },
+      );
+
     const user = await this.userRepository.findOne({
       where: { id: Equal(userId) },
       relations: {
@@ -1171,6 +1240,10 @@ export class UserService {
 
         // Save the updated programAssignment
         await this.assignmentRepository.save(programAssignment);
+        await this.userAccessGroupAssignmentsService.replaceAccessGroups({
+          programAidworkerAssignmentId: programAssignment.id,
+          accessGroups,
+        });
 
         return {
           programId,
@@ -1203,7 +1276,10 @@ export class UserService {
     return assignment.scope;
   }
 
-  public getScopeForUser(user: UserEntity, programId: number): string {
+  public getScopeForUser(
+    user: Pick<UserAccess, 'programAssignments'>,
+    programId: number,
+  ): string {
     programId = Number(programId);
     const assignment = user.programAssignments.find(
       (programAssignment) => programAssignment.programId === programId,
@@ -1248,3 +1324,7 @@ export class UserService {
     return crypto.randomBytes(30).toString('base64').slice(0, 25);
   }
 }
+
+export type UserAccess = Awaited<
+  ReturnType<UserService['findUserAccessByUsernameOrThrow']>
+>;

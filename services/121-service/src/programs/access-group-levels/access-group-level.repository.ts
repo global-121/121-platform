@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { Equal, In, Repository } from 'typeorm';
 
 import { AccessGroupLevelEntity } from '@121-service/src/programs/access-group-levels/access-group-level.entity';
 
@@ -31,31 +31,26 @@ export class AccessGroupLevelRepository extends Repository<AccessGroupLevelEntit
     );
   }
 
-  public async replaceForProgram({
+  public async getIdsByAttributeNames({
     programId,
-    orderedProgramRegistrationAttributeIds,
+    attributeNames,
   }: {
     programId: number;
-    orderedProgramRegistrationAttributeIds: number[];
-  }): Promise<void> {
-    await this.manager.transaction(async (transactionalEntityManager) => {
-      await transactionalEntityManager.delete(AccessGroupLevelEntity, {
+    attributeNames: string[];
+  }): Promise<Map<string, number>> {
+    const accessGroupLevels = await this.find({
+      where: {
         programId: Equal(programId),
-      });
-
-      if (orderedProgramRegistrationAttributeIds.length === 0) {
-        return;
-      }
-
-      const accessGroupLevels = orderedProgramRegistrationAttributeIds.map(
-        (programRegistrationAttributeId, level) =>
-          transactionalEntityManager.create(AccessGroupLevelEntity, {
-            programId,
-            programRegistrationAttributeId,
-            level,
-          }),
-      );
-      await transactionalEntityManager.save(accessGroupLevels);
+        programRegistrationAttribute: { name: In(attributeNames) },
+      },
+      relations: { programRegistrationAttribute: true },
     });
+
+    return new Map(
+      accessGroupLevels.map((accessGroupLevel) => [
+        accessGroupLevel.programRegistrationAttribute.name,
+        accessGroupLevel.id,
+      ]),
+    );
   }
 }

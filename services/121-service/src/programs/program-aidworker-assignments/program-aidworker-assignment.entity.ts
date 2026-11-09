@@ -5,12 +5,14 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   Relation,
   Unique,
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramAidworkerAssignmentAccessGroupEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment-access-group.entity';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
@@ -40,6 +42,12 @@ export class ProgramAidworkerAssignmentEntity extends Base121Entity {
 
   @Column({ nullable: false, default: '' })
   public scope: string;
+
+  @OneToMany(
+    () => ProgramAidworkerAssignmentAccessGroupEntity,
+    (accessGroup) => accessGroup.programAidworkerAssignment,
+  )
+  public accessGroups: Relation<ProgramAidworkerAssignmentAccessGroupEntity[]>;
 
   @ManyToOne(
     () => ProgramApprovalThresholdEntity,

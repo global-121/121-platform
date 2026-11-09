@@ -6,6 +6,7 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
 // Todo make this strongly typed
+// TODO: rename these provider helpers to access groups once we deprecate scope
 export function getScopedRepositoryProviderName(entity: any): string {
   return `ScopedRepository${entity.name}`;
 }

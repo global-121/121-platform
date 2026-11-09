@@ -209,6 +209,7 @@ graph LR
   TransactionsModule-->TransactionEventsModule
   TransactionsModule-->UserModule
   UserEmailsModule-->EmailsModule
+  UserModule-->AccessGroupLevelsModule
   UserModule-->ProgramAidworkerAssignmentsModule
   UserModule-->UserEmailsModule
   UserModule-->UserOtpModule
