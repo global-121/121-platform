@@ -14,7 +14,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
     <span class="inline-flex flex-wrap items-center gap-1">
       @for (label of labels(); track $index) {
         @if (!$first) {
-          <bdi dir="ltr">{{ separator() }}</bdi>
+          <bdi [dir]="direction()">{{ separator() }}</bdi>
         }
         <bdi>{{ label }}</bdi>
       }
@@ -25,5 +25,6 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
 export class AccessGroupPathComponent {
   readonly labels = input.required<string[]>();
   private readonly rtlHelper = inject(RtlHelperService);
-  readonly separator = computed(() => (this.rtlHelper.isRtl() ? '<' : '>'));
+  readonly direction = computed(() => (this.rtlHelper.isRtl() ? 'rtl' : 'ltr'));
+  readonly separator = computed(() => (this.direction() === 'rtl' ? '<' : '>'));
 }

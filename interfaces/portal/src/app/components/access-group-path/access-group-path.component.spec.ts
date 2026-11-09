@@ -36,11 +36,11 @@ describe('Access group path', () => {
       // Assert
       expect(
         Array.from(
-          element.querySelectorAll('bdi:not([dir="ltr"])'),
+          element.querySelectorAll('bdi:not([dir])'),
           (label) => label.textContent,
         ),
       ).toEqual(labels);
-      expect(element.querySelectorAll('bdi[dir="ltr"]')).toHaveLength(
+      expect(element.querySelectorAll('bdi[dir]')).toHaveLength(
         Math.max(0, labels.length - 1),
       );
     },
@@ -49,19 +49,22 @@ describe('Access group path', () => {
   it.each([
     { direction: 'ltr', separator: '>' },
     { direction: 'rtl', separator: '<' },
-  ])('uses the correct separator in $direction', ({ direction, separator }) => {
-    // Arrange
-    document.documentElement.dir = direction;
-    const fixture = TestBed.createComponent(AccessGroupPathComponent);
-    fixture.componentRef.setInput('labels', ['North-Holland', 'Haarlem']);
+  ])(
+    'uses the correct separator direction in $direction mode',
+    ({ direction, separator }) => {
+      // Arrange
+      document.documentElement.dir = direction;
+      const fixture = TestBed.createComponent(AccessGroupPathComponent);
+      fixture.componentRef.setInput('labels', ['North-Holland', 'Haarlem']);
 
-    // Act
-    fixture.detectChanges();
-    const element = fixture.nativeElement as HTMLElement;
+      // Act
+      fixture.detectChanges();
+      const element = fixture.nativeElement as HTMLElement;
 
-    // Assert
-    expect(element.querySelector('bdi[dir="ltr"]')?.textContent).toBe(
-      separator,
-    );
-  });
+      // Assert
+      const renderedSeparator = element.querySelector('bdi[dir]');
+      expect(renderedSeparator?.getAttribute('dir')).toBe(direction);
+      expect(renderedSeparator?.textContent).toBe(separator);
+    },
+  );
 });
