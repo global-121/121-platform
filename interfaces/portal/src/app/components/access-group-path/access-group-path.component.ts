@@ -25,6 +25,6 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
 export class AccessGroupPathComponent {
   readonly labels = input.required<string[]>();
   private readonly rtlHelper = inject(RtlHelperService);
-  readonly direction = computed(() => (this.rtlHelper.isRtl() ? 'rtl' : 'ltr'));
+  readonly direction = this.rtlHelper.direction;
   readonly separator = computed(() => (this.direction() === 'rtl' ? '<' : '>'));
 }
