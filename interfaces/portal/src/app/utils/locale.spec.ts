@@ -22,7 +22,6 @@ describe('getLocaleForInitialization', () => {
       getLocaleForInitialization({
         defaultLocale: 'nonsense',
         urlLocale: 'en-GB',
-        isDevMode: false,
       });
     }).toThrow('Invalid default locale "nonsense" found in environment.');
   });
@@ -32,7 +31,6 @@ describe('getLocaleForInitialization', () => {
       getLocaleForInitialization({
         defaultLocale: 'en-GB',
         urlLocale: 'nonsense',
-        isDevMode: false,
       });
     }).toThrow('Invalid locale "nonsense" found in URL:');
   });
@@ -55,7 +53,6 @@ describe('getLocaleForInitialization', () => {
     const localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
       urlLocale: UILanguage.nl,
-      isDevMode: false,
     });
 
     expect(localeInfo).toEqual({ locale: Locale.nl });
@@ -67,7 +64,6 @@ describe('getLocaleForInitialization', () => {
     let localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
       urlLocale: 'en-GB',
-      isDevMode: false,
     });
 
     expect(localeInfo).toEqual({ locale: Locale.en });
@@ -75,7 +71,6 @@ describe('getLocaleForInitialization', () => {
     localeInfo = getLocaleForInitialization({
       defaultLocale: UILanguage.nl,
       urlLocale: UILanguage.nl,
-      isDevMode: false,
     });
 
     expect(localeInfo).toEqual({ locale: Locale.nl });
@@ -87,7 +82,6 @@ describe('getLocaleForInitialization', () => {
     const localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
       urlLocale: 'en-GB',
-      isDevMode: false,
     });
 
     expect(localeInfo).toEqual({
@@ -102,7 +96,6 @@ describe('getLocaleForInitialization', () => {
     const localeInfo = getLocaleForInitialization({
       defaultLocale: UILanguage.nl,
       urlLocale: 'en-GB',
-      isDevMode: false,
     });
 
     expect(localeInfo).toEqual({

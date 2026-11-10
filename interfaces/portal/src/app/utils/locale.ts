@@ -73,11 +73,11 @@ const isValidLocale = (locale: string): locale is Locale =>
 export const getLocaleForInitialization = ({
   defaultLocale,
   urlLocale,
-  isDevMode,
+  isDevMode = false,
 }: {
   defaultLocale: string;
   urlLocale: string;
-  isDevMode: boolean;
+  isDevMode?: boolean;
 }):
   | {
       locale: Locale;
