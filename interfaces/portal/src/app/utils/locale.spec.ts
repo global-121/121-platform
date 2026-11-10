@@ -36,14 +36,17 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should always use the default locale in dev mode', () => {
+    // Arrange
     getItemSpy.mockReturnValue(UILanguage.nl);
 
+    // Act
     const localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
       urlLocale: 'nonsense',
       isDevMode: true,
     });
 
+    // Assert
     expect(localeInfo).toEqual({ locale: Locale.en });
   });
 
