@@ -92,6 +92,11 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
   public readonly koboLabel?: RegistrationPreferredLanguageTranslation | null;
 
   @ApiProperty({
+    example: RegistrationAttributeTypes.numeric,
+  })
+  public readonly koboInferredType?: RegistrationAttributeTypes | null;
+
+  @ApiProperty({
     example: RegistrationAttributeTypes.text,
   })
   @IsString()

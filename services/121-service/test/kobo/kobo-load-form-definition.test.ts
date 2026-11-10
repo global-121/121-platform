@@ -128,10 +128,14 @@ describe('Import a Kobo form definition', () => {
     const expectedAttributeNamesAfterKobo = [
       ...expectedAttributeNamesBeforeKobo,
       'How_are_you_today_select_one',
+      'adults',
+      'children',
       'What_is_2_2_number',
       'driversLicensePhoto',
       'idPhoto',
       'photo',
+      'calculatedQuestionNumeric',
+      'calculatedQuestionText',
     ];
 
     expect(linkKoboResponse.body).toMatchInlineSnapshot(`
@@ -173,15 +177,16 @@ describe('Import a Kobo form definition', () => {
     expect(firstAttributeSnapshot).toMatchInlineSnapshot(`
      {
        "isRequired": false,
+       "koboInferredType": "numeric",
        "koboLabel": {
-         "en": "Upload your driver's license",
-         "nl": "Upload je rijbewijs",
+         "en": "Adults",
+         "nl": "Volwassenen",
        },
        "label": null,
-       "name": "driversLicensePhoto",
+       "name": "adults",
        "options": [],
        "showInPeopleAffectedTable": true,
-       "type": "kobo-image",
+       "type": "numeric",
      }
     `);
   });
