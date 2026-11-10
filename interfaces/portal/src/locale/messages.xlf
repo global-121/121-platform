@@ -444,6 +444,9 @@
       <trans-unit id="2701527640285744987" datatype="html">
         <source>Rename payment</source>
       </trans-unit>
+      <trans-unit id="2710194014504963782" datatype="html">
+        <source>Level 2:</source>
+      </trans-unit>
       <trans-unit id="2717935367210661025" datatype="html">
         <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>). Note: <x equiv-text="event.attributes.note" id="PH_3"/></source>
       </trans-unit>
@@ -1343,6 +1346,9 @@
       <trans-unit id="6041115344061899387" datatype="html">
         <source>Rename</source>
       </trans-unit>
+      <trans-unit id="604620400436672622" datatype="html">
+        <source>Level 1:</source>
+      </trans-unit>
       <trans-unit id="6057281094654962766" datatype="html">
         <source>Validate</source>
       </trans-unit>
@@ -1409,6 +1415,9 @@
       </trans-unit>
       <trans-unit id="6381578200008167206" datatype="html">
         <source>Include</source>
+      </trans-unit>
+      <trans-unit id="6392054863318745845" datatype="html">
+        <source>Level 3:</source>
       </trans-unit>
       <trans-unit id="6400478456082901749" datatype="html">
         <source>Add approval step</source>

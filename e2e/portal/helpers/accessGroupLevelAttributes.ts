@@ -59,6 +59,24 @@ export const accessGroupLevelAttributes: CreateProgramRegistrationAttributeDto[]
       type: RegistrationAttributeTypes.dropdown,
       isRequired: false,
     },
+    {
+      options: [
+        { option: '1', label: { en: '1-50' } },
+        { option: '51', label: { en: '51-100' } },
+        { option: '101', label: { en: '101-150' } },
+        { option: '151', label: { en: '151-200' } },
+      ],
+      showInPeopleAffectedTable: true,
+      editableInPortal: true,
+      includeInTransactionExport: true,
+      duplicateCheck: false,
+      name: 'housenr',
+      label: {
+        en: 'House number',
+      },
+      type: RegistrationAttributeTypes.dropdown,
+      isRequired: false,
+    },
   ];
 
 export const accessGroupLevelAttributeNames = accessGroupLevelAttributes.map(
