@@ -62,7 +62,11 @@ export class KoboCalculationTypeInferenceService {
     }
 
     // 6. Arithmetic operators always return a number in XPath
-    if (ARITHMETIC_OPERATOR_PATTERN.test(topLevel)) {
+    if (
+      ARITHMETIC_OPERATOR_PATTERN.test(
+        topLevel.replace(WILDCARD_NODE_TEST_PATTERN, ''),
+      )
+    ) {
       return RegistrationAttributeTypes.numeric;
     }
 
@@ -97,20 +101,35 @@ export class KoboCalculationTypeInferenceService {
   }: {
     conditional: Conditional;
   }): boolean {
-    return [conditional.thenBranch, conditional.elseBranch].every((branch) =>
-      this.isNumericBranch({ branch, condition: conditional.condition }),
+    return (
+      this.isNumericBranch({
+        branch: conditional.thenBranch,
+        condition: conditional.condition,
+        isReferenceProvenNumeric: true,
+      }) &&
+      this.isNumericBranch({
+        branch: conditional.elseBranch,
+        condition: conditional.condition,
+        isReferenceProvenNumeric: false,
+      })
     );
   }
 
+  // Only the then-branch is reached with a reference that passed the numeric comparison
   private isNumericBranch({
     branch,
     condition,
+    isReferenceProvenNumeric,
   }: {
     branch: string;
     condition: string;
+    isReferenceProvenNumeric: boolean;
   }): boolean {
     if (REFERENCE_PATTERN.test(branch)) {
-      return this.isComparedToNumber({ reference: branch, condition });
+      return (
+        isReferenceProvenNumeric &&
+        this.isWholeConditionComparedToNumber({ reference: branch, condition })
+      );
     }
 
     return (
@@ -119,8 +138,8 @@ export class KoboCalculationTypeInferenceService {
     );
   }
 
-  // A reference has no known type, unless the condition orders it against a number (e.g. ${a} > 0)
-  private isComparedToNumber({
+  // A reference has no known type, unless the whole condition orders it against a number (e.g. ${a} > 0)
+  private isWholeConditionComparedToNumber({
     reference,
     condition,
   }: {
@@ -129,9 +148,11 @@ export class KoboCalculationTypeInferenceService {
   }): boolean {
     const escapedReference = reference.replace(/[$.*+?^{}()|[\]\\]/g, '\\$&');
     const comparedToNumberPattern = new RegExp(
-      `${escapedReference}\\s*(<=|>=|<|>)\\s*-?[\\d.]|[\\d.]\\s*(<=|>=|<|>)\\s*${escapedReference}`,
+      `^(${escapedReference}\\s*(<=|>=|<|>)\\s*-?(\\d+\\.?\\d*|\\.\\d+)|-?(\\d+\\.?\\d*|\\.\\d+)\\s*(<=|>=|<|>)\\s*${escapedReference})$`,
     );
-    return comparedToNumberPattern.test(condition);
+    return comparedToNumberPattern.test(
+      this.removeEnclosingParentheses({ formula: condition }),
+    );
   }
 
   private splitTopLevelArguments({ formula }: { formula: string }): string[] {
@@ -316,6 +337,9 @@ const REFERENCE_PATTERN = /^\$\{[^}]+\}$/;
 const BOOLEAN_OPERATOR_PATTERN = /[<>=]|\b(and|or)\b/i;
 
 const ARITHMETIC_OPERATOR_PATTERN = /\*|\+|\s-\s|\b(div|mod)\b/i;
+
+// `*` directly after a path separator, attribute or axis selects nodes instead of multiplying
+const WILDCARD_NODE_TEST_PATTERN = /(\/|@|::)\*/g;
 
 const toFunctionCallPattern = ({
   functionNames,
