@@ -328,12 +328,12 @@ export class ProgramRegistrationAttributesService {
     const userConfiguredType = existingAttribute.type;
 
     const koboDefinedThisAttributeBefore =
-      existingAttribute.koboType !== null ||
+      existingAttribute.koboInferredType !== null ||
       existingAttribute.koboLabel !== null;
 
     Object.assign(existingAttribute, update);
 
-    // The 121 type leads over koboType: a type changed by a user survives a Kobo
+    // The 121 type leads over koboInferredType: a type changed by a user survives a Kobo
     // refresh. An attribute Kobo never defined before (e.g. the phoneNumber
     // fallback added for Twilio) takes Kobo's type instead.
     if (koboDefinedThisAttributeBefore) {
@@ -453,7 +453,8 @@ export class ProgramRegistrationAttributesService {
     programRegistrationAttribute.label = attribute.label ?? null;
     programRegistrationAttribute.koboLabel = attribute.koboLabel ?? null;
     programRegistrationAttribute.type = attribute.type;
-    programRegistrationAttribute.koboType = attribute.koboType ?? null;
+    programRegistrationAttribute.koboInferredType =
+      attribute.koboInferredType ?? null;
     programRegistrationAttribute.options = attribute.options ?? null;
     programRegistrationAttribute.scoring = attribute.scoring ?? {};
     programRegistrationAttribute.pattern = attribute.pattern ?? null;

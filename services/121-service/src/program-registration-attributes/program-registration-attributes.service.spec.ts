@@ -274,7 +274,7 @@ describe('ProgramRegistrationAttributesService', () => {
         name: 'firstName',
         type: RegistrationAttributeTypes.numeric,
         label: { en: 'Old Label' },
-        koboType: KoboSurveyItemType.integer,
+        koboInferredType: KoboSurveyItemType.integer,
       });
 
       const updateFromKobo = createAttributeDto({
@@ -302,9 +302,11 @@ describe('ProgramRegistrationAttributesService', () => {
       // Assert
       const savedEntities = saveSpy.mock.calls[0][0];
       expect(savedEntities).toHaveLength(1);
-      // Proves the existing koboType is preserved even if the type from Kobo differs
+      // Proves the existing koboInferredType is preserved even if the type from Kobo differs
       expect(savedEntities[0].type).toBe(RegistrationAttributeTypes.numeric);
-      expect(savedEntities[0].koboType).toBe(KoboSurveyItemType.integer);
+      expect(savedEntities[0].koboInferredType).toBe(
+        KoboSurveyItemType.integer,
+      );
       // Proves the refresh still applied the other changes
       expect(savedEntities[0].label).toEqual({ en: 'Updated First Name' });
     });
@@ -316,14 +318,14 @@ describe('ProgramRegistrationAttributesService', () => {
         id: 10,
         name: DefaultRegistrationDataAttributeNames.phoneNumber,
         type: RegistrationAttributeTypes.tel,
-        koboType: null,
+        koboInferredType: null,
         koboLabel: null,
       });
 
       const updateFromKobo: ProgramRegistrationAttribute = {
         name: DefaultRegistrationDataAttributeNames.phoneNumber,
         type: RegistrationAttributeTypes.text,
-        koboType: KoboSurveyItemType.text,
+        koboInferredType: KoboSurveyItemType.text,
         koboLabel: { en: 'Phone number' },
       };
 
@@ -347,24 +349,24 @@ describe('ProgramRegistrationAttributesService', () => {
       const savedEntities = saveSpy.mock.calls[0][0];
       expect(savedEntities).toHaveLength(1);
       expect(savedEntities[0].type).toBe(RegistrationAttributeTypes.text);
-      expect(savedEntities[0].koboType).toBe(KoboSurveyItemType.text);
+      expect(savedEntities[0].koboInferredType).toBe(KoboSurveyItemType.text);
       expect(savedEntities[0].koboLabel).toEqual({ en: 'Phone number' });
     });
 
-    it('should update koboType and koboLabel from Kobo when an existing attribute is refreshed', async () => {
+    it('should update koboInferredType and koboLabel from Kobo when an existing attribute is refreshed', async () => {
       // Arrange
       const programId = 1;
       const existingEntity = createAttributeEntity({
         id: 10,
         name: 'householdScore',
-        koboType: KoboSurveyItemType.integer,
+        koboInferredType: KoboSurveyItemType.integer,
         koboLabel: { en: 'Old household score' },
       });
 
       const updateFromKobo: ProgramRegistrationAttribute = {
         name: 'householdScore',
         type: RegistrationAttributeTypes.numeric,
-        koboType: KoboSurveyItemType.calculate,
+        koboInferredType: KoboSurveyItemType.calculate,
         koboLabel: { en: 'Household score' },
       };
 
@@ -387,17 +389,19 @@ describe('ProgramRegistrationAttributesService', () => {
       // Assert
       const savedEntities = saveSpy.mock.calls[0][0];
       expect(savedEntities).toHaveLength(1);
-      expect(savedEntities[0].koboType).toBe(KoboSurveyItemType.calculate);
+      expect(savedEntities[0].koboInferredType).toBe(
+        KoboSurveyItemType.calculate,
+      );
       expect(savedEntities[0].koboLabel).toEqual({ en: 'Household score' });
     });
 
-    it('should take type and koboType from Kobo when a new attribute is created', async () => {
+    it('should take type and koboInferredType from Kobo when a new attribute is created', async () => {
       // Arrange
       const programId = 1;
       const newAttributeFromKobo: ProgramRegistrationAttribute = {
         name: 'householdScore',
         type: RegistrationAttributeTypes.numeric,
-        koboType: KoboSurveyItemType.calculate,
+        koboInferredType: KoboSurveyItemType.calculate,
         koboLabel: { en: 'Household score' },
       };
 
@@ -421,10 +425,12 @@ describe('ProgramRegistrationAttributesService', () => {
       const savedEntities = saveSpy.mock.calls[0][0];
       expect(savedEntities).toHaveLength(1);
       expect(savedEntities[0].type).toBe(RegistrationAttributeTypes.numeric);
-      expect(savedEntities[0].koboType).toBe(KoboSurveyItemType.calculate);
+      expect(savedEntities[0].koboInferredType).toBe(
+        KoboSurveyItemType.calculate,
+      );
     });
 
-    it('Should keep the existing type and adopt koboType when a legacy Kobo attribute without koboType is refreshed', async () => {
+    it('Should keep the existing type and adopt koboInferredType when a legacy Kobo attribute without koboInferredType is refreshed', async () => {
       const programId = 1;
 
       // Arrange existing entity and update from Kobo
@@ -433,14 +439,14 @@ describe('ProgramRegistrationAttributesService', () => {
         name: 'firstName',
         type: RegistrationAttributeTypes.numeric,
         koboLabel: { en: 'Old Kobo Label' },
-        koboType: null,
+        koboInferredType: null,
       });
 
       // Act - Prepare the update from Kobo
       const updateFromKobo: ProgramRegistrationAttribute = {
         name: 'firstName',
         type: RegistrationAttributeTypes.text,
-        koboType: KoboSurveyItemType.text,
+        koboInferredType: KoboSurveyItemType.text,
       };
 
       // Arrange the repository to return the existing entity
@@ -461,10 +467,10 @@ describe('ProgramRegistrationAttributesService', () => {
 
       const savedEntities = saveSpy.mock.calls[0][0];
 
-      // Assert that the saved entity has kept the existing type and adopted the koboType from the update
+      // Assert that the saved entity has kept the existing type and adopted the koboInferredType from the update
       expect(savedEntities).toHaveLength(1);
       expect(savedEntities[0].type).toBe(RegistrationAttributeTypes.numeric);
-      expect(savedEntities[0].koboType).toBe(KoboSurveyItemType.text);
+      expect(savedEntities[0].koboInferredType).toBe(KoboSurveyItemType.text);
     });
 
     it('should not remove options missing from the update when the update does include options', async () => {
