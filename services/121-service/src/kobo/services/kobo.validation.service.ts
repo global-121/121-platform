@@ -53,7 +53,6 @@ export class KoboValidationService {
       where: { id: Equal(programId) },
       select: {
         fullnameNamingConvention: true,
-        enableScope: true,
       },
     });
 

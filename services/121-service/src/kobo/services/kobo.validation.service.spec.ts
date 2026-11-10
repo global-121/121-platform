@@ -13,10 +13,7 @@ import { AccessGroupLevelsService } from '@121-service/src/programs/access-group
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
-import {
-  GenericRegistrationAttributes,
-  RegistrationAttributeTypes,
-} from '@121-service/src/registration/enum/registration-attribute.enum';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 jest.mock('@121-service/src/env', () => ({
   env: {
@@ -578,167 +575,6 @@ describe('KoboValidationService', () => {
     });
   });
 
-  describe('scope validation', () => {
-    it('should pass validation when scope is disabled', async () => {
-      // Arrange
-      const mockFspConfigs = [];
-
-      const formDefinitionWithoutScope: KoboFormDefinition = {
-        ...baseFormDefinition,
-        survey: [
-          ...baseSurveyItems,
-          // No scope field present
-        ],
-      };
-
-      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
-        fullnameNamingConvention: [],
-        enableScope: false,
-      });
-      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
-        mockFspConfigs,
-      );
-
-      // Act & Assert
-      await expect(
-        service.validateKoboFormDefinition({
-          formDefinition: formDefinitionWithoutScope,
-          programId,
-        }),
-      ).resolves.not.toThrow();
-    });
-
-    it('should pass validation when scope is enabled and scope item exists with correct type', async () => {
-      // Arrange
-      const mockFspConfigs = [];
-
-      const formDefinitionWithValidScope: KoboFormDefinition = {
-        ...baseFormDefinition,
-        survey: [
-          ...baseSurveyItems,
-          {
-            name: GenericRegistrationAttributes.scope,
-            type: 'text',
-            label: ['Scope'],
-            choices: [],
-          },
-        ],
-      };
-
-      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
-        fullnameNamingConvention: [],
-        enableScope: true,
-      });
-      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
-        mockFspConfigs,
-      );
-
-      // Act & Assert
-      await expect(
-        service.validateKoboFormDefinition({
-          formDefinition: formDefinitionWithValidScope,
-          programId,
-        }),
-      ).resolves.not.toThrow();
-    });
-
-    it('should throw HttpException when scope is enabled but scope item is missing', async () => {
-      // Arrange
-      const mockFspConfigs = [];
-
-      const formDefinitionMissingScope: KoboFormDefinition = {
-        ...baseFormDefinition,
-        survey: [
-          ...baseSurveyItems,
-          // Missing scope field
-        ],
-      };
-
-      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
-        fullnameNamingConvention: [],
-        enableScope: true,
-      });
-      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
-        mockFspConfigs,
-      );
-
-      // Act
-      let error: HttpException | any;
-      try {
-        await service.validateKoboFormDefinition({
-          formDefinition: formDefinitionMissingScope,
-          programId,
-        });
-      } catch (e) {
-        error = e;
-      }
-
-      // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
-      expect(error.response.errors).toMatchInlineSnapshot(`
-         [
-           {
-             "attributeName": "scope",
-             "error": "Attribute 'scope' is missing",
-             "solution": "Add a scope field to the Kobo form (required when program.enableScope is true)",
-             "type": "missingField",
-           },
-         ]
-        `);
-    });
-
-    it('should throw HttpException when scope has incompatible type', async () => {
-      // Arrange
-      const mockFspConfigs = [];
-
-      const formDefinitionWithWrongScopeType: KoboFormDefinition = {
-        ...baseFormDefinition,
-        survey: [
-          ...baseSurveyItems,
-          {
-            name: GenericRegistrationAttributes.scope,
-            type: 'integer', // Wrong type - should be text
-            label: ['Scope'],
-            choices: [],
-          },
-        ],
-      };
-
-      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
-        fullnameNamingConvention: [],
-        enableScope: true,
-      });
-      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
-        mockFspConfigs,
-      );
-
-      // Act
-      let error: HttpException | any;
-      try {
-        await service.validateKoboFormDefinition({
-          formDefinition: formDefinitionWithWrongScopeType,
-          programId,
-        });
-      } catch (e) {
-        error = e;
-      }
-
-      // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
-      expect(error.response.errors).toMatchInlineSnapshot(`
-         [
-           {
-             "attributeName": "scope",
-             "error": "Field type must not be 'integer'",
-             "info": "Expected one of: 'background-audio', 'xml-external', 'acknowledge', 'audio', 'barcode', 'calculate', 'date', 'dateTime', 'file', 'geopoint', 'geoshape', 'geotrace', 'hidden', 'rank', 'select_multiple_from_file', 'select_multiple', 'text', 'time', 'video'",
-             "solution": "Change the field type to an accepted type",
-             "type": "typeMismatch",
-           },
-         ]
-        `);
-    });
-  });
-
   describe('access-group-locked attribute validation', () => {
     const createAccessGroupAttributeEntity = (
       overrides: Partial<ProgramRegistrationAttributeEntity> = {},
@@ -758,7 +594,6 @@ describe('KoboValidationService', () => {
     beforeEach(() => {
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        enableScope: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
         [],
@@ -882,7 +717,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        enableScope: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
         mockFspConfigs,
@@ -934,7 +768,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        enableScope: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
         mockFspConfigs,
@@ -979,7 +812,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        enableScope: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
         mockFspConfigs,
@@ -1006,7 +838,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        enableScope: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
         mockFspConfigs,
@@ -1058,7 +889,6 @@ describe('KoboValidationService', () => {
 
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        enableScope: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
         mockFspConfigs,
@@ -1097,7 +927,6 @@ describe('KoboValidationService', () => {
     beforeEach(() => {
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         fullnameNamingConvention: [],
-        enableScope: false,
       });
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
         mockFspConfigs,
@@ -1466,7 +1295,6 @@ describe('KoboValidationService', () => {
     // Arrange
     (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
       fullnameNamingConvention: [],
-      enableScope: false,
     });
     (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue([]);
 
