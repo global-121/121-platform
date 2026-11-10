@@ -65,7 +65,7 @@ describe('Access group display helpers', () => {
     });
 
     // Assert
-    expect(value).toBe('North > North Central');
+    expect(value).toBe('North / North Central');
   });
 
   it('skips missing and non-string access group values', () => {
@@ -101,7 +101,7 @@ describe('Access group display helpers', () => {
     });
 
     // Assert
-    expect(value).toBe('north > north-central');
+    expect(value).toBe('north / north-central');
   });
 
   it('returns no value when registration has no valid access group values', () => {

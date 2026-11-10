@@ -166,7 +166,7 @@ describe('Registration profile access group', () => {
     // Assert
     expect(row).toMatchObject({
       type: 'text',
-      value: 'Turkana > Turkana North',
+      value: 'Turkana / Turkana North',
       loading: false,
     });
   });
@@ -180,7 +180,7 @@ describe('Registration profile access group', () => {
     const text = (fixture.nativeElement as HTMLElement).textContent;
 
     // Assert
-    expect(text).toContain('Turkana (NL) > Noord-Turkana');
+    expect(text).toContain('Turkana (NL) / Noord-Turkana');
   });
 
   it('shows labels for ViewWithoutPII without requesting protected attribute metadata', () => {
@@ -196,7 +196,7 @@ describe('Registration profile access group', () => {
     expect(userPermissions).not.toContain(
       PermissionEnum.ProgramRegistrationAttributesREAD,
     );
-    expect(accessGroup?.value).toBe('Turkana > Turkana North');
+    expect(accessGroup?.value).toBe('Turkana / Turkana North');
   });
 
   it.each([DefaultUserRole.Approver, DefaultUserRole.ProgramTeamManager])(
@@ -286,7 +286,7 @@ describe('Registration profile access group', () => {
       .find((item) => item.label === 'Access group');
 
     // Assert
-    expect(row?.value).toBe('Turkana > unknown-district');
+    expect(row?.value).toBe('Turkana / unknown-district');
   });
 
   it.each([{}, { en: '' }])(
@@ -304,7 +304,7 @@ describe('Registration profile access group', () => {
         .find((item) => item.label === 'Access group');
 
       // Assert
-      expect(row?.value).toBe('Turkana > turkana-north');
+      expect(row?.value).toBe('Turkana / turkana-north');
     },
   );
 
