@@ -23,7 +23,10 @@
         aria-hidden="true"
       ></i>
     }
-    <span class="text-lg/tight font-semibold">
+
+    <span
+      class="text-lg/tight font-semibold [&_.p-tag]:px-4 [&_.p-tag]:text-base"
+    >
       @switch (currentItem.type) {
         @case ('boolean') {
           @if (currentItem.value) {

@@ -6,9 +6,9 @@ import {
   input,
 } from '@angular/core';
 
-import { determineDataListItemEdgeFlags } from '~/components/data-list/data-list-edge-flags.helper';
 import { DataListItem } from '~/components/data-list/data-list-item.type';
 import { DataListValueComponent } from '~/components/data-list/data-list-value/data-list-value.component';
+import { determineDataListItemEdgeFlags } from '~/components/data-list/helpers/data-list-edge-flags.helper';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
