@@ -44,6 +44,9 @@ services:
       - GLOBAL_121_VERSION
     ports:
       - '${PORT_MOCK_SERVICE}:${PORT_MOCK_SERVICE}'
+    depends_on:
+      mailpit:
+        condition: service_started
     stdin_open: true
     tty: true
     restart: on-failure
@@ -81,3 +84,11 @@ services:
     volumes:
       - ./azurite_data:/data
     command: 'azurite --blobHost 0.0.0.0 --blobPort 10000 --queueHost 0.0.0.0 --queuePort 10001 --skipApiVersionCheck'
+
+  mailpit:
+    container_name: mailpit
+    image: axllent/mailpit:latest
+    ports:
+      - '1025:1025' # SMTP
+      - '8025:8025' # Web UI and API
+    restart: unless-stopped

@@ -2,13 +2,14 @@ import { SUPPORT_EMAIL } from '@121-service/src/emails/emails.const';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
 import { env } from '@121-service/src/env';
 import { PasswordResetEmailInput } from '@121-service/src/user/user-emails/interfaces/password-reset-email-input.interface';
+import { PASSWORD_RESET_EMAIL_SUBJECT } from '@121-service/src/user/user-emails/user-emails.const';
 
 export const buildTemplatePasswordReset = (
   userEmailInput: PasswordResetEmailInput,
 ): EmailTemplate => {
   const { recipientName, email, password } = userEmailInput;
 
-  const subject = '121 Portal password reset';
+  const subject = PASSWORD_RESET_EMAIL_SUBJECT;
   const body = `
     <p>Dear ${recipientName},</p>
     <p>
