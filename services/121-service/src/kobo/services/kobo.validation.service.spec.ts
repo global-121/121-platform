@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { DataSource } from 'typeorm';
 
 import { env } from '@121-service/src/env';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
@@ -831,7 +832,9 @@ describe('KoboValidationService', () => {
         const realAccessGroupLevelsService = new AccessGroupLevelsService(
           {} as AccessGroupLevelRepository,
           {} as RegistrationAttributeDataRepository,
+          {} as DataSource,
         );
+
         accessGroupLevelsService.isAccessGroupAttributeTypeViolated.mockImplementation(
           (args) =>
             realAccessGroupLevelsService.isAccessGroupAttributeTypeViolated(

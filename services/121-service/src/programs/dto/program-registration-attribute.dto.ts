@@ -95,7 +95,7 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
   @ApiProperty({
     example: KoboSurveyItemType.integer,
   })
-  public readonly koboType?: KoboSurveyItemType | null;
+  public readonly koboInferredType?: KoboSurveyItemType | null;
 
   @ApiProperty({
     example: RegistrationAttributeTypes.text,

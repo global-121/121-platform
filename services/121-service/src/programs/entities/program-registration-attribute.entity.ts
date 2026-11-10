@@ -32,7 +32,7 @@ export class ProgramRegistrationAttributeEntity extends Base121Entity {
   public type: RegistrationAttributeTypes;
 
   @Column({ type: 'character varying', nullable: true })
-  public koboType: KoboSurveyItemType | null;
+  public koboInferredType: KoboSurveyItemType | null;
 
   @Column()
   public isRequired: boolean;
