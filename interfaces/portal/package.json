@@ -77,8 +77,8 @@
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
-    "@angular/build": "^21.2.28",
-    "@angular/cli": "^21.2.28",
+    "@angular/build": "^21.2.29",
+    "@angular/cli": "^21.2.29",
     "@angular/compiler-cli": "^21.2.25",
     "@angular/localize": "^21.2.25",
     "@azure/static-web-apps-cli": "^2.1.0",
@@ -86,7 +86,7 @@
     "@eslint/js": "^10.0.1",
     "@prettier/plugin-xml": "^3.4.2",
     "@tailwindcss/postcss": "^4.3.3",
-    "@tanstack/eslint-plugin-query": "^5.104.5",
+    "@tanstack/eslint-plugin-query": "^5.105.1",
     "@types/konami-code-js": "^0.8.3",
     "@types/node": "^24.x",
     "@types/papaparse": "^5.5.2",
@@ -99,7 +99,7 @@
     "eslint-plugin-better-tailwindcss": "^4.10.0",
     "eslint-plugin-no-relative-import-paths": "^1.7.3",
     "eslint-plugin-perfectionist": "^5.13.0",
-    "eslint-plugin-regexp": "^3.3.1",
+    "eslint-plugin-regexp": "^3.3.3",
     "eslint-plugin-sort-class-members": "^1.22.1",
     "jsdom": "^30.1.3",
     "knip": "^6.43.0",
