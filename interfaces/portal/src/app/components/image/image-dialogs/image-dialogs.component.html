@@ -29,7 +29,7 @@
       </ng-template>
 
       <app-image-viewer
-        [imageUrl]="downloadedImageObjectUrls()[index] ?? image.imageUrl"
+        [imageUrl]="downloadedImageObjectUrls()[index] ?? null"
       />
     </p-dialog>
   }
