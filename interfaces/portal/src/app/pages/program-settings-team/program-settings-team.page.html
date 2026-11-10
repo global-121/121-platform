@@ -12,7 +12,7 @@
             outlined
             icon="pi pi-plus text-xs"
             [iconPos]="rtlHelper.createPosition('start')()"
-            (click)="openForm('add')"
+            (click)="openAddUserForm()"
           />
         }
       </div>
@@ -39,7 +39,6 @@
       #addUserDialog
       [programId]="programId()"
       [enableScope]="enableScope()"
-      [userToEdit]="formMode() === 'edit' ? selectedUser() : undefined"
     />
   </p-card>
 </app-page-layout-program-settings>

@@ -62,7 +62,6 @@ export class ProgramSettingsTeamPageComponent {
   readonly selectedUser = signal<ProgramUserWithRolesLabel | undefined>(
     undefined,
   );
-  readonly formMode = signal<'add' | 'edit'>('add');
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
   programUsers = injectQuery(
@@ -140,7 +139,7 @@ export class ProgramSettingsTeamPageComponent {
       icon: 'pi pi-pencil',
       visible: this.canManageAidworkers(),
       command: () => {
-        this.openForm('edit');
+        this.openEditUserForm();
       },
     },
     {
@@ -153,8 +152,18 @@ export class ProgramSettingsTeamPageComponent {
     },
   ]);
 
-  openForm(formMode: 'add' | 'edit') {
-    this.formMode.set(formMode);
+  openAddUserForm() {
     this.addUserDialog().show();
+  }
+
+  openEditUserForm() {
+    const userToEdit = this.selectedUser();
+
+    if (!userToEdit) {
+      this.toastService.showGenericError();
+      return;
+    }
+
+    this.addUserDialog().show({ userToEdit });
   }
 }
