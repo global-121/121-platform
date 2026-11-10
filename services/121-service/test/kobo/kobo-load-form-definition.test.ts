@@ -177,11 +177,11 @@ describe('Import a Kobo form definition', () => {
     expect(firstAttributeSnapshot).toMatchInlineSnapshot(`
      {
        "isRequired": false,
+       "koboInferredType": "numeric",
        "koboLabel": {
          "en": "Adults",
          "nl": "Volwassenen",
        },
-       "koboInferredType": "numeric",
        "label": null,
        "name": "adults",
        "options": [],
