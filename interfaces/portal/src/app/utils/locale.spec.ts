@@ -1,5 +1,3 @@
-import { enableProdMode } from '@angular/core';
-
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
@@ -12,12 +10,13 @@ describe('getLocaleForInitialization', () => {
   beforeEach(() => {
     getItemSpy.mockClear();
     localStorage.clear();
-    enableProdMode();
+    vi.stubGlobal('ngDevMode', false);
   });
 
   afterEach(() => {
     getItemSpy.mockClear();
     localStorage.clear();
+    vi.unstubAllGlobals();
   });
 
   it('should throw an error when an invalid default locale is passed in', () => {
