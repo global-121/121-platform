@@ -215,6 +215,22 @@ describe('KoboCalculationTypeInferenceService', () => {
         calculation: 'if(${a} + ${b} > 3, ${x}, ${y})',
       },
       {
+        description: 'a wildcard path expression',
+        calculation: '/data/*[1]',
+      },
+      {
+        description: 'a reference returned from the else branch',
+        calculation: 'if(${a} > 0, 0, ${a})',
+      },
+      {
+        description: 'a reference with a partial comparison in the condition',
+        calculation: 'if(${a} > 0 or ${override} = 1, ${a}, 0)',
+      },
+      {
+        description: 'a reference with a negated comparison in the condition',
+        calculation: 'if(not(${a} > 0), ${a}, 0)',
+      },
+      {
         description: 'a comparison: the result is true or false',
         calculation: '${adults} * 1 = 5',
       },
