@@ -18,6 +18,7 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should throw an error when an invalid default locale is passed in', () => {
+    // Act & Assert
     expect(() => {
       getLocaleForInitialization({
         defaultLocale: 'nonsense',
@@ -27,6 +28,7 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should throw an error when an invalid url locale is passed in', () => {
+    // Act & Assert
     expect(() => {
       getLocaleForInitialization({
         defaultLocale: 'en-GB',
@@ -51,42 +53,58 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should default to the urlLocale whenever there is weirdness saved in local storage', () => {
+    // Arrange
     getItemSpy.mockReturnValue('nonsense');
 
+    // Act
     const localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
       urlLocale: UILanguage.nl,
     });
 
+    // Assert
     expect(localeInfo).toEqual({ locale: Locale.nl });
   });
 
   it('should use the default locale when there is nothing saved in local storage', () => {
+    // Arrange
     getItemSpy.mockReturnValue(null);
 
-    let localeInfo = getLocaleForInitialization({
-      defaultLocale: 'en-GB',
-      urlLocale: 'en-GB',
-    });
-
-    expect(localeInfo).toEqual({ locale: Locale.en });
-
-    localeInfo = getLocaleForInitialization({
-      defaultLocale: UILanguage.nl,
-      urlLocale: UILanguage.nl,
-    });
-
-    expect(localeInfo).toEqual({ locale: Locale.nl });
-  });
-
-  it('should prompt to change language when the local storage locale is out of sync with the url locale', () => {
-    getItemSpy.mockImplementation(() => UILanguage.nl);
-
+    // Act
     const localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
       urlLocale: 'en-GB',
     });
 
+    // Assert
+    expect(localeInfo).toEqual({ locale: Locale.en });
+  });
+
+  it('should use a non-English default locale when there is nothing saved in local storage', () => {
+    // Arrange
+    getItemSpy.mockReturnValue(null);
+
+    // Act
+    const localeInfo = getLocaleForInitialization({
+      defaultLocale: UILanguage.nl,
+      urlLocale: UILanguage.nl,
+    });
+
+    // Assert
+    expect(localeInfo).toEqual({ locale: Locale.nl });
+  });
+
+  it('should prompt to change language when the local storage locale is out of sync with the url locale', () => {
+    // Arrange
+    getItemSpy.mockImplementation(() => UILanguage.nl);
+
+    // Act
+    const localeInfo = getLocaleForInitialization({
+      defaultLocale: 'en-GB',
+      urlLocale: 'en-GB',
+    });
+
+    // Assert
     expect(localeInfo).toEqual({
       localStorageLocale: Locale.nl,
       localeIsOutOfSyncWithUrl: true,
@@ -94,13 +112,16 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should prompt to change language when the local storage locale does not exist and the url locale does not match the default locale', () => {
+    // Arrange
     getItemSpy.mockImplementation(() => null);
 
+    // Act
     const localeInfo = getLocaleForInitialization({
       defaultLocale: UILanguage.nl,
       urlLocale: 'en-GB',
     });
 
+    // Assert
     expect(localeInfo).toEqual({
       localStorageLocale: Locale.nl,
       localeIsOutOfSyncWithUrl: true,
