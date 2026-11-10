@@ -30,10 +30,10 @@
 
 <ng-container [formGroup]="form">
   <ng-container formGroupName="accessGroupsValue">
-    @if (!!accessGroupAttributes()[0]) {
+    @if (accessGroupAttributes()[0]) {
       @let attribute = accessGroupAttributes()[0];
       <app-form-field-wrapper
-        [label]="'Level 1:'"
+        label="Level 1:"
         i18n-label
       >
         <ng-container slot="label-extra-inline">
@@ -62,7 +62,7 @@
     @if (accessGroupAttributes()[1]) {
       @let attribute = accessGroupAttributes()[1];
       <app-form-field-wrapper
-        [label]="'Level 2:'"
+        label="Level 2:"
         i18n-label
       >
         <ng-container slot="label-extra-inline">
@@ -91,7 +91,7 @@
     @if (accessGroupAttributes()[2]) {
       @let attribute = accessGroupAttributes()[2];
       <app-form-field-wrapper
-        [label]="'Level 3:'"
+        label="Level 3:"
         i18n-label
       >
         <ng-container slot="label-extra-inline">
@@ -105,6 +105,35 @@
           [optionValue]="'option'"
           [filter]="true"
           formControlName="accessGroup3Value"
+          placeholder="Type or select"
+          i18n-placeholder="@@generic-type-or-select"
+          [showClear]="true"
+          [disabled]="userIsUpdatingItself()"
+        >
+          <ng-template #emptyfilter>
+            <app-select-no-results-message />
+          </ng-template>
+        </p-select>
+      </app-form-field-wrapper>
+    }
+
+    @if (accessGroupAttributes()[3]) {
+      @let attribute = accessGroupAttributes()[3];
+      <app-form-field-wrapper
+        [label]="'Level 4:'"
+        i18n-label
+      >
+        <ng-container slot="label-extra-inline">
+          <span>
+            {{ attribute.label }}
+          </span>
+        </ng-container>
+        <p-select
+          [options]="attribute.options"
+          [optionLabel]="'label'"
+          [optionValue]="'option'"
+          [filter]="true"
+          formControlName="accessGroup4Value"
           placeholder="Type or select"
           i18n-placeholder="@@generic-type-or-select"
           [showClear]="true"

@@ -176,6 +176,10 @@ export class AddProgramTeamUserDialogComponent {
         value: null,
         disabled: true,
       }),
+      accessGroup4Value: new FormControl<null | string>({
+        value: null,
+        disabled: true,
+      }),
     }),
   });
 
@@ -249,6 +253,7 @@ export class AddProgramTeamUserDialogComponent {
         accessGroup1Value: null | string;
         accessGroup2Value: null | string;
         accessGroup3Value: null | string;
+        accessGroup4Value: null | string;
       };
     }) => {
       const accessGroups: ProgramUserAssignment['accessGroups'] = [];
@@ -314,8 +319,12 @@ export class AddProgramTeamUserDialogComponent {
     return false;
   });
   constructor() {
-    const { accessGroup1Value, accessGroup2Value, accessGroup3Value } =
-      this.formGroup.controls.accessGroupsValue.controls;
+    const {
+      accessGroup1Value,
+      accessGroup2Value,
+      accessGroup3Value,
+      accessGroup4Value,
+    } = this.formGroup.controls.accessGroupsValue.controls;
 
     this.enableAccessGroupControlOnlyWhenPreviousLevelIsSelected({
       previousLevelControl: accessGroup1Value,
@@ -324,6 +333,10 @@ export class AddProgramTeamUserDialogComponent {
     this.enableAccessGroupControlOnlyWhenPreviousLevelIsSelected({
       previousLevelControl: accessGroup2Value,
       control: accessGroup3Value,
+    });
+    this.enableAccessGroupControlOnlyWhenPreviousLevelIsSelected({
+      previousLevelControl: accessGroup3Value,
+      control: accessGroup4Value,
     });
   }
 
@@ -364,6 +377,14 @@ export class AddProgramTeamUserDialogComponent {
   }: {
     userToEdit?: ProgramUserWithRolesLabel;
   }) {
+    if (
+      !this.program.isSuccess() ||
+      !this.roles.isSuccess() ||
+      !this.programUsers.isSuccess() ||
+      !this.accessGroupLevels.isSuccess()
+    ) {
+      return;
+    }
     if (!userToEdit) {
       this.formGroup.controls.userValue.enable();
       return;
@@ -389,6 +410,7 @@ export class AddProgramTeamUserDialogComponent {
         accessGroup1Value: accessGroupValues.get(1) ?? null,
         accessGroup2Value: accessGroupValues.get(2) ?? null,
         accessGroup3Value: accessGroupValues.get(3) ?? null,
+        accessGroup4Value: accessGroupValues.get(4) ?? null,
       },
     });
 

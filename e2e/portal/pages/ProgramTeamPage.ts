@@ -5,7 +5,7 @@ import TableComponent from '@121-e2e/portal/components/TableComponent';
 import BasePage from '@121-e2e/portal/pages/BasePage';
 import { expectedSortedArraysToEqual } from '@121-e2e/portal/utils';
 
-const ACCESS_GROUP_LEVELS = [1, 2, 3] as const;
+const ACCESS_GROUP_LEVELS = [1, 2, 3, 4] as const;
 const ACCESS_GROUP_LEVEL_PLACEHOLDER = 'Type or select';
 
 export type AccessGroupLevel = (typeof ACCESS_GROUP_LEVELS)[number];

@@ -87,7 +87,7 @@ test('Set access groups when adding a user to the program team', async ({
   await test.step('Validate the stored access groups when editing the user', async () => {
     await programTeamPage.editUser({ userEmail: newUserEmail });
     await programTeamPage.validateAccessGroupLevels({
-      accessGroupLevels: { 1: 'Amsterdam', 2: 'West', 3: null },
+      accessGroupLevels: { 1: 'Amsterdam', 2: 'West', 3: null, 4: null },
     });
   });
 });
@@ -102,33 +102,33 @@ test('Update and clear the access groups of a program team member', async ({
   await test.step('Validate the team member has no access groups yet', async () => {
     await programTeamPage.editUser({ userEmail: existingTeamMemberEmail });
     await programTeamPage.validateAccessGroupLevels({
-      accessGroupLevels: { 1: null, 2: null, 3: null },
+      accessGroupLevels: { 1: null, 2: null, 3: null, 4: null },
     });
   });
 
   await test.step('Set access groups for all three levels', async () => {
     await programTeamPage.setAccessGroupLevels({
-      accessGroupLevels: { 1: 'Utrecht', 2: 'Noord', 3: 'Damrak' },
+      accessGroupLevels: { 1: 'Utrecht', 2: 'Noord', 3: 'Damrak', 4: '51-100' },
     });
     await programTeamPage.saveEditedUser();
     await programTeamPage.validateToastMessageAndClose('User updated');
 
     await programTeamPage.editUser({ userEmail: existingTeamMemberEmail });
     await programTeamPage.validateAccessGroupLevels({
-      accessGroupLevels: { 1: 'Utrecht', 2: 'Noord', 3: 'Damrak' },
+      accessGroupLevels: { 1: 'Utrecht', 2: 'Noord', 3: 'Damrak', 4: '51-100' },
     });
   });
 
   await test.step('Change the first level and clear the last level', async () => {
     await programTeamPage.setAccessGroupLevels({
-      accessGroupLevels: { 1: 'Rotterdam', 3: null },
+      accessGroupLevels: { 1: 'Rotterdam', 4: null },
     });
     await programTeamPage.saveEditedUser();
     await programTeamPage.validateToastMessageAndClose('User updated');
 
     await programTeamPage.editUser({ userEmail: existingTeamMemberEmail });
     await programTeamPage.validateAccessGroupLevels({
-      accessGroupLevels: { 1: 'Rotterdam', 2: 'Noord', 3: null },
+      accessGroupLevels: { 1: 'Rotterdam', 2: 'Noord', 3: 'Damrak', 4: null },
     });
   });
 
@@ -141,7 +141,7 @@ test('Update and clear the access groups of a program team member', async ({
 
     await programTeamPage.editUser({ userEmail: existingTeamMemberEmail });
     await programTeamPage.validateAccessGroupLevels({
-      accessGroupLevels: { 1: null, 2: null, 3: null },
+      accessGroupLevels: { 1: null, 2: null, 3: null, 4: null },
     });
   });
 });

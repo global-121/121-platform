@@ -102,6 +102,10 @@ export class FormDialogComponent<TMutationData = unknown> {
   }
 
   onProceed() {
+    if (this.confirmButtonDisabled()) {
+      return;
+    }
+
     if (this.trackingEvent) {
       this.trackingService.trackEvent(this.trackingEvent);
 
