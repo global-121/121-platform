@@ -9,6 +9,14 @@ export class KoboType1792075114643 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_registration_attribute" ALTER COLUMN "koboInferredType" DROP NOT NULL`,
     );
+
+    await queryRunner.query(
+      `UPDATE "121-service"."program_registration_attribute" AS attribute
+       SET "koboInferredType" = attribute."type"
+       FROM "121-service"."kobo" AS kobo
+       WHERE kobo."programId" = attribute."programId"
+       AND attribute."koboLabel" IS NOT NULL`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

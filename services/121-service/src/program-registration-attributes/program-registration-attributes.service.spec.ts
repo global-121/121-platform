@@ -4,7 +4,6 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { DataSource, Equal, Repository } from 'typeorm';
 
 import { env } from '@121-service/src/env';
-import { KoboSurveyItemType } from '@121-service/src/kobo/enum/kobo-survey-item-type';
 import { TwilioMode } from '@121-service/src/notifications/enum/twilio-mode.enum';
 import { ProgramRegistrationAttributesService } from '@121-service/src/program-registration-attributes/program-registration-attributes.service';
 import { AccessGroupLevelRepository } from '@121-service/src/programs/access-group-levels/access-group-level.repository';
@@ -274,7 +273,7 @@ describe('ProgramRegistrationAttributesService', () => {
         name: 'firstName',
         type: RegistrationAttributeTypes.numeric,
         label: { en: 'Old Label' },
-        koboInferredType: KoboSurveyItemType.integer,
+        koboInferredType: RegistrationAttributeTypes.numeric,
       });
 
       const updateFromKobo = createAttributeDto({
@@ -305,7 +304,7 @@ describe('ProgramRegistrationAttributesService', () => {
       // Proves the existing koboInferredType is preserved even if the type from Kobo differs
       expect(savedEntities[0].type).toBe(RegistrationAttributeTypes.numeric);
       expect(savedEntities[0].koboInferredType).toBe(
-        KoboSurveyItemType.integer,
+        RegistrationAttributeTypes.numeric,
       );
       // Proves the refresh still applied the other changes
       expect(savedEntities[0].label).toEqual({ en: 'Updated First Name' });
@@ -325,7 +324,7 @@ describe('ProgramRegistrationAttributesService', () => {
       const updateFromKobo: ProgramRegistrationAttribute = {
         name: DefaultRegistrationDataAttributeNames.phoneNumber,
         type: RegistrationAttributeTypes.text,
-        koboInferredType: KoboSurveyItemType.text,
+        koboInferredType: RegistrationAttributeTypes.text,
         koboLabel: { en: 'Phone number' },
       };
 
@@ -349,7 +348,7 @@ describe('ProgramRegistrationAttributesService', () => {
       const savedEntities = saveSpy.mock.calls[0][0];
       expect(savedEntities).toHaveLength(1);
       expect(savedEntities[0].type).toBe(RegistrationAttributeTypes.text);
-      expect(savedEntities[0].koboInferredType).toBe(KoboSurveyItemType.text);
+      expect(savedEntities[0].koboInferredType).toBe(RegistrationAttributeTypes.text);
       expect(savedEntities[0].koboLabel).toEqual({ en: 'Phone number' });
     });
 
@@ -359,14 +358,14 @@ describe('ProgramRegistrationAttributesService', () => {
       const existingEntity = createAttributeEntity({
         id: 10,
         name: 'householdScore',
-        koboInferredType: KoboSurveyItemType.integer,
+        koboInferredType: RegistrationAttributeTypes.numeric,
         koboLabel: { en: 'Old household score' },
       });
 
       const updateFromKobo: ProgramRegistrationAttribute = {
         name: 'householdScore',
         type: RegistrationAttributeTypes.numeric,
-        koboInferredType: KoboSurveyItemType.calculate,
+        koboInferredType: RegistrationAttributeTypes.numeric,
         koboLabel: { en: 'Household score' },
       };
 
@@ -390,7 +389,7 @@ describe('ProgramRegistrationAttributesService', () => {
       const savedEntities = saveSpy.mock.calls[0][0];
       expect(savedEntities).toHaveLength(1);
       expect(savedEntities[0].koboInferredType).toBe(
-        KoboSurveyItemType.calculate,
+        RegistrationAttributeTypes.numeric,
       );
       expect(savedEntities[0].koboLabel).toEqual({ en: 'Household score' });
     });
@@ -401,7 +400,7 @@ describe('ProgramRegistrationAttributesService', () => {
       const newAttributeFromKobo: ProgramRegistrationAttribute = {
         name: 'householdScore',
         type: RegistrationAttributeTypes.numeric,
-        koboInferredType: KoboSurveyItemType.calculate,
+        koboInferredType: RegistrationAttributeTypes.numeric,
         koboLabel: { en: 'Household score' },
       };
 
@@ -426,7 +425,7 @@ describe('ProgramRegistrationAttributesService', () => {
       expect(savedEntities).toHaveLength(1);
       expect(savedEntities[0].type).toBe(RegistrationAttributeTypes.numeric);
       expect(savedEntities[0].koboInferredType).toBe(
-        KoboSurveyItemType.calculate,
+        RegistrationAttributeTypes.numeric,
       );
     });
 
@@ -446,7 +445,7 @@ describe('ProgramRegistrationAttributesService', () => {
       const updateFromKobo: ProgramRegistrationAttribute = {
         name: 'firstName',
         type: RegistrationAttributeTypes.text,
-        koboInferredType: KoboSurveyItemType.text,
+        koboInferredType: RegistrationAttributeTypes.text,
       };
 
       // Arrange the repository to return the existing entity
@@ -470,7 +469,7 @@ describe('ProgramRegistrationAttributesService', () => {
       // Assert that the saved entity has kept the existing type and adopted the koboInferredType from the update
       expect(savedEntities).toHaveLength(1);
       expect(savedEntities[0].type).toBe(RegistrationAttributeTypes.numeric);
-      expect(savedEntities[0].koboInferredType).toBe(KoboSurveyItemType.text);
+      expect(savedEntities[0].koboInferredType).toBe(RegistrationAttributeTypes.text);
     });
 
     it('should not remove options missing from the update when the update does include options', async () => {

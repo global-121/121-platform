@@ -181,7 +181,7 @@ describe('Import a Kobo form definition', () => {
          "en": "Adults",
          "nl": "Volwassenen",
        },
-       "koboInferredType": "integer",
+       "koboInferredType": "numeric",
        "label": null,
        "name": "adults",
        "options": [],
