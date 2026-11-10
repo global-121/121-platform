@@ -20,6 +20,7 @@ import { ImageViewerService } from '~/components/image/services/image-viewer.ser
 import { isImageAvailable } from '~/components/image/utils/is-image-available';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-image-dialogs',
@@ -36,6 +37,7 @@ export class ImageDialogsComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly registrationApiService = inject(RegistrationApiService);
   private readonly imageViewerService = inject(ImageViewerService);
+  private readonly toastService = inject(ToastService);
   readonly images = input.required<
     {
       label: string | UILanguageTranslation;
@@ -162,12 +164,17 @@ export class ImageDialogsComponent {
       return;
     }
 
-    const downloadedImage: Blob =
-      await this.registrationApiService.downloadKoboImage({
+    let downloadedImage: Blob;
+    try {
+      downloadedImage = await this.registrationApiService.downloadKoboImage({
         programId,
         referenceId,
         attributeName,
       });
+    } catch {
+      this.toastService.showGenericError();
+      return;
+    }
 
     const previousObjectUrl = this.downloadedImageObjectUrls()[index];
     if (previousObjectUrl) {
