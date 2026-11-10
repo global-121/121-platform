@@ -11,11 +11,10 @@ import {
 import Panzoom, { PanzoomObject } from '@panzoom/panzoom';
 import { ButtonModule } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-image-viewer',
-  imports: [ButtonModule, ButtonGroupModule, ProgressSpinnerModule],
+  imports: [ButtonModule, ButtonGroupModule],
   templateUrl: './image-viewer.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -24,7 +23,7 @@ export class ImageViewerComponent {
   private readonly ZOOM_FACTOR_MIN = 1;
   private readonly ZOOM_FACTOR_MAX = 5;
 
-  readonly imageUrl = input.required<null | string>();
+  readonly imageUrl = input.required<string>();
 
   readonly imageElement =
     viewChild.required<ElementRef<HTMLImageElement>>('imageElement');

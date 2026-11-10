@@ -51,20 +51,11 @@
   <div
     class="bg-grey-100/75 absolute inset-0 flex items-center justify-center overflow-hidden rounded-md"
   >
-    @if (!imageUrl()) {
-      <p-progress-spinner
-        class="absolute block-10 inline-10"
-        ariaLabel="Loading..."
-        i18n-ariaLabel="@@generic-loading"
-        strokeWidth="4"
-      />
-    }
     <img
       #imageElement
-      [attr.src]="imageUrl()"
+      [src]="imageUrl()"
       [alt]=""
       class="object-contain inline-full max-block-full max-inline-full"
-      [class.invisible]="!imageUrl()"
       style="transition: transform 120ms ease-in-out"
     />
   </div>
