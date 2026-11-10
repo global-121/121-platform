@@ -71,21 +71,16 @@ describe('getLocaleForInitialization', () => {
     getItemSpy.mockReturnValue(null);
 
     // Act
-    const localeInfo = getLocaleForInitialization({
+    let localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
       urlLocale: 'en-GB',
     });
 
     // Assert
     expect(localeInfo).toEqual({ locale: Locale.en });
-  });
-
-  it('should use a non-English default locale when there is nothing saved in local storage', () => {
-    // Arrange
-    getItemSpy.mockReturnValue(null);
 
     // Act
-    const localeInfo = getLocaleForInitialization({
+    localeInfo = getLocaleForInitialization({
       defaultLocale: UILanguage.nl,
       urlLocale: UILanguage.nl,
     });
