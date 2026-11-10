@@ -4,9 +4,9 @@ import { KOBO_TO_121_TYPE_MAPPING } from '@121-service/src/kobo/consts/kobo-surv
 import { KoboSurveyItemType } from '@121-service/src/kobo/enum/kobo-survey-item-type';
 import { KoboChoiceCleaned } from '@121-service/src/kobo/interfaces/kobo-choice-cleaned.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
-import { findKoboSurveyItemType } from '@121-service/src/kobo/utils/find-kobo-survey-item-type';
-import { inferAttributeTypeFromCalculation } from '@121-service/src/kobo/utils/parse-kobo-survey-item-calculation';
+import { KoboCalculationTypeInferenceService } from '@121-service/src/kobo/services/kobo-calculation-type-inference.service';
 import { ProgramRegistrationAttribute } from '@121-service/src/programs/interfaces/program-registration-attribute.interface';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { RegistrationPreferredLanguageTranslation } from '@121-service/src/shared/types/registration-preferred-language-translation.type';
 
@@ -18,6 +18,10 @@ const DEFAULT_ATTRIBUTE_CONFIG = {
 };
 @Injectable()
 export class KoboSurveyProcessorService {
+  public constructor(
+    private readonly koboCalculationTypeInferenceService: KoboCalculationTypeInferenceService,
+  ) {}
+
   public surveyToProgramRegistrationAttributes({
     surveyItems,
     languageIsoCodes,
@@ -48,8 +52,8 @@ export class KoboSurveyProcessorService {
     koboSurveyItem: KoboSurveyItemCleaned;
     languageIsoCodes: RegistrationPreferredLanguage[];
   }): ProgramRegistrationAttribute | undefined {
-    const koboSurveyItemType = findKoboSurveyItemType({
-      rawType: koboSurveyItem.type,
+    const koboSurveyItemType = this.findKnownSurveyItemType({
+      type: koboSurveyItem.type,
     });
 
     // Skip items irrelevant to 121 (e.g. note, groups). Unsupported but relevant types are reported during validation.
@@ -57,12 +61,10 @@ export class KoboSurveyProcessorService {
       return;
     }
 
-    const attributeType =
-      koboSurveyItemType === KoboSurveyItemType.calculate
-        ? inferAttributeTypeFromCalculation({
-            calculation: koboSurveyItem.calculation,
-          })
-        : KOBO_TO_121_TYPE_MAPPING[koboSurveyItemType];
+    const attributeType = this.getAttributeType({
+      koboSurveyItemType,
+      calculation: koboSurveyItem.calculation,
+    });
 
     const name = koboSurveyItem.name;
 
@@ -81,7 +83,7 @@ export class KoboSurveyProcessorService {
       name,
       koboLabel: label,
       type: attributeType,
-      koboType: koboSurveyItemType,
+      koboInferredType: koboSurveyItemType,
       options,
       // We do not use the 'required' property from Kobo because in Kobo a question can be conditionally required based on skip logic while still having the 'required' property set to true
       isRequired: DEFAULT_ATTRIBUTE_CONFIG.isRequired,
@@ -89,6 +91,32 @@ export class KoboSurveyProcessorService {
         DEFAULT_ATTRIBUTE_CONFIG.showInPeopleAffectedTable,
       editableInPortal: DEFAULT_ATTRIBUTE_CONFIG.editableInPortal,
     };
+  }
+
+  private findKnownSurveyItemType({
+    type,
+  }: {
+    type: string;
+  }): KoboSurveyItemType | undefined {
+    return Object.values(KoboSurveyItemType).find(
+      (knownType) => knownType === type,
+    );
+  }
+
+  private getAttributeType({
+    koboSurveyItemType,
+    calculation,
+  }: {
+    koboSurveyItemType: KoboSurveyItemType;
+    calculation?: string;
+  }): RegistrationAttributeTypes {
+    if (koboSurveyItemType === KoboSurveyItemType.calculate) {
+      return this.koboCalculationTypeInferenceService.inferAttributeTypeFromCalculation(
+        { calculation },
+      );
+    }
+
+    return KOBO_TO_121_TYPE_MAPPING[koboSurveyItemType];
   }
 
   private getLabelForLanguages({

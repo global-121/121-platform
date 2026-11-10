@@ -1,9 +1,21 @@
-import { inferAttributeTypeFromCalculation } from '@121-service/src/kobo/utils/parse-kobo-survey-item-calculation';
+import { Test } from '@nestjs/testing';
+
+import { KoboCalculationTypeInferenceService } from '@121-service/src/kobo/services/kobo-calculation-type-inference.service';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 const { numeric, text } = RegistrationAttributeTypes;
 
-describe('inferAttributeTypeFromCalculation', () => {
+describe('KoboCalculationTypeInferenceService', () => {
+  let service: KoboCalculationTypeInferenceService;
+
+  beforeEach(async () => {
+    const module = await Test.createTestingModule({
+      providers: [KoboCalculationTypeInferenceService],
+    }).compile();
+
+    service = module.get(KoboCalculationTypeInferenceService);
+  });
+
   describe('missing or empty formula', () => {
     it.each([
       { description: 'is undefined', calculation: undefined },
@@ -12,7 +24,9 @@ describe('inferAttributeTypeFromCalculation', () => {
     ])(
       'should return text when the formula $description',
       ({ calculation }) => {
-        const result = inferAttributeTypeFromCalculation({ calculation });
+        const result = service.inferAttributeTypeFromCalculation({
+          calculation,
+        });
 
         expect(result).toBe(text);
       },
@@ -118,7 +132,7 @@ describe('inferAttributeTypeFromCalculation', () => {
         calculation: "if(${a} = 'x,y', 1, 0)",
       },
     ])('should return numeric for $description', ({ calculation }) => {
-      const result = inferAttributeTypeFromCalculation({ calculation });
+      const result = service.inferAttributeTypeFromCalculation({ calculation });
 
       expect(result).toBe(numeric);
     });
@@ -159,7 +173,7 @@ describe('inferAttributeTypeFromCalculation', () => {
         calculation: '(concat(${a}, ${b}))',
       },
     ])('should return text for $description', ({ calculation }) => {
-      const result = inferAttributeTypeFromCalculation({ calculation });
+      const result = service.inferAttributeTypeFromCalculation({ calculation });
 
       expect(result).toBe(text);
     });
@@ -217,7 +231,7 @@ describe('inferAttributeTypeFromCalculation', () => {
         calculation: 'foo bar',
       },
     ])('should return text for $description', ({ calculation }) => {
-      const result = inferAttributeTypeFromCalculation({ calculation });
+      const result = service.inferAttributeTypeFromCalculation({ calculation });
 
       expect(result).toBe(text);
     });
