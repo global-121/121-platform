@@ -59,7 +59,7 @@ describe('KoboSurveyProcessorService', () => {
         name: fieldName,
         koboLabel: labels,
         type: RegistrationAttributeTypes.text,
-        koboInferredType: KoboSurveyItemType.text,
+        koboInferredType: RegistrationAttributeTypes.text,
         // Also validate the defeault values in this test
         isRequired: false,
         showInPeopleAffectedTable: true,
@@ -102,7 +102,7 @@ describe('KoboSurveyProcessorService', () => {
         name: fieldName,
         koboLabel: labels,
         type: RegistrationAttributeTypes.numeric,
-        koboInferredType: KoboSurveyItemType.integer,
+        koboInferredType: RegistrationAttributeTypes.numeric,
       });
     });
 
@@ -134,7 +134,7 @@ describe('KoboSurveyProcessorService', () => {
           en: 'Calculated Field',
         },
         type: RegistrationAttributeTypes.numeric,
-        koboInferredType: KoboSurveyItemType.calculate,
+        koboInferredType: RegistrationAttributeTypes.numeric,
       });
     });
 
@@ -166,7 +166,7 @@ describe('KoboSurveyProcessorService', () => {
           en: 'Calculated Field',
         },
         type: RegistrationAttributeTypes.text,
-        koboInferredType: KoboSurveyItemType.calculate,
+        koboInferredType: RegistrationAttributeTypes.text,
       });
     });
 
@@ -198,7 +198,7 @@ describe('KoboSurveyProcessorService', () => {
           en: 'Calculated Field',
         },
         type: RegistrationAttributeTypes.text,
-        koboInferredType: KoboSurveyItemType.calculate,
+        koboInferredType: RegistrationAttributeTypes.text,
       });
     });
 
