@@ -10,13 +10,11 @@ describe('getLocaleForInitialization', () => {
   beforeEach(() => {
     getItemSpy.mockClear();
     localStorage.clear();
-    vi.stubGlobal('ngDevMode', false);
   });
 
   afterEach(() => {
     getItemSpy.mockClear();
     localStorage.clear();
-    vi.unstubAllGlobals();
   });
 
   it('should throw an error when an invalid default locale is passed in', () => {
@@ -24,6 +22,7 @@ describe('getLocaleForInitialization', () => {
       getLocaleForInitialization({
         defaultLocale: 'nonsense',
         urlLocale: 'en-GB',
+        isDevMode: false,
       });
     }).toThrow('Invalid default locale "nonsense" found in environment.');
   });
@@ -33,8 +32,21 @@ describe('getLocaleForInitialization', () => {
       getLocaleForInitialization({
         defaultLocale: 'en-GB',
         urlLocale: 'nonsense',
+        isDevMode: false,
       });
     }).toThrow('Invalid locale "nonsense" found in URL:');
+  });
+
+  it('should always use the default locale in dev mode', () => {
+    getItemSpy.mockReturnValue(UILanguage.nl);
+
+    const localeInfo = getLocaleForInitialization({
+      defaultLocale: 'en-GB',
+      urlLocale: 'nonsense',
+      isDevMode: true,
+    });
+
+    expect(localeInfo).toEqual({ locale: Locale.en });
   });
 
   it('should default to the urlLocale whenever there is weirdness saved in local storage', () => {
@@ -43,6 +55,7 @@ describe('getLocaleForInitialization', () => {
     const localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
       urlLocale: UILanguage.nl,
+      isDevMode: false,
     });
 
     expect(localeInfo).toEqual({ locale: Locale.nl });
@@ -54,6 +67,7 @@ describe('getLocaleForInitialization', () => {
     let localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
       urlLocale: 'en-GB',
+      isDevMode: false,
     });
 
     expect(localeInfo).toEqual({ locale: Locale.en });
@@ -61,6 +75,7 @@ describe('getLocaleForInitialization', () => {
     localeInfo = getLocaleForInitialization({
       defaultLocale: UILanguage.nl,
       urlLocale: UILanguage.nl,
+      isDevMode: false,
     });
 
     expect(localeInfo).toEqual({ locale: Locale.nl });
@@ -72,6 +87,7 @@ describe('getLocaleForInitialization', () => {
     const localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
       urlLocale: 'en-GB',
+      isDevMode: false,
     });
 
     expect(localeInfo).toEqual({
@@ -86,6 +102,7 @@ describe('getLocaleForInitialization', () => {
     const localeInfo = getLocaleForInitialization({
       defaultLocale: UILanguage.nl,
       urlLocale: 'en-GB',
+      isDevMode: false,
     });
 
     expect(localeInfo).toEqual({

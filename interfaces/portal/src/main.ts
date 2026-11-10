@@ -1,5 +1,6 @@
 /// <reference types="@angular/localize" />
 
+import { isDevMode } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 
 import { AppComponent } from '~/app.component';
@@ -18,6 +19,7 @@ const main = async () => {
   const localeInitialization = getLocaleForInitialization({
     defaultLocale: environment.defaultLocale,
     urlLocale: window.location.pathname.split('/')[1],
+    isDevMode: isDevMode(),
   });
 
   if (localeInitialization.localeIsOutOfSyncWithUrl) {
