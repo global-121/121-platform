@@ -104,14 +104,6 @@ export class KoboValidationService {
 
     errors = this.collectErrors({
       accumulatedErrors: errors,
-      error: this.validateScopeInKoboSurveyItems({
-        koboSurveyItems: formDefinition.survey,
-        scopeEnabled: program.enableScope,
-      }),
-    });
-
-    errors = this.collectErrors({
-      accumulatedErrors: errors,
       error: this.validateAccessGroupLockedAttributes({
         koboSurveyItems: formDefinition.survey,
         programRegistrationAttributes,
@@ -356,36 +348,6 @@ export class KoboValidationService {
     }
 
     return errors;
-  }
-
-  private validateScopeInKoboSurveyItems({
-    koboSurveyItems,
-    scopeEnabled,
-  }: {
-    koboSurveyItems: KoboSurveyItemCleaned[];
-    scopeEnabled: boolean;
-  }): KoboValidationError | undefined {
-    if (!scopeEnabled) {
-      return;
-    }
-    const scopeItem = koboSurveyItems.find(
-      (item) => item.name === GenericRegistrationAttributes.scope,
-    );
-    if (!scopeItem) {
-      return {
-        type: KoboValidationErrorType.missingField,
-        attributeName: GenericRegistrationAttributes.scope,
-        error: `Attribute '${GenericRegistrationAttributes.scope}' is missing`,
-        solution:
-          'Add a scope field to the Kobo form (required when program.enableScope is true)',
-      };
-    }
-
-    return this.validateSurveyItemTypeMatchExpected121Type({
-      attributeName: GenericRegistrationAttributes.scope,
-      surveyItemType: scopeItem.type,
-      expected121Type: RegistrationAttributeTypes.text,
-    });
   }
 
   private validateAccessGroupLockedAttributes({

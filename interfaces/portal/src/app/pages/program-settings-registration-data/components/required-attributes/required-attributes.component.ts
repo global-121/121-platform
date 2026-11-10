@@ -27,10 +27,7 @@ import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-conf
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
-import {
-  ExplainerTrackingName,
-  InfoTooltipTrackingName,
-} from '~/services/tracking/tracking.enums';
+import { ExplainerTrackingName } from '~/services/tracking/tracking.enums';
 @Component({
   selector: 'app-required-attributes',
   imports: [
@@ -67,7 +64,6 @@ export class RequiredAttributesComponent {
   readonly program = injectQuery(
     this.programApiService.getProgram(this.programId),
   );
-  readonly enableScope = computed(() => this.program.data()?.enableScope);
 
   readonly programAttributes = injectQuery(
     this.programApiService.getProgramAttributes({
@@ -122,19 +118,8 @@ export class RequiredAttributesComponent {
       label: 'FSP',
     };
 
-    // Scope is a field that is independent from the FSPs, so we hardcode it to the list of required attributes if the program has scope enabled.
-    const scope = {
-      name: 'scope',
-      label: 'Scope',
-      infoTooltipData: {
-        message: $localize`Scope should be a 'hidden' field in your form that has the 'default response' set to the scope of the registration`,
-        trackingName: InfoTooltipTrackingName.requiredAttributeScopeInfo,
-      },
-    };
-
     return [
       fspEntry,
-      ...(this.enableScope() ? [scope] : []),
       ...attributes.filter((attr) => requiredAttributeNames.has(attr.name)),
     ];
   });
@@ -209,10 +194,6 @@ export class RequiredAttributesComponent {
   }) {
     if (attribute.name === 'fsp') {
       return this.getRecommendedFspAttributeType();
-    }
-
-    if (attribute.name === 'scope') {
-      return $localize`Hidden`;
     }
 
     switch (attribute.type) {

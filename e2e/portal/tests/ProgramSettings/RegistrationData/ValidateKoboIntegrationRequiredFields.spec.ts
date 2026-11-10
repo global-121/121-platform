@@ -26,7 +26,6 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
 });
 
 const allRequiredAttributesFromSeed = [
-  'scope',
   'namePartnerOrganization',
   'fullName',
   'phoneNumber',
@@ -76,44 +75,6 @@ test('Check if all required fields are updated when adding a FSP', async ({
     await programSettingsRegistrationDataPage.clickRegistrationDataSection();
     await programSettingsRegistrationDataPage.validateKoboRequiredFieldsTable({
       requiredDataColumnNames: [...allRequiredAttributesFromSeed, 'nationalId'],
-    });
-  });
-});
-
-test('Check if scope is not shown when scope is disabled', async ({
-  programSettingsPage,
-  programSettingsRegistrationDataPage,
-  page,
-}) => {
-  await test.step('Disable scope', async () => {
-    await programSettingsPage.navigateToProgramPage('Settings');
-    await programSettingsPage.clickEditProgramInformationSectionByTitle(
-      'Basic information',
-    );
-
-    const scopeSwitch = page.getByRole('switch', {
-      name: 'Use "scope" in this program',
-    });
-
-    await programSettingsPage.setSwitch({
-      locator: scopeSwitch,
-      checked: false,
-    });
-
-    await programSettingsPage.saveChanges();
-    await programSettingsPage.validateToastMessageAndClose(
-      'Basic information details saved successfully.',
-    );
-  });
-
-  await test.step('Validate scope not shown as required field', async () => {
-    await programSettingsRegistrationDataPage.clickRegistrationDataSection();
-    await programSettingsRegistrationDataPage.validateKoboRequiredFieldsTable({
-      requiredDataColumnNames: [
-        ...allRequiredAttributesFromSeed.filter(
-          (attribute) => attribute !== 'scope',
-        ),
-      ],
     });
   });
 });

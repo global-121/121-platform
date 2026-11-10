@@ -1295,9 +1295,6 @@
       <trans-unit id="5820091469118357161" datatype="html">
         <source>Data column name</source>
       </trans-unit>
-      <trans-unit id="5833271673900301518" datatype="html">
-        <source>Scope should be a &apos;hidden&apos; field in your form that has the &apos;default response&apos; set to the scope of the registration</source>
-      </trans-unit>
       <trans-unit id="5906272961955453157" datatype="html">
         <source>Approved</source>
       </trans-unit>
