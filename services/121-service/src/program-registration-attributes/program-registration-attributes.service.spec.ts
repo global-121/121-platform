@@ -82,7 +82,7 @@ describe('ProgramRegistrationAttributesService', () => {
     jest
       .spyOn(
         programAccessGroupLevelRepository,
-        'findOrderedAttributeNamesByProgramId',
+        'getOrderedAttributeNamesByProgramId',
       )
       .mockResolvedValue(accessGroupRegistrationAttributeNames);
   };
@@ -101,7 +101,7 @@ describe('ProgramRegistrationAttributesService', () => {
         {
           provide: AccessGroupLevelRepository,
           useValue: {
-            findOrderedAttributeNamesByProgramId: jest
+            getOrderedAttributeNamesByProgramId: jest
               .fn()
               .mockResolvedValue([]),
           },
