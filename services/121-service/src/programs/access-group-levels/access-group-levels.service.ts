@@ -7,6 +7,7 @@ import { MAX_ACCESS_GROUP_LEVELS } from '@121-service/src/programs/access-group-
 import { AccessGroupAttributeUpdate } from '@121-service/src/programs/access-group-levels/interfaces/access-group-attribute-update.interface';
 import { AccessGroupLevelAttribute } from '@121-service/src/programs/access-group-levels/interfaces/access-group-level-attribute.interface';
 import { AccessGroupRegistrationAttribute } from '@121-service/src/programs/access-group-levels/interfaces/access-group-registration-attribute.interface';
+import { ProgramAidworkerAssignmentAccessGroupRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment-access-group.repository';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationAttributeDataRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-attribute-data.repository';
 
@@ -16,6 +17,7 @@ export class AccessGroupLevelsService {
     private readonly accessGroupLevelRepository: AccessGroupLevelRepository,
     private readonly registrationAttributeDataRepository: RegistrationAttributeDataRepository,
     private readonly dataSource: DataSource,
+    private readonly assignmentAccessGroupRepository: ProgramAidworkerAssignmentAccessGroupRepository,
   ) {}
 
   public async updateAccessGroupLevels({
@@ -45,11 +47,25 @@ export class AccessGroupLevelsService {
 
     const existingLevels = await this.accessGroupLevelRepository.find({
       where: { programId: Equal(programId) },
+      relations: { programRegistrationAttribute: true },
+      select: {
+        id: true,
+        programId: true,
+        level: true,
+        programRegistrationAttributeId: true,
+        programRegistrationAttribute: { id: true, name: true },
+      },
+      order: { level: 'ASC' },
     });
     const { levelsToRemove, levelsToCreate } = this.diffAccessGroupLevels({
       programId,
       existingLevels,
       orderedProgramRegistrationAttributeIds,
+    });
+
+    await this.throwIfLevelsAreAssignedToUsers({
+      programId,
+      levels: levelsToRemove,
     });
 
     await this.dataSource.transaction(async (manager) => {
@@ -61,16 +77,21 @@ export class AccessGroupLevelsService {
   }
 
   // A level is identified by its attribute and its position. Unchanged levels keep their row (and id), so assignments referencing them remain valid.
-  private diffAccessGroupLevels({
+  private diffAccessGroupLevels<
+    ExistingLevel extends Pick<
+      AccessGroupLevelEntity,
+      'level' | 'programRegistrationAttributeId'
+    >,
+  >({
     programId,
     existingLevels,
     orderedProgramRegistrationAttributeIds,
   }: {
     programId: number;
-    existingLevels: AccessGroupLevelEntity[];
+    existingLevels: ExistingLevel[];
     orderedProgramRegistrationAttributeIds: number[];
   }): {
-    levelsToRemove: AccessGroupLevelEntity[];
+    levelsToRemove: ExistingLevel[];
     levelsToCreate: AccessGroupLevelEntity[];
   } {
     const isSameLevel = ({
@@ -111,6 +132,32 @@ export class AccessGroupLevelsService {
       );
 
     return { levelsToRemove, levelsToCreate };
+  }
+
+  // Access groups of a user always start at the highest level without skipping levels,
+  // so only users with an access group at a level that is moved or removed are affected
+  private async throwIfLevelsAreAssignedToUsers({
+    programId,
+    levels,
+  }: {
+    programId: number;
+    levels: {
+      id: number;
+      programRegistrationAttribute: { name: string };
+    }[];
+  }): Promise<void> {
+    const assignedLevelIds =
+      await this.assignmentAccessGroupRepository.getAssignedAccessGroupLevelIds(
+        { accessGroupLevelIds: levels.map(({ id }) => id) },
+      );
+    for (const { id, programRegistrationAttribute } of levels) {
+      if (assignedLevelIds.has(id)) {
+        throw new HttpException(
+          `Access group level '${programRegistrationAttribute.name}' cannot be moved or removed because it is assigned to users in program ${programId}. Remove this access group from the users first.`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
   }
 
   public async getAccessGroupRegistrationAttributeNames({
