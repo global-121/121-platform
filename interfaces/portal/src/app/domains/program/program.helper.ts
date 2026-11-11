@@ -105,7 +105,7 @@ export const getAccessGroupValue = ({
     return;
   }
 
-  return accessGroupLabels.join(' > ');
+  return accessGroupLabels.join(' / ');
 };
 
 export const fspConfigurationNamesHaveIntegrationType = ({

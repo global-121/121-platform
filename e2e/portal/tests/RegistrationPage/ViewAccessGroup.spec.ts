@@ -73,6 +73,6 @@ test('User should see the access group of a registration', async ({
   await test.step('Validate access group shows option labels per level', async () => {
     const summary =
       await registrationActivityLogPage.getRegistrationSummaryList();
-    expect(summary['Access group']).toBe('Utrecht > Houten');
+    expect(summary['Access group']).toBe('Utrecht / Houten');
   });
 });
