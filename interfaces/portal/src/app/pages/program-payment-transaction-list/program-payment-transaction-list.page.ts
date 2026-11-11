@@ -11,11 +11,11 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { MenuItem } from '@openng/optimus-ui/api';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { CardModule } from '@openng/optimus-ui/card';
+import { SkeletonModule } from '@openng/optimus-ui/skeleton';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MenuItem } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { SkeletonModule } from 'primeng/skeleton';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';

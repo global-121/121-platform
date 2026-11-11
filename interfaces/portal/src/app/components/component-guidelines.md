@@ -3,8 +3,8 @@
 Guidelines with the 🤖 emoji are enforced through CI checks.
 
 - Keep custom components/CSS to a minimum.
-- Use [PrimeNG](https://primeng.org/) components whenever possible
-  - A design might contain something that, with a few tweaks, could use a PrimeNG component instead of a custom one. Always prefer to push for and suggest those tweaks.
+- Use [Optimus UI](https://optimus.openng.org/) components whenever possible
+  - A design might contain something that, with a few tweaks, could use an Optimus UI component instead of a custom one. Always prefer to push for and suggest those tweaks.
 - Use [Tailwind](https://tailwindcss.com) utility classes instead of (s)css files
   - Follow the tailwind recommendations for [reusing styles](https://tailwindcss.com/docs/reusing-styles)
 - When creating components via the CLI, the following defaults are setup. Do not change your component in these regards unless strictly necessary:
@@ -30,10 +30,10 @@ As with other kinds of tests: we generally only want to test "our own" code. Som
   - the HTML `<select>` element working
   - that `localStorage` itself works
   - a utility function that's part of a library we depend on (the `unique`-function from `radashi`)
-  - simple use of a PrimeNG component
+  - simple use of an Optimus UI component
   - simple use of Angular: `@if`
 - ✅ Test:
-  - complex use of a PrimeNG component: you can make mistakes
+  - complex use of an Optimus UI component: you can make mistakes
   - a helper function that's part of our codebase (and not from a library)
   - that our code actually and correctly puts something in `localStorage` (and returns it in the expected shape)
   - "glue code": the value that you put into an Angular `@if` has the right value at the right time(s)

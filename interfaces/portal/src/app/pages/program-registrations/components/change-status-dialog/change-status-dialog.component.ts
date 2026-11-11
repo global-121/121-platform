@@ -12,15 +12,15 @@ import {
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { DialogModule } from '@openng/optimus-ui/dialog';
+import { RadioButtonModule } from '@openng/optimus-ui/radiobutton';
+import { SkeletonModule } from '@openng/optimus-ui/skeleton';
+import { ToggleSwitchModule } from '@openng/optimus-ui/toggleswitch';
 import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { SkeletonModule } from 'primeng/skeleton';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 

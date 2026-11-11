@@ -5,8 +5,8 @@ import {
   input,
 } from '@angular/core';
 
-import { ButtonModule } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { TooltipModule } from '@openng/optimus-ui/tooltip';
 
 import { ToastService } from '~/services/toast.service';
 

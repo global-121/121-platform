@@ -9,11 +9,11 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
+import { MultiSelectModule } from '@openng/optimus-ui/multiselect';
 import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
-import { MultiSelectModule } from 'primeng/multiselect';
 
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';

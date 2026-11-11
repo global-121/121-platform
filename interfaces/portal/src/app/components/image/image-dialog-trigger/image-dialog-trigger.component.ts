@@ -6,7 +6,7 @@ import {
   input,
 } from '@angular/core';
 
-import { ButtonModule } from 'primeng/button';
+import { ButtonModule } from '@openng/optimus-ui/button';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 

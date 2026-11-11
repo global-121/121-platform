@@ -9,13 +9,13 @@ import {
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
-import { MenuItem } from 'primeng/api';
-import { AutoFocusModule } from 'primeng/autofocus';
-import { ButtonModule } from 'primeng/button';
-import { DrawerModule } from 'primeng/drawer';
-import { FocusTrapModule } from 'primeng/focustrap';
-import { MenuModule } from 'primeng/menu';
-import { ToolbarModule } from 'primeng/toolbar';
+import { MenuItem } from '@openng/optimus-ui/api';
+import { AutoFocusModule } from '@openng/optimus-ui/autofocus';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { DrawerModule } from '@openng/optimus-ui/drawer';
+import { FocusTrapModule } from '@openng/optimus-ui/focustrap';
+import { MenuModule } from '@openng/optimus-ui/menu';
+import { ToolbarModule } from '@openng/optimus-ui/toolbar';
 
 import { AppRoutes } from '~/app-routes.const';
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';

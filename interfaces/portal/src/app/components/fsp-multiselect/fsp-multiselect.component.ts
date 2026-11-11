@@ -14,8 +14,8 @@ import {
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
 
+import { MultiSelectModule } from '@openng/optimus-ui/multiselect';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MultiSelectModule } from 'primeng/multiselect';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 

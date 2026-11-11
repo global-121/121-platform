@@ -9,8 +9,8 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { MenuItem } from '@openng/optimus-ui/api';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MenuItem } from 'primeng/api';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 

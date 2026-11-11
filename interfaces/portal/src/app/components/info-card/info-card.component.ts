@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { CardModule } from 'primeng/card';
+import { CardModule } from '@openng/optimus-ui/card';
 
 @Component({
   selector: 'app-info-card',

@@ -8,8 +8,8 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { MenuItem } from '@openng/optimus-ui/api';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MenuItem } from 'primeng/api';
 
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';

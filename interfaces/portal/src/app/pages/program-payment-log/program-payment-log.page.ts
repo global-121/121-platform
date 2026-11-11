@@ -9,10 +9,10 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { CardModule } from '@openng/optimus-ui/card';
+import { SkeletonModule } from '@openng/optimus-ui/skeleton';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { SkeletonModule } from 'primeng/skeleton';
 
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 

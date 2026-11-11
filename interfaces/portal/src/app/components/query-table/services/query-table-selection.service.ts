@@ -1,6 +1,6 @@
 import { computed, inject, signal, WritableSignal } from '@angular/core';
 
-import { TableSelectAllChangeEvent } from 'primeng/table';
+import { TableSelectAllChangeEvent } from '@openng/optimus-ui/table';
 
 import {
   QueryTableColumn,

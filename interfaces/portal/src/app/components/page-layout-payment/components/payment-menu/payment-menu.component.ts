@@ -6,8 +6,8 @@ import {
   input,
 } from '@angular/core';
 
-import { MenuItem } from 'primeng/api';
-import { TabsModule } from 'primeng/tabs';
+import { MenuItem } from '@openng/optimus-ui/api';
+import { TabsModule } from '@openng/optimus-ui/tabs';
 
 import { AppRoutes } from '~/app-routes.const';
 import { TabsMenuComponent } from '~/components/tabs-menu/tabs-menu.component';

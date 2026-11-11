@@ -10,8 +10,8 @@ import {
   untracked,
 } from '@angular/core';
 
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { DialogModule } from '@openng/optimus-ui/dialog';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 

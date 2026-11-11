@@ -6,9 +6,9 @@ import {
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
+import { TooltipModule } from '@openng/optimus-ui/tooltip';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { SvgIconComponent } from 'angular-svg-icon';
-import { TooltipModule } from 'primeng/tooltip';
 
 import { NotificationBannerComponent } from '~/components/notification-banner/notification-banner.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';

@@ -14,9 +14,9 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { InputTextModule } from 'primeng/inputtext';
-import { SkeletonModule } from 'primeng/skeleton';
-import { TagModule } from 'primeng/tag';
+import { InputTextModule } from '@openng/optimus-ui/inputtext';
+import { SkeletonModule } from '@openng/optimus-ui/skeleton';
+import { TagModule } from '@openng/optimus-ui/tag';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { getRandomInt } from '@121-service/src/utils/random-value.helper';

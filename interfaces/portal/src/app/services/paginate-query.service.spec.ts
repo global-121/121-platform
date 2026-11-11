@@ -1,8 +1,8 @@
 import { HttpParams } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
-import { FilterMatchMode, FilterMetadata } from 'primeng/api';
-import { TableLazyLoadEvent } from 'primeng/table';
+import { FilterMatchMode, FilterMetadata } from '@openng/optimus-ui/api';
+import { TableLazyLoadEvent } from '@openng/optimus-ui/table';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';

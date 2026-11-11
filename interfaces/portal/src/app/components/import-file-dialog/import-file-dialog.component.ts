@@ -12,9 +12,9 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { DialogModule } from '@openng/optimus-ui/dialog';
 import { CreateMutationResult } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 
 import { FileUploadControlComponent } from '~/components/file-upload-control/file-upload-control.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';

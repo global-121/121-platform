@@ -5,8 +5,8 @@ import {
   inject,
 } from '@angular/core';
 
+import { CardModule } from '@openng/optimus-ui/card';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { CardModule } from 'primeng/card';
 
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';

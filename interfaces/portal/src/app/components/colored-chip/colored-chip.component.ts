@@ -5,8 +5,8 @@ import {
   input,
 } from '@angular/core';
 
-import { ChipModule } from 'primeng/chip';
-import { TooltipModule } from 'primeng/tooltip';
+import { ChipModule } from '@openng/optimus-ui/chip';
+import { TooltipModule } from '@openng/optimus-ui/tooltip';
 
 import {
   InfoTooltipComponent,

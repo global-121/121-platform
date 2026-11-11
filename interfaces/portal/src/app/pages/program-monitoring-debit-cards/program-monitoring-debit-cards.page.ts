@@ -8,8 +8,8 @@ import {
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
 
 import { VisaCardOrderResponseDto } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/dto/visa-card-order-response.dto';
 import { VisaCardOrderStatus } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-order-status.enum';

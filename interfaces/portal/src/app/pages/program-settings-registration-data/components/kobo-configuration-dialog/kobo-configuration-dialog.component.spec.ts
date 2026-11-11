@@ -1,12 +1,12 @@
 import { Signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { MessageService } from '@openng/optimus-ui/api';
 import {
   provideTanStackQuery,
   QueryClient,
   queryOptions,
 } from '@tanstack/angular-query-experimental';
-import { MessageService } from 'primeng/api';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { extractServerAndAssetIdFromUrl } from '~/domains/kobo/kobo.helpers';

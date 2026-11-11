@@ -1,7 +1,7 @@
 import { computed, inject, signal } from '@angular/core';
 
-import { FilterMatchMode, FilterMetadata } from 'primeng/api';
-import { ColumnFilter } from 'primeng/table';
+import { FilterMatchMode, FilterMetadata } from '@openng/optimus-ui/api';
+import { ColumnFilter } from '@openng/optimus-ui/table';
 
 import {
   QueryTableColumn,

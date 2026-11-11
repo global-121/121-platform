@@ -6,9 +6,9 @@ import {
   input,
 } from '@angular/core';
 
+import { ChartModule } from '@openng/optimus-ui/chart';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ChartData } from 'chart.js';
-import { ChartModule } from 'primeng/chart';
 import colors from 'tailwindcss/colors';
 
 import { MetricApiService } from '~/domains/metric/metric.api.service';

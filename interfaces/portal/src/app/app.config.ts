@@ -15,14 +15,14 @@ import {
   withComponentInputBinding,
 } from '@angular/router';
 
+import { MessageService } from '@openng/optimus-ui/api';
+import { provideOptimus } from '@openng/optimus-ui/config';
 import {
   MutationCache,
   provideTanStackQuery,
   QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { provideAngularSvgIcon } from 'angular-svg-icon';
-import { MessageService } from 'primeng/api';
-import { providePrimeNG } from 'primeng/config';
 
 import { routes } from '~/app.routes';
 import AppTheme from '~/app.theme';
@@ -73,15 +73,15 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
     provideZonelessChangeDetection(),
     provideHttpClient(withInterceptorsFromDi()),
     provideAngularSvgIcon(),
-    providePrimeNG({
+    provideOptimus({
       theme: {
         preset: AppTheme,
         options: {
           // disable dark mode (for now)
           darkModeSelector: false,
           cssLayer: {
-            name: 'primeng',
-            order: 'theme, base, primeng, primeng-customisations',
+            name: 'optimus',
+            order: 'theme, base, optimus, optimus-customisations',
           },
         },
       },
