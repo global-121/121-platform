@@ -83,7 +83,13 @@ export class TransactionViewEntity {
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
 
-  @ViewColumn()
+  @ViewColumn({
+    transformer: {
+      to: (value: number | null) => value,
+      from: (value: string | number | null) =>
+        value === null ? null : Number(value),
+    },
+  })
   public transferValue: number | null;
 
   @ViewColumn()

@@ -4,9 +4,12 @@ import {
   IsBoolean,
   IsDateString,
   IsEnum,
+  IsInt,
   IsNumber,
   IsOptional,
   IsString,
+  Max,
+  Min,
 } from 'class-validator';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
@@ -106,9 +109,11 @@ export abstract class BaseProgramDto {
   @IsString()
   public monitoringDashboardUrl?: string;
 
-  @ApiProperty({ example: 100000 })
+  @ApiProperty({ example: 100000, maximum: 2147483647, minimum: 0 })
   @IsOptional()
-  @IsNumber()
+  @IsInt()
+  @Min(0)
+  @Max(2147483647)
   public readonly budget?: number;
 
   @ApiProperty({

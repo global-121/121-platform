@@ -55,7 +55,7 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
         'paymentAmountMultiplier',
       )
       .addSelect(
-        'registration.paymentAmountMultiplier * program."fixedTransferValue"',
+        '"registration"."paymentAmountMultiplier"::text::numeric * "program"."fixedTransferValueNumeric"',
         'transferValue',
       )
       .addSelect('registration.maxPayments', 'maxPayments')
@@ -146,7 +146,13 @@ export class RegistrationViewEntity {
   @ViewColumn()
   public paymentAmountMultiplier: number;
 
-  @ViewColumn()
+  @ViewColumn({
+    transformer: {
+      to: (value: number | null) => value,
+      from: (value: string | number | null) =>
+        value === null ? null : Number(value),
+    },
+  })
   public transferValue: number | null;
 
   @ViewColumn()
