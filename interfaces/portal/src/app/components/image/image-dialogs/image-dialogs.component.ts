@@ -173,6 +173,7 @@ export class ImageDialogsComponent {
       });
     } catch {
       this.toastService.showGenericError();
+      this.closeDialog({ imageIndex: index });
       return;
     }
 

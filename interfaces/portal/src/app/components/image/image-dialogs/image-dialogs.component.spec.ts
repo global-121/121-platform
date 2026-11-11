@@ -165,7 +165,7 @@ describe('ImageDialogsComponent', () => {
     expect(downloadKoboImage).toHaveBeenCalledTimes(1);
   });
 
-  it('shows an error toast when the download fails', async () => {
+  it('shows an error toast and closes the dialog when the download fails', async () => {
     downloadKoboImage.mockRejectedValueOnce(new Error('Not found'));
 
     imageViewerService.open({ imageUrl: firstImageUrl });
@@ -173,6 +173,7 @@ describe('ImageDialogsComponent', () => {
     await fixture.whenStable();
 
     expect(showGenericError).toHaveBeenCalledTimes(1);
+    expect(imageDialogsComponent.openImageIndexes().has(0)).toBe(false);
     expect(createObjectUrl).not.toHaveBeenCalled();
     expect(imageDialogsComponent.downloadedImageObjectUrls()[0]).toBeNull();
   });
