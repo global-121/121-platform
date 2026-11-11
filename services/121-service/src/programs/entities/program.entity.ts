@@ -44,10 +44,16 @@ export class ProgramEntity extends Base121Entity {
   @Column({ type: 'integer', nullable: true })
   public distributionDuration: number | null;
 
-  @Column({ nullable: true, type: 'real' })
-  public fixedTransferValue: number | null;
+  @Column({
+    name: 'fixedTransferValue',
+    nullable: true,
+    select: false,
+    type: 'real',
+  })
+  public fixedTransferValueLegacy?: number | null;
 
   @Column({
+    name: 'fixedTransferValueNumeric',
     nullable: true,
     type: 'numeric',
     transformer: {
@@ -56,7 +62,7 @@ export class ProgramEntity extends Base121Entity {
         value === null ? null : Number.parseFloat(value),
     },
   })
-  public fixedTransferValueNumeric?: number | null;
+  public fixedTransferValue: number | null;
 
   @Column({ type: 'character varying', nullable: true })
   public paymentAmountMultiplierFormula: string | null;
@@ -109,10 +115,17 @@ export class ProgramEntity extends Base121Entity {
   @Column({ default: false })
   public enableScope: boolean;
 
-  @Column({ nullable: true, default: null, type: 'integer' })
-  public budget: number | null;
+  @Column({
+    name: 'budget',
+    nullable: true,
+    default: null,
+    select: false,
+    type: 'integer',
+  })
+  public budgetLegacy?: number | null;
 
   @Column({
+    name: 'budgetNumeric',
     nullable: true,
     type: 'numeric',
     transformer: {
@@ -121,7 +134,7 @@ export class ProgramEntity extends Base121Entity {
         value === null ? null : Number.parseFloat(value),
     },
   })
-  public budgetNumeric?: number | null;
+  public budget: number | null;
 
   @OneToMany(() => PaymentEntity, (payment) => payment.program)
   public payments: Relation<PaymentEntity[]>;
