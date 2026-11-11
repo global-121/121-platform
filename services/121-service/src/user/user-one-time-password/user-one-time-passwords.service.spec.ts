@@ -12,10 +12,10 @@ import {
 } from '@121-service/src/user/user-one-time-password/user-one-time-password.const';
 import { UserOneTimePasswordEntity } from '@121-service/src/user/user-one-time-password/user-one-time-password.entity';
 import { UserOneTimePasswordRepository } from '@121-service/src/user/user-one-time-password/user-one-time-password.repository';
-import { UserOneTimePasswordService } from '@121-service/src/user/user-one-time-password/user-one-time-password.service';
+import { UserOneTimePasswordsService } from '@121-service/src/user/user-one-time-password/user-one-time-passwords.service';
 
-describe('UserOneTimePasswordService', () => {
-  let service: UserOneTimePasswordService;
+describe('UserOneTimePasswordsService', () => {
+  let service: UserOneTimePasswordsService;
   let userOneTimePasswordRepository: jest.Mocked<UserOneTimePasswordRepository>;
 
   const hashOneTimePassword = ({ oneTimePassword }: { oneTimePassword: string }): string =>
@@ -35,7 +35,7 @@ describe('UserOneTimePasswordService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UserOneTimePasswordService,
+        UserOneTimePasswordsService,
         {
           provide: UserOneTimePasswordRepository,
           useValue: {
@@ -52,7 +52,7 @@ describe('UserOneTimePasswordService', () => {
       ],
     }).compile();
 
-    service = module.get(UserOneTimePasswordService);
+    service = module.get(UserOneTimePasswordsService);
     userOneTimePasswordRepository = module.get(UserOneTimePasswordRepository);
   });
 

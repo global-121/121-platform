@@ -19,7 +19,7 @@ import { UserOneTimePasswordEntity } from '@121-service/src/user/user-one-time-p
 import { UserOneTimePasswordRepository } from '@121-service/src/user/user-one-time-password/user-one-time-password.repository';
 
 @Injectable()
-export class UserOneTimePasswordService {
+export class UserOneTimePasswordsService {
   public constructor(private readonly userOneTimePasswordRepository: UserOneTimePasswordRepository) {}
 
   public async createOneTimePassword({

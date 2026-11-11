@@ -54,7 +54,7 @@ import { UserData, UserRO } from '@121-service/src/user/user.interface';
 import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { ONE_TIME_PASSWORD_EXPIRATION_MINUTES } from '@121-service/src/user/user-one-time-password/user-one-time-password.const';
-import { UserOneTimePasswordService } from '@121-service/src/user/user-one-time-password/user-one-time-password.service';
+import { UserOneTimePasswordsService } from '@121-service/src/user/user-one-time-password/user-one-time-passwords.service';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 const tokenExpirationHours = 33; // We picked a 33 hour window because it's 1 day + 8 hour working day + 1 hour buffer, to minimize the chance of a token expiring during a working day.
 const MS_PER_HOUR = 3_600_000;
@@ -74,7 +74,7 @@ export class UserService {
     private readonly userEmailsService: UserEmailsService,
     private readonly userAccessGroupAssignmentsService: UserAccessGroupAssignmentsService,
     private readonly assignmentRepository: ProgramAidworkerAssignmentRepository,
-    private readonly userOneTimePasswordService: UserOneTimePasswordService,
+    private readonly userOneTimePasswordsService: UserOneTimePasswordsService,
     private readonly azureLogService: AzureLogService,
   ) {}
 
@@ -140,7 +140,7 @@ export class UserService {
       return;
     }
 
-    const createOneTimePasswordResult = await this.userOneTimePasswordService.createOneTimePassword({
+    const createOneTimePasswordResult = await this.userOneTimePasswordsService.createOneTimePassword({
       userId: user.id,
     });
     if (!createOneTimePasswordResult) {
@@ -256,7 +256,7 @@ export class UserService {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-    const verifyOneTimePasswordResult = await this.userOneTimePasswordService.verifyOneTimePassword({
+    const verifyOneTimePasswordResult = await this.userOneTimePasswordsService.verifyOneTimePassword({
       userId: userEntity.id,
       oneTimePassword,
     });

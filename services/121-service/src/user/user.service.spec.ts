@@ -23,7 +23,7 @@ import { UserService } from '@121-service/src/user/user.service';
 import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { OneTimePasswordVerificationFailureReason } from '@121-service/src/user/user-one-time-password/enum/one-time-password-verification-failure-reason.enum';
-import { UserOneTimePasswordService } from '@121-service/src/user/user-one-time-password/user-one-time-password.service';
+import { UserOneTimePasswordsService } from '@121-service/src/user/user-one-time-password/user-one-time-passwords.service';
 
 jest.mock('@121-service/src/env', () => ({
   env: {
@@ -41,7 +41,7 @@ describe('UserService', () => {
   let assignmentRepository: ProgramAidworkerAssignmentRepository;
   let userAccessGroupAssignmentsService: jest.Mocked<UserAccessGroupAssignmentsService>;
   let userEmailsService: UserEmailsService;
-  let userOneTimePasswordService: UserOneTimePasswordService;
+  let userOneTimePasswordsService: UserOneTimePasswordsService;
   let azureLogService: AzureLogService;
 
   const mockRequest = {
@@ -98,7 +98,7 @@ describe('UserService', () => {
           },
         },
         {
-          provide: UserOneTimePasswordService,
+          provide: UserOneTimePasswordsService,
           useValue: { createOneTimePassword: jest.fn(), verifyOneTimePassword: jest.fn() },
         },
         {
@@ -128,7 +128,7 @@ describe('UserService', () => {
       UserAccessGroupAssignmentsService,
     );
     userEmailsService = module.get<UserEmailsService>(UserEmailsService);
-    userOneTimePasswordService = module.get<UserOneTimePasswordService>(UserOneTimePasswordService);
+    userOneTimePasswordsService = module.get<UserOneTimePasswordsService>(UserOneTimePasswordsService);
     azureLogService = module.get<AzureLogService>(AzureLogService);
   });
 
@@ -152,7 +152,7 @@ describe('UserService', () => {
 
     beforeEach(() => {
       jest
-        .spyOn(userOneTimePasswordService, 'createOneTimePassword')
+        .spyOn(userOneTimePasswordsService, 'createOneTimePassword')
         .mockResolvedValue({ oneTimePassword, expiresAt: new Date() });
       jest.spyOn(userEmailsService, 'sendLoginOneTimePassword').mockResolvedValue();
     });
@@ -185,14 +185,14 @@ describe('UserService', () => {
       await requestLoginOneTimePasswordAndWait({ username: 'unknown@example.org' });
 
       // Assert
-      expect(userOneTimePasswordService.createOneTimePassword).not.toHaveBeenCalled();
+      expect(userOneTimePasswordsService.createOneTimePassword).not.toHaveBeenCalled();
       expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
     });
 
     it('does not email a one-time password while the previous one is within the cooldown', async () => {
       // Arrange
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
-      jest.spyOn(userOneTimePasswordService, 'createOneTimePassword').mockResolvedValue(undefined);
+      jest.spyOn(userOneTimePasswordsService, 'createOneTimePassword').mockResolvedValue(undefined);
 
       // Act
       await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
@@ -212,7 +212,7 @@ describe('UserService', () => {
       await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
 
       // Assert
-      expect(userOneTimePasswordService.createOneTimePassword).not.toHaveBeenCalled();
+      expect(userOneTimePasswordsService.createOneTimePassword).not.toHaveBeenCalled();
       expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
     });
 
@@ -225,7 +225,7 @@ describe('UserService', () => {
       await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
 
       // Assert
-      expect(userOneTimePasswordService.createOneTimePassword).not.toHaveBeenCalled();
+      expect(userOneTimePasswordsService.createOneTimePassword).not.toHaveBeenCalled();
       expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
     });
 
@@ -305,7 +305,7 @@ describe('UserService', () => {
       it('logs a refused one-time password request with the user id', async () => {
         // Arrange
         jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
-        jest.spyOn(userOneTimePasswordService, 'createOneTimePassword').mockResolvedValue(undefined);
+        jest.spyOn(userOneTimePasswordsService, 'createOneTimePassword').mockResolvedValue(undefined);
 
         // Act
         await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
@@ -368,7 +368,7 @@ describe('UserService', () => {
 
     beforeEach(() => {
       jest
-        .spyOn(userOneTimePasswordService, 'verifyOneTimePassword')
+        .spyOn(userOneTimePasswordsService, 'verifyOneTimePassword')
         .mockResolvedValue({ isVerified: true });
       jest
         .spyOn(userRepository, 'findOneOrFail')
@@ -412,7 +412,7 @@ describe('UserService', () => {
       jest
         .spyOn(userRepository, 'findOne')
         .mockResolvedValue(buildExistingUser());
-      jest.spyOn(userOneTimePasswordService, 'verifyOneTimePassword').mockResolvedValue({
+      jest.spyOn(userOneTimePasswordsService, 'verifyOneTimePassword').mockResolvedValue({
         isVerified: false,
         failureReason: OneTimePasswordVerificationFailureReason.wrongCode,
       });
@@ -494,7 +494,7 @@ describe('UserService', () => {
         jest
           .spyOn(userRepository, 'findOne')
           .mockResolvedValue(buildExistingUser());
-        jest.spyOn(userOneTimePasswordService, 'verifyOneTimePassword').mockResolvedValue({
+        jest.spyOn(userOneTimePasswordsService, 'verifyOneTimePassword').mockResolvedValue({
           isVerified: false,
           failureReason: OneTimePasswordVerificationFailureReason.expired,
         });
@@ -518,7 +518,7 @@ describe('UserService', () => {
         jest
           .spyOn(userRepository, 'findOne')
           .mockResolvedValue(buildExistingUser());
-        jest.spyOn(userOneTimePasswordService, 'verifyOneTimePassword').mockResolvedValue({
+        jest.spyOn(userOneTimePasswordsService, 'verifyOneTimePassword').mockResolvedValue({
           isVerified: false,
           failureReason: OneTimePasswordVerificationFailureReason.wrongCode,
           lockedUntil,
@@ -539,7 +539,7 @@ describe('UserService', () => {
         jest
           .spyOn(userRepository, 'findOne')
           .mockResolvedValue(buildExistingUser());
-        jest.spyOn(userOneTimePasswordService, 'verifyOneTimePassword').mockResolvedValue({
+        jest.spyOn(userOneTimePasswordsService, 'verifyOneTimePassword').mockResolvedValue({
           isVerified: false,
           failureReason: OneTimePasswordVerificationFailureReason.wrongCode,
         });
