@@ -138,6 +138,30 @@ export default defineConfig(
       // `this`. In that case the underlying method is just not called so the
       // rule is irrelevant.
       '@typescript-eslint/unbound-method': 'off',
+      // Angular's TestBed relies on dev mode. Switching to prod mode leaks into
+      // other spec files and causes order-dependent failures. Make dev mode an
+      // explicit input of the code under test instead.
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@angular/core',
+              importNames: ['enableProdMode'],
+              message:
+                'Do not change Angular dev mode in tests. Pass dev mode as an explicit input instead.',
+            },
+          ],
+        },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "Identifier[name='ngDevMode'], Literal[value='ngDevMode']",
+          message:
+            'Do not change Angular dev mode in tests. Pass dev mode as an explicit input instead.',
+        },
+      ],
     },
   },
   {

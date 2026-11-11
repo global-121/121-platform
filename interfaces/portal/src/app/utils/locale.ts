@@ -1,5 +1,3 @@
-import { isDevMode } from '@angular/core';
-
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 import { Language } from '@121-service/src/shared/types/language.type';
 import { isStringEnumValue } from '@121-service/src/utils/is-string-enum-value.helper';
@@ -75,9 +73,11 @@ const isValidLocale = (locale: string): locale is Locale =>
 export const getLocaleForInitialization = ({
   defaultLocale,
   urlLocale,
+  isDevMode = false,
 }: {
   defaultLocale: string;
   urlLocale: string;
+  isDevMode?: boolean;
 }):
   | {
       locale: Locale;
@@ -94,7 +94,7 @@ export const getLocaleForInitialization = ({
     );
   }
 
-  if (isDevMode()) {
+  if (isDevMode) {
     return { locale: defaultLocale };
   }
 

@@ -1,7 +1,7 @@
 import { LOCALE_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { Locale } from '~/utils/locale';
@@ -24,12 +24,6 @@ describe('TranslatableStringPipe', () => {
         TranslatableStringPipe,
       ],
     });
-
-    vi.stubGlobal('ngDevMode', false);
-  });
-
-  afterEach(() => {
-    vi.unstubAllGlobals();
   });
 
   it('create an instance', () => {
