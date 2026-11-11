@@ -124,6 +124,16 @@ export class ImageDialogsComponent {
     return isImageAvailable({ imageUrl });
   }
 
+  getDisplayedImageUrl({ imageIndex }: { imageIndex: number }): null | string {
+    const { imageUrl, referenceId } = this.images()[imageIndex];
+
+    if (!referenceId) {
+      return imageUrl;
+    }
+
+    return this.downloadedImageObjectUrls()[imageIndex] ?? null;
+  }
+
   async openImage({ imageIndex }: { imageIndex: number }): Promise<void> {
     const images = this.images();
 
