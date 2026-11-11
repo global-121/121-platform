@@ -6,8 +6,8 @@ import {
   input,
 } from '@angular/core';
 
+import { TagModule } from '@openng/optimus-ui/tag';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { TagModule } from 'primeng/tag';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 

@@ -6,9 +6,9 @@ import {
   input,
 } from '@angular/core';
 
+import { MenuItem } from '@openng/optimus-ui/api';
+import { TabsModule } from '@openng/optimus-ui/tabs';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MenuItem } from 'primeng/api';
-import { TabsModule } from 'primeng/tabs';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 

@@ -6,7 +6,7 @@ import {
   input,
 } from '@angular/core';
 
-import { MenuItem } from 'primeng/api';
+import { MenuItem } from '@openng/optimus-ui/api';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
