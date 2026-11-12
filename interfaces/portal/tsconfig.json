@@ -12,6 +12,7 @@
       "tailwind.config.mjs": ["./tailwind.config.mts"]
     },
     "outDir": "./dist/out-tsc",
+    // Must contain all sources, including those imported from `services/121-service` via "@121-service/*"
     "rootDir": "../../",
     "strict": true,
     // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28804
