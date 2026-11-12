@@ -65,6 +65,15 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v7
 
+      - name: Start build and test energy measurement
+        id: energy_start
+        continue-on-error: true
+        uses: green-coding-solutions/eco-ci-energy-estimation@782dd4a31bc426a6ae26a7b08d89af454b10ffc0 # v5.3.0
+        with:
+          task: start-measurement
+          send-data: false
+          json-output: true
+
       - name: Set up Node.js version
         uses: actions/setup-node@v7
         with:
@@ -80,6 +89,16 @@ jobs:
       - name: Lint E2E-Tests code
         working-directory: ${{ env.e2eTestsPath }}
         run: 'npm run lint'
+
+      - name: Collect build and test energy
+        if: always()
+        continue-on-error: true
+        uses: ./.github/actions/energy-results
+        with:
+          artifact-name: test_e2e_portal-lint-code
+          start-outcome: ${{ steps.energy_start.outcome }}
+          workload-status: ${{ job.status }}
+          approximate: 'false'
 
   test-shard-e2e:
     runs-on: ubuntu-latest
@@ -97,6 +116,15 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v7
+
+      - name: Start build and test energy measurement
+        id: energy_start
+        continue-on-error: true
+        uses: green-coding-solutions/eco-ci-energy-estimation@782dd4a31bc426a6ae26a7b08d89af454b10ffc0 # v5.3.0
+        with:
+          task: start-measurement
+          send-data: false
+          json-output: true
 
       - name: Set up Node.js version
         uses: actions/setup-node@v7
@@ -144,6 +172,16 @@ jobs:
         run: |
           npm test -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
 
+      - name: Collect build and test energy
+        if: always()
+        continue-on-error: true
+        uses: ./.github/actions/energy-results
+        with:
+          artifact-name: test_e2e_portal-test-shard-e2e-${{ matrix.shard }}
+          start-outcome: ${{ steps.energy_start.outcome }}
+          workload-status: ${{ job.status }}
+          approximate: 'false'
+
       - uses: actions/upload-artifact@v7
         if: always()
         with:
@@ -179,3 +217,19 @@ jobs:
         run: |
           echo "All required checks have successfully passed." >> "$GITHUB_STEP_SUMMARY"
           exit 0
+
+  energy-summary:
+    name: Build and test energy total
+    if: always()
+    needs: [lint-code, test-shard-e2e]
+    runs-on: ubuntu-slim
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Summarize build and test energy
+        uses: ./.github/actions/energy-summary
+        with:
+          workflow: test_e2e_portal
+          producers: '["test_e2e_portal-lint-code","test_e2e_portal-test-shard-e2e-1","test_e2e_portal-test-shard-e2e-2","test_e2e_portal-test-shard-e2e-3","test_e2e_portal-test-shard-e2e-4","test_e2e_portal-test-shard-e2e-5","test_e2e_portal-test-shard-e2e-6"]'
+          job-results: ${{ toJSON(needs) }}

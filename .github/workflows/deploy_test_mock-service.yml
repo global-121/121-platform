@@ -44,11 +44,30 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Start build and test energy measurement
+        id: energy_start
+        continue-on-error: true
+        uses: green-coding-solutions/eco-ci-energy-estimation@782dd4a31bc426a6ae26a7b08d89af454b10ffc0 # v5.3.0
+        with:
+          task: start-measurement
+          send-data: false
+          json-output: true
+
       - name: Build Service
         id: build
         uses: ./.github/actions/build-service
         with:
           servicePath: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      - name: Collect build and test energy
+        if: always()
+        continue-on-error: true
+        uses: ./.github/actions/energy-results
+        with:
+          artifact-name: deploy_test_mock-service-build-and-deploy
+          start-outcome: ${{ steps.energy_start.outcome }}
+          workload-status: ${{ job.status }}
+          approximate: 'false'
 
       - name: Deploy to Azure App Service
         id: deploy_to_aas
@@ -64,3 +83,19 @@ jobs:
         run: |
           echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
           echo "Preview: <${{ steps.deploy_to_aas.outputs.webapp-url }}>" >> $GITHUB_STEP_SUMMARY
+
+  energy-summary:
+    name: Build and test energy total
+    if: always()
+    needs: [build-and-deploy]
+    runs-on: ubuntu-slim
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Summarize build and test energy
+        uses: ./.github/actions/energy-summary
+        with:
+          workflow: deploy_test_mock-service
+          producers: '["deploy_test_mock-service-build-and-deploy"]'
+          job-results: ${{ toJSON(needs) }}

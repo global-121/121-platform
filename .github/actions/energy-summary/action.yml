@@ -1,0 +1,60 @@
+name: Build and test energy total
+description: Sum the native Eco CI results from this workflow's measured jobs.
+
+inputs:
+  workflow:
+    description: Workflow filename without its extension.
+    required: true
+  producers:
+    description: JSON array of expected producer identifiers, including every shard.
+    required: true
+  job-results:
+    description: JSON representation of the caller job's needs context.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v7
+      with:
+        node-version-file: '.node-version'
+
+    - name: Download build and test measurements
+      id: download
+      if: always() && (contains(fromJSON(inputs.job-results).*.result, 'success') || contains(fromJSON(inputs.job-results).*.result, 'failure') || contains(fromJSON(inputs.job-results).*.result, 'cancelled'))
+      continue-on-error: true
+      uses: actions/download-artifact@v8
+      with:
+        pattern: eco-ci-${{ inputs.workflow }}-*-attempt-${{ github.run_attempt }}
+        path: ${{ runner.temp }}/eco-ci-${{ inputs.workflow }}
+
+    - name: Summarize native Eco CI results
+      id: summarize
+      if: always()
+      continue-on-error: true
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      env:
+        ENERGY_DIRECTORY: ${{ runner.temp }}/eco-ci-${{ inputs.workflow }}
+        ENERGY_NEEDS: ${{ inputs.job-results }}
+        ENERGY_PRODUCERS: ${{ inputs.producers }}
+      run: node tools/eco-ci-summary.mjs summarize
+
+    - name: Preserve workflow total
+      id: upload
+      if: always() && steps.summarize.outcome == 'success'
+      continue-on-error: true
+      uses: actions/upload-artifact@v7
+      with:
+        name: eco-ci-total-${{ inputs.workflow }}-attempt-${{ github.run_attempt }}
+        path: eco-ci-total/total.json
+        if-no-files-found: error
+        retention-days: 30
+
+    - name: Warn about missing totals
+      if: always() && (steps.summarize.outcome != 'success' || steps.upload.outcome != 'success' || steps.download.outcome == 'failure')
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      run: |
+        echo "::warning::Eco CI workflow reporting is incomplete. Existing build/test results are unchanged."
+        echo "### Eco CI: workflow reporting incomplete" >> "$GITHUB_STEP_SUMMARY"

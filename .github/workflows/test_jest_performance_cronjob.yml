@@ -86,6 +86,15 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v7
 
+      - name: Start build and test energy measurement
+        id: energy_start
+        continue-on-error: true
+        uses: green-coding-solutions/eco-ci-energy-estimation@782dd4a31bc426a6ae26a7b08d89af454b10ffc0 # v5.3.0
+        with:
+          task: start-measurement
+          send-data: false
+          json-output: true
+
       - name: Set up Node.js version
         uses: actions/setup-node@v7
         with:
@@ -113,6 +122,16 @@ jobs:
             fi
           done
 
+      - name: Collect build and test energy
+        if: always()
+        continue-on-error: true
+        uses: ./.github/actions/energy-results
+        with:
+          artifact-name: test_jest_performance_cronjob-performance-test-shard-${{ matrix.shard }}
+          start-outcome: ${{ steps.energy_start.outcome }}
+          workload-status: ${{ job.status }}
+          approximate: 'false'
+
       - name: Docker logs
         if: always()
         uses: global-121/collect-container-logs@78594c6154439e32858bf3dc17c9ff36561a1d31
@@ -135,3 +154,19 @@ jobs:
         run: |
           echo "All performance tests have successfully passed." >> "$GITHUB_STEP_SUMMARY"
           echo "Test results: ${{ toJson(needs.*.result) }}" >> "$GITHUB_STEP_SUMMARY"
+
+  energy-summary:
+    name: Build and test energy total
+    if: always()
+    needs: [performance-test-shard]
+    runs-on: ubuntu-slim
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Summarize build and test energy
+        uses: ./.github/actions/energy-summary
+        with:
+          workflow: test_jest_performance_cronjob
+          producers: '["test_jest_performance_cronjob-performance-test-shard-1","test_jest_performance_cronjob-performance-test-shard-2","test_jest_performance_cronjob-performance-test-shard-3","test_jest_performance_cronjob-performance-test-shard-4","test_jest_performance_cronjob-performance-test-shard-5","test_jest_performance_cronjob-performance-test-shard-6","test_jest_performance_cronjob-performance-test-shard-7"]'
+          job-results: ${{ toJSON(needs) }}

@@ -71,6 +71,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Start build and test energy measurement
+        id: energy_start
+        continue-on-error: true
+        uses: green-coding-solutions/eco-ci-energy-estimation@782dd4a31bc426a6ae26a7b08d89af454b10ffc0 # v5.3.0
+        with:
+          task: start-measurement
+          send-data: false
+          json-output: true
+
       - name: Build Interface
         id: build
         uses: ./.github/actions/build-interface
@@ -80,6 +89,16 @@ jobs:
         with:
           interfacePath: ${{ env.workingDirectory }}
           envIcon: ${{ env.NG_ENV_ICON }}
+
+      - name: Collect build and test energy
+        if: always()
+        continue-on-error: true
+        uses: ./.github/actions/energy-results
+        with:
+          artifact-name: deploy_test_portal-test
+          start-outcome: ${{ steps.energy_start.outcome }}
+          workload-status: ${{ job.status }}
+          approximate: 'false'
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig
@@ -150,3 +169,19 @@ jobs:
           app_location: '${{ env.workingDirectory }}/www'
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL }}
           action: 'close'
+
+  energy-summary:
+    name: Build and test energy total
+    if: always()
+    needs: [test]
+    runs-on: ubuntu-slim
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Summarize build and test energy
+        uses: ./.github/actions/energy-summary
+        with:
+          workflow: deploy_test_portal
+          producers: '["deploy_test_portal-test"]'
+          job-results: ${{ toJSON(needs) }}

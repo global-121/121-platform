@@ -18,6 +18,18 @@ jobs:
     if: contains(github.actor, 'dependabot') == false
 
     steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+
+      - name: Start build and test energy measurement
+        id: energy_start
+        continue-on-error: true
+        uses: green-coding-solutions/eco-ci-energy-estimation@782dd4a31bc426a6ae26a7b08d89af454b10ffc0 # v5.3.0
+        with:
+          task: start-measurement
+          send-data: false
+          json-output: true
+
       - name: Check PR description and labels
         id: fetch_pr
         uses: actions/github-script@v9
@@ -61,9 +73,6 @@ jobs:
 
             return pr.data;
 
-      - name: Check out repository code
-        uses: actions/checkout@v7
-
       - name: Check that no "XXX:" comments have been left on the PR
         run: |
           echo "The following files contain 'XXX:' comments that should be removed:"
@@ -73,3 +82,29 @@ jobs:
         run: |
           echo "The following files contain '##TODO' comments that should be removed:"
           ! grep -RI --exclude-dir=.git --exclude=\*.{json,md,xml,nvmrc} --exclude=test_pull_request_formatting.yml "##TODO" .
+
+      - name: Collect build and test energy
+        if: always()
+        continue-on-error: true
+        uses: ./.github/actions/energy-results
+        with:
+          artifact-name: test_pull_request_formatting-test
+          start-outcome: ${{ steps.energy_start.outcome }}
+          workload-status: ${{ job.status }}
+          approximate: 'true'
+
+  energy-summary:
+    name: Build and test energy total
+    if: always()
+    needs: [test]
+    runs-on: ubuntu-slim
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Summarize build and test energy
+        uses: ./.github/actions/energy-summary
+        with:
+          workflow: test_pull_request_formatting
+          producers: '["test_pull_request_formatting-test"]'
+          job-results: ${{ toJSON(needs) }}
