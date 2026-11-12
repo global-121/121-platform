@@ -166,7 +166,7 @@ async function bootstrap(): Promise<void> {
       defaultModelsExpandDepth: 1,
       displayOperationId: IS_DEVELOPMENT,
       displayRequestDuration: true,
-      filter: false,
+      filter: true,
       operationsSorter: 'alpha',
       persistAuthorization: IS_DEVELOPMENT,
       queryConfigEnabled: IS_DEVELOPMENT,
