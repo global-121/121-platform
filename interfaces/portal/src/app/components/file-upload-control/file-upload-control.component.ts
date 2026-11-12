@@ -9,10 +9,10 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { DialogModule } from '@openng/optimus-ui/dialog';
+import { FileUploadModule } from '@openng/optimus-ui/fileupload';
 import { NgxFilesizeModule } from 'ngx-filesize';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { FileUploadModule } from 'primeng/fileupload';
 
 import { RtlHelperService } from '~/services/rtl-helper.service';
 

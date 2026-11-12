@@ -2,11 +2,11 @@ import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 
+import { MessageService } from '@openng/optimus-ui/api';
 import {
   provideTanStackQuery,
   QueryClient,
 } from '@tanstack/angular-query-experimental';
-import { MessageService } from 'primeng/api';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { AppComponent } from '~/app.component';

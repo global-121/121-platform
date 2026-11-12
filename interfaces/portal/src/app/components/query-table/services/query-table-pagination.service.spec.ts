@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { TableLazyLoadEvent } from 'primeng/table';
+import { TableLazyLoadEvent } from '@openng/optimus-ui/table';
 import {
   beforeEach,
   describe,

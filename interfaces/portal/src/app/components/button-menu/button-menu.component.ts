@@ -8,9 +8,9 @@ import {
   model,
 } from '@angular/core';
 
-import { MenuItem } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { MenuModule } from 'primeng/menu';
+import { MenuItem } from '@openng/optimus-ui/api';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { MenuModule } from '@openng/optimus-ui/menu';
 
 import { RtlHelperService } from '~/services/rtl-helper.service';
 

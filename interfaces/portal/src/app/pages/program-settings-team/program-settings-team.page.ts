@@ -8,14 +8,14 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { MenuItem } from '@openng/optimus-ui/api';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { CardModule } from '@openng/optimus-ui/card';
+import { ConfirmDialogModule } from '@openng/optimus-ui/confirmdialog';
 import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
-import { MenuItem } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 

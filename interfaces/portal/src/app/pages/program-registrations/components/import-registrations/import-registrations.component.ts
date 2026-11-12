@@ -6,11 +6,11 @@ import {
   model,
 } from '@angular/core';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
 import {
   injectMutation,
   QueryClient,
 } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 

@@ -7,8 +7,8 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { TextareaModule } from '@openng/optimus-ui/textarea';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { TextareaModule } from 'primeng/textarea';
 
 import { Registration } from '~/domains/registration/registration.model';
 import {

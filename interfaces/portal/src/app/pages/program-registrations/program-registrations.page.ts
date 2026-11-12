@@ -8,11 +8,11 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { MenuItem } from '@openng/optimus-ui/api';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { ButtonGroupModule } from '@openng/optimus-ui/buttongroup';
+import { CardModule } from '@openng/optimus-ui/card';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MenuItem } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { ButtonGroupModule } from 'primeng/buttongroup';
-import { CardModule } from 'primeng/card';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';

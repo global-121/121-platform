@@ -8,8 +8,8 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { ProgressSpinnerModule } from '@openng/optimus-ui/progressspinner';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';

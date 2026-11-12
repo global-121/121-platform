@@ -14,11 +14,11 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { DrawerModule } from 'primeng/drawer';
-import { FocusTrapModule } from 'primeng/focustrap';
-import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { CheckboxModule } from '@openng/optimus-ui/checkbox';
+import { DrawerModule } from '@openng/optimus-ui/drawer';
+import { FocusTrapModule } from '@openng/optimus-ui/focustrap';
+import { ScrollPanelModule } from '@openng/optimus-ui/scrollpanel';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { QueryTableColumn } from '~/components/query-table/query-table.types';

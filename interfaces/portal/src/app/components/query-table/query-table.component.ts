@@ -18,17 +18,21 @@ import {
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-import { MenuItem, TableState } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ContextMenuModule } from 'primeng/contextmenu';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
-import { Menu, MenuModule } from 'primeng/menu';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { SkeletonModule } from 'primeng/skeleton';
-import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
+import { MenuItem, TableState } from '@openng/optimus-ui/api';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { CheckboxModule } from '@openng/optimus-ui/checkbox';
+import { ContextMenuModule } from '@openng/optimus-ui/contextmenu';
+import { IconFieldModule } from '@openng/optimus-ui/iconfield';
+import { InputIconModule } from '@openng/optimus-ui/inputicon';
+import { InputTextModule } from '@openng/optimus-ui/inputtext';
+import { Menu, MenuModule } from '@openng/optimus-ui/menu';
+import { MultiSelectModule } from '@openng/optimus-ui/multiselect';
+import { SkeletonModule } from '@openng/optimus-ui/skeleton';
+import {
+  Table,
+  TableLazyLoadEvent,
+  TableModule,
+} from '@openng/optimus-ui/table';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';

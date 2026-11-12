@@ -2,7 +2,7 @@
 
 import { inject, Injectable } from '@angular/core';
 
-import { MessageService, ToastMessageOptions } from 'primeng/api';
+import { MessageService, ToastMessageOptions } from '@openng/optimus-ui/api';
 
 @Injectable({
   providedIn: 'root',

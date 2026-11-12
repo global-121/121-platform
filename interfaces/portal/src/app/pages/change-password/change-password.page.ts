@@ -1,7 +1,7 @@
 import { NgComponentOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { CardModule } from 'primeng/card';
+import { CardModule } from '@openng/optimus-ui/card';
 
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { AuthService } from '~/services/auth.service';

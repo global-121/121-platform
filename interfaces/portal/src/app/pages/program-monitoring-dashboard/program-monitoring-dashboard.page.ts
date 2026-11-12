@@ -5,8 +5,8 @@ import {
   input,
 } from '@angular/core';
 
-import { CardModule } from 'primeng/card';
-import { ChartModule } from 'primeng/chart';
+import { CardModule } from '@openng/optimus-ui/card';
+import { ChartModule } from '@openng/optimus-ui/chart';
 
 import tailwindConfig from '~/../../tailwind.config.mjs';
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';

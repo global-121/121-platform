@@ -1,5 +1,5 @@
-import { definePreset } from '@primeuix/themes';
-import Aura from '@primeuix/themes/aura';
+import { definePreset } from '@openng/optimus-ui-themes';
+import Aura from '@openng/optimus-ui-themes/aura';
 import tailwindConfig from 'tailwind.config.mjs';
 
 const colors = tailwindConfig.theme.colors;
@@ -89,21 +89,23 @@ const AppTheme = definePreset(Aura, {
   },
   components: {
     button: {
+      root: {
+        gap: '0.625rem',
+        paddingX: '1.25rem',
+        paddingY: '0.6rem',
+        sm: {
+          paddingX: '1rem',
+          paddingY: '0.25rem',
+        },
+        lg: {
+          paddingX: '1rem',
+          paddingY: '0.25rem',
+          iconOnlyWidth: '2.5rem',
+        },
+      },
       colorScheme: {
         light: {
           root: {
-            gap: '0.625rem',
-            paddingX: '1.25rem',
-            paddingY: '0.6rem',
-            sm: {
-              paddingX: '1rem',
-              paddingY: '0.25rem',
-            },
-            lg: {
-              paddingX: '1rem',
-              paddingY: '0.25rem',
-              iconOnlyWidth: '2.5rem',
-            },
             primary: {
               hoverBackground: colors.purple[600],
               activeBackground: colors.purple[900],
@@ -132,20 +134,16 @@ const AppTheme = definePreset(Aura, {
       },
     },
     card: {
-      colorScheme: {
-        light: {
-          root: {
-            shadow: 'none',
-          },
-        },
+      root: {
+        shadow: 'none',
       },
     },
     datatable: {
+      bodyCell: {
+        padding: '0.625rem 1rem',
+      },
       colorScheme: {
         light: {
-          bodyCell: {
-            padding: '0.625rem 1rem',
-          },
           row: {
             hoverColor: colors.black.DEFAULT,
           },
@@ -163,17 +161,13 @@ const AppTheme = definePreset(Aura, {
       },
     },
     radiobutton: {
-      colorScheme: {
-        light: {
-          root: {
-            checkedBackground: colors.white,
-            checkedHoverBackground: colors.white,
-          },
-          icon: {
-            checkedColor: colors.purple.DEFAULT,
-            checkedHoverColor: colors.purple.DEFAULT,
-          },
-        },
+      root: {
+        checkedBackground: colors.white,
+        checkedHoverBackground: colors.white,
+      },
+      icon: {
+        checkedColor: colors.purple.DEFAULT,
+        checkedHoverColor: colors.purple.DEFAULT,
       },
     },
     scrollpanel: {
@@ -201,23 +195,21 @@ const AppTheme = definePreset(Aura, {
       },
     },
     tooltip: {
+      root: {
+        shadow: tailwindConfig.theme.extend.boxShadow.tooltip,
+      },
       colorScheme: {
         light: {
           root: {
             background: colors.white,
             color: colors.black.DEFAULT,
-            shadow: tailwindConfig.theme.extend.boxShadow.tooltip,
           },
         },
       },
     },
     chip: {
-      colorScheme: {
-        light: {
-          root: {
-            paddingY: '0.125rem',
-          },
-        },
+      root: {
+        paddingY: '0.125rem',
       },
     },
   },

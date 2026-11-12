@@ -8,9 +8,9 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { SkeletonModule } from '@openng/optimus-ui/skeleton';
 import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
-import { SkeletonModule } from 'primeng/skeleton';
 
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';

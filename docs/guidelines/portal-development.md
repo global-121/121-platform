@@ -80,8 +80,8 @@ Items with the 🤖 emoji happen automatically when using `ng generate component
 ### General component guidelines
 
 - Keep custom components/CSS to a minimum.
-  - Use [PrimeNG](https://primeng.org/) components whenever possible
-    - A design might contain something that, with a few tweaks, could use a PrimeNG component instead of a custom one. Always prefer to push for and suggest those tweaks.
+  - Use [Optimus UI](https://optimus.openng.org/) components whenever possible
+    - A design might contain something that, with a few tweaks, could use an Optimus UI component instead of a custom one. Always prefer to push for and suggest those tweaks.
 - Use the [new syntax for control flow](https://angular.dev/guide/templates/control-flow) rather than structural directives
   - ie. prefer `@if` and `@for` over `NgIf` and `NgFor`
 - Do not abstract by default
@@ -190,7 +190,7 @@ This is our first point of entry, and the source of truth for design tokens (eg.
 
 #### `app.theme.ts`
 
-Thie file defines the theme used by primeng. This imports tokens from `tailwind.config.ts`, and uses them to customise primeng components and general theming.
+Thie file defines the theme used by Optimus UI. This imports tokens from `tailwind.config.ts`, and uses them to customise Optimus UI components and general theming.
 
 #### `styles.css`
 
@@ -198,9 +198,9 @@ This file does the remaining general styling. We do a few things here:
 
 - Define some tailwind helpers that cannot be defines in tailwind v4 (mostly typography helpers such as `txt-system-s`)
 - Define some sensible defaults for selectors such as `h1`, `p`, `a`, etc.
-- Override some primeng styles that cannot be tweaked via the `app.theme.ts` file
+- Override some Optimus UI styles that cannot be tweaked via the `app.theme.ts` file
 
-Changes and additions to this css file should be kept to a minimum, because more difficult to maintain (especially with major primeng / tailwind upgrades) and preferably applied via the two other files wherever possible.
+Changes and additions to this css file should be kept to a minimum, because more difficult to maintain (especially with major Optimus UI / tailwind upgrades) and preferably applied via the two other files wherever possible.
 
 ## Interacting with the 121-service
 

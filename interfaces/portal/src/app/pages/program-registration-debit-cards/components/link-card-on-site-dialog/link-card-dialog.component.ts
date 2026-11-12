@@ -11,10 +11,10 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { Button } from '@openng/optimus-ui/button';
+import { DialogModule } from '@openng/optimus-ui/dialog';
+import { InputMask } from '@openng/optimus-ui/inputmask';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { Button } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { InputMask } from 'primeng/inputmask';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { IntersolveVisaApiService } from '~/domains/fsp-account-management/intersolve-visa.api.service';

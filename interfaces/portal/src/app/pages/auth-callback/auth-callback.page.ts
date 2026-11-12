@@ -5,7 +5,7 @@ import {
   OnInit,
 } from '@angular/core';
 
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ProgressSpinnerModule } from '@openng/optimus-ui/progressspinner';
 
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { AuthService } from '~/services/auth.service';

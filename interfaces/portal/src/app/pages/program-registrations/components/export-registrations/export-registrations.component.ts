@@ -9,14 +9,14 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
+import { MenuItem } from '@openng/optimus-ui/api';
+import { DatePickerModule } from '@openng/optimus-ui/datepicker';
+import { FloatLabelModule } from '@openng/optimus-ui/floatlabel';
+import { RadioButtonModule } from '@openng/optimus-ui/radiobutton';
 import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
-import { MenuItem } from 'primeng/api';
-import { DatePickerModule } from 'primeng/datepicker';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { RadioButtonModule } from 'primeng/radiobutton';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';

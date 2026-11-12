@@ -1,5 +1,5 @@
 ---
-description: 'Use when writing or changing Angular code in interfaces/portal: components, pages, domains, api services, signals, templates, Tailwind styling and PrimeNG usage.'
+description: 'Use when writing or changing Angular code in interfaces/portal: components, pages, domains, api services, signals, templates, Tailwind styling and Optimus UI usage.'
 applyTo: 'interfaces/portal/src/**'
 ---
 
@@ -16,7 +16,7 @@ Rules from the [Portal Development Guidelines](../../docs/guidelines/portal-deve
 - Keep TypeScript file imports acyclic. Services, guards, components, pages, directives and pipes must not export additional shared runtime constants or standalone helpers. Primary exported functions/consts (such as functional guards) and public service methods are allowed. Put shared constants in nearby `*.const.ts` files and pure helpers in `*.helpers.ts` files. Import directly. (Export Boundaries and Circular Dependencies).
 - Keep page-only implementation details in the page file and unexported; extract shared constants and pure helpers according to the export-boundary rule (Creating components).
 - Components are standalone and use `OnPush`; no (S)CSS file per component (Creating components).
-- Prefer PrimeNG components over custom ones; suggest design tweaks that make one fit (General component guidelines).
+- Prefer Optimus UI components over custom ones; suggest design tweaks that make one fit (General component guidelines).
 - Use `@if`/`@for`, not `NgIf`/`NgFor` (General component guidelines).
 - Split a component only for reuse, a template over ~150 lines or deeply nested, or tightly coupled signals; otherwise keep it inline (Splitting components).
 - Delete generated `.spec.ts` files unless the test is meaningful (Creating components).

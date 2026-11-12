@@ -3,14 +3,17 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "paths": {
       "@121-service/*": ["./../../services/121-service/*"],
       "~environment": ["./src/environments/environment"],
       "~assets": ["./src/assets"],
-      "~/*": ["./src/app/*"]
+      "~/*": ["./src/app/*"],
+      "scripts/*": ["./scripts/*"],
+      "tailwind.config.mjs": ["./tailwind.config.mts"]
     },
     "outDir": "./dist/out-tsc",
+    // Must contain all sources, including those imported from `services/121-service` via "@121-service/*"
+    "rootDir": "../../",
     "strict": true,
     // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28804
     "strictPropertyInitialization": false,

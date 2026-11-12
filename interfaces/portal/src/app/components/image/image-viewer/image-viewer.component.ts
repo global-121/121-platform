@@ -8,9 +8,9 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { ButtonGroupModule } from '@openng/optimus-ui/buttongroup';
 import Panzoom, { PanzoomObject } from '@panzoom/panzoom';
-import { ButtonModule } from 'primeng/button';
-import { ButtonGroupModule } from 'primeng/buttongroup';
 
 @Component({
   selector: 'app-image-viewer',

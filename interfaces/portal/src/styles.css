@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import 'primeicons/primeicons.css';
+@import '@openng/icons/openng-icons.css';
 
 @config '../tailwind.config.mts';
 
@@ -131,29 +131,6 @@ svg-icon svg {
   }
 }
 
-.mention-menu {
-  @apply shadow-menu;
-
-  li {
-    .mention-item {
-      @apply txt-body-m py-2! text-start font-semibold text-black!;
-    }
-
-    &.mention-active {
-      @apply bg-purple-100;
-
-      a {
-        background: inherit !important;
-      }
-    }
-  }
-
-  /* Move the menu from the hard-coded LTR-position to the RTL reading-direction */
-  &:dir(rtl) {
-    transform: translateX(-100%);
-  }
-}
-
 /* PrimeNG Component overrides */
 
 /* Rule-of-thumb: Override only from any specific component class-name(i.e. `.p-component-X`) 'down'.
@@ -168,7 +145,7 @@ svg-icon svg {
    So there will only be ONE section/grouping per PrimeNG component.
 */
 
-@layer primeng-customisations {
+@layer optimus-customisations {
   :root {
     --toolbar-height: calc(48 / 14 * 1rem);
     --p-form-field-padding-y: 0.75rem;

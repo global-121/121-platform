@@ -7,8 +7,8 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { MenuItem } from 'primeng/api';
-import { CardModule } from 'primeng/card';
+import { MenuItem } from '@openng/optimus-ui/api';
+import { CardModule } from '@openng/optimus-ui/card';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';

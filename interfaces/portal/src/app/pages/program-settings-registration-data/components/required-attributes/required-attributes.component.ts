@@ -6,9 +6,9 @@ import {
   input,
 } from '@angular/core';
 
+import { AccordionModule } from '@openng/optimus-ui/accordion';
+import { TableModule } from '@openng/optimus-ui/table';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { AccordionModule } from 'primeng/accordion';
-import { TableModule } from 'primeng/table';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';

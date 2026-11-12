@@ -7,11 +7,14 @@ import {
 } from '@angular/core';
 import { FormGroup, FormsModule } from '@angular/forms';
 
+import { ConfirmationService } from '@openng/optimus-ui/api';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import {
+  ConfirmDialog,
+  ConfirmDialogModule,
+} from '@openng/optimus-ui/confirmdialog';
+import { FocusTrapModule } from '@openng/optimus-ui/focustrap';
 import { CreateMutationResult } from '@tanstack/angular-query-experimental';
-import { ConfirmationService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmDialog, ConfirmDialogModule } from 'primeng/confirmdialog';
-import { FocusTrapModule } from 'primeng/focustrap';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { TrackingService } from '~/services/tracking/tracking.service';

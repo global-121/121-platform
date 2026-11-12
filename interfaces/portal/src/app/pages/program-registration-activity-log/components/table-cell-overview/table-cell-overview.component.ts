@@ -10,9 +10,9 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { ChipModule } from '@openng/optimus-ui/chip';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
-import { ChipModule } from 'primeng/chip';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';

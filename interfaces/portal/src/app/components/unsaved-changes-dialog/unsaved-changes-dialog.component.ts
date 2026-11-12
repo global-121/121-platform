@@ -5,8 +5,8 @@ import {
   output,
 } from '@angular/core';
 
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { DialogModule } from '@openng/optimus-ui/dialog';
 
 @Component({
   selector: 'app-unsaved-changes-dialog',
