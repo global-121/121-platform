@@ -45,17 +45,17 @@ import {
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
-import { LoginOtpAuditEventName } from '@121-service/src/user/enum/login-otp-audit-event-name.enum';
-import { LoginOtpRequestOutcome } from '@121-service/src/user/enum/login-otp-request-outcome.enum';
-import { LoginOtpUserFailureReason } from '@121-service/src/user/enum/login-otp-user-failure-reason.enum';
+import { LoginOneTimePasswordAuditEventName } from '@121-service/src/user/enum/login-one-time-password-audit-event-name.enum';
+import { LoginOneTimePasswordRequestOutcome } from '@121-service/src/user/enum/login-one-time-password-request-outcome.enum';
+import { LoginOneTimePasswordUserFailureReason } from '@121-service/src/user/enum/login-one-time-password-user-failure-reason.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
 import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
-import { OTP_EXPIRATION_MINUTES } from '@121-service/src/user/user-otp/user-otp.const';
-import { UserOtpService } from '@121-service/src/user/user-otp/user-otp.service';
+import { ONE_TIME_PASSWORD_EXPIRATION_MINUTES } from '@121-service/src/user/user-one-time-password/user-one-time-password.const';
+import { UserOneTimePasswordsService } from '@121-service/src/user/user-one-time-password/user-one-time-passwords.service';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 const tokenExpirationHours = 33; // We picked a 33 hour window because it's 1 day + 8 hour working day + 1 hour buffer, to minimize the chance of a token expiring during a working day.
 const MS_PER_HOUR = 3_600_000;
@@ -75,7 +75,7 @@ export class UserService {
     private readonly userEmailsService: UserEmailsService,
     private readonly userAccessGroupAssignmentsService: UserAccessGroupAssignmentsService,
     private readonly assignmentRepository: ProgramAidworkerAssignmentRepository,
-    private readonly userOtpService: UserOtpService,
+    private readonly userOneTimePasswordsService: UserOneTimePasswordsService,
     private readonly azureLogService: AzureLogService,
   ) {}
 
@@ -105,16 +105,16 @@ export class UserService {
 
   // Process the request in the background without awaiting it,
   // so the response time does not reveal whether the user exists
-  public requestLoginOtp({ username }: { username: string }): void {
-    void this.processLoginOtpRequest({ username }).catch((error: unknown) => {
+  public requestLoginOneTimePassword({ username }: { username: string }): void {
+    void this.processLoginOneTimePasswordRequest({ username }).catch((error: unknown) => {
       this.logBackgroundError({
-        message: 'Failed to process login OTP request',
+        message: 'Failed to process login one-time password request',
         cause: error,
       });
     });
   }
 
-  private async processLoginOtpRequest({
+  private async processLoginOneTimePasswordRequest({
     username,
   }: {
     username: string;
@@ -125,44 +125,44 @@ export class UserService {
     });
 
     if (!user) {
-      this.trackLoginOtpEvent({
-        name: LoginOtpAuditEventName.requested,
-        details: { outcome: LoginOtpRequestOutcome.unknownUser },
+      this.trackLoginOneTimePasswordEvent({
+        name: LoginOneTimePasswordAuditEventName.requested,
+        details: { outcome: LoginOneTimePasswordRequestOutcome.unknownUser },
       });
       return;
     }
 
     if (this.signsInWithEntra({ isEntraUser: user.isEntraUser })) {
-      this.trackLoginOtpEvent({
-        name: LoginOtpAuditEventName.requested,
+      this.trackLoginOneTimePasswordEvent({
+        name: LoginOneTimePasswordAuditEventName.requested,
         userId: user.id,
-        details: { outcome: LoginOtpRequestOutcome.entraUser },
+        details: { outcome: LoginOneTimePasswordRequestOutcome.entraUser },
       });
       return;
     }
 
-    const createOtpResult = await this.userOtpService.createOtp({
+    const createOneTimePasswordResult = await this.userOneTimePasswordsService.createOneTimePassword({
       userId: user.id,
     });
-    if (!createOtpResult) {
-      this.trackLoginOtpEvent({
-        name: LoginOtpAuditEventName.requested,
+    if (!createOneTimePasswordResult) {
+      this.trackLoginOneTimePasswordEvent({
+        name: LoginOneTimePasswordAuditEventName.requested,
         userId: user.id,
-        details: { outcome: LoginOtpRequestOutcome.refused },
+        details: { outcome: LoginOneTimePasswordRequestOutcome.refused },
       });
       return;
     }
 
-    this.trackLoginOtpEvent({
-      name: LoginOtpAuditEventName.requested,
+    this.trackLoginOneTimePasswordEvent({
+      name: LoginOneTimePasswordAuditEventName.requested,
       userId: user.id,
-      details: { outcome: LoginOtpRequestOutcome.issued },
+      details: { outcome: LoginOneTimePasswordRequestOutcome.issued },
     });
 
-    this.sendLoginOtpEmailInBackground({
+    this.sendLoginOneTimePasswordEmailInBackground({
       email,
       recipientName: user.displayName,
-      otp: createOtpResult.otp,
+      oneTimePassword: createOneTimePasswordResult.oneTimePassword,
     });
   }
 
@@ -170,13 +170,13 @@ export class UserService {
     return env.USE_SSO_AZURE_ENTRA || isEntraUser;
   }
 
-  // Never include the OTP, its hash or the username in the event properties
-  private trackLoginOtpEvent({
+  // Never include the one-time password, its hash or the username in the event properties
+  private trackLoginOneTimePasswordEvent({
     name,
     userId,
     details,
   }: {
-    name: LoginOtpAuditEventName;
+    name: LoginOneTimePasswordAuditEventName;
     userId?: number;
     details?: Record<string, string>;
   }): void {
@@ -189,25 +189,25 @@ export class UserService {
     });
   }
 
-  private sendLoginOtpEmailInBackground({
+  private sendLoginOneTimePasswordEmailInBackground({
     email,
     recipientName,
-    otp,
+    oneTimePassword,
   }: {
     email: string;
     recipientName: string;
-    otp: string;
+    oneTimePassword: string;
   }): void {
     this.userEmailsService
-      .sendLoginOtp({
+      .sendLoginOneTimePassword({
         email,
         recipientName,
-        otp,
-        expirationMinutes: OTP_EXPIRATION_MINUTES,
+        oneTimePassword,
+        expirationMinutes: ONE_TIME_PASSWORD_EXPIRATION_MINUTES,
       })
       .catch((error: unknown) => {
         this.logBackgroundError({
-          message: 'Failed to send login OTP email',
+          message: 'Failed to send login one-time password email',
           cause: error,
         });
       });
@@ -229,58 +229,58 @@ export class UserService {
     }
   }
 
-  public async loginWithOtp({
+  public async loginWithOneTimePassword({
     username,
-    otp,
+    oneTimePassword,
   }: {
     username: string;
-    otp: string;
+    oneTimePassword: string;
   }): Promise<LoginResponseDto> {
     const userEntity = await this.userRepository.findOne({
       where: { username: Equal(username.toLowerCase()) },
     });
 
     if (!userEntity) {
-      this.trackLoginOtpEvent({
-        name: LoginOtpAuditEventName.failed,
-        details: { reason: LoginOtpUserFailureReason.unknownUser },
+      this.trackLoginOneTimePasswordEvent({
+        name: LoginOneTimePasswordAuditEventName.failed,
+        details: { reason: LoginOneTimePasswordUserFailureReason.unknownUser },
       });
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
     if (this.signsInWithEntra({ isEntraUser: userEntity.isEntraUser })) {
-      this.trackLoginOtpEvent({
-        name: LoginOtpAuditEventName.failed,
+      this.trackLoginOneTimePasswordEvent({
+        name: LoginOneTimePasswordAuditEventName.failed,
         userId: userEntity.id,
-        details: { reason: LoginOtpUserFailureReason.entraUser },
+        details: { reason: LoginOneTimePasswordUserFailureReason.entraUser },
       });
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-    const verifyOtpResult = await this.userOtpService.verifyOtp({
+    const verifyOneTimePasswordResult = await this.userOneTimePasswordsService.verifyOneTimePassword({
       userId: userEntity.id,
-      otp,
+      oneTimePassword,
     });
 
-    if (!verifyOtpResult.isVerified) {
-      this.trackLoginOtpEvent({
-        name: LoginOtpAuditEventName.failed,
+    if (!verifyOneTimePasswordResult.isVerified) {
+      this.trackLoginOneTimePasswordEvent({
+        name: LoginOneTimePasswordAuditEventName.failed,
         userId: userEntity.id,
-        details: { reason: verifyOtpResult.failureReason },
+        details: { reason: verifyOneTimePasswordResult.failureReason },
       });
-      if (verifyOtpResult.lockedUntil) {
-        this.trackLoginOtpEvent({
-          name: LoginOtpAuditEventName.locked,
+      if (verifyOneTimePasswordResult.lockedUntil) {
+        this.trackLoginOneTimePasswordEvent({
+          name: LoginOneTimePasswordAuditEventName.locked,
           userId: userEntity.id,
-          details: { lockedUntil: verifyOtpResult.lockedUntil.toISOString() },
+          details: { lockedUntil: verifyOneTimePasswordResult.lockedUntil.toISOString() },
         });
       }
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
     const loginResponse = await this.buildLoginResponse({ userEntity });
-    this.trackLoginOtpEvent({
-      name: LoginOtpAuditEventName.succeeded,
+    this.trackLoginOneTimePasswordEvent({
+      name: LoginOneTimePasswordAuditEventName.succeeded,
       userId: userEntity.id,
     });
     return loginResponse;

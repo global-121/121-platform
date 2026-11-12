@@ -1,6 +1,6 @@
-export interface LoginOtpEmailInput {
+export interface LoginOneTimePasswordEmailInput {
   readonly email: string;
   readonly recipientName: string;
-  readonly otp: string;
+  readonly oneTimePassword: string;
   readonly expirationMinutes: number;
 }

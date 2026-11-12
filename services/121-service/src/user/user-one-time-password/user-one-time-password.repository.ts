@@ -8,12 +8,12 @@ import {
   Repository,
 } from 'typeorm';
 
-import { UserOtpEntity } from '@121-service/src/user/user-otp/user-otp.entity';
+import { UserOneTimePasswordEntity } from '@121-service/src/user/user-one-time-password/user-one-time-password.entity';
 
-export class UserOtpRepository extends Repository<UserOtpEntity> {
+export class UserOneTimePasswordRepository extends Repository<UserOneTimePasswordEntity> {
   constructor(
-    @InjectRepository(UserOtpEntity)
-    private baseRepository: Repository<UserOtpEntity>,
+    @InjectRepository(UserOneTimePasswordEntity)
+    private baseRepository: Repository<UserOneTimePasswordEntity>,
   ) {
     super(
       baseRepository.target,
@@ -24,13 +24,13 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
 
   public async replaceForUserIfIssuedBeforeAndNotLocked({
     userId,
-    otp,
+    oneTimePassword,
     issuedAt,
     expiresAt,
     previousIssuedBefore,
   }: {
     userId: number;
-    otp: string;
+    oneTimePassword: string;
     issuedAt: Date;
     expiresAt: Date;
     previousIssuedBefore: Date;
@@ -40,7 +40,7 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
       .insert()
       .values({
         userId,
-        otp,
+        oneTimePassword,
         issuedAt,
         expiresAt,
         consumedAt: null,
@@ -49,7 +49,7 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
       })
       .orUpdate(
         [
-          'otp',
+          'oneTimePassword',
           'issuedAt',
           'expiresAt',
           'consumedAt',
@@ -83,7 +83,7 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
     userId,
   }: {
     userId: number;
-  }): Promise<UserOtpEntity | null> {
+  }): Promise<UserOneTimePasswordEntity | null> {
     return await this.baseRepository.findOne({
       where: { userId: Equal(userId) },
     });
@@ -91,19 +91,19 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
 
   public async consumeIfUsable({
     userId,
-    otp,
+    oneTimePassword,
     consumedAt,
     maxFailedAttempts,
   }: {
     userId: number;
-    otp: string;
+    oneTimePassword: string;
     consumedAt: Date;
     maxFailedAttempts: number;
   }): Promise<boolean> {
     const result = await this.baseRepository.update(
       {
         userId: Equal(userId),
-        otp: Equal(otp),
+        oneTimePassword: Equal(oneTimePassword),
         consumedAt: IsNull(),
         expiresAt: MoreThan(consumedAt),
         failedAttempts: LessThan(maxFailedAttempts),
@@ -117,13 +117,13 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
 
   public async recordFailedAttemptIfUsable({
     userId,
-    otp,
+    oneTimePassword,
     now,
     maxFailedAttempts,
     lockedUntil,
   }: {
     userId: number;
-    otp: string;
+    oneTimePassword: string;
     now: Date;
     maxFailedAttempts: number;
     lockedUntil: Date;
@@ -138,7 +138,7 @@ export class UserOtpRepository extends Repository<UserOtpEntity> {
       })
       .where({
         userId: Equal(userId),
-        otp: Equal(otp),
+        oneTimePassword: Equal(oneTimePassword),
         consumedAt: IsNull(),
         expiresAt: MoreThan(now),
         failedAttempts: LessThan(maxFailedAttempts),

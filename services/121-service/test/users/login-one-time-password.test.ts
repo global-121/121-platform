@@ -4,8 +4,8 @@ import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  loginWithOtp,
-  requestLoginOtp,
+  loginWithOneTimePassword,
+  requestLoginOneTimePassword,
 } from '@121-service/test/helpers/user.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
@@ -17,10 +17,10 @@ describe('/ Users', () => {
     await resetDB({ seedScript: SeedScript.productionInitialState });
   });
 
-  describe('/ Login OTP request', () => {
+  describe('/ Login one-time password request', () => {
     it('should accept an unauthenticated request', async () => {
       // Act
-      const response = await requestLoginOtp({ username: knownUsername });
+      const response = await requestLoginOneTimePassword({ username: knownUsername });
 
       // Assert
       expect(response.status).toBe(HttpStatus.ACCEPTED);
@@ -29,12 +29,12 @@ describe('/ Users', () => {
 
     it('should give an unknown username the same response as a known username', async () => {
       // Arrange
-      const knownUsernameResponse = await requestLoginOtp({
+      const knownUsernameResponse = await requestLoginOneTimePassword({
         username: knownUsername,
       });
 
       // Act
-      const unknownUsernameResponse = await requestLoginOtp({
+      const unknownUsernameResponse = await requestLoginOneTimePassword({
         username: unknownUsername,
       });
 
@@ -44,18 +44,18 @@ describe('/ Users', () => {
     });
   });
 
-  describe('/ Login with OTP', () => {
-    it('should reject a wrong OTP without setting a cookie', async () => {
+  describe('/ Login with one-time password', () => {
+    it('should reject a wrong one-time password without setting a cookie', async () => {
       // Arrange
-      await requestLoginOtp({ username: knownUsername });
-      // The otp-code is created in the background after the request is accepted
+      await requestLoginOneTimePassword({ username: knownUsername });
+      // The one-time password is created in the background after the request is accepted
       // this risk of flakiness is acceptable here since it provides security
       await waitFor(500);
 
       // Act
-      const response = await loginWithOtp({
+      const response = await loginWithOneTimePassword({
         username: knownUsername,
-        otp: 'WRONG1',
+        oneTimePassword: 'WRONG1',
       });
 
       // Assert
@@ -63,22 +63,22 @@ describe('/ Users', () => {
       expect(response.headers['set-cookie']).toBeUndefined();
     });
 
-    it('should give an unknown username the same response as a wrong OTP', async () => {
+    it('should give an unknown username the same response as a wrong one-time password', async () => {
       // Arrange
-      const wrongOtpResponse = await loginWithOtp({
+      const wrongOneTimePasswordResponse = await loginWithOneTimePassword({
         username: knownUsername,
-        otp: 'WRONG1',
+        oneTimePassword: 'WRONG1',
       });
 
       // Act
-      const unknownUsernameResponse = await loginWithOtp({
+      const unknownUsernameResponse = await loginWithOneTimePassword({
         username: unknownUsername,
-        otp: 'WRONG1',
+        oneTimePassword: 'WRONG1',
       });
 
       // Assert
-      expect(unknownUsernameResponse.status).toBe(wrongOtpResponse.status);
-      expect(unknownUsernameResponse.body).toEqual(wrongOtpResponse.body);
+      expect(unknownUsernameResponse.status).toBe(wrongOneTimePasswordResponse.status);
+      expect(unknownUsernameResponse.body).toEqual(wrongOneTimePasswordResponse.body);
     });
   });
 });

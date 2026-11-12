@@ -1,4 +1,4 @@
-export enum LoginOtpUserFailureReason {
+export enum LoginOneTimePasswordUserFailureReason {
   unknownUser = 'unknownUser',
   entraUser = 'entraUser',
 }

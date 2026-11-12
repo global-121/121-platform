@@ -31,12 +31,12 @@ import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-au
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto';
-import { CreateLoginOtpDto } from '@121-service/src/user/dto/create-login-otp.dto';
+import { CreateLoginOneTimePasswordDto } from '@121-service/src/user/dto/create-login-one-time-password.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
 import { LoginResponseDto } from '@121-service/src/user/dto/login-response.dto';
 import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
-import { LoginWithOtpDto } from '@121-service/src/user/dto/login-with-otp.dto';
+import { LoginWithOneTimePasswordDto } from '@121-service/src/user/dto/login-with-one-time-password.dto';
 import {
   UpdateUserDto,
   UpdateUserPasswordDto,
@@ -111,47 +111,47 @@ export class UserController {
   }
 
   @NoUserAuthenticationEndpoint(
-    'OTP request endpoint must be publicly accessible, because it is used before logging in.',
+    'One-time password request endpoint must be publicly accessible, because it is used before logging in.',
   )
   @Throttle(THROTTLING_LIMIT_HIGH)
   @ApiOperation({
     summary:
-      'Request a login OTP by email. The response is the same whether or not the user exists.',
+      'Request a login one-time password by email. The response is the same whether or not the user exists.',
   })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description:
-      'Request accepted. If the user exists, an OTP is sent to their email address.',
+      'Request accepted. If the user exists, a one-time password is sent to their email address.',
   })
   @HttpCode(HttpStatus.ACCEPTED)
-  @Post('users/otp')
-  public requestLoginOtp(@Body() createLoginOtpDto: CreateLoginOtpDto): void {
-    this.userService.requestLoginOtp({
-      username: createLoginOtpDto.username,
+  @Post('users/one-time-password')
+  public requestLoginOneTimePassword(@Body() createLoginOneTimePasswordDto: CreateLoginOneTimePasswordDto): void {
+    this.userService.requestLoginOneTimePassword({
+      username: createLoginOneTimePasswordDto.username,
     });
   }
 
   @NoUserAuthenticationEndpoint(
-    'OTP login endpoint must be publicly accessible, to be able to authenticate further use.',
+    'One-time password login endpoint must be publicly accessible, to be able to authenticate further use.',
   )
   @Throttle(THROTTLING_LIMIT_HIGH)
-  @ApiOperation({ summary: 'Log in existing user with a login OTP' })
+  @ApiOperation({ summary: 'Log in existing user with a login one-time password' })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Logged in successfully',
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
-    description: 'Unknown username, or invalid, expired or locked OTP',
+    description: 'Unknown username, or invalid, expired or locked one-time password',
   })
-  @Post('users/login/otp')
-  public async loginWithOtp(
-    @Body() loginWithOtpDto: LoginWithOtpDto,
+  @Post('users/login/one-time-password')
+  public async loginWithOneTimePassword(
+    @Body() loginWithOneTimePasswordDto: LoginWithOneTimePasswordDto,
     @Res() res,
   ): Promise<UserRO> {
-    const loginResponse = await this.userService.loginWithOtp({
-      username: loginWithOtpDto.username,
-      otp: loginWithOtpDto.otp,
+    const loginResponse = await this.userService.loginWithOneTimePassword({
+      username: loginWithOneTimePasswordDto.username,
+      oneTimePassword: loginWithOneTimePasswordDto.oneTimePassword,
     });
 
     res.cookie(
