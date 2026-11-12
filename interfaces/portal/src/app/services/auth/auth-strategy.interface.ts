@@ -7,7 +7,11 @@ import { LoginMethod } from '~/services/auth/login-method.enum';
 import { LocalStorageUser } from '~/utils/local-storage';
 
 export type LoginCredentials =
-  | { method: LoginMethod.otp; username: string; otp: string }
+  | {
+      method: LoginMethod.oneTimePassword;
+      username: string;
+      oneTimePassword: string;
+    }
   | { method: LoginMethod.password; username: string; password: string }
   | { username: string };
 

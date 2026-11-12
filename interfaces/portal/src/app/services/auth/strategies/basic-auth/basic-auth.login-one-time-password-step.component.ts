@@ -21,10 +21,10 @@ import { InputOtpModule } from 'primeng/inputotp';
 import { interval, map } from 'rxjs';
 
 import {
-  OTP_EXPIRATION_MS,
-  OTP_LENGTH,
-  OTP_REISSUE_COOLDOWN_MS,
-} from '@121-service/src/user/user-otp/user-otp.const';
+  ONE_TIME_PASSWORD_EXPIRATION_MS,
+  ONE_TIME_PASSWORD_LENGTH,
+  ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS,
+} from '@121-service/src/user/user-one-time-password/user-one-time-password.const';
 
 import { FormDefaultComponent } from '~/components/form-default/form-default.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
@@ -37,11 +37,11 @@ import { generateFieldErrors } from '~/utils/form-validation';
 
 const CLOCK_TICK_MS = 1_000;
 
-type LoginOtpStepFormGroup =
-  (typeof BasicAuthLoginOtpStepComponent)['prototype']['formGroup'];
+type LoginOneTimePasswordStepFormGroup =
+  (typeof BasicAuthLoginOneTimePasswordStepComponent)['prototype']['formGroup'];
 
 @Component({
-  selector: 'app-basic-auth-login-otp-step',
+  selector: 'app-basic-auth-login-one-time-password-step',
   imports: [
     InputOtpModule,
     ButtonModule,
@@ -51,43 +51,50 @@ type LoginOtpStepFormGroup =
     ReactiveFormsModule,
     FormFieldWrapperComponent,
   ],
-  templateUrl: './basic-auth.login-otp-step.component.html',
+  templateUrl: './basic-auth.login-one-time-password-step.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BasicAuthLoginOtpStepComponent {
+export class BasicAuthLoginOneTimePasswordStepComponent {
   private authService = inject(AuthService);
   private userApiService = inject(UserApiService);
   private toastService = inject(ToastService);
   readonly email = input.required<string>();
-  readonly otpRequestedAt = input.required<number>();
+  readonly oneTimePasswordRequestedAt = input.required<number>();
   readonly returnUrl = input<string | undefined>(undefined);
-  readonly otpRequested = output<{ email: string }>();
+  readonly oneTimePasswordRequested = output<{ email: string }>();
   readonly changeEmail = output<{ email: string }>();
   readonly passwordInstead = output<{ email: string }>();
 
-  readonly OTP_LENGTH = OTP_LENGTH;
+  readonly ONE_TIME_PASSWORD_LENGTH = ONE_TIME_PASSWORD_LENGTH;
 
   private readonly now = toSignal(
     interval(CLOCK_TICK_MS).pipe(map(() => Date.now())),
     { initialValue: Date.now() },
   );
 
-  readonly otpRemainingMs = computed(() =>
-    Math.max(0, this.otpRequestedAt() + OTP_EXPIRATION_MS - this.now()),
+  readonly oneTimePasswordRemainingMs = computed(() =>
+    Math.max(
+      0,
+      this.oneTimePasswordRequestedAt() +
+        ONE_TIME_PASSWORD_EXPIRATION_MS -
+        this.now(),
+    ),
   );
 
-  readonly canRequestNewOtp = computed(
-    () => this.now() - this.otpRequestedAt() >= OTP_REISSUE_COOLDOWN_MS,
+  readonly canRequestNewOneTimePassword = computed(
+    () =>
+      this.now() - this.oneTimePasswordRequestedAt() >=
+      ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS,
   );
 
   formGroup = new FormGroup({
-    otp: new FormControl('', {
+    oneTimePassword: new FormControl('', {
       nonNullable: true,
       validators: [
         // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
         Validators.required,
-        Validators.minLength(OTP_LENGTH),
+        Validators.minLength(ONE_TIME_PASSWORD_LENGTH),
       ],
     }),
   });
@@ -95,9 +102,15 @@ export class BasicAuthLoginOtpStepComponent {
   formFieldErrors = generateFieldErrors(this.formGroup);
 
   loginMutation = injectMutation(() => ({
-    mutationFn: ({ otp }: ReturnType<LoginOtpStepFormGroup['getRawValue']>) =>
+    mutationFn: ({
+      oneTimePassword,
+    }: ReturnType<LoginOneTimePasswordStepFormGroup['getRawValue']>) =>
       this.authService.login(
-        { method: LoginMethod.otp, username: this.email(), otp },
+        {
+          method: LoginMethod.oneTimePassword,
+          username: this.email(),
+          oneTimePassword,
+        },
         this.returnUrl(),
       ),
     onSuccess: () => {
@@ -107,13 +120,15 @@ export class BasicAuthLoginOtpStepComponent {
     },
   }));
 
-  requestNewOtpMutation = injectMutation(() => ({
+  requestNewOneTimePasswordMutation = injectMutation(() => ({
     mutationFn: () =>
-      this.userApiService.createLoginOtp({ username: this.email() }),
+      this.userApiService.createLoginOneTimePassword({
+        username: this.email(),
+      }),
     onSuccess: () => {
       this.formGroup.reset();
       this.loginMutation.reset();
-      this.otpRequested.emit({ email: this.email() });
+      this.oneTimePasswordRequested.emit({ email: this.email() });
     },
   }));
 }

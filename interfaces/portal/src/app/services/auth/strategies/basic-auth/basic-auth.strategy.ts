@@ -38,16 +38,19 @@ export class BasicAuthStrategy implements IAuthStrategy {
     }
 
     switch (credentials.method) {
-      case LoginMethod.otp:
-        return await this.loginWithOtp(credentials);
+      case LoginMethod.oneTimePassword:
+        return await this.loginWithOneTimePassword(credentials);
       case LoginMethod.password:
         return await this.loginWithPassword(credentials);
     }
   }
 
-  private async loginWithOtp(credentials: { username: string; otp: string }) {
+  private async loginWithOneTimePassword(credentials: {
+    username: string;
+    oneTimePassword: string;
+  }) {
     try {
-      return await this.userApiService.loginWithOtp(credentials);
+      return await this.userApiService.loginWithOneTimePassword(credentials);
     } catch {
       throw new Error(
         $localize`Invalid or expired code. Double-check the code or request a new one.`,

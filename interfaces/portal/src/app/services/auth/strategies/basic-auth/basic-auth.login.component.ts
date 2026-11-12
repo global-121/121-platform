@@ -5,19 +5,19 @@ import {
   signal,
 } from '@angular/core';
 
-import { OTP_REISSUE_COOLDOWN_MS } from '@121-service/src/user/user-otp/user-otp.const';
+import { ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS } from '@121-service/src/user/user-one-time-password/user-one-time-password.const';
 
 import { BasicAuthLoginEmailStepComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login-email-step.component';
-import { BasicAuthLoginOtpStepComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login-otp-step.component';
+import { BasicAuthLoginOneTimePasswordStepComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login-one-time-password-step.component';
 import { BasicAuthLoginPasswordStepComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login-password-step.component';
 
 enum LoginStep {
   email = 'email',
-  otp = 'otp',
+  oneTimePassword = 'oneTimePassword',
   password = 'password',
 }
 
-interface OtpRequest {
+interface OneTimePasswordRequest {
   email: string;
   requestedAt: number;
 }
@@ -26,7 +26,7 @@ interface OtpRequest {
   selector: 'app-basic-auth-login',
   imports: [
     BasicAuthLoginEmailStepComponent,
-    BasicAuthLoginOtpStepComponent,
+    BasicAuthLoginOneTimePasswordStepComponent,
     BasicAuthLoginPasswordStepComponent,
   ],
   templateUrl: './basic-auth.login.component.html',
@@ -40,20 +40,27 @@ export class BasicAuthLoginComponent {
 
   readonly step = signal(LoginStep.email);
   readonly email = signal('');
-  readonly otpRequest = signal<OtpRequest | undefined>(undefined);
+  readonly oneTimePasswordRequest = signal<OneTimePasswordRequest | undefined>(
+    undefined,
+  );
 
-  onOtpRequested({ email }: { email: string }): void {
-    if (!this.isWithinOtpCooldown({ email })) {
-      this.otpRequest.set({ email, requestedAt: Date.now() });
+  onOneTimePasswordRequested({ email }: { email: string }): void {
+    if (!this.isWithinOneTimePasswordCooldown({ email })) {
+      this.oneTimePasswordRequest.set({ email, requestedAt: Date.now() });
     }
-    this.goToStep({ step: LoginStep.otp, email });
+    this.goToStep({ step: LoginStep.oneTimePassword, email });
   }
 
-  private isWithinOtpCooldown({ email }: { email: string }): boolean {
-    const otpRequest = this.otpRequest();
+  private isWithinOneTimePasswordCooldown({
+    email,
+  }: {
+    email: string;
+  }): boolean {
+    const oneTimePasswordRequest = this.oneTimePasswordRequest();
     return (
-      otpRequest?.email === email &&
-      Date.now() - otpRequest.requestedAt < OTP_REISSUE_COOLDOWN_MS
+      oneTimePasswordRequest?.email === email &&
+      Date.now() - oneTimePasswordRequest.requestedAt <
+        ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS
     );
   }
 

@@ -1,4 +1,4 @@
 export enum LoginMethod {
-  otp = 'otp',
+  oneTimePassword = 'oneTimePassword',
   password = 'password',
 }

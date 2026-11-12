@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { OTP_REISSUE_COOLDOWN_MS } from '@121-service/src/user/user-otp/user-otp.const';
+import { ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS } from '@121-service/src/user/user-one-time-password/user-one-time-password.const';
 
 import { BasicAuthLoginComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login.component';
 
@@ -25,52 +25,61 @@ describe('Requesting a one-time login code', () => {
 
   it('should show the code step for the email with the request time set to now', () => {
     // Act
-    component.onOtpRequested({ email });
+    component.onOneTimePasswordRequested({ email });
 
     // Assert
-    expect(component.step()).toBe(component.LoginStep.otp);
+    expect(component.step()).toBe(component.LoginStep.oneTimePassword);
     expect(component.email()).toBe(email);
-    expect(component.otpRequest()).toEqual({ email, requestedAt: now });
+    expect(component.oneTimePasswordRequest()).toEqual({
+      email,
+      requestedAt: now,
+    });
   });
 
   it('should keep the original request time when the same email requests again within the cooldown', () => {
     // Arrange
-    component.onOtpRequested({ email });
-    vi.setSystemTime(now + OTP_REISSUE_COOLDOWN_MS - 1);
+    component.onOneTimePasswordRequested({ email });
+    vi.setSystemTime(now + ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS - 1);
 
     // Act
-    component.onOtpRequested({ email });
+    component.onOneTimePasswordRequested({ email });
 
     // Assert
-    expect(component.otpRequest()).toEqual({ email, requestedAt: now });
+    expect(component.oneTimePasswordRequest()).toEqual({
+      email,
+      requestedAt: now,
+    });
   });
 
   it('should set a new request time when the same email requests again after the cooldown', () => {
     // Arrange
-    component.onOtpRequested({ email });
-    const later = now + OTP_REISSUE_COOLDOWN_MS;
+    component.onOneTimePasswordRequested({ email });
+    const later = now + ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS;
     vi.setSystemTime(later);
 
     // Act
-    component.onOtpRequested({ email });
+    component.onOneTimePasswordRequested({ email });
 
     // Assert
-    expect(component.otpRequest()).toEqual({ email, requestedAt: later });
+    expect(component.oneTimePasswordRequest()).toEqual({
+      email,
+      requestedAt: later,
+    });
   });
 
   it('should set a new request time when a different email requests within the cooldown', () => {
     // Arrange
-    component.onOtpRequested({ email });
+    component.onOneTimePasswordRequested({ email });
     const otherEmail = 'other@example.com';
     const later = now + 1;
     vi.setSystemTime(later);
 
     // Act
-    component.onOtpRequested({ email: otherEmail });
+    component.onOneTimePasswordRequested({ email: otherEmail });
 
     // Assert
     expect(component.email()).toBe(otherEmail);
-    expect(component.otpRequest()).toEqual({
+    expect(component.oneTimePasswordRequest()).toEqual({
       email: otherEmail,
       requestedAt: later,
     });
