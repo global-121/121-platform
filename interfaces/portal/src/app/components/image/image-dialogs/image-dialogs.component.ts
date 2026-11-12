@@ -17,10 +17,20 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
 
 import { ImageViewerComponent } from '~/components/image/image-viewer/image-viewer.component';
 import { ImageViewerService } from '~/components/image/services/image-viewer.service';
+import { getKoboImageDownloadParams } from '~/components/image/utils/get-kobo-image-download-params';
 import { isImageAvailable } from '~/components/image/utils/is-image-available';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { ToastService } from '~/services/toast.service';
+
+interface DialogImage {
+  label: string | UILanguageTranslation;
+  imageUrl: string;
+  programId?: number | string;
+  referenceId?: string;
+  attributeName?: string;
+  dataTestId?: string;
+}
 
 @Component({
   selector: 'app-image-dialogs',
@@ -38,17 +48,13 @@ export class ImageDialogsComponent {
   private readonly registrationApiService = inject(RegistrationApiService);
   private readonly imageViewerService = inject(ImageViewerService);
   private readonly toastService = inject(ToastService);
-  readonly images = input.required<
-    {
-      label: string | UILanguageTranslation;
-      imageUrl: string;
-      programId?: number | string;
-      referenceId?: string;
-      attributeName?: string;
-      dataTestId?: string;
-    }[]
-  >();
-  readonly downloadedImageObjectUrls = signal<(null | string)[]>([]);
+  readonly images = input.required<DialogImage[]>();
+
+  // Blob object URLs of downloaded images, keyed by image URL.
+  readonly downloadedImageObjectUrls = signal<ReadonlyMap<string, string>>(
+    new Map(),
+  );
+  private readonly pendingDownloads = new Set<string>();
 
   // Visible dialogs are derived from the shared open-image state (keyed by URL).
   readonly openImageIndexes = computed(() => {
@@ -67,56 +73,48 @@ export class ImageDialogsComponent {
   isMaximized = false;
 
   constructor() {
-    // Downloaded images are kept as blob object URLs, which must be revoked
-    // explicitly once they're no longer used, or else they will leak memory.
-    const revokeBlobObjectUrls = (blobObjectUrls: (null | string)[]): void => {
-      for (const blobObjectUrl of blobObjectUrls) {
-        if (blobObjectUrl) {
-          URL.revokeObjectURL(blobObjectUrl);
-        }
-      }
-    };
-
+    // Blob object URLs must be revoked explicitly, or else they leak memory.
     effect(() => {
-      const imageCount = this.images().length;
+      const currentImageUrls = new Set(
+        this.images().map(({ imageUrl }) => imageUrl),
+      );
 
-      this.downloadedImageObjectUrls.update((previousUrls) => {
-        // Images beyond the new count were removed from the list, so their
-        // blob URLs are no longer needed and can be revoked.
-        const discardedBlobObjectUrls = previousUrls.slice(imageCount);
-        revokeBlobObjectUrls(discardedBlobObjectUrls);
+      this.downloadedImageObjectUrls.update((downloadedObjectUrls) => {
+        const keptObjectUrls = new Map<string, string>();
 
-        // Keep the blob URL for images that are still present and pad with
-        // null for images that haven't been downloaded yet.
-        return Array.from(
-          { length: imageCount },
-          (_, index) => previousUrls[index] ?? null,
-        );
+        for (const [imageUrl, objectUrl] of downloadedObjectUrls) {
+          if (currentImageUrls.has(imageUrl)) {
+            keptObjectUrls.set(imageUrl, objectUrl);
+          } else {
+            URL.revokeObjectURL(objectUrl);
+          }
+        }
+
+        return keptObjectUrls;
       });
     });
 
-    // Revoke everything that's left once the component itself is destroyed.
     this.destroyRef.onDestroy(() => {
-      revokeBlobObjectUrls(this.downloadedImageObjectUrls());
+      for (const objectUrl of this.downloadedImageObjectUrls().values()) {
+        URL.revokeObjectURL(objectUrl);
+      }
     });
 
-    // Download images as they are opened elsewhere; downloads are idempotent.
+    // Start the download when an image is opened through ImageViewerService
     effect(() => {
       const openImageUrls = this.imageViewerService.openImageUrls();
 
       untracked(() => {
-        this.images().forEach((image, index) => {
+        for (const image of this.images()) {
           if (openImageUrls.has(image.imageUrl)) {
-            void this.openImage({ imageIndex: index });
+            void this.loadImage({ image });
           }
-        });
+        }
       });
     });
   }
 
-  closeDialog({ imageIndex }: { imageIndex: number }): void {
-    const image = this.images()[imageIndex];
-
+  closeDialog({ image }: { image: DialogImage }): void {
     this.imageViewerService.close({ imageUrl: image.imageUrl });
   }
 
@@ -124,79 +122,54 @@ export class ImageDialogsComponent {
     return isImageAvailable({ imageUrl });
   }
 
-  getDisplayedImageUrl({ imageIndex }: { imageIndex: number }): null | string {
-    const { imageUrl, referenceId } = this.images()[imageIndex];
-
-    if (!referenceId) {
-      return imageUrl;
+  getDisplayedImageUrl({ image }: { image: DialogImage }): null | string {
+    if (!getKoboImageDownloadParams({ image })) {
+      return image.imageUrl;
     }
 
-    return this.downloadedImageObjectUrls()[imageIndex] ?? null;
+    return this.downloadedImageObjectUrls().get(image.imageUrl) ?? null;
   }
 
-  async openImage({ imageIndex }: { imageIndex: number }): Promise<void> {
-    const images = this.images();
+  async loadImage({ image }: { image: DialogImage }): Promise<void> {
+    const downloadParams = getKoboImageDownloadParams({ image });
 
-    if (imageIndex < 0 || imageIndex >= images.length) {
-      return;
-    }
-
-    const image = images[imageIndex];
-
-    await this.loadImage({
-      index: imageIndex,
-      programId: image.programId,
-      referenceId: image.referenceId,
-      attributeName: image.attributeName,
-    });
-  }
-
-  async loadImage({
-    index,
-    programId,
-    referenceId,
-    attributeName,
-  }: {
-    index: number;
-    programId?: number | string;
-    referenceId?: string;
-    attributeName?: string;
-  }): Promise<void> {
     if (
-      programId === undefined ||
-      !referenceId?.trim() ||
-      !attributeName?.trim()
+      !downloadParams ||
+      this.downloadedImageObjectUrls().has(image.imageUrl) ||
+      this.pendingDownloads.has(image.imageUrl)
     ) {
       return;
     }
 
-    if (this.downloadedImageObjectUrls()[index]) {
-      return;
-    }
+    this.pendingDownloads.add(image.imageUrl);
 
-    let downloadedImage: Blob;
     try {
-      downloadedImage = await this.registrationApiService.downloadKoboImage({
-        programId,
-        referenceId,
-        attributeName,
+      const downloadedImage =
+        await this.registrationApiService.downloadKoboImage(downloadParams);
+
+      this.storeDownloadedImage({
+        imageUrl: image.imageUrl,
+        blob: downloadedImage,
       });
     } catch {
       this.toastService.showGenericError();
-      this.closeDialog({ imageIndex: index });
-      return;
+      this.closeDialog({ image });
+    } finally {
+      this.pendingDownloads.delete(image.imageUrl);
     }
+  }
 
-    const previousObjectUrl = this.downloadedImageObjectUrls()[index];
-    if (previousObjectUrl) {
-      URL.revokeObjectURL(previousObjectUrl);
-    }
-
-    const objectUrl = URL.createObjectURL(downloadedImage);
-    this.downloadedImageObjectUrls.update((previousUrls) => {
-      const updatedUrls = [...previousUrls];
-      updatedUrls[index] = objectUrl;
-      return updatedUrls;
+  private storeDownloadedImage({
+    imageUrl,
+    blob,
+  }: {
+    imageUrl: string;
+    blob: Blob;
+  }): void {
+    this.downloadedImageObjectUrls.update((downloadedObjectUrls) => {
+      const updatedObjectUrls = new Map(downloadedObjectUrls);
+      updatedObjectUrls.set(imageUrl, URL.createObjectURL(blob));
+      return updatedObjectUrls;
     });
   }
 }

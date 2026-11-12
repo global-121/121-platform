@@ -13,7 +13,7 @@
       [appendTo]="'body'"
       [style]="{ width: '42rem', height: '42rem' }"
       (onMaximize)="isMaximized = !isMaximized"
-      (onHide)="closeDialog({ imageIndex: index })"
+      (onHide)="closeDialog({ image })"
       [contentStyleClass]="'cursor-default'"
       [resizable]="true"
       class="shadow-2xl"
@@ -28,9 +28,7 @@
         </div>
       </ng-template>
 
-      <app-image-viewer
-        [imageUrl]="getDisplayedImageUrl({ imageIndex: index })"
-      />
+      <app-image-viewer [imageUrl]="getDisplayedImageUrl({ image })" />
     </p-dialog>
   }
 }
