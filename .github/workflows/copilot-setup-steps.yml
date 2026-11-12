@@ -25,6 +25,15 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v7
 
+      - name: Start build and test energy measurement
+        id: energy_start
+        continue-on-error: true
+        uses: green-coding-solutions/eco-ci-energy-estimation@782dd4a31bc426a6ae26a7b08d89af454b10ffc0 # v5.3.0
+        with:
+          task: start-measurement
+          send-data: false
+          json-output: true
+
       - name: Set up Node.js version
         uses: actions/setup-node@v7
         with:
@@ -64,9 +73,35 @@ jobs:
         working-directory: './services/mock-service'
         run: npm ci --ignore-scripts
 
+      - name: Collect build and test energy
+        if: always()
+        continue-on-error: true
+        uses: ./.github/actions/energy-results
+        with:
+          artifact-name: copilot-setup-steps-copilot-setup-steps
+          start-outcome: ${{ steps.energy_start.outcome }}
+          workload-status: ${{ job.status }}
+          approximate: 'false'
+
       - name: Prepare ENV-variables
         run: |
           cp services/.env.example services/.env
           grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
           cp interfaces/portal/.env.example interfaces/portal/.env
           grep -v "^#\|^$" interfaces/portal/.env >> $GITHUB_ENV
+
+  energy-summary:
+    name: Build and test energy total
+    if: always()
+    needs: [copilot-setup-steps]
+    runs-on: ubuntu-slim
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Summarize build and test energy
+        uses: ./.github/actions/energy-summary
+        with:
+          workflow: copilot-setup-steps
+          producers: '["copilot-setup-steps-copilot-setup-steps"]'
+          job-results: ${{ toJSON(needs) }}

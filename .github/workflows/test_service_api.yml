@@ -72,6 +72,15 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v7
 
+      - name: Start build and test energy measurement
+        id: energy_start
+        continue-on-error: true
+        uses: green-coding-solutions/eco-ci-energy-estimation@782dd4a31bc426a6ae26a7b08d89af454b10ffc0 # v5.3.0
+        with:
+          task: start-measurement
+          send-data: false
+          json-output: true
+
       - name: Set up Node.js version
         uses: actions/setup-node@v7
         with:
@@ -95,6 +104,16 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: |
           docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
+
+      - name: Collect build and test energy
+        if: always()
+        continue-on-error: true
+        uses: ./.github/actions/energy-results
+        with:
+          artifact-name: test_service_api-test-shard-${{ matrix.shard }}
+          start-outcome: ${{ steps.energy_start.outcome }}
+          workload-status: ${{ job.status }}
+          approximate: 'false'
 
       # For more info, see services/121-service/README.md#Integration-test-coverage
       - name: Generate Coverage-report from 121-service
@@ -121,6 +140,15 @@ jobs:
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
     steps:
       - uses: actions/checkout@v7
+
+      - name: Start build and test energy measurement
+        id: energy_start
+        continue-on-error: true
+        uses: green-coding-solutions/eco-ci-energy-estimation@782dd4a31bc426a6ae26a7b08d89af454b10ffc0 # v5.3.0
+        with:
+          task: start-measurement
+          send-data: false
+          json-output: true
 
       - name: Set up Node.js version
         uses: actions/setup-node@v7
@@ -154,6 +182,16 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: 'npm run test:unit:coverage'
 
+      - name: Collect build and test energy
+        if: always()
+        continue-on-error: true
+        uses: ./.github/actions/energy-results
+        with:
+          artifact-name: test_service_api-test
+          start-outcome: ${{ steps.energy_start.outcome }}
+          workload-status: ${{ job.status }}
+          approximate: 'false'
+
       - uses: actions/upload-artifact@v7
         with:
           name: unit-test-coverage-report
@@ -172,6 +210,7 @@ jobs:
       - name: Download coverage reports from previous jobs
         uses: actions/download-artifact@v8
         with:
+          pattern: '*-test-coverage-report*'
           path: coverage
 
       - name: Save a single artifact with all of the coverage reports
@@ -213,3 +252,19 @@ jobs:
         run: |
           echo "All required checks have successfully passed." >> "$GITHUB_STEP_SUMMARY"
           exit 0
+
+  energy-summary:
+    name: Build and test energy total
+    if: always()
+    needs: [test-shard, test]
+    runs-on: ubuntu-slim
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Summarize build and test energy
+        uses: ./.github/actions/energy-summary
+        with:
+          workflow: test_service_api
+          producers: '["test_service_api-test-shard-1","test_service_api-test-shard-2","test_service_api-test-shard-3","test_service_api-test-shard-4","test_service_api-test-shard-5","test_service_api-test-shard-6","test_service_api-test"]'
+          job-results: ${{ toJSON(needs) }}

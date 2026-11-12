@@ -41,6 +41,15 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Start build and test energy measurement
+        id: energy_start
+        continue-on-error: true
+        uses: green-coding-solutions/eco-ci-energy-estimation@782dd4a31bc426a6ae26a7b08d89af454b10ffc0 # v5.3.0
+        with:
+          task: start-measurement
+          send-data: false
+          json-output: true
+
       - name: Set up Node.js version
         uses: actions/setup-node@v7
         with:
@@ -75,6 +84,23 @@ jobs:
         working-directory: ${{ env.interfacePath }}
         run: 'npm run test:coverage'
 
+      - name: 'Check translations output-file'
+        working-directory: ${{ env.interfacePath }}
+        run: |
+          npm run set-env-variables -- --env=development
+          npm run extract-i18n
+          git diff --exit-code src/locale/messages.xlf
+
+      - name: Collect build and test energy
+        if: always()
+        continue-on-error: true
+        uses: ./.github/actions/energy-results
+        with:
+          artifact-name: test_interface_portal-test
+          start-outcome: ${{ steps.energy_start.outcome }}
+          workload-status: ${{ job.status }}
+          approximate: 'false'
+
       - name: 'Upload coverage report to QLTY'
         uses: qltysh/qlty-action/coverage@ebcd284bf32e36a030afe15f1e136c7be08b9506
         with:
@@ -83,13 +109,6 @@ jobs:
           tag: portal
           files: ${{ env.interfacePath }}/coverage/portal/lcov.info
 
-      - name: 'Check translations output-file'
-        working-directory: ${{ env.interfacePath }}
-        run: |
-          npm run set-env-variables -- --env=development
-          npm run extract-i18n
-          git diff --exit-code src/locale/messages.xlf
-
       - name: Save coverage report
         if: always()
         uses: actions/upload-artifact@v7
@@ -97,3 +116,19 @@ jobs:
           name: coverage-report
           path: |
             ${{ env.interfacePath }}/coverage
+
+  energy-summary:
+    name: Build and test energy total
+    if: always()
+    needs: [test]
+    runs-on: ubuntu-slim
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Summarize build and test energy
+        uses: ./.github/actions/energy-summary
+        with:
+          workflow: test_interface_portal
+          producers: '["test_interface_portal-test"]'
+          job-results: ${{ toJSON(needs) }}
