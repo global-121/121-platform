@@ -145,9 +145,9 @@ describe('ImageDialogsComponent', () => {
       attributeName: 'upload_an_image',
     });
     expect(createObjectUrl).toHaveBeenCalledWith(downloadedBlob);
-    expect(imageDialogsComponent.downloadedImageObjectUrls()[0]).toBe(
-      'blob:https://example.org/kobo-image',
-    );
+    expect(
+      imageDialogsComponent.downloadedImageObjectUrls().get(firstImageUrl),
+    ).toBe('blob:https://example.org/kobo-image');
   });
 
   it('does not re-download when the image was already downloaded', async () => {
@@ -175,7 +175,64 @@ describe('ImageDialogsComponent', () => {
     expect(showGenericError).toHaveBeenCalledTimes(1);
     expect(imageDialogsComponent.openImageIndexes().has(0)).toBe(false);
     expect(createObjectUrl).not.toHaveBeenCalled();
-    expect(imageDialogsComponent.downloadedImageObjectUrls()[0]).toBeNull();
+    expect(
+      imageDialogsComponent.downloadedImageObjectUrls().has(firstImageUrl),
+    ).toBe(false);
+  });
+
+  it('does not start a second download while one is in flight', async () => {
+    let resolveDownload: (blob: Blob) => void = () => undefined;
+    downloadKoboImage.mockReturnValueOnce(
+      new Promise<Blob>((resolve) => {
+        resolveDownload = resolve;
+      }),
+    );
+
+    imageViewerService.open({ imageUrl: firstImageUrl });
+    fixture.detectChanges();
+    imageViewerService.open({ imageUrl: secondImageUrl });
+    fixture.detectChanges();
+    resolveDownload(downloadedBlob);
+    await fixture.whenStable();
+
+    const firstImageDownloads = downloadKoboImage.mock.calls.filter(
+      ([{ attributeName }]) => attributeName === 'upload_an_image',
+    );
+
+    expect(firstImageDownloads.length).toBe(1);
+  });
+
+  it('shows the original image URL without downloading when download details are missing', () => {
+    hostComponent.images.set([
+      { label: 'Photo of ID', imageUrl: firstImageUrl, referenceId },
+    ]);
+    fixture.detectChanges();
+    imageViewerService.open({ imageUrl: firstImageUrl });
+    fixture.detectChanges();
+
+    expect(downloadKoboImage).not.toHaveBeenCalled();
+    expect(
+      imageDialogsComponent.getDisplayedImageUrl({
+        image: hostComponent.images()[0],
+      }),
+    ).toBe(firstImageUrl);
+  });
+
+  it('revokes the object URL of an image that is removed from the list', async () => {
+    imageViewerService.open({ imageUrl: firstImageUrl });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    hostComponent.images.set([hostComponent.images()[1]]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(revokeObjectUrl).toHaveBeenCalledWith(
+      'blob:https://example.org/kobo-image',
+    );
+    expect(
+      imageDialogsComponent.downloadedImageObjectUrls().has(firstImageUrl),
+    ).toBe(false);
   });
 
   it('closes the dialog via the shared service', () => {
@@ -184,7 +241,7 @@ describe('ImageDialogsComponent', () => {
 
     expect(imageDialogsComponent.openImageIndexes().has(0)).toBe(true);
 
-    imageDialogsComponent.closeDialog({ imageIndex: 0 });
+    imageDialogsComponent.closeDialog({ image: hostComponent.images()[0] });
     fixture.detectChanges();
 
     expect(imageDialogsComponent.openImageIndexes().has(0)).toBe(false);
