@@ -43,7 +43,7 @@ type LoginEmailStepFormGroup =
 export class BasicAuthLoginEmailStepComponent implements OnInit {
   private userApiService = inject(UserApiService);
   readonly email = input.required<string>();
-  readonly otpRequested = output<{ email: string }>();
+  readonly oneTimePasswordRequested = output<{ email: string }>();
   readonly passwordInstead = output<{ email: string }>();
 
   formGroup = new FormGroup({
@@ -56,13 +56,13 @@ export class BasicAuthLoginEmailStepComponent implements OnInit {
 
   formFieldErrors = generateFieldErrors(this.formGroup);
 
-  requestOtpMutation = injectMutation(() => ({
+  requestOneTimePasswordMutation = injectMutation(() => ({
     mutationFn: ({
       email,
     }: ReturnType<LoginEmailStepFormGroup['getRawValue']>) =>
-      this.userApiService.createLoginOtp({ username: email }),
+      this.userApiService.createLoginOneTimePassword({ username: email }),
     onSuccess: (_, { email }) => {
-      this.otpRequested.emit({ email });
+      this.oneTimePasswordRequested.emit({ email });
     },
   }));
 

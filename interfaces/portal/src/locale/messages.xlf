@@ -283,7 +283,7 @@
         <source>Select Many</source>
       </trans-unit>
       <trans-unit id="2148561060695665765" datatype="html">
-        <source>We&apos;ve sent a <x equiv-text="{{ OTP_LENGTH }}" id="INTERPOLATION"/>-character code to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ email() }}" id="INTERPOLATION_1"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
+        <source>We&apos;ve sent a <x equiv-text="{{ ONE_TIME_PASSWORD_LENGTH }}" id="INTERPOLATION"/>-character code to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ email() }}" id="INTERPOLATION_1"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
       </trans-unit>
       <trans-unit id="2161871078253886554" datatype="html">
         <source>Unknown user</source>
@@ -2056,7 +2056,7 @@
         <source>Name fields</source>
       </trans-unit>
       <trans-unit id="8645028158985898467" datatype="html">
-        <source>The code is valid for <x equiv-text="{{ otpRemainingMs() | date: &apos;m:ss&apos; : &apos;UTC&apos; }}" id="INTERPOLATION"/> minutes.</source>
+        <source>The code is valid for <x equiv-text="{{ oneTimePasswordRemainingMs() | date: &apos;m:ss&apos; : &apos;UTC&apos; }}" id="INTERPOLATION"/> minutes.</source>
       </trans-unit>
       <trans-unit id="8670091824036050972" datatype="html">
         <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations.</source>

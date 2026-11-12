@@ -17,11 +17,11 @@ describe('Logging in', () => {
   let strategy: BasicAuthStrategy;
   let userApiService: {
     login: ReturnType<typeof vi.fn>;
-    loginWithOtp: ReturnType<typeof vi.fn>;
+    loginWithOneTimePassword: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(() => {
-    userApiService = { login: vi.fn(), loginWithOtp: vi.fn() };
+    userApiService = { login: vi.fn(), loginWithOneTimePassword: vi.fn() };
 
     TestBed.configureTestingModule({
       providers: [
@@ -42,30 +42,32 @@ describe('Logging in', () => {
     strategy = TestBed.inject(BasicAuthStrategy);
   });
 
-  it('should log in with a one-time code when an OTP is given', async () => {
+  it('should log in with a one-time password when one is given', async () => {
     // Arrange
-    userApiService.loginWithOtp.mockResolvedValue(user);
+    userApiService.loginWithOneTimePassword.mockResolvedValue(user);
 
     // Act
     const result = await strategy.login({
-      method: LoginMethod.otp,
+      method: LoginMethod.oneTimePassword,
       username: 'test@example.com',
-      otp: 'ABC123',
+      oneTimePassword: 'ABC123',
     });
 
     // Assert
     expect(result).toBe(user);
   });
 
-  it('should throw a code-specific error when logging in with a one-time code fails', async () => {
+  it('should throw a code-specific error when logging in with a one-time password fails', async () => {
     // Arrange
-    userApiService.loginWithOtp.mockRejectedValue(new Error('Unauthorized'));
+    userApiService.loginWithOneTimePassword.mockRejectedValue(
+      new Error('Unauthorized'),
+    );
 
     // Act
     const loginPromise = strategy.login({
-      method: LoginMethod.otp,
+      method: LoginMethod.oneTimePassword,
       username: 'test@example.com',
-      otp: 'ABC123',
+      oneTimePassword: 'ABC123',
     });
 
     // Assert
