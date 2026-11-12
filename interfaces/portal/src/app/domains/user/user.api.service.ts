@@ -17,6 +17,7 @@ export class UserApiService extends DomainApiService {
         username,
         password,
       },
+      hasSensitiveBody: true,
     });
   }
 
@@ -44,6 +45,7 @@ export class UserApiService extends DomainApiService {
         username,
         oneTimePassword,
       },
+      hasSensitiveBody: true,
     });
   }
 
@@ -71,6 +73,7 @@ export class UserApiService extends DomainApiService {
         password,
         newPassword,
       },
+      hasSensitiveBody: true,
     });
   }
 
