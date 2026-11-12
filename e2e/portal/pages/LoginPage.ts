@@ -63,6 +63,7 @@ class LoginPage extends BasePage {
     }
 
     await this.loginWithPasswordButton.click();
+    await expect(this.passwordInput).toBeVisible();
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
     await this.loginButton.click();
