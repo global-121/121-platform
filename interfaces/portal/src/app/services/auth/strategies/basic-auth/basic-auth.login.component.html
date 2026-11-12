@@ -1,47 +1,34 @@
-<app-form-default
-  [formGroup]="formGroup"
-  submitButtonText="Log in"
-  i18n-submitButtonText
-  [mutation]="loginMutation"
->
-  <app-form-field-wrapper
-    label="E-mail"
-    i18n-label
-    [errorMessage]="formFieldErrors()('email')"
-  >
-    <!-- eslint-disable @angular-eslint/template/no-autofocus -- THE login-input allows for an exception. -->
-    <input
-      pInputText
-      type="email"
-      formControlName="email"
-      autocomplete="username"
-      placeholder="yourname@example.org"
-      i18n-placeholder
-      [pAutoFocus]="true"
-      autofocus
+@switch (step()) {
+  @case (LoginStep.email) {
+    <app-basic-auth-login-email-step
+      [email]="email()"
+      (oneTimePasswordRequested)="onOneTimePasswordRequested($event)"
+      (passwordInstead)="
+        goToStep({ step: LoginStep.password, email: $event.email })
+      "
     />
-    <!-- eslint-enable @angular-eslint/template/no-autofocus -- Only this input requires exception. -->
-  </app-form-field-wrapper>
-  <app-form-field-wrapper
-    label="Password"
-    i18n-label
-    [errorMessage]="formFieldErrors()('password')"
-  >
-    <p-password
-      formControlName="password"
-      autocomplete="current-password"
-      [toggleMask]="true"
-      [feedback]="false"
+  }
+  @case (LoginStep.oneTimePassword) {
+    @if (oneTimePasswordRequest(); as oneTimePasswordRequest) {
+      <app-basic-auth-login-one-time-password-step
+        [email]="email()"
+        [oneTimePasswordRequestedAt]="oneTimePasswordRequest.requestedAt"
+        [returnUrl]="returnUrl()"
+        (oneTimePasswordRequested)="onOneTimePasswordRequested($event)"
+        (changeEmail)="goToStep({ step: LoginStep.email, email: $event.email })"
+        (passwordInstead)="
+          goToStep({ step: LoginStep.password, email: $event.email })
+        "
+      />
+    }
+  }
+  @case (LoginStep.password) {
+    <app-basic-auth-login-password-step
+      [email]="email()"
+      [returnUrl]="returnUrl()"
+      (oneTimePasswordInstead)="
+        goToStep({ step: LoginStep.email, email: $event.email })
+      "
     />
-  </app-form-field-wrapper>
-</app-form-default>
-<p class="mbs-4">
-  <span i18n>Forgot your password?</span>&nbsp;
-
-  <a
-    i18n
-    [href]="'mailto:support@121.global?subject=' + passWordResetSubject"
-    target="_blank"
-    >Request a password reset</a
-  >
-</p>
+  }
+}

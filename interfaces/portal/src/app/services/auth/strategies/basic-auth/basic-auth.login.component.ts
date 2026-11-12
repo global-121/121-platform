@@ -1,69 +1,71 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  inject,
   input,
+  signal,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
 
-import { injectMutation } from '@tanstack/angular-query-experimental';
-import { AutoFocus } from 'primeng/autofocus';
-import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
+import { ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS } from '@121-service/src/user/user-one-time-password/user-one-time-password.const';
 
-import { FormDefaultComponent } from '~/components/form-default/form-default.component';
-import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
-import { AuthService } from '~/services/auth.service';
-import { generateFieldErrors } from '~/utils/form-validation';
+import { BasicAuthLoginEmailStepComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login-email-step.component';
+import { BasicAuthLoginOneTimePasswordStepComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login-one-time-password-step.component';
+import { BasicAuthLoginPasswordStepComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login-password-step.component';
 
-type LoginFormGroup =
-  (typeof BasicAuthLoginComponent)['prototype']['formGroup'];
+enum LoginStep {
+  email = 'email',
+  oneTimePassword = 'oneTimePassword',
+  password = 'password',
+}
+
+interface OneTimePasswordRequest {
+  email: string;
+  requestedAt: number;
+}
 
 @Component({
   selector: 'app-basic-auth-login',
   imports: [
-    InputTextModule,
-    PasswordModule,
-    AutoFocus,
-    FormDefaultComponent,
-    ReactiveFormsModule,
-    FormFieldWrapperComponent,
+    BasicAuthLoginEmailStepComponent,
+    BasicAuthLoginOneTimePasswordStepComponent,
+    BasicAuthLoginPasswordStepComponent,
   ],
   templateUrl: './basic-auth.login.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BasicAuthLoginComponent {
-  private authService = inject(AuthService);
   readonly returnUrl = input<string | undefined>(undefined);
 
-  passWordResetSubject = `Request Password reset for 121 Platform: ${location.host}`; // NOTE: Not localized/translated, it's used by support-team only
+  readonly LoginStep = LoginStep;
 
-  formGroup = new FormGroup({
-    email: new FormControl('', {
-      nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-      validators: [Validators.required, Validators.email],
-    }),
-    password: new FormControl('', {
-      nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-      validators: [Validators.required],
-    }),
-  });
+  readonly step = signal(LoginStep.email);
+  readonly email = signal('');
+  readonly oneTimePasswordRequest = signal<OneTimePasswordRequest | undefined>(
+    undefined,
+  );
 
-  formFieldErrors = generateFieldErrors(this.formGroup);
+  onOneTimePasswordRequested({ email }: { email: string }): void {
+    if (!this.isWithinOneTimePasswordCooldown({ email })) {
+      this.oneTimePasswordRequest.set({ email, requestedAt: Date.now() });
+    }
+    this.goToStep({ step: LoginStep.oneTimePassword, email });
+  }
 
-  loginMutation = injectMutation(() => ({
-    mutationFn: ({
-      email,
-      password,
-    }: ReturnType<LoginFormGroup['getRawValue']>) =>
-      this.authService.login({ username: email, password }, this.returnUrl()),
-  }));
+  private isWithinOneTimePasswordCooldown({
+    email,
+  }: {
+    email: string;
+  }): boolean {
+    const oneTimePasswordRequest = this.oneTimePasswordRequest();
+    return (
+      oneTimePasswordRequest?.email === email &&
+      Date.now() - oneTimePasswordRequest.requestedAt <
+        ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS
+    );
+  }
+
+  goToStep({ step, email }: { step: LoginStep; email: string }): void {
+    this.email.set(email);
+    this.step.set(step);
+  }
 }

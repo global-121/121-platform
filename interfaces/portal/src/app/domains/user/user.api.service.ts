@@ -20,6 +20,33 @@ export class UserApiService extends DomainApiService {
     });
   }
 
+  createLoginOneTimePassword({ username }: { username: string }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'POST',
+      endpoint: `${BASE_ENDPOINT}/one-time-password`,
+      body: {
+        username,
+      },
+    });
+  }
+
+  loginWithOneTimePassword({
+    username,
+    oneTimePassword,
+  }: {
+    username: string;
+    oneTimePassword: string;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<User>({
+      method: 'POST',
+      endpoint: `${BASE_ENDPOINT}/login/one-time-password`,
+      body: {
+        username,
+        oneTimePassword,
+      },
+    });
+  }
+
   logout() {
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
