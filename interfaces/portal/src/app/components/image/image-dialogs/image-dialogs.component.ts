@@ -54,6 +54,7 @@ export class ImageDialogsComponent {
   readonly downloadedImageObjectUrls = signal<ReadonlyMap<string, string>>(
     new Map(),
   );
+  // Image URLs being downloaded right now, to avoid requesting them twice.
   private readonly pendingDownloads = new Set<string>();
 
   // Visible dialogs are derived from the shared open-image state (keyed by URL).
@@ -73,44 +74,19 @@ export class ImageDialogsComponent {
   isMaximized = false;
 
   constructor() {
-    // Blob object URLs must be revoked explicitly, or else they leak memory.
+    // Free the blobs of images that are no longer in the list.
     effect(() => {
-      const currentImageUrls = new Set(
-        this.images().map(({ imageUrl }) => imageUrl),
-      );
-
-      this.downloadedImageObjectUrls.update((downloadedObjectUrls) => {
-        const keptObjectUrls = new Map<string, string>();
-
-        for (const [imageUrl, objectUrl] of downloadedObjectUrls) {
-          if (currentImageUrls.has(imageUrl)) {
-            keptObjectUrls.set(imageUrl, objectUrl);
-          } else {
-            URL.revokeObjectURL(objectUrl);
-          }
-        }
-
-        return keptObjectUrls;
-      });
+      this.revokeObjectUrlsOfRemovedImages();
     });
 
+    // Download an image when it gets opened through ImageViewerService.
+    effect(() => {
+      this.loadOpenImages();
+    });
+
+    // Free all remaining blobs when the component goes away.
     this.destroyRef.onDestroy(() => {
-      for (const objectUrl of this.downloadedImageObjectUrls().values()) {
-        URL.revokeObjectURL(objectUrl);
-      }
-    });
-
-    // Start the download when an image is opened through ImageViewerService
-    effect(() => {
-      const openImageUrls = this.imageViewerService.openImageUrls();
-
-      untracked(() => {
-        for (const image of this.images()) {
-          if (openImageUrls.has(image.imageUrl)) {
-            void this.loadImage({ image });
-          }
-        }
-      });
+      this.revokeAllObjectUrls();
     });
   }
 
@@ -133,11 +109,7 @@ export class ImageDialogsComponent {
   async loadImage({ image }: { image: DialogImage }): Promise<void> {
     const downloadParams = getKoboImageDownloadParams({ image });
 
-    if (
-      !downloadParams ||
-      this.downloadedImageObjectUrls().has(image.imageUrl) ||
-      this.pendingDownloads.has(image.imageUrl)
-    ) {
+    if (!downloadParams || this.isDownloadedOrDownloading({ image })) {
       return;
     }
 
@@ -159,6 +131,29 @@ export class ImageDialogsComponent {
     }
   }
 
+  private isDownloadedOrDownloading({
+    image,
+  }: {
+    image: DialogImage;
+  }): boolean {
+    return (
+      this.downloadedImageObjectUrls().has(image.imageUrl) ||
+      this.pendingDownloads.has(image.imageUrl)
+    );
+  }
+
+  private loadOpenImages(): void {
+    const openImageUrls = this.imageViewerService.openImageUrls();
+
+    untracked(() => {
+      for (const image of this.images()) {
+        if (openImageUrls.has(image.imageUrl)) {
+          void this.loadImage({ image });
+        }
+      }
+    });
+  }
+
   private storeDownloadedImage({
     imageUrl,
     blob,
@@ -171,5 +166,32 @@ export class ImageDialogsComponent {
       updatedObjectUrls.set(imageUrl, URL.createObjectURL(blob));
       return updatedObjectUrls;
     });
+  }
+
+  // Blob object URLs must be revoked explicitly, or else they leak memory.
+  private revokeObjectUrlsOfRemovedImages(): void {
+    const currentImageUrls = new Set(
+      this.images().map(({ imageUrl }) => imageUrl),
+    );
+
+    this.downloadedImageObjectUrls.update((downloadedObjectUrls) => {
+      const keptObjectUrls = new Map<string, string>();
+
+      for (const [imageUrl, objectUrl] of downloadedObjectUrls) {
+        if (currentImageUrls.has(imageUrl)) {
+          keptObjectUrls.set(imageUrl, objectUrl);
+        } else {
+          URL.revokeObjectURL(objectUrl);
+        }
+      }
+
+      return keptObjectUrls;
+    });
+  }
+
+  private revokeAllObjectUrls(): void {
+    for (const objectUrl of this.downloadedImageObjectUrls().values()) {
+      URL.revokeObjectURL(objectUrl);
+    }
   }
 }
