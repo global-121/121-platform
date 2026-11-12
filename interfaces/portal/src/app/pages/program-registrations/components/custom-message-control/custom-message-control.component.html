@@ -45,16 +45,21 @@
     @if (mentionOptions().length > 0) {
       <ul
         role="listbox"
-        class="border-grey-300 absolute z-10 overflow-auto rounded-sm border bg-white shadow-lg inline-full max-block-48"
+        class="shadow-menu absolute z-10 overflow-y-auto rounded-sm bg-white max-block-48"
+        [style.top.px]="mentionMenuPosition().top"
+        [style.left.px]="mentionMenuPosition().left"
+        [style.right.px]="mentionMenuPosition().right"
       >
         @for (option of mentionOptions(); track option.label; let i = $index) {
-          <li role="presentation">
+          <li
+            role="presentation"
+            [class.bg-purple-100]="i === highlightedOptionIndex()"
+          >
             <button
               type="button"
               role="option"
               tabindex="-1"
-              class="cursor-pointer px-3 py-1 text-start inline-full"
-              [class.bg-grey-300]="i === highlightedOptionIndex()"
+              class="txt-body-m cursor-pointer px-4 py-2 text-start font-semibold whitespace-nowrap text-black inline-full"
               [attr.aria-selected]="i === highlightedOptionIndex()"
               [disabled]="!option.name"
               (mousedown)="$event.preventDefault()"

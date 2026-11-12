@@ -28,6 +28,7 @@ import {
   findActiveMention,
   formatPlaceholder,
 } from '~/pages/program-registrations/components/custom-message-control/custom-message-mention.helper';
+import { getTextareaCaretPosition } from '~/pages/program-registrations/components/custom-message-control/textarea-caret-position.helper';
 import { MessagingService } from '~/services/messaging.service';
 import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 
@@ -92,6 +93,11 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
 
   private readonly activeMention = signal<ActiveMention | undefined>(undefined);
   readonly highlightedOptionIndex = signal(0);
+  readonly mentionMenuPosition = signal<{
+    top: number;
+    left?: number;
+    right?: number;
+  }>({ top: 0, left: 0 });
 
   readonly mentionOptions = computed(() => {
     const activeMention = this.activeMention();
@@ -119,6 +125,28 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
 
     this.activeMention.set(activeMention);
     this.highlightedOptionIndex.set(0);
+
+    if (activeMention) {
+      this.updateMentionMenuPosition({ startIndex: activeMention.startIndex });
+    }
+  }
+
+  private updateMentionMenuPosition({ startIndex }: { startIndex: number }) {
+    const textarea = this.textarea().nativeElement;
+    const { left, top, lineHeight } = getTextareaCaretPosition({
+      textarea,
+      caretPosition: startIndex,
+    });
+    const containerWidth = textarea.offsetLeft + textarea.offsetWidth;
+    const isInStartHalf = left < containerWidth / 2;
+    const blockStart = top + lineHeight;
+
+    // Anchor to the opposite edge in the second half, so the menu doesn't overflow
+    this.mentionMenuPosition.set(
+      isInStartHalf
+        ? { top: blockStart, left }
+        : { top: blockStart, right: containerWidth - left },
+    );
   }
 
   closeMentionOptions() {
