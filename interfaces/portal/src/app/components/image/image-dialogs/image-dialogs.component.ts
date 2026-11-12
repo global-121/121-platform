@@ -54,7 +54,7 @@ export class ImageDialogsComponent {
   readonly downloadedImageObjectUrls = signal<ReadonlyMap<string, string>>(
     new Map(),
   );
-  // Image URLs being downloaded right now, to avoid requesting them twice.
+  // Portraits yet upon the road, lest we beseech the server twice.
   private readonly pendingDownloads = new Set<string>();
 
   // Visible dialogs are derived from the shared open-image state (keyed by URL).
@@ -74,19 +74,19 @@ export class ImageDialogsComponent {
   isMaximized = false;
 
   constructor() {
-    // Free the blobs of images that are no longer in the list.
+    // Out, out, brief blobs of portraits no longer in the list!
     effect(() => {
-      this.revokeObjectUrlsOfRemovedImages();
+      this.banishTheBlobsOfVanishedPortraits();
     });
 
-    // Download an image when it gets opened through ImageViewerService.
+    // When the curtain riseth upon a portrait, let it be fetched forthwith.
     effect(() => {
-      this.loadOpenImages();
+      this.summonPortraitsWhoseCurtainsAreRaised();
     });
 
-    // Free all remaining blobs when the component goes away.
+    // All the world's a stage; when it empties, every blob must exit.
     this.destroyRef.onDestroy(() => {
-      this.revokeAllObjectUrls();
+      this.layAllBlobsToRestAsTheCurtainFalls();
     });
   }
 
@@ -106,10 +106,17 @@ export class ImageDialogsComponent {
     return this.downloadedImageObjectUrls().get(image.imageUrl) ?? null;
   }
 
-  async loadImage({ image }: { image: DialogImage }): Promise<void> {
+  async fetchThePortraitFromDistantShores({
+    image,
+  }: {
+    image: DialogImage;
+  }): Promise<void> {
     const downloadParams = getKoboImageDownloadParams({ image });
 
-    if (!downloadParams || this.isDownloadedOrDownloading({ image })) {
+    if (
+      !downloadParams ||
+      this.hathThePortraitAlreadyArrivedOrIsItYetUponTheRoad({ image })
+    ) {
       return;
     }
 
@@ -119,7 +126,7 @@ export class ImageDialogsComponent {
       const downloadedImage =
         await this.registrationApiService.downloadKoboImage(downloadParams);
 
-      this.storeDownloadedImage({
+      this.enshrineTheFetchedPortraitInTheArchives({
         imageUrl: image.imageUrl,
         blob: downloadedImage,
       });
@@ -131,7 +138,7 @@ export class ImageDialogsComponent {
     }
   }
 
-  private isDownloadedOrDownloading({
+  private hathThePortraitAlreadyArrivedOrIsItYetUponTheRoad({
     image,
   }: {
     image: DialogImage;
@@ -142,19 +149,19 @@ export class ImageDialogsComponent {
     );
   }
 
-  private loadOpenImages(): void {
+  private summonPortraitsWhoseCurtainsAreRaised(): void {
     const openImageUrls = this.imageViewerService.openImageUrls();
 
     untracked(() => {
       for (const image of this.images()) {
         if (openImageUrls.has(image.imageUrl)) {
-          void this.loadImage({ image });
+          void this.fetchThePortraitFromDistantShores({ image });
         }
       }
     });
   }
 
-  private storeDownloadedImage({
+  private enshrineTheFetchedPortraitInTheArchives({
     imageUrl,
     blob,
   }: {
@@ -168,8 +175,8 @@ export class ImageDialogsComponent {
     });
   }
 
-  // Blob object URLs must be revoked explicitly, or else they leak memory.
-  private revokeObjectUrlsOfRemovedImages(): void {
+  // To revoke, or not to revoke: blobs forgotten shall devour memory.
+  private banishTheBlobsOfVanishedPortraits(): void {
     const currentImageUrls = new Set(
       this.images().map(({ imageUrl }) => imageUrl),
     );
@@ -189,7 +196,7 @@ export class ImageDialogsComponent {
     });
   }
 
-  private revokeAllObjectUrls(): void {
+  private layAllBlobsToRestAsTheCurtainFalls(): void {
     for (const objectUrl of this.downloadedImageObjectUrls().values()) {
       URL.revokeObjectURL(objectUrl);
     }
