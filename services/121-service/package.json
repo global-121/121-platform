@@ -75,7 +75,7 @@
     "@t3-oss/env-core": "^0.13.11",
     "@types/express": "^4.17.25",
     "@types/jsonwebtoken": "^9.0.10",
-    "applicationinsights": "^2.9.8",
+    "applicationinsights": "^3.17.0",
     "axios": "^1.21.0",
     "body-parser": "^2.4.0",
     "bull": "^4.16.5",
@@ -157,6 +157,7 @@
     "dtrace-provider": false,
     "fsevents": false,
     "msgpackr-extract": false,
+    "protobufjs": false,
     "ssh2": false,
     "unrs-resolver": false
   }

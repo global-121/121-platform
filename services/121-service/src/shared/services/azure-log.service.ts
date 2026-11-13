@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { defaultClient, TelemetryClient } from 'applicationinsights';
-import { SeverityLevel } from 'applicationinsights/out/Declarations/Contracts';
+import {
+  defaultClient,
+  KnownSeverityLevel,
+  TelemetryClient,
+} from 'applicationinsights';
 
 import { IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
@@ -24,18 +27,18 @@ export class AzureLogService {
     try {
       this.defaultClient.trackException({
         exception: error,
-        severity: alert ? SeverityLevel.Critical : SeverityLevel.Error,
+        severity: alert ? KnownSeverityLevel.Critical : KnownSeverityLevel.Error,
       });
     } catch (trackExceptionError) {
       console.error('An error occurred in logError:', trackExceptionError);
     }
 
-    this.flushLogs();
+    void this.flushLogs();
   }
 
-  private flushLogs(): void {
+  private async flushLogs(): Promise<void> {
     try {
-      this.defaultClient.flush();
+      await this.defaultClient.flush();
     } catch (flushError) {
       console.error(
         'An error occurred in AzureLogService::flushLogs:',
@@ -52,7 +55,7 @@ export class AzureLogService {
       return;
     }
     this.defaultClient.trackTrace({ message });
-    this.flushLogs();
+    void this.flushLogs();
   }
 
   public trackEvent({
@@ -75,6 +78,6 @@ export class AzureLogService {
       console.error('An error occurred in trackEvent:', trackEventError);
     }
 
-    this.flushLogs();
+    void this.flushLogs();
   }
 }

@@ -289,7 +289,7 @@ export class CustomHttpService {
             externalUrl: request.url,
           },
         });
-        this.flushLogs('logMessageRequest');
+        void this.flushLogs('logMessageRequest');
       } catch (error) {
         console.log('An error occurred in logMessageRequest: ', error);
       }
@@ -321,7 +321,7 @@ export class CustomHttpService {
             externalUrl: request.url,
           },
         });
-        this.flushLogs('logErrorRequest');
+        void this.flushLogs('logErrorRequest');
       } catch (error) {
         console.log('An error occurred in logErrorRequest: ', error);
       }
@@ -387,9 +387,9 @@ export class CustomHttpService {
     });
   }
 
-  private flushLogs(methodName: string): void {
+  private async flushLogs(methodName: string): Promise<void> {
     try {
-      this.defaultClient.flush();
+      await this.defaultClient.flush();
     } catch (flushError) {
       console.error(
         `An error occurred in CustomHttpService::${methodName}:`,
