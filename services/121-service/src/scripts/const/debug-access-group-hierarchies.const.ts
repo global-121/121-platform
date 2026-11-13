@@ -38,4 +38,26 @@ export const DEBUG_ACCESS_GROUP_HIERARCHIES = new Map<
       ],
     },
   ],
+  [
+    DebugAccessGroupHierarchy.kenya,
+    {
+      registrationAttributeNames: ['county', 'subCounty', 'village'],
+      leafPaths: [
+        'kisumu/kisumu-central/manyatta',
+        'kisumu/kisumu-central/milimani',
+        'kisumu/kisumu-central/nyamasaria',
+        'kisumu/kisumu-east/kajulu',
+        'kisumu/kisumu-east/kondele',
+        'kisumu/kisumu-east/nyalenda',
+        'kisumu/kisumu-west/kisian',
+        'kisumu/kisumu-west/obunga',
+        'kisumu/kisumu-west/otonglo',
+        'turkana/turkana-central/lodwar',
+        'turkana/turkana-north/nakwamekwi',
+        'turkana/turkana-north/nariemet',
+        'turkana/turkana-south/lokichar',
+        'turkana/turkana-west/kakuma',
+      ],
+    },
+  ],
 ]);
