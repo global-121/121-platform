@@ -82,23 +82,15 @@ export class ProgramSettingsTeamPageComponent {
   );
 
   readonly tableRows = computed<ProgramTeamUser[]>(() => {
-    const attributes = this.program.data()?.programRegistrationAttributes ?? [];
-
     return (this.programUsers.data() ?? []).map((user) => ({
       ...user,
       accessGroupLabel: user.accessGroups
-        .map(({ programRegistrationAttributeName, value }) => {
-          const attribute = attributes.find(
-            ({ name }) => name === programRegistrationAttributeName,
-          );
-          const option = attribute?.options?.find(
-            ({ option: optionValue }) => optionValue === value,
-          );
-
-          return (
-            this.translatableStringService.translate(option?.label) ?? value
-          );
-        })
+        .map(({ programRegistrationAttributeName, value }) =>
+          this.getAccessGroupLabel({
+            attributeName: programRegistrationAttributeName,
+            value,
+          }),
+        )
         .join(' / '),
     }));
   });
@@ -117,7 +109,6 @@ export class ProgramSettingsTeamPageComponent {
       },
     }),
   );
-
   readonly columns = computed<QueryTableColumn<ProgramTeamUser>[]>(() => {
     const scopeColumn: QueryTableColumn<ProgramTeamUser> = {
       field: 'scope',
@@ -145,14 +136,12 @@ export class ProgramSettingsTeamPageComponent {
       ...(this.enableAccessGroups() ? [accessGroupColumn] : []),
     ];
   });
-
   readonly canManageAidworkers = computed(() =>
     this.authService.hasPermission({
       programId: this.programId(),
       requiredPermission: PermissionEnum.AidWorkerProgramUPDATE,
     }),
   );
-
   readonly enableScope = computed(
     () => this.program.data()?.enableScope ?? false,
   );
@@ -162,7 +151,6 @@ export class ProgramSettingsTeamPageComponent {
         this.accessGroupLevels.data()?.accessGroupRegistrationAttributeNames,
     }),
   );
-
   readonly contextMenuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`Copy email`,
@@ -196,6 +184,32 @@ export class ProgramSettingsTeamPageComponent {
       },
     },
   ]);
+  private getAccessGroupLabel({
+    attributeName,
+    value,
+  }: {
+    attributeName: string;
+    value: string;
+  }): string {
+    const attribute = this.program
+      .data()
+      ?.programRegistrationAttributes.find(
+        ({ name }) => name === attributeName,
+      );
+    if (!attribute) {
+      return value;
+    }
+
+    const option = attribute.options?.find(
+      ({ option: optionValue }) => optionValue === value,
+    );
+    const label = this.translatableStringService.translate(option?.label);
+    if (!label) {
+      return value;
+    }
+
+    return label;
+  }
 
   openForm(formMode: 'add' | 'edit') {
     this.formMode.set(formMode);

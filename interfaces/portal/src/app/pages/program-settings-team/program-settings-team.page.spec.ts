@@ -198,6 +198,11 @@ describe('Program team access groups', () => {
         { name: 'region', options: [{ option: 'north', label: {} }] },
       ],
     },
+    {
+      attributes: [
+        { name: 'region', options: [{ option: 'north', label: { en: '' } }] },
+      ],
+    },
   ])(
     'keeps the value when no translated label exists (%j)',
     ({ attributes }) => {
