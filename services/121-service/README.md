@@ -40,6 +40,48 @@ Make sure to update any dependencies from _within_ the Docker-container, with:
 
 ## External services
 
+### Application Insights
+
+The service uses the Node.js `applicationinsights` 3.x SDK. Telemetry starts before
+NestJS and its instrumented dependencies load. Without
+`APPLICATIONINSIGHTS_CONNECTION_STRING`, initialization is skipped.
+
+#### Upgrade decisions (AB#45327, compatibility layer)
+
+- Keep the `applicationinsights` package and its manual tracking APIs rather than
+  replace the logging stack with the Azure Monitor OpenTelemetry distribution.
+  This limits changes to existing traces, exceptions, custom events and callers.
+- Keep `main.ts` as an ordered, two-import entry point (`instrumentation`, then
+  `server`). The import formatter otherwise moves initialization behind NestJS
+  imports, which prevents reliable dependency instrumentation. The existing server
+  bootstrap lives in `server.ts`; startup commands remain unchanged.
+- Replace the unsupported `addTelemetryProcessor` with the supported HTTP
+  `startIncomingSpanHook`. Preserve the `x-121-interface` header as the request's
+  `customDimensions.interface`, rather than rename the dimension or emit another
+  request record. Explicit HTTP enablement keeps the hook configuration compatible
+  with the SDK's public options type; it matches the SDK default.
+- Keep existing application-authored messages, properties, severity levels,
+  redaction, middleware coverage and per-message flushing in this first layer.
+  Handle rejected flush promises as well as synchronous errors, since SDK 3.x
+  flushing is asynchronous.
+- Use the public `KnownSeverityLevel` export instead of an internal SDK path.
+  Azure still receives Error/Critical severity for the existing alert flag.
+- Keep SDK collection defaults rather than recreate legacy internals. SDK-generated
+  names, runtime counters and correlation behavior follow the 3.x SDK; unsupported
+  legacy features such as native extended metrics are not recreated. Existing
+  application-authored telemetry contracts remain unchanged.
+- Set `tracesPerSecond: 0` to retain percentage-based sampling (100% by default,
+  still configurable through the SDK). The underlying distribution otherwise
+  defaults to a five-trace-per-second rate-limited sampler, which can discard
+  requests even though the compatibility SDK reports 100% sampling. This is a
+  deliberate exception to the new defaults to preserve collection volume.
+- Deny the new transitive `protobufjs` install script explicitly. Its script only
+  checks dependency version notation; it is not needed at runtime.
+
+References: [Node.js SDK and supported configuration](https://github.com/microsoft/ApplicationInsights-node.js#readme),
+[Node.js migration guide](https://learn.microsoft.com/azure/azure-monitor/app/opentelemetry-nodejs-migrate?tabs=cleaninstall),
+[HTTP instrumentation hooks](https://github.com/open-telemetry/opentelemetry-js/tree/main/experimental/packages/opentelemetry-instrumentation-http#http-instrumentation-options).
+
 ### FSP-specific instructions
 
 For FSP-specific instructions, see the README.md in each individual FSP-folder, e.g. for [Intersolve](./src/fsp-integrations/integrations/intersolve/README.md)
