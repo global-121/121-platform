@@ -4,11 +4,13 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   Relation,
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramAttachmentAccessGroupEntity } from '@121-service/src/programs/program-attachments/program-attachment-access-group.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @Index('IDX_program_attachment_programId_scope', ['programId', 'scope'])
@@ -41,4 +43,11 @@ export class ProgramAttachmentEntity extends Base121Entity {
 
   @Column({ default: '' })
   public scope: string;
+
+  @OneToMany(
+    () => ProgramAttachmentAccessGroupEntity,
+    (accessGroup) => accessGroup.programAttachment,
+    { cascade: ['insert'] },
+  )
+  public accessGroups: Relation<ProgramAttachmentAccessGroupEntity[]>;
 }

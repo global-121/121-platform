@@ -340,6 +340,7 @@ describe('UserAccessGroupAssignmentsService', () => {
             id: 10,
             value: 'kisumu',
             accessGroupLevel: {
+              id: countyLevelId,
               programRegistrationAttributeId: countyAttributeId,
             },
           },
@@ -356,7 +357,11 @@ describe('UserAccessGroupAssignmentsService', () => {
 
       // Assert
       expect(result).toEqual([
-        { programRegistrationAttributeId: countyAttributeId, value: 'kisumu' },
+        {
+          accessGroupLevelId: countyLevelId,
+          programRegistrationAttributeId: countyAttributeId,
+          value: 'kisumu',
+        },
       ]);
     });
 
@@ -380,7 +385,11 @@ describe('UserAccessGroupAssignmentsService', () => {
 
       // Assert
       expect(result).toEqual([
-        { programRegistrationAttributeId: countyAttributeId, value: 'kisumu' },
+        {
+          accessGroupLevelId: countyLevelId,
+          programRegistrationAttributeId: countyAttributeId,
+          value: 'kisumu',
+        },
       ]);
     });
     it('should return attribute ids and values in assignment order', () => {
@@ -394,12 +403,14 @@ describe('UserAccessGroupAssignmentsService', () => {
               {
                 value: 'kisumu',
                 accessGroupLevel: {
+                  id: countyLevelId,
                   programRegistrationAttributeId: countyAttributeId,
                 },
               },
               {
                 value: 'kisumu-west',
                 accessGroupLevel: {
+                  id: 2,
                   programRegistrationAttributeId: 12,
                 },
               },
@@ -410,8 +421,16 @@ describe('UserAccessGroupAssignmentsService', () => {
 
       // Assert
       expect(result).toEqual([
-        { programRegistrationAttributeId: countyAttributeId, value: 'kisumu' },
-        { programRegistrationAttributeId: 12, value: 'kisumu-west' },
+        {
+          accessGroupLevelId: countyLevelId,
+          programRegistrationAttributeId: countyAttributeId,
+          value: 'kisumu',
+        },
+        {
+          accessGroupLevelId: 2,
+          programRegistrationAttributeId: 12,
+          value: 'kisumu-west',
+        },
       ]);
     });
 

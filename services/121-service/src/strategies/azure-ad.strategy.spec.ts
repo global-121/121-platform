@@ -442,7 +442,7 @@ describe('AzureAdStrategy', () => {
       it('should return UserRequestData with correct scope and access groups when programId is provided', async () => {
         const mockUser = createMockUser();
         const accessGroups = [
-          { programRegistrationAttributeId: 7, value: 'kisumu' },
+          { accessGroupLevelId: 3, programRegistrationAttributeId: 7, value: 'kisumu' },
         ];
         userService.findUserAccessByUsernameOrThrow.mockResolvedValue(mockUser);
         userService.getScopeForUser.mockReturnValue('program-scope');

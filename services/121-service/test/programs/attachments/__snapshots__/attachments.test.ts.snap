@@ -2,6 +2,7 @@
 
 exports[`Program Attachments should list all attachments for a program 1`] = `
 {
+  "accessGroups": [],
   "created": Any<String>,
   "filename": "Test Image.jpg",
   "id": Any<Number>,

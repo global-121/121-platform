@@ -4,6 +4,7 @@ export interface GetAccessGroupsForUserParams {
     readonly accessGroups: readonly {
       readonly value: string;
       readonly accessGroupLevel: {
+        readonly id: number;
         readonly programRegistrationAttributeId: number;
       };
     }[];

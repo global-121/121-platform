@@ -183,6 +183,7 @@ export class UserAccessGroupAssignmentsService {
     }
 
     return assignment.accessGroups.map(({ accessGroupLevel, value }) => ({
+      accessGroupLevelId: accessGroupLevel.id,
       programRegistrationAttributeId:
         accessGroupLevel.programRegistrationAttributeId,
       value,

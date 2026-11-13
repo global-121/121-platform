@@ -87,6 +87,7 @@ export class ProgramAttachmentsController {
 
     const userId = RequestHelper.getUserId(req);
     const scope = RequestHelper.getUserScope(req);
+    const accessGroups = RequestHelper.getUserAccessGroups(req);
 
     return await this.programAttachmentsService.createProgramAttachment({
       programId,
@@ -94,6 +95,7 @@ export class ProgramAttachmentsController {
       filename: body.filename,
       userId,
       scope,
+      accessGroups,
     });
   }
 
@@ -115,11 +117,13 @@ export class ProgramAttachmentsController {
     @Req() req: ScopedUserRequest,
   ): Promise<void> {
     const scope = RequestHelper.getUserScope(req);
+    const accessGroups = RequestHelper.getUserAccessGroups(req);
     await this.programAttachmentsService.renameProgramAttachment({
       programId,
       attachmentId,
       filename: body.newFilename,
       scope,
+      accessGroups,
     });
   }
 
@@ -139,10 +143,12 @@ export class ProgramAttachmentsController {
     @Req() req: ScopedUserRequest,
   ): Promise<GetProgramAttachmentResponseDto[]> {
     const scope = RequestHelper.getUserScope(req);
-    return this.programAttachmentsService.getProgramAttachments(
+    const accessGroups = RequestHelper.getUserAccessGroups(req);
+    return this.programAttachmentsService.getProgramAttachments({
       programId,
       scope,
-    );
+      accessGroups,
+    });
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramAttachmentsREAD] })
@@ -164,12 +170,14 @@ export class ProgramAttachmentsController {
     @Req() req: ScopedUserRequest,
   ): Promise<void> {
     const scope = RequestHelper.getUserScope(req);
+    const accessGroups = RequestHelper.getUserAccessGroups(req);
     const { stream, mimetype, filename } =
-      await this.programAttachmentsService.getProgramAttachmentById(
+      await this.programAttachmentsService.getProgramAttachmentById({
         programId,
         attachmentId,
         scope,
-      );
+        accessGroups,
+      });
 
     res.writeHead(HttpStatus.OK, {
       'Content-Type': mimetype,
@@ -198,10 +206,12 @@ export class ProgramAttachmentsController {
     @Req() req: ScopedUserRequest,
   ): Promise<void> {
     const scope = RequestHelper.getUserScope(req);
-    await this.programAttachmentsService.deleteProgramAttachmentById(
+    const accessGroups = RequestHelper.getUserAccessGroups(req);
+    await this.programAttachmentsService.deleteProgramAttachmentById({
       programId,
       attachmentId,
       scope,
-    );
+      accessGroups,
+    });
   }
 }
