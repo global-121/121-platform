@@ -140,7 +140,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
         'r.id AS "registrationId"',
         'r.registrationStatus AS "registrationStatus"',
         'transaction.status AS "status"',
-        'transaction.transferValue AS "amount"',
+        'CAST(transaction."transferValue" AS double precision) AS "amount"',
         'transaction.errorMessage AS "errorMessage"',
         'transaction.programFspConfigurationName AS "programFspConfigurationName"',
       ])
@@ -204,7 +204,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       })
       .select([
         'transaction.id as "transactionId"',
-        'transaction.transferValue as "transferValue"',
+        'CAST(transaction."transferValue" AS double precision) as "transferValue"',
         'registration."referenceId" as "referenceId"',
         '"fspConfig"."fspName" as "fspName"',
       ])

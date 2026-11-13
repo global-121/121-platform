@@ -44,7 +44,24 @@ export class ProgramEntity extends Base121Entity {
   @Column({ type: 'integer', nullable: true })
   public distributionDuration: number | null;
 
-  @Column({ nullable: true, type: 'real' })
+  @Column({
+    name: 'fixedTransferValue',
+    nullable: true,
+    select: false,
+    type: 'real',
+  })
+  public fixedTransferValueLegacy?: number | null;
+
+  @Column({
+    name: 'fixedTransferValueNumeric',
+    nullable: true,
+    type: 'numeric',
+    transformer: {
+      to: (value: number | null) => value,
+      from: (value: string | null) =>
+        value === null ? null : Number.parseFloat(value),
+    },
+  })
   public fixedTransferValue: number | null;
 
   @Column({ type: 'character varying', nullable: true })
@@ -98,7 +115,25 @@ export class ProgramEntity extends Base121Entity {
   @Column({ default: false })
   public enableScope: boolean;
 
-  @Column({ nullable: true, default: null, type: 'integer' })
+  @Column({
+    name: 'budget',
+    nullable: true,
+    default: null,
+    select: false,
+    type: 'integer',
+  })
+  public budgetLegacy?: number | null;
+
+  @Column({
+    name: 'budgetNumeric',
+    nullable: true,
+    type: 'numeric',
+    transformer: {
+      to: (value: number | null) => value,
+      from: (value: string | null) =>
+        value === null ? null : Number.parseFloat(value),
+    },
+  })
   public budget: number | null;
 
   @OneToMany(() => PaymentEntity, (payment) => payment.program)

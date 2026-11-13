@@ -24,7 +24,24 @@ export class TransactionEntity extends Base121AuditedEntity {
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
 
-  @Column({ nullable: true, type: 'real' })
+  @Column({
+    name: 'transferValue',
+    nullable: true,
+    select: false,
+    type: 'real',
+  })
+  public transferValueLegacy?: number | null;
+
+  @Column({
+    name: 'transferValueNumeric',
+    nullable: true,
+    type: 'numeric',
+    transformer: {
+      to: (value: number | null) => value,
+      from: (value: string | null) =>
+        value === null ? null : Number.parseFloat(value),
+    },
+  })
   public transferValue: number | null;
 
   @Column()
