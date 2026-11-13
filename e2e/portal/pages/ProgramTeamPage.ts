@@ -122,6 +122,7 @@ class ProgramTeamPage extends BasePage {
     expectedAccessGroup: string;
   }) {
     await expect(this.accessGroupColumn).toBeVisible();
+    await this.table.globalSearch(userEmail);
     await expect(this.page.getByRole('row', { name: userEmail })).toContainText(
       expectedAccessGroup,
     );
