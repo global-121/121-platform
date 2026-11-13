@@ -1,8 +1,4 @@
-import {
-  type AccessToken,
-  ManagedIdentityCredential,
-  type TokenCredential,
-} from '@azure/identity';
+import { ManagedIdentityCredential } from '@azure/identity';
 import { Injectable } from '@nestjs/common';
 
 import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
@@ -21,27 +17,21 @@ const TOKEN_ACQUISITION_FAILED_MESSAGE =
  */
 @Injectable()
 export class AzureGraphTokenService {
-  private credential: TokenCredential | undefined;
+  private credential: ManagedIdentityCredential | undefined;
 
   public async getAccessToken(): Promise<string> {
-    let accessToken: AccessToken | null;
     try {
       const credential = this.getOrCreateCredential();
-      accessToken = await credential.getToken(GRAPH_API_DEFAULT_SCOPE);
+      const accessToken = await credential.getToken(GRAPH_API_DEFAULT_SCOPE);
+      return accessToken.token;
     } catch (error) {
       throw new EmailDeliveryError(TOKEN_ACQUISITION_FAILED_MESSAGE, {
         cause: error,
       });
     }
-
-    if (!accessToken?.token) {
-      throw new EmailDeliveryError(TOKEN_ACQUISITION_FAILED_MESSAGE);
-    }
-
-    return accessToken.token;
   }
 
-  private getOrCreateCredential(): TokenCredential {
+  private getOrCreateCredential(): ManagedIdentityCredential {
     if (!this.credential) {
       this.credential = new ManagedIdentityCredential({
         clientId: env.AZURE_USER_ASSIGNED_IDENTITY_CLIENT_ID,

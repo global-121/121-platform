@@ -38,16 +38,6 @@ describe('AzureGraphTokenService', () => {
     expect(accessToken).toBe('test-token');
   });
 
-  it('throws EmailDeliveryError when no token is returned', async () => {
-    // Arrange
-    mockGetToken.mockResolvedValue(null);
-
-    // Act & Assert
-    await expect(service.getAccessToken()).rejects.toBeInstanceOf(
-      EmailDeliveryError,
-    );
-  });
-
   it('wraps credential-provider rejections in EmailDeliveryError', async () => {
     // Arrange
     const credentialError = new CredentialUnavailableError(
