@@ -2,6 +2,7 @@ import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { getDebugScopeUsername } from '@121-service/src/scripts/helpers/debug-scope-username.helper';
 import { getAllUsersByProgramId } from '@121-service/test/helpers/user.helper';
 import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
@@ -150,7 +151,7 @@ test('Do not show scoped users in first-step approver options', async ({
     programId: programIdOCW,
   });
 
-  const scopedUsername = `${DebugScope.Kisumu}@example.org`;
+  const scopedUsername = getDebugScopeUsername({ scope: DebugScope.Kisumu });
   const scopedUser = allUsersResponse.body.find(
     (user) =>
       user.username === scopedUsername && user.scope === DebugScope.Kisumu,

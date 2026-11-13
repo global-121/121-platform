@@ -44,7 +44,10 @@ describe('Payment start', () => {
   const transferValue = 25;
 
   beforeEach(async () => {
-    await resetDB({ seedScript: SeedScript.nlrcMultiple });
+    await resetDB({
+      seedScript: SeedScript.nlrcMultiple,
+      enableScopeForProgramId: programId,
+    });
     accessToken = await getAccessToken();
   });
 

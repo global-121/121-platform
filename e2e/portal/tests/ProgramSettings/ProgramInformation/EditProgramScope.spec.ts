@@ -9,6 +9,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     skipSeedRegistrations: true,
+    enableScopeForProgramId: programIdPV,
     navigateToPage: `/program/${programIdPV}/registrations`,
   });
 });

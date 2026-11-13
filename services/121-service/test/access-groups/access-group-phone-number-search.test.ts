@@ -21,8 +21,9 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
-  programIdPV,
+  programIdCbe,
+  programIdWesteros,
+  registrationCbe,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 // The search by phone number is not bound to a program, so the access groups of the user
@@ -40,9 +41,11 @@ describe('Access groups - search registrations by phone number across programs',
     path?: AccessGroupPath;
   }) => ({
     referenceId: `access-group-phone-number-${name}`,
-    programFspConfigurationName: Fsps.intersolveVoucherPaper,
+    programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
     phoneNumber,
+    whatsappPhoneNumber: phoneNumber,
     fullName: name,
+    house: 'stark',
     ...(path ? getAccessGroupRegistrationValues({ path }) : {}),
   });
 
@@ -58,44 +61,39 @@ describe('Access groups - search registrations by phone number across programs',
   });
   // Shares its phone number with the registration outside the access group of the user in the first program
   const ofOtherProgram = {
-    ...createRegistration({
-      name: 'of-other-program',
-      phoneNumber: outsideAccessGroup.phoneNumber,
-    }),
-    programFspConfigurationName: Fsps.intersolveVisa,
-    addressStreet: 'Teststraat',
-    addressHouseNumber: '1',
-    addressPostalCode: '1234AB',
-    addressCity: 'Stad',
+    ...registrationCbe,
+    referenceId: 'access-group-phone-number-of-other-program',
+    phoneNumber: outsideAccessGroup.phoneNumber,
+    fullName: 'of-other-program',
   };
 
   let accessToken: string;
 
   beforeAll(async () => {
-    await resetDB({ seedScript: SeedScript.nlrcMultiple });
+    await resetDB({ seedScript: SeedScript.testMultiple });
     const accessTokenAdmin = await getAccessToken();
 
     await setupAccessGroupLevels({
-      programId: programIdPV,
+      programId: programIdWesteros,
       paths: [userAccessGroupPath, 'zuid-holland/rotterdam'],
       accessToken: accessTokenAdmin,
     });
     await importRegistrations(
-      programIdPV,
+      programIdWesteros,
       [withinAccessGroup, outsideAccessGroup],
       accessTokenAdmin,
     );
 
-    await importRegistrations(programIdOCW, [ofOtherProgram], accessTokenAdmin);
+    await importRegistrations(programIdCbe, [ofOtherProgram], accessTokenAdmin);
 
     const { username, password, userId } = await createUserWithPermissions({
       permissions: Object.values(PermissionEnum),
-      programId: programIdPV,
+      programId: programIdWesteros,
       adminAccessToken: accessTokenAdmin,
       accessGroups: getAccessGroupAssignments({ path: userAccessGroupPath }),
     });
     await assignUserToProgram({
-      programId: programIdOCW,
+      programId: programIdCbe,
       userId,
       roles: [DefaultUserRole.View],
       adminAccessToken: accessTokenAdmin,
@@ -146,6 +144,6 @@ describe('Access groups - search registrations by phone number across programs',
     expect(response.status).toBe(HttpStatus.OK);
     expect(response.body).toHaveLength(1);
     expect(response.body[0].referenceId).toBe(ofOtherProgram.referenceId);
-    expect(response.body[0].programId).toBe(programIdOCW);
+    expect(response.body[0].programId).toBe(programIdCbe);
   });
 });

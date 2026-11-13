@@ -16,6 +16,7 @@ test.describe('Export registrations with different formats and configurations', 
       seedScript: SeedScript.nlrcMultiple,
       registrations: [registrationPvMaxPayment, ...registrationsPV],
       programId: programIdPV,
+      enableScopeForProgramId: programIdPV,
     });
   });
 

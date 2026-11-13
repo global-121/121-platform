@@ -121,7 +121,10 @@ describe('Import a registration', () => {
 
   it('should not import any registration if one of them has different scope than user', async () => {
     // Arrange
-    await resetDB({ seedScript: SeedScript.nlrcMultiple });
+    await resetDB({
+      seedScript: SeedScript.nlrcMultiple,
+      enableScopeForProgramId: programIdPV,
+    });
     const accessToken = await getAccessTokenScoped(DebugScope.Kisumu);
 
     // Act
@@ -145,7 +148,10 @@ describe('Import a registration', () => {
 
   it('should import registration scoped', async () => {
     // Arrange
-    await resetDB({ seedScript: SeedScript.nlrcMultiple });
+    await resetDB({
+      seedScript: SeedScript.nlrcMultiple,
+      enableScopeForProgramId: programIdPV,
+    });
     const accessToken = await getAccessTokenScoped(DebugScope.Kisumu);
 
     // Act
