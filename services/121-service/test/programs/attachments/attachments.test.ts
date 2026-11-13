@@ -3,6 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { getDebugScopeUsername } from '@121-service/src/scripts/helpers/debug-scope-username.helper';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { postProgram } from '@121-service/test/helpers/program.helper';
 import {
@@ -45,8 +46,12 @@ describe('Program Attachments', () => {
     const allUsersResponse = await getAllUsers(accessToken);
     const users = allUsersResponse.body as { id: number; username: string }[];
     const userByUsername = new Map(users.map((u) => [u.username, u.id]));
-    kisumuUserId = userByUsername.get(`${DebugScope.Kisumu}@example.org`)!;
-    turkanaUserId = userByUsername.get(`${DebugScope.Turkana}@example.org`)!;
+    kisumuUserId = userByUsername.get(
+      getDebugScopeUsername({ scope: DebugScope.Kisumu }),
+    )!;
+    turkanaUserId = userByUsername.get(
+      getDebugScopeUsername({ scope: DebugScope.Turkana }),
+    )!;
   });
 
   async function setup({

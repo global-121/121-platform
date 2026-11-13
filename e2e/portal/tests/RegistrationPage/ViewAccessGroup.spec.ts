@@ -1,11 +1,6 @@
 import { expect } from '@playwright/test';
 
-import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import {
-  postProgramRegistrationAttribute,
-  updateProgramAccessGroupLevels,
-} from '@121-service/test/helpers/program.helper';
 import {
   searchRegistrationByReferenceId,
   seedIncludedRegistrations,
@@ -18,8 +13,8 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 const programId = 2;
 const registration = {
   ...registrationPvScoped,
-  province: 'utrecht',
-  district: 'houten',
+  province: 'zuid-holland',
+  municipality: 'den-haag',
 };
 
 test('User should see the access group of a registration', async ({
@@ -32,31 +27,6 @@ test('User should see the access group of a registration', async ({
   });
 
   const accessToken = await getAccessToken();
-  await postProgramRegistrationAttribute(
-    {
-      name: 'province',
-      type: RegistrationAttributeTypes.dropdown,
-      label: { en: 'Province' },
-      options: [{ option: 'utrecht', label: { en: 'Utrecht' } }],
-    },
-    programId,
-    accessToken,
-  );
-  await postProgramRegistrationAttribute(
-    {
-      name: 'district',
-      type: RegistrationAttributeTypes.dropdown,
-      label: { en: 'District' },
-      options: [{ option: 'houten', label: { en: 'Houten' } }],
-    },
-    programId,
-    accessToken,
-  );
-  await updateProgramAccessGroupLevels(
-    programId,
-    { accessGroupRegistrationAttributeNames: ['province', 'district'] },
-    accessToken,
-  );
   await seedIncludedRegistrations([registration], programId, accessToken);
 
   const searchRegistrationResponse = await searchRegistrationByReferenceId(
@@ -73,6 +43,6 @@ test('User should see the access group of a registration', async ({
   await test.step('Validate access group shows option labels per level', async () => {
     const summary =
       await registrationActivityLogPage.getRegistrationSummaryList();
-    expect(summary['Access group']).toBe('Utrecht / Houten');
+    expect(summary['Access group']).toBe('Zuid-Holland / The Hague');
   });
 });

@@ -25,6 +25,7 @@ test.describe('Edit all the fields in registration Personal Information', () => 
       seedScript: SeedScript.nlrcMultiple,
       registrations: [registrationPV5],
       programId: programIdPV,
+      enableScopeForProgramId: programIdPV,
     });
     const accessToken = await getAccessToken();
     const response = await postProgramRegistrationAttribute(

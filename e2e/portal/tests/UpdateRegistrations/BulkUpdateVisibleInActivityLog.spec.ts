@@ -17,6 +17,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     registrations: [registrationPV5, registrationPV6],
     programId: programIdPV,
     navigateToPage: `/program/${programIdPV}/registrations`,
+    enableScopeForProgramId: programIdPV,
   });
 });
 
