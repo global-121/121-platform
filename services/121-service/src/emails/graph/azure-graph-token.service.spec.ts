@@ -38,6 +38,20 @@ describe('AzureGraphTokenService', () => {
     expect(accessToken).toBe('test-token');
   });
 
+  it('throws EmailDeliveryError when the token is empty', async () => {
+    // Arrange
+    mockGetToken.mockResolvedValue({ token: '', expiresOnTimestamp: 0 });
+
+    // Act
+    const error: unknown = await service.getAccessToken().catch((e) => e);
+
+    // Assert
+    expect(error).toBeInstanceOf(EmailDeliveryError);
+    expect((error as EmailDeliveryError).cause).toEqual(
+      new Error('Received an empty access token'),
+    );
+  });
+
   it('wraps credential-provider rejections in EmailDeliveryError', async () => {
     // Arrange
     const credentialError = new CredentialUnavailableError(

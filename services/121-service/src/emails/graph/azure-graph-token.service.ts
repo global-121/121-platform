@@ -23,6 +23,11 @@ export class AzureGraphTokenService {
     try {
       const credential = this.getOrCreateCredential();
       const accessToken = await credential.getToken(GRAPH_API_DEFAULT_SCOPE);
+
+      if (!accessToken.token) {
+        throw new Error('Received an empty access token');
+      }
+
       return accessToken.token;
     } catch (error) {
       throw new EmailDeliveryError(TOKEN_ACQUISITION_FAILED_MESSAGE, {
