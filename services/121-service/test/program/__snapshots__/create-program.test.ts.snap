@@ -354,7 +354,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": false,
       "editableInPortal": true,
-      "id": 29,
+      "id": 31,
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
@@ -374,7 +374,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": false,
       "editableInPortal": true,
-      "id": 31,
+      "id": 33,
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
@@ -395,7 +395,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": false,
       "editableInPortal": true,
-      "id": 26,
+      "id": 28,
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
@@ -415,7 +415,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": false,
       "editableInPortal": true,
-      "id": 30,
+      "id": 32,
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
@@ -450,7 +450,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": true,
       "editableInPortal": true,
-      "id": 28,
+      "id": 30,
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
@@ -470,7 +470,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": false,
       "editableInPortal": true,
-      "id": 27,
+      "id": 29,
       "includeInTransactionExport": true,
       "isRequired": true,
       "koboLabel": null,
@@ -874,7 +874,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": false,
       "editableInPortal": true,
-      "id": 25,
+      "id": 27,
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
@@ -893,7 +893,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": false,
       "editableInPortal": true,
-      "id": 22,
+      "id": 24,
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
@@ -912,7 +912,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": false,
       "editableInPortal": true,
-      "id": 23,
+      "id": 25,
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
@@ -931,7 +931,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": false,
       "editableInPortal": true,
-      "id": 24,
+      "id": 26,
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
@@ -950,7 +950,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": false,
       "editableInPortal": true,
-      "id": 21,
+      "id": 23,
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
@@ -969,7 +969,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": false,
       "editableInPortal": true,
-      "id": 18,
+      "id": 20,
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,
@@ -988,7 +988,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": true,
       "editableInPortal": false,
-      "id": 19,
+      "id": 21,
       "includeInTransactionExport": false,
       "isRequired": true,
       "koboLabel": null,
@@ -1009,7 +1009,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": true,
       "editableInPortal": true,
-      "id": 20,
+      "id": 22,
       "includeInTransactionExport": true,
       "isRequired": false,
       "koboLabel": null,

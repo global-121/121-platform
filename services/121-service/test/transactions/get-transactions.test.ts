@@ -30,7 +30,10 @@ describe('Registrations - [Scoped]', () => {
   let paymentIdPv: number;
 
   beforeAll(async () => {
-    await resetDB({ seedScript: SeedScript.nlrcMultiple });
+    await resetDB({
+      seedScript: SeedScript.nlrcMultiple,
+      enableScopeForProgramId: PvProgramId,
+    });
     await seedPaidRegistrations({
       registrations: registrationsOCW,
       programId: OcwProgramId,

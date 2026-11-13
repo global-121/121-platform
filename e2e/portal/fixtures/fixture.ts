@@ -59,6 +59,7 @@ interface Fixtures {
     };
     includeRegistrationEvents?: boolean;
     approverMode?: ApproverSeedMode;
+    enableScopeForProgramId?: number;
   }) => Promise<void>;
   login: (userCredentials?: {
     username: string;
@@ -95,11 +96,13 @@ const resetDatabase = async ({
   seedScript,
   includeRegistrationEvents,
   approverMode,
+  enableScopeForProgramId,
   nameOfFileContainingTest,
 }: {
   seedScript: SeedScript;
   includeRegistrationEvents?: boolean;
   approverMode?: ApproverSeedMode;
+  enableScopeForProgramId?: number;
   nameOfFileContainingTest: string;
 }) => {
   // Logic to reset the database and seed registrations
@@ -107,6 +110,7 @@ const resetDatabase = async ({
     seedScript,
     includeRegistrationEvents: includeRegistrationEvents ?? false,
     approverMode,
+    enableScopeForProgramId,
     resetIdentifier: nameOfFileContainingTest,
   });
 };
@@ -174,6 +178,7 @@ export const customSharedFixture = base.extend<Fixtures>({
       approverMode?: ApproverSeedMode;
       includeRegistrationEvents?: boolean;
       seedScript: SeedScript;
+      enableScopeForProgramId?: number;
       // For seeding registrations.
       programId?: number;
       registrations?: TestRegistration[];
@@ -192,6 +197,7 @@ export const customSharedFixture = base.extend<Fixtures>({
         approverMode: params.approverMode,
         includeRegistrationEvents: params.includeRegistrationEvents,
         seedScript: params.seedScript,
+        enableScopeForProgramId: params.enableScopeForProgramId,
         nameOfFileContainingTest: testInfo.file,
       });
       await seedRegistrations({
@@ -256,6 +262,7 @@ export const customSharedFixture = base.extend<Fixtures>({
         approverMode: params.approverMode,
         includeRegistrationEvents: params.includeRegistrationEvents,
         seedScript: params.seedScript,
+        enableScopeForProgramId: params.enableScopeForProgramId,
         nameOfFileContainingTest: testInfo.file,
       });
       await seedRegistrations({

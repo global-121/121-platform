@@ -7,6 +7,7 @@ import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { getDebugScopeUsername } from '@121-service/src/scripts/helpers/debug-scope-username.helper';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { CreateProgramAssignmentDto } from '@121-service/src/user/dto/assign-aw-to-program.dto';
 import { AssignedAccessGroupDto } from '@121-service/src/user/dto/assigned-access-group.dto';
@@ -57,19 +58,21 @@ function getCallerFilePath(): string {
   return 'unknown';
 }
 
-export function resetDB({
+export async function resetDB({
   seedScript,
   includeRegistrationEvents = false,
   approverMode,
+  enableScopeForProgramId,
   // In most cases we can dynamically determine this.
   resetIdentifier = getCallerFilePath(),
 }: {
   seedScript: SeedScript;
   includeRegistrationEvents?: boolean;
   approverMode?: ApproverSeedMode;
+  enableScopeForProgramId?: number;
   resetIdentifier?: string;
 }): Promise<request.Response> {
-  return getServer()
+  const resetResponse = await getServer()
     .post('/scripts/reset')
     .query({
       script: seedScript,
@@ -81,6 +84,18 @@ export function resetDB({
     .send({
       secret: env.RESET_SECRET,
     });
+
+  if (enableScopeForProgramId === undefined) {
+    return resetResponse;
+  }
+
+  const accessToken = await getAccessToken();
+  await getServer()
+    .patch(`/programs/${enableScopeForProgramId}`)
+    .set('Cookie', [accessToken])
+    .send({ enableScope: true });
+
+  return resetResponse;
 }
 
 export function resetDuplicateRegistrations({
@@ -143,7 +158,7 @@ export async function getAccessTokenScoped(
   defaultScope: DebugScope,
 ): Promise<string> {
   return await getAccessToken(
-    `${defaultScope}@example.org`,
+    getDebugScopeUsername({ scope: defaultScope }),
     env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
   );
 }
