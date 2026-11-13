@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 
 import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/integrations/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqModule } from '@121-service/src/fsp-integrations/integrations/onafriq/onafriq.module';
@@ -11,7 +11,6 @@ import { TransactionsModule } from '@121-service/src/payments/transactions/trans
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
-import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-logger.middleware';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
@@ -34,10 +33,4 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
   controllers: [OnafriqReconciliationController],
   exports: [OnafriqReconciliationService],
 })
-export class OnafriqReconciliationModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): void {
-    consumer
-      .apply(AzureLoggerMiddleware)
-      .forRoutes(OnafriqReconciliationController);
-  }
-}
+export class OnafriqReconciliationModule {}

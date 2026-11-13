@@ -16,7 +16,8 @@ import {
   SWAGGER_CUSTOM_JS,
 } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
-import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { handleFatalError } from '@121-service/src/telemetry/application-insights-lifecycle';
+import { ApplicationInsightsLogger } from '@121-service/src/telemetry/application-insights-logger';
 import { getModuleDependencyEdges } from '@121-service/src/utils/module-dependency-graph.helper';
 import { ValidationPipeOptions } from '@121-service/src/validation-options/validation-pipe-options.const';
 
@@ -113,9 +114,19 @@ function generateSwaggerSummaryJson(app: INestApplication<any>): void {
 }
 
 async function bootstrap(): Promise<void> {
+  process.on('unhandledRejection', (reason: unknown) => {
+    throw reason;
+  });
+  process.once('uncaughtException', (error: Error) => {
+    void exitAfterFatalError({ error });
+  });
+
   console.warn(`Bootstrapping ${APP_TITLE} - ${APP_VERSION}`);
 
-  const app = await NestFactory.create(ApplicationModule);
+  const app = await NestFactory.create(ApplicationModule, {
+    logger: new ApplicationInsightsLogger(),
+  });
+  app.enableShutdownHooks();
 
   // CORS is only enabled for local development; Because the Azure App Service applies its own CORS settings 'on the outside'
   app.enableCors({
@@ -192,26 +203,15 @@ async function bootstrap(): Promise<void> {
     generateModuleDependencyGraph(app);
     generateSwaggerSummaryJson(app);
   }
+}
 
-  // Set up generic error handling:
-  process.on(
-    'unhandledRejection',
-    (reason: string, promise: Promise<unknown>) => {
-      console.warn('Unhandled Rejection:', reason, promise);
-      throw reason;
-    },
-  );
-
-  process.on('uncaughtException', (error: Error) => {
-    console.warn('Uncaught Exception:', error);
-
-    const logService = new AzureLogService();
-    logService.logError(error, true);
-    logService.logError(new Error('Uncaught Exception: restarting'), true);
-
+async function exitAfterFatalError({ error }: { error: Error }): Promise<void> {
+  try {
+    await handleFatalError({ error });
+  } finally {
     // eslint-disable-next-line n/no-process-exit -- Trigger a reboot, as the app is in an unknown state.
     process.exit(1);
-  });
+  }
 }
 
 void bootstrap();
