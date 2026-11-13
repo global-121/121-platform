@@ -58,7 +58,7 @@ export class BasicAuthLoginComponent {
   }): boolean {
     const oneTimePasswordRequest = this.oneTimePasswordRequest();
     return (
-      oneTimePasswordRequest?.email === email &&
+      oneTimePasswordRequest?.email.toLowerCase() === email.toLowerCase() &&
       Date.now() - oneTimePasswordRequest.requestedAt <
         ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS
     );
