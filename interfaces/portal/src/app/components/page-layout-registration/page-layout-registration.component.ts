@@ -40,7 +40,6 @@ import { RegistrationMenuComponent } from '~/components/page-layout-registration
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import {
-  getAccessGroupValue,
   programHasAccessGroups,
   programNeedsFullNameSetup,
 } from '~/domains/program/program.helper';
@@ -49,6 +48,7 @@ import { registrationTransferValueTooltipMessage } from '~/domains/registration/
 import { RegistrationStatusChangeTarget } from '~/domains/registration/registration.model';
 import { ChangeStatusDialogComponent } from '~/pages/program-registrations/components/change-status-dialog/change-status-dialog.component';
 import { SendMessageDialogComponent } from '~/pages/program-registrations/components/send-message-dialog/send-message-dialog.component';
+import { AccessGroupLabelService } from '~/services/access-group-label.service';
 import { AuthService } from '~/services/auth.service';
 import { PaginateQueryService } from '~/services/paginate-query.service';
 import { RegistrationActionMenuService } from '~/services/registration-action-menu.service';
@@ -85,6 +85,7 @@ export class PageLayoutRegistrationComponent {
   readonly registrationId = input.required<string>();
 
   private authService = inject(AuthService);
+  private accessGroupLabelService = inject(AccessGroupLabelService);
   readonly programApiService = inject(ProgramApiService);
   readonly registrationApiService = inject(RegistrationApiService);
   readonly registrationLookupService = inject(RegistrationLookupService);
@@ -346,32 +347,13 @@ export class PageLayoutRegistrationComponent {
       return;
     }
 
-    const programRegistrationAttributes =
-      this.program.data()?.programRegistrationAttributes ?? [];
-    const accessGroupValue = getAccessGroupValue({
-      accessGroupRegistrationAttributeNames: accessGroupAttributeNames,
-      registration,
-      localizeAttribute: ({ attributeName, attributeOptionValue }) => {
-        const attribute = programRegistrationAttributes.find(
-          (programAttribute) => programAttribute.name === attributeName,
-        );
-        if (!attribute) {
-          return attributeOptionValue;
-        }
-
-        const option = attribute.options?.find(
-          (programOption) => programOption.option === attributeOptionValue,
-        );
-        if (!option) {
-          return attributeOptionValue;
-        }
-
-        return (
-          this.translatableStringService.translate(option.label) ??
-          attributeOptionValue
-        );
-      },
-    });
+    const accessGroupValue =
+      this.accessGroupLabelService.getRegistrationAccessGroupLabel({
+        programRegistrationAttributes:
+          this.program.data()?.programRegistrationAttributes ?? [],
+        accessGroupRegistrationAttributeNames: accessGroupAttributeNames,
+        registration,
+      });
 
     return {
       label: $localize`Access group`,
