@@ -14,6 +14,7 @@ class ProgramTeamPage extends BasePage {
   readonly addUserFormSubmitButton: Locator;
   readonly removeUserButton: Locator;
   readonly scopeColumn: Locator;
+  readonly accessGroupColumn: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -33,6 +34,9 @@ class ProgramTeamPage extends BasePage {
       name: 'Remove user',
     });
     this.scopeColumn = this.page.getByRole('columnheader', { name: 'Scope' });
+    this.accessGroupColumn = this.page.getByRole('columnheader', {
+      name: 'Access group',
+    });
   }
 
   async validateAssignedTeamMembers(expectedAssignedUsers: string[]) {
@@ -101,6 +105,26 @@ class ProgramTeamPage extends BasePage {
 
   async validateScopeColumnIsHidden() {
     await expect(this.scopeColumn).toBeHidden();
+  }
+
+  async validateAccessGroupColumnIsHidden() {
+    await expect(
+      this.page.getByRole('columnheader', { name: 'Roles' }),
+    ).toBeVisible();
+    await expect(this.accessGroupColumn).toBeHidden();
+  }
+
+  async validateAccessGroupOfUser({
+    userEmail,
+    expectedAccessGroup,
+  }: {
+    userEmail: string;
+    expectedAccessGroup: string;
+  }) {
+    await expect(this.accessGroupColumn).toBeVisible();
+    await expect(this.page.getByRole('row', { name: userEmail })).toContainText(
+      expectedAccessGroup,
+    );
   }
 }
 
