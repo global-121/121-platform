@@ -1,6 +1,10 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { defaultClient, TelemetryClient } from 'applicationinsights';
+import {
+  defaultClient,
+  KnownSeverityLevel,
+  TelemetryClient,
+} from 'applicationinsights';
 import { AxiosRequestConfig } from 'axios';
 import { cloneDeepWith, isPlainObject } from 'lodash';
 import fs from 'node:fs';
@@ -9,11 +13,6 @@ import { SecureContextOptions } from 'node:tls';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
 
 import { SensitivePiiValue } from '@121-service/src/shared/consts/sensitive-pii-value.class';
-import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
-import {
-  maskValueKeepEnd,
-  maskValueKeepStart,
-} from '@121-service/src/utils/mask-value.helper';
 
 class Request {
   public headers?: Headers;
@@ -29,7 +28,7 @@ class Response {
 
 @Injectable()
 export class CustomHttpService {
-  defaultClient: TelemetryClient;
+  defaultClient: TelemetryClient | undefined;
 
   public constructor(private readonly httpService: HttpService) {
     this.defaultClient = defaultClient;
@@ -270,28 +269,13 @@ export class CustomHttpService {
   ): void {
     if (this.defaultClient) {
       try {
-        const requestPayload = JSON.stringify(
-          this.redactSensitiveDataProperties(request.payload),
-        );
-        const responseBody = JSON.stringify(
-          this.redactSensitiveDataProperties(response.data),
-        );
-
-        const requestContent = `URL: ${request.url}. Payload: ${requestPayload}`;
-        const responseContent = `Response: ${response.status} ${response.statusText} - Body: ${responseBody}`;
-
-        // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
-        const message = `${requestContent.substring(0, 16_000)} - ${responseContent.substring(0, 16_000)}`;
-
         this.defaultClient.trackTrace({
-          message,
-          properties: {
-            externalUrl: request.url,
-          },
+          message: 'External HTTP request completed',
+          severity: KnownSeverityLevel.Information,
+          properties: this.getRequestTelemetryProperties({ request, response }),
         });
-        void this.flushLogs('logMessageRequest');
       } catch (error) {
-        console.log('An error occurred in logMessageRequest: ', error);
+        console.error('An error occurred in logMessageRequest: ', error);
       }
     }
   }
@@ -302,28 +286,16 @@ export class CustomHttpService {
   ): void {
     if (this.defaultClient) {
       try {
-        const requestPayload = this.stringify(
-          this.redactSensitiveDataProperties(request.payload),
-        );
-        const responseBody = this.stringify(
-          this.redactSensitiveDataProperties(error.data),
-        );
-
-        const requestContent = `URL: ${request.url}. Payload: ${requestPayload}`;
-        const responseContent = `Response error: ${error.status} ${error.statusText} - Body: ${responseBody}`;
-
-        // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
-        const message = `${requestContent.substring(0, 16_000)} - ${responseContent.substring(0, 16_000)}}`;
-
-        this.defaultClient.trackException({
-          exception: new Error(message),
-          properties: {
-            externalUrl: request.url,
-          },
+        this.defaultClient.trackTrace({
+          message: 'External HTTP request failed',
+          severity: KnownSeverityLevel.Error,
+          properties: this.getRequestTelemetryProperties({
+            request,
+            response: error,
+          }),
         });
-        void this.flushLogs('logErrorRequest');
       } catch (error) {
-        console.log('An error occurred in logErrorRequest: ', error);
+        console.error('An error occurred in logErrorRequest: ', error);
       }
     }
   }
@@ -387,84 +359,24 @@ export class CustomHttpService {
     });
   }
 
-  private async flushLogs(methodName: string): Promise<void> {
-    try {
-      await this.defaultClient.flush();
-    } catch (flushError) {
-      console.error(
-        `An error occurred in CustomHttpService::${methodName}:`,
-        flushError,
-      );
-    }
-  }
-
-  private stringify(obj: object): string {
-    let cache: object[] | null = [];
-    const str = JSON.stringify(obj, (_key, value) => {
-      if (typeof value === 'object' && value !== null) {
-        if (cache?.indexOf(value) !== -1) {
-          // Circular reference found, discard key
-          return;
-        }
-        // Store value in our collection
-        cache.push(value);
+  private getRequestTelemetryProperties({
+    request,
+    response,
+  }: {
+    request: Partial<Request>;
+    response: Partial<Response>;
+  }): Record<string, string> {
+    const properties: Record<string, string> = {};
+    if (request.url) {
+      if (URL.canParse(request.url)) {
+        properties.externalUrl = new URL(request.url).origin;
+      } else {
+        console.warn('Omitted an invalid external request URL from telemetry');
       }
-      return value;
-    });
-    cache = null; // reset the cache
-    return str;
-  }
-
-  /**
-   * Overwrite and/or mask sensitive data (recursively for nested plain objects)
-   * @param data - Any key-value object
-   * @returns - A deep copy of the input-object with sensitive data overwritten/redacted
-   */
-  private redactSensitiveDataProperties(data: any) {
-    if (!isPlainObject(data)) {
-      return data;
     }
-
-    const sensitiveProperties = [
-      'authorization',
-      'password',
-      'access_token',
-      CookieNames.general,
-      CookieNames.portal,
-    ];
-
-    const isSensitiveProperty = (key: string | number | undefined): boolean =>
-      typeof key === 'string' &&
-        sensitiveProperties.includes(key.toLowerCase());
-
-    const isUsernameProperty = (key: string | number | undefined): boolean =>
-      typeof key === 'string' &&
-        key.toLowerCase() === 'username';
-
-    return cloneDeepWith(
-      data,
-      (value: unknown, key: string | number | undefined) => {
-        if (isSensitiveProperty(key)) {
-          return '**REDACTED**';
-        }
-        if (value instanceof SensitivePiiValue) {
-          return maskValueKeepEnd(String(value.value), 3);
-        }
-        if (isUsernameProperty(key) && typeof value === 'string') {
-          return maskValueKeepStart(value, 3);
-        }
-        if (typeof value === 'string') {
-          return this.redactCodeElementsInLoggedContent(value);
-        }
-        return undefined;
-      },
-    );
-  }
-
-  private redactCodeElementsInLoggedContent(content: string): string {
-    return content.replace(
-      /(<code[^>]*>)(.*?)(<\/code>)/gs,
-      '$1**REDACTED**$3',
-    );
+    if (response.status !== undefined) {
+      properties.statusCode = String(response.status);
+    }
+    return properties;
   }
 }

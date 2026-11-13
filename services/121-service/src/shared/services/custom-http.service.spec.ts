@@ -1,678 +1,245 @@
 import { HttpService } from '@nestjs/axios';
-import { HttpStatus } from '@nestjs/common';
+import { KnownSeverityLevel } from 'applicationinsights';
 import fs from 'node:fs';
 import https from 'node:https';
 import { of, throwError } from 'rxjs';
 
 import { SensitivePiiValue } from '@121-service/src/shared/consts/sensitive-pii-value.class';
-import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { buildTemplateLoginOneTimePassword } from '@121-service/src/user/user-emails/templates/login-one-time-password.template';
 
 jest.mock('fs');
 
-describe('CustomHttpService', () => {
+describe('External HTTP telemetry', () => {
   let service: CustomHttpService;
+  const client = {
+    trackTrace: jest.fn(),
+    trackException: jest.fn(),
+    flush: jest.fn(),
+  };
 
   beforeEach(() => {
-    service = new CustomHttpService({} as any);
+    jest.clearAllMocks();
+    service = new CustomHttpService({} as HttpService);
+    service.defaultClient = client as any;
   });
 
-  describe('post data with SensitiveValue fields', () => {
-    let httpServicePostMock: jest.Mock;
-    let trackTraceMock: jest.Mock;
-    let trackExceptionMock: jest.Mock;
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
-    beforeEach(() => {
-      httpServicePostMock = jest
-        .fn()
-        .mockReturnValue(of({ status: 200, statusText: 'OK', data: {} }));
-      trackTraceMock = jest.fn();
-      trackExceptionMock = jest.fn();
-
-      service = new CustomHttpService({
-        post: httpServicePostMock,
-      } as unknown as HttpService);
-
-      service.defaultClient = {
-        trackTrace: trackTraceMock,
-        trackException: trackExceptionMock,
-        flush: jest.fn(),
-      } as any;
-    });
-
-    it('should send SensitivePiiValue fields unwrapped while masking them in the log', async () => {
+  it.each([false, true])(
+    'should omit payloads and URL identifiers for failed=%s',
+    (failed) => {
       // Arrange
-      const payload = {
-        SenderFullName: new SensitivePiiValue('John Doe'),
-        ReferenceNumber: 'RC-TEST-1',
+      const request = {
+        url: 'https://user:password@example.test/people/person-123?token=secret',
+        payload: {
+          username: 'person@example.test',
+          password: 'secret',
+          value: new SensitivePiiValue('personal-data'),
+        },
+      };
+      const response = {
+        status: failed ? 503 : 200,
+        statusText: 'May contain personal-data',
+        data: { phone: 'personal-data' },
       };
 
       // Act
-      await service.post('https://example.com', payload);
-
-      // Assert
-      const sentPayload = httpServicePostMock.mock.calls[0][1];
-      expect(sentPayload).toEqual({
-        SenderFullName: 'John Doe',
-        ReferenceNumber: 'RC-TEST-1',
-      });
-
-      const loggedMessage = trackTraceMock.mock.calls[0][0].message;
-      expect(loggedMessage).not.toContain('John Doe');
-      expect(loggedMessage).toContain('*****Doe');
-    });
-
-    it('should send non-plain object payload unmodified', async () => {
-      // Arrange
-      const payload = new FormData();
-      payload.append('file', 'content');
-
-      // Act
-      await service.post('https://example.com', payload);
-
-      // Assert
-      const sentPayload = httpServicePostMock.mock.calls[0][1];
-      expect(sentPayload).toBe(payload);
-    });
-
-    it('should send an email payload with a password unmodified while redacting the password in the log', async () => {
-      // Arrange
-      const password = 'temp-pass-123';
-      const payload = {
-        message: {
-          subject: '121 Portal account created',
-          body: {
-            contentType: 'HTML',
-            content: `<p>Username: user@example.org<br>\nPassword: <code>${password}</code></p>`,
-          },
-          toRecipients: [{ emailAddress: { address: 'user@example.org' } }],
-        },
-        saveToSentItems: false,
-      };
-
-      // Act
-      await service.post('https://email.example.net/api/sendMail', payload);
-
-      // Assert
-      const sentPayload = httpServicePostMock.mock.calls[0][1];
-      expect(sentPayload.message.body.content).toContain(password);
-
-      const loggedMessage = trackTraceMock.mock.calls[0][0].message;
-      expect(loggedMessage).not.toContain(password);
-      expect(loggedMessage).toContain('Password: <code>**REDACTED**</code>');
-    });
-
-    describe('with a login one-time password email payload', () => {
-      const oneTimePassword = '4A1RQ9';
-      const { subject, body } = buildTemplateLoginOneTimePassword({
-        email: 'user@example.org',
-        recipientName: 'Jane',
-        oneTimePassword,
-        expirationMinutes: 10,
-      });
-      const payload = {
-        message: {
-          subject,
-          body: { contentType: 'HTML', content: body },
-          toRecipients: [{ emailAddress: { address: 'user@example.org' } }],
-        },
-        saveToSentItems: false,
-      };
-
-      it('should send the one-time password unmodified while redacting it in the success log', async () => {
-        // Act
-        await service.post('https://email.example.net/api/sendMail', payload);
-
-        // Assert
-        const sentPayload = httpServicePostMock.mock.calls[0][1];
-        expect(sentPayload.message.body.content).toContain(oneTimePassword);
-        const loggedMessage = trackTraceMock.mock.calls[0][0].message;
-        expect(loggedMessage).not.toContain(oneTimePassword);
-        expect(loggedMessage).toContain('**REDACTED**');
-      });
-
-      it('should send the one-time password unmodified while redacting it in the failure log', async () => {
-        // Arrange
-        httpServicePostMock.mockReturnValue(
-          throwError(() => ({
-            response: {
-              status: HttpStatus.BAD_REQUEST,
-              statusText: 'Bad Request',
-              data: {},
-            },
-          })),
-        );
-
-        // Act
-        await service.post('https://email.example.net/api/sendMail', payload);
-
-        // Assert
-        const sentPayload = httpServicePostMock.mock.calls[0][1];
-        expect(sentPayload.message.body.content).toContain(oneTimePassword);
-        const loggedMessage =
-          trackExceptionMock.mock.calls[0][0].exception.message;
-        expect(loggedMessage).not.toContain(oneTimePassword);
-        expect(loggedMessage).toContain('**REDACTED**');
-      });
-    });
-  });
-
-  describe('remove sensitive values from logging', () => {
-    let trackTraceMock: jest.Mock;
-
-    beforeEach(() => {
-      trackTraceMock = jest.fn();
-      service.defaultClient = {
-        trackTrace: trackTraceMock,
-        flush: jest.fn(),
-      } as any;
-    });
-
-    const getTrackedMessage = (): string =>
-      trackTraceMock.mock.calls[0][0].message;
-
-    const getTrackedPayload = (): Record<string, any> =>
-      JSON.parse(getTrackedMessage().match(/Payload: (.*?) - Response:/)![1]);
-
-    const logWithPayload = (payload: object) =>
-      service.logMessageRequest(
-        { url: 'https://example.com', payload },
-        { status: 200, statusText: 'OK', data: {} },
-      );
-
-    it('should redact top-level password', () => {
-      // Arrange
-      const payload = { password: 'super-secret' };
-
-      // Act
-      logWithPayload(payload);
-
-      // Assert
-      expect(getTrackedPayload().password).toMatchInlineSnapshot(
-        `"**REDACTED**"`,
-      );
-    });
-
-    it('should mask top-level username', () => {
-      // Arrange
-      const payload = { username: 'john-doe' };
-
-      // Act
-      logWithPayload(payload);
-
-      // Assert
-      expect(getTrackedPayload().username).toMatchInlineSnapshot(`"joh*****"`);
-    });
-
-    it('should redact nested password inside settings object', () => {
-      // Arrange
-      const payload = {
-        settings: { username: 'john', password: 'nested-secret' },
-      };
-
-      // Act
-      logWithPayload(payload);
-
-      // Assert
-      expect(getTrackedPayload().settings.password).toMatchInlineSnapshot(
-        `"**REDACTED**"`,
-      );
-    });
-
-    it('should mask nested username inside settings object', () => {
-      // Arrange
-      const payload = { settings: { username: 'john-doe' } };
-
-      // Act
-      logWithPayload(payload);
-
-      // Assert
-      expect(getTrackedPayload().settings.username).toMatchInlineSnapshot(
-        `"joh*****"`,
-      );
-    });
-
-    it('should redact cookie names', () => {
-      // Arrange
-      const payload = {
-        [CookieNames.general]: 'cookie-value',
-        [CookieNames.portal]: 'portal-value',
-      };
-
-      // Act
-      logWithPayload(payload);
-
-      // Assert
-      expect(getTrackedPayload()[CookieNames.general]).toMatchInlineSnapshot(
-        `"**REDACTED**"`,
-      );
-      expect(getTrackedPayload()[CookieNames.portal]).toMatchInlineSnapshot(
-        `"**REDACTED**"`,
-      );
-    });
-
-    it('should leave non-sensitive properties unchanged', () => {
-      // Arrange
-      const payload = { name: 'test-webhook', active: true };
-
-      // Act
-      logWithPayload(payload);
-
-      // Assert
-      expect(getTrackedPayload().name).toMatchInlineSnapshot(`"test-webhook"`);
-    });
-  });
-
-  describe('createHttpsAgentWithCertificate', () => {
-    it('should create an HTTPS agent with a certificate and passphrase', () => {
-      const certificatePath = 'path/to/certificate.p12';
-      const password = 'test-password';
-      const dummyCertificate = Buffer.from('dummy-certificate');
-
-      (fs.readFileSync as jest.Mock).mockReturnValue(dummyCertificate);
-
-      const agent = service.createHttpsAgentWithCertificate(
-        certificatePath,
-        password,
-      );
-
-      expect(agent).toBeInstanceOf(https.Agent);
-      expect(agent.options.pfx).toBe(dummyCertificate);
-      expect(agent.options.passphrase).toBe(password);
-    });
-
-    it('should create an HTTPS agent with a certificate without passphrase', () => {
-      const certificatePath = 'path/to/certificate.p12';
-      const dummyCertificate = Buffer.from('dummy-certificate');
-
-      (fs.readFileSync as jest.Mock).mockReturnValue(dummyCertificate);
-
-      const agent = service.createHttpsAgentWithCertificate(certificatePath);
-
-      expect(agent).toBeInstanceOf(https.Agent);
-      expect(agent.options.pfx).toBe(dummyCertificate);
-      expect(agent.options.passphrase).toBeUndefined();
-    });
-  });
-
-  describe('createHttpsAgentWithWeakSelfSignedCertificateOnly', () => {
-    it('should create an HTTPS agent with a self-signed certificate and extra options', () => {
-      const certificatePath = 'path/to/certificate.crt';
-      const dummyCertificate = Buffer.from('dummy-ca-certificate');
-      const extraOpts = { keepAlive: true, maxSockets: 50 };
-
-      (fs.readFileSync as jest.Mock).mockReturnValue(dummyCertificate);
-
-      const agent = service.createHttpsAgentWithWeakSelfSignedCertificateOnly(
-        certificatePath,
-        extraOpts,
-      );
-
-      expect(agent).toBeInstanceOf(https.Agent);
-      expect(agent.options.ca).toBe(dummyCertificate);
-      expect(agent.options.keepAlive).toBe(true);
-      expect(agent.options.maxSockets).toBe(50);
-    });
-
-    it('should throw an error if self-signed certificate file is not found', () => {
-      const certificatePath = 'path/to/nonexistent.crt';
-      const fileError = new Error('ENOENT: no such file or directory');
-
-      (fs.readFileSync as jest.Mock).mockImplementation(() => {
-        throw fileError;
-      });
-
-      expect(() => {
-        service.createHttpsAgentWithWeakSelfSignedCertificateOnly(
-          certificatePath,
-        );
-      }).toThrowErrorMatchingInlineSnapshot(`
-       "Certificate not found at: path/to/nonexistent.crt
-       Cause: ENOENT: no such file or directory"
-      `);
-    });
-  });
-
-  describe('logMessageRequest', () => {
-    const mockTrackTrace = jest.fn();
-    const mockFlush = jest.fn();
-
-    const getTracedMessage = (): string =>
-      mockTrackTrace.mock.calls[0][0].message;
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-      service.defaultClient = {
-        trackTrace: mockTrackTrace,
-        flush: mockFlush,
-      } as any;
-    });
-
-    it.each([
-      {
-        caseName: 'password value',
-        sensitiveValue: 'super-secret-password',
-        request: {
-          url: 'http://example.com/api',
-          payload: { password: 'super-secret-password' },
-        },
-        response: { status: HttpStatus.OK, statusText: 'OK', data: {} },
-      },
-      {
-        caseName: 'Authorization header value',
-        sensitiveValue: 'Bearer super-secret-token-value',
-        request: {
-          url: 'http://example.com/api',
-          payload: { Authorization: 'Bearer super-secret-token-value' },
-        },
-        response: { status: HttpStatus.OK, statusText: 'OK', data: {} },
-      },
-      {
-        caseName: 'access_token value',
-        sensitiveValue: 'eyJhbGciOiJSUzI1NiJ9.sensitive-token-value',
-        request: {
-          url: 'http://example.com/api',
-          payload: {
-            access_token: 'eyJhbGciOiJSUzI1NiJ9.sensitive-token-value',
-          },
-        },
-        response: { status: HttpStatus.OK, statusText: 'OK', data: {} },
-      },
-      {
-        caseName: `${CookieNames.general} cookie value`,
-        sensitiveValue: `${CookieNames.general}=secret-session-value`,
-        request: { url: 'http://example.com/api', payload: null },
-        response: {
-          status: HttpStatus.OK,
-          statusText: 'OK',
-          data: {
-            [CookieNames.general]: `${CookieNames.general}=secret-session-value`,
-          },
-        },
-      },
-      {
-        caseName: `${CookieNames.portal} cookie value`,
-        sensitiveValue: `${CookieNames.portal}=secret-portal-value`,
-        request: { url: 'http://example.com/api', payload: null },
-        response: {
-          status: HttpStatus.OK,
-          statusText: 'OK',
-          data: {
-            [CookieNames.portal]: `${CookieNames.portal}=secret-portal-value`,
-          },
-        },
-      },
-    ])(
-      'should not include the actual $caseName in the logged message',
-      ({ request, response, sensitiveValue }) => {
-        // Act
+      if (failed) {
+        service.logErrorRequest(request, response);
+      } else {
         service.logMessageRequest(request, response);
-
-        // Assert
-        expect(getTracedMessage()).not.toContain(sensitiveValue);
-        expect(getTracedMessage()).toContain('**REDACTED**');
-      },
-    );
-
-    it('should mask the username but still include its first characters in the logged message', () => {
-      service.logMessageRequest(
-        {
-          url: 'http://example.com/api',
-          payload: { username: 'user@example.com', password: 'secret' },
-        },
-        { status: HttpStatus.OK, statusText: 'OK', data: {} },
-      );
-
-      expect(getTracedMessage()).toContain('use'); // First 3 characters are kept
-      expect(getTracedMessage()).not.toContain('user@example.com'); // Full value is not present
-    });
-
-    it('should still include non-sensitive data in the logged message', () => {
-      service.logMessageRequest(
-        {
-          url: 'http://example.com/api',
-          payload: { transactionReference: 'TXN-12345', amount: 100 },
-        },
-        {
-          status: HttpStatus.OK,
-          statusText: 'OK',
-          data: { resultCode: 'SUCCESS' },
-        },
-      );
-
-      expect(getTracedMessage()).toContain('TXN-12345');
-      expect(getTracedMessage()).toContain('SUCCESS');
-    });
-
-    it('should not mutate the original request payload object', () => {
-      const originalPayload = {
-        password: 'secret',
-        access_token: 'token',
-        username: 'user@example.com',
-        amount: 42,
-      };
-      const payloadCopy = { ...originalPayload };
-
-      service.logMessageRequest(
-        { url: 'http://example.com/api', payload: originalPayload },
-        { status: HttpStatus.OK, statusText: 'OK', data: {} },
-      );
-
-      expect(originalPayload).toEqual(payloadCopy);
-    });
-
-    it('should handle a null payload without throwing', () => {
-      expect(() => {
-        service.logMessageRequest(
-          { url: 'http://example.com/api', payload: null },
-          { status: HttpStatus.OK, statusText: 'OK', data: null },
-        );
-      }).not.toThrow();
-    });
-
-    it('should redact passwords embedded in HTML email bodies', () => {
-      // Arrange
-      const password = 'ABCXXXXXXXXXXXXXXXXXXXXXX';
-      const payload = {
-        message: {
-          subject: '121 Portal password reset',
-          body: {
-            contentType: 'HTML',
-            content: `<p>Username: user@example.org<br>\nPassword: <code>${password}</code></p>`,
-          },
-          toRecipients: [{ emailAddress: { address: 'user@example.org' } }],
-        },
-        saveToSentItems: false,
-      };
-
-      // Act
-      service.logMessageRequest(
-        { url: 'https://email.example.net/api/sendMail', payload },
-        { status: HttpStatus.ACCEPTED, statusText: 'Accepted', data: {} },
-      );
+      }
 
       // Assert
-      expect(getTracedMessage()).not.toContain(password);
-      expect(getTracedMessage()).toContain(
-        'Password: <code>**REDACTED**</code>',
-      );
+      expect(client.trackTrace).toHaveBeenCalledWith({
+        message: failed
+          ? 'External HTTP request failed'
+          : 'External HTTP request completed',
+        severity: failed
+          ? KnownSeverityLevel.Error
+          : KnownSeverityLevel.Information,
+        properties: {
+          externalUrl: 'https://example.test',
+          statusCode: String(response.status),
+        },
+      });
+      expect(client.trackException).not.toHaveBeenCalled();
+      expect(client.flush).not.toHaveBeenCalled();
+    },
+  );
+
+  it('should omit absent metadata without inspecting circular payloads', () => {
+    // Arrange
+    const payload: { circular?: unknown } = {};
+    payload.circular = payload;
+
+    // Act
+    service.logMessageRequest({ payload }, { data: payload });
+
+    // Assert
+    expect(client.trackTrace).toHaveBeenCalledWith({
+      message: 'External HTTP request completed',
+      severity: KnownSeverityLevel.Information,
+      properties: {},
     });
   });
 
-  describe('logErrorRequest', () => {
-    const mockTrackException = jest.fn();
-    const mockFlush = jest.fn();
+  it('should report invalid URLs without logging their content', () => {
+    // Arrange
+    jest.spyOn(console, 'warn').mockImplementation();
 
-    const getExceptionMessage = (): string =>
-      mockTrackException.mock.calls[0][0].exception.message;
+    // Act
+    service.logMessageRequest({ url: 'invalid secret URL' }, { status: 200 });
 
-    beforeEach(() => {
-      jest.clearAllMocks();
-      service.defaultClient = {
-        trackException: mockTrackException,
-        flush: mockFlush,
-      } as any;
-    });
-
-    it.each([
-      {
-        caseName: 'password value',
-        sensitiveValue: 'super-secret-password',
-        request: {
-          url: 'http://example.com/api',
-          payload: { password: 'super-secret-password' },
-        },
-        errorResponse: {
-          status: HttpStatus.UNAUTHORIZED,
-          statusText: 'Unauthorized',
-          data: {},
-        },
-      },
-      {
-        caseName: 'access_token value',
-        sensitiveValue: 'eyJhbGciOiJSUzI1NiJ9.sensitive-token-value',
-        request: { url: 'http://example.com/api', payload: null },
-        errorResponse: {
-          status: HttpStatus.UNAUTHORIZED,
-          statusText: 'Unauthorized',
-          data: { access_token: 'eyJhbGciOiJSUzI1NiJ9.sensitive-token-value' },
-        },
-      },
-      {
-        caseName: `${CookieNames.general} cookie value`,
-        sensitiveValue: `${CookieNames.general}=secret-session-value`,
-        request: { url: 'http://example.com/api', payload: null },
-        errorResponse: {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          statusText: 'Internal Server Error',
-          data: {
-            [CookieNames.general]: `${CookieNames.general}=secret-session-value`,
-          },
-        },
-      },
-      {
-        caseName: `${CookieNames.portal} cookie value`,
-        sensitiveValue: `${CookieNames.portal}=secret-portal-value`,
-        request: { url: 'http://example.com/api', payload: null },
-        errorResponse: {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          statusText: 'Internal Server Error',
-          data: {
-            [CookieNames.portal]: `${CookieNames.portal}=secret-portal-value`,
-          },
-        },
-      },
-    ])(
-      'should not include the actual $caseName in the logged error',
-      ({ request, errorResponse, sensitiveValue }) => {
-        // Act
-        service.logErrorRequest(request, errorResponse);
-
-        // Assert
-        expect(getExceptionMessage()).not.toContain(sensitiveValue);
-        expect(getExceptionMessage()).toContain('**REDACTED**');
-      },
+    // Assert
+    expect(console.warn).toHaveBeenCalledWith(
+      'Omitted an invalid external request URL from telemetry',
     );
+    expect(client.trackTrace).toHaveBeenCalledWith(
+      expect.objectContaining({ properties: { statusCode: '200' } }),
+    );
+  });
 
-    it('should mask the username but still include its first characters in the logged error', () => {
-      service.logErrorRequest(
-        {
-          url: 'http://example.com/api',
-          payload: { username: 'user@example.com', password: 'secret' },
-        },
-        {
-          status: HttpStatus.UNAUTHORIZED,
-          statusText: 'Unauthorized',
-          data: {},
-        },
-      );
+  it('should skip telemetry without a client', () => {
+    // Arrange
+    service.defaultClient = undefined;
 
-      expect(getExceptionMessage()).toContain('use'); // First 3 characters are kept
-      expect(getExceptionMessage()).not.toContain('user@example.com'); // Full value is not present
-    });
+    // Act
+    service.logMessageRequest({}, {});
+    service.logErrorRequest({}, {});
 
-    it('should still include non-sensitive data in the logged error', () => {
-      service.logErrorRequest(
-        {
-          url: 'http://example.com/api',
-          payload: { transactionReference: 'TXN-12345' },
-        },
-        {
-          status: HttpStatus.BAD_REQUEST,
-          statusText: 'Bad Request',
-          data: { errorCode: 'INVALID_AMOUNT' },
-        },
-      );
+    // Assert
+    expect(client.trackTrace).not.toHaveBeenCalled();
+  });
 
-      expect(getExceptionMessage()).toContain('TXN-12345');
-      expect(getExceptionMessage()).toContain('INVALID_AMOUNT');
-    });
-
-    it('should not mutate the original request payload object', () => {
-      const originalPayload = {
-        password: 'secret',
-        access_token: 'token',
-        username: 'user@example.com',
-        amount: 42,
-      };
-      const payloadCopy = { ...originalPayload };
-
-      service.logErrorRequest(
-        { url: 'http://example.com/api', payload: originalPayload },
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          statusText: 'Internal Server Error',
-          data: {},
-        },
-      );
-
-      expect(originalPayload).toEqual(payloadCopy);
-    });
-
-    it('should handle a null payload and null error data without throwing', () => {
-      expect(() => {
-        service.logErrorRequest(
-          { url: 'http://example.com/api', payload: null },
-          {
-            status: HttpStatus.INTERNAL_SERVER_ERROR,
-            statusText: 'Internal Server Error',
-            data: null,
-          },
-        );
-      }).not.toThrow();
-    });
-
-    it('should redact passwords embedded in HTML email bodies', () => {
+  it.each([false, true])(
+    'should report SDK failures for failed=%s',
+    (failed) => {
       // Arrange
-      const password = 'ABCXXXXXXXXXXXXXXXXXXXXXX';
+      const error = new Error('SDK unavailable');
+      client.trackTrace.mockImplementationOnce(() => {
+        throw error;
+      });
+      jest.spyOn(console, 'error').mockImplementation();
+
+      // Act
+      if (failed) {
+        service.logErrorRequest({}, {});
+      } else {
+        service.logMessageRequest({}, {});
+      }
+
+      // Assert
+      expect(console.error).toHaveBeenCalledWith(
+        expect.stringContaining('An error occurred'),
+        error,
+      );
+    },
+  );
+
+  it.each([false, true])(
+    'should preserve outbound values and response behavior for failed=%s',
+    async (failed) => {
+      // Arrange
+      const response = {
+        status: failed ? 400 : 200,
+        statusText: 'Result',
+        data: {},
+      };
+      const post = jest
+        .fn()
+        .mockReturnValue(
+          failed ? throwError(() => ({ response })) : of(response),
+        );
+      service = new CustomHttpService({ post } as unknown as HttpService);
+      service.defaultClient = client as any;
       const payload = {
-        message: {
-          subject: '121 Portal password reset',
-          body: {
-            contentType: 'HTML',
-            content: `<p>Username: user@example.org<br>\nPassword: <code>${password}</code></p>`,
-          },
-          toRecipients: [{ emailAddress: { address: 'user@example.org' } }],
-        },
-        saveToSentItems: false,
+        fullName: new SensitivePiiValue('Jane Doe'),
+        nested: [{ value: new SensitivePiiValue('sensitive') }],
       };
 
       // Act
-      service.logErrorRequest(
-        { url: 'https://email.example.net/api/sendMail', payload },
-        {
-          status: HttpStatus.BAD_REQUEST,
-          statusText: 'Bad Request',
-          data: {},
-        },
+      const result = await service.post('https://example.test', payload);
+
+      // Assert
+      expect(post.mock.calls[0][1]).toEqual({
+        fullName: 'Jane Doe',
+        nested: [{ value: 'sensitive' }],
+      });
+      expect(payload.fullName).toBeInstanceOf(SensitivePiiValue);
+      expect(result).toBe(response);
+      expect(JSON.stringify(client.trackTrace.mock.calls)).not.toContain(
+        'Jane Doe',
+      );
+    },
+  );
+
+  it('should preserve non-plain outbound payloads', async () => {
+    // Arrange
+    const post = jest.fn().mockReturnValue(of({ status: 200, data: {} }));
+    service = new CustomHttpService({ post } as unknown as HttpService);
+    const payload = new FormData();
+    payload.append('file', 'content');
+
+    // Act
+    await service.post('https://example.test', payload);
+
+    // Assert
+    expect(post.mock.calls[0][1]).toBe(payload);
+  });
+});
+
+describe('HTTPS agent configuration', () => {
+  const service = new CustomHttpService({} as HttpService);
+
+  it.each([undefined, 'test-passphrase'])(
+    'should retain certificate options with passphrase %s',
+    (passphrase) => {
+      // Arrange
+      const certificate = Buffer.from('test-certificate');
+      jest.mocked(fs.readFileSync).mockReturnValue(certificate);
+
+      // Act
+      const agent = service.createHttpsAgentWithCertificate(
+        'test.p12',
+        passphrase,
       );
 
       // Assert
-      expect(getExceptionMessage()).not.toContain(password);
-      expect(getExceptionMessage()).toContain(
-        'Password: <code>**REDACTED**</code>',
-      );
+      expect(agent).toBeInstanceOf(https.Agent);
+      expect(agent.options.pfx).toBe(certificate);
+      expect(agent.options.passphrase).toBe(passphrase);
+    },
+  );
+
+  it('should retain weak-certificate options for existing integrations', () => {
+    // Arrange
+    const certificate = Buffer.from('test-certificate');
+    jest.mocked(fs.readFileSync).mockReturnValue(certificate);
+
+    // Act
+    const agent = service.createHttpsAgentWithWeakSelfSignedCertificateOnly(
+      'test.pem',
+      { keepAlive: true, maxSockets: 50 },
+    );
+
+    // Assert
+    expect(agent.options.ca).toBe(certificate);
+    expect(agent.options.keepAlive).toBe(true);
+    expect(agent.options.maxSockets).toBe(50);
+  });
+
+  it('should retain missing-certificate errors', () => {
+    // Arrange
+    jest.mocked(fs.readFileSync).mockImplementationOnce(() => {
+      throw new Error('ENOENT');
     });
+
+    // Act & Assert
+    expect(() =>
+      service.createHttpsAgentWithWeakSelfSignedCertificateOnly('missing.pem'),
+    ).toThrow('Certificate not found at: missing.pem');
   });
 });

@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 
 import { SafaricomModule } from '@121-service/src/fsp-integrations/integrations/safaricom/safaricom.module';
 import { TimeoutCallbackJobProcessorSafaricom } from '@121-service/src/fsp-integrations/reconciliation/safaricom/processors/safaricom-timeout-callback-job.processor';
@@ -9,7 +9,6 @@ import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEventsModule } from '@121-service/src/payments/transactions/transaction-events/transaction-events.module';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
-import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-logger.middleware';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Module({
@@ -29,10 +28,4 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
   controllers: [SafaricomReconciliationController],
   exports: [SafaricomReconciliationService],
 })
-export class SafaricomReconciliationModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): void {
-    consumer
-      .apply(AzureLoggerMiddleware)
-      .forRoutes(SafaricomReconciliationController);
-  }
-}
+export class SafaricomReconciliationModule {}

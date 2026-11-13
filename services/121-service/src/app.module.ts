@@ -10,8 +10,8 @@ import { DataSource } from 'typeorm';
 import { ActivitiesModule } from '@121-service/src/activities/activities.module';
 import { AuthModule } from '@121-service/src/auth/auth.module';
 import {
-    BULL_STALLED_INTERVAL_MS,
-    THROTTLING_LIMIT_GENERIC,
+  BULL_STALLED_INTERVAL_MS,
+  THROTTLING_LIMIT_GENERIC,
 } from '@121-service/src/config';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
 import { EmailsModule } from '@121-service/src/emails/emails.module';
@@ -45,6 +45,7 @@ import { RegistrationsUpdateJobsModule } from '@121-service/src/registrations-up
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
 import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
 import { PermissionMaintenanceService } from '@121-service/src/shared/services/permission-maintenance.service';
+import { ApplicationInsightsShutdownService } from '@121-service/src/telemetry/application-insights-shutdown.service';
 import { TypeOrmModule } from '@121-service/src/typeorm.module';
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
@@ -135,6 +136,7 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
       useClass: ProgramExistenceInterceptor,
     },
     PermissionMaintenanceService,
+    ApplicationInsightsShutdownService,
   ],
 })
 export class ApplicationModule implements OnApplicationBootstrap {
