@@ -82,6 +82,115 @@ References: [Node.js SDK and supported configuration](https://github.com/microso
 [Node.js migration guide](https://learn.microsoft.com/azure/azure-monitor/app/opentelemetry-nodejs-migrate?tabs=cleaninstall),
 [HTTP instrumentation hooks](https://github.com/open-telemetry/opentelemetry-js/tree/main/experimental/packages/opentelemetry-instrumentation-http#http-instrumentation-options).
 
+#### Baseline observability (AB#45327, second layer)
+
+| Signal                                                       | Collection                                                                                                    |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| Request volume, duration and failures                        | SDK HTTP instrumentation; request names use Express route templates, not individual identifiers               |
+| Outbound HTTP and PostgreSQL duration/failures               | SDK defaults                                                                                                  |
+| Redis commands within traced operations                      | Standard OpenTelemetry `ioredis` instrumentation; command names only, without keys or values                  |
+| NestJS logs and handled errors                               | `ApplicationInsightsLogger`, with severity and logger context; Error objects become exception records         |
+| Existing custom events, traces and handled exceptions        | Existing `AzureLogService` APIs                                                                               |
+| Uncaught errors and unhandled rejections                     | One Critical exception plus a restart trace; bounded delivery before exit code 1                              |
+| Process CPU, memory and supported request/exception counters | SDK default performance counters, on the SDK's collection interval                                            |
+| Service identity                                             | OpenTelemetry resource `service.name=121-service`; `service.version` from `GLOBAL_121_VERSION` when available |
+
+Requests, dependencies, logs and exceptions retain SDK operation correlation.
+`x-121-interface` still populates `customDimensions.interface`. Automatic metrics
+and service resources use SDK defaults; no custom business counters are added.
+
+##### Decisions and alternatives
+
+- Add only the missing `ioredis` instrumentation, not an all-instrumentations
+  bundle. The SDK's Redis instrumentation targets the `redis` package, while this
+  service uses `ioredis`. Retain the instrumentation's default parent-span
+  requirement to avoid exporting every background Bull polling command. Job-level
+  traces and queue-depth/business metrics remain outside this slice.
+- Align the instrumentation dependency generation with the Application Insights
+  SDK (`instrumentation` 0.221.x, `instrumentation-ioredis` 0.69.x), rather than
+  introduce another instrumentation generation. Newer packages also triggered
+  the repository's minimum-release-age policy during installation.
+- Bridge NestJS's existing logger instead of adding Winston/Pino or enabling
+  blanket console collection. Keep local console output. Export string messages
+  and Error objects, but omit other objects and structured parameters from Azure
+  records to avoid exporting unaudited payloads. Existing direct `console.*`
+  output remains local; callers should use NestJS Logger or AzureLogService for
+  cloud-visible logs. Never put personal data or secrets in free-text messages,
+  exceptions or custom-event properties; these remain the caller's responsibility.
+- Remove the Onafriq/Safaricom payload-logging middleware rather than maintain a
+  second request record alongside automatic HTTP telemetry. Retain the public
+  external-request logging methods for SOAP and other manual callers, but export
+  fixed success/failure messages with only origin and status code. Failures now
+  produce Error-severity traces, not synthetic exceptions containing payloads.
+- Redact URL credentials, concrete paths/query strings, database statement text,
+  database usernames/connection strings and incoming caller addresses. Keep route
+  templates, dependency origins, operation names, durations and outcomes.
+  Centralize this in a span processor's mutable `onEnding` hook rather than
+  mutate the read-only `onEnd` span or introduce an external collector. `onEnding`
+  is an experimental OpenTelemetry API in the locked SDK; SDK upgrades need a
+  real-ingestion privacy check in addition to unit tests.
+- Use a standard resource for name/version across logs, traces and metrics, rather
+  than client tags that do not consistently cover metrics.
+- Keep percentage-based sampling from the compatibility layer. Keep console
+  auto-collection disabled. Disable SDK uncaught-exception collection because the
+  service owns fatal handling; this prevents duplicate exception records and
+  retains exit code 1 for unhandled rejections. Register those handlers before
+  NestJS bootstrap rather than after listening.
+- Use SDK batching instead of flushing every event. Enable NestJS shutdown hooks
+  for graceful signals and flush/shut down telemetry after application closure.
+  Bound this work to five seconds so an unavailable ingestion endpoint cannot
+  block shutdown or fatal restart indefinitely. Log timeout/export failures
+  locally. Delivery after a hard kill or deadline expiry is not guaranteed.
+
+These are intentional output changes in the second layer. Queries based on
+request/response body text, full external URLs, caller IPs or the former synthetic
+HTTP exceptions need updates. No API responses, payloads or Fsp behavior change.
+Legacy native extended metrics, arbitrary console/object capture, dashboards,
+alerts and browser instrumentation remain excluded.
+
+##### Azure verification queries
+
+Run these in the Application Insights resource after deployment. Allow at least
+one minute for default performance counters. Live Azure ingestion and existing
+deployment-specific dashboards require an authorized deployment check; local
+collector checks do not prove Azure-side ingestion.
+
+```kusto
+requests
+| where timestamp > ago(30m) and cloud_RoleName == "121-service"
+| summarize requests=sum(itemCount),
+    failures=sumif(itemCount, success == false),
+    p95Duration=percentile(duration, 95)
+    by name, tostring(customDimensions.interface), bin(timestamp, 5m)
+```
+
+```kusto
+dependencies
+| where timestamp > ago(30m) and cloud_RoleName == "121-service"
+| summarize calls=sum(itemCount), failures=sumif(itemCount, success == false),
+    p95Duration=percentile(duration, 95) by type, target, name
+```
+
+```kusto
+union traces, exceptions, customEvents
+| where timestamp > ago(30m) and cloud_RoleName == "121-service"
+| project timestamp, itemType, operation_Id, operation_ParentId,
+    severityLevel, message, outerMessage, name, customDimensions
+| order by timestamp desc
+```
+
+```kusto
+union performanceCounters, customMetrics
+| where timestamp > ago(30m) and cloud_RoleName == "121-service"
+| summarize samples=count() by itemType, name
+```
+
+References: [NestJS custom loggers](https://docs.nestjs.com/techniques/logger#extending-built-in-logger),
+[NestJS shutdown hooks](https://docs.nestjs.com/fundamentals/lifecycle-events#application-shutdown),
+[`ioredis` instrumentation and privacy options](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/plugins/node/opentelemetry-instrumentation-ioredis),
+[OpenTelemetry mutable span-ending hook](https://opentelemetry.io/docs/specs/otel/trace/sdk/#onending),
+[Azure Monitor OpenTelemetry options](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/monitor/monitor-opentelemetry#configuration).
+
 ### FSP-specific instructions
 
 For FSP-specific instructions, see the README.md in each individual FSP-folder, e.g. for [Intersolve](./src/fsp-integrations/integrations/intersolve/README.md)

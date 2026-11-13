@@ -10,7 +10,7 @@ import { env } from '@121-service/src/env';
 
 @Injectable()
 export class AzureLogService {
-  defaultClient: TelemetryClient;
+  defaultClient: TelemetryClient | undefined;
 
   public constructor() {
     if (env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
@@ -27,23 +27,12 @@ export class AzureLogService {
     try {
       this.defaultClient.trackException({
         exception: error,
-        severity: alert ? KnownSeverityLevel.Critical : KnownSeverityLevel.Error,
+        severity: alert
+          ? KnownSeverityLevel.Critical
+          : KnownSeverityLevel.Error,
       });
     } catch (trackExceptionError) {
       console.error('An error occurred in logError:', trackExceptionError);
-    }
-
-    void this.flushLogs();
-  }
-
-  private async flushLogs(): Promise<void> {
-    try {
-      await this.defaultClient.flush();
-    } catch (flushError) {
-      console.error(
-        'An error occurred in AzureLogService::flushLogs:',
-        flushError,
-      );
     }
   }
 
@@ -55,7 +44,6 @@ export class AzureLogService {
       return;
     }
     this.defaultClient.trackTrace({ message });
-    void this.flushLogs();
   }
 
   public trackEvent({
@@ -77,7 +65,5 @@ export class AzureLogService {
     } catch (trackEventError) {
       console.error('An error occurred in trackEvent:', trackEventError);
     }
-
-    void this.flushLogs();
   }
 }
