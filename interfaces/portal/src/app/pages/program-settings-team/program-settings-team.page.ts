@@ -24,11 +24,17 @@ import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-pro
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import { QueryTableColumn } from '~/components/query-table/query-table.types';
 import { ProgramApiService } from '~/domains/program/program.api.service';
+import { programHasAccessGroups } from '~/domains/program/program.helper';
 import { ProgramUserWithRolesLabel } from '~/domains/program/program.model';
 import { AddProgramTeamUserDialogComponent } from '~/pages/program-settings-team/components/add-program-team-user-dialog/add-program-team-user-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
+import { TranslatableStringService } from '~/services/translatable-string.service';
+
+type ProgramTeamUser = {
+  accessGroupLabel: string;
+} & ProgramUserWithRolesLabel;
 
 @Component({
   selector: 'app-program-settings-team',
@@ -53,6 +59,7 @@ export class ProgramSettingsTeamPageComponent {
   private programApiService = inject(ProgramApiService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
+  private translatableStringService = inject(TranslatableStringService);
 
   readonly addUserDialog =
     viewChild.required<AddProgramTeamUserDialogComponent>('addUserDialog');
@@ -68,6 +75,33 @@ export class ProgramSettingsTeamPageComponent {
   programUsers = injectQuery(
     this.programApiService.getProgramUsers(this.programId),
   );
+  readonly accessGroupLevels = injectQuery(
+    this.programApiService.getAccessGroupLevels({
+      programId: this.programId,
+    }),
+  );
+
+  readonly tableRows = computed<ProgramTeamUser[]>(() => {
+    const attributes = this.program.data()?.programRegistrationAttributes ?? [];
+
+    return (this.programUsers.data() ?? []).map((user) => ({
+      ...user,
+      accessGroupLabel: user.accessGroups
+        .map(({ programRegistrationAttributeName, value }) => {
+          const attribute = attributes.find(
+            ({ name }) => name === programRegistrationAttributeName,
+          );
+          const option = attribute?.options?.find(
+            ({ option: optionValue }) => optionValue === value,
+          );
+
+          return (
+            this.translatableStringService.translate(option?.label) ?? value
+          );
+        })
+        .join(' / '),
+    }));
+  });
 
   removeUserMutation = injectMutation<unknown, Error, { userId?: number }>(
     () => ({
@@ -84,29 +118,33 @@ export class ProgramSettingsTeamPageComponent {
     }),
   );
 
-  readonly columns = computed<QueryTableColumn<ProgramUserWithRolesLabel>[]>(
-    () => {
-      const scopeColumn: QueryTableColumn<ProgramUserWithRolesLabel> = {
-        field: 'scope',
-        header: $localize`:@@attribute-label-scope:Scope`,
-        class: 'w-1/3',
-      };
+  readonly columns = computed<QueryTableColumn<ProgramTeamUser>[]>(() => {
+    const scopeColumn: QueryTableColumn<ProgramTeamUser> = {
+      field: 'scope',
+      header: $localize`:@@attribute-label-scope:Scope`,
+      class: 'w-1/3',
+    };
+    const accessGroupColumn: QueryTableColumn<ProgramTeamUser> = {
+      field: 'accessGroupLabel',
+      header: $localize`Access group`,
+      class: 'w-1/3',
+    };
 
-      return [
-        {
-          field: 'username',
-          header: $localize`User name`,
-          class: 'w-1/3 align-top',
-        },
-        {
-          field: 'allRolesLabel',
-          header: $localize`Roles`,
-          class: 'w-1/3',
-        },
-        ...(this.enableScope() ? [scopeColumn] : []),
-      ];
-    },
-  );
+    return [
+      {
+        field: 'username',
+        header: $localize`User name`,
+        class: 'w-1/3 align-top',
+      },
+      {
+        field: 'allRolesLabel',
+        header: $localize`Roles`,
+        class: 'w-1/3',
+      },
+      ...(this.enableScope() ? [scopeColumn] : []),
+      ...(this.enableAccessGroups() ? [accessGroupColumn] : []),
+    ];
+  });
 
   readonly canManageAidworkers = computed(() =>
     this.authService.hasPermission({
@@ -117,6 +155,12 @@ export class ProgramSettingsTeamPageComponent {
 
   readonly enableScope = computed(
     () => this.program.data()?.enableScope ?? false,
+  );
+  readonly enableAccessGroups = computed(() =>
+    programHasAccessGroups({
+      accessGroupRegistrationAttributeNames:
+        this.accessGroupLevels.data()?.accessGroupRegistrationAttributeNames,
+    }),
   );
 
   readonly contextMenuItems = computed<MenuItem[]>(() => [

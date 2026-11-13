@@ -23,7 +23,7 @@
     </div>
 
     <app-query-table
-      [items]="programUsers.data() ?? []"
+      [items]="tableRows()"
       [isPending]="programUsers.isPending()"
       [columns]="columns()"
       localStorageKey="program-team-table"
@@ -31,7 +31,12 @@
         canManageAidworkers() ? contextMenuItems() : undefined
       "
       (updateContextMenuItem)="selectedUser.set($event)"
-      [globalFilterFields]="['username', 'allRolesLabel', 'scope']"
+      [globalFilterFields]="[
+        'username',
+        'allRolesLabel',
+        'scope',
+        'accessGroupLabel',
+      ]"
       [initialSortField]="'username'"
     ></app-query-table>
 
