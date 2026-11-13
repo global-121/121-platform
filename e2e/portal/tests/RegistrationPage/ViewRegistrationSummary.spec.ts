@@ -1,7 +1,11 @@
 import { expect } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { searchRegistrationByReferenceId } from '@121-service/test/helpers/registration.helper';
+import { patchProgram } from '@121-service/test/helpers/program.helper';
+import {
+  searchRegistrationByReferenceId,
+  seedPaidRegistrations,
+} from '@121-service/test/helpers/registration.helper';
 import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { registrationPvScoped } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -17,12 +21,20 @@ test('User should see a summary of a registration', async ({
 }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
-    seedPaidRegistrations: true,
-    registrations: [registrationPvScoped],
-    programId,
+    skipSeedRegistrations: true,
   });
 
   const accessToken = await getAccessToken();
+  const updateProgramResponse = await patchProgram(
+    programId,
+    { enableScope: true },
+    accessToken,
+  );
+  expect(updateProgramResponse.status).toBe(200);
+  await seedPaidRegistrations({
+    registrations: [registrationPvScoped],
+    programId,
+  });
 
   const searchRegistrationResponse = await searchRegistrationByReferenceId(
     registrationPvScoped.referenceId,

@@ -8,7 +8,10 @@ import {
   registrationScopedTurkanaNorthPv,
   registrationsPV,
 } from '@121-service/test/fixtures/scoped-registrations';
-import { getTransactionsByPaymentIdPaginated } from '@121-service/test/helpers/program.helper';
+import {
+  getTransactionsByPaymentIdPaginated,
+  patchProgram,
+} from '@121-service/test/helpers/program.helper';
 import {
   getTransactionEvents,
   importRegistrations,
@@ -34,6 +37,12 @@ describe('Registrations - [Scoped]', () => {
   beforeEach(async () => {
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
+    const updateProgramResponse = await patchProgram(
+      PvProgramId,
+      { enableScope: true },
+      accessToken,
+    );
+    expect(updateProgramResponse.status).toBe(HttpStatus.OK);
   });
 
   it('should return all registrations from 1 program within the scope of the requesting user', async () => {

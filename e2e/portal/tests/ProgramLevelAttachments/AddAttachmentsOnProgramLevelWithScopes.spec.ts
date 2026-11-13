@@ -5,6 +5,8 @@ import { env } from '@121-service/src/env';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { getDebugScopeUsername } from '@121-service/src/scripts/helpers/debug-scope-username.helper';
+import { patchProgram } from '@121-service/test/helpers/program.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
@@ -37,6 +39,13 @@ test.describe('Attachments on Program Level with Scope', () => {
       seedScript: SeedScript.nlrcMultiple,
       skipSeedRegistrations: true,
     });
+    const accessToken = await getAccessToken();
+    const updateProgramResponse = await patchProgram(
+      programIdPV,
+      { enableScope: true },
+      accessToken,
+    );
+    expect(updateProgramResponse.status).toBe(200);
   });
 
   for (const scope of scopes) {

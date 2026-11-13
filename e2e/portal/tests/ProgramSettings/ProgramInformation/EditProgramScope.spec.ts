@@ -1,16 +1,25 @@
 import { expect } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { patchProgram } from '@121-service/test/helpers/program.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+test.beforeEach(async ({ page, resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     skipSeedRegistrations: true,
-    navigateToPage: `/program/${programIdPV}/registrations`,
   });
+  const accessToken = await getAccessToken();
+  const updateProgramResponse = await patchProgram(
+    programIdPV,
+    { enableScope: true },
+    accessToken,
+  );
+  expect(updateProgramResponse.status).toBe(200);
+  await page.goto(`/program/${programIdPV}/registrations`);
 });
 
 test('Toggle scope in program settings', async ({
