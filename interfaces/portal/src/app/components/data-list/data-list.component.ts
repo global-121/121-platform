@@ -1,153 +1,39 @@
-import {
-  CurrencyPipe,
-  DatePipe,
-  DecimalPipe,
-  NgClass,
-  NgComponentOutlet,
-} from '@angular/common';
+import { NgClass, NgComponentOutlet, NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  inject,
+  computed,
   input,
-  Type,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
-import { InputTextModule } from 'primeng/inputtext';
-import { SkeletonModule } from 'primeng/skeleton';
-import { TagModule } from 'primeng/tag';
-
-import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
-import { getRandomInt } from '@121-service/src/utils/random-value.helper';
-
-import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
-import { ImageDialogTriggerComponent } from '~/components/image/image-dialog-trigger/image-dialog-trigger.component';
-import {
-  InfoTooltipComponent,
-  InfoTooltipData,
-} from '~/components/info-tooltip/info-tooltip.component';
+import { DataListItem } from '~/components/data-list/data-list-item.type';
+import { DataListValueComponent } from '~/components/data-list/data-list-value/data-list-value.component';
+import { determineDataListItemEdgeFlags } from '~/components/data-list/helpers/data-list-edge-flags.helper';
+import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
-import { TranslatableStringService } from '~/services/translatable-string.service';
-import { ColorVariant } from '~/utils/color-variant.enum';
-
-export type DataListItem = (
-  | {
-      infoTooltipData: InfoTooltipData;
-    }
-  | {
-      infoTooltipData?: undefined;
-    }
-) & {
-  label: string | UILanguageTranslation;
-  loading?: boolean;
-  chipLabel?: string;
-  chipVariant?: ColorVariant;
-  fullWidth?: boolean;
-  icon?: string;
-  detailAction?: {
-    component: Type<unknown>;
-    inputs: Record<string, unknown>;
-  };
-  dataTestId?: string;
-} & (
-    | {
-        type: 'boolean';
-        value: boolean;
-      }
-    | {
-        type: 'code';
-        value?: null | string;
-      }
-    | {
-        type: 'component';
-        value: Type<unknown>;
-        inputs?: Record<string, unknown>;
-      }
-    | {
-        type: 'currency';
-        value?: null | number;
-        currencyCode?: null | string;
-        currencyFormat?: string;
-      }
-    | {
-        type: 'date';
-        value?: Date | null | number | string;
-      }
-    | {
-        type: 'koboImage';
-        value: string;
-      }
-    | {
-        type: 'number';
-        value?: null | number;
-      }
-    | {
-        type: 'options';
-        value: string | string[];
-        options?: {
-          value: string;
-          label?: string | UILanguageTranslation;
-        }[];
-      }
-    | {
-        type: 'tags';
-        value: string | string[];
-        options: {
-          value: string;
-          label?: string | UILanguageTranslation;
-        }[];
-      }
-    | {
-        type?: 'text';
-        value?: null | string | UILanguageTranslation;
-        routerLink?: RouterLink['routerLink'];
-      }
-  );
 
 @Component({
   selector: 'app-data-list',
   imports: [
-    InfoTooltipComponent,
-    CurrencyPipe,
-    DatePipe,
-    DecimalPipe,
-    SkeletonModule,
-    ColoredChipComponent,
     TranslatableStringPipe,
-    NgClass,
+    DataListValueComponent,
+    InfoTooltipComponent,
     NgComponentOutlet,
-    RouterLink,
-    InputTextModule,
-    TagModule,
-    ImageDialogTriggerComponent,
+    NgTemplateOutlet,
+    NgClass,
   ],
   templateUrl: './data-list.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataListComponent {
   readonly data = input.required<DataListItem[]>();
-  readonly hideBottomBorder = input<boolean>();
   readonly forceOneColumn = input(false);
+  readonly horizontal = input(false);
 
-  readonly translatableStringService = inject(TranslatableStringService);
-
-  skeletonWidth() {
-    return `${getRandomInt(42, 98).toString()}%`;
-  }
-
-  optionItemValue(item: { type: 'options' } & DataListItem) {
-    const value = Array.isArray(item.value) ? item.value : [item.value];
-
-    const valueList = value.map((v) => {
-      const option = item.options?.find((o) => o.value === v);
-
-      return this.translatableStringService.translate(option?.label) ?? v;
-    });
-
-    return this.translatableStringService.commaSeparatedList({
-      values: valueList,
-    });
-  }
+  readonly itemEdgeFlags = computed(() =>
+    determineDataListItemEdgeFlags({
+      items: this.data(),
+      forceOneColumn: this.forceOneColumn(),
+    }),
+  );
 }

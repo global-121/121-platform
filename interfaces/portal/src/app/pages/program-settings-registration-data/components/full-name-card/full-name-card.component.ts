@@ -19,10 +19,8 @@ import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/r
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
-import {
-  DataListComponent,
-  DataListItem,
-} from '~/components/data-list/data-list.component';
+import { DataListComponent } from '~/components/data-list/data-list.component';
+import { DataListItem } from '~/components/data-list/data-list-item.type';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { getNameFieldsInConventionOrder } from '~/pages/program-settings-registration-data/components/full-name-card/full-name-card.helper';
@@ -40,7 +38,6 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     ReactiveFormsModule,
   ],
   templateUrl: './full-name-card.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FullNameCardComponent {

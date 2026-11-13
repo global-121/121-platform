@@ -26,39 +26,44 @@
       />
     </app-form-field-wrapper>
   </div>
-  <app-form-field-wrapper
-    label="Location"
-    i18n-label
-    [errorMessage]="formFieldErrors()('location')"
-  >
-    <input
-      pInputText
-      type="text"
-      formControlName="location"
-      placeholder="Location"
-      i18n-placeholder
-    />
-  </app-form-field-wrapper>
-  <app-form-field-wrapper
-    label="Target registrations"
-    i18n-label
-    [errorMessage]="formFieldErrors()('targetNrRegistrations')"
-    [isRequired]="true"
-    [infoTooltipData]="PROGRAM_FORM_TOOLTIPS_CONFIG.targetRegistrations"
-  >
-    <p-inputNumber
-      mode="decimal"
-      [locale]="locale"
-      [useGrouping]="true"
-      [minFractionDigits]="0"
-      [maxFractionDigits]="0"
-      class="inline-full"
-      inputStyleClass="inline-full"
-      formControlName="targetNrRegistrations"
-      placeholder="Target registrations"
-      i18n-placeholder
-    />
-  </app-form-field-wrapper>
+
+  <div class="flex flex-row gap-4 inline-full *:inline-1/2">
+    <app-form-field-wrapper
+      label="Location"
+      i18n-label
+      [errorMessage]="formFieldErrors()('location')"
+    >
+      <input
+        pInputText
+        type="text"
+        formControlName="location"
+        placeholder="Location"
+        i18n-placeholder
+      />
+    </app-form-field-wrapper>
+
+    <app-form-field-wrapper
+      label="Target registrations"
+      i18n-label
+      [errorMessage]="formFieldErrors()('targetNrRegistrations')"
+      [isRequired]="true"
+      [infoTooltipData]="PROGRAM_FORM_TOOLTIPS_CONFIG.targetRegistrations"
+    >
+      <p-inputNumber
+        mode="decimal"
+        [locale]="locale"
+        [useGrouping]="true"
+        [minFractionDigits]="0"
+        [maxFractionDigits]="0"
+        class="inline-full"
+        inputStyleClass="inline-full"
+        formControlName="targetNrRegistrations"
+        placeholder="Target registrations"
+        i18n-placeholder
+      />
+    </app-form-field-wrapper>
+  </div>
+
   <div class="mbs-4 flex justify-items-center">
     <p-toggleSwitch
       inputId="validation"

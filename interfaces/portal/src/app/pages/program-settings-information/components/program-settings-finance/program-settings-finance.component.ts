@@ -17,10 +17,8 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
-import {
-  DataListComponent,
-  DataListItem,
-} from '~/components/data-list/data-list.component';
+import { DataListComponent } from '~/components/data-list/data-list.component';
+import { DataListItem } from '~/components/data-list/data-list-item.type';
 import { FspTagsComponent } from '~/components/fsp-tags/fsp-tags.component';
 import {
   ProgramBudgetFormGroup,
@@ -140,7 +138,7 @@ export class ProgramSettingsFinanceComponent {
         type: 'currency',
       },
       {
-        label: '*' + $localize`Currency`,
+        label: $localize`Currency`,
         value: programData?.currency,
         infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.currency,
         type: 'text',
@@ -149,15 +147,13 @@ export class ProgramSettingsFinanceComponent {
         label: $localize`Number of distributions per registration`,
         value: programData?.distributionDuration,
         type: 'number',
-        fullWidth: true,
         infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.distributionDuration,
       },
       {
-        label: '*' + $localize`Fixed transfer value`,
+        label: $localize`Fixed transfer value`,
         value: programData?.fixedTransferValue,
         currencyCode: programData?.currency,
         type: 'currency',
-        fullWidth: true,
       },
       {
         label: $localize`Financial service providers`,

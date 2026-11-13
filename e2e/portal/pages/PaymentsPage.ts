@@ -86,7 +86,9 @@ class PaymentsPage extends BasePage {
     currency: string;
     paymentAmount: number;
   }) {
-    const fspSummary = await this.fspSummary.textContent();
+    const fspSummary = (await this.fspSummary.textContent())
+      ?.replace(/\s+/g, ' ')
+      .trim();
 
     expect(fspSummary).toContain(
       `Financial Service Provider(s): ${fsp.join(', ')}`,

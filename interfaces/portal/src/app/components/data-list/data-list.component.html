@@ -1,152 +1,96 @@
 <div
   class="grid grid-cols-1 gap-x-5"
   [ngClass]="{
-    'mbe-[-2px] [clip-path:inset(0_0_2px_0)]': hideBottomBorder(),
     'md:grid-cols-2': !forceOneColumn(),
   }"
 >
   @for (item of data(); track $index) {
+    @let edge = itemEdgeFlags()[$index];
     <div
-      [attr.data-testid]="item?.dataTestId"
+      [attr.data-testid]="item.dataTestId"
       [attr.data-testid-category]="'data-list-item'"
-      class="border-grey-300 flex items-center border-be px-2 py-4"
+      class="border-grey-300 mbe-3.5 flex border-be pbe-3.5"
       [ngClass]="{
+        'flex-col gap-1': !horizontal(),
+        'flex-row items-center gap-2': horizontal(),
         'col-span-2': item.fullWidth,
-        'items-start': item.type === 'koboImage',
+        'pbs-3.5': edge.isFirstItem,
+        'md:pbs-3.5': edge.isInFirstWideScreenRow,
+        'mbe-0! border-be-0!': edge.isLastItem,
+        'md:mbe-0! md:border-be-0!': edge.isInLastWideScreenRow,
       }"
     >
-      @if (item.loading) {
-        <p-skeleton
-          [width]="skeletonWidth()"
-          class="py-1"
-        />
-      } @else if (item.type === 'koboImage') {
-        <div class="grid grid-cols-[auto_1fr] inline-full">
-          <div class="me-1">
-            <strong>
-              <i class="pi pi-image me-2"></i>
-              {{ item.label | translatableString }}:
-            </strong>
-          </div>
-          <span class="relative ms-1">
-            <div class="absolute inset-x-0 inset-bs-1/2 -translate-y-1/2">
-              <app-image-dialog-trigger
-                [wrapperClassName]="'flex items-center justify-between inline-full'"
-                [label]="item.label | translatableString"
-                [includeColoredChip]="true"
-                [imageUrl]="item.value"
-              />
-            </div>
-          </span>
-        </div>
-      } @else {
-        <div class="me-1">
-          <strong>{{ item.label | translatableString }}:</strong>
-          @if (item.infoTooltipData) {
-            <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
-          }
-        </div>
-        @if (item.chipLabel && item.chipVariant) {
-          <app-colored-chip
-            [variant]="item.chipVariant"
-            [label]="item.chipLabel"
-          />
-        } @else if (item.value !== undefined && item.value !== null) {
-          @if (item.icon) {
-            <i
-              class="pi me-1"
-              [ngClass]="item.icon"
-              aria-hidden="true"
-            ></i>
-          }
-          <span class="me-1">
-            @switch (item.type) {
-              @case ('boolean') {
-                @if (item.value) {
-                  <span
-                    i18n="@@generic-boolean-true"
-                    class="ms-1"
-                    >Yes</span
-                  >
-                } @else {
-                  <span
-                    i18n="@@generic-boolean-false"
-                    class="ms-1"
-                    >No</span
-                  >
-                }
-              }
-              @case ('code') {
-                <code>{{ item.value }}</code>
-              }
-              @case ('currency') {
-                {{
-                  item.value
-                    | currency
-                      : item.currencyCode ?? undefined
-                      : 'symbol-narrow'
-                      : item.currencyFormat
-                }}
-              }
-              @case ('date') {
-                {{ item.value | date: 'longDate' }}
-              }
-              @case ('number') {
-                {{ item.value | number }}
-              }
-              @case ('options') {
-                {{ optionItemValue(item) }}
-              }
-              @case ('component') {
-                <ng-container
-                  *ngComponentOutlet="item.value; inputs: item.inputs"
-                />
-              }
-              @case ('tags') {
-                <ol class="flex flex-wrap gap-2">
-                  @for (option of item.options; track $index) {
-                    <li>
-                      <p-tag
-                        [value]="
-                          (option.label | translatableString) ?? option.value
-                        "
-                        class="bg-blue-100 text-blue-700"
-                        [rounded]="true"
-                      />
-                    </li>
-                  }
-                </ol>
-              }
-
-              @default {
-                @let routerLink = item.routerLink;
-
-                @if (routerLink) {
-                  <a
-                    [routerLink]="routerLink"
-                    class="text-black"
-                    >{{ item.value | translatableString }}</a
-                  >
-                } @else {
-                  {{ item.value | translatableString }}
-                }
-              }
-            }
-          </span>
-          @if (item.detailAction && item.detailAction.component) {
-            <span class="ms-auto">
-              <ng-container
-                *ngComponentOutlet="
-                  item.detailAction.component;
-                  inputs: item.detailAction.inputs
-                "
-              ></ng-container>
-            </span>
-          }
-        } @else if (!item.chipLabel) {
-          —
-        }
-      }
+      <ng-container
+        *ngTemplateOutlet="
+          horizontal() ? horizontalLabel : verticalLabel;
+          context: { $implicit: item }
+        "
+      />
     </div>
   }
 </div>
+
+<!-- HORIZONTAL LABEL -->
+
+<ng-template
+  #horizontalLabel
+  let-item
+>
+  <div class="flex text-base opacity-65">
+    <div>{{ item.label | translatableString }}:</div>
+    @if (item.infoTooltipData) {
+      <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
+    }
+  </div>
+
+  <app-data-list-value
+    [item]="item"
+    class="*:text-base!"
+  />
+
+  @if (item.detailAction && !item.loading) {
+    <span class="ms-auto">
+      <ng-container
+        *ngComponentOutlet="
+          item.detailAction.component;
+          inputs: item.detailAction.inputs
+        "
+      />
+    </span>
+  }
+</ng-template>
+
+<!-- VERTICAL LABEL -->
+
+<ng-template
+  #verticalLabel
+  let-item
+>
+  <div class="relative flex items-center">
+    <div class="flex flex-1 text-base opacity-65">
+      @if (item.type === 'koboImage') {
+        <i class="pi pi-image relative inset-bs-1 me-1.5 opacity-80"></i>
+      }
+
+      <div>
+        {{ item.label | translatableString }}:
+        @if (item.infoTooltipData) {
+          <app-info-tooltip [infoTooltipData]="item.infoTooltipData" />
+        }
+      </div>
+    </div>
+
+    @if (item.detailAction && !item.loading) {
+      <span class="absolute inset-e-0 inset-bs-1/2 -translate-y-1/2">
+        <ng-container
+          *ngComponentOutlet="
+            item.detailAction.component;
+            inputs: item.detailAction.inputs
+          "
+        />
+      </span>
+    }
+  </div>
+
+  <app-data-list-value [item]="item" />
+</ng-template>
