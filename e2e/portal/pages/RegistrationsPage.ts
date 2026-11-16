@@ -407,7 +407,7 @@ class RegistrationsPage extends BasePage {
     await expect(this.importFileButton).toHaveClass(/p-button-loading/);
 
     // Then wait for loading state to disappear (import completes)
-    // It is a primeNG component, so we can't use the built-in waitForLoadState method
+    // It is a Optimus UI component, so we can't use the built-in waitForLoadState method
     await expect(this.importFileButton).not.toHaveClass(/p-button-loading/, {
       timeout: 10000,
     });

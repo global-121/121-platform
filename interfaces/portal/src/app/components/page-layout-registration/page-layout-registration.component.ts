@@ -127,9 +127,9 @@ export class PageLayoutRegistrationComponent {
 
   readonly actionMenuItems = computed<MenuItem[]>(() => [
     {
-      // We need to provide a label for this submenu header due to a PrimeNG bug.
-      // Without a label, PrimeNG adds unwanted whitespace in the menu rendering.
-      // See discussion: https://github.com/global-121/121-platform/pull/6541#discussion_r1975162183 on out github which also links to the bug in primeNG
+      // We need to provide a label for this submenu header due to a Optimus UI bug.
+      // Without a label, Optimus UI adds unwanted whitespace in the menu rendering.
+      // See discussion: https://github.com/global-121/121-platform/pull/6541#discussion_r1975162183 on out github which also links to the bug in Optimus UI
       label: $localize`:@@general:General`,
       items: [
         {

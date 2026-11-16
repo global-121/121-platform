@@ -158,7 +158,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly expandedRowKeys = this.rowExpansionService.expandedRowKeys;
   readonly tableFilters = this.filterService.tableFilters;
 
-  // This is triggered whenever PrimeNG saves the state of the table to local storage which is an optimal time to update our local state,
+  // This is triggered whenever Optimus UI saves the state of the table to local storage which is an optimal time to update our local state,
   //  and make sure the table is showing the correct data.
   onStateSave(event: TableState) {
     this.filterService.updateTableFilters(event.filters ?? {});
