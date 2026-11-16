@@ -8,8 +8,8 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { SelectButtonModule } from '@openng/optimus-ui/selectbutton';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { SelectButtonModule } from 'primeng/selectbutton';
 
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';

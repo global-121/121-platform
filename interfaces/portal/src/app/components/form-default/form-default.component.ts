@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
 import { CreateMutationResult } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 

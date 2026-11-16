@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { CardModule } from 'primeng/card';
-import { TooltipModule } from 'primeng/tooltip';
+import { CardModule } from '@openng/optimus-ui/card';
+import { TooltipModule } from '@openng/optimus-ui/tooltip';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import {

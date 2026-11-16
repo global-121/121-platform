@@ -11,11 +11,11 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { AutoFocus } from '@openng/optimus-ui/autofocus';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { InputTextModule } from '@openng/optimus-ui/inputtext';
+import { ProgressSpinnerModule } from '@openng/optimus-ui/progressspinner';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { AutoFocus } from 'primeng/autofocus';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { FormDefaultComponent } from '~/components/form-default/form-default.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';

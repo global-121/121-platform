@@ -1,9 +1,9 @@
 import { HttpParamsOptions } from '@angular/common/http';
 import { Injectable, OutputEmitterRef } from '@angular/core';
 
+import { FilterMatchMode, FilterMetadata } from '@openng/optimus-ui/api';
+import { TableLazyLoadEvent } from '@openng/optimus-ui/table';
 import { endOfDay, startOfDay } from 'date-fns';
-import { FilterMatchMode, FilterMetadata } from 'primeng/api';
-import { TableLazyLoadEvent } from 'primeng/table';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 

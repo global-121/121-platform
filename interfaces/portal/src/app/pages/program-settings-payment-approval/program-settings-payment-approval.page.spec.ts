@@ -2,12 +2,12 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
+import { MessageService } from '@openng/optimus-ui/api';
 import {
   provideTanStackQuery,
   QueryClient,
   queryOptions,
 } from '@tanstack/angular-query-experimental';
-import { MessageService } from 'primeng/api';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';

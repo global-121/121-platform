@@ -20,16 +20,16 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { MenuItem } from '@openng/optimus-ui/api';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { CardModule } from '@openng/optimus-ui/card';
+import { DialogModule } from '@openng/optimus-ui/dialog';
+import { InputText } from '@openng/optimus-ui/inputtext';
 import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 import { format } from 'date-fns';
-import { MenuItem } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { DialogModule } from 'primeng/dialog';
-import { InputText } from 'primeng/inputtext';
 import { map } from 'rxjs';
 
 import { FspIntegrationType } from '@121-service/src/fsp-integrations/shared/enum/fsp-integration-type.enum';

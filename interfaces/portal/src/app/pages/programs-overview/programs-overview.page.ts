@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { ButtonModule } from 'primeng/button';
+import { ButtonModule } from '@openng/optimus-ui/button';
 
 import { CardGridComponent } from '~/components/card-grid/card-grid.component';
 import { AppInfoCardComponent } from '~/components/info-card/info-card.component';

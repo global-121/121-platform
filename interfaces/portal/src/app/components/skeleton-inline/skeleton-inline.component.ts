@@ -5,7 +5,7 @@ import {
   input,
 } from '@angular/core';
 
-import { SkeletonModule } from 'primeng/skeleton';
+import { SkeletonModule } from '@openng/optimus-ui/skeleton';
 
 import { getRandomInt } from '@121-service/src/utils/random-value.helper';
 

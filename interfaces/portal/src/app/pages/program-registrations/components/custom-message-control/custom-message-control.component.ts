@@ -13,9 +13,9 @@ import {
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
 
+import { TextareaModule } from '@openng/optimus-ui/textarea';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MentionModule } from 'angular-mentions';
-import { TextareaModule } from 'primeng/textarea';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';

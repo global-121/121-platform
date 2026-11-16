@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import 'primeicons/primeicons.css';
+@import '@openng/icons/openng-icons.css';
 
 @config '../tailwind.config.mts';
 
@@ -168,7 +168,7 @@ svg-icon svg {
    So there will only be ONE section/grouping per PrimeNG component.
 */
 
-@layer primeng-customisations {
+@layer optimus-customisations {
   :root {
     --toolbar-height: calc(48 / 14 * 1rem);
     --p-form-field-padding-y: 0.75rem;
