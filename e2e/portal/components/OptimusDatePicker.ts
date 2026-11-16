@@ -1,7 +1,7 @@
 import { Locator, Page } from 'playwright';
 import { expect } from 'playwright/test';
 
-export class PrimeNGDatePicker {
+export class OptimusDatePicker {
   readonly page: Page;
   readonly datePickerField: Locator;
   readonly datePickerPanel: Locator;

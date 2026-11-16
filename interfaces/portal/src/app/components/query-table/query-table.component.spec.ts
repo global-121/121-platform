@@ -23,7 +23,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
 import { TrackingService } from '~/services/tracking/tracking.service';
 import { Locale } from '~/utils/locale';
 
-// To make the tests concerning PrimeNG ContextMenu work.
+// To make the tests concerning Optimus UI ContextMenu work.
 // See: https://rebeccamdeprey.com/blog/mock-windowmatchmedia-in-vitest
 beforeEach(() => {
   Object.defineProperty(window, 'matchMedia', {
@@ -383,7 +383,7 @@ describe('QueryTableComponent', () => {
   });
 
   describe('behaviour', () => {
-    it('emits updatePaginateQuery when PrimeNG emits a lazy load event', () => {
+    it('emits updatePaginateQuery when Optimus UI emits a lazy load event', () => {
       const updateSpy = vi.spyOn(
         fixture.componentInstance.updatePaginateQuery,
         'emit',
