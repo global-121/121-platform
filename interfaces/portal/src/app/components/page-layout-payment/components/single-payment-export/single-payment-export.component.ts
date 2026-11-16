@@ -7,8 +7,8 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { MenuItem } from '@openng/optimus-ui/api';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { MenuItem } from 'primeng/api';
 
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';

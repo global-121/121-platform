@@ -5,7 +5,7 @@ import {
   output,
 } from '@angular/core';
 
-import { ButtonModule } from 'primeng/button';
+import { ButtonModule } from '@openng/optimus-ui/button';
 
 @Component({
   selector: 'app-change-status-submit-buttons',

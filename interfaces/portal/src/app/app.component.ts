@@ -8,8 +8,8 @@ import {
 } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 
+import { ToastModule, ToastPositionType } from '@openng/optimus-ui/toast';
 import KonamiCode from 'konami-code-js';
-import { ToastModule, ToastPositionType } from 'primeng/toast';
 import { Subscription } from 'rxjs';
 
 import { AppRoutes } from '~/app-routes.const';

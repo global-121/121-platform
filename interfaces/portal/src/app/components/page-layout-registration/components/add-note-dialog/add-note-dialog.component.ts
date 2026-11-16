@@ -12,9 +12,9 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { TextareaModule } from '@openng/optimus-ui/textarea';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { TextareaModule } from 'primeng/textarea';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';

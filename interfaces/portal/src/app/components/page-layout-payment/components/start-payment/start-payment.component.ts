@@ -10,9 +10,9 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { DialogModule } from '@openng/optimus-ui/dialog';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 import { isObject } from 'radashi';
 
 import {
