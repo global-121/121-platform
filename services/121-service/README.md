@@ -51,10 +51,9 @@ NestJS and its instrumented dependencies load. Without
 - Keep the `applicationinsights` package and its manual tracking APIs rather than
   replace the logging stack with the Azure Monitor OpenTelemetry distribution.
   This limits changes to existing traces, exceptions, custom events and callers.
-- Keep `main.ts` as an ordered, two-import entry point (`instrumentation`, then
-  `server`). The import formatter otherwise moves initialization behind NestJS
-  imports, which prevents reliable dependency instrumentation. The existing server
-  bootstrap lives in `server.ts`; startup commands remain unchanged.
+- Keep the `instrumentation` import first in `main.ts`. The import formatter
+  otherwise moves initialization behind NestJS imports, which prevents reliable
+  dependency instrumentation; the service bootstrap remains in `main.ts`.
 - Replace the unsupported `addTelemetryProcessor` with the supported HTTP
   `startIncomingSpanHook`. Preserve the `x-121-interface` header as the request's
   `customDimensions.interface`, rather than rename the dimension or emit another
