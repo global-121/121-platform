@@ -1,11 +1,5 @@
-<div [class]="wrapperClassName()">
-  @if (includeColoredChip()) {
-    <app-colored-chip
-      [label]="coloredChipProps().label"
-      [variant]="coloredChipProps().variant"
-    />
-  }
-  @if (isAvailable()) {
+@if (isAvailable()) {
+  <div [class]="wrapperClassName()">
     <p-button
       (click)="toggleImageViewerDialog()"
       class="ms-auto [&>button]:bg-white!"
@@ -16,5 +10,5 @@
       outlined
       rounded
     ></p-button>
-  }
-</div>
+  </div>
+}

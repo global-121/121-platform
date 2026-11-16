@@ -102,12 +102,12 @@ test('Edit Program Information', async ({ programSettingsPage }) => {
       const basicInformationData =
         await programSettingsPage.basicInformationDataList.getData();
       expect(basicInformationData).toEqual({
-        '*Program name': programInfo.name,
+        'Program name': programInfo.name,
         'Program description': programInfo.description,
         'Start date': format(programInfo.dateRange.start, 'd MMMM yyyy'),
         'End date': format(programInfo.dateRange.end, 'd MMMM yyyy'),
         Location: programInfo.location,
-        '*Target registrations': programInfo.targetRegistrations,
+        'Target registrations': programInfo.targetRegistrations,
         'Enable validation': 'No',
         'Enable scope': 'No',
       });
@@ -151,10 +151,10 @@ test('Edit Program Information', async ({ programSettingsPage }) => {
           value: financeInfo.fundsAvailable,
           currency: financeInfo.currency,
         }),
-        '*Currency': financeInfo.currency,
+        Currency: financeInfo.currency,
         'Number of distributions per registration':
           financeInfo.defaultTransferValue,
-        '*Fixed transfer value': formatValueBasedOnCurrency({
+        'Fixed transfer value': formatValueBasedOnCurrency({
           value: financeInfo.fixedTransferValue,
           currency: financeInfo.currency,
         }),

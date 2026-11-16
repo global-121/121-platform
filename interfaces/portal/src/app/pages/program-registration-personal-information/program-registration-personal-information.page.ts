@@ -16,10 +16,9 @@ import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/r
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import {
-  DataListComponent,
-  DataListItem,
-} from '~/components/data-list/data-list.component';
+import { DataListComponent } from '~/components/data-list/data-list.component';
+import { DataListItem } from '~/components/data-list/data-list-item.type';
+import { ImageDialogTriggerComponent } from '~/components/image/image-dialog-trigger/image-dialog-trigger.component';
 import { ImageDialogsComponent } from '~/components/image/image-dialogs/image-dialogs.component';
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
@@ -135,12 +134,19 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
               type: 'options',
               value: value as string | string[],
             };
-          case RegistrationAttributeTypes.koboImage:
+          case RegistrationAttributeTypes.koboImage: {
+            const imageUrl = normalizeKoboImageValue(value);
+
             return {
               ...attribute,
               type: 'koboImage',
-              value: normalizeKoboImageValue(value),
+              value: imageUrl,
+              detailAction: {
+                component: ImageDialogTriggerComponent,
+                inputs: { label: attribute.label, imageUrl },
+              },
             };
+          }
           case RegistrationAttributeTypes.tel:
           case RegistrationAttributeTypes.text:
           default:

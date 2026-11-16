@@ -40,10 +40,8 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { AppRoutes } from '~/app-routes.const';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
-import {
-  DataListComponent,
-  DataListItem,
-} from '~/components/data-list/data-list.component';
+import { DataListComponent } from '~/components/data-list/data-list.component';
+import { DataListItem } from '~/components/data-list/data-list-item.type';
 import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';

@@ -29,10 +29,8 @@ import {
   getChipDataByDuplicateStatus,
   getChipDataByRegistrationStatus,
 } from '~/components/colored-chip/colored-chip.helper';
-import {
-  DataListComponent,
-  DataListItem,
-} from '~/components/data-list/data-list.component';
+import { DataListComponent } from '~/components/data-list/data-list.component';
+import { DataListItem } from '~/components/data-list/data-list-item.type';
 import { FullNameSetupNeededChipComponent } from '~/components/full-name-setup-needed/full-name-setup-needed-chip.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { AddNoteDialogComponent } from '~/components/page-layout-registration/components/add-note-dialog/add-note-dialog.component';

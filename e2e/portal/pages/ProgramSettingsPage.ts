@@ -114,12 +114,12 @@ class ProgramSettingsPage extends BasePage {
   }) {
     const basicInformationData = await this.basicInformationDataList.getData();
     expect(basicInformationData).toEqual({
-      '*Program name': programName ?? programData.name,
+      'Program name': programName ?? programData.name,
       'Program description': programData.description,
       'Start date': format(programData.dateRange.start, 'd MMMM yyyy'),
       'End date': format(programData.dateRange.end, 'd MMMM yyyy'),
       Location: programData.location,
-      '*Target registrations': programData.targetRegistrations,
+      'Target registrations': programData.targetRegistrations,
       'Enable validation': 'No',
       'Enable scope': 'No',
     });
@@ -131,10 +131,10 @@ class ProgramSettingsPage extends BasePage {
         value: programData.fundsAvailable,
         currency: programData.currency,
       }),
-      '*Currency': programData.currency,
+      Currency: programData.currency,
       'Number of distributions per registration':
         programData.defaultNumberOfTransactions,
-      '*Fixed transfer value': formatValueBasedOnCurrency({
+      'Fixed transfer value': formatValueBasedOnCurrency({
         value: programData.fixedTransferValue,
         currency: programData.currency,
       }),

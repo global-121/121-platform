@@ -18,10 +18,8 @@ import {
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
-import {
-  DataListComponent,
-  DataListItem,
-} from '~/components/data-list/data-list.component';
+import { DataListComponent } from '~/components/data-list/data-list.component';
+import { DataListItem } from '~/components/data-list/data-list-item.type';
 import {
   ProgramFormInformationComponent,
   ProgramInformationFormGroup,
@@ -165,7 +163,7 @@ export class ProgramSettingsBasicInformationComponent {
 
     const listData: DataListItem[] = [
       {
-        label: '*' + $localize`Program name`,
+        label: $localize`Program name`,
         value: this.translatableStringService.translate(
           programData?.titlePortal,
         ),
@@ -191,26 +189,22 @@ export class ProgramSettingsBasicInformationComponent {
       {
         label: $localize`Location`,
         value: programData?.location,
-        fullWidth: true,
       },
       {
-        label: '*' + $localize`Target registrations`,
+        label: $localize`Target registrations`,
         value: programData?.targetNrRegistrations,
-        fullWidth: true,
         type: 'number',
         infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.targetRegistrations,
       },
       {
         label: $localize`Enable validation`,
         value: programData?.validation ?? false,
-        fullWidth: true,
         type: 'boolean',
         infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.validationProcess,
       },
       {
         label: $localize`Enable scope`,
         value: programData?.enableScope ?? false,
-        fullWidth: true,
         type: 'boolean',
         infoTooltipData: PROGRAM_FORM_TOOLTIPS_CONFIG.enableScope,
       },

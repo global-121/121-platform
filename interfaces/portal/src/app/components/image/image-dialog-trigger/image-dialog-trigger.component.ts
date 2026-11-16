@@ -10,14 +10,12 @@ import { ButtonModule } from 'primeng/button';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
-import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { ImageViewerService } from '~/components/image/services/image-viewer.service';
 import { isImageAvailable } from '~/components/image/utils/is-image-available';
-import { ColorVariant } from '~/utils/color-variant.enum';
 
 @Component({
   selector: 'app-image-dialog-trigger',
-  imports: [ButtonModule, ColoredChipComponent],
+  imports: [ButtonModule],
   templateUrl: './image-dialog-trigger.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -27,7 +25,6 @@ export class ImageDialogTriggerComponent {
   readonly label = input.required<string | UILanguageTranslation>();
   readonly name = input<string>();
   readonly imageUrl = input<null | string | undefined>();
-  readonly includeColoredChip = input(false);
   readonly wrapperClassName = input('');
 
   readonly isOpen = computed(() => {
@@ -39,13 +36,6 @@ export class ImageDialogTriggerComponent {
     isImageAvailable({ imageUrl: this.imageUrl() }),
   );
 
-  readonly coloredChipProps = computed(() => ({
-    label: this.isAvailable()
-      ? $localize`:@@image-available:Available`
-      : $localize`:@@image-not-available:Not available`,
-    variant: this.isAvailable() ? ColorVariant.Green : ColorVariant.Red,
-  }));
-
   readonly buttonProps = computed(() => ({
     label: this.isOpen()
       ? $localize`:@@image-viewer-hide:Hide`
@@ -56,7 +46,7 @@ export class ImageDialogTriggerComponent {
   toggleImageViewerDialog() {
     const imageUrl = this.imageUrl();
 
-    if (!imageUrl || !this.isAvailable()) {
+    if (!imageUrl) {
       return;
     }
 
