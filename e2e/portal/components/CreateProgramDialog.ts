@@ -1,13 +1,13 @@
 import { Locator, Page } from 'playwright';
 
 import BasePage from '../pages/BasePage';
-import { PrimeNGDatePicker } from './PrimeNGDatePicker';
+import { OptimusDatePicker } from './OptimusDatePicker';
 class CreateProgramDialog extends BasePage {
   readonly nextButton: Locator;
   readonly submitButton: Locator;
   readonly duplicateProgramSubmitButton: Locator;
-  readonly dateRangeStartInput: PrimeNGDatePicker;
-  readonly dateRangeEndInput: PrimeNGDatePicker;
+  readonly dateRangeStartInput: OptimusDatePicker;
+  readonly dateRangeEndInput: OptimusDatePicker;
   readonly currencyDropdown: Locator;
 
   constructor(page: Page) {
@@ -19,11 +19,11 @@ class CreateProgramDialog extends BasePage {
     this.duplicateProgramSubmitButton = this.page.getByRole('button', {
       name: 'Duplicate program',
     });
-    this.dateRangeStartInput = new PrimeNGDatePicker({
+    this.dateRangeStartInput = new OptimusDatePicker({
       page: this.page,
       datePicker: this.page.getByLabel('Start date'),
     });
-    this.dateRangeEndInput = new PrimeNGDatePicker({
+    this.dateRangeEndInput = new OptimusDatePicker({
       page: this.page,
       datePicker: this.page.getByLabel('End date'),
     });

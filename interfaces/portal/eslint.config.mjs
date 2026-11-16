@@ -278,7 +278,7 @@ export default defineConfig(
         'error',
         {
           ignore: [
-            // Allow PrimeNG component/icon classes:
+            // Allow Optimus UI component/icon classes:
             'p\\-.*',
             'pi',
             'pi\\-.*',

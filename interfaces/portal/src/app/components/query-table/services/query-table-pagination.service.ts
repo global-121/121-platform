@@ -60,7 +60,7 @@ export class QueryTablePaginationService<TData> {
     onUpdate: (query: PaginateQuery) => void,
   ) {
     const paginateQuery =
-      this.paginateQueryService.convertPrimeNGLazyLoadEventToPaginateQuery(
+      this.paginateQueryService.convertOptimusLazyLoadEventToPaginateQuery(
         event,
       );
     if (!paginateQuery) {
