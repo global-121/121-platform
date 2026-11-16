@@ -56,6 +56,7 @@ export class ImageDialogsComponent {
   );
   // Image URLs being downloaded right now, to avoid requesting them twice.
   private readonly pendingDownloads = new Set<string>();
+  private isDestroyed = false;
 
   // Visible dialogs are derived from the shared open-image state (keyed by URL).
   readonly openImageIndexes = computed(() => {
@@ -86,6 +87,7 @@ export class ImageDialogsComponent {
 
     // Free all remaining blobs when the component goes away.
     this.destroyRef.onDestroy(() => {
+      this.isDestroyed = true;
       this.revokeAllObjectUrls();
     });
   }
@@ -119,10 +121,12 @@ export class ImageDialogsComponent {
       const downloadedImage =
         await this.registrationApiService.downloadKoboImage(downloadParams);
 
-      this.storeDownloadedImage({
-        imageUrl: image.imageUrl,
-        blob: downloadedImage,
-      });
+      if (this.isImageStillShown({ image })) {
+        this.storeDownloadedImage({
+          imageUrl: image.imageUrl,
+          blob: downloadedImage,
+        });
+      }
     } catch {
       this.toastService.showGenericError();
       this.closeDialog({ image });
@@ -140,6 +144,14 @@ export class ImageDialogsComponent {
       this.downloadedImageObjectUrls().has(image.imageUrl) ||
       this.pendingDownloads.has(image.imageUrl)
     );
+  }
+
+  private isImageStillShown({ image }: { image: DialogImage }): boolean {
+    if (this.isDestroyed) {
+      return false;
+    }
+
+    return this.images().some(({ imageUrl }) => imageUrl === image.imageUrl);
   }
 
   private loadOpenImages(): void {
@@ -175,14 +187,19 @@ export class ImageDialogsComponent {
     );
 
     this.downloadedImageObjectUrls.update((downloadedObjectUrls) => {
-      const keptObjectUrls = new Map<string, string>();
+      const removedEntries = [...downloadedObjectUrls].filter(
+        ([imageUrl]) => !currentImageUrls.has(imageUrl),
+      );
 
-      for (const [imageUrl, objectUrl] of downloadedObjectUrls) {
-        if (currentImageUrls.has(imageUrl)) {
-          keptObjectUrls.set(imageUrl, objectUrl);
-        } else {
-          URL.revokeObjectURL(objectUrl);
-        }
+      if (removedEntries.length === 0) {
+        return downloadedObjectUrls;
+      }
+
+      const keptObjectUrls = new Map(downloadedObjectUrls);
+
+      for (const [imageUrl, objectUrl] of removedEntries) {
+        URL.revokeObjectURL(objectUrl);
+        keptObjectUrls.delete(imageUrl);
       }
 
       return keptObjectUrls;
