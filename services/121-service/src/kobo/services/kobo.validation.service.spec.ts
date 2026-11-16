@@ -14,6 +14,7 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { AccessGroupLevelRepository } from '@121-service/src/programs/access-group-levels/access-group-level.repository';
 import { AccessGroupLevelsService } from '@121-service/src/programs/access-group-levels/access-group-levels.service';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { ProgramAidworkerAssignmentAccessGroupRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment-access-group.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import {
@@ -833,6 +834,7 @@ describe('KoboValidationService', () => {
           {} as AccessGroupLevelRepository,
           {} as RegistrationAttributeDataRepository,
           {} as DataSource,
+          {} as ProgramAidworkerAssignmentAccessGroupRepository,
         );
 
         accessGroupLevelsService.isAccessGroupAttributeTypeViolated.mockImplementation(
