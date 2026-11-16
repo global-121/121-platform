@@ -125,7 +125,6 @@
       "@angular/router": "$@angular/router"
     },
     "@angular/build": {
-      "typescript": "$typescript",
       "piscina": "5.3.2"
     }
   },
