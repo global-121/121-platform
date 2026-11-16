@@ -21,20 +21,56 @@
     <ng-container i18n>Learn more in the <app-manual-link />.</ng-container>
   </p>
 
-  <div>
+  <div class="relative">
     <textarea
+      #messageTextarea
       id="customMessage"
       rows="5"
       pTextarea
       [(ngModel)]="customMessageInternalModel"
       [disabled]="customMessageDisabled()"
-      [mentionConfig]="mentionConfig()"
+      (input)="updateActiveMention()"
+      (click)="updateActiveMention()"
+      (keyup.arrowLeft)="updateActiveMention()"
+      (keyup.arrowRight)="updateActiveMention()"
+      (keydown)="onTextareaKeydown($event)"
+      (blur)="closeMentionOptions()"
       autocomplete="off"
       class="inline-full"
       [ngClass]="{
         'ng-invalid ng-dirty': !!error(),
       }"
     ></textarea>
+
+    @if (mentionOptions().length > 0) {
+      <ul
+        role="listbox"
+        class="shadow-menu absolute z-10 overflow-y-auto rounded-sm bg-white max-block-48"
+        [style.top.px]="mentionMenuPosition().top"
+        [style.left.px]="mentionMenuPosition().left"
+        [style.right.px]="mentionMenuPosition().right"
+      >
+        @for (option of mentionOptions(); track option.label; let i = $index) {
+          <li
+            role="presentation"
+            [class.bg-purple-100]="i === highlightedOptionIndex()"
+          >
+            <button
+              type="button"
+              role="option"
+              tabindex="-1"
+              class="txt-body-m cursor-pointer px-4 py-2 text-start font-semibold whitespace-nowrap text-black inline-full"
+              [attr.aria-selected]="i === highlightedOptionIndex()"
+              [disabled]="!option.name"
+              (mousedown)="$event.preventDefault()"
+              (click)="option.name && selectPlaceholder({ name: option.name })"
+            >
+              {{ option.label }}
+            </button>
+          </li>
+        }
+      </ul>
+    }
 
     <p class="txt-body-s text-end inline-full">
       @if (customMessageInternalModel().length > 20) {
