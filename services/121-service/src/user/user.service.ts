@@ -107,12 +107,14 @@ export class UserService {
   // Process the request in the background without awaiting it,
   // so the response time does not reveal whether the user exists
   public requestLoginOneTimePassword({ username }: { username: string }): void {
-    void this.processLoginOneTimePasswordRequest({ username }).catch((error: unknown) => {
-      this.logBackgroundError({
-        message: 'Failed to process login one-time password request',
-        cause: error,
-      });
-    });
+    void this.processLoginOneTimePasswordRequest({ username }).catch(
+      (error: unknown) => {
+        this.logBackgroundError({
+          message: 'Failed to process login one-time password request',
+          cause: error,
+        });
+      },
+    );
   }
 
   private async processLoginOneTimePasswordRequest({
@@ -142,9 +144,10 @@ export class UserService {
       return;
     }
 
-    const createOneTimePasswordResult = await this.userOneTimePasswordsService.createOneTimePassword({
-      userId: user.id,
-    });
+    const createOneTimePasswordResult =
+      await this.userOneTimePasswordsService.createOneTimePassword({
+        userId: user.id,
+      });
     if (!createOneTimePasswordResult) {
       this.trackLoginOneTimePasswordEvent({
         name: LoginOneTimePasswordAuditEventName.requested,
@@ -258,10 +261,11 @@ export class UserService {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-    const verifyOneTimePasswordResult = await this.userOneTimePasswordsService.verifyOneTimePassword({
-      userId: userEntity.id,
-      oneTimePassword,
-    });
+    const verifyOneTimePasswordResult =
+      await this.userOneTimePasswordsService.verifyOneTimePassword({
+        userId: userEntity.id,
+        oneTimePassword,
+      });
 
     if (!verifyOneTimePasswordResult.isVerified) {
       this.trackLoginOneTimePasswordEvent({
@@ -273,7 +277,9 @@ export class UserService {
         this.trackLoginOneTimePasswordEvent({
           name: LoginOneTimePasswordAuditEventName.locked,
           userId: userEntity.id,
-          details: { lockedUntil: verifyOneTimePasswordResult.lockedUntil.toISOString() },
+          details: {
+            lockedUntil: verifyOneTimePasswordResult.lockedUntil.toISOString(),
+          },
         });
       }
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
@@ -360,6 +366,7 @@ export class UserService {
             scope: assignment.scope,
             accessGroups: assignment.accessGroups.map(
               ({ accessGroupLevel, value }) => ({
+                accessGroupLevelId: accessGroupLevel.id,
                 programRegistrationAttributeId:
                   accessGroupLevel.programRegistrationAttributeId,
                 value,
@@ -1166,7 +1173,8 @@ export class UserService {
         roles,
         scope: user.scope,
         accessGroups,
-        isEligiblePaymentApprover: user.scope === '' && accessGroups.length === 0,
+        isEligiblePaymentApprover:
+          user.scope === '' && accessGroups.length === 0,
       };
     });
 

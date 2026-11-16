@@ -73,7 +73,7 @@ describe('CookieJwtStrategy', () => {
   it('should return the scope and access groups of the program when a programId is provided', async () => {
     // Arrange
     const accessGroups = [
-      { programRegistrationAttributeId: 7, value: 'kisumu' },
+      { accessGroupLevelId: 3, programRegistrationAttributeId: 7, value: 'kisumu' },
     ];
     userService.getScopeForUser.mockReturnValue('program-scope');
     userAccessGroupAssignmentsService.getAccessGroupsForUser.mockReturnValue(

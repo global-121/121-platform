@@ -2,6 +2,7 @@ import { BlockBlobClient, ContainerClient } from '@azure/storage-blob';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
+import { AssignedAccessGroupResult } from '@121-service/src/programs/access-group-levels/interfaces/assigned-access-group-result.interface';
 import { CreateProgramAttachmentResponseDto } from '@121-service/src/programs/program-attachments/dtos/create-program-attachment-response.dto';
 import { GetProgramAttachmentResponseDto } from '@121-service/src/programs/program-attachments/dtos/get-program-attachment-response.dto';
 import { ProgramAttachmentMapper } from '@121-service/src/programs/program-attachments/mapper/program-attachment.mapper';
@@ -22,12 +23,14 @@ export class ProgramAttachmentsService {
     filename,
     userId,
     scope,
+    accessGroups,
   }: {
     programId: number;
     file: Express.Multer.File;
     filename: string;
     userId: number;
     scope: string;
+    accessGroups: readonly AssignedAccessGroupResult[];
   }): Promise<CreateProgramAttachmentResponseDto> {
     // get extension from original file name
     const extension = file.originalname.split('.').pop();
@@ -40,43 +43,49 @@ export class ProgramAttachmentsService {
       blobHTTPHeaders: { blobContentType: file.mimetype },
     });
 
-    // Save metadata to DB
-    const attachment = new ProgramAttachmentEntity();
-    attachment.filename = filenameWithExtension;
-    attachment.mimetype = file.mimetype;
-    attachment.blobName = blobName;
-    attachment.programId = programId;
-    attachment.userId = userId;
-    attachment.scope = scope;
+    const id = await this.programAttachmentRepository.createWithAccessGroups({
+      programId,
+      userId,
+      filename: filenameWithExtension,
+      mimetype: file.mimetype,
+      blobName,
+      scope,
+      accessGroups,
+    });
 
-    const savedAttachment =
-      await this.programAttachmentRepository.save(attachment);
-
-    return {
-      id: savedAttachment.id,
-    };
+    return { id };
   }
 
-  public async getProgramAttachments(
-    programId: number,
-    scope: string,
-  ): Promise<GetProgramAttachmentResponseDto[]> {
-    const attachments = await this.programAttachmentRepository.findManyScoped({
-      programId,
-      scope,
-      relations: {
-        user: true,
-      },
-    });
+  public async getProgramAttachments({
+    programId,
+    scope,
+    accessGroups,
+  }: {
+    programId: number;
+    scope: string;
+    accessGroups: readonly AssignedAccessGroupResult[];
+  }): Promise<GetProgramAttachmentResponseDto[]> {
+    const attachments =
+      await this.programAttachmentRepository.getManyAccessible({
+        programId,
+        scope,
+        accessGroups,
+      });
 
     return ProgramAttachmentMapper.mapEntitiesToDtos(attachments);
   }
 
-  public async getProgramAttachmentById(
-    programId: number,
-    attachmentId: number,
-    scope: string,
-  ): Promise<{
+  public async getProgramAttachmentById({
+    programId,
+    attachmentId,
+    scope,
+    accessGroups,
+  }: {
+    programId: number;
+    attachmentId: number;
+    scope: string;
+    accessGroups: readonly AssignedAccessGroupResult[];
+  }): Promise<{
     stream: NodeJS.ReadableStream;
     mimetype: string;
     filename: string;
@@ -86,6 +95,7 @@ export class ProgramAttachmentsService {
         programId,
         attachmentId,
         scope,
+        accessGroups,
       });
 
     const downloadBlockBlobResponse = await blockBlobClient.download(0);
@@ -108,16 +118,19 @@ export class ProgramAttachmentsService {
     attachmentId,
     filename,
     scope,
+    accessGroups,
   }: {
     programId: number;
     attachmentId: number;
     filename: string;
     scope: string;
+    accessGroups: readonly AssignedAccessGroupResult[];
   }): Promise<void> {
     const programAttachment = await this.getProgramAttachmentOrThrow({
       programId,
       attachmentId,
       scope,
+      accessGroups,
     });
 
     // Keep existing extension
@@ -125,31 +138,40 @@ export class ProgramAttachmentsService {
     const currentExtension =
       currentFilenameParts.length > 1 ? currentFilenameParts.pop() : undefined;
 
-    programAttachment.filename = currentExtension
-      ? `${filename}.${currentExtension}`
-      : filename;
-
-    await this.programAttachmentRepository.save(programAttachment);
+    await this.programAttachmentRepository.updateFilename({
+      attachmentId: programAttachment.id,
+      filename: currentExtension ? `${filename}.${currentExtension}` : filename,
+    });
   }
 
-  public async deleteProgramAttachmentById(
-    programId: number,
-    attachmentId: number,
-    scope: string,
-  ): Promise<void> {
+  public async deleteProgramAttachmentById({
+    programId,
+    attachmentId,
+    scope,
+    accessGroups,
+  }: {
+    programId: number;
+    attachmentId: number;
+    scope: string;
+    accessGroups: readonly AssignedAccessGroupResult[];
+  }): Promise<void> {
     const { programAttachment, blockBlobClient } =
       await this.getProgramAttachmentAndBlockBlobClient({
         programId,
         attachmentId,
         scope,
+        accessGroups,
       });
 
     await blockBlobClient.deleteIfExists();
 
-    // Delete from DB
-    await this.programAttachmentRepository.remove(programAttachment);
+    // Its access groups are deleted by the database cascade
+    await this.programAttachmentRepository.deleteById({
+      attachmentId: programAttachment.id,
+    });
   }
 
+  // Deletes all attachments of the program, regardless of the scope and access groups of the requesting user
   public async deleteAllProgramAttachments(programId: number): Promise<void> {
     const programAttachments = await this.programAttachmentRepository.find({
       where: { programId: Equal(programId) },
@@ -171,16 +193,19 @@ export class ProgramAttachmentsService {
     programId,
     attachmentId,
     scope,
+    accessGroups,
   }: {
     programId: number;
     attachmentId: number;
     scope: string;
+    accessGroups: readonly AssignedAccessGroupResult[];
   }): Promise<ProgramAttachmentEntity> {
     const programAttachment =
-      await this.programAttachmentRepository.findOneScoped({
+      await this.programAttachmentRepository.getOneAccessible({
         programId,
         attachmentId,
         scope,
+        accessGroups,
       });
 
     if (!programAttachment) {
@@ -197,10 +222,12 @@ export class ProgramAttachmentsService {
     programId,
     attachmentId,
     scope,
+    accessGroups,
   }: {
     programId: number;
     attachmentId: number;
     scope: string;
+    accessGroups: readonly AssignedAccessGroupResult[];
   }): Promise<{
     programAttachment: ProgramAttachmentEntity;
     blockBlobClient: BlockBlobClient;
@@ -209,6 +236,7 @@ export class ProgramAttachmentsService {
       programId,
       attachmentId,
       scope,
+      accessGroups,
     });
 
     const blockBlobClient = this.containerClient.getBlockBlobClient(

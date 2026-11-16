@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { ProgramAttachmentAccessGroupResponseDto } from '@121-service/src/programs/program-attachments/dtos/program-attachment-access-group-response.dto';
+
 export class GetProgramAttachmentResponseDto {
   @ApiProperty({ example: 1, type: 'number' })
   public readonly id: number;
@@ -28,4 +30,11 @@ export class GetProgramAttachmentResponseDto {
 
   @ApiProperty({ example: 'amsterdam.west', type: 'string' })
   public readonly scope: string;
+
+  @ApiProperty({
+    description:
+      'Access groups of the uploader at the time of uploading, ordered from the highest level down',
+    type: [ProgramAttachmentAccessGroupResponseDto],
+  })
+  public readonly accessGroups: ProgramAttachmentAccessGroupResponseDto[];
 }

@@ -8,7 +8,6 @@ import { ProgramAttachmentsService } from '@121-service/src/programs/program-att
 describe('ProgramAttachmentsService', () => {
   let service: ProgramAttachmentsService;
   let programAttachmentRepository: ProgramAttachmentRepository;
-
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(
       ProgramAttachmentsService,
@@ -26,11 +25,11 @@ describe('ProgramAttachmentsService', () => {
       } as ProgramAttachmentEntity;
 
       jest
-        .spyOn(programAttachmentRepository, 'findOneScoped')
+        .spyOn(programAttachmentRepository, 'getOneAccessible')
         .mockResolvedValue(existingAttachment);
       jest
-        .spyOn(programAttachmentRepository, 'save')
-        .mockResolvedValue(existingAttachment);
+        .spyOn(programAttachmentRepository, 'updateFilename')
+        .mockResolvedValue();
 
       // Act
       await service.renameProgramAttachment({
@@ -38,10 +37,11 @@ describe('ProgramAttachmentsService', () => {
         attachmentId: 42,
         filename: 'summary',
         scope: 'test-scope',
+        accessGroups: [],
       });
 
       // Assert
-      expect(programAttachmentRepository.save).toHaveBeenCalledWith(
+      expect(programAttachmentRepository.updateFilename).toHaveBeenCalledWith(
         expect.objectContaining({ filename: 'summary.pdf' }),
       );
     });
@@ -54,11 +54,11 @@ describe('ProgramAttachmentsService', () => {
       } as ProgramAttachmentEntity;
 
       jest
-        .spyOn(programAttachmentRepository, 'findOneScoped')
+        .spyOn(programAttachmentRepository, 'getOneAccessible')
         .mockResolvedValue(existingAttachment);
       jest
-        .spyOn(programAttachmentRepository, 'save')
-        .mockResolvedValue(existingAttachment);
+        .spyOn(programAttachmentRepository, 'updateFilename')
+        .mockResolvedValue();
 
       // Act
       await service.renameProgramAttachment({
@@ -66,10 +66,11 @@ describe('ProgramAttachmentsService', () => {
         attachmentId: 43,
         filename: 'summary',
         scope: 'test-scope',
+        accessGroups: [],
       });
 
       // Assert
-      expect(programAttachmentRepository.save).toHaveBeenCalledWith(
+      expect(programAttachmentRepository.updateFilename).toHaveBeenCalledWith(
         expect.objectContaining({ filename: 'summary.pdf' }),
       );
     });
@@ -82,11 +83,11 @@ describe('ProgramAttachmentsService', () => {
       } as ProgramAttachmentEntity;
 
       jest
-        .spyOn(programAttachmentRepository, 'findOneScoped')
+        .spyOn(programAttachmentRepository, 'getOneAccessible')
         .mockResolvedValue(existingAttachment);
       jest
-        .spyOn(programAttachmentRepository, 'save')
-        .mockResolvedValue(existingAttachment);
+        .spyOn(programAttachmentRepository, 'updateFilename')
+        .mockResolvedValue();
 
       // Act
       await service.renameProgramAttachment({
@@ -94,10 +95,11 @@ describe('ProgramAttachmentsService', () => {
         attachmentId: 44,
         filename: 'summary',
         scope: 'test-scope',
+        accessGroups: [],
       });
 
       // Assert
-      expect(programAttachmentRepository.save).toHaveBeenCalledWith(
+      expect(programAttachmentRepository.updateFilename).toHaveBeenCalledWith(
         expect.objectContaining({ filename: 'summary' }),
       );
     });
@@ -105,7 +107,7 @@ describe('ProgramAttachmentsService', () => {
     it('should throw a 404 when the attachment does not exist', async () => {
       // Arrange
       jest
-        .spyOn(programAttachmentRepository, 'findOneScoped')
+        .spyOn(programAttachmentRepository, 'getOneAccessible')
         .mockResolvedValue(null);
 
       // Act & Assert
@@ -115,6 +117,7 @@ describe('ProgramAttachmentsService', () => {
           attachmentId: 99,
           filename: 'summary',
           scope: 'test-scope',
+          accessGroups: [],
         }),
       ).rejects.toThrow(
         new HttpException(

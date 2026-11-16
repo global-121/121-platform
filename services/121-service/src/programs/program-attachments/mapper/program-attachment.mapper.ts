@@ -25,6 +25,11 @@ export class ProgramAttachmentMapper {
       filename: entity.filename,
       mimetype: entity.mimetype,
       scope: entity.scope,
+      accessGroups: entity.accessGroups.map(({ accessGroupLevel, value }) => ({
+        programRegistrationAttributeName:
+          accessGroupLevel.programRegistrationAttribute.name,
+        value,
+      })),
     };
   }
 }

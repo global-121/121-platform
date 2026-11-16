@@ -16,6 +16,22 @@ export class AccessGroupLevelRepository extends Repository<AccessGroupLevelEntit
     );
   }
 
+  public async applyLevelChanges({
+    levelIdsToRemove,
+    levelsToCreate,
+  }: {
+    levelIdsToRemove: number[];
+    levelsToCreate: Pick<
+      AccessGroupLevelEntity,
+      'programId' | 'programRegistrationAttributeId' | 'level'
+    >[];
+  }): Promise<void> {
+    await this.manager.transaction(async (manager) => {
+      await manager.remove(levelIdsToRemove.map((id) => this.create({ id })));
+      await manager.save(levelsToCreate.map((level) => this.create(level)));
+    });
+  }
+
   public async getOrderedAttributeNamesByProgramId({
     programId,
   }: {

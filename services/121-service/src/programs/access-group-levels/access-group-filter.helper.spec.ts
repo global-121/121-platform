@@ -33,14 +33,28 @@ describe('Filtering registrations by access groups', () => {
       queryBuilder,
       registrationAlias: 'registration',
       accessGroups: [
-        { programRegistrationAttributeId: 1, value: 'north' },
-        { programRegistrationAttributeId: 3, value: 'east' },
+        {
+          accessGroupLevelId: 11,
+          programRegistrationAttributeId: 1,
+          value: 'north',
+        },
+        {
+          accessGroupLevelId: 13,
+          programRegistrationAttributeId: 3,
+          value: 'east',
+        },
       ],
     });
     addAccessGroupFilter({
       queryBuilder,
       registrationAlias: 'registration',
-      accessGroups: [{ programRegistrationAttributeId: 2, value: 'south' }],
+      accessGroups: [
+        {
+          accessGroupLevelId: 12,
+          programRegistrationAttributeId: 2,
+          value: 'south',
+        },
+      ],
     });
 
     // Assert
