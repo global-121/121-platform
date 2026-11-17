@@ -3,9 +3,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  ElementRef,
   inject,
   input,
   output,
+  viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -17,7 +19,11 @@ import {
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
-import { InputOtpModule } from 'primeng/inputotp';
+import {
+  InputOtp,
+  InputOtpChangeEvent,
+  InputOtpModule,
+} from 'primeng/inputotp';
 import { interval, map } from 'rxjs';
 
 import {
@@ -32,7 +38,6 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { UserApiService } from '~/domains/user/user.api.service';
 import { AuthService } from '~/services/auth.service';
 import { LoginMethod } from '~/services/auth/login-method.enum';
-import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 const CLOCK_TICK_MS = 1_000;
@@ -52,13 +57,11 @@ type LoginOneTimePasswordStepFormGroup =
     FormFieldWrapperComponent,
   ],
   templateUrl: './basic-auth.login-one-time-password-step.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BasicAuthLoginOneTimePasswordStepComponent {
   private authService = inject(AuthService);
   private userApiService = inject(UserApiService);
-  private toastService = inject(ToastService);
   readonly email = input.required<string>();
   readonly oneTimePasswordRequestedAt = input.required<number>();
   readonly returnUrl = input<string | undefined>(undefined);
@@ -67,6 +70,11 @@ export class BasicAuthLoginOneTimePasswordStepComponent {
   readonly passwordInstead = output<{ email: string }>();
 
   readonly ONE_TIME_PASSWORD_LENGTH = ONE_TIME_PASSWORD_LENGTH;
+
+  private readonly inputOtp = viewChild.required<
+    InputOtp,
+    ElementRef<HTMLElement>
+  >(InputOtp, { read: ElementRef });
 
   private readonly now = toSignal(
     interval(CLOCK_TICK_MS).pipe(map(() => Date.now())),
@@ -113,13 +121,7 @@ export class BasicAuthLoginOneTimePasswordStepComponent {
         },
         this.returnUrl(),
       ),
-    onSuccess: () => {
-      this.toastService.showToast({
-        detail: $localize`Verification successful`,
-      });
-    },
   }));
-
   requestNewOneTimePasswordMutation = injectMutation(() => ({
     mutationFn: () =>
       this.userApiService.createLoginOneTimePassword({
@@ -131,4 +133,27 @@ export class BasicAuthLoginOneTimePasswordStepComponent {
       this.oneTimePasswordRequested.emit({ email: this.email() });
     },
   }));
+
+  onOneTimePasswordChange({ originalEvent }: InputOtpChangeEvent): void {
+    // A failed login's error no longer applies once the code is edited
+    if (this.loginMutation.isError()) {
+      this.loginMutation.reset();
+    }
+
+    // PrimeNG fills the boxes on paste or autofill, but doesn't move the focus
+    // along like it does when typing
+    const isMultiCharacterEntry =
+      originalEvent.type === 'paste' ||
+      (originalEvent.target instanceof HTMLInputElement &&
+        originalEvent.target.value.length > 1);
+
+    if (!isMultiCharacterEntry) {
+      return;
+    }
+
+    const inputs = this.inputOtp().nativeElement.querySelectorAll('input');
+    const filledLength =
+      this.formGroup.controls.oneTimePassword.getRawValue().length;
+    inputs[Math.min(filledLength, inputs.length - 1)].focus();
+  }
 }

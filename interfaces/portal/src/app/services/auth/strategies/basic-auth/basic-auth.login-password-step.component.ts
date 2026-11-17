@@ -38,7 +38,6 @@ type LoginPasswordStepFormGroup =
     FormFieldWrapperComponent,
   ],
   templateUrl: './basic-auth.login-password-step.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BasicAuthLoginPasswordStepComponent implements OnInit {

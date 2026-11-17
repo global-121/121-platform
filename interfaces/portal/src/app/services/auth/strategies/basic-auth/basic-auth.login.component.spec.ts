@@ -51,6 +51,21 @@ describe('Requesting a one-time login code', () => {
     });
   });
 
+  it('should keep the original request time when the same email in different casing requests again within the cooldown', () => {
+    // Arrange
+    component.onOneTimePasswordRequested({ email });
+    vi.setSystemTime(now + ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS - 1);
+
+    // Act
+    component.onOneTimePasswordRequested({ email: 'Test@Example.COM' });
+
+    // Assert
+    expect(component.oneTimePasswordRequest()).toEqual({
+      email,
+      requestedAt: now,
+    });
+  });
+
   it('should set a new request time when the same email requests again after the cooldown', () => {
     // Arrange
     component.onOneTimePasswordRequested({ email });
