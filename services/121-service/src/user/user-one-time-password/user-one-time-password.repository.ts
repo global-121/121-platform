@@ -5,6 +5,7 @@ import {
   LessThan,
   LessThanOrEqual,
   MoreThan,
+  Not,
   Repository,
 } from 'typeorm';
 
@@ -67,6 +68,10 @@ export class UserOneTimePasswordRepository extends Repository<UserOneTimePasswor
               {
                 issuedAt: LessThan(previousIssuedBefore),
                 lockedUntil: LessThanOrEqual(issuedAt),
+              },
+              // A used code no longer blocks a new one, so logging out and back in within the cooldown still sends a code.
+              {
+                consumedAt: Not(IsNull()),
               },
             ],
           },
