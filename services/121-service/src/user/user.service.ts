@@ -28,6 +28,8 @@ import {
 import { AssignedAccessGroupDto } from '@121-service/src/user/dto/assigned-access-group.dto';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto';
+import { CreateMachineUserDto } from '@121-service/src/user/dto/create-machine-user.dto';
+import { CreateMachineUserResponseDto } from '@121-service/src/user/dto/create-machine-user-response.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { CreateUserRoleDto } from '@121-service/src/user/dto/create-user-role.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
@@ -54,6 +56,7 @@ import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
 import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
+import { UserApiKeysService } from '@121-service/src/user/user-api-keys/user-api-keys.service';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { ONE_TIME_PASSWORD_EXPIRATION_MINUTES } from '@121-service/src/user/user-one-time-password/user-one-time-password.const';
 import { UserOneTimePasswordsService } from '@121-service/src/user/user-one-time-password/user-one-time-passwords.service';
@@ -77,6 +80,7 @@ export class UserService {
     private readonly userAccessGroupAssignmentsService: UserAccessGroupAssignmentsService,
     private readonly assignmentRepository: ProgramAidworkerAssignmentRepository,
     private readonly userOneTimePasswordsService: UserOneTimePasswordsService,
+    private readonly userApiKeysService: UserApiKeysService,
     private readonly azureLogService: AzureLogService,
   ) {}
 
@@ -131,6 +135,15 @@ export class UserService {
       this.trackLoginOneTimePasswordEvent({
         name: LoginOneTimePasswordAuditEventName.requested,
         details: { outcome: LoginOneTimePasswordRequestOutcome.unknownUser },
+      });
+      return;
+    }
+
+    if (user.userType === UserType.machine) {
+      this.trackLoginOneTimePasswordEvent({
+        name: LoginOneTimePasswordAuditEventName.requested,
+        userId: user.id,
+        details: { outcome: LoginOneTimePasswordRequestOutcome.machineUser },
       });
       return;
     }
@@ -248,6 +261,15 @@ export class UserService {
       this.trackLoginOneTimePasswordEvent({
         name: LoginOneTimePasswordAuditEventName.failed,
         details: { reason: LoginOneTimePasswordUserFailureReason.unknownUser },
+      });
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
+    if (userEntity.userType === UserType.machine) {
+      this.trackLoginOneTimePasswordEvent({
+        name: LoginOneTimePasswordAuditEventName.failed,
+        userId: userEntity.id,
+        details: { reason: LoginOneTimePasswordUserFailureReason.machineUser },
       });
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
@@ -558,6 +580,28 @@ export class UserService {
         });
       }
     }
+  }
+
+  public async createMachineUser({
+    username,
+    displayName,
+  }: CreateMachineUserDto): Promise<CreateMachineUserResponseDto> {
+    const userEntity = await this.create(
+      username,
+      displayName ?? null,
+      this.generateUnusablePassword(),
+      UserType.machine,
+    );
+    const { apiKey } = await this.userApiKeysService.createApiKey({
+      userId: userEntity.id,
+    });
+
+    return {
+      id: userEntity.id,
+      username: userEntity.username as string,
+      displayName: userEntity.displayName,
+      apiKey,
+    };
   }
 
   public async create(
@@ -1100,6 +1144,9 @@ export class UserService {
       .leftJoinAndSelect('assignment.roles', 'roles')
       .leftJoinAndSelect('roles.permissions', 'permissions')
       .where(findOneOptions)
+      .andWhere('user.userType != :machineUserType', {
+        machineUserType: UserType.machine,
+      })
       .getOne();
 
     return userEntity;
@@ -1395,6 +1442,10 @@ export class UserService {
 
   private hashPassword(password: string, salt: string): string {
     return crypto.pbkdf2Sync(password, salt, 1, 32, 'sha256').toString('hex');
+  }
+
+  private generateUnusablePassword(): string {
+    return crypto.randomBytes(32).toString('hex');
   }
 
   private generateStrongPassword(): string {

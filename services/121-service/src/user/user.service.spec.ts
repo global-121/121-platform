@@ -19,8 +19,10 @@ import { LoginOneTimePasswordRequestOutcome } from '@121-service/src/user/enum/l
 import { LoginOneTimePasswordUserFailureReason } from '@121-service/src/user/enum/login-one-time-password-user-failure-reason.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
+import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
+import { UserApiKeysService } from '@121-service/src/user/user-api-keys/user-api-keys.service';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { OneTimePasswordVerificationFailureReason } from '@121-service/src/user/user-one-time-password/enum/one-time-password-verification-failure-reason.enum';
 import { UserOneTimePasswordsService } from '@121-service/src/user/user-one-time-password/user-one-time-passwords.service';
@@ -42,6 +44,7 @@ describe('UserService', () => {
   let userAccessGroupAssignmentsService: jest.Mocked<UserAccessGroupAssignmentsService>;
   let userEmailsService: UserEmailsService;
   let userOneTimePasswordsService: UserOneTimePasswordsService;
+  let userApiKeysService: UserApiKeysService;
   let azureLogService: AzureLogService;
 
   const mockRequest = {
@@ -104,6 +107,10 @@ describe('UserService', () => {
           useValue: { createOneTimePassword: jest.fn(), verifyOneTimePassword: jest.fn() },
         },
         {
+          provide: UserApiKeysService,
+          useValue: { createApiKey: jest.fn() },
+        },
+        {
           provide: AzureLogService,
           useValue: { logError: jest.fn(), trackEvent: jest.fn() },
         },
@@ -131,7 +138,131 @@ describe('UserService', () => {
     );
     userEmailsService = module.get<UserEmailsService>(UserEmailsService);
     userOneTimePasswordsService = module.get<UserOneTimePasswordsService>(UserOneTimePasswordsService);
+    userApiKeysService = module.get<UserApiKeysService>(UserApiKeysService);
     azureLogService = module.get<AzureLogService>(AzureLogService);
+  });
+
+  describe('Creating a machine user', () => {
+    const mockUsernameIsAvailable = ({
+      isAvailable,
+    }: {
+      isAvailable: boolean;
+    }): void => {
+      const queryBuilderMock = {
+        where: jest.fn().mockReturnThis(),
+        getOne: jest
+          .fn()
+          .mockResolvedValue(isAvailable ? null : ({ id: 1 } as UserEntity)),
+      };
+      jest
+        .spyOn(userRepository, 'createQueryBuilder')
+        .mockReturnValue(queryBuilderMock as never);
+    };
+
+    beforeEach(() => {
+      jest
+        .spyOn(userRepository, 'save')
+        .mockImplementation(
+          async (user) => ({ ...user, id: 7 }) as unknown as UserEntity,
+        );
+      jest
+        .spyOn(userApiKeysService, 'createApiKey')
+        .mockResolvedValue({ apiKey: 'plaintext-api-key' });
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('creates a machine user and returns the plaintext API key', async () => {
+      // Arrange
+      mockUsernameIsAvailable({ isAvailable: true });
+
+      // Act
+      const result = await service.createMachineUser({
+        username: 'Espo-Connector',
+        displayName: 'Espo connector',
+      });
+
+      // Assert
+      expect(userRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          username: 'espo-connector',
+          userType: UserType.machine,
+          displayName: 'Espo connector',
+        }),
+      );
+      expect(userApiKeysService.createApiKey).toHaveBeenCalledWith({
+        userId: 7,
+      });
+      expect(result).toEqual({
+        id: 7,
+        username: 'espo-connector',
+        displayName: 'Espo connector',
+        apiKey: 'plaintext-api-key',
+      });
+    });
+
+    it('uses the username as display name when none is given', async () => {
+      // Arrange
+      mockUsernameIsAvailable({ isAvailable: true });
+
+      // Act
+      const result = await service.createMachineUser({
+        username: 'espo-connector',
+      });
+
+      // Assert
+      expect(result.displayName).toBe('espo-connector');
+    });
+
+    it('does not create an API key when the username is already taken', async () => {
+      // Arrange
+      mockUsernameIsAvailable({ isAvailable: false });
+
+      // Act & Assert
+      await expect(
+        service.createMachineUser({ username: 'espo-connector' }),
+      ).rejects.toMatchObject({ status: HttpStatus.BAD_REQUEST });
+      expect(userApiKeysService.createApiKey).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Logging in with a password', () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('never matches a machine user', async () => {
+      // Arrange
+      const saltCheckUser = { id: 1, salt: 'salt' } as UserEntity;
+      const queryBuilderMock = {
+        addSelect: jest.fn().mockReturnThis(),
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getOne: jest
+          .fn()
+          .mockResolvedValueOnce(saltCheckUser)
+          .mockResolvedValueOnce(null),
+      };
+      jest
+        .spyOn(userRepository, 'createQueryBuilder')
+        .mockReturnValue(queryBuilderMock as never);
+
+      // Act
+      const result = await service.matchPassword({
+        username: 'espo-connector',
+        password: 'any-password',
+      });
+
+      // Assert
+      expect(result).toBeNull();
+      expect(queryBuilderMock.andWhere).toHaveBeenCalledWith(
+        'user.userType != :machineUserType',
+        { machineUserType: UserType.machine },
+      );
+    });
   });
 
   describe('Requesting a login one-time password', () => {
@@ -201,6 +332,28 @@ describe('UserService', () => {
 
       // Assert
       expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
+    });
+
+    it('does not create or email a one-time password for a machine user', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue({
+        ...existingUser,
+        userType: UserType.machine,
+      } as UserEntity);
+
+      // Act
+      await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
+
+      // Assert
+      expect(userOneTimePasswordsService.createOneTimePassword).not.toHaveBeenCalled();
+      expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
+      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
+        name: LoginOneTimePasswordAuditEventName.requested,
+        properties: {
+          outcome: LoginOneTimePasswordRequestOutcome.machineUser,
+          userId: '1',
+        },
+      });
     });
 
     it('does not create or email a one-time password for a user who signs in with Entra', async () => {
@@ -437,6 +590,28 @@ describe('UserService', () => {
       ).rejects.toThrow(
         new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED),
       );
+    });
+
+    it('rejects a machine user, even with a valid one-time password', async () => {
+      // Arrange
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue(buildExistingUser({ userType: UserType.machine }));
+
+      // Act & Assert
+      await expect(
+        service.loginWithOneTimePassword({ username: 'user@example.org', oneTimePassword }),
+      ).rejects.toThrow(
+        new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED),
+      );
+      expect(userOneTimePasswordsService.verifyOneTimePassword).not.toHaveBeenCalled();
+      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
+        name: LoginOneTimePasswordAuditEventName.failed,
+        properties: {
+          reason: LoginOneTimePasswordUserFailureReason.machineUser,
+          userId: '1',
+        },
+      });
     });
 
     it('rejects a user who signs in with Entra, even with a valid one-time password', async () => {
