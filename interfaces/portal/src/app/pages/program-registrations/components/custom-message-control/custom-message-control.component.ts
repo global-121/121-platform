@@ -32,6 +32,7 @@ import {
 } from '~/pages/program-registrations/components/custom-message-control/custom-message-mention.helper';
 import { getTextareaCaretPosition } from '~/pages/program-registrations/components/custom-message-control/textarea-caret-position.helper';
 import { MessagingService } from '~/services/messaging.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 
 const CARET_MOVEMENT_KEYS = new Set([
@@ -54,7 +55,6 @@ const CARET_MOVEMENT_KEYS = new Set([
     ManualLinkComponent,
   ],
   templateUrl: './custom-message-control.component.html',
-  styles: ``,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -69,6 +69,7 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
   readonly error = input<string>();
 
   private messagingService = inject(MessagingService);
+  private rtlHelper = inject(RtlHelperService);
   private injector = inject(Injector);
 
   readonly customMessageDisabled = model(false);
@@ -106,10 +107,10 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
   private readonly activeMention = signal<ActiveMention | undefined>(undefined);
   readonly highlightedOptionIndex = signal(0);
   readonly mentionMenuPosition = signal<{
-    top: number;
-    left?: number;
-    right?: number;
-  }>({ top: 0, left: 0 });
+    blockStart: number;
+    inlineStart?: number;
+    inlineEnd?: number;
+  }>({ blockStart: 0, inlineStart: 0 });
 
   readonly mentionOptions = computed(() => {
     const activeMention = this.activeMention();
@@ -129,13 +130,6 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
   };
 
   readonly mentionListboxId = 'customMessageMentionListbox';
-
-  readonly highlightedOptionId = computed(() => {
-    if (this.mentionOptions().length === 0) {
-      return null;
-    }
-    return this.getMentionOptionId({ index: this.highlightedOptionIndex() });
-  });
 
   getMentionOptionId({ index }: { index: number }) {
     return `${this.mentionListboxId}-option-${index.toString()}`;
@@ -179,14 +173,15 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
       caretPosition: startIndex,
     });
     const containerWidth = textarea.offsetLeft + textarea.offsetWidth;
-    const isInStartHalf = left < containerWidth / 2;
+    const inlineOffset = this.rtlHelper.isRtl() ? containerWidth - left : left;
+    const isInStartHalf = inlineOffset < containerWidth / 2;
     const blockStart = top + lineHeight;
 
     // Anchor to the opposite edge in the second half, so the menu doesn't overflow
     this.mentionMenuPosition.set(
       isInStartHalf
-        ? { top: blockStart, left }
-        : { top: blockStart, right: containerWidth - left },
+        ? { blockStart, inlineStart: inlineOffset }
+        : { blockStart, inlineEnd: containerWidth - inlineOffset },
     );
   }
 

@@ -1,4 +1,5 @@
 const MIRRORED_STYLE_PROPERTIES = [
+  'direction',
   'boxSizing',
   'width',
   'borderTopWidth',

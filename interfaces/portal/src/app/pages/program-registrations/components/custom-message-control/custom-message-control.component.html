@@ -35,14 +35,6 @@
       (keydown)="onTextareaKeydown($event)"
       (blur)="closeMentionOptions()"
       autocomplete="off"
-      role="combobox"
-      aria-autocomplete="list"
-      i18n-aria-autocomplete
-      [attr.aria-expanded]="mentionOptions().length > 0"
-      [attr.aria-controls]="
-        mentionOptions().length > 0 ? mentionListboxId : null
-      "
-      [attr.aria-activedescendant]="highlightedOptionId()"
       class="inline-full"
       [ngClass]="{
         'ng-invalid ng-dirty': !!error(),
@@ -52,24 +44,20 @@
     @if (mentionOptions().length > 0) {
       <ul
         role="listbox"
-        [id]="mentionListboxId"
         class="shadow-menu absolute z-10 overflow-y-auto rounded-sm bg-white max-block-48"
-        [style.top.px]="mentionMenuPosition().top"
-        [style.left.px]="mentionMenuPosition().left"
-        [style.right.px]="mentionMenuPosition().right"
+        [style.inset-block-start.px]="mentionMenuPosition().blockStart"
+        [style.inset-inline-start.px]="mentionMenuPosition().inlineStart"
+        [style.inset-inline-end.px]="mentionMenuPosition().inlineEnd"
       >
         @for (option of mentionOptions(); track option.label; let i = $index) {
-          <li
-            role="presentation"
-            [class.bg-purple-100]="i === highlightedOptionIndex()"
-          >
+          <li [class.bg-purple-100]="i === highlightedOptionIndex()">
             <button
               type="button"
               role="option"
+              [attr.aria-selected]="i === highlightedOptionIndex()"
               [id]="getMentionOptionId({ index: i })"
               tabindex="-1"
               class="txt-body-m cursor-pointer px-4 py-2 text-start font-semibold whitespace-nowrap text-black inline-full"
-              [attr.aria-selected]="i === highlightedOptionIndex()"
               [disabled]="!option.name"
               (mousedown)="$event.preventDefault()"
               (click)="option.name && selectPlaceholder({ name: option.name })"
