@@ -108,6 +108,14 @@
   },
   {
     "method": "post",
+    "path": "/api/users/{userId}/api-key",
+    "params": [
+      "userId"
+    ],
+    "returnType": "MachineUserApiKeyResponseDto"
+  },
+  {
+    "method": "post",
     "path": "/api/users/login",
     "params": []
   },

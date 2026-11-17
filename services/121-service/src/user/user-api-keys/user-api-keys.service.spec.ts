@@ -20,6 +20,7 @@ describe('UserApiKeysService', () => {
           provide: UserApiKeyRepository,
           useValue: {
             save: jest.fn(),
+            replaceForUser: jest.fn(),
             getByApiKey: jest.fn(),
           },
         },
@@ -59,6 +60,27 @@ describe('UserApiKeysService', () => {
 
       // Assert
       expect(firstApiKey).not.toBe(secondApiKey);
+    });
+  });
+
+  describe('when replacing an API key', () => {
+    it('returns a new 256-bit base64url encoded key', async () => {
+      // Act
+      const { apiKey } = await service.replaceApiKey({ userId: 1 });
+
+      // Assert
+      expect(apiKey).toMatch(/^[A-Za-z0-9_-]{43}$/);
+    });
+
+    it('replaces the stored key of the user with only the SHA-256 hash of the new key', async () => {
+      // Act
+      const { apiKey } = await service.replaceApiKey({ userId: 1 });
+
+      // Assert
+      expect(userApiKeyRepository.replaceForUser).toHaveBeenCalledWith({
+        userId: 1,
+        apiKey: hashApiKey({ apiKey }),
+      });
     });
   });
 

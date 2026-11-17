@@ -5,6 +5,8 @@ import { CreateApiKeyParams } from '@121-service/src/user/user-api-keys/interfac
 import { CreateApiKeyResult } from '@121-service/src/user/user-api-keys/interfaces/create-api-key-result.interface';
 import { GetUserIdByApiKeyParams } from '@121-service/src/user/user-api-keys/interfaces/get-user-id-by-api-key-params.interface';
 import { GetUserIdByApiKeyResult } from '@121-service/src/user/user-api-keys/interfaces/get-user-id-by-api-key-result.interface';
+import { ReplaceApiKeyParams } from '@121-service/src/user/user-api-keys/interfaces/replace-api-key-params.interface';
+import { ReplaceApiKeyResult } from '@121-service/src/user/user-api-keys/interfaces/replace-api-key-result.interface';
 import { API_KEY_BYTE_LENGTH } from '@121-service/src/user/user-api-keys/user-api-key.const';
 import { UserApiKeyRepository } from '@121-service/src/user/user-api-keys/user-api-key.repository';
 
@@ -19,6 +21,17 @@ export class UserApiKeysService {
   }: CreateApiKeyParams): Promise<CreateApiKeyResult> {
     const apiKey = this.generateApiKey();
     await this.userApiKeyRepository.save({
+      userId,
+      apiKey: this.hashApiKey({ apiKey }),
+    });
+    return { apiKey };
+  }
+
+  public async replaceApiKey({
+    userId,
+  }: ReplaceApiKeyParams): Promise<ReplaceApiKeyResult> {
+    const apiKey = this.generateApiKey();
+    await this.userApiKeyRepository.replaceForUser({
       userId,
       apiKey: this.hashApiKey({ apiKey }),
     });

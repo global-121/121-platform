@@ -17,6 +17,7 @@ import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity'
 import { LoginOneTimePasswordAuditEventName } from '@121-service/src/user/enum/login-one-time-password-audit-event-name.enum';
 import { LoginOneTimePasswordRequestOutcome } from '@121-service/src/user/enum/login-one-time-password-request-outcome.enum';
 import { LoginOneTimePasswordUserFailureReason } from '@121-service/src/user/enum/login-one-time-password-user-failure-reason.enum';
+import { MachineUserAuditEventName } from '@121-service/src/user/enum/machine-user-audit-event-name.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
@@ -108,7 +109,7 @@ describe('UserService', () => {
         },
         {
           provide: UserApiKeysService,
-          useValue: { createApiKey: jest.fn() },
+          useValue: { createApiKey: jest.fn(), replaceApiKey: jest.fn() },
         },
         {
           provide: AzureLogService,
@@ -181,6 +182,7 @@ describe('UserService', () => {
       // Act
       const result = await service.createMachineUser({
         username: 'Espo-Connector',
+        createdByUserId: 1,
       });
 
       // Assert
@@ -200,15 +202,117 @@ describe('UserService', () => {
       });
     });
 
+    it('logs who created the machine user, without the API key', async () => {
+      // Arrange
+      mockUsernameIsAvailable({ isAvailable: true });
+
+      // Act
+      await service.createMachineUser({
+        username: 'espo-connector',
+        createdByUserId: 1,
+      });
+
+      // Assert
+      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
+        name: MachineUserAuditEventName.created,
+        properties: { userId: '7', createdByUserId: '1' },
+      });
+    });
+
     it('does not create an API key when the username is already taken', async () => {
       // Arrange
       mockUsernameIsAvailable({ isAvailable: false });
 
       // Act & Assert
       await expect(
-        service.createMachineUser({ username: 'espo-connector' }),
+        service.createMachineUser({
+          username: 'espo-connector',
+          createdByUserId: 1,
+        }),
       ).rejects.toMatchObject({ status: HttpStatus.BAD_REQUEST });
       expect(userApiKeysService.createApiKey).not.toHaveBeenCalled();
+      expect(azureLogService.trackEvent).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Regenerating the API key of a machine user', () => {
+    const mockExistingUser = ({ userType }: { userType: UserType }): void => {
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue({ id: 7, userType } as UserEntity);
+    };
+
+    beforeEach(() => {
+      jest
+        .spyOn(userApiKeysService, 'replaceApiKey')
+        .mockResolvedValue({ apiKey: 'new-plaintext-api-key' });
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('replaces the API key and returns the new plaintext API key', async () => {
+      // Arrange
+      mockExistingUser({ userType: UserType.machine });
+
+      // Act
+      const result = await service.regenerateMachineUserApiKey({
+        userId: 7,
+        regeneratedByUserId: 1,
+      });
+
+      // Assert
+      expect(userApiKeysService.replaceApiKey).toHaveBeenCalledWith({
+        userId: 7,
+      });
+      expect(result).toEqual({ apiKey: 'new-plaintext-api-key' });
+    });
+
+    it('logs who regenerated the API key, without the API key', async () => {
+      // Arrange
+      mockExistingUser({ userType: UserType.machine });
+
+      // Act
+      await service.regenerateMachineUserApiKey({
+        userId: 7,
+        regeneratedByUserId: 1,
+      });
+
+      // Assert
+      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
+        name: MachineUserAuditEventName.apiKeyRegenerated,
+        properties: { userId: '7', regeneratedByUserId: '1' },
+      });
+    });
+
+    it('refuses to give an API key to an aid worker user', async () => {
+      // Arrange
+      mockExistingUser({ userType: UserType.aidWorker });
+
+      // Act & Assert
+      await expect(
+        service.regenerateMachineUserApiKey({
+          userId: 7,
+          regeneratedByUserId: 1,
+        }),
+      ).rejects.toMatchObject({ status: HttpStatus.BAD_REQUEST });
+      expect(userApiKeysService.replaceApiKey).not.toHaveBeenCalled();
+      expect(azureLogService.trackEvent).not.toHaveBeenCalled();
+    });
+
+    it('rejects an unknown user', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(
+        service.regenerateMachineUserApiKey({
+          userId: 7,
+          regeneratedByUserId: 1,
+        }),
+      ).rejects.toMatchObject({ status: HttpStatus.NOT_FOUND });
+      expect(userApiKeysService.replaceApiKey).not.toHaveBeenCalled();
     });
   });
 
