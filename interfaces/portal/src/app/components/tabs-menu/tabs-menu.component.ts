@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
-import { MenuItem } from 'primeng/api';
-import { TabsModule } from 'primeng/tabs';
+import { MenuItem } from '@openng/optimus-ui/api';
+import { TabsModule } from '@openng/optimus-ui/tabs';
 
 @Component({
   selector: 'app-tabs-menu',

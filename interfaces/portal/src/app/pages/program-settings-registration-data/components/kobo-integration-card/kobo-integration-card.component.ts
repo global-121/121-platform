@@ -11,18 +11,18 @@ import {
 import { Router } from '@angular/router';
 
 import {
-  injectMutation,
-  injectQuery,
-} from '@tanstack/angular-query-experimental';
-import {
   Accordion,
   AccordionContent,
   AccordionHeader,
   AccordionPanel,
-} from 'primeng/accordion';
-import { MenuItem } from 'primeng/api';
-import { Button } from 'primeng/button';
-import { Dialog } from 'primeng/dialog';
+} from '@openng/optimus-ui/accordion';
+import { MenuItem } from '@openng/optimus-ui/api';
+import { Button } from '@openng/optimus-ui/button';
+import { Dialog } from '@openng/optimus-ui/dialog';
+import {
+  injectMutation,
+  injectQuery,
+} from '@tanstack/angular-query-experimental';
 
 import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';

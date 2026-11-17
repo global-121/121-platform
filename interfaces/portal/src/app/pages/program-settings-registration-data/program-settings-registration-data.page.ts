@@ -6,8 +6,8 @@ import {
   input,
 } from '@angular/core';
 
+import { CardModule } from '@openng/optimus-ui/card';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { CardModule } from 'primeng/card';
 
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import {

@@ -6,8 +6,8 @@ import {
   input,
 } from '@angular/core';
 
+import { ChartModule } from '@openng/optimus-ui/chart';
 import { ChartData } from 'chart.js';
-import { ChartModule } from 'primeng/chart';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 

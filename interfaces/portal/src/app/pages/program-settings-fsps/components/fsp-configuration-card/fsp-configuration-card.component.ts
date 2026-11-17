@@ -8,14 +8,14 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { AccordionModule } from '@openng/optimus-ui/accordion';
+import { MenuItem } from '@openng/optimus-ui/api';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { TableModule } from '@openng/optimus-ui/table';
 import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
-import { AccordionModule } from 'primeng/accordion';
-import { MenuItem } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { TableModule } from 'primeng/table';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';

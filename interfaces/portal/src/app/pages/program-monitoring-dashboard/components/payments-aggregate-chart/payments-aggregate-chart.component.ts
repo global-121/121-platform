@@ -8,9 +8,9 @@ import {
   LOCALE_ID,
 } from '@angular/core';
 
+import { ChartModule } from '@openng/optimus-ui/chart';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ChartData, ChartDataset } from 'chart.js';
-import { ChartModule } from 'primeng/chart';
 import tailwindConfig from 'tailwind.config.mjs';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';

@@ -6,8 +6,8 @@ import {
   input,
 } from '@angular/core';
 
+import { MenuItem } from '@openng/optimus-ui/api';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MenuItem } from 'primeng/api';
 
 import { TabsMenuComponent } from '~/components/tabs-menu/tabs-menu.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';

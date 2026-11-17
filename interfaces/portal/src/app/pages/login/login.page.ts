@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { ToolbarModule } from 'primeng/toolbar';
+import { ToolbarModule } from '@openng/optimus-ui/toolbar';
 
 import { AppRoutes } from '~/app-routes.const';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
