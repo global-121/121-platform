@@ -1488,9 +1488,6 @@
       <trans-unit id="6562860910125244453" datatype="html">
         <source>Use the &apos;Last Message Status&apos; column to check the progress of messages. Closing this notification will not cancel message sending.</source>
       </trans-unit>
-      <trans-unit id="6564693025097903922" datatype="html">
-        <source>Verification successful</source>
-      </trans-unit>
       <trans-unit id="6566240598427787934" datatype="html">
         <source>Part of payment</source>
       </trans-unit>

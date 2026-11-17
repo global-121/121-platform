@@ -30,7 +30,6 @@ interface OneTimePasswordRequest {
     BasicAuthLoginPasswordStepComponent,
   ],
   templateUrl: './basic-auth.login.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BasicAuthLoginComponent {

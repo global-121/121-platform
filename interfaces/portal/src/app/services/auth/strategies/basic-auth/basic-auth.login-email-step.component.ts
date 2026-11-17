@@ -37,7 +37,6 @@ type LoginEmailStepFormGroup =
     FormFieldWrapperComponent,
   ],
   templateUrl: './basic-auth.login-email-step.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BasicAuthLoginEmailStepComponent implements OnInit {
