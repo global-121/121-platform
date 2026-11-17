@@ -38,6 +38,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { UserApiService } from '~/domains/user/user.api.service';
 import { AuthService } from '~/services/auth.service';
 import { LoginMethod } from '~/services/auth/login-method.enum';
+import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 const CLOCK_TICK_MS = 1_000;
@@ -61,6 +62,7 @@ type LoginOneTimePasswordStepFormGroup =
 })
 export class BasicAuthLoginOneTimePasswordStepComponent {
   private authService = inject(AuthService);
+  private toastService = inject(ToastService);
   private userApiService = inject(UserApiService);
   readonly email = input.required<string>();
   readonly oneTimePasswordRequestedAt = input.required<number>();
@@ -81,19 +83,30 @@ export class BasicAuthLoginOneTimePasswordStepComponent {
     { initialValue: Date.now() },
   );
 
-  readonly oneTimePasswordRemainingMs = computed(() =>
-    Math.max(
-      0,
-      this.oneTimePasswordRequestedAt() +
-        ONE_TIME_PASSWORD_EXPIRATION_MS -
-        this.now(),
-    ),
+  // Rounded up to whole seconds, so it ticks in step with the cooldown countdown
+  readonly oneTimePasswordRemainingMs = computed(
+    () =>
+      Math.max(
+        0,
+        Math.ceil(
+          (this.oneTimePasswordRequestedAt() +
+            ONE_TIME_PASSWORD_EXPIRATION_MS -
+            this.now()) /
+            CLOCK_TICK_MS,
+        ),
+      ) * CLOCK_TICK_MS,
   );
 
-  readonly canRequestNewOneTimePassword = computed(
-    () =>
-      this.now() - this.oneTimePasswordRequestedAt() >=
-      ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS,
+  readonly cooldownRemainingSeconds = computed(() =>
+    Math.max(
+      0,
+      Math.ceil(
+        (this.oneTimePasswordRequestedAt() +
+          ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS -
+          this.now()) /
+          CLOCK_TICK_MS,
+      ),
+    ),
   );
 
   formGroup = new FormGroup({
@@ -130,6 +143,9 @@ export class BasicAuthLoginOneTimePasswordStepComponent {
     onSuccess: () => {
       this.formGroup.reset();
       this.loginMutation.reset();
+      this.toastService.showToast({
+        detail: $localize`We've sent a new code to ${this.email()}.`,
+      });
       this.oneTimePasswordRequested.emit({ email: this.email() });
     },
   }));
