@@ -7,9 +7,6 @@ export class CreateMachineUserResponseDto {
   @ApiProperty({ example: 'espo-connector' })
   public readonly username: string;
 
-  @ApiProperty({ example: 'Espo connector' })
-  public readonly displayName: string;
-
   @ApiProperty({
     example: 'Xk3v9Qm2...',
     description:

@@ -558,11 +558,10 @@ export class UserService {
 
   public async createMachineUser({
     username,
-    displayName,
   }: CreateMachineUserDto): Promise<CreateMachineUserResponseDto> {
     const userEntity = await this.create(
       username,
-      displayName ?? null,
+      null,
       this.generateStrongPassword(),
       UserType.machine,
     );
@@ -573,7 +572,6 @@ export class UserService {
     return {
       id: userEntity.id,
       username: userEntity.username as string,
-      displayName: userEntity.displayName,
       apiKey,
     };
   }
