@@ -181,7 +181,6 @@ describe('UserService', () => {
       // Act
       const result = await service.createMachineUser({
         username: 'Espo-Connector',
-        displayName: 'Espo connector',
       });
 
       // Assert
@@ -189,7 +188,6 @@ describe('UserService', () => {
         expect.objectContaining({
           username: 'espo-connector',
           userType: UserType.machine,
-          displayName: 'Espo connector',
         }),
       );
       expect(userApiKeysService.createApiKey).toHaveBeenCalledWith({
@@ -198,22 +196,8 @@ describe('UserService', () => {
       expect(result).toEqual({
         id: 7,
         username: 'espo-connector',
-        displayName: 'Espo connector',
         apiKey: 'plaintext-api-key',
       });
-    });
-
-    it('uses the username as display name when none is given', async () => {
-      // Arrange
-      mockUsernameIsAvailable({ isAvailable: true });
-
-      // Act
-      const result = await service.createMachineUser({
-        username: 'espo-connector',
-      });
-
-      // Assert
-      expect(result.displayName).toBe('espo-connector');
     });
 
     it('does not create an API key when the username is already taken', async () => {
