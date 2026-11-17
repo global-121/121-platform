@@ -131,29 +131,6 @@ svg-icon svg {
   }
 }
 
-.mention-menu {
-  @apply shadow-menu;
-
-  li {
-    .mention-item {
-      @apply txt-body-m py-2! text-start font-semibold text-black!;
-    }
-
-    &.mention-active {
-      @apply bg-purple-100;
-
-      a {
-        background: inherit !important;
-      }
-    }
-  }
-
-  /* Move the menu from the hard-coded LTR-position to the RTL reading-direction */
-  &:dir(rtl) {
-    transform: translateX(-100%);
-  }
-}
-
 /* PrimeNG Component overrides */
 
 /* Rule-of-thumb: Override only from any specific component class-name(i.e. `.p-component-X`) 'down'.
