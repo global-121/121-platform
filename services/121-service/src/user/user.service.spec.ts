@@ -3,7 +3,7 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { REQUEST } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
 import { env } from '@121-service/src/env';
@@ -233,35 +233,25 @@ describe('UserService', () => {
       jest.restoreAllMocks();
     });
 
-    it('only matches aid worker users', async () => {
+    it('rejects a machine user', async () => {
       // Arrange
-      const saltCheckUser = { id: 1, salt: 'salt' } as UserEntity;
-      const queryBuilderMock = {
+      jest.spyOn(userRepository, 'createQueryBuilder').mockReturnValue({
         addSelect: jest.fn().mockReturnThis(),
-        leftJoinAndSelect: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        getOne: jest
-          .fn()
-          .mockResolvedValueOnce(saltCheckUser)
-          .mockResolvedValueOnce(null),
-      };
-      jest
-        .spyOn(userRepository, 'createQueryBuilder')
-        .mockReturnValue(queryBuilderMock as never);
+        getOne: jest.fn().mockResolvedValue({
+          id: 1,
+          salt: 'salt',
+          userType: UserType.machine,
+        } as UserEntity),
+      } as never);
 
-      // Act
-      const result = await service.matchPassword({
-        username: 'espo-connector',
-        password: 'any-password',
-      });
-
-      // Assert
-      expect(result).toBeNull();
-      expect(queryBuilderMock.andWhere).toHaveBeenCalledWith(
-        'user.userType = :userType',
-        { userType: UserType.aidWorker },
-      );
+      // Act & Assert
+      await expect(
+        service.matchPassword({
+          username: 'espo-connector',
+          password: 'any-password',
+        }),
+      ).rejects.toMatchObject({ status: HttpStatus.UNAUTHORIZED });
     });
   });
 
@@ -272,6 +262,7 @@ describe('UserService', () => {
       username: 'user@example.org',
       displayName: 'Jane',
       isEntraUser: false,
+      userType: UserType.aidWorker,
     } as UserEntity;
 
     const requestLoginOneTimePasswordAndWait = async ({
@@ -334,21 +325,23 @@ describe('UserService', () => {
       expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
     });
 
-    it('only looks up aid worker users', async () => {
+    it('does not create or email a one-time password for a machine user', async () => {
       // Arrange
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue({
+        ...existingUser,
+        userType: UserType.machine,
+      } as UserEntity);
 
       // Act
-      await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
+      await requestLoginOneTimePasswordAndWait({ username: 'espo-connector' });
 
       // Assert
-      expect(userRepository.findOne).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            userType: Equal(UserType.aidWorker),
-          }),
-        }),
-      );
+      expect(userOneTimePasswordsService.createOneTimePassword).not.toHaveBeenCalled();
+      expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
+      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
+        name: LoginOneTimePasswordAuditEventName.requested,
+        properties: { outcome: LoginOneTimePasswordRequestOutcome.unknownUser },
+      });
     });
 
     it('does not create or email a one-time password for a user who signs in with Entra', async () => {
@@ -511,6 +504,7 @@ describe('UserService', () => {
         username: 'user@example.org',
         displayName: 'Jane',
         isEntraUser: false,
+        userType: UserType.aidWorker,
         admin: false,
         isOrganizationAdmin: false,
         ...overrides,
@@ -587,23 +581,21 @@ describe('UserService', () => {
       );
     });
 
-    it('only looks up aid worker users', async () => {
+    it('rejects a machine user, even with a valid one-time password', async () => {
       // Arrange
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue(buildExistingUser({ userType: UserType.machine }));
 
       // Act & Assert
       await expect(
-        service.loginWithOneTimePassword({ username: 'user@example.org', oneTimePassword }),
-      ).rejects.toThrow(
-        new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED),
-      );
-      expect(userRepository.findOne).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            userType: Equal(UserType.aidWorker),
-          }),
-        }),
-      );
+        service.loginWithOneTimePassword({ username: 'espo-connector', oneTimePassword }),
+      ).rejects.toMatchObject({ status: HttpStatus.UNAUTHORIZED });
+      expect(userOneTimePasswordsService.verifyOneTimePassword).not.toHaveBeenCalled();
+      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
+        name: LoginOneTimePasswordAuditEventName.failed,
+        properties: { reason: LoginOneTimePasswordUserFailureReason.unknownUser },
+      });
     });
 
     it('rejects a user who signs in with Entra, even with a valid one-time password', async () => {
@@ -1373,6 +1365,7 @@ describe('UserService', () => {
         username: 'test@example.com',
         password: 'wrongHashedPassword',
         salt: 'salt',
+        userType: UserType.aidWorker,
       };
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser as any);
 
@@ -1411,6 +1404,7 @@ describe('UserService', () => {
         username: 'test@example.com',
         password: 'currentHashedPassword',
         salt: 'currentSalt',
+        userType: UserType.aidWorker,
       };
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser as any);
 
@@ -1469,6 +1463,7 @@ describe('UserService', () => {
         username: 'test@example.com',
         password: 'currentHashedPassword',
         salt: 'currentSalt',
+        userType: UserType.aidWorker,
       };
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser as any);
 
