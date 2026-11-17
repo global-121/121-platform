@@ -1,10 +1,12 @@
 import { NgClass } from '@angular/common';
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
   ElementRef,
   inject,
+  Injector,
   input,
   model,
   signal,
@@ -32,6 +34,15 @@ import { getTextareaCaretPosition } from '~/pages/program-registrations/componen
 import { MessagingService } from '~/services/messaging.service';
 import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 
+const CARET_MOVEMENT_KEYS = new Set([
+  'ArrowLeft',
+  'ArrowRight',
+  'Home',
+  'End',
+  'PageUp',
+  'PageDown',
+]);
+
 @Component({
   selector: 'app-custom-message-control',
   imports: [
@@ -58,6 +69,7 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
   readonly error = input<string>();
 
   private messagingService = inject(MessagingService);
+  private injector = inject(Injector);
 
   readonly customMessageDisabled = model(false);
   readonly customMessageInternalModel = model('');
@@ -116,12 +128,41 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
     trackingName: InfoTooltipTrackingName.customMessageCharacterLimit,
   };
 
+  readonly mentionListboxId = 'customMessageMentionListbox';
+
+  readonly highlightedOptionId = computed(() => {
+    if (this.mentionOptions().length === 0) {
+      return null;
+    }
+    return this.getMentionOptionId({ index: this.highlightedOptionIndex() });
+  });
+
+  getMentionOptionId({ index }: { index: number }) {
+    return `${this.mentionListboxId}-option-${index.toString()}`;
+  }
+
+  private findMentionAtCaret(): ActiveMention | undefined {
+    const { value, selectionStart, selectionEnd } =
+      this.textarea().nativeElement;
+    if (selectionStart !== selectionEnd) {
+      return;
+    }
+    return findActiveMention({ text: value, caretPosition: selectionStart });
+  }
+
+  private isActiveMentionCurrent() {
+    const current = this.findMentionAtCaret();
+    const stored = this.activeMention();
+    return (
+      !!current &&
+      !!stored &&
+      current.startIndex === stored.startIndex &&
+      current.query === stored.query
+    );
+  }
+
   updateActiveMention() {
-    const { value, selectionStart } = this.textarea().nativeElement;
-    const activeMention = findActiveMention({
-      text: value,
-      caretPosition: selectionStart,
-    });
+    const activeMention = this.findMentionAtCaret();
 
     this.activeMention.set(activeMention);
     this.highlightedOptionIndex.set(0);
@@ -153,7 +194,17 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
     this.activeMention.set(undefined);
   }
 
+  onTextareaKeyup(event: KeyboardEvent) {
+    if (CARET_MOVEMENT_KEYS.has(event.key)) {
+      this.updateActiveMention();
+    }
+  }
+
   onTextareaKeydown(event: KeyboardEvent) {
+    if (this.activeMention() && !this.isActiveMentionCurrent()) {
+      this.updateActiveMention();
+    }
+
     const options = this.mentionOptions();
     if (options.length === 0) {
       return;
@@ -165,12 +216,14 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
         this.highlightedOptionIndex.update(
           (index) => (index + 1) % options.length,
         );
+        this.scrollHighlightedOptionIntoView();
         return;
       case 'ArrowUp':
         event.preventDefault();
         this.highlightedOptionIndex.update(
           (index) => (index - 1 + options.length) % options.length,
         );
+        this.scrollHighlightedOptionIntoView();
         return;
       case 'Enter':
       case 'Tab': {
@@ -189,7 +242,24 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
     }
   }
 
+  private scrollHighlightedOptionIntoView() {
+    const optionId = this.getMentionOptionId({
+      index: this.highlightedOptionIndex(),
+    });
+    // Wait for the highlight to render before scrolling
+    afterNextRender(
+      () => {
+        document.getElementById(optionId)?.scrollIntoView({ block: 'nearest' });
+      },
+      { injector: this.injector },
+    );
+  }
+
   selectPlaceholder({ name }: { name: string }) {
+    if (!this.isActiveMentionCurrent()) {
+      this.updateActiveMention();
+      return;
+    }
     const activeMention = this.activeMention();
     if (!activeMention) {
       return;

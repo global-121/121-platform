@@ -31,11 +31,18 @@
       [disabled]="customMessageDisabled()"
       (input)="updateActiveMention()"
       (click)="updateActiveMention()"
-      (keyup.arrowLeft)="updateActiveMention()"
-      (keyup.arrowRight)="updateActiveMention()"
+      (keyup)="onTextareaKeyup($event)"
       (keydown)="onTextareaKeydown($event)"
       (blur)="closeMentionOptions()"
       autocomplete="off"
+      role="combobox"
+      aria-autocomplete="list"
+      i18n-aria-autocomplete
+      [attr.aria-expanded]="mentionOptions().length > 0"
+      [attr.aria-controls]="
+        mentionOptions().length > 0 ? mentionListboxId : null
+      "
+      [attr.aria-activedescendant]="highlightedOptionId()"
       class="inline-full"
       [ngClass]="{
         'ng-invalid ng-dirty': !!error(),
@@ -45,6 +52,7 @@
     @if (mentionOptions().length > 0) {
       <ul
         role="listbox"
+        [id]="mentionListboxId"
         class="shadow-menu absolute z-10 overflow-y-auto rounded-sm bg-white max-block-48"
         [style.top.px]="mentionMenuPosition().top"
         [style.left.px]="mentionMenuPosition().left"
@@ -58,6 +66,7 @@
             <button
               type="button"
               role="option"
+              [id]="getMentionOptionId({ index: i })"
               tabindex="-1"
               class="txt-body-m cursor-pointer px-4 py-2 text-start font-semibold whitespace-nowrap text-black inline-full"
               [attr.aria-selected]="i === highlightedOptionIndex()"

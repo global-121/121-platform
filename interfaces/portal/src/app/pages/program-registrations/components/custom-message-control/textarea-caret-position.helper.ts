@@ -30,7 +30,7 @@ export interface TextareaCaretPosition {
 }
 
 /**
- * Measures the caret position by rendering the text before the caret in an invisible copy of the textarea.
+ * Measures the caret position by rendering the text around the caret in an invisible copy of the textarea.
  * The returned coordinates are relative to the textarea's offset parent.
  */
 export const getTextareaCaretPosition = ({
@@ -53,7 +53,8 @@ export const getTextareaCaretPosition = ({
   mirror.textContent = textarea.value.slice(0, caretPosition);
 
   const marker = document.createElement('span');
-  marker.textContent = '\u200b';
+  // Includes the text after the caret, so the marker wraps like the real text
+  marker.textContent = textarea.value.slice(caretPosition) || '\u200b';
   mirror.append(marker);
 
   document.body.append(mirror);

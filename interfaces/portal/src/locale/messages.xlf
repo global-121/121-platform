@@ -1653,6 +1653,9 @@
       <trans-unit id="7243344858982743222" datatype="html">
         <source>To handle duplications you can edit the personal information or decline the registration.</source>
       </trans-unit>
+      <trans-unit id="7246196759043272468" datatype="html">
+        <source>list</source>
+      </trans-unit>
       <trans-unit id="7267039351824245641" datatype="html">
         <source>You&apos;re about to permanently close card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>. This means that the funds on the card will be booked back and the card will not be replaced.</source>
       </trans-unit>
