@@ -28,7 +28,6 @@ import {
 import { AssignedAccessGroupDto } from '@121-service/src/user/dto/assigned-access-group.dto';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto';
-import { CreateMachineUserDto } from '@121-service/src/user/dto/create-machine-user.dto';
 import { CreateMachineUserResponseDto } from '@121-service/src/user/dto/create-machine-user-response.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { CreateUserRoleDto } from '@121-service/src/user/dto/create-user-role.dto';
@@ -36,6 +35,7 @@ import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response
 import { GetUserReponseDto } from '@121-service/src/user/dto/get-user-response.dto';
 import { LoginResponseDto } from '@121-service/src/user/dto/login-response.dto';
 import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
+import { MachineUserApiKeyResponseDto } from '@121-service/src/user/dto/machine-user-api-key-response.dto';
 import {
   UpdateUserDto,
   UpdateUserPasswordDto,
@@ -51,6 +51,7 @@ import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity'
 import { LoginOneTimePasswordAuditEventName } from '@121-service/src/user/enum/login-one-time-password-audit-event-name.enum';
 import { LoginOneTimePasswordRequestOutcome } from '@121-service/src/user/enum/login-one-time-password-request-outcome.enum';
 import { LoginOneTimePasswordUserFailureReason } from '@121-service/src/user/enum/login-one-time-password-user-failure-reason.enum';
+import { MachineUserAuditEventName } from '@121-service/src/user/enum/machine-user-audit-event-name.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
@@ -566,7 +567,11 @@ export class UserService {
 
   public async createMachineUser({
     username,
-  }: CreateMachineUserDto): Promise<CreateMachineUserResponseDto> {
+    createdByUserId,
+  }: {
+    username: string;
+    createdByUserId: number;
+  }): Promise<CreateMachineUserResponseDto> {
     const userEntity = await this.create(
       username,
       null,
@@ -576,12 +581,51 @@ export class UserService {
     const { apiKey } = await this.userApiKeysService.createApiKey({
       userId: userEntity.id,
     });
+    this.azureLogService.trackEvent({
+      name: MachineUserAuditEventName.created,
+      properties: {
+        userId: String(userEntity.id),
+        createdByUserId: String(createdByUserId),
+      },
+    });
 
     return {
       id: userEntity.id,
       username: userEntity.username as string,
       apiKey,
     };
+  }
+
+  public async regenerateMachineUserApiKey({
+    userId,
+    regeneratedByUserId,
+  }: {
+    userId: number;
+    regeneratedByUserId: number;
+  }): Promise<MachineUserApiKeyResponseDto> {
+    const user = await this.userRepository.findOne({
+      where: { id: Equal(userId) },
+    });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    if (user.userType !== UserType.machine) {
+      throw new HttpException(
+        'Only machine users have an API key',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const { apiKey } = await this.userApiKeysService.replaceApiKey({ userId });
+    this.azureLogService.trackEvent({
+      name: MachineUserAuditEventName.apiKeyRegenerated,
+      properties: {
+        userId: String(userId),
+        regeneratedByUserId: String(regeneratedByUserId),
+      },
+    });
+
+    return { apiKey };
   }
 
   public async create(

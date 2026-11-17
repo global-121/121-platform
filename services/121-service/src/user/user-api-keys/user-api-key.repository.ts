@@ -15,6 +15,16 @@ export class UserApiKeyRepository extends Repository<UserApiKeyEntity> {
     );
   }
 
+  public async replaceForUser({
+    userId,
+    apiKey,
+  }: {
+    userId: number;
+    apiKey: string;
+  }): Promise<void> {
+    await this.baseRepository.upsert({ userId, apiKey }, ['userId']);
+  }
+
   public async getByApiKey({
     apiKey,
   }: {
