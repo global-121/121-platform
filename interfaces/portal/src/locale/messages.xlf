@@ -875,6 +875,9 @@
       <trans-unit id="4231630870580628223" datatype="html">
         <source>Solution</source>
       </trans-unit>
+      <trans-unit id="424589506637617766" datatype="html">
+        <source>Level 4:</source>
+      </trans-unit>
       <trans-unit id="4249207548869932033" datatype="html">
         <source>Password reset successful</source>
       </trans-unit>

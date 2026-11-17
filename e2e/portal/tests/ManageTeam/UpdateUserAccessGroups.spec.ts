@@ -106,7 +106,7 @@ test('Update and clear the access groups of a program team member', async ({
     });
   });
 
-  await test.step('Set access groups for all three levels', async () => {
+  await test.step('Set access groups for all levels', async () => {
     await programTeamPage.setAccessGroupLevels({
       accessGroupLevels: { 1: 'Utrecht', 2: 'Noord', 3: 'Damrak', 4: '51-100' },
     });
