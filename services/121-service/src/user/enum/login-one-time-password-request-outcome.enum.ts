@@ -3,5 +3,4 @@ export enum LoginOneTimePasswordRequestOutcome {
   refused = 'refused',
   unknownUser = 'unknownUser',
   entraUser = 'entraUser',
-  machineUser = 'machineUser',
 }

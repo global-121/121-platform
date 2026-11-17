@@ -125,22 +125,16 @@ export class UserService {
   }): Promise<void> {
     const email = username.toLowerCase();
     const user = await this.userRepository.findOne({
-      where: { username: Equal(email) },
+      where: {
+        username: Equal(email),
+        userType: Equal(UserType.aidWorker),
+      },
     });
 
     if (!user) {
       this.trackLoginOneTimePasswordEvent({
         name: LoginOneTimePasswordAuditEventName.requested,
         details: { outcome: LoginOneTimePasswordRequestOutcome.unknownUser },
-      });
-      return;
-    }
-
-    if (user.userType === UserType.machine) {
-      this.trackLoginOneTimePasswordEvent({
-        name: LoginOneTimePasswordAuditEventName.requested,
-        userId: user.id,
-        details: { outcome: LoginOneTimePasswordRequestOutcome.machineUser },
       });
       return;
     }
@@ -250,22 +244,16 @@ export class UserService {
     oneTimePassword: string;
   }): Promise<LoginResponseDto> {
     const userEntity = await this.userRepository.findOne({
-      where: { username: Equal(username.toLowerCase()) },
+      where: {
+        username: Equal(username.toLowerCase()),
+        userType: Equal(UserType.aidWorker),
+      },
     });
 
     if (!userEntity) {
       this.trackLoginOneTimePasswordEvent({
         name: LoginOneTimePasswordAuditEventName.failed,
         details: { reason: LoginOneTimePasswordUserFailureReason.unknownUser },
-      });
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    }
-
-    if (userEntity.userType === UserType.machine) {
-      this.trackLoginOneTimePasswordEvent({
-        name: LoginOneTimePasswordAuditEventName.failed,
-        userId: userEntity.id,
-        details: { reason: LoginOneTimePasswordUserFailureReason.machineUser },
       });
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
@@ -581,7 +569,7 @@ export class UserService {
     const userEntity = await this.create(
       username,
       displayName ?? null,
-      this.generateUnusablePassword(),
+      this.generateStrongPassword(),
       UserType.machine,
     );
     const { apiKey } = await this.userApiKeysService.createApiKey({
@@ -1136,8 +1124,8 @@ export class UserService {
       .leftJoinAndSelect('assignment.roles', 'roles')
       .leftJoinAndSelect('roles.permissions', 'permissions')
       .where(findOneOptions)
-      .andWhere('user.userType != :machineUserType', {
-        machineUserType: UserType.machine,
+      .andWhere('user.userType = :userType', {
+        userType: UserType.aidWorker,
       })
       .getOne();
 
@@ -1396,6 +1384,12 @@ export class UserService {
     if (!user || !user.username) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
+    if (user.userType === UserType.machine) {
+      throw new HttpException(
+        'Machine users do not have a password',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     user.salt = this.generateSalt();
     const password = this.generateStrongPassword();
     user.password = this.hashPassword(password, user.salt);
@@ -1414,10 +1408,6 @@ export class UserService {
 
   private hashPassword(password: string, salt: string): string {
     return crypto.pbkdf2Sync(password, salt, 1, 32, 'sha256').toString('hex');
-  }
-
-  private generateUnusablePassword(): string {
-    return crypto.randomBytes(32).toString('hex');
   }
 
   private generateStrongPassword(): string {
