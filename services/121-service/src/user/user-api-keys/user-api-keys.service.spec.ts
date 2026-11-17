@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import crypto from 'node:crypto';
+import { EntityManager } from 'typeorm';
 
 import { UserApiKeyEntity } from '@121-service/src/user/user-api-keys/user-api-key.entity';
 import { UserApiKeyRepository } from '@121-service/src/user/user-api-keys/user-api-key.repository';
@@ -11,6 +12,7 @@ describe('UserApiKeysService', () => {
 
   const hashApiKey = ({ apiKey }: { apiKey: string }): string =>
     crypto.createHash('sha256').update(apiKey).digest('hex');
+  const manager = {} as EntityManager;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,8 +21,8 @@ describe('UserApiKeysService', () => {
         {
           provide: UserApiKeyRepository,
           useValue: {
-            save: jest.fn(),
-            replaceForUser: jest.fn(),
+            createForUser: jest.fn(),
+            deleteForUser: jest.fn(),
             getByApiKey: jest.fn(),
           },
         },
@@ -34,28 +36,33 @@ describe('UserApiKeysService', () => {
   describe('when creating an API key', () => {
     it('returns a 256-bit base64url encoded key', async () => {
       // Act
-      const { apiKey } = await service.createApiKey({ userId: 1 });
+      const { apiKey } = await service.createApiKey({ userId: 1, manager });
 
       // Assert
       expect(apiKey).toMatch(/^[A-Za-z0-9_-]{43}$/);
     });
 
-    it('stores only the SHA-256 hash of the key', async () => {
+    it('stores only the SHA-256 hash of the key within the given transaction', async () => {
       // Act
-      const { apiKey } = await service.createApiKey({ userId: 1 });
+      const { apiKey } = await service.createApiKey({ userId: 1, manager });
 
       // Assert
-      expect(userApiKeyRepository.save).toHaveBeenCalledWith({
+      expect(userApiKeyRepository.createForUser).toHaveBeenCalledWith({
         userId: 1,
         apiKey: hashApiKey({ apiKey }),
+        manager,
       });
     });
 
     it('returns a different key on every call', async () => {
       // Act
-      const { apiKey: firstApiKey } = await service.createApiKey({ userId: 1 });
+      const { apiKey: firstApiKey } = await service.createApiKey({
+        userId: 1,
+        manager,
+      });
       const { apiKey: secondApiKey } = await service.createApiKey({
         userId: 2,
+        manager,
       });
 
       // Assert
@@ -63,23 +70,14 @@ describe('UserApiKeysService', () => {
     });
   });
 
-  describe('when replacing an API key', () => {
-    it('returns a new 256-bit base64url encoded key', async () => {
+  describe('when deleting an API key', () => {
+    it('deletes the stored key of the user', async () => {
       // Act
-      const { apiKey } = await service.replaceApiKey({ userId: 1 });
+      await service.deleteApiKey({ userId: 1 });
 
       // Assert
-      expect(apiKey).toMatch(/^[A-Za-z0-9_-]{43}$/);
-    });
-
-    it('replaces the stored key of the user with only the SHA-256 hash of the new key', async () => {
-      // Act
-      const { apiKey } = await service.replaceApiKey({ userId: 1 });
-
-      // Assert
-      expect(userApiKeyRepository.replaceForUser).toHaveBeenCalledWith({
+      expect(userApiKeyRepository.deleteForUser).toHaveBeenCalledWith({
         userId: 1,
-        apiKey: hashApiKey({ apiKey }),
       });
     });
   });

@@ -40,7 +40,6 @@ import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response
 import { LoginResponseDto } from '@121-service/src/user/dto/login-response.dto';
 import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
 import { LoginWithOneTimePasswordDto } from '@121-service/src/user/dto/login-with-one-time-password.dto';
-import { MachineUserApiKeyResponseDto } from '@121-service/src/user/dto/machine-user-api-key-response.dto';
 import {
   UpdateUserDto,
   UpdateUserPasswordDto,
@@ -107,36 +106,6 @@ export class UserController {
     return await this.userService.createMachineUser({
       username: createMachineUserDto.username,
       createdByUserId: RequestHelper.getUserId(req),
-    });
-  }
-
-  @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({
-    summary:
-      'Replace the API key of a machine user. The previous API key stops working immediately. The new API key is only shown once, in this response.',
-  })
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Successfully replaced the API key',
-    type: MachineUserApiKeyResponseDto,
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'User is not a machine user',
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'User not found',
-  })
-  @Post('users/:userId/api-key')
-  public async regenerateMachineUserApiKey(
-    @Req() req: ScopedUserRequest,
-    @Param('userId', ParseIntPipe) userId: number,
-  ): Promise<MachineUserApiKeyResponseDto> {
-    return await this.userService.regenerateMachineUserApiKey({
-      userId,
-      regeneratedByUserId: RequestHelper.getUserId(req),
     });
   }
 

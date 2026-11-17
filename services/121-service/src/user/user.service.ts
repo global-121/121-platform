@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
-import { Equal, In, Repository } from 'typeorm';
+import { DataSource, EntityManager, Equal, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/emails.const';
@@ -34,7 +34,6 @@ import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response
 import { GetUserReponseDto } from '@121-service/src/user/dto/get-user-response.dto';
 import { LoginResponseDto } from '@121-service/src/user/dto/login-response.dto';
 import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
-import { MachineUserApiKeyResponseDto } from '@121-service/src/user/dto/machine-user-api-key-response.dto';
 import {
   UpdateUserDto,
   UpdateUserPasswordDto,
@@ -82,6 +81,7 @@ export class UserService {
     private readonly userOneTimePasswordsService: UserOneTimePasswordsService,
     private readonly userApiKeysService: UserApiKeysService,
     private readonly azureLogService: AzureLogService,
+    private readonly dataSource: DataSource,
   ) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
@@ -564,15 +564,23 @@ export class UserService {
     username: string;
     createdByUserId: number;
   }): Promise<CreateMachineUserResponseDto> {
-    const userEntity = await this.create(
-      username,
-      null,
-      this.generateStrongPassword(),
-      UserType.machine,
+    const { userEntity, apiKey } = await this.dataSource.transaction(
+      async (manager) => {
+        const userEntity = await this.create(
+          username,
+          null,
+          this.generateStrongPassword(),
+          UserType.machine,
+          false,
+          manager,
+        );
+        const { apiKey } = await this.userApiKeysService.createApiKey({
+          userId: userEntity.id,
+          manager,
+        });
+        return { userEntity, apiKey };
+      },
     );
-    const { apiKey } = await this.userApiKeysService.createApiKey({
-      userId: userEntity.id,
-    });
     this.azureLogService.trackEvent({
       name: MachineUserAuditEventName.created,
       properties: {
@@ -588,48 +596,19 @@ export class UserService {
     };
   }
 
-  public async regenerateMachineUserApiKey({
-    userId,
-    regeneratedByUserId,
-  }: {
-    userId: number;
-    regeneratedByUserId: number;
-  }): Promise<MachineUserApiKeyResponseDto> {
-    const user = await this.userRepository.findOne({
-      where: { id: Equal(userId) },
-    });
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-    if (user.userType !== UserType.machine) {
-      throw new HttpException(
-        'Only machine users have an API key',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const { apiKey } = await this.userApiKeysService.replaceApiKey({ userId });
-    this.azureLogService.trackEvent({
-      name: MachineUserAuditEventName.apiKeyRegenerated,
-      properties: {
-        userId: String(userId),
-        regeneratedByUserId: String(regeneratedByUserId),
-      },
-    });
-
-    return { apiKey };
-  }
-
   public async create(
     username: string,
     displayName: string | null,
     password: string,
     userType: UserType,
     isEntraUser = false,
+    manager?: EntityManager,
   ): Promise<UserEntity> {
+    const userRepository =
+      manager?.getRepository(UserEntity) ?? this.userRepository;
     username = username.toLowerCase();
     // check uniqueness of email
-    const qb = this.userRepository
+    const qb = userRepository
       .createQueryBuilder('user')
       .where('user.username = :username', { username });
 
@@ -650,7 +629,7 @@ export class UserService {
     newUser.userType = userType;
     newUser.isEntraUser = isEntraUser;
     newUser.displayName = displayName || username.split('@')[0];
-    return await this.userRepository.save(newUser);
+    return await userRepository.save(newUser);
   }
 
   public async updatePassword(dto: UpdateUserPasswordDto): Promise<UserRO> {
@@ -925,6 +904,7 @@ export class UserService {
     });
 
     await this.assignmentRepository.remove(user.programAssignments);
+    await this.userApiKeysService.deleteApiKey({ userId });
 
     try {
       return await this.userRepository.remove(user);
