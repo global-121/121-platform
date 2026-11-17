@@ -1,3 +1,7 @@
+// Initialize before any application bootstrap, to collect the most wide telemetry possible
+import { initializeApplicationInsights } from '@121-service/src/telemetry/application-insights';
+initializeApplicationInsights();
+
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -17,14 +21,10 @@ import {
 } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
-import { initializeApplicationInsights } from '@121-service/src/telemetry/application-insights';
 import { getModuleDependencyEdges } from '@121-service/src/utils/module-dependency-graph.helper';
 import { ValidationPipeOptions } from '@121-service/src/validation-options/validation-pipe-options.const';
 
 import 'multer'; // This is import is required to prevent typing error on the MulterModule
-
-// Initialize before any application bootstrap, to collect the most wide telemetry possible
-initializeApplicationInsights();
 
 /**
  * A visualization of module dependencies is generated using a small local
