@@ -125,4 +125,6 @@ export enum InfoTooltipTrackingName {
   requiredAttributeScopeInfo = 'Kobo Required Attribute: Scope Info',
 
   unsupportedLanguageWarning = 'Registration Questions: Unsupported Language Warning',
+
+  userSettingsAccessGroup = 'User Settings: Acces Group',
 }

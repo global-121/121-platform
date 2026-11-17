@@ -6,6 +6,7 @@
   [header]="dialogHeader()"
   [headerIcon]="dialogHeaderIcon()"
   [proceedLabel]="dialogProceedLabel()"
+  [confirmButtonDisabled]="confirmButtonDisabled()"
 >
   <p class="mbe-4">
     @if (!isEditing()) {
@@ -120,5 +121,14 @@
         </p>
       </ng-container>
     </app-form-field-wrapper>
+  }
+
+  @if (accessGroupAttributes().length > 0) {
+    <app-user-access-group-form
+      [programId]="programId()"
+      [accessGroupAttributes]="accessGroupAttributes()"
+      [userIsUpdatingItself]="userIsUpdatingItself()"
+      formGroupName="accessGroupsValue"
+    />
   }
 </app-form-dialog>
