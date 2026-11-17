@@ -3,7 +3,7 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { REQUEST } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
 import { env } from '@121-service/src/env';
@@ -233,7 +233,7 @@ describe('UserService', () => {
       jest.restoreAllMocks();
     });
 
-    it('never matches a machine user', async () => {
+    it('only matches aid worker users', async () => {
       // Arrange
       const saltCheckUser = { id: 1, salt: 'salt' } as UserEntity;
       const queryBuilderMock = {
@@ -259,8 +259,8 @@ describe('UserService', () => {
       // Assert
       expect(result).toBeNull();
       expect(queryBuilderMock.andWhere).toHaveBeenCalledWith(
-        'user.userType != :machineUserType',
-        { machineUserType: UserType.machine },
+        'user.userType = :userType',
+        { userType: UserType.aidWorker },
       );
     });
   });
@@ -334,26 +334,21 @@ describe('UserService', () => {
       expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
     });
 
-    it('does not create or email a one-time password for a machine user', async () => {
+    it('only looks up aid worker users', async () => {
       // Arrange
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue({
-        ...existingUser,
-        userType: UserType.machine,
-      } as UserEntity);
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
 
       // Act
       await requestLoginOneTimePasswordAndWait({ username: 'user@example.org' });
 
       // Assert
-      expect(userOneTimePasswordsService.createOneTimePassword).not.toHaveBeenCalled();
-      expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
-      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
-        name: LoginOneTimePasswordAuditEventName.requested,
-        properties: {
-          outcome: LoginOneTimePasswordRequestOutcome.machineUser,
-          userId: '1',
-        },
-      });
+      expect(userRepository.findOne).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            userType: Equal(UserType.aidWorker),
+          }),
+        }),
+      );
     });
 
     it('does not create or email a one-time password for a user who signs in with Entra', async () => {
@@ -592,11 +587,9 @@ describe('UserService', () => {
       );
     });
 
-    it('rejects a machine user, even with a valid one-time password', async () => {
+    it('only looks up aid worker users', async () => {
       // Arrange
-      jest
-        .spyOn(userRepository, 'findOne')
-        .mockResolvedValue(buildExistingUser({ userType: UserType.machine }));
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
 
       // Act & Assert
       await expect(
@@ -604,14 +597,13 @@ describe('UserService', () => {
       ).rejects.toThrow(
         new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED),
       );
-      expect(userOneTimePasswordsService.verifyOneTimePassword).not.toHaveBeenCalled();
-      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
-        name: LoginOneTimePasswordAuditEventName.failed,
-        properties: {
-          reason: LoginOneTimePasswordUserFailureReason.machineUser,
-          userId: '1',
-        },
-      });
+      expect(userRepository.findOne).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            userType: Equal(UserType.aidWorker),
+          }),
+        }),
+      );
     });
 
     it('rejects a user who signs in with Entra, even with a valid one-time password', async () => {
@@ -1696,6 +1688,27 @@ describe('UserService', () => {
         service.changePasswordWithoutCurrentPassword(mockChangePasswordDto),
       ).rejects.toThrow(
         new HttpException('User not found', HttpStatus.NOT_FOUND),
+      );
+
+      expect(userRepository.save).not.toHaveBeenCalled();
+      expect(userEmailsService.sendPasswordReset).not.toHaveBeenCalled();
+    });
+
+    it('should throw HttpException when the user is a machine user', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue({
+        ...mockUser,
+        userType: UserType.machine,
+      } as UserEntity);
+
+      // Act & Assert
+      await expect(
+        service.changePasswordWithoutCurrentPassword(mockChangePasswordDto),
+      ).rejects.toThrow(
+        new HttpException(
+          'Machine users do not have a password',
+          HttpStatus.BAD_REQUEST,
+        ),
       );
 
       expect(userRepository.save).not.toHaveBeenCalled();

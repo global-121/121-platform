@@ -18,16 +18,7 @@ export class UserApiKey1794832790215 implements MigrationInterface {
     );
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."user_api_key" DROP CONSTRAINT "FK_c6316cc59f67b45ed31310bce53"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "121-service"."IDX_92ab922ee0d04d90699f1f3a93"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "121-service"."IDX_fd8ffd3827f21d2c8ae1e37ee4"`,
-    );
-    await queryRunner.query(`DROP TABLE "121-service"."user_api_key"`);
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // No down migration
   }
 }
