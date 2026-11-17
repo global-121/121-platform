@@ -212,6 +212,7 @@ graph LR
   UserEmailsModule-->EmailsModule
   UserModule-->AccessGroupLevelsModule
   UserModule-->ProgramAidworkerAssignmentsModule
+  UserModule-->UserApiKeysModule
   UserModule-->UserEmailsModule
   UserModule-->UserOneTimePasswordsModule
   WhatsappModule-->ImageCodeModule

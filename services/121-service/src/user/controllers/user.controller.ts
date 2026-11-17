@@ -32,6 +32,8 @@ import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto';
 import { CreateLoginOneTimePasswordDto } from '@121-service/src/user/dto/create-login-one-time-password.dto';
+import { CreateMachineUserDto } from '@121-service/src/user/dto/create-machine-user.dto';
+import { CreateMachineUserResponseDto } from '@121-service/src/user/dto/create-machine-user-response.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
 import { LoginResponseDto } from '@121-service/src/user/dto/login-response.dto';
@@ -78,6 +80,27 @@ export class UserController {
   @Post('users')
   public async createUsers(@Body() userData: CreateUsersDto): Promise<void> {
     return this.userService.createUsers(userData);
+  }
+
+  @AuthenticatedUser({ isOrganizationAdmin: true })
+  @ApiOperation({
+    summary:
+      'Create a machine user with an API key. The API key is only shown once, in this response.',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Successfully created machine user',
+    type: CreateMachineUserResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid username, or username already exists',
+  })
+  @Post('users/machine-users')
+  public async createMachineUser(
+    @Body() createMachineUserDto: CreateMachineUserDto,
+  ): Promise<CreateMachineUserResponseDto> {
+    return await this.userService.createMachineUser(createMachineUserDto);
   }
 
   @NoUserAuthenticationEndpoint(

@@ -13,6 +13,7 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
+import { UserApiKeysModule } from '@121-service/src/user/user-api-keys/user-api-keys.module';
 import { UserEmailsModule } from '@121-service/src/user/user-emails/user-emails.module';
 import { UserOneTimePasswordsModule } from '@121-service/src/user/user-one-time-password/user-one-time-passwords.module';
 
@@ -28,6 +29,7 @@ import { UserOneTimePasswordsModule } from '@121-service/src/user/user-one-time-
     AccessGroupLevelsModule,
     UserEmailsModule,
     UserOneTimePasswordsModule,
+    UserApiKeysModule,
   ],
   providers: [UserService, UserAccessGroupAssignmentsService, AzureLogService],
   controllers: [UserController, UserAssignmentsController, RolesController],
