@@ -76,8 +76,6 @@ updates:
       # Dependencies below are ordered alphabetically!
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
-      - dependency-name: 'applicationinsights'
-        update-types: ['version-update:semver-major']
       - dependency-name: 'chokidar'
         update-types: ['version-update:semver-major'] # Reconsider after @swc/@nestjs CLI updates
       - dependency-name: 'ioredis'
