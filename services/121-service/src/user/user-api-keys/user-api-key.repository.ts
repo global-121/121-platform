@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { EntityManager, Equal, Repository } from 'typeorm';
 
 import { UserApiKeyEntity } from '@121-service/src/user/user-api-keys/user-api-key.entity';
 
@@ -15,14 +15,20 @@ export class UserApiKeyRepository extends Repository<UserApiKeyEntity> {
     );
   }
 
-  public async replaceForUser({
+  public async createForUser({
     userId,
     apiKey,
+    manager,
   }: {
     userId: number;
     apiKey: string;
+    manager: EntityManager;
   }): Promise<void> {
-    await this.baseRepository.upsert({ userId, apiKey }, ['userId']);
+    await manager.getRepository(UserApiKeyEntity).insert({ userId, apiKey });
+  }
+
+  public async deleteForUser({ userId }: { userId: number }): Promise<void> {
+    await this.baseRepository.delete({ userId: Equal(userId) });
   }
 
   public async getByApiKey({

@@ -3,10 +3,9 @@ import crypto from 'node:crypto';
 
 import { CreateApiKeyParams } from '@121-service/src/user/user-api-keys/interfaces/create-api-key-params.interface';
 import { CreateApiKeyResult } from '@121-service/src/user/user-api-keys/interfaces/create-api-key-result.interface';
+import { DeleteApiKeyParams } from '@121-service/src/user/user-api-keys/interfaces/delete-api-key-params.interface';
 import { GetUserIdByApiKeyParams } from '@121-service/src/user/user-api-keys/interfaces/get-user-id-by-api-key-params.interface';
 import { GetUserIdByApiKeyResult } from '@121-service/src/user/user-api-keys/interfaces/get-user-id-by-api-key-result.interface';
-import { ReplaceApiKeyParams } from '@121-service/src/user/user-api-keys/interfaces/replace-api-key-params.interface';
-import { ReplaceApiKeyResult } from '@121-service/src/user/user-api-keys/interfaces/replace-api-key-result.interface';
 import { API_KEY_BYTE_LENGTH } from '@121-service/src/user/user-api-keys/user-api-key.const';
 import { UserApiKeyRepository } from '@121-service/src/user/user-api-keys/user-api-key.repository';
 
@@ -18,24 +17,19 @@ export class UserApiKeysService {
 
   public async createApiKey({
     userId,
+    manager,
   }: CreateApiKeyParams): Promise<CreateApiKeyResult> {
     const apiKey = this.generateApiKey();
-    await this.userApiKeyRepository.save({
+    await this.userApiKeyRepository.createForUser({
       userId,
       apiKey: this.hashApiKey({ apiKey }),
+      manager,
     });
     return { apiKey };
   }
 
-  public async replaceApiKey({
-    userId,
-  }: ReplaceApiKeyParams): Promise<ReplaceApiKeyResult> {
-    const apiKey = this.generateApiKey();
-    await this.userApiKeyRepository.replaceForUser({
-      userId,
-      apiKey: this.hashApiKey({ apiKey }),
-    });
-    return { apiKey };
+  public async deleteApiKey({ userId }: DeleteApiKeyParams): Promise<void> {
+    await this.userApiKeyRepository.deleteForUser({ userId });
   }
 
   private generateApiKey(): string {

@@ -3,13 +3,14 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { REQUEST } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 
 import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
 import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
+import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
@@ -47,12 +48,17 @@ describe('UserService', () => {
   let userOneTimePasswordsService: UserOneTimePasswordsService;
   let userApiKeysService: UserApiKeysService;
   let azureLogService: AzureLogService;
+  let transactionManager: EntityManager;
 
   const mockRequest = {
     headers: {},
   };
 
   beforeEach(async () => {
+    transactionManager = {
+      getRepository: jest.fn(() => userRepository),
+    } as unknown as EntityManager;
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
@@ -89,6 +95,7 @@ describe('UserService', () => {
             findOne: jest.fn(),
             createQueryBuilder: jest.fn(),
             save: jest.fn(),
+            remove: jest.fn(),
           },
         },
         {
@@ -109,11 +116,20 @@ describe('UserService', () => {
         },
         {
           provide: UserApiKeysService,
-          useValue: { createApiKey: jest.fn(), replaceApiKey: jest.fn() },
+          useValue: { createApiKey: jest.fn(), deleteApiKey: jest.fn() },
         },
         {
           provide: AzureLogService,
           useValue: { logError: jest.fn(), trackEvent: jest.fn() },
+        },
+        {
+          provide: DataSource,
+          useValue: {
+            transaction: jest.fn(
+              (work: (manager: EntityManager) => Promise<unknown>) =>
+                work(transactionManager),
+            ),
+          },
         },
       ],
     }).compile();
@@ -194,6 +210,7 @@ describe('UserService', () => {
       );
       expect(userApiKeysService.createApiKey).toHaveBeenCalledWith({
         userId: 7,
+        manager: transactionManager,
       });
       expect(result).toEqual({
         id: 7,
@@ -233,86 +250,68 @@ describe('UserService', () => {
       expect(userApiKeysService.createApiKey).not.toHaveBeenCalled();
       expect(azureLogService.trackEvent).not.toHaveBeenCalled();
     });
+
+    it('fails and does not log the creation when storing the API key fails', async () => {
+      // Arrange
+      mockUsernameIsAvailable({ isAvailable: true });
+      const storeError = new Error('Storing API key failed');
+      jest
+        .spyOn(userApiKeysService, 'createApiKey')
+        .mockRejectedValue(storeError);
+
+      // Act & Assert
+      await expect(
+        service.createMachineUser({
+          username: 'espo-connector',
+          createdByUserId: 1,
+        }),
+      ).rejects.toBe(storeError);
+      expect(azureLogService.trackEvent).not.toHaveBeenCalled();
+    });
   });
 
-  describe('Regenerating the API key of a machine user', () => {
-    const mockExistingUser = ({ userType }: { userType: UserType }): void => {
-      jest
-        .spyOn(userRepository, 'findOne')
-        .mockResolvedValue({ id: 7, userType } as UserEntity);
-    };
-
+  describe('Deleting a user', () => {
     beforeEach(() => {
-      jest
-        .spyOn(userApiKeysService, 'replaceApiKey')
-        .mockResolvedValue({ apiKey: 'new-plaintext-api-key' });
+      jest.spyOn(userRepository, 'findOneOrFail').mockResolvedValue({
+        id: 7,
+        userType: UserType.machine,
+        programAssignments: [],
+      } as unknown as UserEntity);
     });
 
     afterEach(() => {
       jest.restoreAllMocks();
     });
 
-    it('replaces the API key and returns the new plaintext API key', async () => {
+    it('revokes the API key and removes the user', async () => {
       // Arrange
-      mockExistingUser({ userType: UserType.machine });
+      jest
+        .spyOn(userRepository, 'remove')
+        .mockImplementation(async (user) => user);
 
       // Act
-      const result = await service.regenerateMachineUserApiKey({
-        userId: 7,
-        regeneratedByUserId: 1,
-      });
+      await service.delete(7);
 
       // Assert
-      expect(userApiKeysService.replaceApiKey).toHaveBeenCalledWith({
+      expect(userApiKeysService.deleteApiKey).toHaveBeenCalledWith({
         userId: 7,
       });
-      expect(result).toEqual({ apiKey: 'new-plaintext-api-key' });
+      expect(userRepository.remove).toHaveBeenCalled();
     });
 
-    it('logs who regenerated the API key, without the API key', async () => {
+    it('still revokes the API key when the user cannot be removed because of related activity', async () => {
       // Arrange
-      mockExistingUser({ userType: UserType.machine });
+      jest
+        .spyOn(userRepository, 'remove')
+        .mockRejectedValue({ code: PostgresStatusCodes.FOREIGN_KEY_VIOLATION });
 
-      // Act
-      await service.regenerateMachineUserApiKey({
+      // Act & Assert
+      await expect(service.delete(7)).rejects.toMatchObject({
+        status: HttpStatus.CONFLICT,
+      });
+      expect(userApiKeysService.deleteApiKey).toHaveBeenCalledWith({
         userId: 7,
-        regeneratedByUserId: 1,
       });
-
-      // Assert
-      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
-        name: MachineUserAuditEventName.apiKeyRegenerated,
-        properties: { userId: '7', regeneratedByUserId: '1' },
-      });
-    });
-
-    it('refuses to give an API key to an aid worker user', async () => {
-      // Arrange
-      mockExistingUser({ userType: UserType.aidWorker });
-
-      // Act & Assert
-      await expect(
-        service.regenerateMachineUserApiKey({
-          userId: 7,
-          regeneratedByUserId: 1,
-        }),
-      ).rejects.toMatchObject({ status: HttpStatus.BAD_REQUEST });
-      expect(userApiKeysService.replaceApiKey).not.toHaveBeenCalled();
-      expect(azureLogService.trackEvent).not.toHaveBeenCalled();
-    });
-
-    it('rejects an unknown user', async () => {
-      // Arrange
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
-
-      // Act & Assert
-      await expect(
-        service.regenerateMachineUserApiKey({
-          userId: 7,
-          regeneratedByUserId: 1,
-        }),
-      ).rejects.toMatchObject({ status: HttpStatus.NOT_FOUND });
-      expect(userApiKeysService.replaceApiKey).not.toHaveBeenCalled();
     });
   });
 
