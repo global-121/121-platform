@@ -26,9 +26,18 @@ import { QueryTableColumn } from '~/components/query-table/query-table.types';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { ProgramUserWithRolesLabel } from '~/domains/program/program.model';
 import { AddProgramTeamUserDialogComponent } from '~/pages/program-settings-team/components/add-program-team-user-dialog/add-program-team-user-dialog.component';
+import { TableCellUserAccessGroupsComponent } from '~/pages/program-settings-team/components/add-program-team-user-dialog/table-cell-user-access-groups.component';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
+import { TranslatableStringService } from '~/services/translatable-string.service';
+
+export interface AccessGroupAttribute {
+  level: number;
+  name: string;
+  label: string | undefined;
+  options: { option: string; label: string | undefined }[] | undefined;
+}
 
 @Component({
   selector: 'app-program-settings-team',
@@ -53,6 +62,7 @@ export class ProgramSettingsTeamPageComponent {
   private programApiService = inject(ProgramApiService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
+  private translatableStringService = inject(TranslatableStringService);
 
   readonly addUserDialog =
     viewChild.required<AddProgramTeamUserDialogComponent>('addUserDialog');
@@ -67,6 +77,75 @@ export class ProgramSettingsTeamPageComponent {
   programUsers = injectQuery(
     this.programApiService.getProgramUsers(this.programId),
   );
+  accessGroupLevels = injectQuery(
+    this.programApiService.getProgramAccessGroupLevels({
+      programId: this.programId,
+    }),
+  );
+
+  readonly enableAccessGroups = computed(() => {
+    if (!this.accessGroupLevels.isSuccess()) {
+      return false;
+    }
+
+    const data = this.accessGroupLevels.data();
+
+    return data.accessGroupRegistrationAttributeNames.length > 0;
+  });
+
+  readonly accessGroupAttributes = computed<AccessGroupAttribute[]>(() => {
+    const accessGroupAttributes: AccessGroupAttribute[] = [];
+
+    if (!this.program.isSuccess() || !this.accessGroupLevels.isSuccess()) {
+      return [];
+    }
+
+    const accessGroupAttributeNames =
+      this.accessGroupLevels.data().accessGroupRegistrationAttributeNames;
+
+    if (accessGroupAttributeNames.length === 0) {
+      return [];
+    }
+
+    const registrationAttributes =
+      this.program.data().programRegistrationAttributes;
+
+    for (const [
+      index,
+      accessGroupAttributeName,
+    ] of accessGroupAttributeNames.entries()) {
+      const registrationAttribute = registrationAttributes.find(
+        (attr) => attr.name === accessGroupAttributeName,
+      );
+
+      if (registrationAttribute) {
+        accessGroupAttributes.push({
+          level: index + 1,
+          name: registrationAttribute.name,
+          label: this.translatableStringService.translate(
+            registrationAttribute.label,
+          ),
+          options: registrationAttribute.options?.map((option) => ({
+            option: option.option,
+            label: this.translatableStringService.translate(option.label),
+          })),
+        });
+      }
+    }
+
+    return accessGroupAttributes;
+  });
+
+  readonly accessGroupContext = computed(() => {
+    return {
+      enableAccessGroups: this.enableAccessGroups(),
+      accessGroupAttributes: this.accessGroupAttributes(),
+    };
+  });
+
+  readonly tableCellContext = computed(() => ({
+    accessGroupAttributes: this.accessGroupAttributes(),
+  }));
 
   removeUserMutation = injectMutation<unknown, Error, { userId?: number }>(
     () => ({
@@ -91,6 +170,13 @@ export class ProgramSettingsTeamPageComponent {
         class: 'w-1/3',
       };
 
+      const accessGroupsColumn: QueryTableColumn<ProgramUserWithRolesLabel> = {
+        field: 'accessGroups',
+        header: $localize`Access group`,
+        class: 'w-1/3',
+        component: TableCellUserAccessGroupsComponent,
+      };
+
       return [
         {
           field: 'username',
@@ -103,6 +189,7 @@ export class ProgramSettingsTeamPageComponent {
           class: 'w-1/3',
         },
         ...(this.enableScope() ? [scopeColumn] : []),
+        ...(this.enableAccessGroups() ? [accessGroupsColumn] : []),
       ];
     },
   );

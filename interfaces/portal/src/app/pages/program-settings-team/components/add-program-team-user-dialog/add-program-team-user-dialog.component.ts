@@ -35,6 +35,7 @@ import {
 } from '~/domains/program/program.model';
 import { RoleApiService } from '~/domains/role/role.api.service';
 import { UserAccessGroupFormComponent } from '~/pages/program-settings-team/components/add-program-team-user-dialog/user-access-group-form.component';
+import { AccessGroupAttribute } from '~/pages/program-settings-team/program-settings-team.page';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import {
@@ -42,15 +43,7 @@ import {
   TrackingCategory,
 } from '~/services/tracking/tracking.enums';
 import { TrackingService } from '~/services/tracking/tracking.service';
-import { TranslatableStringService } from '~/services/translatable-string.service';
 import { generateFieldErrors } from '~/utils/form-validation';
-
-export interface AccessGroupAttribute {
-  level: number;
-  name: string;
-  label: string | undefined;
-  options: { option: string; label: string | undefined }[] | undefined;
-}
 
 @Component({
   selector: 'app-add-program-team-user-dialog',
@@ -73,6 +66,10 @@ export interface AccessGroupAttribute {
 export class AddProgramTeamUserDialogComponent {
   readonly programId = input.required<string>();
   readonly enableScope = input.required<boolean>();
+  readonly accessGroupsContext = input.required<{
+    enableAccessGroups: boolean;
+    accessGroupAttributes: AccessGroupAttribute[];
+  }>();
 
   readonly userToEdit = signal<ProgramUserWithRolesLabel | undefined>(
     undefined,
@@ -83,7 +80,6 @@ export class AddProgramTeamUserDialogComponent {
   private toastService = inject(ToastService);
   private authService = inject(AuthService);
   private trackingService = inject(TrackingService);
-  private translatableStringService = inject(TranslatableStringService);
 
   readonly formDialog = viewChild.required<FormDialogComponent>('formDialog');
 
@@ -102,54 +98,6 @@ export class AddProgramTeamUserDialogComponent {
   programUsers = injectQuery(
     this.programApiService.getProgramUsers(this.programId),
   );
-
-  accessGroupLevels = injectQuery(
-    this.programApiService.getProgramAccessGroupLevels({
-      programId: this.programId,
-    }),
-  );
-
-  readonly accessGroupAttributes = computed<AccessGroupAttribute[]>(() => {
-    const accessGroupAttributes: AccessGroupAttribute[] = [];
-
-    if (!this.program.isSuccess() || !this.accessGroupLevels.isSuccess()) {
-      return [];
-    }
-
-    const accessGroupAttributeNames =
-      this.accessGroupLevels.data().accessGroupRegistrationAttributeNames;
-
-    if (accessGroupAttributeNames.length === 0) {
-      return [];
-    }
-
-    const registrationAttributes =
-      this.program.data().programRegistrationAttributes;
-
-    for (const [
-      index,
-      accessGroupAttributeName,
-    ] of accessGroupAttributeNames.entries()) {
-      const registrationAttribute = registrationAttributes.find(
-        (attr) => attr.name === accessGroupAttributeName,
-      );
-
-      if (registrationAttribute) {
-        accessGroupAttributes.push({
-          level: index + 1,
-          name: registrationAttribute.name,
-          label: this.translatableStringService.translate(
-            registrationAttribute.label,
-          ),
-          options: registrationAttribute.options?.map((option) => ({
-            option: option.option,
-            label: this.translatableStringService.translate(option.label),
-          })),
-        });
-      }
-    }
-    return accessGroupAttributes;
-  });
 
   formGroup = new FormGroup({
     userValue: new FormControl(-1, {
@@ -259,7 +207,8 @@ export class AddProgramTeamUserDialogComponent {
       const accessGroups: ProgramUserAssignment['accessGroups'] = [];
 
       for (const [index, value] of Object.values(accessGroupsValue).entries()) {
-        const attribute = this.accessGroupAttributes()[index];
+        const attribute =
+          this.accessGroupsContext().accessGroupAttributes[index];
         if (value) {
           const programRegistrationAttributeName = attribute.name;
           accessGroups.push({ programRegistrationAttributeName, value });
@@ -312,7 +261,7 @@ export class AddProgramTeamUserDialogComponent {
     title: $localize`No users found.`,
   };
   readonly confirmButtonDisabled = computed(() => {
-    if (!this.program.isSuccess() || !this.accessGroupLevels.isSuccess()) {
+    if (!this.program.isSuccess()) {
       return true;
     }
 
@@ -380,8 +329,7 @@ export class AddProgramTeamUserDialogComponent {
     if (
       !this.program.isSuccess() ||
       !this.roles.isSuccess() ||
-      !this.programUsers.isSuccess() ||
-      !this.accessGroupLevels.isSuccess()
+      !this.programUsers.isSuccess()
     ) {
       return;
     }
@@ -393,7 +341,7 @@ export class AddProgramTeamUserDialogComponent {
     const accessGroupValues = new Map<number, string>();
 
     for (const userAccessGroup of userToEdit.accessGroups) {
-      const attribute = this.accessGroupAttributes().find(
+      const attribute = this.accessGroupsContext().accessGroupAttributes.find(
         (attr) =>
           attr.name === userAccessGroup.programRegistrationAttributeName,
       );

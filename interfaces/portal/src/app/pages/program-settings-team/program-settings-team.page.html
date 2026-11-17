@@ -31,14 +31,21 @@
         canManageAidworkers() ? contextMenuItems() : undefined
       "
       (updateContextMenuItem)="selectedUser.set($event)"
-      [globalFilterFields]="['username', 'allRolesLabel', 'scope']"
+      [globalFilterFields]="[
+        'username',
+        'allRolesLabel',
+        'scope',
+        'accessGroups',
+      ]"
       [initialSortField]="'username'"
+      [tableCellContext]="tableCellContext()"
     ></app-query-table>
 
     <app-add-program-team-user-dialog
       #addUserDialog
       [programId]="programId()"
       [enableScope]="enableScope()"
+      [accessGroupsContext]="accessGroupContext()"
     />
   </p-card>
 </app-page-layout-program-settings>
