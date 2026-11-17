@@ -109,7 +109,7 @@
     "prettier-plugin-tailwindcss": "^0.8.1",
     "shx": "^0.4.0",
     "tailwindcss": "^4.1.13",
-    "typescript": "^5.9.3",
+    "typescript": "~6.0.3",
     "typescript-eslint": "^8.71.2",
     "vitest": "^4.1.11"
   },
@@ -124,6 +124,7 @@
       "@angular/common": "$@angular/common"
     },
     "@angular/build": {
+      "typescript": "$typescript",
       "piscina": "5.3.2"
     }
   },
