@@ -125,13 +125,10 @@ export class UserService {
   }): Promise<void> {
     const email = username.toLowerCase();
     const user = await this.userRepository.findOne({
-      where: {
-        username: Equal(email),
-        userType: Equal(UserType.aidWorker),
-      },
+      where: { username: Equal(email) },
     });
 
-    if (!user) {
+    if (!user || user.userType !== UserType.aidWorker) {
       this.trackLoginOneTimePasswordEvent({
         name: LoginOneTimePasswordAuditEventName.requested,
         details: { outcome: LoginOneTimePasswordRequestOutcome.unknownUser },
@@ -244,13 +241,10 @@ export class UserService {
     oneTimePassword: string;
   }): Promise<LoginResponseDto> {
     const userEntity = await this.userRepository.findOne({
-      where: {
-        username: Equal(username.toLowerCase()),
-        userType: Equal(UserType.aidWorker),
-      },
+      where: { username: Equal(username.toLowerCase()) },
     });
 
-    if (!userEntity) {
+    if (!userEntity || userEntity.userType !== UserType.aidWorker) {
       this.trackLoginOneTimePasswordEvent({
         name: LoginOneTimePasswordAuditEventName.failed,
         details: { reason: LoginOneTimePasswordUserFailureReason.unknownUser },
@@ -1102,7 +1096,7 @@ export class UserService {
       .where({ username })
       .getOne();
 
-    if (!saltCheck) {
+    if (!saltCheck || saltCheck.userType !== UserType.aidWorker) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
@@ -1124,9 +1118,6 @@ export class UserService {
       .leftJoinAndSelect('assignment.roles', 'roles')
       .leftJoinAndSelect('roles.permissions', 'permissions')
       .where(findOneOptions)
-      .andWhere('user.userType = :userType', {
-        userType: UserType.aidWorker,
-      })
       .getOne();
 
     return userEntity;
