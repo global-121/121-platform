@@ -120,6 +120,34 @@ test('Access group column shows the access groups of a team member after updatin
   });
 });
 
+test('Access group column can be filtered by the access groups of a team member', async ({
+  programTeamPage,
+}) => {
+  await test.step('Navigate to the program team page', async () => {
+    await programTeamPage.goto(programTeamPagePathCbe);
+  });
+
+  await test.step('Set access groups for a team member', async () => {
+    await programTeamPage.editUser({ userEmail: existingTeamMemberEmail });
+    await programTeamPage.setAccessGroupLevels({
+      accessGroupLevels: { 1: 'Amsterdam', 2: 'West' },
+    });
+    await programTeamPage.saveEditedUser();
+    await programTeamPage.validateToastMessageAndClose('User updated');
+  });
+
+  await test.step('Filter the access group column and validate only that team member is shown', async () => {
+    await programTeamPage.table.filterColumnByText({
+      columnName: 'Access group',
+      filterText: 'West',
+    });
+
+    await programTeamPage.validateAssignedTeamMembers([
+      existingTeamMemberEmail,
+    ]);
+  });
+});
+
 test('Access group column is hidden for a program without access group levels', async ({
   programTeamPage,
 }) => {

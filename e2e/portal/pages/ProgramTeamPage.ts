@@ -230,8 +230,8 @@ class ProgramTeamPage extends BasePage {
       has: this.page.getByRole('cell', { name: userEmail, exact: true }),
     });
     await expect(
-      userRow.locator('app-table-cell-user-access-groups'),
-    ).toHaveText(accessGroup);
+      userRow.getByRole('cell', { name: accessGroup, exact: true }),
+    ).toBeVisible();
   }
 }
 

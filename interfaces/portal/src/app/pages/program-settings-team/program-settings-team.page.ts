@@ -26,7 +26,6 @@ import { QueryTableColumn } from '~/components/query-table/query-table.types';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { ProgramUserWithRolesLabel } from '~/domains/program/program.model';
 import { AddProgramTeamUserDialogComponent } from '~/pages/program-settings-team/components/add-program-team-user-dialog/add-program-team-user-dialog.component';
-import { TableCellUserAccessGroupsComponent } from '~/pages/program-settings-team/components/add-program-team-user-dialog/table-cell-user-access-groups.component';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
@@ -38,6 +37,12 @@ export interface AccessGroupAttribute {
   label: string | undefined;
   options: { option: string; label: string | undefined }[] | undefined;
 }
+
+type ProgramUserWithAccessGroupsLabel = {
+  accessGroupsLabel: string;
+} & ProgramUserWithRolesLabel;
+
+const ACCESS_GROUPS_LABEL_SEPARATOR = ' / ';
 
 @Component({
   selector: 'app-program-settings-team',
@@ -143,9 +148,23 @@ export class ProgramSettingsTeamPageComponent {
     };
   });
 
-  readonly tableCellContext = computed(() => ({
-    accessGroupAttributes: this.accessGroupAttributes(),
-  }));
+  readonly programUsersWithAccessGroupsLabel = computed<
+    ProgramUserWithAccessGroupsLabel[]
+  >(() => {
+    if (!this.programUsers.isSuccess()) {
+      return [];
+    }
+
+    const accessGroupAttributes = this.accessGroupAttributes();
+
+    return this.programUsers.data().map((programUser) => ({
+      ...programUser,
+      accessGroupsLabel: this.getAccessGroupsLabel({
+        accessGroups: programUser.accessGroups,
+        accessGroupAttributes,
+      }),
+    }));
+  });
 
   removeUserMutation = injectMutation<unknown, Error, { userId?: number }>(
     () => ({
@@ -161,50 +180,46 @@ export class ProgramSettingsTeamPageComponent {
       },
     }),
   );
+  readonly columns = computed<
+    QueryTableColumn<ProgramUserWithAccessGroupsLabel>[]
+  >(() => {
+    const scopeColumn: QueryTableColumn<ProgramUserWithAccessGroupsLabel> = {
+      field: 'scope',
+      header: $localize`:@@attribute-label-scope:Scope`,
+      class: 'w-1/3',
+    };
 
-  readonly columns = computed<QueryTableColumn<ProgramUserWithRolesLabel>[]>(
-    () => {
-      const scopeColumn: QueryTableColumn<ProgramUserWithRolesLabel> = {
-        field: 'scope',
-        header: $localize`:@@attribute-label-scope:Scope`,
-        class: 'w-1/3',
-      };
-
-      const accessGroupsColumn: QueryTableColumn<ProgramUserWithRolesLabel> = {
-        field: 'accessGroups',
+    const accessGroupsColumn: QueryTableColumn<ProgramUserWithAccessGroupsLabel> =
+      {
+        field: 'accessGroupsLabel',
         header: $localize`Access group`,
         class: 'w-1/3',
-        component: TableCellUserAccessGroupsComponent,
       };
 
-      return [
-        {
-          field: 'username',
-          header: $localize`User name`,
-          class: 'w-1/3 align-top',
-        },
-        {
-          field: 'allRolesLabel',
-          header: $localize`Roles`,
-          class: 'w-1/3',
-        },
-        ...(this.enableScope() ? [scopeColumn] : []),
-        ...(this.enableAccessGroups() ? [accessGroupsColumn] : []),
-      ];
-    },
-  );
-
+    return [
+      {
+        field: 'username',
+        header: $localize`User name`,
+        class: 'w-1/3 align-top',
+      },
+      {
+        field: 'allRolesLabel',
+        header: $localize`Roles`,
+        class: 'w-1/3',
+      },
+      ...(this.enableScope() ? [scopeColumn] : []),
+      ...(this.enableAccessGroups() ? [accessGroupsColumn] : []),
+    ];
+  });
   readonly canManageAidworkers = computed(() =>
     this.authService.hasPermission({
       programId: this.programId(),
       requiredPermission: PermissionEnum.AidWorkerProgramUPDATE,
     }),
   );
-
   readonly enableScope = computed(
     () => this.program.data()?.enableScope ?? false,
   );
-
   readonly contextMenuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`Copy email`,
@@ -238,6 +253,41 @@ export class ProgramSettingsTeamPageComponent {
       },
     },
   ]);
+  private getAccessGroupsLabel({
+    accessGroups,
+    accessGroupAttributes,
+  }: {
+    accessGroups: ProgramUserWithRolesLabel['accessGroups'];
+    accessGroupAttributes: AccessGroupAttribute[];
+  }): string {
+    const accessGroupLabels: string[] = [];
+
+    for (const accessGroup of accessGroups) {
+      const attribute = accessGroupAttributes.find(
+        ({ name }) => name === accessGroup.programRegistrationAttributeName,
+      );
+
+      if (!attribute) {
+        continue;
+      }
+
+      const option = attribute.options?.find(
+        (attributeOption) => attributeOption.option === accessGroup.value,
+      );
+
+      if (!option) {
+        continue;
+      }
+
+      accessGroupLabels.push(option.label ?? option.option);
+    }
+
+    if (accessGroupLabels.length === 0) {
+      return $localize`All`;
+    }
+
+    return accessGroupLabels.join(ACCESS_GROUPS_LABEL_SEPARATOR);
+  }
 
   openAddUserForm() {
     this.addUserDialog().show();

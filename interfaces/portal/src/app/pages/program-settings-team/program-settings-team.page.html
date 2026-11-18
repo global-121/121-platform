@@ -23,7 +23,7 @@
     </div>
 
     <app-query-table
-      [items]="programUsers.data() ?? []"
+      [items]="programUsersWithAccessGroupsLabel()"
       [isPending]="programUsers.isPending()"
       [columns]="columns()"
       localStorageKey="program-team-table"
@@ -35,10 +35,9 @@
         'username',
         'allRolesLabel',
         'scope',
-        'accessGroups',
+        'accessGroupsLabel',
       ]"
       [initialSortField]="'username'"
-      [tableCellContext]="tableCellContext()"
     ></app-query-table>
 
     <app-add-program-team-user-dialog
