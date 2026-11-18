@@ -53,7 +53,7 @@ export class BasicAuthStrategy implements IAuthStrategy {
       return await this.userApiService.loginWithOneTimePassword(credentials);
     } catch {
       throw new Error(
-        $localize`Invalid or expired code. Double-check the code or request a new one.`,
+        $localize`Invalid or expired code. Check the code or request a new one.`,
       );
     }
   }

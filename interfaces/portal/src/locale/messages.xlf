@@ -110,9 +110,6 @@
       <trans-unit id="1478156471032913670" datatype="html">
         <source>Message preview</source>
       </trans-unit>
-      <trans-unit id="1481627074855564963" datatype="html">
-        <source>Invalid or expired code. Double-check the code or request a new one.</source>
-      </trans-unit>
       <trans-unit id="1485624035618673724" datatype="html">
         <source>Import reconciliation data</source>
       </trans-unit>
@@ -515,6 +512,9 @@
       </trans-unit>
       <trans-unit id="2948202815374708667" datatype="html">
         <source>General information</source>
+      </trans-unit>
+      <trans-unit id="296525656256757496" datatype="html">
+        <source>Invalid or expired code. Check the code or request a new one.</source>
       </trans-unit>
       <trans-unit id="2976767115406008475" datatype="html">
         <source>Registration out of scope or not found - please check URL or contact your supervisor</source>
@@ -961,6 +961,9 @@
       </trans-unit>
       <trans-unit id="4548982880429289150" datatype="html">
         <source><x equiv-text="data.applicableCount" id="PH"/> transactions(s) are being retried. The status change can take up to a minute to process.</source>
+      </trans-unit>
+      <trans-unit id="4553549638421008203" datatype="html">
+        <source>Request new code</source>
       </trans-unit>
       <trans-unit id="4574346850927067014" datatype="html">
         <source>Status update</source>
@@ -1512,6 +1515,9 @@
       <trans-unit id="6693349469471580292" datatype="html">
         <source>Delete file</source>
       </trans-unit>
+      <trans-unit id="6696721147897029589" datatype="html">
+        <source>We&apos;ve sent a new code to <x equiv-text="this.email()" id="PH"/>.</source>
+      </trans-unit>
       <trans-unit id="6704198793956298786" datatype="html">
         <source>Coopbank verification report</source>
       </trans-unit>
@@ -1983,6 +1989,9 @@
       <trans-unit id="8355761006232718301" datatype="html">
         <source>This field cannot be shorter than <x equiv-text="minlength" id="PH"/> characters.</source>
       </trans-unit>
+      <trans-unit id="836079390729993594" datatype="html">
+        <source>You can request a new code in <x equiv-text="{{ cooldownRemainingSeconds() }}" id="INTERPOLATION"/> seconds.</source>
+      </trans-unit>
       <trans-unit id="8384225360105280028" datatype="html">
         <source>Complete</source>
       </trans-unit>
@@ -2027,9 +2036,6 @@
       </trans-unit>
       <trans-unit id="856921700208045215" datatype="html">
         <source>This will download an Excel file showing the balance of every card. The export is limited to 100,000 records.</source>
-      </trans-unit>
-      <trans-unit id="858320921283206051" datatype="html">
-        <source>Request new code</source>
       </trans-unit>
       <trans-unit id="8596681732200300530" datatype="html">
         <source>Remaining funds</source>
