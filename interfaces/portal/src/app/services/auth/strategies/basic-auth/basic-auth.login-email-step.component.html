@@ -28,9 +28,9 @@
 </app-form-default>
 <p class="mbs-4">
   <p-button
-    i18n
+    label="Log in with password instead"
+    i18n-label
     [link]="true"
     (click)="passwordInstead.emit({ email: formGroup.getRawValue().email })"
-    >Log in with password instead</p-button
-  >
+  />
 </p>
