@@ -5,22 +5,26 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS } from '@121-service/src/user/user-one-time-password/user-one-time-password.const';
 
 import { BasicAuthLoginComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login.component';
+import { setOneTimePasswordRequestInSessionStorage } from '~/services/auth/strategies/basic-auth/one-time-password-request-storage';
 
 describe('Requesting a one-time login code', () => {
   const email = 'test@example.com';
   const now = new Date('2026-01-01T12:00:00.000Z').getTime();
   let component: BasicAuthLoginComponent;
 
+  const createComponent = () =>
+    TestBed.runInInjectionContext(() => new BasicAuthLoginComponent());
+
   beforeEach(() => {
+    sessionStorage.clear();
     vi.useFakeTimers();
     vi.setSystemTime(now);
-    component = TestBed.runInInjectionContext(
-      () => new BasicAuthLoginComponent(),
-    );
+    component = createComponent();
   });
 
   afterEach(() => {
     vi.useRealTimers();
+    sessionStorage.clear();
   });
 
   it('should show the code step for the email with the request time set to now', () => {
@@ -96,6 +100,39 @@ describe('Requesting a one-time login code', () => {
     expect(component.email()).toBe(otherEmail);
     expect(component.oneTimePasswordRequest()).toEqual({
       email: otherEmail,
+      requestedAt: later,
+    });
+  });
+
+  it('should keep the original request time after a page reload within the cooldown', () => {
+    // Arrange
+    component.onOneTimePasswordRequested({ email });
+    vi.setSystemTime(now + ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS - 1);
+
+    // Act
+    const componentAfterReload = createComponent();
+    componentAfterReload.onOneTimePasswordRequested({ email });
+
+    // Assert
+    expect(componentAfterReload.oneTimePasswordRequest()).toEqual({
+      email,
+      requestedAt: now,
+    });
+  });
+
+  it('should set a new request time after a page reload once the stored request is past the cooldown', () => {
+    // Arrange
+    setOneTimePasswordRequestInSessionStorage({ email, requestedAt: now });
+    const later = now + ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS;
+    vi.setSystemTime(later);
+
+    // Act
+    const componentAfterReload = createComponent();
+    componentAfterReload.onOneTimePasswordRequested({ email });
+
+    // Assert
+    expect(componentAfterReload.oneTimePasswordRequest()).toEqual({
+      email,
       requestedAt: later,
     });
   });
