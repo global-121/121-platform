@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   input,
   signal,
@@ -67,6 +68,7 @@ export class AddProgramTeamUserDialogComponent {
   readonly programId = input.required<string>();
   readonly enableScope = input.required<boolean>();
   readonly accessGroupsContext = input.required<{
+    isReady: boolean;
     enableAccessGroups: boolean;
     accessGroupAttributes: AccessGroupAttribute[];
   }>();
@@ -74,6 +76,7 @@ export class AddProgramTeamUserDialogComponent {
   readonly userToEdit = signal<ProgramUserWithRolesLabel | undefined>(
     undefined,
   );
+  readonly isFormPrefillPending = signal(false);
 
   private programApiService = inject(ProgramApiService);
   private roleApiService = inject(RoleApiService);
@@ -97,6 +100,14 @@ export class AddProgramTeamUserDialogComponent {
   );
   programUsers = injectQuery(
     this.programApiService.getProgramUsers(this.programId),
+  );
+
+  private readonly isFormDataReady = computed(
+    () =>
+      this.program.isSuccess() &&
+      this.roles.isSuccess() &&
+      this.programUsers.isSuccess() &&
+      this.accessGroupsContext().isReady,
   );
 
   formGroup = new FormGroup({
@@ -260,14 +271,16 @@ export class AddProgramTeamUserDialogComponent {
     message: $localize`This 121 portal doesn't have users to be added. Add users on the Users page, then assign them to this program.`,
     title: $localize`No users found.`,
   };
-  readonly confirmButtonDisabled = computed(() => {
-    if (!this.program.isSuccess()) {
-      return true;
-    }
-
-    return false;
-  });
   constructor() {
+    effect(() => {
+      if (!this.isFormPrefillPending() || !this.isFormDataReady()) {
+        return;
+      }
+
+      this.prefillForm({ userToEdit: this.userToEdit() });
+      this.isFormPrefillPending.set(false);
+    });
+
     const {
       accessGroup1Value,
       accessGroup2Value,
@@ -312,13 +325,11 @@ export class AddProgramTeamUserDialogComponent {
   show({ userToEdit }: { userToEdit?: ProgramUserWithRolesLabel } = {}) {
     this.userToEdit.set(userToEdit);
 
-    // The form dialog resets the form group on show, so the form must be
-    // pre-filled only after that
     this.formDialog().show({
       resetMutation: true,
     });
 
-    this.prefillForm({ userToEdit });
+    this.isFormPrefillPending.set(true);
   }
 
   private prefillForm({
@@ -326,13 +337,6 @@ export class AddProgramTeamUserDialogComponent {
   }: {
     userToEdit?: ProgramUserWithRolesLabel;
   }) {
-    if (
-      !this.program.isSuccess() ||
-      !this.roles.isSuccess() ||
-      !this.programUsers.isSuccess()
-    ) {
-      return;
-    }
     if (!userToEdit) {
       this.formGroup.controls.userValue.enable();
       return;

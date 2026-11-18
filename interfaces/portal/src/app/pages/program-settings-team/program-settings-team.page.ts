@@ -143,6 +143,7 @@ export class ProgramSettingsTeamPageComponent {
 
   readonly accessGroupContext = computed(() => {
     return {
+      isReady: this.program.isSuccess() && this.accessGroupLevels.isSuccess(),
       enableAccessGroups: this.enableAccessGroups(),
       accessGroupAttributes: this.accessGroupAttributes(),
     };
@@ -260,33 +261,41 @@ export class ProgramSettingsTeamPageComponent {
     accessGroups: ProgramUserWithRolesLabel['accessGroups'];
     accessGroupAttributes: AccessGroupAttribute[];
   }): string {
-    const accessGroupLabels: string[] = [];
-
-    for (const accessGroup of accessGroups) {
-      const attribute = accessGroupAttributes.find(
-        ({ name }) => name === accessGroup.programRegistrationAttributeName,
-      );
-
-      if (!attribute) {
-        continue;
-      }
-
-      const option = attribute.options?.find(
-        (attributeOption) => attributeOption.option === accessGroup.value,
-      );
-
-      if (!option) {
-        continue;
-      }
-
-      accessGroupLabels.push(option.label ?? option.option);
-    }
-
-    if (accessGroupLabels.length === 0) {
+    if (accessGroups.length === 0) {
       return $localize`All`;
     }
 
-    return accessGroupLabels.join(ACCESS_GROUPS_LABEL_SEPARATOR);
+    return accessGroups
+      .map((accessGroup) =>
+        this.getAccessGroupLabel({ accessGroup, accessGroupAttributes }),
+      )
+      .join(ACCESS_GROUPS_LABEL_SEPARATOR);
+  }
+
+  private getAccessGroupLabel({
+    accessGroup,
+    accessGroupAttributes,
+  }: {
+    accessGroup: ProgramUserWithRolesLabel['accessGroups'][number];
+    accessGroupAttributes: AccessGroupAttribute[];
+  }): string {
+    const attribute = accessGroupAttributes.find(
+      ({ name }) => name === accessGroup.programRegistrationAttributeName,
+    );
+
+    if (!attribute) {
+      return accessGroup.value;
+    }
+
+    const option = attribute.options?.find(
+      (attributeOption) => attributeOption.option === accessGroup.value,
+    );
+
+    if (!option) {
+      return accessGroup.value;
+    }
+
+    return option.label ?? option.option;
   }
 
   openAddUserForm() {
