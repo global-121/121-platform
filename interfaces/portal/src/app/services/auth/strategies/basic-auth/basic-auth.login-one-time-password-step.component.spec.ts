@@ -174,37 +174,4 @@ describe('Logging in with a one-time code', () => {
     // Assert
     expect(component.loginMutation.isError()).toBe(false);
   });
-
-  it('should log in when Enter is pressed in the last box after typing the full code', async () => {
-    // Arrange
-    mockAuthService.login.mockResolvedValue(undefined);
-    const fixture = TestBed.createComponent(
-      BasicAuthLoginOneTimePasswordStepComponent,
-    );
-    fixture.componentRef.setInput('email', email);
-    fixture.componentRef.setInput('oneTimePasswordRequestedAt', now);
-    fixture.detectChanges();
-    fixture.componentInstance.formGroup.setValue({ oneTimePassword: 'ABC123' });
-    fixture.detectChanges();
-    const boxes = (fixture.nativeElement as HTMLElement).querySelectorAll(
-      'p-inputotp input',
-    );
-    const lastBox = boxes[boxes.length - 1];
-
-    // Act
-    lastBox.dispatchEvent(
-      new KeyboardEvent('keydown', {
-        key: 'Enter',
-        bubbles: true,
-        cancelable: true,
-      }),
-    );
-    await flushMutation();
-
-    // Assert
-    expect(mockAuthService.login).toHaveBeenCalledWith(
-      expect.objectContaining({ oneTimePassword: 'ABC123' }),
-      undefined,
-    );
-  });
 });

@@ -8,16 +8,6 @@ export interface OneTimePasswordRequest {
   requestedAt: number;
 }
 
-const isOneTimePasswordRequest = (
-  value: unknown,
-): value is OneTimePasswordRequest =>
-  typeof value === 'object' &&
-  value !== null &&
-  'email' in value &&
-  typeof value.email === 'string' &&
-  'requestedAt' in value &&
-  typeof value.requestedAt === 'number';
-
 export const setOneTimePasswordRequestInSessionStorage = (
   oneTimePasswordRequest: OneTimePasswordRequest,
 ): void => {
@@ -38,12 +28,7 @@ export const getOneTimePasswordRequestFromSessionStorage = ():
   }
 
   try {
-    const oneTimePasswordRequest: unknown = JSON.parse(
-      rawOneTimePasswordRequest,
-    );
-    return isOneTimePasswordRequest(oneTimePasswordRequest)
-      ? oneTimePasswordRequest
-      : undefined;
+    return JSON.parse(rawOneTimePasswordRequest) as OneTimePasswordRequest;
   } catch {
     return undefined;
   }

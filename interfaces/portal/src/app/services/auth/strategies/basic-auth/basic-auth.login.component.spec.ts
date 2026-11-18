@@ -120,17 +120,6 @@ describe('Requesting a one-time login code', () => {
     });
   });
 
-  it('should ignore a stored request that is not valid', () => {
-    // Arrange
-    sessionStorage.setItem('one-time-password-request', '{"email": 42}');
-
-    // Act
-    const componentAfterReload = createComponent();
-
-    // Assert
-    expect(componentAfterReload.oneTimePasswordRequest()).toBeUndefined();
-  });
-
   it('should set a new request time after a page reload once the stored request is past the cooldown', () => {
     // Arrange
     setOneTimePasswordRequestInSessionStorage({ email, requestedAt: now });
