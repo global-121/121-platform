@@ -172,4 +172,12 @@ export class BasicAuthLoginOneTimePasswordStepComponent {
       this.formGroup.controls.oneTimePassword.getRawValue().length;
     inputs[Math.min(filledLength, inputs.length - 1)].focus();
   }
+
+  onOneTimePasswordEnter(event: Event): void {
+    // PrimeNG blocks every key once all boxes are filled, Enter included,
+    // which cancels the browser's own form submission
+    if (event.defaultPrevented && event.target instanceof HTMLElement) {
+      event.target.closest('form')?.requestSubmit();
+    }
+  }
 }
