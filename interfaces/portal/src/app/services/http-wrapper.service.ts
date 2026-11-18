@@ -23,8 +23,8 @@ interface PerformRequestParams {
   method: 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT';
   url: string;
   body?: unknown;
-  /** Set when the body contains secrets (e.g. passwords), to keep it out of the console logs. */
-  hasSensitiveBody?: boolean;
+  /** Set when the request or response body contains secrets (e.g. passwords, session tokens), to keep them out of the console logs. */
+  isSensitive?: boolean;
   responseAsBlob?: boolean;
   isUpload?: boolean;
   httpParams?: HttpParamsOptions['fromObject'];
@@ -158,12 +158,12 @@ export class HttpWrapperService {
     method,
     url,
     body,
-    hasSensitiveBody = false,
+    isSensitive = false,
     responseAsBlob = false,
     isUpload = false,
     httpParams: params,
   }: PerformRequestParams): Promise<T> {
-    const loggableBody = hasSensitiveBody && body ? '[redacted]' : body;
+    const loggableBody = isSensitive && body ? '[redacted]' : body;
     console.log(`HttpWrapperService ${method}: ${url}`, loggableBody ?? '');
 
     try {
@@ -183,7 +183,7 @@ export class HttpWrapperService {
                   params ? `\nParams ${JSON.stringify(params, null, 2)}` : ''
                 }${loggableBody ? `\nBody: ${JSON.stringify(loggableBody, null, 2)}` : ''}`,
                 '\nResponse:',
-                response,
+                isSensitive ? '[redacted]' : response,
               );
             }),
             catchError((error: HttpErrorResponse) => this.handleError(error)),

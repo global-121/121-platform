@@ -20,6 +20,7 @@ import { HttpWrapperService } from '~/services/http-wrapper.service';
 describe('HttpWrapperService', () => {
   const url = 'https://example.org/users/login';
   const secret = 'super-secret-value';
+  const sessionToken = 'session-token-value';
 
   let service: HttpWrapperService;
   let httpTestingController: HttpTestingController;
@@ -42,54 +43,59 @@ describe('HttpWrapperService', () => {
   });
 
   const performRequestAndGetLogs = async ({
-    hasSensitiveBody,
+    isSensitive,
   }: {
-    hasSensitiveBody?: boolean;
+    isSensitive?: boolean;
   }): Promise<string> => {
     const request = service.performRequest({
       method: 'POST',
       url,
       body: { username: 'user@example.org', password: secret },
-      hasSensitiveBody,
+      isSensitive,
     });
-    httpTestingController.expectOne(url).flush({});
+    httpTestingController
+      .expectOne(url)
+      .flush({ username: 'user@example.org', access_token: sessionToken });
     await request;
 
     return JSON.stringify(consoleLogSpy.mock.calls);
   };
 
-  it('keeps a sensitive body out of the logs', async () => {
+  it('keeps a sensitive body and the response with its session token out of the logs', async () => {
     // Act
     const loggedOutput = await performRequestAndGetLogs({
-      hasSensitiveBody: true,
+      isSensitive: true,
     });
 
     // Assert
     expect(loggedOutput).not.toContain(secret);
+    expect(loggedOutput).not.toContain(sessionToken);
     expect(loggedOutput).toContain('[redacted]');
   });
 
-  it('still sends a sensitive body to the server', async () => {
+  it('still sends a sensitive body to the server and returns the full response', async () => {
     // Act
     const request = service.performRequest({
       method: 'POST',
       url,
       body: { password: secret },
-      hasSensitiveBody: true,
+      isSensitive: true,
     });
     const testRequest = httpTestingController.expectOne(url);
-    testRequest.flush({});
-    await request;
+    testRequest.flush({ access_token: sessionToken });
+    const response = await request;
 
     // Assert
     expect(testRequest.request.body).toEqual({ password: secret });
+    expect(response).toEqual({ access_token: sessionToken });
   });
 
-  it('logs a non-sensitive body', async () => {
+  it('logs a non-sensitive body and response', async () => {
     // Act
     const loggedOutput = await performRequestAndGetLogs({});
 
     // Assert
     expect(loggedOutput).toContain(secret);
+    expect(loggedOutput).toContain(sessionToken);
   });
 });

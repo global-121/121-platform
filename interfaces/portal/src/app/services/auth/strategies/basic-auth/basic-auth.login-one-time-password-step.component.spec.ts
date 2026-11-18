@@ -15,6 +15,10 @@ import {
 import { UserApiService } from '~/domains/user/user.api.service';
 import { AuthService } from '~/services/auth.service';
 import { BasicAuthLoginOneTimePasswordStepComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login-one-time-password-step.component';
+import {
+  getOneTimePasswordRequestFromSessionStorage,
+  setOneTimePasswordRequestInSessionStorage,
+} from '~/services/auth/strategies/basic-auth/one-time-password-request-storage';
 import { ToastService } from '~/services/toast.service';
 
 describe('Logging in with a one-time code', () => {
@@ -46,6 +50,7 @@ describe('Logging in with a one-time code', () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    sessionStorage.clear();
   });
 
   const createComponent = () => {
@@ -135,6 +140,20 @@ describe('Logging in with a one-time code', () => {
       detail: `We've sent a new code to ${email}.`,
     });
     expect(oneTimePasswordRequested).toHaveBeenCalledWith({ email });
+  });
+
+  it('should forget the request time once the code is used to log in', async () => {
+    // Arrange
+    mockAuthService.login.mockResolvedValue(undefined);
+    setOneTimePasswordRequestInSessionStorage({ email, requestedAt: now });
+    const component = createComponent();
+
+    // Act
+    component.loginMutation.mutate({ oneTimePassword: 'ABC123' });
+    await flushMutation();
+
+    // Assert
+    expect(getOneTimePasswordRequestFromSessionStorage()).toBeUndefined();
   });
 
   it('should clear the login error once the code is edited', async () => {

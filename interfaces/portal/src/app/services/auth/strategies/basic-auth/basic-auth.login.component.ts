@@ -10,16 +10,16 @@ import { ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS } from '@121-service/src/user/use
 import { BasicAuthLoginEmailStepComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login-email-step.component';
 import { BasicAuthLoginOneTimePasswordStepComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login-one-time-password-step.component';
 import { BasicAuthLoginPasswordStepComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login-password-step.component';
+import {
+  getOneTimePasswordRequestFromSessionStorage,
+  OneTimePasswordRequest,
+  setOneTimePasswordRequestInSessionStorage,
+} from '~/services/auth/strategies/basic-auth/one-time-password-request-storage';
 
 enum LoginStep {
   email = 'email',
   oneTimePassword = 'oneTimePassword',
   password = 'password',
-}
-
-interface OneTimePasswordRequest {
-  email: string;
-  requestedAt: number;
 }
 
 @Component({
@@ -40,12 +40,14 @@ export class BasicAuthLoginComponent {
   readonly step = signal(LoginStep.email);
   readonly email = signal('');
   readonly oneTimePasswordRequest = signal<OneTimePasswordRequest | undefined>(
-    undefined,
+    getOneTimePasswordRequestFromSessionStorage(),
   );
 
   onOneTimePasswordRequested({ email }: { email: string }): void {
     if (!this.isWithinOneTimePasswordCooldown({ email })) {
-      this.oneTimePasswordRequest.set({ email, requestedAt: Date.now() });
+      const oneTimePasswordRequest = { email, requestedAt: Date.now() };
+      this.oneTimePasswordRequest.set(oneTimePasswordRequest);
+      setOneTimePasswordRequestInSessionStorage(oneTimePasswordRequest);
     }
     this.goToStep({ step: LoginStep.oneTimePassword, email });
   }

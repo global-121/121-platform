@@ -38,6 +38,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { UserApiService } from '~/domains/user/user.api.service';
 import { AuthService } from '~/services/auth.service';
 import { LoginMethod } from '~/services/auth/login-method.enum';
+import { removeOneTimePasswordRequestFromSessionStorage } from '~/services/auth/strategies/basic-auth/one-time-password-request-storage';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
@@ -134,6 +135,9 @@ export class BasicAuthLoginOneTimePasswordStepComponent {
         },
         this.returnUrl(),
       ),
+    onSuccess: () => {
+      removeOneTimePasswordRequestFromSessionStorage();
+    },
   }));
   requestNewOneTimePasswordMutation = injectMutation(() => ({
     mutationFn: () =>
