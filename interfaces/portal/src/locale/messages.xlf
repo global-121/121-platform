@@ -1370,9 +1370,6 @@
       <trans-unit id="6169902268775373280" datatype="html">
         <source>Select users for this approval step</source>
       </trans-unit>
-      <trans-unit id="6186007479370342072" datatype="html">
-        <source>Request a password reset</source>
-      </trans-unit>
       <trans-unit id="6205851746813309628" datatype="html">
         <source>KoboToolbox account settings menu</source>
       </trans-unit>
@@ -2072,6 +2069,9 @@
       </trans-unit>
       <trans-unit id="8733206904097373941" datatype="html">
         <source>This will download an Excel file with all unused voucher(s).</source>
+      </trans-unit>
+      <trans-unit id="8734556310743051788" datatype="html">
+        <source>Request a password reset</source>
       </trans-unit>
       <trans-unit id="8747826357702572054" datatype="html">
         <source>Financial service providers:</source>
