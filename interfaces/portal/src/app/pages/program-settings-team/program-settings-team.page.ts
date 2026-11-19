@@ -29,6 +29,7 @@ import { AddProgramTeamUserDialogComponent } from '~/pages/program-settings-team
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 export interface AccessGroupAttribute {
@@ -195,6 +196,10 @@ export class ProgramSettingsTeamPageComponent {
         field: 'accessGroupsLabel',
         header: $localize`Access group`,
         class: 'w-1/3',
+        tooltip: {
+          message: $localize`Access groups are defined in the Registration data section of settings. You can limit the registrations your team member has access to by assigning the appropriate group.`,
+          trackingName: InfoTooltipTrackingName.programTeamTableAccessGroup,
+        },
       };
 
     return [

@@ -1902,6 +1902,9 @@
       <trans-unit id="8121141462865337916" datatype="html">
         <source>Phone number</source>
       </trans-unit>
+      <trans-unit id="8129562959836176355" datatype="html">
+        <source>Access groups are defined in the Registration data section of settings. You can limit the registrations your team member has access to by assigning the appropriate group.</source>
+      </trans-unit>
       <trans-unit id="8135595255350159325" datatype="html">
         <source>No Programs found</source>
       </trans-unit>
