@@ -8,6 +8,7 @@ import { KoboController } from '@121-service/src/kobo/kobo.controller';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboValidationService } from '@121-service/src/kobo/services/kobo.validation.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
+import { KoboCalculationTypeInferenceService } from '@121-service/src/kobo/services/kobo-calculation-type-inference.service';
 import { KoboImageService } from '@121-service/src/kobo/services/kobo-image.service';
 import { KoboSubmissionHelperService } from '@121-service/src/kobo/services/kobo-submission.helper.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
@@ -34,6 +35,7 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
     KoboValidationService,
     CustomHttpService,
     KoboSurveyProcessorService,
+    KoboCalculationTypeInferenceService,
     KoboSubmissionService,
     KoboSubmissionHelperService,
     KoboImageService,

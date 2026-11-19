@@ -357,6 +357,7 @@ exports[`Create program should post a program: Create program response for progr
       "id": 29,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboInferredType": null,
       "koboLabel": null,
       "label": {
         "am": "እድሜ",
@@ -377,6 +378,7 @@ exports[`Create program should post a program: Create program response for progr
       "id": 31,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboInferredType": null,
       "koboLabel": null,
       "label": {
         "en": "Bank Account Number",
@@ -398,6 +400,7 @@ exports[`Create program should post a program: Create program response for progr
       "id": 26,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboInferredType": null,
       "koboLabel": null,
       "label": {
         "am": "ስም",
@@ -418,6 +421,7 @@ exports[`Create program should post a program: Create program response for progr
       "id": 30,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboInferredType": null,
       "koboLabel": null,
       "label": {
         "am": "ጾታ",
@@ -453,6 +457,7 @@ exports[`Create program should post a program: Create program response for progr
       "id": 28,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboInferredType": null,
       "koboLabel": null,
       "label": {
         "am": "የመታውቂያ ቁጥር",
@@ -473,6 +478,7 @@ exports[`Create program should post a program: Create program response for progr
       "id": 27,
       "includeInTransactionExport": true,
       "isRequired": true,
+      "koboInferredType": null,
       "koboLabel": null,
       "label": {
         "am": "ስልክ ቁጥር",
@@ -877,6 +883,7 @@ exports[`Create program should post a program: Create program response for progr
       "id": 25,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboInferredType": null,
       "koboLabel": null,
       "label": {
         "en": "Address city",
@@ -896,6 +903,7 @@ exports[`Create program should post a program: Create program response for progr
       "id": 22,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboInferredType": null,
       "koboLabel": null,
       "label": {
         "en": "Address house number",
@@ -915,6 +923,7 @@ exports[`Create program should post a program: Create program response for progr
       "id": 23,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboInferredType": null,
       "koboLabel": null,
       "label": {
         "en": "Address house number addition",
@@ -934,6 +943,7 @@ exports[`Create program should post a program: Create program response for progr
       "id": 24,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboInferredType": null,
       "koboLabel": null,
       "label": {
         "en": "Address postal code",
@@ -953,6 +963,7 @@ exports[`Create program should post a program: Create program response for progr
       "id": 21,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboInferredType": null,
       "koboLabel": null,
       "label": {
         "en": "Address street",
@@ -972,6 +983,7 @@ exports[`Create program should post a program: Create program response for progr
       "id": 18,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboInferredType": null,
       "koboLabel": null,
       "label": {
         "en": "Full Name",
@@ -991,6 +1003,7 @@ exports[`Create program should post a program: Create program response for progr
       "id": 19,
       "includeInTransactionExport": false,
       "isRequired": true,
+      "koboInferredType": null,
       "koboLabel": null,
       "label": {
         "en": "Phone Number",
@@ -1012,6 +1025,7 @@ exports[`Create program should post a program: Create program response for progr
       "id": 20,
       "includeInTransactionExport": true,
       "isRequired": false,
+      "koboInferredType": null,
       "koboLabel": null,
       "label": {
         "en": "WhatsApp Nr.",
