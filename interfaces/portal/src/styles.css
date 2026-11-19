@@ -463,6 +463,18 @@ svg-icon svg {
   }
 
   .p-toast {
+    .p-toast-message-text {
+      @apply gap-0.25;
+    }
+
+    .p-toast-message-icon {
+      @apply relative top-1;
+    }
+
+    .p-toast-summary {
+      @apply font-semibold;
+    }
+
     .p-toast-close-button {
       @apply text-grey-700;
     }
