@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
+  FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -24,6 +25,8 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
+
+import { MAX_ACCESS_GROUP_LEVELS } from '@121-service/src/programs/access-group-levels/const/max-access-group-levels.const';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
@@ -45,6 +48,12 @@ import {
 } from '~/services/tracking/tracking.enums';
 import { TrackingService } from '~/services/tracking/tracking.service';
 import { generateFieldErrors } from '~/utils/form-validation';
+
+const FIRST_ACCESS_GROUP_LEVEL = 1;
+const ACCESS_GROUP_LEVELS = Array.from(
+  { length: MAX_ACCESS_GROUP_LEVELS },
+  (_, index) => index + FIRST_ACCESS_GROUP_LEVEL,
+);
 
 @Component({
   selector: 'app-add-program-team-user-dialog',
@@ -125,21 +134,15 @@ export class AddProgramTeamUserDialogComponent {
       validators: [Validators.pattern(/^\S*$/)],
       nonNullable: true,
     }),
-    accessGroupsValue: new FormGroup({
-      accessGroup1Value: new FormControl<null | string>(null),
-      accessGroup2Value: new FormControl<null | string>({
-        value: null,
-        disabled: true,
-      }),
-      accessGroup3Value: new FormControl<null | string>({
-        value: null,
-        disabled: true,
-      }),
-      accessGroup4Value: new FormControl<null | string>({
-        value: null,
-        disabled: true,
-      }),
-    }),
+    accessGroupsValue: new FormArray(
+      ACCESS_GROUP_LEVELS.map(
+        (level) =>
+          new FormControl<null | string>({
+            value: null,
+            disabled: level > FIRST_ACCESS_GROUP_LEVEL,
+          }),
+      ),
+    ),
   });
 
   formFieldErrors = generateFieldErrors(this.formGroup, {
@@ -208,16 +211,11 @@ export class AddProgramTeamUserDialogComponent {
       userValue?: number; // this is undefined when editing because the field is disabled
       rolesValue: string[];
       scopeValue: string;
-      accessGroupsValue: {
-        accessGroup1Value: null | string;
-        accessGroup2Value: null | string;
-        accessGroup3Value: null | string;
-        accessGroup4Value: null | string;
-      };
+      accessGroupsValue: (null | string)[];
     }) => {
       const accessGroups: ProgramUserAssignment['accessGroups'] = [];
 
-      for (const [index, value] of Object.values(accessGroupsValue).entries()) {
+      for (const [index, value] of accessGroupsValue.entries()) {
         const attribute =
           this.accessGroupsContext().accessGroupAttributes[index];
         if (value) {
@@ -281,25 +279,21 @@ export class AddProgramTeamUserDialogComponent {
       this.isFormPrefillPending.set(false);
     });
 
-    const {
-      accessGroup1Value,
-      accessGroup2Value,
-      accessGroup3Value,
-      accessGroup4Value,
-    } = this.formGroup.controls.accessGroupsValue.controls;
+    const accessGroupControls =
+      this.formGroup.controls.accessGroupsValue.controls;
 
-    this.enableAccessGroupControlOnlyWhenPreviousLevelIsSelected({
-      previousLevelControl: accessGroup1Value,
-      control: accessGroup2Value,
-    });
-    this.enableAccessGroupControlOnlyWhenPreviousLevelIsSelected({
-      previousLevelControl: accessGroup2Value,
-      control: accessGroup3Value,
-    });
-    this.enableAccessGroupControlOnlyWhenPreviousLevelIsSelected({
-      previousLevelControl: accessGroup3Value,
-      control: accessGroup4Value,
-    });
+    for (const [index, previousLevelControl] of accessGroupControls.entries()) {
+      const control = accessGroupControls.at(index + 1);
+
+      if (!control) {
+        continue;
+      }
+
+      this.enableAccessGroupControlOnlyWhenPreviousLevelIsSelected({
+        previousLevelControl,
+        control,
+      });
+    }
   }
 
   private enableAccessGroupControlOnlyWhenPreviousLevelIsSelected({
@@ -358,12 +352,9 @@ export class AddProgramTeamUserDialogComponent {
       userValue: userToEdit.id,
       rolesValue: userToEdit.roles.map(({ role }) => role),
       scopeValue: userToEdit.scope,
-      accessGroupsValue: {
-        accessGroup1Value: accessGroupValues.get(1) ?? null,
-        accessGroup2Value: accessGroupValues.get(2) ?? null,
-        accessGroup3Value: accessGroupValues.get(3) ?? null,
-        accessGroup4Value: accessGroupValues.get(4) ?? null,
-      },
+      accessGroupsValue: ACCESS_GROUP_LEVELS.map(
+        (level) => accessGroupValues.get(level) ?? null,
+      ),
     });
 
     this.formGroup.controls.userValue.disable();
