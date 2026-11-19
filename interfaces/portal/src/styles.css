@@ -464,7 +464,7 @@ svg-icon svg {
 
   .p-toast {
     .p-toast-message-text {
-      @apply gap-0.25;
+      @apply gap-0.5;
     }
 
     .p-toast-message-icon {
