@@ -1013,6 +1013,9 @@
       <trans-unit id="471816275243265264" datatype="html">
         <source>Location</source>
       </trans-unit>
+      <trans-unit id="4725981390022018964" datatype="html">
+        <source>Users with Admin role data access group is always set to all data and can&apos;t be changed.</source>
+      </trans-unit>
       <trans-unit id="4746344653872488527" datatype="html">
         <source>Export payment list</source>
       </trans-unit>

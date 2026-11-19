@@ -18,8 +18,10 @@ import { CardModule } from 'primeng/card';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
+import { InfoTooltipData } from '~/components/info-tooltip/info-tooltip.component';
 import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-program-settings/page-layout-program-settings.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import { QueryTableColumn } from '~/components/query-table/query-table.types';
@@ -44,6 +46,13 @@ type ProgramUserWithAccessGroupsLabel = {
 } & ProgramUserWithRolesLabel;
 
 const ACCESS_GROUPS_LABEL_SEPARATOR = ' / ';
+
+const ADMIN_ROLE_NAME: string = DefaultUserRole.Admin;
+
+const ADMIN_ACCESS_TO_ALL_GROUPS_TOOLTIP: InfoTooltipData = {
+  message: $localize`Users with Admin role data access group is always set to all data and can't be changed.`,
+  trackingName: InfoTooltipTrackingName.programTeamTableAccessGroupAdmin,
+};
 
 @Component({
   selector: 'app-program-settings-team',
@@ -200,6 +209,8 @@ export class ProgramSettingsTeamPageComponent {
           message: $localize`Access groups are defined in the Registration data section of settings. You can limit the registrations your team member has access to by assigning the appropriate group.`,
           trackingName: InfoTooltipTrackingName.programTeamTableAccessGroup,
         },
+        getCellTooltip: (programUser) =>
+          this.getAccessGroupsCellTooltip({ programUser }),
       };
 
     return [
@@ -301,6 +312,28 @@ export class ProgramSettingsTeamPageComponent {
     }
 
     return option.label ?? option.option;
+  }
+
+  private getAccessGroupsCellTooltip({
+    programUser,
+  }: {
+    programUser: ProgramUserWithAccessGroupsLabel;
+  }): InfoTooltipData | undefined {
+    const hasAccessToAllGroups = programUser.accessGroups.length === 0;
+
+    if (!hasAccessToAllGroups) {
+      return;
+    }
+
+    const hasAdminRole = programUser.roles.some(
+      ({ role }) => role === ADMIN_ROLE_NAME,
+    );
+
+    if (!hasAdminRole) {
+      return;
+    }
+
+    return ADMIN_ACCESS_TO_ALL_GROUPS_TOOLTIP;
   }
 
   openAddUserForm() {

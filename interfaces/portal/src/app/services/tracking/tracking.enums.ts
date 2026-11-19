@@ -114,6 +114,7 @@ export enum InfoTooltipTrackingName {
   programEnableScope = 'Program: Enable Scope',
   programTargetRegistrations = 'Program: Target Registrations',
   programTeamTableAccessGroup = 'Program Team Table: Access Group',
+  programTeamTableAccessGroupAdmin = 'Program Team Table: Access Group Admin',
 
   programValidationProcess = 'Program: Use validation Process',
   registrationPageTransferValue = 'Registration Page: Transfer Value Result',
