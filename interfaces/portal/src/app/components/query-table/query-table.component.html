@@ -313,6 +313,10 @@
                 {{ cellText }}
               }
             }
+            @let cellTooltip = column.getCellTooltip?.(item);
+            @if (cellTooltip) {
+              <app-info-tooltip [infoTooltipData]="cellTooltip" />
+            }
           }
         </td>
       }

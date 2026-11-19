@@ -24,6 +24,7 @@ class ProgramTeamPage extends BasePage {
   readonly editUserFormSubmitButton: Locator;
   readonly removeUserButton: Locator;
   readonly scopeColumn: Locator;
+  readonly accessGroupColumn: Locator;
   readonly accessGroupFormHeader: Locator;
   readonly ownAccessGroupsWarning: Locator;
   readonly openNewUserDialogButton: Locator;
@@ -51,9 +52,12 @@ class ProgramTeamPage extends BasePage {
       name: 'Remove user',
     });
     this.scopeColumn = this.page.getByRole('columnheader', { name: 'Scope' });
-    this.accessGroupFormHeader = this.page.getByText('Access group', {
-      exact: true,
+    this.accessGroupColumn = this.page.getByRole('columnheader', {
+      name: 'Access group',
     });
+    this.accessGroupFormHeader = this.page
+      .getByRole('alertdialog')
+      .getByText('Access group', { exact: true });
     this.ownAccessGroupsWarning = this.page.getByText(
       'Users cannot change their own access group levels',
     );
@@ -204,6 +208,30 @@ class ProgramTeamPage extends BasePage {
 
   async validateScopeColumnIsHidden() {
     await expect(this.scopeColumn).toBeHidden();
+  }
+
+  async validateAccessGroupColumnIsVisible() {
+    await expect(this.accessGroupColumn).toBeVisible();
+  }
+
+  async validateAccessGroupColumnIsHidden() {
+    await this.table.waitForLoaded();
+    await expect(this.accessGroupColumn).toBeHidden();
+  }
+
+  async validateAccessGroupOfUser({
+    userEmail,
+    accessGroup,
+  }: {
+    userEmail: string;
+    accessGroup: string;
+  }) {
+    const userRow = this.table.tableRows.filter({
+      has: this.page.getByRole('cell', { name: userEmail, exact: true }),
+    });
+    await expect(
+      userRow.getByRole('cell', { name: accessGroup, exact: true }),
+    ).toBeVisible();
   }
 }
 
