@@ -2,8 +2,9 @@ import { DebugAccessGroupHierarchy } from '@121-service/src/scripts/enum/debug-a
 
 export interface DebugAccessGroupHierarchyDefinition {
   readonly registrationAttributeNames: readonly string[];
-  // Paths to the lowest access group level; the higher levels are derived from these
-  readonly leafPaths: readonly string[];
+  // Paths to the lowest access group level; the higher levels are derived from these.
+  // Non-empty, so a random leaf path can always be picked
+  readonly leafPaths: readonly [string, ...string[]];
 }
 
 export const DEBUG_ACCESS_GROUP_HIERARCHIES = new Map<

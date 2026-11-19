@@ -90,10 +90,16 @@ export async function resetDB({
   }
 
   const accessToken = await getAccessToken();
-  await getServer()
+  const enableScopeResponse = await getServer()
     .patch(`/programs/${enableScopeForProgramId}`)
     .set('Cookie', [accessToken])
     .send({ enableScope: true });
+
+  if (enableScopeResponse.status !== HttpStatus.OK) {
+    throw new Error(
+      `Failed to enable scope for program ${enableScopeForProgramId}: ${enableScopeResponse.status} - ${JSON.stringify(enableScopeResponse.body)}`,
+    );
+  }
 
   return resetResponse;
 }

@@ -103,8 +103,11 @@ export class SeedAccessGroupService {
   }): DebugAccessGroupHierarchy | undefined {
     for (const [hierarchy, definition] of DEBUG_ACCESS_GROUP_HIERARCHIES) {
       if (
-        definition.registrationAttributeNames.join() ===
-        registrationAttributeNames.join()
+        definition.registrationAttributeNames.length ===
+          registrationAttributeNames.length &&
+        definition.registrationAttributeNames.every(
+          (name, index) => name === registrationAttributeNames[index],
+        )
       ) {
         return hierarchy;
       }
