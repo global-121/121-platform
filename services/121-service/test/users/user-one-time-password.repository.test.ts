@@ -180,6 +180,24 @@ describe('UserOneTimePasswordRepository', () => {
       const storedOneTimePassword = await getStoredOneTimePasswordOrThrow();
       expect(storedOneTimePassword.oneTimePassword).toBe(firstOneTimePassword);
     });
+
+    it('issues a new code within the cooldown when the previous code was already used', async () => {
+      // Arrange
+      await issueOneTimePassword({ oneTimePassword: firstOneTimePassword, issuedAt: issuedAtFirstOneTimePassword });
+      await consumeOneTimePassword({ oneTimePassword: firstOneTimePassword, consumedAt: withinCooldown });
+
+      // Act
+      const isIssued = await tryIssueOneTimePassword({
+        oneTimePassword: secondOneTimePassword,
+        issuedAt: withinCooldown,
+      });
+
+      // Assert
+      expect(isIssued).toBe(true);
+      const storedOneTimePassword = await getStoredOneTimePasswordOrThrow();
+      expect(storedOneTimePassword.oneTimePassword).toBe(secondOneTimePassword);
+      expect(storedOneTimePassword.consumedAt).toBeNull();
+    });
   });
 
   describe('when consuming a code', () => {
