@@ -24,6 +24,7 @@ import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-st
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
+import { nullableNumericColumnTransformer } from '@121-service/src/utils/nullable-numeric-column-transformer.const';
 
 @ViewEntity({
   name: 'transaction_view',
@@ -83,13 +84,7 @@ export class TransactionViewEntity {
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
 
-  @ViewColumn({
-    transformer: {
-      to: (value: number | null) => value,
-      from: (value: string | number | null) =>
-        value === null ? null : Number(value),
-    },
-  })
+  @ViewColumn({ transformer: nullableNumericColumnTransformer })
   public transferValue: number | null;
 
   @ViewColumn()

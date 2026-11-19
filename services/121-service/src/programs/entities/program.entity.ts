@@ -15,6 +15,7 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
+import { nullableNumericColumnTransformer } from '@121-service/src/utils/nullable-numeric-column-transformer.const';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 @Entity('program')
@@ -58,11 +59,7 @@ export class ProgramEntity extends Base121Entity {
     name: 'fixedTransferValueNumeric',
     nullable: true,
     type: 'numeric',
-    transformer: {
-      to: (value: number | null) => value,
-      from: (value: string | null) =>
-        value === null ? null : Number.parseFloat(value),
-    },
+    transformer: nullableNumericColumnTransformer,
   })
   public fixedTransferValue: number | null;
 
@@ -132,11 +129,7 @@ export class ProgramEntity extends Base121Entity {
     name: 'budgetNumeric',
     nullable: true,
     type: 'numeric',
-    transformer: {
-      to: (value: number | null) => value,
-      from: (value: string | null) =>
-        value === null ? null : Number.parseFloat(value),
-    },
+    transformer: nullableNumericColumnTransformer,
   })
   public budget: number | null;
 

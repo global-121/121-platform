@@ -1,13 +1,13 @@
 import {
-    Column,
-    Entity,
-    Index,
-    JoinColumn,
-    ManyToOne,
-    OneToMany,
-    OneToOne,
-    Relation,
-    Unique,
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  Relation,
+  Unique,
 } from 'typeorm';
 
 import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
@@ -16,6 +16,7 @@ import { LastTransactionEventEntity } from '@121-service/src/payments/transactio
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
+import { nullableNumericColumnTransformer } from '@121-service/src/utils/nullable-numeric-column-transformer.const';
 
 @Unique(['registrationId', 'paymentId'])
 @Entity('transaction')
@@ -38,11 +39,7 @@ export class TransactionEntity extends Base121AuditedEntity {
     name: 'transferValueNumeric',
     nullable: true,
     type: 'numeric',
-    transformer: {
-      to: (value: number | null) => value,
-      from: (value: string | null) =>
-        value === null ? null : Number.parseFloat(value),
-    },
+    transformer: nullableNumericColumnTransformer,
   })
   public transferValue: number | null;
 

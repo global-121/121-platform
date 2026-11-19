@@ -168,46 +168,58 @@ describe('Currency column synchronization during the compatibility period', () =
     expect(program.fixedTransferValueNumeric).toBe('234.56');
   });
 
-  it('should mirror budgets in both directions', async () => {
+  it('should mirror a numeric budget to the legacy column', async () => {
     // Act
-    const afterNumericWrite = await updateProgram({
+    const program = await updateProgram({
       column: 'budgetNumeric',
       value: '5000',
     });
-    const afterLegacyWrite = await updateProgram({
+
+    // Assert
+    expect(program.budget).toBe(5000);
+  });
+
+  it('should mirror a legacy budget to the numeric column', async () => {
+    // Act
+    const program = await updateProgram({
       column: 'budget',
       value: 7000,
     });
 
     // Assert
-    expect(afterNumericWrite.budget).toBe(5000);
-    expect(afterLegacyWrite.budgetNumeric).toBe('7000');
+    expect(program.budgetNumeric).toBe('7000');
   });
 
-  it('should reject a budget that does not fit the legacy integer column', async () => {
-    // Act & Assert
-    await expect(
-      updateProgram({ column: 'budgetNumeric', value: '12.5' }),
-    ).rejects.toThrow(/legacy integer range/);
-    await expect(
-      updateProgram({ column: 'budgetNumeric', value: '2147483648' }),
-    ).rejects.toThrow(/legacy integer range/);
-  });
+  it.each(['12.5', '2147483648'])(
+    'should reject budget %s because it does not fit the legacy integer column',
+    async (budget) => {
+      // Act & Assert
+      await expect(
+        updateProgram({ column: 'budgetNumeric', value: budget }),
+      ).rejects.toThrow(/legacy integer range/);
+    },
+  );
 
-  it('should mirror transaction transfer values in both directions', async () => {
+  it('should mirror a numeric transaction transfer value to the legacy column', async () => {
     // Act
-    const afterNumericWrite = await updateTransaction({
+    const transaction = await updateTransaction({
       column: 'transferValueNumeric',
       value: '123.456',
     });
-    const afterLegacyWrite = await updateTransaction({
+
+    // Assert
+    expect(transaction.transferValue).toBeCloseTo(123.456, 3);
+  });
+
+  it('should mirror a legacy transaction transfer value to the numeric column', async () => {
+    // Act
+    const transaction = await updateTransaction({
       column: 'transferValue',
       value: 234.56,
     });
 
     // Assert
-    expect(afterNumericWrite.transferValue).toBeCloseTo(123.456, 3);
-    expect(afterLegacyWrite.transferValueNumeric).toBe('234.56');
+    expect(transaction.transferValueNumeric).toBe('234.56');
   });
 
   it('should mirror numeric values to the legacy columns when a program is inserted', async () => {

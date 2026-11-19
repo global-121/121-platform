@@ -18,6 +18,7 @@ import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-st
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
+import { nullableNumericColumnTransformer } from '@121-service/src/utils/nullable-numeric-column-transformer.const';
 
 @ViewEntity({
   name: 'registration_view',
@@ -146,13 +147,7 @@ export class RegistrationViewEntity {
   @ViewColumn()
   public paymentAmountMultiplier: number;
 
-  @ViewColumn({
-    transformer: {
-      to: (value: number | null) => value,
-      from: (value: string | number | null) =>
-        value === null ? null : Number(value),
-    },
-  })
+  @ViewColumn({ transformer: nullableNumericColumnTransformer })
   public transferValue: number | null;
 
   @ViewColumn()

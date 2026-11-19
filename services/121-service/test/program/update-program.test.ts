@@ -107,4 +107,19 @@ describe('Update program', () => {
     );
     expect(getProgramResponse.body.fullnameNamingConvention).toStrictEqual([]);
   });
+
+  it.each([-1, 12.5, 2147483648])(
+    'should not be able to update a program with budget %p',
+    async (budget) => {
+      // Act
+      const updateProgramResponse = await patchProgram(
+        2,
+        { budget },
+        accessToken,
+      );
+
+      // Assert
+      expect(updateProgramResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    },
+  );
 });
