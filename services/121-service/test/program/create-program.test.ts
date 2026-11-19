@@ -407,4 +407,30 @@ describe('Create program', () => {
       expect(createProgramResponse.statusCode).toBe(HttpStatus.FORBIDDEN);
     },
   );
+
+  it.each([-1, 12.5, 2147483648])(
+    'should not be able to post a program with budget %p',
+    async (budget) => {
+      // Act
+      const createProgramResponse = await postProgram(
+        { titlePortal: { en: 'Test Title' }, currency: CurrencyCode.EUR, budget },
+        accessToken,
+      );
+
+      // Assert
+      expect(createProgramResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    },
+  );
+
+  it('should post a program with a budget of zero', async () => {
+    // Act
+    const createProgramResponse = await postProgram(
+      { titlePortal: { en: 'Test Title' }, currency: CurrencyCode.EUR, budget: 0 },
+      accessToken,
+    );
+
+    // Assert
+    expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
+    expect(createProgramResponse.body.budget).toBe(0);
+  });
 });

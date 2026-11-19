@@ -15,6 +15,7 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
+import { nullableNumericColumnTransformer } from '@121-service/src/utils/nullable-numeric-column-transformer.const';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 @Entity('program')
@@ -44,7 +45,22 @@ export class ProgramEntity extends Base121Entity {
   @Column({ type: 'integer', nullable: true })
   public distributionDuration: number | null;
 
-  @Column({ nullable: true, type: 'real' })
+  @Column({
+    name: 'fixedTransferValue',
+    nullable: true,
+    select: false,
+    insert: false,
+    update: false,
+    type: 'real',
+  })
+  public fixedTransferValueLegacy?: number | null;
+
+  @Column({
+    name: 'fixedTransferValueNumeric',
+    nullable: true,
+    type: 'numeric',
+    transformer: nullableNumericColumnTransformer,
+  })
   public fixedTransferValue: number | null;
 
   @Column({ type: 'character varying', nullable: true })
@@ -98,7 +114,23 @@ export class ProgramEntity extends Base121Entity {
   @Column({ default: false })
   public enableScope: boolean;
 
-  @Column({ nullable: true, default: null, type: 'integer' })
+  @Column({
+    name: 'budget',
+    nullable: true,
+    default: null,
+    select: false,
+    insert: false,
+    update: false,
+    type: 'integer',
+  })
+  public budgetLegacy?: number | null;
+
+  @Column({
+    name: 'budgetNumeric',
+    nullable: true,
+    type: 'numeric',
+    transformer: nullableNumericColumnTransformer,
+  })
   public budget: number | null;
 
   @OneToMany(() => PaymentEntity, (payment) => payment.program)
