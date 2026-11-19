@@ -102,6 +102,12 @@
   },
   {
     "method": "post",
+    "path": "/api/users/machine-users",
+    "params": [],
+    "returnType": "CreateMachineUserResponseDto"
+  },
+  {
+    "method": "post",
     "path": "/api/users/login",
     "params": []
   },
