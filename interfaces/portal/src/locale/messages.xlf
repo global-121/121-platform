@@ -742,6 +742,9 @@
       <trans-unit id="3869416404290728263" datatype="html">
         <source>Select at least one user.</source>
       </trans-unit>
+      <trans-unit id="3870070853083483591" datatype="html">
+        <source>The data access group for users with Admin role is always set to all data and can&apos;t be changed.</source>
+      </trans-unit>
       <trans-unit id="3871260480214506166" datatype="html">
         <source>Showing [first] to [last] of [totalRecords] records</source>
         <note priority="1" from="description">The contents of the square brackets should not be touched/changed</note>
@@ -1012,9 +1015,6 @@
       </trans-unit>
       <trans-unit id="471816275243265264" datatype="html">
         <source>Location</source>
-      </trans-unit>
-      <trans-unit id="4725981390022018964" datatype="html">
-        <source>Users with Admin role data access group is always set to all data and can&apos;t be changed.</source>
       </trans-unit>
       <trans-unit id="4746344653872488527" datatype="html">
         <source>Export payment list</source>

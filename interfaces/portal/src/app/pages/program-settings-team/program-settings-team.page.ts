@@ -50,7 +50,7 @@ const ACCESS_GROUPS_LABEL_SEPARATOR = ' / ';
 const ADMIN_ROLE_NAME: string = DefaultUserRole.Admin;
 
 const ADMIN_ACCESS_TO_ALL_GROUPS_TOOLTIP: InfoTooltipData = {
-  message: $localize`Users with Admin role data access group is always set to all data and can't be changed.`,
+  message: $localize`The data access group for users with Admin role is always set to all data and can't be changed.`,
   trackingName: InfoTooltipTrackingName.programTeamTableAccessGroupAdmin,
 };
 
