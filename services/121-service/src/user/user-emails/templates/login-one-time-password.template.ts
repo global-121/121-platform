@@ -1,12 +1,13 @@
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
 import { LoginOneTimePasswordEmailInput } from '@121-service/src/user/user-emails/interfaces/login-one-time-password-email-input.interface';
+import { LOGIN_ONE_TIME_PASSWORD_EMAIL_SUBJECT } from '@121-service/src/user/user-emails/user-emails.const';
 
 export const buildTemplateLoginOneTimePassword = (
   userEmailInput: LoginOneTimePasswordEmailInput,
 ): EmailTemplate => {
   const { recipientName, oneTimePassword, expirationMinutes } = userEmailInput;
 
-  const subject = 'Your 121 Portal sign-in code';
+  const subject = LOGIN_ONE_TIME_PASSWORD_EMAIL_SUBJECT;
   const body = `
     <p>Hi ${recipientName},</p>
     <p>Use the code below to sign in to the 121 Portal:</p>
