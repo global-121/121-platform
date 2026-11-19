@@ -29,11 +29,10 @@
 </p>
 
 <ng-container [formGroup]="form">
-  <ng-container formGroupName="accessGroupsValue">
-    @if (accessGroupAttributes()[0]) {
-      @let attribute = accessGroupAttributes()[0];
+  <ng-container formArrayName="accessGroupsValue">
+    @for (attribute of accessGroupAttributes(); track attribute.name) {
       <app-form-field-wrapper
-        label="Level 1:"
+        label="Level {{ attribute.level }}:"
         i18n-label
       >
         <ng-container slot="label-extra-inline">
@@ -46,94 +45,8 @@
           [optionLabel]="'label'"
           [optionValue]="'option'"
           [filter]="true"
-          formControlName="accessGroup1Value"
-          placeholder="Type or select"
-          i18n-placeholder="@@generic-type-or-select"
-          [showClear]="true"
-          [disabled]="userIsUpdatingItself()"
-        >
-          <ng-template #emptyfilter>
-            <app-select-no-results-message />
-          </ng-template>
-        </p-select>
-      </app-form-field-wrapper>
-    }
-
-    @if (accessGroupAttributes()[1]) {
-      @let attribute = accessGroupAttributes()[1];
-      <app-form-field-wrapper
-        label="Level 2:"
-        i18n-label
-      >
-        <ng-container slot="label-extra-inline">
-          <span>
-            {{ attribute.label }}
-          </span>
-        </ng-container>
-        <p-select
-          [options]="attribute.options"
-          [optionLabel]="'label'"
-          [optionValue]="'option'"
-          [filter]="true"
-          formControlName="accessGroup2Value"
-          placeholder="Type or select"
-          i18n-placeholder="@@generic-type-or-select"
-          [showClear]="true"
-          [disabled]="userIsUpdatingItself()"
-        >
-          <ng-template #emptyfilter>
-            <app-select-no-results-message />
-          </ng-template>
-        </p-select>
-      </app-form-field-wrapper>
-    }
-
-    @if (accessGroupAttributes()[2]) {
-      @let attribute = accessGroupAttributes()[2];
-      <app-form-field-wrapper
-        label="Level 3:"
-        i18n-label
-      >
-        <ng-container slot="label-extra-inline">
-          <span>
-            {{ attribute.label }}
-          </span>
-        </ng-container>
-        <p-select
-          [options]="attribute.options"
-          [optionLabel]="'label'"
-          [optionValue]="'option'"
-          [filter]="true"
-          formControlName="accessGroup3Value"
-          placeholder="Type or select"
-          i18n-placeholder="@@generic-type-or-select"
-          [showClear]="true"
-          [disabled]="userIsUpdatingItself()"
-        >
-          <ng-template #emptyfilter>
-            <app-select-no-results-message />
-          </ng-template>
-        </p-select>
-      </app-form-field-wrapper>
-    }
-
-    @if (accessGroupAttributes()[3]) {
-      @let attribute = accessGroupAttributes()[3];
-      <app-form-field-wrapper
-        label="Level 4:"
-        i18n-label
-      >
-        <ng-container slot="label-extra-inline">
-          <span>
-            {{ attribute.label }}
-          </span>
-        </ng-container>
-        <p-select
-          [options]="attribute.options"
-          [optionLabel]="'label'"
-          [optionValue]="'option'"
-          [filter]="true"
-          formControlName="accessGroup4Value"
+          [formControlName]="$index"
+          [attr.data-testid]="`access-group-level-${attribute.level}`"
           placeholder="Type or select"
           i18n-placeholder="@@generic-type-or-select"
           [showClear]="true"
