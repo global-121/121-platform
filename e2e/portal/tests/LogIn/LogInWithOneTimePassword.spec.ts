@@ -31,18 +31,20 @@ test.beforeEach(async ({ onlyResetAndSeedRegistrations }) => {
 test('[Admin] Log in with a one-time password received by email', async ({
   loginPage,
 }) => {
+  let oneTimePassword: string;
+
   await test.step('Request a one-time password', async () => {
     await loginPage.requestOneTimePassword({ email: adminEmail });
   });
 
-  const oneTimePassword =
-    await test.step('Read the one-time password from the email', async () => {
-      const email = await waitForEmail({
-        recipient: adminEmail,
-        subject: LOGIN_ONE_TIME_PASSWORD_EMAIL_SUBJECT,
-      });
-      return extractOneTimePassword({ html: email.HTML });
+  await test.step('Read the one-time password from the email', async () => {
+    const email = await waitForEmail({
+      recipient: adminEmail,
+      subject: LOGIN_ONE_TIME_PASSWORD_EMAIL_SUBJECT,
     });
+
+    oneTimePassword = extractOneTimePassword({ html: email.HTML });
+  });
 
   await test.step('Log in with the one-time password', async () => {
     await loginPage.loginWithOneTimePassword({ oneTimePassword });
