@@ -1,6 +1,6 @@
 <app-page-layout-monitoring [programId]="programId()">
   <app-query-table
-    [items]="programAttachments.data() ?? []"
+    [items]="attachmentTableRows()"
     [isPending]="programAttachments.isPending()"
     [columns]="columns()"
     localStorageKey="program-monitoring-files-table"

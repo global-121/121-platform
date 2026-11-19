@@ -38,17 +38,23 @@ import { ProgramApiService } from '~/domains/program/program.api.service';
 import {
   PROGRAM_ATTACHMENT_FILE_TYPE_ICONS,
   PROGRAM_ATTACHMENT_FILE_TYPE_LABELS,
+  programHasAccessGroups,
 } from '~/domains/program/program.helper';
 import {
   ProgramAttachment,
   ProgramAttachmentFileType,
 } from '~/domains/program/program.model';
 import { MonitoringUploadFileDialogComponent } from '~/pages/program-monitoring-files/components/monitoring-upload-file-dialog/monitoring-upload-file-dialog.component';
+import { AccessGroupLabelService } from '~/services/access-group-label.service';
 import { AuthService } from '~/services/auth.service';
 import { DownloadService } from '~/services/download.service';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 import { getUniqueUserOptions } from '~/utils/unique-users';
+
+type ProgramAttachmentTableRow = {
+  accessGroupLabel: string;
+} & ProgramAttachment;
 
 @Component({
   selector: 'app-program-monitoring-files',
@@ -76,12 +82,40 @@ export class ProgramMonitoringFilesPageComponent {
   readonly downloadService = inject(DownloadService);
   readonly programApiService = inject(ProgramApiService);
   readonly toastService = inject(ToastService);
+  readonly accessGroupLabelService = inject(AccessGroupLabelService);
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
   readonly enableScope = computed(() => this.program.data()?.enableScope);
+  readonly accessGroupLevels = injectQuery(() => ({
+    ...this.programApiService.getAccessGroupLevels({
+      programId: this.programId,
+    })(),
+    enabled: this.authService.hasPermission({
+      programId: this.programId(),
+      requiredPermission: PermissionEnum.ProgramREAD,
+    }),
+  }));
+  readonly hasAccessGroups = computed(() =>
+    programHasAccessGroups({
+      accessGroupRegistrationAttributeNames:
+        this.accessGroupLevels.data()?.accessGroupRegistrationAttributeNames,
+    }),
+  );
 
   programAttachments = injectQuery(
     this.programApiService.getProgramAttachments(this.programId),
+  );
+
+  readonly attachmentTableRows = computed<ProgramAttachmentTableRow[]>(() =>
+    (this.programAttachments.data() ?? []).map((attachment) => ({
+      ...attachment,
+      accessGroupLabel:
+        this.accessGroupLabelService.getAccessGroupLabel({
+          programRegistrationAttributes:
+            this.program.data()?.programRegistrationAttributes ?? [],
+          accessGroups: attachment.accessGroups,
+        }) ?? '',
+    })),
   );
 
   readonly selectedFile = signal<null | ProgramAttachment>(null);
@@ -159,14 +193,14 @@ export class ProgramMonitoringFilesPageComponent {
   }));
 
   readonly columns = computed(() => {
-    const scopeColumns: QueryTableColumn<ProgramAttachment>[] = [
+    const scopeColumns: QueryTableColumn<ProgramAttachmentTableRow>[] = [
       {
         field: 'scope',
         header: $localize`:@@attribute-label-scope:Scope`,
       },
     ];
 
-    const baseColumns: QueryTableColumn<ProgramAttachment>[] = [
+    const baseColumns: QueryTableColumn<ProgramAttachmentTableRow>[] = [
       {
         field: 'fileType',
         header: $localize`File type`,
@@ -195,6 +229,13 @@ export class ProgramMonitoringFilesPageComponent {
         type: QueryTableColumnType.DATE,
       },
     ];
+
+    if (this.hasAccessGroups()) {
+      baseColumns.push({
+        field: 'accessGroupLabel',
+        header: $localize`Access group`,
+      });
+    }
 
     if (this.enableScope()) {
       return [...baseColumns, ...scopeColumns];
