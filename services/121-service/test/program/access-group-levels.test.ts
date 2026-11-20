@@ -7,6 +7,7 @@ import { CreateProgramRegistrationAttributeDto } from '@121-service/src/programs
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { getDebugScopeUsername } from '@121-service/src/scripts/helpers/debug-scope-username.helper';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import {
@@ -284,7 +285,8 @@ describe('Update program access group levels', () => {
     const allUsersResponse = await getAllUsers(accessToken);
     const users = allUsersResponse.body as { id: number; username: string }[];
     const uploaderUserId = users.find(
-      ({ username }) => username === `${DebugScope.Kisumu}@example.org`,
+      ({ username }) =>
+        username === getDebugScopeUsername({ scope: DebugScope.Kisumu }),
     )!.id;
     await assignUserToProgram({
       programId,

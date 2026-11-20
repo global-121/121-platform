@@ -22,6 +22,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     programId: programIdPV,
     registrations: [registrationPV5],
     navigateToPage: `/program/${programIdPV}/settings/registration-data`,
+    enableScopeForProgramId: programIdPV,
   });
 });
 
@@ -36,6 +37,8 @@ const allRequiredAttributesFromSeed = [
   'addressHouseNumberAddition',
   'addressPostalCode',
   'addressCity',
+  'province',
+  'municipality',
 ];
 
 const allRequiredFspsFromSeed = [

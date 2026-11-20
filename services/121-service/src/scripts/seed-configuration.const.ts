@@ -1,3 +1,4 @@
+import { DebugAccessGroupHierarchy } from '@121-service/src/scripts/enum/debug-access-group-hierarchy.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { demoMessageTemplates } from '@121-service/src/seed-data/message-template/demo-message-template-mobile-money.const';
@@ -19,6 +20,7 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
       {
         program: 'program-nlrc-pv.json',
         messageTemplate: messageTemplateNlrcPv,
+        debugAccessGroupHierarchy: DebugAccessGroupHierarchy.netherlands,
       },
       {
         program: 'program-nlrc-ocw.json',
@@ -26,6 +28,7 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
       },
     ],
     includeDebugScopes: true,
+    includeDebugAccessGroups: true,
     firstProgramId: 2,
   },
   {
@@ -34,6 +37,7 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
       {
         program: 'program-nlrc-pv.json',
         messageTemplate: messageTemplateNlrcPv,
+        debugAccessGroupHierarchy: DebugAccessGroupHierarchy.netherlands,
       },
       {
         program: 'program-nlrc-ocw.json',
@@ -41,6 +45,7 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
       },
     ],
     includeDebugScopes: true,
+    includeDebugAccessGroups: true,
     includeMockData: true,
     firstProgramId: 2,
   },

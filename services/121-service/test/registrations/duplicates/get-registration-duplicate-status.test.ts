@@ -27,7 +27,10 @@ describe('Get duplicate status of registrations', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB({ seedScript: SeedScript.nlrcMultiple });
+    await resetDB({
+      seedScript: SeedScript.nlrcMultiple,
+      enableScopeForProgramId: programId,
+    });
 
     accessToken = await getAccessToken();
   });
