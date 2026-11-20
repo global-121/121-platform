@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TelemetryClient } from 'applicationinsights';
-import { SeverityLevel } from 'applicationinsights/out/Declarations/Contracts';
+import { KnownSeverityLevel as SeverityLevel, TelemetryClient } from 'applicationinsights';
 
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
@@ -14,7 +13,7 @@ jest.mock('applicationinsights', () => {
       trackEvent: jest.fn(),
       flush: jest.fn(),
     },
-    SeverityLevel: actual.SeverityLevel,
+    KnownSeverityLevel: actual.KnownSeverityLevel,
   };
 });
 
@@ -162,6 +161,22 @@ describe('AzureLogService', () => {
       const logErrorCall = () => service.logError(testError, false);
       expect(logErrorCall).not.toThrow();
 
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'An error occurred in AzureLogService::flushLogs:',
+        flushError,
+      );
+    });
+
+    it('should report asynchronous flush failures without rejecting the application operation', async () => {
+      // Arrange
+      const flushError = new Error('Async flush failed');
+      mockTelemetryClient.flush.mockRejectedValueOnce(flushError);
+
+      // Act
+      service.logError(new Error('Application failure'), false);
+      await Promise.resolve();
+
+      // Assert
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'An error occurred in AzureLogService::flushLogs:',
         flushError,
