@@ -65,9 +65,7 @@ jest.mock('nestjs-paginate', () => ({
 describe('PaymentsReportingService - getTransactions', () => {
   let service: PaymentsReportingService;
   let transactionScopedRepository: Mocked<TransactionViewScopedRepository>;
-  let registrationPaginationService: Mocked<
-    Mocked<RegistrationsPaginationService>
-  >;
+  let registrationPaginationService: Mocked<RegistrationsPaginationService>;
   let programRegistrationAttributeRepository: Mocked<ProgramRegistrationAttributeRepository>;
   let paymentsHelperService: Mocked<PaymentsReportingHelperService>;
   let paymentRepository: Mocked<PaymentRepository>;
