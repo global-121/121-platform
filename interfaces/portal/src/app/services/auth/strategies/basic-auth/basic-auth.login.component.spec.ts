@@ -6,6 +6,11 @@ import { ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS } from '@121-service/src/user/use
 
 import { BasicAuthLoginComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login.component';
 import { setOneTimePasswordRequestInSessionStorage } from '~/services/auth/strategies/basic-auth/one-time-password-request-storage';
+import {
+  TrackingAction,
+  TrackingCategory,
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 describe('Requesting a one-time login code', () => {
   const email = 'test@example.com';
@@ -19,6 +24,11 @@ describe('Requesting a one-time login code', () => {
     sessionStorage.clear();
     vi.useFakeTimers();
     vi.setSystemTime(now);
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: TrackingService, useValue: { trackEvent: vi.fn() } },
+      ],
+    });
     component = createComponent();
   });
 
@@ -134,6 +144,84 @@ describe('Requesting a one-time login code', () => {
     expect(componentAfterReload.oneTimePasswordRequest()).toEqual({
       email,
       requestedAt: later,
+    });
+  });
+});
+
+describe('Tracking the login flow', () => {
+  const email = 'test@example.com';
+  let component: BasicAuthLoginComponent;
+  let mockTrackingService: { trackEvent: ReturnType<typeof vi.fn> };
+
+  beforeEach(() => {
+    sessionStorage.clear();
+    mockTrackingService = { trackEvent: vi.fn() };
+    TestBed.configureTestingModule({
+      providers: [{ provide: TrackingService, useValue: mockTrackingService }],
+    });
+    component = TestBed.runInInjectionContext(
+      () => new BasicAuthLoginComponent(),
+    );
+  });
+
+  afterEach(() => {
+    sessionStorage.clear();
+  });
+
+  it('should track a code request from the email step', () => {
+    // Act
+    component.onOneTimePasswordRequested({ email });
+
+    // Assert
+    expect(mockTrackingService.trackEvent).toHaveBeenCalledWith({
+      category: TrackingCategory.logIn,
+      action: TrackingAction.submitRequestCode,
+    });
+  });
+
+  it('should track a new code request from the code step', () => {
+    // Arrange
+    component.onOneTimePasswordRequested({ email });
+    mockTrackingService.trackEvent.mockClear();
+
+    // Act
+    component.onOneTimePasswordRequested({ email });
+
+    // Assert
+    expect(mockTrackingService.trackEvent).toHaveBeenCalledWith({
+      category: TrackingCategory.logIn,
+      action: TrackingAction.submitRequestNewCode,
+    });
+  });
+
+  it('should track switching to password login, including the step it came from', () => {
+    // Arrange
+    component.onOneTimePasswordRequested({ email });
+
+    // Act
+    component.onPasswordInstead({ email });
+
+    // Assert
+    expect(component.step()).toBe(component.LoginStep.password);
+    expect(mockTrackingService.trackEvent).toHaveBeenCalledWith({
+      category: TrackingCategory.logIn,
+      action: TrackingAction.clickLogInWithPasswordInsteadButton,
+      name: 'From Code Step',
+    });
+  });
+
+  it('should track switching to one-time code login', () => {
+    // Arrange
+    component.onPasswordInstead({ email });
+
+    // Act
+    component.onOneTimePasswordInstead({ email });
+
+    // Assert
+    expect(component.step()).toBe(component.LoginStep.email);
+    expect(mockTrackingService.trackEvent).toHaveBeenCalledWith({
+      category: TrackingCategory.logIn,
+      action: TrackingAction.clickLogInWithCodeInsteadButton,
     });
   });
 });

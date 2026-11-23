@@ -22,6 +22,11 @@ import { FormDefaultComponent } from '~/components/form-default/form-default.com
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { AuthService } from '~/services/auth.service';
 import { LoginMethod } from '~/services/auth/login-method.enum';
+import {
+  TrackingAction,
+  TrackingCategory,
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 type LoginPasswordStepFormGroup =
@@ -42,6 +47,7 @@ type LoginPasswordStepFormGroup =
 })
 export class BasicAuthLoginPasswordStepComponent implements OnInit {
   private authService = inject(AuthService);
+  private trackingService = inject(TrackingService);
   readonly email = input.required<string>();
   readonly returnUrl = input<string | undefined>(undefined);
   readonly oneTimePasswordInstead = output<{ email: string }>();
@@ -72,6 +78,20 @@ export class BasicAuthLoginPasswordStepComponent implements OnInit {
         { method: LoginMethod.password, username: email, password },
         this.returnUrl(),
       ),
+    onSuccess: () => {
+      this.trackingService.trackEvent({
+        category: TrackingCategory.logIn,
+        action: TrackingAction.submitLogInWithPassword,
+        name: 'Success',
+      });
+    },
+    onError: () => {
+      this.trackingService.trackEvent({
+        category: TrackingCategory.logIn,
+        action: TrackingAction.submitLogInWithPassword,
+        name: 'Failure',
+      });
+    },
   }));
 
   ngOnInit(): void {

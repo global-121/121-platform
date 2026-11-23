@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
   input,
   signal,
 } from '@angular/core';
@@ -15,6 +16,11 @@ import {
   OneTimePasswordRequest,
   setOneTimePasswordRequestInSessionStorage,
 } from '~/services/auth/strategies/basic-auth/one-time-password-request-storage';
+import {
+  TrackingAction,
+  TrackingCategory,
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 enum LoginStep {
   email = 'email',
@@ -33,6 +39,7 @@ enum LoginStep {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BasicAuthLoginComponent {
+  private readonly trackingService = inject(TrackingService);
   readonly returnUrl = input<string | undefined>(undefined);
 
   readonly LoginStep = LoginStep;
@@ -44,6 +51,14 @@ export class BasicAuthLoginComponent {
   );
 
   onOneTimePasswordRequested({ email }: { email: string }): void {
+    this.trackingService.trackEvent({
+      category: TrackingCategory.logIn,
+      action:
+        this.step() === LoginStep.oneTimePassword
+          ? TrackingAction.submitRequestNewCode
+          : TrackingAction.submitRequestCode,
+    });
+
     if (!this.isWithinOneTimePasswordCooldown({ email })) {
       const oneTimePasswordRequest = { email, requestedAt: Date.now() };
       this.oneTimePasswordRequest.set(oneTimePasswordRequest);
@@ -63,6 +78,26 @@ export class BasicAuthLoginComponent {
       Date.now() - oneTimePasswordRequest.requestedAt <
         ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS
     );
+  }
+
+  onPasswordInstead({ email }: { email: string }): void {
+    this.trackingService.trackEvent({
+      category: TrackingCategory.logIn,
+      action: TrackingAction.clickLogInWithPasswordInsteadButton,
+      name:
+        this.step() === LoginStep.oneTimePassword
+          ? 'From Code Step'
+          : 'From Email Step',
+    });
+    this.goToStep({ step: LoginStep.password, email });
+  }
+
+  onOneTimePasswordInstead({ email }: { email: string }): void {
+    this.trackingService.trackEvent({
+      category: TrackingCategory.logIn,
+      action: TrackingAction.clickLogInWithCodeInsteadButton,
+    });
+    this.goToStep({ step: LoginStep.email, email });
   }
 
   goToStep({ step, email }: { step: LoginStep; email: string }): void {

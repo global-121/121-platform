@@ -3,9 +3,7 @@
     <app-basic-auth-login-email-step
       [email]="email()"
       (oneTimePasswordRequested)="onOneTimePasswordRequested($event)"
-      (passwordInstead)="
-        goToStep({ step: LoginStep.password, email: $event.email })
-      "
+      (passwordInstead)="onPasswordInstead($event)"
     />
   }
   @case (LoginStep.oneTimePassword) {
@@ -16,9 +14,7 @@
         [returnUrl]="returnUrl()"
         (oneTimePasswordRequested)="onOneTimePasswordRequested($event)"
         (changeEmail)="goToStep({ step: LoginStep.email, email: $event.email })"
-        (passwordInstead)="
-          goToStep({ step: LoginStep.password, email: $event.email })
-        "
+        (passwordInstead)="onPasswordInstead($event)"
       />
     }
   }
@@ -26,9 +22,7 @@
     <app-basic-auth-login-password-step
       [email]="email()"
       [returnUrl]="returnUrl()"
-      (oneTimePasswordInstead)="
-        goToStep({ step: LoginStep.email, email: $event.email })
-      "
+      (oneTimePasswordInstead)="onOneTimePasswordInstead($event)"
     />
   }
 }

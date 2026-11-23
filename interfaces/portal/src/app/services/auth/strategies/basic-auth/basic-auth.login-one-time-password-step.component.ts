@@ -40,6 +40,11 @@ import { AuthService } from '~/services/auth.service';
 import { LoginMethod } from '~/services/auth/login-method.enum';
 import { removeOneTimePasswordRequestFromSessionStorage } from '~/services/auth/strategies/basic-auth/one-time-password-request-storage';
 import { ToastService } from '~/services/toast.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+} from '~/services/tracking/tracking.enums';
+import { TrackingService } from '~/services/tracking/tracking.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 const CLOCK_TICK_MS = 1_000;
@@ -64,6 +69,7 @@ type LoginOneTimePasswordStepFormGroup =
 export class BasicAuthLoginOneTimePasswordStepComponent {
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
+  private trackingService = inject(TrackingService);
   private userApiService = inject(UserApiService);
   readonly email = input.required<string>();
   readonly oneTimePasswordRequestedAt = input.required<number>();
@@ -137,6 +143,18 @@ export class BasicAuthLoginOneTimePasswordStepComponent {
       ),
     onSuccess: () => {
       removeOneTimePasswordRequestFromSessionStorage();
+      this.trackingService.trackEvent({
+        category: TrackingCategory.logIn,
+        action: TrackingAction.submitLogInWithCode,
+        name: 'Success',
+      });
+    },
+    onError: () => {
+      this.trackingService.trackEvent({
+        category: TrackingCategory.logIn,
+        action: TrackingAction.submitLogInWithCode,
+        name: 'Failure',
+      });
     },
   }));
   requestNewOneTimePasswordMutation = injectMutation(() => ({
