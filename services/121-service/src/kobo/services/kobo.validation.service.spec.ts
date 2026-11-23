@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DataSource } from 'typeorm';
 
 import { env } from '@121-service/src/env';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
@@ -15,6 +14,7 @@ import { AccessGroupLevelRepository } from '@121-service/src/programs/access-gro
 import { AccessGroupLevelsService } from '@121-service/src/programs/access-group-levels/access-group-levels.service';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramAidworkerAssignmentAccessGroupRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment-access-group.repository';
+import { ProgramAttachmentAccessGroupRepository } from '@121-service/src/programs/program-attachments/program-attachment-access-group.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import {
@@ -833,8 +833,8 @@ describe('KoboValidationService', () => {
         const realAccessGroupLevelsService = new AccessGroupLevelsService(
           {} as AccessGroupLevelRepository,
           {} as RegistrationAttributeDataRepository,
-          {} as DataSource,
           {} as ProgramAidworkerAssignmentAccessGroupRepository,
+          {} as ProgramAttachmentAccessGroupRepository,
         );
 
         accessGroupLevelsService.isAccessGroupAttributeTypeViolated.mockImplementation(
