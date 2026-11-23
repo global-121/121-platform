@@ -21,9 +21,12 @@ Turn one oversized branch into a stack of small branches that together are ident
 
 ### 1. Preflight
 
-- `git status --porcelain` must be empty. Otherwise stop.
-- Note the original branch: `git branch --show-current`, and its SHA. Base is `git merge-base origin/main HEAD`. Do not fetch unless the user agrees; otherwise use the local ref.
-- Check the branch is up to date with main: `git rev-list --count HEAD..origin/main` (commits on main that the branch lacks). If above 0, the base is stale and chunks may not typecheck. Tell the user how far behind it is and use `ask_user` to choose: they rebase the original branch first and re-run (preferred; the skill never rewrites the original), or continue on the stale base and expect failures caused by the old base.
+Run `scripts/preflight.sh` once and read only its labelled output. Do not run the underlying git commands separately, and do not interpret raw or empty command output. It does not fetch; do not fetch unless the user agrees.
+
+- `verdict: READY`: note the `branch`, `sha` and `base` it printed and continue.
+- `verdict: BLOCKED`: report exactly the listed blockers and ask only about those. Never ask about a problem the script did not list.
+  - dirty working tree or detached HEAD: stop until the user fixes it.
+  - behind main: the base is stale and chunks may not typecheck. Use `ask_user` with a single question: the user rebases the original branch first and re-runs (preferred; the skill never rewrites the original), or continues on the stale base and expects failures caused by the old base.
 
 ### 2. Measure
 
