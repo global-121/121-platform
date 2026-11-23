@@ -2,6 +2,7 @@
 # Usage: measure.sh <base> <branch>
 # Prints changed lines per file (excluding generated files) and the total.
 set -euo pipefail
+cd "$(git rev-parse --show-toplevel)"
 
 base="${1:?base ref required}"
 branch="${2:?branch required}"

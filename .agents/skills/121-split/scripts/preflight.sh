@@ -2,6 +2,7 @@
 # Usage: preflight.sh
 # Prints labelled preflight facts and a final verdict line (READY or BLOCKED).
 set -uo pipefail
+cd "$(git rev-parse --show-toplevel)"
 
 if ! git rev-parse --verify --quiet origin/main >/dev/null; then
   echo "verdict:      BLOCKED"

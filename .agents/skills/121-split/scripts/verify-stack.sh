@@ -2,6 +2,7 @@
 # Usage: verify-stack.sh <original-branch> <last-stack-branch>
 # Fails if the tip of the stack differs from the original branch.
 set -euo pipefail
+cd "$(git rev-parse --show-toplevel)"
 
 original="${1:?original branch required}"
 tip="${2:?last stack branch required}"

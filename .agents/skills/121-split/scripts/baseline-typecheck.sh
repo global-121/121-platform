@@ -5,6 +5,7 @@
 # (CLEAN or ERRORS_EXIST). Errors found here exist on the original branch and are
 # not caused by the split.
 set -uo pipefail
+cd "$(git rev-parse --show-toplevel)"
 
 base="${1:?base ref required}"
 packages=("services/121-service" "services/mock-service" "interfaces/portal")
