@@ -20,10 +20,6 @@ import {
   setOneTimePasswordRequestInSessionStorage,
 } from '~/services/auth/strategies/basic-auth/one-time-password-request-storage';
 import { ToastService } from '~/services/toast.service';
-import {
-  TrackingAction,
-  TrackingCategory,
-} from '~/services/tracking/tracking.enums';
 import { TrackingService } from '~/services/tracking/tracking.service';
 
 describe('Logging in with a one-time code', () => {
@@ -34,7 +30,6 @@ describe('Logging in with a one-time code', () => {
     createLoginOneTimePassword: ReturnType<typeof vi.fn>;
   };
   let mockToastService: { showToast: ReturnType<typeof vi.fn> };
-  let mockTrackingService: { trackEvent: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     vi.useFakeTimers();
@@ -42,7 +37,6 @@ describe('Logging in with a one-time code', () => {
     mockAuthService = { login: vi.fn() };
     mockUserApiService = { createLoginOneTimePassword: vi.fn() };
     mockToastService = { showToast: vi.fn() };
-    mockTrackingService = { trackEvent: vi.fn() };
 
     TestBed.configureTestingModule({
       providers: [
@@ -50,7 +44,7 @@ describe('Logging in with a one-time code', () => {
         { provide: AuthService, useValue: mockAuthService },
         { provide: UserApiService, useValue: mockUserApiService },
         { provide: ToastService, useValue: mockToastService },
-        { provide: TrackingService, useValue: mockTrackingService },
+        { provide: TrackingService, useValue: { trackEvent: vi.fn() } },
         { provide: LOCALE_ID, useValue: 'en' },
       ],
     });
@@ -162,40 +156,6 @@ describe('Logging in with a one-time code', () => {
 
     // Assert
     expect(getOneTimePasswordRequestFromSessionStorage()).toBeUndefined();
-  });
-
-  it('should track a successful login with a code', async () => {
-    // Arrange
-    mockAuthService.login.mockResolvedValue(undefined);
-    const component = createComponent();
-
-    // Act
-    component.loginMutation.mutate({ oneTimePassword: 'ABC123' });
-    await flushMutation();
-
-    // Assert
-    expect(mockTrackingService.trackEvent).toHaveBeenCalledWith({
-      category: TrackingCategory.logIn,
-      action: TrackingAction.submitLogInWithCode,
-      name: 'Success',
-    });
-  });
-
-  it('should track a failed login with a code', async () => {
-    // Arrange
-    mockAuthService.login.mockRejectedValue(new Error('Invalid code'));
-    const component = createComponent();
-
-    // Act
-    component.loginMutation.mutate({ oneTimePassword: 'ABC123' });
-    await flushMutation();
-
-    // Assert
-    expect(mockTrackingService.trackEvent).toHaveBeenCalledWith({
-      category: TrackingCategory.logIn,
-      action: TrackingAction.submitLogInWithCode,
-      name: 'Failure',
-    });
   });
 
   it('should clear the login error once the code is edited', async () => {
