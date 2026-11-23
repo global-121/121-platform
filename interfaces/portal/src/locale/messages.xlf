@@ -140,6 +140,9 @@
       <trans-unit id="1605931510132805390" datatype="html">
         <source>There is a maximum of 1000 records per import. If you have more registrations to import, please split them into multiple files. The import takes about 1 minute per 100 records.</source>
       </trans-unit>
+      <trans-unit id="1616102757855967475" datatype="html">
+        <source>All</source>
+      </trans-unit>
       <trans-unit id="1618485249885407092" datatype="html">
         <source>For more information about how to integrate this FSP see the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
       </trans-unit>
@@ -444,9 +447,6 @@
       <trans-unit id="2701527640285744987" datatype="html">
         <source>Rename payment</source>
       </trans-unit>
-      <trans-unit id="2710194014504963782" datatype="html">
-        <source>Level 2:</source>
-      </trans-unit>
       <trans-unit id="2717935367210661025" datatype="html">
         <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>). Note: <x equiv-text="event.attributes.note" id="PH_3"/></source>
       </trans-unit>
@@ -739,6 +739,9 @@
       <trans-unit id="3869416404290728263" datatype="html">
         <source>Select at least one user.</source>
       </trans-unit>
+      <trans-unit id="3870070853083483591" datatype="html">
+        <source>The data access group for users with Admin role is always set to all data and can&apos;t be changed.</source>
+      </trans-unit>
       <trans-unit id="3871260480214506166" datatype="html">
         <source>Showing [first] to [last] of [totalRecords] records</source>
         <note priority="1" from="description">The contents of the square brackets should not be touched/changed</note>
@@ -875,9 +878,6 @@
       <trans-unit id="4231630870580628223" datatype="html">
         <source>Solution</source>
       </trans-unit>
-      <trans-unit id="424589506637617766" datatype="html">
-        <source>Level 4:</source>
-      </trans-unit>
       <trans-unit id="4249207548869932033" datatype="html">
         <source>Password reset successful</source>
       </trans-unit>
@@ -934,6 +934,9 @@
       </trans-unit>
       <trans-unit id="4421433274861560863" datatype="html">
         <source>Add a user to the 121 platform. Fill in the fields below to create a new user account.</source>
+      </trans-unit>
+      <trans-unit id="4463107665570790434" datatype="html">
+        <source>Level <x equiv-text="{{ attribute.level }}" id="INTERPOLATION"/>:</source>
       </trans-unit>
       <trans-unit id="4478569469579904965" datatype="html">
         <source>The note will be visible to other 121 users who are permitted to view personal profiles.</source>
@@ -1349,9 +1352,6 @@
       <trans-unit id="6041115344061899387" datatype="html">
         <source>Rename</source>
       </trans-unit>
-      <trans-unit id="604620400436672622" datatype="html">
-        <source>Level 1:</source>
-      </trans-unit>
       <trans-unit id="6057281094654962766" datatype="html">
         <source>Validate</source>
       </trans-unit>
@@ -1418,9 +1418,6 @@
       </trans-unit>
       <trans-unit id="6381578200008167206" datatype="html">
         <source>Include</source>
-      </trans-unit>
-      <trans-unit id="6392054863318745845" datatype="html">
-        <source>Level 3:</source>
       </trans-unit>
       <trans-unit id="6400478456082901749" datatype="html">
         <source>Add approval step</source>
@@ -1898,6 +1895,9 @@
       </trans-unit>
       <trans-unit id="8121141462865337916" datatype="html">
         <source>Phone number</source>
+      </trans-unit>
+      <trans-unit id="8129562959836176355" datatype="html">
+        <source>Access groups are defined in the Registration data section of settings. You can limit the registrations your team member has access to by assigning the appropriate group.</source>
       </trans-unit>
       <trans-unit id="8135595255350159325" datatype="html">
         <source>No Programs found</source>

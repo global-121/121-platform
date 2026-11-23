@@ -20,6 +20,7 @@ import { QueryTableRowExpansionService } from '~/components/query-table/services
 import { QueryTableSelectionService } from '~/components/query-table/services/query-table-selection.service';
 import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
+import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 import { TrackingService } from '~/services/tracking/tracking.service';
 import { Locale } from '~/utils/locale';
 
@@ -379,6 +380,52 @@ describe('QueryTableComponent', () => {
       expect(actionsHeaderCell.textContent).not.toBeNull();
       const headerText = actionsHeaderCell.textContent;
       expect(headerText).toContain('Actions');
+    });
+
+    it('renders an info tooltip only in the cells for which getCellTooltip returns tooltip data', () => {
+      const items: TestRow[] = [
+        {
+          id: 1,
+          registrationProgramId: 'P-001',
+          created: '2024-01-01T00:00:00Z',
+          status: 'pending',
+        },
+        {
+          id: 2,
+          registrationProgramId: 'P-002',
+          created: '2024-02-01T00:00:00Z',
+          status: 'completed',
+        },
+      ];
+      const idOfItemWithTooltip = 1;
+      const columns: QueryTableColumn<TestRow>[] = [
+        {
+          header: 'Registration ID',
+          field: 'registrationProgramId',
+          type: undefined,
+          getCellTooltip: (item) => {
+            if (item.id !== idOfItemWithTooltip) {
+              return;
+            }
+
+            return {
+              message: 'Cell tooltip',
+              trackingName: InfoTooltipTrackingName.programTeamTableAccessGroup,
+            };
+          },
+        },
+      ];
+
+      setComponentInputs({ items, columns });
+      fixture.detectChanges();
+
+      const hostElement = fixture.nativeElement as HTMLElement;
+      const rows = Array.from<HTMLTableRowElement>(
+        hostElement.querySelectorAll<HTMLTableRowElement>('tbody tr'),
+      );
+
+      expect(rows[0].querySelector('app-info-tooltip')).not.toBeNull();
+      expect(rows[1].querySelector('app-info-tooltip')).toBeNull();
     });
   });
 

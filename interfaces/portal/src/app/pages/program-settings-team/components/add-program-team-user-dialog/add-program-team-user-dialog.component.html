@@ -6,7 +6,7 @@
   [header]="dialogHeader()"
   [headerIcon]="dialogHeaderIcon()"
   [proceedLabel]="dialogProceedLabel()"
-  [confirmButtonDisabled]="confirmButtonDisabled()"
+  [confirmButtonDisabled]="isFormPrefillPending()"
 >
   <p class="mbe-4">
     @if (!isEditing()) {
@@ -25,110 +25,112 @@
       For more information see the <app-manual-link />.
     </ng-container>
   </p>
-  <app-form-field-wrapper
-    label="Select a user"
-    i18n-label
-    [errorMessage]="formFieldErrors()('userValue')"
-  >
-    <p-select
-      [options]="availableUsers()"
-      [optionLabel]="'username'"
-      [optionValue]="'id'"
-      [filter]="true"
-      formControlName="userValue"
-      placeholder="Type or select"
-      i18n-placeholder="@@generic-type-or-select"
-      [loading]="availableUsersIsLoading()"
-    >
-      <ng-template #empty>
-        <app-select-no-results-message
-          [message]="noUsersFoundMessage.message"
-          [title]="noUsersFoundMessage.title"
-        />
-      </ng-template>
-      <ng-template #emptyfilter>
-        <app-select-no-results-message />
-      </ng-template>
-    </p-select>
-  </app-form-field-wrapper>
-
-  <app-form-field-wrapper
-    label="Select role(s)"
-    i18n-label
-    [errorMessage]="formFieldErrors()('rolesValue')"
-  >
-    <p-multiSelect
-      [options]="roles.data()"
-      [optionLabel]="'label'"
-      [optionValue]="'role'"
-      formControlName="rolesValue"
-      placeholder="Type or select"
-      i18n-placeholder="@@generic-type-or-select"
-      [showToggleAll]="false"
-      [overlayOptions]="{
-        target: '@parent',
-      }"
-      [loading]="roles.isPending()"
-      [disabled]="userIsUpdatingItself()"
-    >
-      <ng-template #emptyfilter>
-        <app-select-no-results-message />
-      </ng-template>
-    </p-multiSelect>
-    @if (userIsUpdatingItself()) {
-      <ng-container slot="details">
-        <p
-          i18n
-          class="my-2"
-        >
-          Users cannot change their own roles
-        </p>
-        <p
-          i18n
-          class="my-2"
-        ></p>
-      </ng-container>
-    }
-  </app-form-field-wrapper>
-
-  @if (enableScope()) {
+  @if (!isFormPrefillPending()) {
     <app-form-field-wrapper
-      label="Assign scope*"
+      label="Select a user"
       i18n-label
-      [errorMessage]="formFieldErrors()('scopeValue')"
+      [errorMessage]="formFieldErrors()('userValue')"
     >
-      <input
-        pInputText
-        type="text"
-        formControlName="scopeValue"
-        autocomplete="off"
-        class="font-mono"
-      />
-      <ng-container slot="details">
-        <p
-          i18n
-          class="text-grey-500 txt-system-s mbs-2 mbe-1"
-        >
-          * Leaving this field empty means the team member will have access to
-          <strong>all registrations</strong>
-        </p>
-        <p
-          i18n
-          class="text-grey-500 txt-system-s"
-        >
-          * To use a subscope type a dot between the scope and subscope (e.g.
-          <code>amsterdam.west</code>)
-        </p>
-      </ng-container>
+      <p-select
+        [options]="availableUsers()"
+        [optionLabel]="'username'"
+        [optionValue]="'id'"
+        [filter]="true"
+        formControlName="userValue"
+        placeholder="Type or select"
+        i18n-placeholder="@@generic-type-or-select"
+        [loading]="availableUsersIsLoading()"
+      >
+        <ng-template #empty>
+          <app-select-no-results-message
+            [message]="noUsersFoundMessage.message"
+            [title]="noUsersFoundMessage.title"
+          />
+        </ng-template>
+        <ng-template #emptyfilter>
+          <app-select-no-results-message />
+        </ng-template>
+      </p-select>
     </app-form-field-wrapper>
-  }
 
-  @if (accessGroupAttributes().length > 0) {
-    <app-user-access-group-form
-      [programId]="programId()"
-      [accessGroupAttributes]="accessGroupAttributes()"
-      [userIsUpdatingItself]="userIsUpdatingItself()"
-      formGroupName="accessGroupsValue"
-    />
+    <app-form-field-wrapper
+      label="Select role(s)"
+      i18n-label
+      [errorMessage]="formFieldErrors()('rolesValue')"
+    >
+      <p-multiSelect
+        [options]="roles.data()"
+        [optionLabel]="'label'"
+        [optionValue]="'role'"
+        formControlName="rolesValue"
+        placeholder="Type or select"
+        i18n-placeholder="@@generic-type-or-select"
+        [showToggleAll]="false"
+        [overlayOptions]="{
+          target: '@parent',
+        }"
+        [loading]="roles.isPending()"
+        [disabled]="userIsUpdatingItself()"
+      >
+        <ng-template #emptyfilter>
+          <app-select-no-results-message />
+        </ng-template>
+      </p-multiSelect>
+      @if (userIsUpdatingItself()) {
+        <ng-container slot="details">
+          <p
+            i18n
+            class="my-2"
+          >
+            Users cannot change their own roles
+          </p>
+          <p
+            i18n
+            class="my-2"
+          ></p>
+        </ng-container>
+      }
+    </app-form-field-wrapper>
+
+    @if (enableScope()) {
+      <app-form-field-wrapper
+        label="Assign scope*"
+        i18n-label
+        [errorMessage]="formFieldErrors()('scopeValue')"
+      >
+        <input
+          pInputText
+          type="text"
+          formControlName="scopeValue"
+          autocomplete="off"
+          class="font-mono"
+        />
+        <ng-container slot="details">
+          <p
+            i18n
+            class="text-grey-500 txt-system-s mbs-2 mbe-1"
+          >
+            * Leaving this field empty means the team member will have access to
+            <strong>all registrations</strong>
+          </p>
+          <p
+            i18n
+            class="text-grey-500 txt-system-s"
+          >
+            * To use a subscope type a dot between the scope and subscope (e.g.
+            <code>amsterdam.west</code>)
+          </p>
+        </ng-container>
+      </app-form-field-wrapper>
+    }
+
+    @if (accessGroupsContext().enableAccessGroups) {
+      <app-user-access-group-form
+        [programId]="programId()"
+        [accessGroupAttributes]="accessGroupsContext().accessGroupAttributes"
+        [userIsUpdatingItself]="userIsUpdatingItself()"
+        formArrayName="accessGroupsValue"
+      />
+    }
   }
 </app-form-dialog>

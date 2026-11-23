@@ -22,7 +22,7 @@ import {
   InfoTooltipData,
 } from '~/components/info-tooltip/info-tooltip.component';
 import { SelectNoResultsMessageComponent } from '~/components/select-empty-message/select-no-results-message.component';
-import { AccessGroupAttribute } from '~/pages/program-settings-team/components/add-program-team-user-dialog/add-program-team-user-dialog.component';
+import { AccessGroupAttribute } from '~/pages/program-settings-team/program-settings-team.page';
 import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 
 @Component({
