@@ -106,7 +106,7 @@ class ProgramTeamPage extends BasePage {
   }
 
   getAccessGroupLevelDropdown({ level }: { level: AccessGroupLevel }) {
-    return this.page.locator(`[formControlName="accessGroup${level}Value"]`);
+    return this.page.getByTestId(`access-group-level-${level}`);
   }
 
   async setAccessGroupLevels({
