@@ -23,6 +23,7 @@ Turn one oversized branch into a stack of small branches that together are ident
 
 - `git status --porcelain` must be empty. Otherwise stop.
 - Note the original branch: `git branch --show-current`, and its SHA. Base is `git merge-base origin/main HEAD`. Do not fetch unless the user agrees; otherwise use the local ref.
+- Check the branch is up to date with main: `git rev-list --count HEAD..origin/main` (commits on main that the branch lacks). If above 0, the base is stale and chunks may not typecheck. Tell the user how far behind it is and use `ask_user` to choose: they rebase the original branch first and re-run (preferred; the skill never rewrites the original), or continue on the stale base and expect failures caused by the old base.
 
 ### 2. Measure
 
