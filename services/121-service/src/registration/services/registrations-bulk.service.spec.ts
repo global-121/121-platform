@@ -1,5 +1,5 @@
-import { TestBed } from '@automock/jest';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
@@ -18,8 +18,8 @@ describe('RegistrationBulkService', () => {
   const userId = 1;
 
   let registrationsBulkService: RegistrationsBulkService;
-  let queueMessageService: MessageQueuesService;
-  let registrationsPaginationService: RegistrationsPaginationService;
+  let queueMessageService: Mocked<MessageQueuesService>;
+  let registrationsPaginationService: Mocked<RegistrationsPaginationService>;
 
   const registrationMock = {
     namePartnerOrganization: 'testname',
@@ -34,7 +34,7 @@ describe('RegistrationBulkService', () => {
   };
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(
+    const { unit, unitRef } = await TestBed.solitary(
       RegistrationsBulkService,
     ).compile();
 

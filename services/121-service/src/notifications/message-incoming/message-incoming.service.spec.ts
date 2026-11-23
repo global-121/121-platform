@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import {
   TwilioIncomingCallbackDto,
@@ -10,19 +10,19 @@ import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-r
 
 describe('MessageIncomingService', () => {
   let messageIncomingService: MessageIncomingService;
-  let queuesService: QueuesRegistryService;
+  let queuesService: Mocked<QueuesRegistryService>;
 
-  beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(MessageIncomingService)
+  beforeEach(async () => {
+    const { unit, unitRef } = await TestBed.solitary(MessageIncomingService)
       .mock(QueuesRegistryService)
-      .using({
+      .impl((stub) => ({
         messageStatusCallbackQueue: {
-          add: jest.fn(),
+          add: stub(),
         },
         messageIncomingCallbackQueue: {
-          add: jest.fn(),
+          add: stub(),
         },
-      })
+      }))
       .compile();
 
     messageIncomingService = unit;

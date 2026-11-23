@@ -1,5 +1,5 @@
-import { TestBed } from '@automock/jest';
 import { HttpStatus } from '@nestjs/common';
+import { type Mocked, TestBed } from '@suites/unit';
 import { PaginateQuery } from 'nestjs-paginate';
 
 import { RegistrationsController } from '@121-service/src/registration/controllers/registrations.controller';
@@ -11,11 +11,13 @@ import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
 describe('RegistrationsController', () => {
   let registrationController: RegistrationsController;
-  let registrationsPaginationService: jest.Mocked<RegistrationsPaginationService>;
-  let registrationsBulkService: jest.Mocked<RegistrationsBulkService>;
+  let registrationsPaginationService: Mocked<RegistrationsPaginationService>;
+  let registrationsBulkService: Mocked<RegistrationsBulkService>;
 
-  beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(RegistrationsController).compile();
+  beforeEach(async () => {
+    const { unit, unitRef } = await TestBed.solitary(
+      RegistrationsController,
+    ).compile();
 
     registrationController = unit;
     registrationsPaginationService = unitRef.get(

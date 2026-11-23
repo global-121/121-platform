@@ -1,5 +1,5 @@
-import { TestBed } from '@automock/jest';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { type Mocked, TestBed } from '@suites/unit';
 import { Repository } from 'typeorm';
 
 import { env } from '@121-service/src/env';
@@ -28,18 +28,18 @@ const mockEnv = env as { TWILIO_MODE: string };
 
 describe('MessageQueuesService', () => {
   let queueMessageService: MessageQueuesService;
-  let queuesService: QueuesRegistryService;
-  let programRegistrationAttributesService: ProgramRegistrationAttributesService;
-  let messageTemplateRepository: Repository<MessageTemplateEntity>;
+  let queuesService: Mocked<QueuesRegistryService>;
+  let programRegistrationAttributesService: Mocked<ProgramRegistrationAttributesService>;
+  let messageTemplateRepository: Mocked<Repository<MessageTemplateEntity>>;
 
-  beforeAll(() => {
-    const { unit, unitRef } = TestBed.create(MessageQueuesService)
+  beforeAll(async () => {
+    const { unit, unitRef } = await TestBed.solitary(MessageQueuesService)
       .mock(QueuesRegistryService)
-      .using({
+      .impl((stub) => ({
         createMessageSmallBulkQueue: {
-          add: jest.fn(),
+          add: stub(),
         },
-      })
+      }))
       .compile();
 
     queueMessageService = unit;

@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 import { UpdateResult } from 'typeorm';
 
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
@@ -23,13 +23,13 @@ const mockedRegistration: RegistrationEntity = {
 
 describe('TransactionJobsHelperService', () => {
   let service: TransactionJobsHelperService;
-  let registrationScopedRepository: RegistrationScopedRepository;
-  let transactionsService: TransactionsService;
-  let messageTemplateService: MessageTemplateService;
-  let registrationsBulkService: RegistrationsBulkService;
+  let registrationScopedRepository: Mocked<RegistrationScopedRepository>;
+  let transactionsService: Mocked<TransactionsService>;
+  let messageTemplateService: Mocked<MessageTemplateService>;
+  let registrationsBulkService: Mocked<RegistrationsBulkService>;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(
+    const { unit, unitRef } = await TestBed.solitary(
       TransactionJobsHelperService,
     ).compile();
 

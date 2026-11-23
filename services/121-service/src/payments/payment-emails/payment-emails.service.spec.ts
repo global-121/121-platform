@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/emails.const';
 import { EmailsService } from '@121-service/src/emails/emails.service';
@@ -14,11 +14,12 @@ jest.mock('@121-service/src/env', () => ({
 
 describe('PaymentEmailsService', () => {
   let service: PaymentEmailsService;
-  let emailsService: jest.Mocked<EmailsService>;
-  let azureLogService: jest.Mocked<AzureLogService>;
+  let emailsService: Mocked<EmailsService>;
+  let azureLogService: Mocked<AzureLogService>;
 
-  beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(PaymentEmailsService).compile();
+  beforeEach(async () => {
+    const { unit, unitRef } =
+      await TestBed.solitary(PaymentEmailsService).compile();
     service = unit;
     emailsService = unitRef.get(EmailsService);
     azureLogService = unitRef.get(AzureLogService);

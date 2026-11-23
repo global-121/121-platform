@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 import { UpdateResult } from 'typeorm';
 
 import { SafaricomTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/safaricom/repositories/safaricom-transfer.scoped.repository';
@@ -11,14 +11,14 @@ import { TransactionsService } from '@121-service/src/payments/transactions/tran
 
 describe('TransactionJobsSafaricomService', () => {
   let service: TransactionJobsSafaricomService;
-  let safaricomService: SafaricomService;
-  let safaricomTransferScopedRepository: SafaricomTransferScopedRepository;
-  let transactionEventsScopedRepository: TransactionEventsScopedRepository;
-  let transactionJobsHelperService: TransactionJobsHelperService;
-  let transactionsService: TransactionsService;
+  let safaricomService: Mocked<SafaricomService>;
+  let safaricomTransferScopedRepository: Mocked<SafaricomTransferScopedRepository>;
+  let transactionEventsScopedRepository: Mocked<TransactionEventsScopedRepository>;
+  let transactionJobsHelperService: Mocked<TransactionJobsHelperService>;
+  let transactionsService: Mocked<TransactionsService>;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(
+    const { unit, unitRef } = await TestBed.solitary(
       TransactionJobsSafaricomService,
     ).compile();
 

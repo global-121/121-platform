@@ -1,5 +1,5 @@
-import { TestBed } from '@automock/jest';
 import { ForbiddenException } from '@nestjs/common';
+import { type Mocked, TestBed } from '@suites/unit';
 import { Response } from 'express';
 
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
@@ -17,11 +17,12 @@ jest.mock('@121-service/src/utils/send-xlsx-response', () => ({
 
 describe('PaymentsController', () => {
   let controller: PaymentsController;
-  let userService: jest.Mocked<UserService>;
-  let paymentsReportingService: jest.Mocked<PaymentsReportingService>;
+  let userService: Mocked<UserService>;
+  let paymentsReportingService: Mocked<PaymentsReportingService>;
 
-  beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(PaymentsController).compile();
+  beforeEach(async () => {
+    const { unit, unitRef } =
+      await TestBed.solitary(PaymentsController).compile();
 
     controller = unit;
     userService = unitRef.get(UserService);

@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { DoTransferParams } from '@121-service/src/fsp-integrations/integrations/safaricom/interfaces/do-transfer-params.interface';
 import { TransferResult } from '@121-service/src/fsp-integrations/integrations/safaricom/interfaces/transfer-result.interface';
@@ -16,20 +16,20 @@ const mockedDoTransferParams: DoTransferParams = {
 
 describe('SafaricomService', () => {
   let safaricomService: SafaricomService;
-  let safaricomApiService: SafaricomApiService;
-  let safaricomTransferScopedRepository: SafaricomTransferScopedRepository;
+  let safaricomApiService: Mocked<SafaricomApiService>;
+  let safaricomTransferScopedRepository: Mocked<SafaricomTransferScopedRepository>;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(SafaricomService)
+    const { unit, unitRef } = await TestBed.solitary(SafaricomService)
       .mock(QueuesRegistryService)
-      .using({
+      .impl((stub) => ({
         safaricomTransferCallbackQueue: {
-          add: jest.fn(),
+          add: stub(),
         },
         safaricomTimeoutCallbackQueue: {
-          add: jest.fn(),
+          add: stub(),
         },
-      })
+      }))
       .compile();
 
     safaricomService = unit;

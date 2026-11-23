@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest/dist/testbed-factory';
+import { TestBed } from '@suites/unit';
 
 import { env } from '@121-service/src/env';
 import { MtnMockReferenceId } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-mock-reference-id.enum';
@@ -29,8 +29,8 @@ jest.mock('@121-service/src/utils/uuid.helpers', () => ({
 describe('MtnService', () => {
   let mtnService: MtnService;
 
-  beforeEach(() => {
-    const { unit } = TestBed.create(MtnService).compile();
+  beforeEach(async () => {
+    const { unit } = await TestBed.solitary(MtnService).compile();
     mtnService = unit;
   });
 

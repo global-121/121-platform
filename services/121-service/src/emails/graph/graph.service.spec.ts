@@ -1,5 +1,5 @@
-import { TestBed } from '@automock/jest';
 import { HttpStatus } from '@nestjs/common';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
 import { AzureGraphTokenService } from '@121-service/src/emails/graph/azure-graph-token.service';
@@ -21,8 +21,8 @@ jest.mock('@121-service/src/env', () => ({
 
 describe('GraphService', () => {
   let service: GraphService;
-  let httpService: jest.Mocked<CustomHttpService>;
-  let azureGraphTokenService: jest.Mocked<AzureGraphTokenService>;
+  let httpService: Mocked<CustomHttpService>;
+  let azureGraphTokenService: Mocked<AzureGraphTokenService>;
 
   const emailData: EmailData = {
     email: 'recipient@example.org',
@@ -30,8 +30,8 @@ describe('GraphService', () => {
     body: '<p>Hello</p>',
   };
 
-  beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(GraphService).compile();
+  beforeEach(async () => {
+    const { unit, unitRef } = await TestBed.solitary(GraphService).compile();
     service = unit;
     httpService = unitRef.get(CustomHttpService);
     azureGraphTokenService = unitRef.get(AzureGraphTokenService);

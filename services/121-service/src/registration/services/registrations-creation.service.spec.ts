@@ -1,6 +1,6 @@
-import { TestBed } from '@automock/jest';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { TestBed } from '@suites/unit';
 
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -14,7 +14,7 @@ describe('RegistrationsCreationService', () => {
   const language = RegistrationPreferredLanguage.en;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(
+    const { unit, unitRef } = await TestBed.solitary(
       RegistrationsCreationService,
     ).compile();
     registrationsCreationService = unit;

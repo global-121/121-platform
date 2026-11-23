@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { OnafriqApiResponseStatusType } from '@121-service/src/fsp-integrations/integrations/onafriq/enum/onafriq-api-response-status-type.enum';
 import { OnafriqError } from '@121-service/src/fsp-integrations/integrations/onafriq/errors/onafriq.error';
@@ -23,10 +23,10 @@ const mockedCreateTransactionParams: CreateTransactionParams = {
 
 describe('OnafriqService', () => {
   let onafriqService: OnafriqService;
-  let onafriqApiService: OnafriqApiService;
+  let onafriqApiService: Mocked<OnafriqApiService>;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(OnafriqService).compile();
+    const { unit, unitRef } = await TestBed.solitary(OnafriqService).compile();
 
     onafriqService = unit;
     onafriqApiService = unitRef.get(OnafriqApiService);

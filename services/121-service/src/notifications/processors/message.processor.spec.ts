@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 import { Job } from 'bull';
 
 import {
@@ -27,14 +27,13 @@ const testJob = { data: mockMessageJob } as Job;
 
 describe('Message processor(s)', () => {
   // All message processors are the same, so we only test one
-  let messageService: jest.Mocked<MessageService>;
+  let messageService: Mocked<MessageService>;
   let messageProcessor: MessageProcessorReplyOnIncoming;
 
-  beforeAll(() => {
-    const { unit, unitRef } = TestBed.create(MessageProcessorReplyOnIncoming)
-      .mock(MessageService)
-      .using(messageService)
-      .compile();
+  beforeAll(async () => {
+    const { unit, unitRef } = await TestBed.solitary(
+      MessageProcessorReplyOnIncoming,
+    ).compile();
 
     messageProcessor = unit;
     messageService = unitRef.get(MessageService);

@@ -1,5 +1,5 @@
-import { TestBed } from '@automock/jest';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
 import { ProgramAttachmentRepository } from '@121-service/src/programs/program-attachments/program-attachment.repository';
@@ -7,9 +7,11 @@ import { ProgramAttachmentsService } from '@121-service/src/programs/program-att
 
 describe('ProgramAttachmentsService', () => {
   let service: ProgramAttachmentsService;
-  let programAttachmentRepository: ProgramAttachmentRepository;
-  beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(
+
+  let programAttachmentRepository: Mocked<ProgramAttachmentRepository>;
+
+  beforeEach(async () => {
+    const { unit, unitRef } = await TestBed.solitary(
       ProgramAttachmentsService,
     ).compile();
     service = unit;

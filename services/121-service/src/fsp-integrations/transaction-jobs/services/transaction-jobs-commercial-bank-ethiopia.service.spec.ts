@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { CbeTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.scoped.repository';
 import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
@@ -11,11 +11,11 @@ import { ProgramRepository } from '@121-service/src/programs/repositories/progra
 
 describe('TransactionJobsCommercialBankEthiopiaService', () => {
   let service: TransactionJobsCommercialBankEthiopiaService;
-  let commercialBankEthiopiaService: CommercialBankEthiopiaService;
-  let programFspConfigurationRepository: ProgramFspConfigurationRepository;
-  let cbeTransferScopedRepository: CbeTransferScopedRepository;
-  let transactionJobsHelperService: TransactionJobsHelperService;
-  let programRepository: ProgramRepository;
+  let commercialBankEthiopiaService: Mocked<CommercialBankEthiopiaService>;
+  let programFspConfigurationRepository: Mocked<ProgramFspConfigurationRepository>;
+  let cbeTransferScopedRepository: Mocked<CbeTransferScopedRepository>;
+  let transactionJobsHelperService: Mocked<TransactionJobsHelperService>;
+  let programRepository: Mocked<ProgramRepository>;
 
   // Shared variables
   let credentials: { username: string; password: string };
@@ -25,8 +25,8 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
   let existingCbeTransfer: { debitTheirRef: string };
   let mockTransaction: TransactionEntity;
 
-  beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(
+  beforeEach(async () => {
+    const { unit, unitRef } = await TestBed.solitary(
       TransactionJobsCommercialBankEthiopiaService,
     ).compile();
     service = unit;
@@ -135,9 +135,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
         errorMessage: null,
       });
 
-    await service.processTransactionJob(
-      transactionJobRetry,
-    );
+    await service.processTransactionJob(transactionJobRetry);
 
     expect(createCreditTransferSpy).toHaveBeenCalledWith({
       inputParams: {
@@ -208,9 +206,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       .spyOn(cbeTransferScopedRepository, 'save')
       .mockResolvedValue({} as any);
 
-    await service.processTransactionJob(
-      transactionJobRetry,
-    );
+    await service.processTransactionJob(transactionJobRetry);
     expect(saveCbeTransferSpy).not.toHaveBeenCalled();
   });
 });

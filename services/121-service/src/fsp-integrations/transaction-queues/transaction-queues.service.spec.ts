@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 import Redis from 'ioredis';
 
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-visa-transaction-job.dto';
@@ -45,11 +45,11 @@ const mockSafaricomTransactionJobDto: SafaricomTransactionJobDto[] = [
 
 describe('TransactionQueuesService', () => {
   let transactionQueuesService: TransactionQueuesService;
-  let queuesService: QueuesRegistryService;
+  let queuesService: Mocked<QueuesRegistryService>;
   let mockPipeline: { sadd: jest.Mock; exec: jest.Mock };
   let mockRedisClient: { pipeline: jest.Mock };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockPipeline = {
       sadd: jest.fn().mockReturnThis(),
       exec: jest.fn().mockResolvedValue([]),
@@ -58,18 +58,18 @@ describe('TransactionQueuesService', () => {
       pipeline: jest.fn().mockReturnValue(mockPipeline),
     };
 
-    const { unit, unitRef } = TestBed.create(TransactionQueuesService)
+    const { unit, unitRef } = await TestBed.solitary(TransactionQueuesService)
       .mock(QueuesRegistryService)
-      .using({
+      .impl((stub) => ({
         transactionJobIntersolveVisaQueue: {
-          addBulk: jest.fn(),
+          addBulk: stub(),
         },
         transactionJobSafaricomQueue: {
-          addBulk: jest.fn(),
+          addBulk: stub(),
         },
-      })
+      }))
       .mock<Redis>(REDIS_CLIENT)
-      .using(mockRedisClient as unknown as Redis)
+      .final(mockRedisClient as unknown as Redis)
       .compile();
 
     transactionQueuesService = unit;

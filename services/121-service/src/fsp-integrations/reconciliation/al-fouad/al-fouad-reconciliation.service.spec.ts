@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { AlFouadApiTransactionState } from '@121-service/src/fsp-integrations/integrations/al-fouad/enums/al-fouad-api-transaction-state.enum';
 import { AlFouadAuthIdentity } from '@121-service/src/fsp-integrations/integrations/al-fouad/interfaces/al-fouad-auth-identity.interface';
@@ -24,10 +24,10 @@ jest.mock('@121-service/src/appdatasource', () => ({
 
 describe('AlFouadReconciliationService', () => {
   let alFouadReconciliationService: AlFouadReconciliationService;
-  let alFouadService: jest.Mocked<AlFouadService>;
-  let transactionsService: jest.Mocked<TransactionsService>;
-  let transactionRepository: jest.Mocked<TransactionRepository>;
-  let transactionEventsScopedRepository: jest.Mocked<TransactionEventsScopedRepository>;
+  let alFouadService: Mocked<AlFouadService>;
+  let transactionsService: Mocked<TransactionsService>;
+  let transactionRepository: Mocked<TransactionRepository>;
+  let transactionEventsScopedRepository: Mocked<TransactionEventsScopedRepository>;
 
   const transactionId = 42;
   const successStatus = {
@@ -35,8 +35,8 @@ describe('AlFouadReconciliationService', () => {
     errorMessage: undefined,
   };
 
-  beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(
+  beforeEach(async () => {
+    const { unit, unitRef } = await TestBed.solitary(
       AlFouadReconciliationService,
     ).compile();
 

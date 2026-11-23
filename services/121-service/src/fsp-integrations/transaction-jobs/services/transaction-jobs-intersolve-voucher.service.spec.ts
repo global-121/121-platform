@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
@@ -24,13 +24,13 @@ const mockedIntersolveVoucherTransactionJob: IntersolveVoucherTransactionJobDto 
 
 describe('TransactionJobsIntersolveVoucherService', () => {
   let service: TransactionJobsIntersolveVoucherService;
-  let intersolveVoucherService: jest.Mocked<IntersolveVoucherService>;
-  let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
-  let transactionJobsHelperService: jest.Mocked<TransactionJobsHelperService>;
-  let transactionsService: jest.Mocked<TransactionsService>;
+  let intersolveVoucherService: Mocked<IntersolveVoucherService>;
+  let programFspConfigurationRepository: Mocked<ProgramFspConfigurationRepository>;
+  let transactionJobsHelperService: Mocked<TransactionJobsHelperService>;
+  let transactionsService: Mocked<TransactionsService>;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(
+    const { unit, unitRef } = await TestBed.solitary(
       TransactionJobsIntersolveVoucherService,
     ).compile();
 

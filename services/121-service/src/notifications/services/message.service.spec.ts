@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
 import {
@@ -33,14 +33,14 @@ let getMessageTemplateForLanguageOrFallback: jest.SpyInstance;
 
 describe('MessageService', () => {
   let messageService: MessageService;
-  let whatsappService: jest.Mocked<WhatsappService>;
-  let smsService: jest.Mocked<SmsService>;
-  let intersolveVoucherService: jest.Mocked<IntersolveVoucherService>;
-  let azureLogService: jest.Mocked<AzureLogService>;
+  let whatsappService: Mocked<WhatsappService>;
+  let smsService: Mocked<SmsService>;
+  let intersolveVoucherService: Mocked<IntersolveVoucherService>;
+  let azureLogService: Mocked<AzureLogService>;
   let consoleLogSpy: jest.SpyInstance;
 
-  beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(MessageService).compile();
+  beforeEach(async () => {
+    const { unit, unitRef } = await TestBed.solitary(MessageService).compile();
 
     messageService = unit;
     whatsappService = unitRef.get(WhatsappService);

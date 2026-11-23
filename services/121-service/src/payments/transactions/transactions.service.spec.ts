@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
@@ -14,11 +14,12 @@ const context = {
 
 describe('TransactionsService', () => {
   let transactionsService: TransactionsService;
-  let transactionRepository: jest.Mocked<TransactionRepository>;
-  let transactionEventsService: jest.Mocked<TransactionEventsService>;
+  let transactionRepository: Mocked<TransactionRepository>;
+  let transactionEventsService: Mocked<TransactionEventsService>;
 
-  beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(TransactionsService).compile();
+  beforeEach(async () => {
+    const { unit, unitRef } =
+      await TestBed.solitary(TransactionsService).compile();
 
     transactionsService = unit;
     transactionRepository = unitRef.get(TransactionRepository);

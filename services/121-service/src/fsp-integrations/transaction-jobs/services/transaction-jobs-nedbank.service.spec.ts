@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { NedbankVoucherStatus } from '@121-service/src/fsp-integrations/integrations/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError } from '@121-service/src/fsp-integrations/integrations/nedbank/errors/nedbank.error';
@@ -35,15 +35,15 @@ const transactionEventContext: TransactionEventCreationContext = {
 
 describe('TransactionJobsNedbankService', () => {
   let service: TransactionJobsNedbankService;
-  let nedbankService: NedbankService;
-  let nedbankVoucherScopedRepository: NedbankVoucherScopedRepository;
-  let programFspConfigurationRepository: ProgramFspConfigurationRepository;
-  let transactionEventsScopedRepository: TransactionEventsScopedRepository;
-  let transactionJobsHelperService: TransactionJobsHelperService;
-  let transactionsService: TransactionsService;
+  let nedbankService: Mocked<NedbankService>;
+  let nedbankVoucherScopedRepository: Mocked<NedbankVoucherScopedRepository>;
+  let programFspConfigurationRepository: Mocked<ProgramFspConfigurationRepository>;
+  let transactionEventsScopedRepository: Mocked<TransactionEventsScopedRepository>;
+  let transactionJobsHelperService: Mocked<TransactionJobsHelperService>;
+  let transactionsService: Mocked<TransactionsService>;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(
+    const { unit, unitRef } = await TestBed.solitary(
       TransactionJobsNedbankService,
     ).compile();
 
