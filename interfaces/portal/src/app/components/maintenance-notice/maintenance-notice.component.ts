@@ -6,7 +6,7 @@ import {
   input,
 } from '@angular/core';
 
-import { isWithinInterval, parseISO, startOfDay } from 'date-fns';
+import { isWithinInterval, parseISO } from 'date-fns';
 
 @Component({
   selector: 'app-maintenance-notice',
@@ -19,8 +19,8 @@ export class MaintenanceNoticeComponent {
 
   readonly showNotice = computed(() => {
     const isInTimeframe = isWithinInterval(new Date(), {
-      start: parseISO('2026-11-23'),
-      end: startOfDay(parseISO('2026-12-05')),
+      start: parseISO('2026-11-23T00:00:00+01:00'),
+      end: parseISO('2026-12-05T00:00:00+01:00'),
     });
     return isInTimeframe;
   });
