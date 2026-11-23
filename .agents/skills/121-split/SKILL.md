@@ -29,6 +29,13 @@ Run `scripts/preflight.sh` once and read only its labelled output. Do not run th
   - after the user rebases or fixes a blocker, re-run the script and continue; do not re-ask settled questions.
   - behind main: the base is stale and chunks may not typecheck. Use `ask_user` with a single question: the user rebases the original branch first and re-runs (preferred; the skill never rewrites the original), or continues on the stale base and expects failures caused by the old base.
 
+### 1b. Baseline typecheck
+
+Run `scripts/baseline-typecheck.sh <base>` on the original branch. It reports typecheck errors that already exist on the original, so they are not mistaken for split failures.
+
+- `verdict: CLEAN`: continue; any later chunk failure is caused by the split.
+- `verdict: ERRORS_EXIST`: show the listed errors and use `ask_user` once: the user fixes them on the original first (preferred, then re-run from step 1), or continues and accepts them in the chunks that contain those files. Errors with no parsed file are environment problems (for example missing dependencies), not code bugs; say so.
+
 ### 2. Measure
 
 Run `scripts/measure.sh <base> <original-branch>`. It prints changed lines per file, excluding generated files. Target is ~400 changed lines per chunk. If the total is below the target, say the PR is small enough and stop.
@@ -41,6 +48,7 @@ Read the diff (not only file names) and group files by intent following the heur
 - files and changed line count (excluding generated files)
 - one-line rationale and a Conventional Commits PR title (imperative mood)
 - whether it typechecks and lints standalone; list files that must be split by hunk
+- which baseline errors from step 1b land in this chunk (by file path), e.g. "`foo.spec.ts` error: existing on the original"
 
 Chunks should be ordered so each builds on the previous. Prefer file-level splitting; propose hunk-level splitting only when unavoidable. Present the proposal as a table and use `ask_user` to approve or adjust it. In the same form, ask once whether chunks may be committed with `--no-verify` when hooks fail on errors that already exist on the original branch; apply that answer to every chunk instead of asking again mid-run.
 
