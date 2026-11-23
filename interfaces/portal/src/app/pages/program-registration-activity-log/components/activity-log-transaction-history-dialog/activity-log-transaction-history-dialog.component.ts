@@ -8,11 +8,11 @@ import {
   Signal,
 } from '@angular/core';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { DialogModule } from '@openng/optimus-ui/dialog';
+import { ScrollPanelModule } from '@openng/optimus-ui/scrollpanel';
+import { SkeletonModule } from '@openng/optimus-ui/skeleton';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { ScrollPanelModule } from 'primeng/scrollpanel';
-import { SkeletonModule } from 'primeng/skeleton';
 
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import {

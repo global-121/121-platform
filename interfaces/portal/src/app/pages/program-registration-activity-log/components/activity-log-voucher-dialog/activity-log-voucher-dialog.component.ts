@@ -11,11 +11,11 @@ import {
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { DialogModule } from '@openng/optimus-ui/dialog';
+import { ScrollPanelModule } from '@openng/optimus-ui/scrollpanel';
+import { SkeletonModule } from '@openng/optimus-ui/skeleton';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { ScrollPanelModule } from 'primeng/scrollpanel';
-import { SkeletonModule } from 'primeng/skeleton';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 

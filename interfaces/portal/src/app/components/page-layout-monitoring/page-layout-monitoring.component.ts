@@ -8,9 +8,9 @@ import {
   LOCALE_ID,
 } from '@angular/core';
 
+import { CardModule } from '@openng/optimus-ui/card';
+import { SkeletonModule } from '@openng/optimus-ui/skeleton';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { CardModule } from 'primeng/card';
-import { SkeletonModule } from 'primeng/skeleton';
 
 import {
   DataListComponent,

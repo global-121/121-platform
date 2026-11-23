@@ -7,9 +7,9 @@ import {
   signal,
 } from '@angular/core';
 
+import { ChartModule } from '@openng/optimus-ui/chart';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ChartData } from 'chart.js';
-import { ChartModule } from 'primeng/chart';
 
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 
