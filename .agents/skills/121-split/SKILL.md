@@ -25,7 +25,7 @@ Run `scripts/preflight.sh` once and read only its labelled output. Do not run th
 
 - `verdict: READY`: note the `branch`, `sha` and `base` it printed and continue. This `sha` is the original's SHA for the whole run; before verifying, confirm the original branch still points to it and stop if it moved.
 - `verdict: BLOCKED`: report exactly the listed blockers and ask only about those. Never ask about a problem the script did not list.
-  - dirty working tree or detached HEAD: stop until the user fixes it. Changes inside `.agents/skills/121-split/` are ignored by the script.
+  - dirty working tree or detached HEAD: stop until the user fixes it.
   - after the user rebases or fixes a blocker, re-run the script and continue; do not re-ask settled questions.
   - behind main: the base is stale and chunks may not typecheck. Use `ask_user` with a single question: the user rebases the original branch first and re-runs (preferred; the skill never rewrites the original), or continues on the stale base and expects failures caused by the old base.
 
@@ -57,7 +57,7 @@ Chunks should be ordered so each builds on the previous. Prefer file-level split
 For each chunk in order:
 
 1. `git switch -c <branch>` from the previous chunk branch (the first from the base).
-2. Bring in the final content: `git checkout <original-branch> -- <paths>` (deleted files: `git rm`). For hunk splits, take the diff of the file between the previous chunk and the original, apply only the selected hunks with `git apply --cached`, then check the result compiles.
+2. Bring in the final content: `git checkout <original-branch> -- <paths>` (deleted files: `git rm`). For hunk splits, take the diff of the file between the previous chunk and the original, apply only the selected hunks with `git apply --index` (updates both index and working tree), then check the result compiles.
 3. Commit with a Conventional Commits message and this trailer:
    `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
 
@@ -67,7 +67,7 @@ Generated files (see heuristics) go with the chunk that causes them. Regenerate 
 
 - `scripts/verify-stack.sh <original-branch> <last-branch>` must report no tree difference. If it does, put the leftover files in the last chunk.
 - The original branch must be unchanged (same SHA as at the start).
-- Per chunk, best effort: `npm run typecheck` and `npm run lint` in the touched package(s) (`services/121-service`, `interfaces/portal`). Report failures; do not skip them silently.
+- Per chunk, best effort: `npm run typecheck` and `npm run lint` in the touched package(s) (`services/121-service`, `interfaces/portal`, `e2e`). Report failures; do not skip them silently.
 
 ### 6. Report
 

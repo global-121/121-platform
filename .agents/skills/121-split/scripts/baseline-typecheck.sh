@@ -8,7 +8,7 @@ set -uo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 base="${1:?base ref required}"
-packages=("services/121-service" "services/mock-service" "interfaces/portal")
+packages=("services/121-service" "services/mock-service" "interfaces/portal" "e2e")
 failed=0
 
 for package in "${packages[@]}"; do

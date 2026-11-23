@@ -12,8 +12,7 @@ fi
 
 branch="$(git branch --show-current)"
 sha="$(git rev-parse HEAD)"
-# Edits to this skill itself never count as a dirty working tree
-dirty_count="$(git status --porcelain -- . ':(exclude).agents/skills/121-split' | wc -l | tr -d ' ')"
+dirty_count="$(git status --porcelain | wc -l | tr -d ' ')"
 base="$(git merge-base origin/main HEAD)"
 behind_main="$(git rev-list --count HEAD..origin/main)"
 
