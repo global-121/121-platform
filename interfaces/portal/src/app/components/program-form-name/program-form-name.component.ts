@@ -13,8 +13,8 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { InputTextModule } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea';
+import { InputTextModule } from '@openng/optimus-ui/inputtext';
+import { TextareaModule } from '@openng/optimus-ui/textarea';
 
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { Program } from '~/domains/program/program.model';

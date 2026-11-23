@@ -8,11 +8,11 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { MenuItem } from '@openng/optimus-ui/api';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { CardModule } from '@openng/optimus-ui/card';
+import { MenuModule } from '@openng/optimus-ui/menu';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MenuItem } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { MenuModule } from 'primeng/menu';
 
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import {

@@ -7,10 +7,10 @@ import {
   output,
 } from '@angular/core';
 
-import { Button } from 'primeng/button';
-import { Dialog } from 'primeng/dialog';
-import { TableModule } from 'primeng/table';
-import { Tag } from 'primeng/tag';
+import { Button } from '@openng/optimus-ui/button';
+import { Dialog } from '@openng/optimus-ui/dialog';
+import { TableModule } from '@openng/optimus-ui/table';
+import { Tag } from '@openng/optimus-ui/tag';
 
 import { KoboValidationErrorType } from '@121-service/src/kobo/enum/kobo-validation-error-type';
 import { KoboValidationError } from '@121-service/src/kobo/interfaces/kobo-validation-error.interface';

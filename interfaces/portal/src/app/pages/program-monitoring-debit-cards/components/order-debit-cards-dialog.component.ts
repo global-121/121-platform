@@ -12,8 +12,8 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { InputTextModule } from '@openng/optimus-ui/inputtext';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { InputTextModule } from 'primeng/inputtext';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';

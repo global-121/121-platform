@@ -11,8 +11,8 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { MenuItem } from '@openng/optimus-ui/api';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MenuItem } from 'primeng/api';
 
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';

@@ -1,8 +1,6 @@
 /** @type {import('knip').KnipConfig} */
 module.exports = {
   ignoreDependencies: [
-    // Known issues with "Unused dependencies":
-    'primeicons',
     // Known issues with "Unused devDependencies":
     'autoprefixer',
     // Known issues with "Unlisted dependencies":

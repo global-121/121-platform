@@ -8,10 +8,10 @@ import {
 } from '@angular/core';
 import { FormGroup, FormsModule } from '@angular/forms';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { CardModule } from '@openng/optimus-ui/card';
+import { FocusTrapModule } from '@openng/optimus-ui/focustrap';
 import { CreateMutationResult } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { FocusTrapModule } from 'primeng/focustrap';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { RtlHelperService } from '~/services/rtl-helper.service';

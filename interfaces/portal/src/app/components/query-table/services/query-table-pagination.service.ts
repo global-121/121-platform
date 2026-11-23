@@ -1,6 +1,6 @@
 import { computed, inject } from '@angular/core';
 
-import { TableLazyLoadEvent } from 'primeng/table';
+import { TableLazyLoadEvent } from '@openng/optimus-ui/table';
 
 import {
   PaginateQuery,

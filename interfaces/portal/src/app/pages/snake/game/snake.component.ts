@@ -10,8 +10,8 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { DialogModule } from '@openng/optimus-ui/dialog';
 
 import {
   TrackingAction,

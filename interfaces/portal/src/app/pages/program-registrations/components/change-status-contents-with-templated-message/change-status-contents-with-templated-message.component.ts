@@ -5,7 +5,7 @@ import {
   output,
 } from '@angular/core';
 
-import { ButtonModule } from 'primeng/button';
+import { ButtonModule } from '@openng/optimus-ui/button';
 
 import { Registration } from '~/domains/registration/registration.model';
 import { ChangeStatusSubmitButtonsComponent } from '~/pages/program-registrations/components/change-status-submit-buttons/change-status-submit-buttons.component';

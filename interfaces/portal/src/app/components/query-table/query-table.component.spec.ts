@@ -9,7 +9,7 @@ import {
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { MenuItem, MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from '@openng/optimus-ui/api';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
