@@ -23,9 +23,10 @@ Turn one oversized branch into a stack of small branches that together are ident
 
 Run `scripts/preflight.sh` once and read only its labelled output. Do not run the underlying git commands separately, and do not interpret raw or empty command output. It does not fetch; do not fetch unless the user agrees.
 
-- `verdict: READY`: note the `branch`, `sha` and `base` it printed and continue.
+- `verdict: READY`: note the `branch`, `sha` and `base` it printed and continue. This `sha` is the original's SHA for the whole run; before verifying, confirm the original branch still points to it and stop if it moved.
 - `verdict: BLOCKED`: report exactly the listed blockers and ask only about those. Never ask about a problem the script did not list.
-  - dirty working tree or detached HEAD: stop until the user fixes it.
+  - dirty working tree or detached HEAD: stop until the user fixes it. Changes inside `.agents/skills/121-split/` are ignored by the script.
+  - after the user rebases or fixes a blocker, re-run the script and continue; do not re-ask settled questions.
   - behind main: the base is stale and chunks may not typecheck. Use `ask_user` with a single question: the user rebases the original branch first and re-runs (preferred; the skill never rewrites the original), or continues on the stale base and expects failures caused by the old base.
 
 ### 2. Measure
@@ -41,7 +42,7 @@ Read the diff (not only file names) and group files by intent following the heur
 - one-line rationale and a Conventional Commits PR title (imperative mood)
 - whether it typechecks and lints standalone; list files that must be split by hunk
 
-Chunks should be ordered so each builds on the previous. Prefer file-level splitting; propose hunk-level splitting only when unavoidable. Present the proposal as a table and use `ask_user` to approve or adjust it.
+Chunks should be ordered so each builds on the previous. Prefer file-level splitting; propose hunk-level splitting only when unavoidable. Present the proposal as a table and use `ask_user` to approve or adjust it. In the same form, ask once whether chunks may be committed with `--no-verify` when hooks fail on errors that already exist on the original branch; apply that answer to every chunk instead of asking again mid-run.
 
 ### 4. Execute (after approval)
 

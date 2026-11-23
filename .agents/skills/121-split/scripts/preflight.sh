@@ -3,9 +3,16 @@
 # Prints labelled preflight facts and a final verdict line (READY or BLOCKED).
 set -uo pipefail
 
+if ! git rev-parse --verify --quiet origin/main >/dev/null; then
+  echo "verdict:      BLOCKED"
+  echo "  - origin/main does not exist locally: fetch it first (ask the user)"
+  exit 0
+fi
+
 branch="$(git branch --show-current)"
 sha="$(git rev-parse HEAD)"
-dirty_count="$(git status --porcelain | wc -l | tr -d ' ')"
+# Edits to this skill itself never count as a dirty working tree
+dirty_count="$(git status --porcelain -- . ':(exclude).agents/skills/121-split' | wc -l | tr -d ' ')"
 base="$(git merge-base origin/main HEAD)"
 behind_main="$(git rev-list --count HEAD..origin/main)"
 
