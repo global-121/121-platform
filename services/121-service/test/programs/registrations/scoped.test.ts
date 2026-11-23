@@ -32,7 +32,10 @@ describe('Registrations - [Scoped]', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB({ seedScript: SeedScript.nlrcMultiple });
+    await resetDB({
+      seedScript: SeedScript.nlrcMultiple,
+      enableScopeForProgramId: PvProgramId,
+    });
     accessToken = await getAccessToken();
   });
 

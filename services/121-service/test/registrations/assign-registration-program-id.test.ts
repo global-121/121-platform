@@ -86,7 +86,10 @@ describe('Assign registrationProgramId', () => {
   let accessToken: string;
 
   beforeAll(async () => {
-    await resetDB({ seedScript: SeedScript.nlrcMultiple });
+    await resetDB({
+      seedScript: SeedScript.nlrcMultiple,
+      enableScopeForProgramId: programIdPV,
+    });
     accessToken = await getAccessToken();
   });
 

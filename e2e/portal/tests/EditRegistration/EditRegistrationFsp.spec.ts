@@ -21,6 +21,7 @@ test.beforeEach(async ({ page, resetDBAndSeedRegistrations }) => {
     seedScript: SeedScript.nlrcMultiple,
     registrations: [registrationPV5],
     programId: programIdPV,
+    enableScopeForProgramId: programIdPV,
   });
 
   const accessToken = await getAccessToken();

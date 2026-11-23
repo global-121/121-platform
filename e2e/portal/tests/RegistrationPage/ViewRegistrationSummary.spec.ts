@@ -20,6 +20,7 @@ test('User should see a summary of a registration', async ({
     seedPaidRegistrations: true,
     registrations: [registrationPvScoped],
     programId,
+    enableScopeForProgramId: programId,
   });
 
   const accessToken = await getAccessToken();

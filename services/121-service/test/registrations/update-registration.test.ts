@@ -30,7 +30,10 @@ const programIdPv = 2;
 const programIdOcw = 3;
 
 async function setupNlrcEnvironment() {
-  await resetDB({ seedScript: SeedScript.nlrcMultiple });
+  await resetDB({
+    seedScript: SeedScript.nlrcMultiple,
+    enableScopeForProgramId: programIdPv,
+  });
   const accessToken = await getAccessToken();
 
   await importRegistrations(programIdOcw, [registrationVisa], accessToken);
