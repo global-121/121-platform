@@ -167,20 +167,26 @@ describe('PaymentsManagementService', () => {
         },
         registrationsForPayment: [
           {
+            id: 12,
+            referenceId: 'ref2',
+            paymentAmountMultiplier: 2.5,
+            programFspConfigurationId: 6,
+            programFspConfigurationName: 'fspB',
+          },
+          {
+            id: 11,
             referenceId: 'ref1',
             paymentAmountMultiplier: 1,
+            programFspConfigurationId: 5,
             programFspConfigurationName: 'fspA',
           },
         ],
-        programFspConfigurationNames: ['fspA'],
+        programFspConfigurationNames: ['fspA', 'fspB'],
         thresholds: [{ id: 1, thresholdAmount: 0 }],
       });
     (
       paymentsHelperService.checkFspConfigurationsOrThrow as jest.Mock
     ).mockResolvedValue(undefined);
-    (service as any).getTransactionCreationDetails = jest
-      .fn()
-      .mockResolvedValue([{ detail: 'test' }]);
     (
       transactionsService.createTransactionsAndEvents as jest.Mock
     ).mockResolvedValue(undefined);
@@ -203,7 +209,18 @@ describe('PaymentsManagementService', () => {
     expect(
       transactionsService.createTransactionsAndEvents,
     ).toHaveBeenCalledWith({
-      transactionCreationDetails: [{ detail: 'test' }],
+      transactionCreationDetails: [
+        {
+          registrationId: 11,
+          transferValue: 100,
+          programFspConfigurationId: 5,
+        },
+        {
+          registrationId: 12,
+          transferValue: 250,
+          programFspConfigurationId: 6,
+        },
+      ],
       paymentId: 123,
       userId: 1,
     });
@@ -286,13 +303,17 @@ describe('PaymentsManagementService', () => {
       const transferValue = 50;
       const registrations = [
         {
+          id: 1,
           referenceId: 'ref1',
           paymentAmountMultiplier: 2,
+          programFspConfigurationId: 1,
           programFspConfigurationName: 'fspA',
         },
         {
+          id: 2,
           referenceId: 'ref2',
           paymentAmountMultiplier: 3,
+          programFspConfigurationId: 1,
           programFspConfigurationName: 'fspA',
         },
       ];
@@ -322,18 +343,6 @@ describe('PaymentsManagementService', () => {
       (
         transactionsService.createTransactionsAndEvents as jest.Mock
       ).mockResolvedValue(undefined);
-      jest
-        .spyOn(
-          registrationsPaginationService as any,
-          'getRegistrationViewsByReferenceIds',
-        )
-        .mockResolvedValue(
-          registrations.map((r, i) => ({
-            id: i + 1,
-            paymentAmountMultiplier: r.paymentAmountMultiplier,
-            programFspConfigurationId: 1,
-          })),
-        );
 
       // Act
       await service.createPayment({
@@ -346,6 +355,24 @@ describe('PaymentsManagementService', () => {
       expect(getThresholdsForPaymentAmountSpy).toHaveBeenCalledWith({
         programId: basePaymentParams.programId,
         totalPaymentAmount: expectedTotalPaymentAmount,
+      });
+      expect(
+        transactionsService.createTransactionsAndEvents,
+      ).toHaveBeenCalledWith({
+        transactionCreationDetails: [
+          {
+            registrationId: 1,
+            transferValue: 100,
+            programFspConfigurationId: 1,
+          },
+          {
+            registrationId: 2,
+            transferValue: 150,
+            programFspConfigurationId: 1,
+          },
+        ],
+        paymentId: 123,
+        userId: basePaymentParams.userId,
       });
     });
   });
