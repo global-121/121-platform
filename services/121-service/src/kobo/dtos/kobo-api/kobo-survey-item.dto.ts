@@ -4,7 +4,7 @@
 export interface KoboSurveyItemDto {
   /** Question identifier used in data collection */
   name?: string;
-  /** Question type (e.g., 'text', 'integer', 'select_one', 'select_multiple') */
+  /** Question type (e.g., 'text', 'integer', 'select_one', 'select_multiple', 'calculate') */
   type: string;
   /** Kobo's unique identifier for this question */
   $kuid: string;
@@ -18,4 +18,6 @@ export interface KoboSurveyItemDto {
   required?: boolean;
   /** For 'select_one'/'select_multiple': references the choice list name */
   select_from_list_name?: string;
+  /** For 'calculate' type questions: the calculation expression */
+  calculation?: string;
 }
