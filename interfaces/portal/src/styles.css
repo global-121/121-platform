@@ -65,8 +65,8 @@ body {
 }
 
 :root {
-  /* primeng uses this variable on all of its components by default
-     and it does not work if we set it within the 'primeng' layer */
+  /* Optimus UI uses this variable on all of its components by default
+     and it does not work if we set it within the 'optimus' layer */
   --font-family: var(--font-body);
 }
 
@@ -131,7 +131,7 @@ svg-icon svg {
   }
 }
 
-/* PrimeNG Component overrides */
+/* Optimus UI Component overrides */
 
 /* Rule-of-thumb: Override only from any specific component class-name(i.e. `.p-component-X`) 'down'.
    Following the pattern:
@@ -142,7 +142,7 @@ svg-icon svg {
      }
    }
 
-   So there will only be ONE section/grouping per PrimeNG component.
+   So there will only be ONE section/grouping per Optimus UI component.
 */
 
 @layer optimus-customisations {
@@ -472,7 +472,7 @@ svg-icon svg {
   }
 
   /**
-   * Workaround to disable minimizing 'maximized' PrimeNG dialogs.
+   * Workaround to disable minimizing 'maximized' Optimus UI dialogs.
    * If a fullscreen dialog is minimized, the dialog UI is broken.
    * See AB#43199 and AB#43622 for details.
    */

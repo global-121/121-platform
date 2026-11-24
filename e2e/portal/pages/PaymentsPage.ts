@@ -4,7 +4,7 @@ import { Locator, Page } from 'playwright';
 import TableComponent from '@121-e2e/portal/components/TableComponent';
 import BasePage from '@121-e2e/portal/pages/BasePage';
 
-import { PrimeNGDatePicker } from '../components/PrimeNGDatePicker';
+import { OptimusDatePicker } from '../components/OptimusDatePicker';
 
 class PaymentsPage extends BasePage {
   readonly page: Page;
@@ -18,8 +18,8 @@ class PaymentsPage extends BasePage {
   readonly paymentSummaryMetrics: Locator;
   readonly paymentSummaryWithInstructions: Locator;
   readonly exportButton: Locator;
-  readonly dateRangeStartInput: PrimeNGDatePicker;
-  readonly dateRangeEndInput: PrimeNGDatePicker;
+  readonly dateRangeStartInput: OptimusDatePicker;
+  readonly dateRangeEndInput: OptimusDatePicker;
   readonly noteInput: Locator;
   readonly paymentNameInput: Locator;
   readonly continueToRegistrationButton: Locator;
@@ -52,13 +52,13 @@ class PaymentsPage extends BasePage {
       'create-payment-fsp-instructions',
     );
     this.exportButton = this.page.getByRole('button', { name: 'Export' });
-    this.dateRangeStartInput = new PrimeNGDatePicker({
+    this.dateRangeStartInput = new OptimusDatePicker({
       page: this.page,
       datePicker: this.page.getByRole('combobox', {
         name: 'Start Date',
       }),
     });
-    this.dateRangeEndInput = new PrimeNGDatePicker({
+    this.dateRangeEndInput = new OptimusDatePicker({
       page: this.page,
       datePicker: this.page.getByRole('combobox', {
         name: 'End Date',

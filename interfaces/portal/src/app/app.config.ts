@@ -91,7 +91,7 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
           locale,
           // eslint-disable-next-line @typescript-eslint/no-deprecated -- Could not find a valid replacement
           FormatWidth.Short,
-        ).toLowerCase(), // toLowerCase because PrimeNG otherwise interprets DD and MM as "name of day" and "name of month"
+        ).toLowerCase(), // toLowerCase because Optimus UI otherwise interprets DD and MM as "name of day" and "name of month"
         apply: $localize`:@@generic-apply:Apply`,
         clear: $localize`:@@generic-clear:Clear`,
       },

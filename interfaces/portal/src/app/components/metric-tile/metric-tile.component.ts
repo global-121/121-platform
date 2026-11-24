@@ -36,7 +36,7 @@ export class MetricTileComponent {
   readonly chipIcon = input<string>();
 
   /*
-   Because we use primeNg's p-chip component that takes a tooltip input,
+   Because we use Optimus UI's p-chip component that takes a tooltip input,
    I unfortunately cannot add a trackingEventName because the tooltip is
    handled internally by the p-chip component (and takes only a <string>).
   */
