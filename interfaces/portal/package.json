@@ -89,8 +89,8 @@
     "@types/konami-code-js": "^0.8.3",
     "@types/node": "^24.x",
     "@types/papaparse": "^5.5.2",
-    "@vitest/browser-playwright": "^4.1.12",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/browser-playwright": "^5.1.0",
+    "@vitest/coverage-v8": "^5.1.0",
     "angular-eslint": "^22.6.0",
     "autoprefixer": "^10.6.2",
     "eslint": "^10.13.0",
@@ -110,7 +110,7 @@
     "tailwindcss": "^4.1.13",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.71.2",
-    "vitest": "^4.1.11"
+    "vitest": "^5.1.0"
   },
   "engines": {
     "node": ">=24",
