@@ -1,36 +1,42 @@
 #!/usr/bin/env bash
-# Usage: preflight.sh
+# Usage: preflight.sh [target-ref]
 # Prints labelled preflight facts and a final verdict line (READY or BLOCKED).
+# target-ref is what the original branch will be merged into (default: origin/main).
 set -uo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
-if ! git rev-parse --verify --quiet origin/main >/dev/null; then
-  echo "verdict:      BLOCKED"
-  echo "  - origin/main does not exist locally: fetch it first (ask the user)"
+target="${1:-origin/main}"
+
+if ! git rev-parse --verify --quiet "$target^{commit}" >/dev/null; then
+  echo "verdict:        BLOCKED"
+  echo "  - $target does not exist locally: fetch it first (ask the user)"
   exit 0
 fi
 
 branch="$(git branch --show-current)"
 sha="$(git rev-parse HEAD)"
 dirty_count="$(git status --porcelain | wc -l | tr -d ' ')"
-base="$(git merge-base origin/main HEAD)"
-behind_main="$(git rev-list --count HEAD..origin/main)"
+base="$(git merge-base "$target" HEAD)"
+behind_target="$(git rev-list --count "HEAD..$target")"
+target_updated="$(git log --walk-reflogs -1 --date=relative --format=%gd "$target" 2>/dev/null | sed -E 's/.*@\{(.*)\}/\1/')"
 
-echo "branch:       ${branch:-<detached HEAD>}"
-echo "sha:          $sha"
-echo "base:         $base"
-echo "dirty files:  $dirty_count"
-echo "behind main:  $behind_main"
+echo "branch:         ${branch:-<detached HEAD>}"
+echo "sha:            $sha"
+echo "target:         $target"
+echo "target updated: ${target_updated:-unknown} (local ref; not fetched by this script)"
+echo "base:           $base"
+echo "dirty files:    $dirty_count"
+echo "behind target:  $behind_target"
 
 blockers=()
 [ -z "$branch" ] && blockers+=("detached HEAD: check out a named branch")
 [ "$dirty_count" != "0" ] && blockers+=("working tree is dirty ($dirty_count files)")
-[ "$behind_main" != "0" ] && blockers+=("branch is $behind_main commits behind origin/main (ask the user: rebase first or continue)")
+[ "$behind_target" != "0" ] && blockers+=("branch is $behind_target commits behind $target (ask the user: rebase first or continue)")
 
 if [ "${#blockers[@]}" -eq 0 ]; then
-  echo "verdict:      READY"
+  echo "verdict:        READY"
 else
-  echo "verdict:      BLOCKED"
+  echo "verdict:        BLOCKED"
   for blocker in "${blockers[@]}"; do
     echo "  - $blocker"
   done
