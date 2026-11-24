@@ -2631,12 +2631,6 @@
         <source>Image credit: ZOA International</source>
         <note priority="1" from="description">Login-page background image credit</note>
       </trans-unit>
-      <trans-unit id="maintenance-notice-2026-11-content" datatype="html">
-        <source>121 will be unavailable while we upgrade the platform. Please plan your work around this window.</source>
-      </trans-unit>
-      <trans-unit id="maintenance-notice-2026-11-title" datatype="html">
-        <source>Scheduled maintenance: Friday 4 December, 06:00-20:00 (CET)</source>
-      </trans-unit>
       <trans-unit id="max-payments" datatype="html">
         <source>Max payments</source>
       </trans-unit>
