@@ -13,7 +13,6 @@ import { AppRoutes } from '~/app-routes.const';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { LocaleSwitcherComponent } from '~/components/locale-switcher/locale-switcher.component';
 import { LogoComponent } from '~/components/logo/logo.component';
-import { MaintenanceNoticeComponent } from '~/components/maintenance-notice/maintenance-notice.component';
 import { CookieBannerComponent } from '~/pages/login/components/cookie-banner/cookie-banner.component';
 import { AuthService } from '~/services/auth.service';
 import {
@@ -26,7 +25,6 @@ import { ToastService } from '~/services/toast.service';
   selector: 'app-login',
   imports: [
     LogoComponent,
-    MaintenanceNoticeComponent,
     ToolbarModule,
     NgOptimizedImage,
     CookieBannerComponent,
