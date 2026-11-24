@@ -16,6 +16,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     seedPaidRegistrations: true,
+    seedPaymentMaxWaitTimeMs: 60_000,
     registrations: [...registrationsPV, registrationPvMaxPayment],
     programId: programIdPV,
     seedWithStatus: RegistrationStatusEnum.included,

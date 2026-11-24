@@ -59,6 +59,7 @@ interface Fixtures {
     seedWithStatus?: RegistrationStatusEnum;
     seedPaidRegistrations?: boolean;
     transferValue?: number;
+    seedPaymentMaxWaitTimeMs?: number;
     userCredentials?: {
       username: string;
       password: string;
@@ -144,6 +145,7 @@ const seedRegistrations = async ({
   seedWithStatus,
   skipSeedRegistrations,
   transferValue,
+  maxWaitTimeMs,
 }: {
   addPaidRegistrations?: boolean;
   programId?: number;
@@ -151,6 +153,7 @@ const seedRegistrations = async ({
   seedWithStatus?: RegistrationStatusEnum;
   skipSeedRegistrations?: boolean;
   transferValue?: number;
+  maxWaitTimeMs?: number;
 }) => {
   if (skipSeedRegistrations) {
     return;
@@ -164,6 +167,7 @@ const seedRegistrations = async ({
       programId: programId!,
       transferValue: transferValue ?? 20,
       completeStatuses: [TransactionStatusEnum.success],
+      maxWaitTimeMs,
     });
   } else if (seedWithStatus) {
     await seedRegistrationsWithStatus(
@@ -234,6 +238,7 @@ export const customSharedFixture = base.extend<Fixtures>({
       seedWithStatus?: RegistrationStatusEnum;
       skipSeedRegistrations?: boolean;
       transferValue?: number;
+      seedPaymentMaxWaitTimeMs?: number;
       // For logging and navigation afterwards.
       userCredentials?: {
         username: string;
@@ -255,6 +260,7 @@ export const customSharedFixture = base.extend<Fixtures>({
         seedWithStatus: params.seedWithStatus,
         addPaidRegistrations: params.seedPaidRegistrations,
         transferValue: params.transferValue,
+        maxWaitTimeMs: params.seedPaymentMaxWaitTimeMs,
       });
 
       // Login
@@ -320,6 +326,7 @@ export const customSharedFixture = base.extend<Fixtures>({
         seedWithStatus: params.seedWithStatus,
         addPaidRegistrations: params.seedPaidRegistrations,
         transferValue: params.transferValue,
+        maxWaitTimeMs: params.seedPaymentMaxWaitTimeMs,
       });
     };
     await use(fn);
