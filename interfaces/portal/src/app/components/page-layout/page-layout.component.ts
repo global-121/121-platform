@@ -11,6 +11,7 @@ import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
 import { SkeletonModule } from 'primeng/skeleton';
 
+import { MaintenanceNoticeComponent } from '~/components/maintenance-notice/maintenance-notice.component';
 import { FooterComponent } from '~/components/page-layout/components/footer/footer.component';
 import { HeaderComponent } from '~/components/page-layout/components/header/header.component';
 import { ProgramMenuComponent } from '~/components/page-layout/components/program-menu/program-menu.component';
@@ -25,6 +26,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
   selector: 'app-page-layout',
   imports: [
     HeaderComponent,
+    MaintenanceNoticeComponent,
     ProgramMenuComponent,
     FooterComponent,
     CardModule,

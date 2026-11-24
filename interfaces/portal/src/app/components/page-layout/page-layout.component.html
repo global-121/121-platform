@@ -1,5 +1,8 @@
 <div class="flex flex-col min-block-screen">
   <app-header [programId]="programId()" />
+
+  <app-maintenance-notice [contentContainerStyles]="'lg:px-24'" />
+
   <div class="flex flex-1 flex-col">
     @if (pageLoadError()) {
       <div class="px-6 inline-full lg:px-24">
