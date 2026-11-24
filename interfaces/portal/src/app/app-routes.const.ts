@@ -21,7 +21,6 @@ export enum AppRoutes {
   programSettingsTeam = 'team',
   registrationByReferenceId = 'registration-by-reference-id',
   registrationLookup = 'registration-lookup',
-  snake = 'snake',
   userRoles = 'user-roles',
   users = 'users',
 }
