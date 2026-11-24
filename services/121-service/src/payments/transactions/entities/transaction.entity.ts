@@ -16,6 +16,7 @@ import { LastTransactionEventEntity } from '@121-service/src/payments/transactio
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
+import { nullableNumericColumnTransformer } from '@121-service/src/utils/nullable-numeric-column-transformer.const';
 
 @Unique(['registrationId', 'paymentId'])
 @Entity('transaction')
@@ -24,7 +25,22 @@ export class TransactionEntity extends Base121AuditedEntity {
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
 
-  @Column({ nullable: true, type: 'real' })
+  @Column({
+    name: 'transferValue',
+    nullable: true,
+    select: false,
+    insert: false,
+    update: false,
+    type: 'real',
+  })
+  public transferValueLegacy?: number | null;
+
+  @Column({
+    name: 'transferValueNumeric',
+    nullable: true,
+    type: 'numeric',
+    transformer: nullableNumericColumnTransformer,
+  })
   public transferValue: number | null;
 
   @Column()
