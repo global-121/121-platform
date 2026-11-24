@@ -31,10 +31,12 @@ echo "behind target:  $behind_target"
 blockers=()
 [ -z "$branch" ] && blockers+=("detached HEAD: check out a named branch")
 [ "$dirty_count" != "0" ] && blockers+=("working tree is dirty ($dirty_count files)")
-[ "$behind_target" != "0" ] && blockers+=("branch is $behind_target commits behind $target (ask the user: rebase first or continue)")
 
 if [ "${#blockers[@]}" -eq 0 ]; then
   echo "verdict:        READY"
+  if [ "$behind_target" != "0" ]; then
+    echo "warning:        branch is $behind_target commits behind $target; the PRs may need a rebase later"
+  fi
 else
   echo "verdict:        BLOCKED"
   for blocker in "${blockers[@]}"; do

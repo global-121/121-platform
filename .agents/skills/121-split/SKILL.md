@@ -30,10 +30,10 @@ Only use this when the branch really is too big to review. Prefer small PRs that
 Run `scripts/preflight.sh` once and read only its labelled output. Pass the target ref as argument only when the user says the branch will not be merged into `main` (for example, it is itself stacked on another branch). Do not run the underlying git commands separately, and do not interpret raw or empty command output. It does not fetch; do not fetch unless the user agrees. Mention the `target updated` age when it is more than a day old.
 
 - `verdict: READY`: note the `branch`, `sha` and `base` it printed and continue. This `sha` is the original's SHA for the whole run; before verifying, confirm the original branch still points to it and stop if it moved.
+  - `warning: ... behind ...`: not a blocker. Chunks are built on the same base as the original, so they behave like the original. Do not ask; mention it once in the proposal: the PRs may need a rebase onto `main` later, and rebasing first is optional (the skill never rewrites the original).
 - `verdict: BLOCKED`: report exactly the listed blockers and ask only about those. Never ask about a problem the script did not list.
   - dirty working tree or detached HEAD: stop until the user fixes it.
   - after the user rebases or fixes a blocker, re-run the script and continue; do not re-ask settled questions.
-  - behind target: the base is stale and chunks may not typecheck. Use `ask_user` with a single question: the user rebases the original branch first and re-runs (preferred; the skill never rewrites the original), or continues on the stale base and expects failures caused by the old base.
 
 ### 1b. Baseline checks
 
