@@ -1,17 +1,21 @@
 ---
 name: 121-split
 description: >
-  Split a large branch/PR into small, reviewable, stacked local branches grouped
-  by intent. Use for "split this PR", "PR is too big", "make stacked PRs",
-  "break up this branch". Never pushes.
+  Split a large branch/PR into small, reviewable local branches grouped by
+  intent, preferably independent PRs to main, otherwise a stack. Use for
+  "split this PR", "PR is too big", "make stacked PRs", "break up this branch".
+  Never pushes.
 ---
 
 # 121-split
 
-Turn one oversized branch into a stack of small branches that together are identical to the original. Read [grouping heuristics](./references/grouping-heuristics.md) first.
+Turn one oversized branch into small branches that together are identical to the original. The goal is reviewability. Read [grouping heuristics](./references/grouping-heuristics.md) first.
+
+Only use this when the branch really is too big to review. Prefer small PRs that merge to `main` on their own; use a stack only for chunks that truly depend on each other.
 
 ## Hard rules
 
+- Every chunk must be mergeable to `main` on its own or after its predecessors: `main` stays releasable, with no broken behaviour and no user-visible half-finished feature.
 - Never push, force-push, or modify the original branch. The user pushes and opens PRs.
 - Never read or modify `.env` files.
 - Stop and ask when the working tree is dirty or the diff cannot be split cleanly.
@@ -50,13 +54,17 @@ Read the diff (not only file names) and group files by intent following the heur
 - whether it typechecks and lints standalone; list files that must be split by hunk
 - which baseline errors from step 1b land in this chunk (by file path), e.g. "`foo.spec.ts` error: existing on the original"
 
-Chunks should be ordered so each builds on the previous. Prefer file-level splitting; propose hunk-level splitting only when unavoidable. Present the proposal as a table and use `ask_user` to approve or adjust it. In the same form, ask once whether chunks may be committed with `--no-verify` when hooks fail on errors that already exist on the original branch; apply that answer to every chunk instead of asking again mid-run.
+First look for chunks that do not depend on other chunks; those are independent and based on `main`. Chain only chunks that really depend on earlier ones, ordered so each builds on its predecessors. Prefer file-level splitting; propose hunk-level splitting only when unavoidable.
+
+If a chunk makes part of a feature visible to users, flag it: landing it before the rest risks releasing a half-finished feature. Propose keeping it last in the stack, and ask whether the stack must be merged in full.
+
+Present the proposal as a table, marking each chunk as independent or stacked, and use `ask_user` to approve or adjust it (independent PRs, a stack, or a mix). In the same form, ask once whether chunks may be committed with `--no-verify` when hooks fail on errors that already exist on the original branch; apply that answer to every chunk instead of asking again mid-run.
 
 ### 4. Execute (after approval)
 
 For each chunk in order:
 
-1. `git switch -c <branch>` from the previous chunk branch (the first from the base).
+1. `git switch -c <branch>` from the base for an independent chunk, otherwise from the chunk branch it depends on.
 2. Bring in the final content: `git checkout <original-branch> -- <paths>` (deleted files: `git rm`). For hunk splits, take the diff of the file between the previous chunk and the original, apply only the selected hunks with `git apply --index` (updates both index and working tree), then check the result compiles.
 3. Commit with a Conventional Commits message and this trailer:
    `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
@@ -65,7 +73,7 @@ Generated files (see heuristics) go with the chunk that causes them. Regenerate 
 
 ### 5. Verify
 
-- `scripts/verify-stack.sh <original-branch> <last-branch>` must report no tree difference. If it does, put the leftover files in the last chunk.
+- `scripts/verify-stack.sh <original-branch> <last-branch>` must report no tree difference. If it does, put the leftover files in the last chunk. With independent chunks, no single branch contains everything; verify against a temporary branch that merges all chunk branches, and delete it afterwards.
 - The original branch must be unchanged (same SHA as at the start).
 - Per chunk, best effort: `npm run typecheck` and `npm run lint` in the touched package(s) (`services/121-service`, `interfaces/portal`, `e2e`). Report failures; do not skip them silently.
 
@@ -77,4 +85,4 @@ Return the stack in order with branch names and line counts, then the manual com
 git push -u origin <branch>   # for each branch, in order
 ```
 
-PR base for chunk N is the branch of chunk N-1 (first chunk: `main`). Remind the user that each PR description needs the `AB#` reference and a label (enhancement, bugfix, other, chore), and to use draft status until ready.
+PR base is `main` for independent chunks, and the branch it depends on for stacked chunks. Stacked PRs must be merged in order; if the stack was marked "merge in full", remind the user not to merge any user-visible chunk before the whole stack is approved. Remind the user that each PR description needs the `AB#` reference and a label (enhancement, bugfix, other, chore), and to use draft status until ready.

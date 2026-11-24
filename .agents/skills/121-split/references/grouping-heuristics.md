@@ -1,6 +1,6 @@
 # Grouping heuristics
 
-Goal: every chunk is reviewable on its own (~400 changed lines, excluding generated files), has one intent, and builds on the previous chunk.
+Goal: every chunk is reviewable on its own (~400 changed lines, excluding generated files), has one intent, and depends only on earlier chunks (or on nothing, so it can merge to `main` alone).
 
 ## Default stack order
 
@@ -11,6 +11,8 @@ Goal: every chunk is reviewable on its own (~400 changed lines, excluding genera
 5. Portal components/pages (with `messages.xlf` changes from `npm run extract-i18n`)
 6. e2e tests
 7. Docs and configuration
+
+Chunks 1-4 are usually invisible to users and safe to land early; user-facing UI (5) goes last.
 
 Deviate when the diff suggests a better intent-based grouping (e.g. two independent features: one stack each, or one chunk per feature slice). Independent features should not depend on each other.
 
