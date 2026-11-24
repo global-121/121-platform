@@ -6,13 +6,11 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 
 import { ToastModule, ToastPositionType } from '@openng/optimus-ui/toast';
-import KonamiCode from 'konami-code-js';
 import { Subscription } from 'rxjs';
 
-import { AppRoutes } from '~/app-routes.const';
 import { SessionExpiredDialogComponent } from '~/components/session-expired-dialog/session-expired-dialog.component';
 import { UnsavedChangesDialogComponent } from '~/components/unsaved-changes-dialog/unsaved-changes-dialog.component';
 import { AuthService } from '~/services/auth.service';
@@ -36,7 +34,6 @@ import { environment } from '~environment';
 export class AppComponent implements OnInit, OnDestroy {
   readonly rtlHelper = inject(RtlHelperService);
   private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
 
   private authSubscriptions: Subscription[] = [];
 
@@ -59,10 +56,6 @@ export class AppComponent implements OnInit, OnDestroy {
       // Enable dev/debugging-styles
       document.documentElement.classList.add('dev');
     }
-
-    new KonamiCode(() => {
-      void this.router.navigate(['/', AppRoutes.snake]);
-    });
   }
 
   ngOnDestroy(): void {

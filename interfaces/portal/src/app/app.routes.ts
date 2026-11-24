@@ -36,11 +36,6 @@ export const routes: Routes = [
       ),
   },
   {
-    path: AppRoutes.snake,
-    loadComponent: () =>
-      import('~/pages/snake/snake.page').then((x) => x.SnakePageComponent),
-  },
-  {
     path: AppRoutes.changePassword,
     title: $localize`:@@page-title-change-password:Change password`,
     loadComponent: () =>
