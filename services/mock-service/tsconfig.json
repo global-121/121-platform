@@ -23,7 +23,6 @@
     "types": ["express", "node"],
     "typeRoots": ["./node_modules/@types"],
     "resolveJsonModule": true,
-    "baseUrl": "./",
     "paths": {
       "@mock-service/*": ["./*"]
     }
