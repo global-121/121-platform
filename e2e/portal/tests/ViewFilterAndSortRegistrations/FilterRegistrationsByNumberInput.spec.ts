@@ -12,11 +12,17 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 let registrationName: string;
 
+const seedPaymentMaxWaitTimeMs = 60_000;
+const defaultTestTimeoutMs = 60_000;
+
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  // The hook shares the test's timeout, so add the extra payment wait on top of the default.
+  test.setTimeout(defaultTestTimeoutMs + seedPaymentMaxWaitTimeMs);
+
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     seedPaidRegistrations: true,
-    seedPaymentMaxWaitTimeMs: 60_000,
+    seedPaymentMaxWaitTimeMs,
     registrations: [...registrationsPV, registrationPvMaxPayment],
     programId: programIdPV,
     seedWithStatus: RegistrationStatusEnum.included,
