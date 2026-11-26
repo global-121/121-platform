@@ -128,9 +128,6 @@
       <trans-unit id="1545261806462361427" datatype="html">
         <source>Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></source>
       </trans-unit>
-      <trans-unit id="1579692722565712588" datatype="html">
-        <source>Okay</source>
-      </trans-unit>
       <trans-unit id="1581201431976430187" datatype="html">
         <source>This field cannot be more than <x equiv-text="max" id="PH"/>.</source>
       </trans-unit>
@@ -260,9 +257,6 @@
       </trans-unit>
       <trans-unit id="2077280297780026969" datatype="html">
         <source>Review payment summary and follow the next steps:</source>
-      </trans-unit>
-      <trans-unit id="2077783620698115246" datatype="html">
-        <source>Your score is <x equiv-text="{{ score() }}" id="INTERPOLATION"/>.</source>
       </trans-unit>
       <trans-unit id="2095982362430871638" datatype="html">
         <source>Select 1 or more fields</source>
@@ -396,9 +390,6 @@
       <trans-unit id="2424309330980717607" datatype="html">
         <source>Payments cannot be approved if there are duplicate registrations. Filter and resolve duplicates in the registration table to continue.</source>
       </trans-unit>
-      <trans-unit id="2438590582556677910" datatype="html">
-        <source>Start!</source>
-      </trans-unit>
       <trans-unit id="2459708623953075527" datatype="html">
         <source>Import PDF, PNG, JPG or DOC files to your program. The files will be available for viewing and exporting to users with the permission to view files.</source>
       </trans-unit>
@@ -521,9 +512,6 @@
       </trans-unit>
       <trans-unit id="2978365127160103687" datatype="html">
         <source>Only the columns that are currently visible in the table will be included. You can learn how to show or hide columns in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
-      </trans-unit>
-      <trans-unit id="2981043932069425956" datatype="html">
-        <source>Let&apos;s start!</source>
       </trans-unit>
       <trans-unit id="2986249053713735246" datatype="html">
         <source>Export refunded debit cards</source>
@@ -1247,9 +1235,6 @@
       <trans-unit id="5587438863454126747" datatype="html">
         <source>New data</source>
       </trans-unit>
-      <trans-unit id="5595826100350402634" datatype="html">
-        <source>Use the arrow keys or W A S D to play the game</source>
-      </trans-unit>
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
       </trans-unit>
@@ -1830,9 +1815,6 @@
       <trans-unit id="7910076708497708162" datatype="html">
         <source>Last login</source>
       </trans-unit>
-      <trans-unit id="7924647147478852112" datatype="html">
-        <source>Game over!</source>
-      </trans-unit>
       <trans-unit id="7940449478357564231" datatype="html">
         <source>You can update these details at any time in the program settings.</source>
       </trans-unit>
@@ -1931,9 +1913,6 @@
       </trans-unit>
       <trans-unit id="8209340100752123472" datatype="html">
         <source>When you receive a task, any information linked to the person&apos;s phone number found in active programs in the 121 Platform will appear here.</source>
-      </trans-unit>
-      <trans-unit id="8220517666190714329" datatype="html">
-        <source>Did you know?</source>
       </trans-unit>
       <trans-unit id="8221183084962199390" datatype="html">
         <source>Payment not found. Please check the URL and try again.</source>
