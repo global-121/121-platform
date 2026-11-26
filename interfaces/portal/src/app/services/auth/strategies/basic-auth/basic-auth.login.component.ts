@@ -44,7 +44,8 @@ export class BasicAuthLoginComponent {
 
   readonly LoginStep = LoginStep;
 
-  readonly step = signal(LoginStep.email);
+  // Password is the default during the grace period for one-time code login
+  readonly step = signal(LoginStep.password);
   readonly email = signal('');
   readonly oneTimePasswordRequest = signal<OneTimePasswordRequest | undefined>(
     getOneTimePasswordRequestFromSessionStorage(),
