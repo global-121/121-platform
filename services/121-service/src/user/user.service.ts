@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
-import { Equal, In, Repository } from 'typeorm';
+import { DataSource, EntityManager, Equal, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/emails.const';
@@ -28,6 +28,7 @@ import {
 import { AssignedAccessGroupDto } from '@121-service/src/user/dto/assigned-access-group.dto';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto';
+import { CreateMachineUserResponseDto } from '@121-service/src/user/dto/create-machine-user-response.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { CreateUserRoleDto } from '@121-service/src/user/dto/create-user-role.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
@@ -49,11 +50,13 @@ import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity'
 import { LoginOneTimePasswordAuditEventName } from '@121-service/src/user/enum/login-one-time-password-audit-event-name.enum';
 import { LoginOneTimePasswordRequestOutcome } from '@121-service/src/user/enum/login-one-time-password-request-outcome.enum';
 import { LoginOneTimePasswordUserFailureReason } from '@121-service/src/user/enum/login-one-time-password-user-failure-reason.enum';
+import { MachineUserAuditEventName } from '@121-service/src/user/enum/machine-user-audit-event-name.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
 import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
+import { UserApiKeysService } from '@121-service/src/user/user-api-keys/user-api-keys.service';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { ONE_TIME_PASSWORD_EXPIRATION_MINUTES } from '@121-service/src/user/user-one-time-password/user-one-time-password.const';
 import { UserOneTimePasswordsService } from '@121-service/src/user/user-one-time-password/user-one-time-passwords.service';
@@ -77,7 +80,9 @@ export class UserService {
     private readonly userAccessGroupAssignmentsService: UserAccessGroupAssignmentsService,
     private readonly assignmentRepository: ProgramAidworkerAssignmentRepository,
     private readonly userOneTimePasswordsService: UserOneTimePasswordsService,
+    private readonly userApiKeysService: UserApiKeysService,
     private readonly azureLogService: AzureLogService,
+    private readonly dataSource: DataSource,
   ) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
@@ -127,7 +132,7 @@ export class UserService {
       where: { username: Equal(email) },
     });
 
-    if (!user) {
+    if (!user || user.userType !== UserType.aidWorker) {
       this.trackLoginOneTimePasswordEvent({
         name: LoginOneTimePasswordAuditEventName.requested,
         details: { outcome: LoginOneTimePasswordRequestOutcome.unknownUser },
@@ -244,7 +249,7 @@ export class UserService {
       where: { username: Equal(username.toLowerCase()) },
     });
 
-    if (!userEntity) {
+    if (!userEntity || userEntity.userType !== UserType.aidWorker) {
       this.trackLoginOneTimePasswordEvent({
         name: LoginOneTimePasswordAuditEventName.failed,
         details: { reason: LoginOneTimePasswordUserFailureReason.unknownUser },
@@ -560,16 +565,58 @@ export class UserService {
     }
   }
 
+  public async createMachineUser({
+    username,
+    createdByUserId,
+  }: {
+    username: string;
+    createdByUserId: number;
+  }): Promise<CreateMachineUserResponseDto> {
+    const { userEntity, apiKey } = await this.dataSource.transaction(
+      async (manager) => {
+        const userEntity = await this.create(
+          username,
+          null,
+          this.generateStrongPassword(),
+          UserType.machine,
+          false,
+          manager,
+        );
+        const { apiKey } = await this.userApiKeysService.createApiKey({
+          userId: userEntity.id,
+          manager,
+        });
+        return { userEntity, apiKey };
+      },
+    );
+    this.azureLogService.trackEvent({
+      name: MachineUserAuditEventName.created,
+      properties: {
+        userId: String(userEntity.id),
+        createdByUserId: String(createdByUserId),
+      },
+    });
+
+    return {
+      id: userEntity.id,
+      username: userEntity.username as string,
+      apiKey,
+    };
+  }
+
   public async create(
     username: string,
     displayName: string | null,
     password: string,
     userType: UserType,
     isEntraUser = false,
+    manager?: EntityManager,
   ): Promise<UserEntity> {
+    const userRepository =
+      manager?.getRepository(UserEntity) ?? this.userRepository;
     username = username.toLowerCase();
     // check uniqueness of email
-    const qb = this.userRepository
+    const qb = userRepository
       .createQueryBuilder('user')
       .where('user.username = :username', { username });
 
@@ -590,7 +637,7 @@ export class UserService {
     newUser.userType = userType;
     newUser.isEntraUser = isEntraUser;
     newUser.displayName = displayName || username.split('@')[0];
-    return await this.userRepository.save(newUser);
+    return await userRepository.save(newUser);
   }
 
   public async updatePassword(dto: UpdateUserPasswordDto): Promise<UserRO> {
@@ -865,6 +912,7 @@ export class UserService {
     });
 
     await this.assignmentRepository.remove(user.programAssignments);
+    await this.userApiKeysService.deleteApiKey({ userId });
 
     try {
       return await this.userRepository.remove(user);
@@ -1078,7 +1126,7 @@ export class UserService {
       .where({ username })
       .getOne();
 
-    if (!saltCheck) {
+    if (!saltCheck || saltCheck.userType !== UserType.aidWorker) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
@@ -1376,6 +1424,12 @@ export class UserService {
     });
     if (!user || !user.username) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    if (user.userType === UserType.machine) {
+      throw new HttpException(
+        'Machine users do not have a password',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     user.salt = this.generateSalt();
     const password = this.generateStrongPassword();

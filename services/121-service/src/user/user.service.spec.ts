@@ -3,13 +3,14 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { REQUEST } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 
 import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
 import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
+import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
@@ -17,10 +18,13 @@ import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity'
 import { LoginOneTimePasswordAuditEventName } from '@121-service/src/user/enum/login-one-time-password-audit-event-name.enum';
 import { LoginOneTimePasswordRequestOutcome } from '@121-service/src/user/enum/login-one-time-password-request-outcome.enum';
 import { LoginOneTimePasswordUserFailureReason } from '@121-service/src/user/enum/login-one-time-password-user-failure-reason.enum';
+import { MachineUserAuditEventName } from '@121-service/src/user/enum/machine-user-audit-event-name.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
+import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserAccessGroupAssignmentsService } from '@121-service/src/user/user-access-group-assignments/user-access-group-assignments.service';
+import { UserApiKeysService } from '@121-service/src/user/user-api-keys/user-api-keys.service';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { OneTimePasswordVerificationFailureReason } from '@121-service/src/user/user-one-time-password/enum/one-time-password-verification-failure-reason.enum';
 import { UserOneTimePasswordsService } from '@121-service/src/user/user-one-time-password/user-one-time-passwords.service';
@@ -42,13 +46,19 @@ describe('UserService', () => {
   let userAccessGroupAssignmentsService: jest.Mocked<UserAccessGroupAssignmentsService>;
   let userEmailsService: UserEmailsService;
   let userOneTimePasswordsService: UserOneTimePasswordsService;
+  let userApiKeysService: UserApiKeysService;
   let azureLogService: AzureLogService;
+  let transactionManager: EntityManager;
 
   const mockRequest = {
     headers: {},
   };
 
   beforeEach(async () => {
+    transactionManager = {
+      getRepository: jest.fn(() => userRepository),
+    } as unknown as EntityManager;
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
@@ -85,6 +95,7 @@ describe('UserService', () => {
             findOne: jest.fn(),
             createQueryBuilder: jest.fn(),
             save: jest.fn(),
+            remove: jest.fn(),
           },
         },
         {
@@ -104,8 +115,21 @@ describe('UserService', () => {
           useValue: { createOneTimePassword: jest.fn(), verifyOneTimePassword: jest.fn() },
         },
         {
+          provide: UserApiKeysService,
+          useValue: { createApiKey: jest.fn(), deleteApiKey: jest.fn() },
+        },
+        {
           provide: AzureLogService,
           useValue: { logError: jest.fn(), trackEvent: jest.fn() },
+        },
+        {
+          provide: DataSource,
+          useValue: {
+            transaction: jest.fn(
+              (work: (manager: EntityManager) => Promise<unknown>) =>
+                work(transactionManager),
+            ),
+          },
         },
       ],
     }).compile();
@@ -131,7 +155,191 @@ describe('UserService', () => {
     );
     userEmailsService = module.get<UserEmailsService>(UserEmailsService);
     userOneTimePasswordsService = module.get<UserOneTimePasswordsService>(UserOneTimePasswordsService);
+    userApiKeysService = module.get<UserApiKeysService>(UserApiKeysService);
     azureLogService = module.get<AzureLogService>(AzureLogService);
+  });
+
+  describe('Creating a machine user', () => {
+    const mockUsernameIsAvailable = ({
+      isAvailable,
+    }: {
+      isAvailable: boolean;
+    }): void => {
+      const queryBuilderMock = {
+        where: jest.fn().mockReturnThis(),
+        getOne: jest
+          .fn()
+          .mockResolvedValue(isAvailable ? null : ({ id: 1 } as UserEntity)),
+      };
+      jest
+        .spyOn(userRepository, 'createQueryBuilder')
+        .mockReturnValue(queryBuilderMock as never);
+    };
+
+    beforeEach(() => {
+      jest
+        .spyOn(userRepository, 'save')
+        .mockImplementation(
+          async (user) => ({ ...user, id: 7 }) as unknown as UserEntity,
+        );
+      jest
+        .spyOn(userApiKeysService, 'createApiKey')
+        .mockResolvedValue({ apiKey: 'plaintext-api-key' });
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('creates a machine user and returns the plaintext API key', async () => {
+      // Arrange
+      mockUsernameIsAvailable({ isAvailable: true });
+
+      // Act
+      const result = await service.createMachineUser({
+        username: 'Espo-Connector',
+        createdByUserId: 1,
+      });
+
+      // Assert
+      expect(userRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          username: 'espo-connector',
+          userType: UserType.machine,
+        }),
+      );
+      expect(userApiKeysService.createApiKey).toHaveBeenCalledWith({
+        userId: 7,
+        manager: transactionManager,
+      });
+      expect(result).toEqual({
+        id: 7,
+        username: 'espo-connector',
+        apiKey: 'plaintext-api-key',
+      });
+    });
+
+    it('logs who created the machine user, without the API key', async () => {
+      // Arrange
+      mockUsernameIsAvailable({ isAvailable: true });
+
+      // Act
+      await service.createMachineUser({
+        username: 'espo-connector',
+        createdByUserId: 1,
+      });
+
+      // Assert
+      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
+        name: MachineUserAuditEventName.created,
+        properties: { userId: '7', createdByUserId: '1' },
+      });
+    });
+
+    it('does not create an API key when the username is already taken', async () => {
+      // Arrange
+      mockUsernameIsAvailable({ isAvailable: false });
+
+      // Act & Assert
+      await expect(
+        service.createMachineUser({
+          username: 'espo-connector',
+          createdByUserId: 1,
+        }),
+      ).rejects.toMatchObject({ status: HttpStatus.BAD_REQUEST });
+      expect(userApiKeysService.createApiKey).not.toHaveBeenCalled();
+      expect(azureLogService.trackEvent).not.toHaveBeenCalled();
+    });
+
+    it('fails and does not log the creation when storing the API key fails', async () => {
+      // Arrange
+      mockUsernameIsAvailable({ isAvailable: true });
+      const storeError = new Error('Storing API key failed');
+      jest
+        .spyOn(userApiKeysService, 'createApiKey')
+        .mockRejectedValue(storeError);
+
+      // Act & Assert
+      await expect(
+        service.createMachineUser({
+          username: 'espo-connector',
+          createdByUserId: 1,
+        }),
+      ).rejects.toBe(storeError);
+      expect(azureLogService.trackEvent).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Deleting a user', () => {
+    beforeEach(() => {
+      jest.spyOn(userRepository, 'findOneOrFail').mockResolvedValue({
+        id: 7,
+        userType: UserType.machine,
+        programAssignments: [],
+      } as unknown as UserEntity);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('revokes the API key and removes the user', async () => {
+      // Arrange
+      jest
+        .spyOn(userRepository, 'remove')
+        .mockImplementation(async (user) => user);
+
+      // Act
+      await service.delete(7);
+
+      // Assert
+      expect(userApiKeysService.deleteApiKey).toHaveBeenCalledWith({
+        userId: 7,
+      });
+      expect(userRepository.remove).toHaveBeenCalled();
+    });
+
+    it('still revokes the API key when the user cannot be removed because of related activity', async () => {
+      // Arrange
+      jest
+        .spyOn(userRepository, 'remove')
+        .mockRejectedValue({ code: PostgresStatusCodes.FOREIGN_KEY_VIOLATION });
+
+      // Act & Assert
+      await expect(service.delete(7)).rejects.toMatchObject({
+        status: HttpStatus.CONFLICT,
+      });
+      expect(userApiKeysService.deleteApiKey).toHaveBeenCalledWith({
+        userId: 7,
+      });
+    });
+  });
+
+  describe('Logging in with a password', () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('rejects a machine user', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'createQueryBuilder').mockReturnValue({
+        addSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        getOne: jest.fn().mockResolvedValue({
+          id: 1,
+          salt: 'salt',
+          userType: UserType.machine,
+        } as UserEntity),
+      } as never);
+
+      // Act & Assert
+      await expect(
+        service.matchPassword({
+          username: 'espo-connector',
+          password: 'any-password',
+        }),
+      ).rejects.toMatchObject({ status: HttpStatus.UNAUTHORIZED });
+    });
   });
 
   describe('Requesting a login one-time password', () => {
@@ -141,6 +349,7 @@ describe('UserService', () => {
       username: 'user@example.org',
       displayName: 'Jane',
       isEntraUser: false,
+      userType: UserType.aidWorker,
     } as UserEntity;
 
     const requestLoginOneTimePasswordAndWait = async ({
@@ -201,6 +410,25 @@ describe('UserService', () => {
 
       // Assert
       expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
+    });
+
+    it('does not create or email a one-time password for a machine user', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue({
+        ...existingUser,
+        userType: UserType.machine,
+      } as UserEntity);
+
+      // Act
+      await requestLoginOneTimePasswordAndWait({ username: 'espo-connector' });
+
+      // Assert
+      expect(userOneTimePasswordsService.createOneTimePassword).not.toHaveBeenCalled();
+      expect(userEmailsService.sendLoginOneTimePassword).not.toHaveBeenCalled();
+      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
+        name: LoginOneTimePasswordAuditEventName.requested,
+        properties: { outcome: LoginOneTimePasswordRequestOutcome.unknownUser },
+      });
     });
 
     it('does not create or email a one-time password for a user who signs in with Entra', async () => {
@@ -363,6 +591,7 @@ describe('UserService', () => {
         username: 'user@example.org',
         displayName: 'Jane',
         isEntraUser: false,
+        userType: UserType.aidWorker,
         admin: false,
         isOrganizationAdmin: false,
         ...overrides,
@@ -437,6 +666,23 @@ describe('UserService', () => {
       ).rejects.toThrow(
         new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED),
       );
+    });
+
+    it('rejects a machine user, even with a valid one-time password', async () => {
+      // Arrange
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue(buildExistingUser({ userType: UserType.machine }));
+
+      // Act & Assert
+      await expect(
+        service.loginWithOneTimePassword({ username: 'espo-connector', oneTimePassword }),
+      ).rejects.toMatchObject({ status: HttpStatus.UNAUTHORIZED });
+      expect(userOneTimePasswordsService.verifyOneTimePassword).not.toHaveBeenCalled();
+      expect(azureLogService.trackEvent).toHaveBeenCalledWith({
+        name: LoginOneTimePasswordAuditEventName.failed,
+        properties: { reason: LoginOneTimePasswordUserFailureReason.unknownUser },
+      });
     });
 
     it('rejects a user who signs in with Entra, even with a valid one-time password', async () => {
@@ -1206,6 +1452,7 @@ describe('UserService', () => {
         username: 'test@example.com',
         password: 'wrongHashedPassword',
         salt: 'salt',
+        userType: UserType.aidWorker,
       };
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser as any);
 
@@ -1244,6 +1491,7 @@ describe('UserService', () => {
         username: 'test@example.com',
         password: 'currentHashedPassword',
         salt: 'currentSalt',
+        userType: UserType.aidWorker,
       };
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser as any);
 
@@ -1302,6 +1550,7 @@ describe('UserService', () => {
         username: 'test@example.com',
         password: 'currentHashedPassword',
         salt: 'currentSalt',
+        userType: UserType.aidWorker,
       };
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser as any);
 
@@ -1521,6 +1770,27 @@ describe('UserService', () => {
         service.changePasswordWithoutCurrentPassword(mockChangePasswordDto),
       ).rejects.toThrow(
         new HttpException('User not found', HttpStatus.NOT_FOUND),
+      );
+
+      expect(userRepository.save).not.toHaveBeenCalled();
+      expect(userEmailsService.sendPasswordReset).not.toHaveBeenCalled();
+    });
+
+    it('should throw HttpException when the user is a machine user', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue({
+        ...mockUser,
+        userType: UserType.machine,
+      } as UserEntity);
+
+      // Act & Assert
+      await expect(
+        service.changePasswordWithoutCurrentPassword(mockChangePasswordDto),
+      ).rejects.toThrow(
+        new HttpException(
+          'Machine users do not have a password',
+          HttpStatus.BAD_REQUEST,
+        ),
       );
 
       expect(userRepository.save).not.toHaveBeenCalled();

@@ -29,9 +29,12 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto';
 import { CreateLoginOneTimePasswordDto } from '@121-service/src/user/dto/create-login-one-time-password.dto';
+import { CreateMachineUserDto } from '@121-service/src/user/dto/create-machine-user.dto';
+import { CreateMachineUserResponseDto } from '@121-service/src/user/dto/create-machine-user-response.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
 import { LoginResponseDto } from '@121-service/src/user/dto/login-response.dto';
@@ -45,6 +48,7 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserRO } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @ApiTags('users')
 @UseGuards(AuthenticatedUserGuard)
@@ -78,6 +82,31 @@ export class UserController {
   @Post('users')
   public async createUsers(@Body() userData: CreateUsersDto): Promise<void> {
     return this.userService.createUsers(userData);
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary:
+      'Create a machine user with an API key. The API key is only shown once, in this response.',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Successfully created machine user',
+    type: CreateMachineUserResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid username, or username already exists',
+  })
+  @Post('users/machine-users')
+  public async createMachineUser(
+    @Req() req: ScopedUserRequest,
+    @Body() createMachineUserDto: CreateMachineUserDto,
+  ): Promise<CreateMachineUserResponseDto> {
+    return await this.userService.createMachineUser({
+      username: createMachineUserDto.username,
+      createdByUserId: RequestHelper.getUserId(req),
+    });
   }
 
   @NoUserAuthenticationEndpoint(
