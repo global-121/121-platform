@@ -63,51 +63,6 @@ export const programHasAccessGroups = ({
   return accessGroupRegistrationAttributeNames.length > 0;
 };
 
-export const getAccessGroupValue = ({
-  accessGroupRegistrationAttributeNames,
-  registration,
-  localizeAttribute,
-}: {
-  accessGroupRegistrationAttributeNames: string[];
-  registration?: Record<string, unknown>;
-  localizeAttribute: ({
-    attributeName,
-    attributeOptionValue,
-  }: {
-    attributeName: string;
-    attributeOptionValue: string;
-  }) => string;
-}): string | undefined => {
-  const accessGroupLabels: string[] = [];
-  for (const attributeName of accessGroupRegistrationAttributeNames) {
-    if (!registration) {
-      continue;
-    }
-
-    const value = registration[attributeName];
-    if (typeof value !== 'string' || value.length === 0) {
-      continue;
-    }
-
-    const label = localizeAttribute({
-      attributeName,
-      attributeOptionValue: value,
-    });
-    if (label.length === 0) {
-      accessGroupLabels.push(value);
-      continue;
-    }
-
-    accessGroupLabels.push(label);
-  }
-
-  if (accessGroupLabels.length === 0) {
-    return;
-  }
-
-  return accessGroupLabels.join(' / ');
-};
-
 export const fspConfigurationNamesHaveIntegrationType = ({
   program,
   fspConfigurationNames,
