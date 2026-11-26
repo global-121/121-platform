@@ -1,7 +1,10 @@
+// Initialize before any application bootstrap, to collect the most wide telemetry possible
+import { initializeApplicationInsights } from '@121-service/src/telemetry/application-insights';
+initializeApplicationInsights();
+
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as appInsights from 'applicationinsights';
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
@@ -17,7 +20,6 @@ import {
   SWAGGER_CUSTOM_JS,
 } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
-import { INTERFACE_NAME_HEADER } from '@121-service/src/shared/enum/interface-names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { getModuleDependencyEdges } from '@121-service/src/utils/module-dependency-graph.helper';
 import { ValidationPipeOptions } from '@121-service/src/validation-options/validation-pipe-options.const';
@@ -217,33 +219,3 @@ async function bootstrap(): Promise<void> {
 }
 
 void bootstrap();
-
-if (env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-  appInsights.setup(env.APPLICATIONINSIGHTS_CONNECTION_STRING);
-  appInsights.start();
-
-  const client = appInsights.defaultClient;
-
-  // Telemetry processor to correlate requests with their origin interface
-  client.addTelemetryProcessor((envelope, contextObjects) => {
-    const telemetryType = envelope.data?.baseType;
-    const baseData = envelope.data?.baseData;
-
-    // Only touch request telemetry
-    if (telemetryType === 'RequestData' && baseData) {
-      const httpRequest = contextObjects?.http?.request;
-
-      if (httpRequest?.headers) {
-        const interfaceName = httpRequest.headers[INTERFACE_NAME_HEADER];
-
-        if (interfaceName) {
-          baseData.properties = baseData.properties || {};
-          baseData.properties.interface = interfaceName;
-        }
-      }
-    }
-
-    // IMPORTANT: Return `true` in all cases to keep the telemetry
-    return true;
-  });
-}
