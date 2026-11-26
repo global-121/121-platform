@@ -9,7 +9,7 @@ Based Assistance programs. Another name for this frontend is "the portal".
 ## Technology stack
 
 - **Framework**: Angular with TypeScript
-- **UI Library**: PrimeNG components
+- **UI Library**: Optimus UI components
 - **Styling**: Tailwind CSS utility classes
 - **State Management**: Angular services and TanStack Query
 - **Testing**: Angular CLI `ng test` with Vitest for unit and component tests; Playwright for E2E
@@ -68,7 +68,7 @@ app
 **Component Best Practices:**
 
 - Keep custom components/CSS to minimum
-- Use PrimeNG components whenever possible
+- Use Optimus UI components whenever possible
 - Use new control flow syntax (`@if`, `@for`) over structural directives
 - Do not abstract by default - only extract when certain of reuse
 - Inline templates OK for templates ≤10 lines
@@ -93,8 +93,8 @@ export class UserProfileComponent implements OnInit {
 
 - **Tailwind CSS**: Use utility classes instead of custom CSS
 - Follow Tailwind recommendations for reusing styles
-- **PrimeNG**: Prefer PrimeNG components over custom implementations
-- Add global rules to `styles.scss` for PrimeNG components used in multiple places (should be done very sparingly - ideally avoided)
+- **Optimus UI**: Prefer Optimus UI components over custom implementations
+- Add global rules to `styles.scss` for Optimus UI components used in multiple places (should be done very sparingly - ideally avoided)
 - Use `*-start`/`*-end` instead of `*-left`/`*-right` for RTL support
 
 **Template Guidelines:**

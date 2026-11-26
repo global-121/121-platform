@@ -1,6 +1,6 @@
 import { computed, inject } from '@angular/core';
 
-import { TableLazyLoadEvent } from 'primeng/table';
+import { TableLazyLoadEvent } from '@openng/optimus-ui/table';
 
 import {
   PaginateQuery,
@@ -60,7 +60,7 @@ export class QueryTablePaginationService<TData> {
     onUpdate: (query: PaginateQuery) => void,
   ) {
     const paginateQuery =
-      this.paginateQueryService.convertPrimeNGLazyLoadEventToPaginateQuery(
+      this.paginateQueryService.convertOptimusLazyLoadEventToPaginateQuery(
         event,
       );
     if (!paginateQuery) {

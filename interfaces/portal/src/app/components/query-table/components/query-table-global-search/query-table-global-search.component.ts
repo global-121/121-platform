@@ -10,11 +10,11 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { AutoFocus } from 'primeng/autofocus';
-import { ButtonModule } from 'primeng/button';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
+import { AutoFocus } from '@openng/optimus-ui/autofocus';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { IconFieldModule } from '@openng/optimus-ui/iconfield';
+import { InputIconModule } from '@openng/optimus-ui/inputicon';
+import { InputTextModule } from '@openng/optimus-ui/inputtext';
 
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import {

@@ -8,11 +8,11 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { MenuItem } from '@openng/optimus-ui/api';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { CardModule } from '@openng/optimus-ui/card';
+import { MenuModule } from '@openng/optimus-ui/menu';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MenuItem } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { MenuModule } from 'primeng/menu';
 
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import {
@@ -125,9 +125,9 @@ export class PageLayoutRegistrationComponent {
 
   readonly actionMenuItems = computed<MenuItem[]>(() => [
     {
-      // We need to provide a label for this submenu header due to a PrimeNG bug.
-      // Without a label, PrimeNG adds unwanted whitespace in the menu rendering.
-      // See discussion: https://github.com/global-121/121-platform/pull/6541#discussion_r1975162183 on out github which also links to the bug in primeNG
+      // We need to provide a label for this submenu header due to a Optimus UI bug.
+      // Without a label, Optimus UI adds unwanted whitespace in the menu rendering.
+      // See discussion: https://github.com/global-121/121-platform/pull/6541#discussion_r1975162183 on out github which also links to the bug in Optimus UI
       label: $localize`:@@general:General`,
       items: [
         {

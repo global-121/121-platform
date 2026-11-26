@@ -4,14 +4,14 @@ import path from 'node:path';
 import { Locator, Page } from 'playwright';
 import * as XLSX from 'xlsx';
 
-import { PrimeNGDropdown } from '@121-e2e/portal/components/PrimeNGDropdown';
+import { OptimusDropdown } from '@121-e2e/portal/components/OptimusDropdown';
 import TableComponent from '@121-e2e/portal/components/TableComponent';
 
 class BasePage {
   readonly page: Page;
   readonly table: TableComponent;
   readonly logo: Locator;
-  readonly localeDropdown: PrimeNGDropdown;
+  readonly localeDropdown: OptimusDropdown;
   readonly programHeader: Locator;
   readonly sidebar: Locator;
   readonly sidebarToggle: Locator;
@@ -27,7 +27,7 @@ class BasePage {
     this.table = new TableComponent(page);
 
     this.logo = this.page.getByTestId('logo');
-    this.localeDropdown = new PrimeNGDropdown({
+    this.localeDropdown = new OptimusDropdown({
       page,
       testId: 'locale-dropdown',
     });

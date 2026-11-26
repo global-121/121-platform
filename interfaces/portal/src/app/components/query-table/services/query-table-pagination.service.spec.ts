@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { TableLazyLoadEvent } from 'primeng/table';
+import { TableLazyLoadEvent } from '@openng/optimus-ui/table';
 import {
   beforeEach,
   describe,
@@ -21,7 +21,7 @@ describe('QueryTablePaginationService', () => {
   let service: QueryTablePaginationService<any>;
 
   let paginateQueryService: MockedObject<PaginateQueryService>;
-  const convertPrimeNGLazyLoadEventToPaginateQuerySpy = vi.fn();
+  const convertOptimusLazyLoadEventToPaginateQuerySpy = vi.fn();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -30,8 +30,8 @@ describe('QueryTablePaginationService', () => {
         {
           provide: PaginateQueryService,
           useValue: {
-            convertPrimeNGLazyLoadEventToPaginateQuery:
-              convertPrimeNGLazyLoadEventToPaginateQuerySpy,
+            convertOptimusLazyLoadEventToPaginateQuery:
+              convertOptimusLazyLoadEventToPaginateQuerySpy,
           } as MockedObject<PaginateQueryService>,
         },
       ],
@@ -107,14 +107,14 @@ describe('QueryTablePaginationService', () => {
       sortBy: [['name', 'ASC']],
     };
 
-    paginateQueryService.convertPrimeNGLazyLoadEventToPaginateQuery.mockReturnValue(
+    paginateQueryService.convertOptimusLazyLoadEventToPaginateQuery.mockReturnValue(
       mockPaginateQuery,
     );
     const updateCallback = vi.fn();
 
     service.onLazyLoadEvent(mockLazyLoadEvent, updateCallback);
 
-    expect(convertPrimeNGLazyLoadEventToPaginateQuerySpy).toHaveBeenCalledWith(
+    expect(convertOptimusLazyLoadEventToPaginateQuerySpy).toHaveBeenCalledWith(
       mockLazyLoadEvent,
     );
     expect(updateCallback).toHaveBeenCalledWith(mockPaginateQuery);
@@ -122,7 +122,7 @@ describe('QueryTablePaginationService', () => {
 
   it('should not call update callback when conversion returns undefined', () => {
     const mockLazyLoadEvent: TableLazyLoadEvent = { first: 0, rows: 10 };
-    paginateQueryService.convertPrimeNGLazyLoadEventToPaginateQuery.mockReturnValue(
+    paginateQueryService.convertOptimusLazyLoadEventToPaginateQuery.mockReturnValue(
       undefined,
     );
     const updateCallback = vi.fn();

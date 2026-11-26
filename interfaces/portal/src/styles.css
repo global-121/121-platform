@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import 'primeicons/primeicons.css';
+@import '@openng/icons/openng-icons.css';
 
 @config '../tailwind.config.mts';
 
@@ -65,8 +65,8 @@ body {
 }
 
 :root {
-  /* primeng uses this variable on all of its components by default
-     and it does not work if we set it within the 'primeng' layer */
+  /* Optimus UI uses this variable on all of its components by default
+     and it does not work if we set it within the 'optimus' layer */
   --font-family: var(--font-body);
 }
 
@@ -131,30 +131,7 @@ svg-icon svg {
   }
 }
 
-.mention-menu {
-  @apply shadow-menu;
-
-  li {
-    .mention-item {
-      @apply txt-body-m py-2! text-start font-semibold text-black!;
-    }
-
-    &.mention-active {
-      @apply bg-purple-100;
-
-      a {
-        background: inherit !important;
-      }
-    }
-  }
-
-  /* Move the menu from the hard-coded LTR-position to the RTL reading-direction */
-  &:dir(rtl) {
-    transform: translateX(-100%);
-  }
-}
-
-/* PrimeNG Component overrides */
+/* Optimus UI Component overrides */
 
 /* Rule-of-thumb: Override only from any specific component class-name(i.e. `.p-component-X`) 'down'.
    Following the pattern:
@@ -165,10 +142,10 @@ svg-icon svg {
      }
    }
 
-   So there will only be ONE section/grouping per PrimeNG component.
+   So there will only be ONE section/grouping per Optimus UI component.
 */
 
-@layer primeng-customisations {
+@layer optimus-customisations {
   :root {
     --toolbar-height: calc(48 / 14 * 1rem);
     --p-form-field-padding-y: 0.75rem;
@@ -495,7 +472,7 @@ svg-icon svg {
   }
 
   /**
-   * Workaround to disable minimizing 'maximized' PrimeNG dialogs.
+   * Workaround to disable minimizing 'maximized' Optimus UI dialogs.
    * If a fullscreen dialog is minimized, the dialog UI is broken.
    * See AB#43199 and AB#43622 for details.
    */

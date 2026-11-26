@@ -15,14 +15,14 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { DialogModule } from '@openng/optimus-ui/dialog';
+import { RadioButtonModule } from '@openng/optimus-ui/radiobutton';
+import { SelectModule } from '@openng/optimus-ui/select';
 import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { SelectModule } from 'primeng/select';
 import { Subscription } from 'rxjs';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';

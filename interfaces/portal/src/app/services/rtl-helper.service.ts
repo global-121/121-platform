@@ -70,7 +70,7 @@ export class RtlHelperService {
 
   /**
    * Creates a computed signal that converts a logical property to a physical property in RTL mode
-   * Ideally would be done in primeng, but this is a workaround for now due to https://github.com/orgs/primefaces/discussions/3649
+   * Ideally would be done in Optimus UI, but this is a workaround for now due to https://github.com/orgs/primefaces/discussions/3649
    */
   createPosition(logicalValue: LogicalPosition): Signal<PhysicalPosition> {
     return computed(

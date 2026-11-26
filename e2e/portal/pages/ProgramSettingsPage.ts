@@ -5,15 +5,15 @@ import { Locator, Page } from 'playwright';
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 
 import DataListComponent from '../components/DataListComponent';
-import { PrimeNGDatePicker } from '../components/PrimeNGDatePicker';
+import { OptimusDatePicker } from '../components/OptimusDatePicker';
 import { formatValueBasedOnCurrency } from '../helpers/formatValueBasedOnCurrency';
 import BasePage from './BasePage';
 
 class ProgramSettingsPage extends BasePage {
   readonly saveButton: Locator;
   readonly programDescriptionInput: Locator;
-  readonly dateRangeStartInput: PrimeNGDatePicker;
-  readonly dateRangeEndInput: PrimeNGDatePicker;
+  readonly dateRangeStartInput: OptimusDatePicker;
+  readonly dateRangeEndInput: OptimusDatePicker;
   readonly basicInformationDataList: DataListComponent;
   readonly financeDataList: DataListComponent;
   readonly currencyDropdown: Locator;
@@ -22,11 +22,11 @@ class ProgramSettingsPage extends BasePage {
     super(page);
     this.saveButton = this.page.getByRole('button', { name: 'Save' });
     this.programDescriptionInput = this.page.getByLabel('Program description');
-    this.dateRangeStartInput = new PrimeNGDatePicker({
+    this.dateRangeStartInput = new OptimusDatePicker({
       page: this.page,
       datePicker: this.page.getByLabel('Start date'),
     });
-    this.dateRangeEndInput = new PrimeNGDatePicker({
+    this.dateRangeEndInput = new OptimusDatePicker({
       page: this.page,
       datePicker: this.page.getByLabel('End date'),
     });
@@ -90,7 +90,7 @@ class ProgramSettingsPage extends BasePage {
   async editInformationFieldByLabel(label: string, value: string) {
     const field = this.page.getByLabel(label);
     await field.fill(value);
-    // PrimeNG inputNumber only commits its value to the form control on blur
+    // Optimus UI inputNumber only commits its value to the form control on blur
     await field.blur();
   }
 

@@ -1,8 +1,8 @@
 import { HttpParams } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
-import { FilterMatchMode, FilterMetadata } from 'primeng/api';
-import { TableLazyLoadEvent } from 'primeng/table';
+import { FilterMatchMode, FilterMetadata } from '@openng/optimus-ui/api';
+import { TableLazyLoadEvent } from '@openng/optimus-ui/table';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -74,11 +74,11 @@ describe('PaginateQueryService', () => {
     });
   });
 
-  describe('convertPrimeNGMatchModeToFilterOperator', () => {
+  describe('convertOptimusMatchModeToFilterOperator', () => {
     it('should convert CONTAINS to ILIKE', () => {
       expect(
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGMatchModeToFilterOperator({
+        service.convertOptimusMatchModeToFilterOperator({
           matchMode: FilterMatchMode.CONTAINS,
         }),
       ).toBe(FilterOperator.ILIKE);
@@ -87,7 +87,7 @@ describe('PaginateQueryService', () => {
     it('should convert EQUALS to EQ', () => {
       expect(
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGMatchModeToFilterOperator({
+        service.convertOptimusMatchModeToFilterOperator({
           matchMode: FilterMatchMode.EQUALS,
         }),
       ).toBe(FilterOperator.EQ);
@@ -96,7 +96,7 @@ describe('PaginateQueryService', () => {
     it('should convert NOT_EQUALS to NOT', () => {
       expect(
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGMatchModeToFilterOperator({
+        service.convertOptimusMatchModeToFilterOperator({
           matchMode: FilterMatchMode.NOT_EQUALS,
         }),
       ).toBe(FilterOperator.NOT);
@@ -105,7 +105,7 @@ describe('PaginateQueryService', () => {
     it('should convert IN to IN', () => {
       expect(
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGMatchModeToFilterOperator({
+        service.convertOptimusMatchModeToFilterOperator({
           matchMode: FilterMatchMode.IN,
         }),
       ).toBe(FilterOperator.IN);
@@ -114,7 +114,7 @@ describe('PaginateQueryService', () => {
     it('should convert GREATER_THAN to GT', () => {
       expect(
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGMatchModeToFilterOperator({
+        service.convertOptimusMatchModeToFilterOperator({
           matchMode: FilterMatchMode.GREATER_THAN,
         }),
       ).toBe(FilterOperator.GT);
@@ -123,7 +123,7 @@ describe('PaginateQueryService', () => {
     it('should convert LESS_THAN to LT', () => {
       expect(
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGMatchModeToFilterOperator({
+        service.convertOptimusMatchModeToFilterOperator({
           matchMode: FilterMatchMode.LESS_THAN,
         }),
       ).toBe(FilterOperator.LT);
@@ -132,7 +132,7 @@ describe('PaginateQueryService', () => {
     it('should convert EQUALS to BTW for dates', () => {
       expect(
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGMatchModeToFilterOperator({
+        service.convertOptimusMatchModeToFilterOperator({
           matchMode: FilterMatchMode.EQUALS,
           isDate: true,
         }),
@@ -141,7 +141,7 @@ describe('PaginateQueryService', () => {
 
     it('should default to ILIKE when matchMode is not provided', () => {
       // @ts-expect-error accessing a private method for unit testing purposes
-      expect(service.convertPrimeNGMatchModeToFilterOperator({})).toBe(
+      expect(service.convertOptimusMatchModeToFilterOperator({})).toBe(
         FilterOperator.ILIKE,
       );
     });
@@ -149,14 +149,14 @@ describe('PaginateQueryService', () => {
     it('should throw an error for an unsupported match mode', () => {
       expect(() =>
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGMatchModeToFilterOperator({
+        service.convertOptimusMatchModeToFilterOperator({
           matchMode: FilterMatchMode.GREATER_THAN_OR_EQUAL_TO,
         }),
       ).toThrow('Unsupported match mode: gte');
     });
   });
 
-  describe('convertPrimeNGFilterMetadataToValueAndOperator', () => {
+  describe('convertOptimusFilterMetadataToValueAndOperator', () => {
     it('should convert filter metadata to value and operator', () => {
       const filterMetadata: FilterMetadata = {
         value: 'test',
@@ -164,14 +164,14 @@ describe('PaginateQueryService', () => {
       };
       const result =
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGFilterMetadataToValueAndOperator(filterMetadata);
+        service.convertOptimusFilterMetadataToValueAndOperator(filterMetadata);
       expect(result).toEqual({ value: 'test', operator: FilterOperator.ILIKE });
     });
 
     it('should return undefined for empty filter', () => {
       const result =
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGFilterMetadataToValueAndOperator(undefined);
+        service.convertOptimusFilterMetadataToValueAndOperator(undefined);
       expect(result).toBeUndefined();
     });
 
@@ -182,7 +182,7 @@ describe('PaginateQueryService', () => {
       };
       const result =
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGFilterMetadataToValueAndOperator(filterMetadata);
+        service.convertOptimusFilterMetadataToValueAndOperator(filterMetadata);
 
       expect(result).toBeDefined();
 
@@ -204,14 +204,14 @@ describe('PaginateQueryService', () => {
     });
   });
 
-  describe('convertPrimeNGLazyLoadFilterToPaginateFilter', () => {
+  describe('convertOptimusLazyLoadFilterToPaginateFilter', () => {
     it('should convert lazy load filters to paginate filters', () => {
       const filters = {
         name: { value: 'test', matchMode: FilterMatchMode.CONTAINS },
       };
       const result =
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGLazyLoadFilterToPaginateFilter(filters);
+        service.convertOptimusLazyLoadFilterToPaginateFilter(filters);
       expect(result).toEqual({ filter: { name: '$ilike:test' } });
     });
 
@@ -221,12 +221,12 @@ describe('PaginateQueryService', () => {
       };
       const result =
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGLazyLoadFilterToPaginateFilter(filters);
+        service.convertOptimusLazyLoadFilterToPaginateFilter(filters);
       expect(result).toEqual({ search: 'search' });
     });
   });
 
-  describe('convertPrimeNGLazyLoadEventToPaginateQuery', () => {
+  describe('convertOptimusLazyLoadEventToPaginateQuery', () => {
     it('should convert lazy load event to paginate query', () => {
       const event: TableLazyLoadEvent = {
         first: 0,
@@ -237,7 +237,7 @@ describe('PaginateQueryService', () => {
         sortField: 'name',
         sortOrder: 1,
       };
-      const result = service.convertPrimeNGLazyLoadEventToPaginateQuery(event);
+      const result = service.convertOptimusLazyLoadEventToPaginateQuery(event);
       expect(result).toEqual({
         page: 1,
         limit: 10,
@@ -254,7 +254,7 @@ describe('PaginateQueryService', () => {
         filters: {},
       };
       expect(() =>
-        service.convertPrimeNGLazyLoadEventToPaginateQuery(event),
+        service.convertOptimusLazyLoadEventToPaginateQuery(event),
       ).toThrow('An unexpected error occurred');
     });
   });

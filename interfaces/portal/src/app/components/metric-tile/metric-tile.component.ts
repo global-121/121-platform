@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { CardModule } from 'primeng/card';
-import { TooltipModule } from 'primeng/tooltip';
+import { CardModule } from '@openng/optimus-ui/card';
+import { TooltipModule } from '@openng/optimus-ui/tooltip';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import {
@@ -36,7 +36,7 @@ export class MetricTileComponent {
   readonly chipIcon = input<string>();
 
   /*
-   Because we use primeNg's p-chip component that takes a tooltip input,
+   Because we use Optimus UI's p-chip component that takes a tooltip input,
    I unfortunately cannot add a trackingEventName because the tooltip is
    handled internally by the p-chip component (and takes only a <string>).
   */

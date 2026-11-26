@@ -9,7 +9,7 @@ import {
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { MenuItem, MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from '@openng/optimus-ui/api';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
@@ -24,7 +24,7 @@ import { InfoTooltipTrackingName } from '~/services/tracking/tracking.enums';
 import { TrackingService } from '~/services/tracking/tracking.service';
 import { Locale } from '~/utils/locale';
 
-// To make the tests concerning PrimeNG ContextMenu work.
+// To make the tests concerning Optimus UI ContextMenu work.
 // See: https://rebeccamdeprey.com/blog/mock-windowmatchmedia-in-vitest
 beforeEach(() => {
   Object.defineProperty(window, 'matchMedia', {
@@ -430,7 +430,7 @@ describe('QueryTableComponent', () => {
   });
 
   describe('behaviour', () => {
-    it('emits updatePaginateQuery when PrimeNG emits a lazy load event', () => {
+    it('emits updatePaginateQuery when Optimus UI emits a lazy load event', () => {
       const updateSpy = vi.spyOn(
         fixture.componentInstance.updatePaginateQuery,
         'emit',

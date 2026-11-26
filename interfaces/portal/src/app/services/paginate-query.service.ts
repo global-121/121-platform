@@ -1,9 +1,9 @@
 import { HttpParamsOptions } from '@angular/common/http';
 import { Injectable, OutputEmitterRef } from '@angular/core';
 
+import { FilterMatchMode, FilterMetadata } from '@openng/optimus-ui/api';
+import { TableLazyLoadEvent } from '@openng/optimus-ui/table';
 import { endOfDay, startOfDay } from 'date-fns';
-import { FilterMatchMode, FilterMetadata } from 'primeng/api';
-import { TableLazyLoadEvent } from 'primeng/table';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
@@ -70,7 +70,7 @@ export class PaginateQueryService {
     return `${currentStatusFilter},${deletedStatus}`;
   };
 
-  private convertPrimeNGMatchModeToFilterOperator({
+  private convertOptimusMatchModeToFilterOperator({
     matchMode,
     isDate,
   }: { matchMode?: FilterMatchMode; isDate?: boolean } = {}): FilterOperator {
@@ -97,7 +97,7 @@ export class PaginateQueryService {
     }
   }
 
-  private convertPrimeNGFilterMetadataToValueAndOperator(
+  private convertOptimusFilterMetadataToValueAndOperator(
     filter: FilterMetadata | FilterMetadata[] | undefined,
   ):
     | {
@@ -111,7 +111,7 @@ export class PaginateQueryService {
     }
 
     const filterValue: unknown = filterObj.value;
-    const operator = this.convertPrimeNGMatchModeToFilterOperator({
+    const operator = this.convertOptimusMatchModeToFilterOperator({
       matchMode: filterObj.matchMode,
       isDate: filterValue instanceof Date,
     });
@@ -166,7 +166,7 @@ export class PaginateQueryService {
     }
   }
 
-  private convertPrimeNGLazyLoadFilterToPaginateFilter(
+  private convertOptimusLazyLoadFilterToPaginateFilter(
     filters: TableLazyLoadEvent['filters'],
   ) {
     return Object.entries(filters ?? {}).reduce<{
@@ -174,7 +174,7 @@ export class PaginateQueryService {
       search?: string;
     }>((acc, [filterKey, filter]) => {
       const valueAndOperator =
-        this.convertPrimeNGFilterMetadataToValueAndOperator(filter);
+        this.convertOptimusFilterMetadataToValueAndOperator(filter);
 
       if (!valueAndOperator) {
         return acc;
@@ -199,7 +199,7 @@ export class PaginateQueryService {
     }, {});
   }
 
-  public convertPrimeNGLazyLoadEventToPaginateQuery(
+  public convertOptimusLazyLoadEventToPaginateQuery(
     event: TableLazyLoadEvent,
   ): PaginateQuery | undefined {
     if (event.first == undefined || !event.rows) {
@@ -208,7 +208,7 @@ export class PaginateQueryService {
     }
 
     const { filter, search } =
-      this.convertPrimeNGLazyLoadFilterToPaginateFilter(event.filters);
+      this.convertOptimusLazyLoadFilterToPaginateFilter(event.filters);
 
     let sortBy: PaginateQuery['sortBy'];
 
