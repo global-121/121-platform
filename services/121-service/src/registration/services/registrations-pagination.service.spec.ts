@@ -1,6 +1,6 @@
-import { TestBed } from '@automock/jest';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { type Mocked, TestBed } from '@suites/unit';
 import { Repository } from 'typeorm';
 
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -12,12 +12,12 @@ import { generateMockCreateQueryBuilder } from '@121-service/src/utils/test-help
 
 describe('RegistrationsPaginationService', () => {
   let service: RegistrationsPaginationService;
-  let programService: ProgramService;
-  let registrationViewScopedRepository: RegistrationViewScopedRepository;
-  let programRepository: Repository<ProgramEntity>;
+  let programService: Mocked<ProgramService>;
+  let registrationViewScopedRepository: Mocked<RegistrationViewScopedRepository>;
+  let programRepository: Mocked<Repository<ProgramEntity>>;
 
-  beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(
+  beforeEach(async () => {
+    const { unit, unitRef } = await TestBed.solitary(
       RegistrationsPaginationService,
     ).compile();
 

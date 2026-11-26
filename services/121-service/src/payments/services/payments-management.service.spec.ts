@@ -1,5 +1,5 @@
-import { TestBed } from '@automock/jest';
 import { HttpStatus } from '@nestjs/common';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
@@ -19,15 +19,15 @@ import '@121-service/src/utils/test-helpers/matchers/httpExceptionMatcher';
 
 describe('PaymentsManagementService', () => {
   let service: PaymentsManagementService;
-  let paymentsProgressService: PaymentsProgressService;
-  let paymentsHelperService: PaymentsHelperService;
-  let paymentEventsService: PaymentEventsService;
-  let transactionsService: TransactionsService;
-  let registrationsBulkService: RegistrationsBulkService;
-  let registrationsPaginationService: RegistrationsPaginationService;
-  let programApprovalThresholdRepository: ProgramApprovalThresholdRepository;
-  let transactionViewScopedRepository: TransactionViewScopedRepository;
-  let azureLogService: AzureLogService;
+  let paymentsProgressService: Mocked<PaymentsProgressService>;
+  let paymentsHelperService: Mocked<PaymentsHelperService>;
+  let paymentEventsService: Mocked<PaymentEventsService>;
+  let transactionsService: Mocked<TransactionsService>;
+  let registrationsBulkService: Mocked<RegistrationsBulkService>;
+  let registrationsPaginationService: Mocked<RegistrationsPaginationService>;
+  let programApprovalThresholdRepository: Mocked<ProgramApprovalThresholdRepository>;
+  let transactionViewScopedRepository: Mocked<TransactionViewScopedRepository>;
+  let azureLogService: Mocked<AzureLogService>;
 
   const basePaymentParams = {
     userId: 1,
@@ -40,7 +40,7 @@ describe('PaymentsManagementService', () => {
   };
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(
+    const { unit, unitRef } = await TestBed.solitary(
       PaymentsManagementService,
     ).compile();
     service = unit;

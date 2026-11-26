@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { PaymentRepository } from '@121-service/src/payments/repositories/payment.repository';
 import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
@@ -64,16 +64,16 @@ jest.mock('nestjs-paginate', () => ({
 
 describe('PaymentsReportingService - getTransactions', () => {
   let service: PaymentsReportingService;
-  let transactionScopedRepository: TransactionViewScopedRepository;
-  let registrationPaginationService: RegistrationsPaginationService;
-  let programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository;
-  let paymentsHelperService: PaymentsReportingHelperService;
-  let paymentRepository: PaymentRepository;
-  let programRepository: ProgramRepository;
-  let paymentApprovalRepository: PaymentApprovalRepository;
+  let transactionScopedRepository: Mocked<TransactionViewScopedRepository>;
+  let registrationPaginationService: Mocked<RegistrationsPaginationService>;
+  let programRegistrationAttributeRepository: Mocked<ProgramRegistrationAttributeRepository>;
+  let paymentsHelperService: Mocked<PaymentsReportingHelperService>;
+  let paymentRepository: Mocked<PaymentRepository>;
+  let programRepository: Mocked<ProgramRepository>;
+  let paymentApprovalRepository: Mocked<PaymentApprovalRepository>;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(
+    const { unit, unitRef } = await TestBed.solitary(
       PaymentsReportingService,
     ).compile();
 

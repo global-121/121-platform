@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 import { Job } from 'bull';
 
 import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
@@ -16,14 +16,13 @@ const testJob = { data: twilioIncommingMessage } as Job;
 
 describe('Message processor(s)', () => {
   // All message processors are the same, so we only test one
-  let messageIncommingService: jest.Mocked<MessageIncomingService>;
+  let messageIncommingService: Mocked<MessageIncomingService>;
   let messageIncommingProcessor: MessageIncomingProcessor;
 
-  beforeAll(() => {
-    const { unit, unitRef } = TestBed.create(MessageIncomingProcessor)
-      .mock(MessageIncomingService)
-      .using(messageIncommingService)
-      .compile();
+  beforeAll(async () => {
+    const { unit, unitRef } = await TestBed.solitary(
+      MessageIncomingProcessor,
+    ).compile();
 
     messageIncommingProcessor = unit;
     messageIncommingService = unitRef.get(MessageIncomingService);

@@ -1,14 +1,14 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { EmailsService } from '@121-service/src/emails/emails.service';
 import { GraphService } from '@121-service/src/emails/graph/graph.service';
 
 describe('EmailsService', () => {
   let service: EmailsService;
-  let graphService: jest.Mocked<GraphService>;
+  let graphService: Mocked<GraphService>;
 
-  beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(EmailsService).compile();
+  beforeEach(async () => {
+    const { unit, unitRef } = await TestBed.solitary(EmailsService).compile();
     service = unit;
     graphService = unitRef.get(GraphService);
     graphService.sendMail.mockResolvedValue(undefined);

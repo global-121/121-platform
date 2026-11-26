@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -11,11 +11,12 @@ const mockProgramFspConfigurationId = 3;
 
 describe('IntersolveVoucherService', () => {
   let service: IntersolveVoucherService;
-  let transactionsService: jest.Mocked<TransactionsService>;
+  let transactionsService: Mocked<TransactionsService>;
 
-  beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(IntersolveVoucherService)
-      .compile();
+  beforeEach(async () => {
+    const { unit, unitRef } = await TestBed.solitary(
+      IntersolveVoucherService,
+    ).compile();
 
     service = unit;
     transactionsService = unitRef.get(TransactionsService);

@@ -1,5 +1,5 @@
-import { TestBed } from '@automock/jest';
 import { HttpStatus } from '@nestjs/common';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
@@ -10,8 +10,8 @@ import { ProgramApprovalThresholdsService } from '@121-service/src/programs/prog
 
 describe('ProgramApprovalThresholdsService', () => {
   let service: ProgramApprovalThresholdsService;
-  let programApprovalThresholdRepository: jest.Mocked<ProgramApprovalThresholdRepository>;
-  let programAidworkerAssignmentRepository: jest.Mocked<ProgramAidworkerAssignmentRepository>;
+  let programApprovalThresholdRepository: Mocked<ProgramApprovalThresholdRepository>;
+  let programAidworkerAssignmentRepository: Mocked<ProgramAidworkerAssignmentRepository>;
 
   const programId = 1;
 
@@ -28,7 +28,7 @@ describe('ProgramApprovalThresholdsService', () => {
     }) as ProgramApprovalThresholdEntity;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(
+    const { unit, unitRef } = await TestBed.solitary(
       ProgramApprovalThresholdsService,
     ).compile();
 

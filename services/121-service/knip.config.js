@@ -10,7 +10,8 @@ module.exports = {
   ],
   ignoreDependencies: [
     // Known issues with devDependencies:
-    '@automock/adapters.nestjs', // Auto-loaded by @automock/jest
+    '@suites/doubles.jest', // Auto-loaded by @suites/unit
+    '@suites/di.nestjs', // Auto-loaded by @suites/unit
     'prettier', // Used by VSCode and ESLint via shared config
     'multer', // Used for file uploads, but not directly imported in the code (imported via MulterModule.register() in NestJS)
   ],

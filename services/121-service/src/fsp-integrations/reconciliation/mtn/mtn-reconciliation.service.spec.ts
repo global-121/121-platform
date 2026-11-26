@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 import { Queue } from 'bull';
 
 import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
@@ -26,19 +26,19 @@ jest.mock('@121-service/src/appdatasource', () => ({
 
 describe('MtnReconciliationService', () => {
   let mtnReconciliationService: MtnReconciliationService;
-  let mtnService: jest.Mocked<MtnService>;
-  let transactionsService: jest.Mocked<TransactionsService>;
-  let queuesRegistryService: jest.Mocked<QueuesRegistryService>;
-  let transactionRepository: jest.Mocked<TransactionRepository>;
-  let transactionEventsScopedRepository: jest.Mocked<TransactionEventsScopedRepository>;
-  let mockMtnTransferReconciliationQueue: jest.Mocked<Queue>;
+  let mtnService: Mocked<MtnService>;
+  let transactionsService: Mocked<TransactionsService>;
+  let queuesRegistryService: Mocked<QueuesRegistryService>;
+  let transactionRepository: Mocked<TransactionRepository>;
+  let transactionEventsScopedRepository: Mocked<TransactionEventsScopedRepository>;
+  let mockMtnTransferReconciliationQueue: Mocked<Queue>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockMtnTransferReconciliationQueue = {
       add: jest.fn().mockResolvedValue({ id: 'job-1' }),
     } as any;
 
-    const { unit, unitRef } = TestBed.create(
+    const { unit, unitRef } = await TestBed.solitary(
       MtnReconciliationService,
     ).compile();
 

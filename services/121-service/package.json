@@ -111,10 +111,11 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@automock/adapters.nestjs": "^2.1.0",
-    "@automock/jest": "^2.1.2",
     "@eslint/compat": "^2.1.1",
     "@nestjs/cli": "^12.0.11",
+    "@suites/di.nestjs": "^4.0.3",
+    "@suites/doubles.jest": "^4.1.2",
+    "@suites/unit": "^4.1.2",
     "@swc/cli": "^0.8.1",
     "@swc/core": "^1.16.20",
     "@swc/jest": "^0.2.39",
@@ -149,7 +150,6 @@
     }
   },
   "allowScripts": {
-    "@automock/adapters.nestjs": false,
     "@parcel/watcher": false,
     "@scarf/scarf": false,
     "@swc/core": false,

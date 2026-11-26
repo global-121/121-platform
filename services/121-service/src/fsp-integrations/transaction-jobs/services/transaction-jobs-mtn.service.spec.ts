@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { MtnTransferErrorTypes } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-error-types.enum';
 import { MtnTransferStatus } from '@121-service/src/fsp-integrations/integrations/mtn/enums/mtn-transfer-status.enum';
@@ -46,14 +46,14 @@ const mockTransactionJob: MtnTransactionJobDto = {
 
 describe('TransactionJobsMtnService', () => {
   let service: TransactionJobsMtnService;
-  let mtnService: MtnService;
-  let transactionEventsScopedRepository: TransactionEventsScopedRepository;
-  let transactionJobsHelperService: TransactionJobsHelperService;
-  let transactionsService: TransactionsService;
-  let programRepository: ProgramRepository;
+  let mtnService: Mocked<MtnService>;
+  let transactionEventsScopedRepository: Mocked<TransactionEventsScopedRepository>;
+  let transactionJobsHelperService: Mocked<TransactionJobsHelperService>;
+  let transactionsService: Mocked<TransactionsService>;
+  let programRepository: Mocked<ProgramRepository>;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(
+    const { unit, unitRef } = await TestBed.solitary(
       TransactionJobsMtnService,
     ).compile();
 

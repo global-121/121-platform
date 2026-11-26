@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
@@ -53,7 +53,7 @@ function getViewRegistration(): RegistrationViewEntity {
   } as unknown as RegistrationViewEntity;
 }
 
-let registrationEventRepository: jest.Mocked<
+let registrationEventRepository: Mocked<
   ScopedRepository<RegistrationEventEntity>
 >;
 let oldViewRegistration: RegistrationViewEntity;
@@ -61,10 +61,10 @@ let newViewRegistration: RegistrationViewEntity;
 
 describe('RegistrationEventsService', () => {
   let registrationEventsService: RegistrationEventsService;
-  let userService: UserService;
+  let userService: Mocked<UserService>;
 
-  beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(
+  beforeEach(async () => {
+    const { unit, unitRef } = await TestBed.solitary(
       RegistrationEventsService,
     ).compile();
     registrationEventRepository = unitRef.get(

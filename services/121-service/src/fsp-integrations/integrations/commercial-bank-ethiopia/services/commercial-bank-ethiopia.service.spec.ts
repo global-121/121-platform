@@ -1,4 +1,4 @@
-import { TestBed } from '@automock/jest';
+import { type Mocked, TestBed } from '@suites/unit';
 
 import { CreateCreditTransferOrGetTransactionStatusParams } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/interfaces/create-credit-transfer-or-get-transaction-status-params.interface';
 import { CommercialBankEthiopiaApiService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.api.service';
@@ -9,8 +9,10 @@ import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configur
 describe('CommercialBankEthiopiaService', () => {
   let commercialBankEthiopiaService: CommercialBankEthiopiaService;
 
-  beforeEach(() => {
-    const { unit } = TestBed.create(CommercialBankEthiopiaService).compile();
+  beforeEach(async () => {
+    const { unit } = await TestBed.solitary(
+      CommercialBankEthiopiaService,
+    ).compile();
 
     commercialBankEthiopiaService = unit;
   });
@@ -21,7 +23,7 @@ describe('CommercialBankEthiopiaService', () => {
 
   describe('createCreditTransferOrGetTransactionStatus', () => {
     let service: CommercialBankEthiopiaService;
-    let apiService: jest.Mocked<CommercialBankEthiopiaApiService>;
+    let apiService: Mocked<CommercialBankEthiopiaApiService>;
 
     const credentials: UsernamePasswordInterface = {
       username: 'user',
@@ -37,16 +39,12 @@ describe('CommercialBankEthiopiaService', () => {
       amount: 100,
     };
 
-    beforeEach(() => {
-      apiService = {
-        creditTransfer: jest.fn(),
-        getTransactionStatus: jest.fn(),
-      } as any;
-      const { unit } = TestBed.create(CommercialBankEthiopiaService)
-        .mock(CommercialBankEthiopiaApiService)
-        .using(apiService)
-        .compile();
+    beforeEach(async () => {
+      const { unit, unitRef } = await TestBed.solitary(
+        CommercialBankEthiopiaService,
+      ).compile();
       service = unit;
+      apiService = unitRef.get(CommercialBankEthiopiaApiService);
     });
 
     it('should return success if creditTransfer returns success', async () => {
