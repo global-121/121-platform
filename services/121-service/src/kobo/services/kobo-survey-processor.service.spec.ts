@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { KoboSurveyItemType } from '@121-service/src/kobo/enum/kobo-survey-item-type';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
+import { KoboCalculationTypeInferenceService } from '@121-service/src/kobo/services/kobo-calculation-type-inference.service';
 import { KoboSurveyProcessorService } from '@121-service/src/kobo/services/kobo-survey-processor.service';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
@@ -10,7 +12,10 @@ describe('KoboSurveyProcessorService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [KoboSurveyProcessorService],
+      providers: [
+        KoboSurveyProcessorService,
+        KoboCalculationTypeInferenceService,
+      ],
     }).compile();
 
     service = module.get<KoboSurveyProcessorService>(
@@ -22,7 +27,7 @@ describe('KoboSurveyProcessorService', () => {
     it('should process a text field survey item into a program registration attribute', () => {
       // Arrange
       const fieldName = 'fullName';
-      const fieldType = 'text';
+      const fieldType = KoboSurveyItemType.text;
       const labels = {
         en: 'What is your full name?',
         nl: 'Wat is je volledige naam?',
@@ -54,6 +59,7 @@ describe('KoboSurveyProcessorService', () => {
         name: fieldName,
         koboLabel: labels,
         type: RegistrationAttributeTypes.text,
+        koboInferredType: RegistrationAttributeTypes.text,
         // Also validate the defeault values in this test
         isRequired: false,
         showInPeopleAffectedTable: true,
@@ -65,7 +71,7 @@ describe('KoboSurveyProcessorService', () => {
     it('should process a number field survey item into a program registration attribute', () => {
       // Arrange
       const fieldName = 'age';
-      const fieldType = 'integer';
+      const fieldType = KoboSurveyItemType.integer;
       const labels = {
         en: 'What is your age?',
         nl: 'Wat is je leeftijd?',
@@ -96,13 +102,110 @@ describe('KoboSurveyProcessorService', () => {
         name: fieldName,
         koboLabel: labels,
         type: RegistrationAttributeTypes.numeric,
+        koboInferredType: RegistrationAttributeTypes.numeric,
+      });
+    });
+
+    it('should process a numeric calculate item into a numeric program registration attribute', () => {
+      const koboSurveyItems: KoboSurveyItemCleaned[] = [
+        {
+          name: 'calculatedField',
+          type: 'calculate',
+          label: ['Calculated Field'],
+          calculation: '${adults} + ${children}',
+          choices: [],
+        },
+      ];
+
+      const languageIsoCodes = [
+        RegistrationPreferredLanguage.en,
+        RegistrationPreferredLanguage.nl,
+      ];
+
+      // Act
+      const result = service.surveyToProgramRegistrationAttributes({
+        surveyItems: koboSurveyItems,
+        languageIsoCodes,
+      });
+
+      expect(result[0]).toMatchObject({
+        name: 'calculatedField',
+        koboLabel: {
+          en: 'Calculated Field',
+        },
+        type: RegistrationAttributeTypes.numeric,
+        koboInferredType: RegistrationAttributeTypes.numeric,
+      });
+    });
+
+    it('should process a text calculate item into a text program registration attribute', () => {
+      const koboSurveyItems: KoboSurveyItemCleaned[] = [
+        {
+          name: 'calculatedField',
+          type: 'calculate',
+          label: ['Calculated Field'],
+          calculation: 'concat(${first}, " ", ${last})',
+          choices: [],
+        },
+      ];
+
+      const languageIsoCodes = [
+        RegistrationPreferredLanguage.en,
+        RegistrationPreferredLanguage.nl,
+      ];
+
+      // Act
+      const result = service.surveyToProgramRegistrationAttributes({
+        surveyItems: koboSurveyItems,
+        languageIsoCodes,
+      });
+
+      expect(result[0]).toMatchObject({
+        name: 'calculatedField',
+        koboLabel: {
+          en: 'Calculated Field',
+        },
+        type: RegistrationAttributeTypes.text,
+        koboInferredType: RegistrationAttributeTypes.text,
+      });
+    });
+
+    it('should process empty calculate item into a text program registration attribute as a fallback', () => {
+      const koboSurveyItems: KoboSurveyItemCleaned[] = [
+        {
+          name: 'calculatedField',
+          type: 'calculate',
+          label: ['Calculated Field'],
+          calculation: '',
+          choices: [],
+        },
+      ];
+
+      const languageIsoCodes = [
+        RegistrationPreferredLanguage.en,
+        RegistrationPreferredLanguage.nl,
+      ];
+
+      // Act
+      const result = service.surveyToProgramRegistrationAttributes({
+        surveyItems: koboSurveyItems,
+        languageIsoCodes,
+      });
+
+      expect(result[0]).toMatchObject({
+        name: 'calculatedField',
+        koboLabel: {
+          en: 'Calculated Field',
+        },
+        type: RegistrationAttributeTypes.text,
+        koboInferredType: RegistrationAttributeTypes.text,
       });
     });
 
     it('should fallback when no labels are provided', () => {
       // Arrange
       const fieldName = 'phoneNumber';
-      const fieldType = 'text';
+      const fieldType = KoboSurveyItemType.text;
 
       const koboSurveyItems: KoboSurveyItemCleaned[] = [
         {
@@ -137,7 +240,7 @@ describe('KoboSurveyProcessorService', () => {
       // Arrange
       const supportedField = {
         name: 'supportedField',
-        type: 'text',
+        type: KoboSurveyItemType.text,
         label: 'Supported field',
       };
       const unsupportedField = {

@@ -18,4 +18,5 @@ export interface ProgramRegistrationAttribute {
   scoring?: Record<string, unknown>;
   showInPeopleAffectedTable?: boolean;
   type: WrapperType<RegistrationAttributeTypes>;
+  koboInferredType?: RegistrationAttributeTypes | null;
 }
