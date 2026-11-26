@@ -231,6 +231,7 @@ Use pattern: `username/description-of-change` (strongly encouraged)
 
 - Keep PRs small and focused on single responsibility
 - Separate frontend and backend changes when possible
+- Use the `121-split` skill (`.agents/skills/121-split/`) to break a large branch (over ~400 changed lines, excluding generated files) into stacked PRs
 - **Draft PRs**: Use draft status until ready for review
 - **Content Guidelines**:
   - Reference the Azure DevOps item (`AB#XXXX`) in the PR description
