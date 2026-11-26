@@ -18,6 +18,7 @@ export enum TrackingCategory {
   createNewProgram = 'Create New Program',
   export = 'Export',
   hiddenFeatures = 'Hidden Features',
+  logIn = 'Log In',
   manageRegistrations = 'Manage Registrations',
   manageTableSettings = 'Manage Table-settings',
   manageTransactions = 'Manage Transactions',
@@ -40,13 +41,15 @@ export enum TrackingAction {
   clickClearColumnFilterButton = 'click: Clear Column-filter Button',
   clickGlobalFilterButton = 'click: Global-filter Button',
   clickGlobalFilterClearButton = 'click: Clear Global-filter Button',
+  clickLogInWithCodeInsteadButton = 'click: Log In With Code Instead Button',
+  clickLogInWithPasswordInsteadButton = 'click: Log In With Password Instead Button',
   clickManageTableButton = 'click: Manage Table Button',
   clickMoreActionsMenuButton = 'click: More-Actions-menu Button',
   clickOpenExplainer = 'click: Explainer',
   clickProceedButton = 'click: Proceed Button',
+
   clickRetryTransactionButton = 'click: Retry Transaction(s) Button',
   clickRevertToDefaultButton = 'click: Revert to Default Button',
-
   createNewProgramBackButtonClicks = 'event: createNewProgram back button clicks',
   createNewProgramCloseDialog = 'event: close createNewProgram dialog',
   createNewProgramStep1Error = 'errors: createNewProgram Step 1',
@@ -55,20 +58,25 @@ export enum TrackingAction {
   createNewProgramStep2TotalTimeSpent = 'time: createNewProgram Step 2',
   createNewProgramStep3Error = 'errors: createNewProgram Step 3',
   createNewProgramStep3TotalTimeSpent = 'time: createNewProgram Step 3',
+
   createNewProgramTotalTimeSpent = 'time: createNewProgram Total Time',
+
   formValidationError = 'errors: Form Validation',
-
   hoverInformationIcon = 'hover: Information Icon',
-
   programSettingsBasicInfoSaveButtonClick = 'click: Program Settings info Save Button',
   programSettingsBudgetSaveButtonClick = 'click: Program Settings Budget Save Button',
-
   selectContextMenuOption = 'select: Context-menu Option',
   selectDropdownOption = 'select: Dropdown Option',
+
   showColumnFilter = 'show: Column-filter',
   showContextMenu = 'show: Context Menu',
+
   showHenryDunant = 'show: Henry Dunant!',
   showSnakeGameOver = 'show: Snake Game Over',
+  submitLogInWithCode = 'submit: Log In With Code',
+  submitLogInWithPassword = 'submit: Log In With Password',
+  submitRequestCode = 'submit: Request Code',
+  submitRequestNewCode = 'submit: Request New Code',
 
   toggleProgramScope = 'toggle: Use Program Scope',
   toggleProgramValidation = 'toggle: Use Program Validation',

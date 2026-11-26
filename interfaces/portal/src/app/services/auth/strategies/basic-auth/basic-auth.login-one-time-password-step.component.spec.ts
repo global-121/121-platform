@@ -20,6 +20,7 @@ import {
   setOneTimePasswordRequestInSessionStorage,
 } from '~/services/auth/strategies/basic-auth/one-time-password-request-storage';
 import { ToastService } from '~/services/toast.service';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 describe('Logging in with a one-time code', () => {
   const email = 'test@example.com';
@@ -43,6 +44,7 @@ describe('Logging in with a one-time code', () => {
         { provide: AuthService, useValue: mockAuthService },
         { provide: UserApiService, useValue: mockUserApiService },
         { provide: ToastService, useValue: mockToastService },
+        { provide: TrackingService, useValue: { trackEvent: vi.fn() } },
         { provide: LOCALE_ID, useValue: 'en' },
       ],
     });

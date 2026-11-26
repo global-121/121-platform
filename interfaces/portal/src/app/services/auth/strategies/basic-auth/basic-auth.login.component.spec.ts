@@ -6,6 +6,7 @@ import { ONE_TIME_PASSWORD_REISSUE_COOLDOWN_MS } from '@121-service/src/user/use
 
 import { BasicAuthLoginComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login.component';
 import { setOneTimePasswordRequestInSessionStorage } from '~/services/auth/strategies/basic-auth/one-time-password-request-storage';
+import { TrackingService } from '~/services/tracking/tracking.service';
 
 describe('Requesting a one-time login code', () => {
   const email = 'test@example.com';
@@ -19,6 +20,11 @@ describe('Requesting a one-time login code', () => {
     sessionStorage.clear();
     vi.useFakeTimers();
     vi.setSystemTime(now);
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: TrackingService, useValue: { trackEvent: vi.fn() } },
+      ],
+    });
     component = createComponent();
   });
 
