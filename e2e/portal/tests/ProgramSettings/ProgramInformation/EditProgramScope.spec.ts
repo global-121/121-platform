@@ -1,6 +1,8 @@
 import { expect } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { patchProgram } from '@121-service/test/helpers/program.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
@@ -19,7 +21,11 @@ test('Toggle scope in program settings', async ({
   registrationsPage,
   programSettingsPage,
 }) => {
+  // Arrange
+  const accessToken = await getAccessToken();
+
   await test.step('Validate that scope is enabled by default', async () => {
+    // Assert
     await registrationsPage.checkColumnAvailability({
       column: 'Scope',
       shouldBeAvailable: true,
@@ -27,17 +33,12 @@ test('Toggle scope in program settings', async ({
   });
 
   await test.step('Disable scope', async () => {
+    // Act
+    await patchProgram(programIdPV, { enableScope: false }, accessToken);
     await programSettingsPage.navigateToProgramPage('Settings');
-    await programSettingsPage.clickEditProgramInformationSectionByTitle(
-      'Basic information',
-    );
+    await page.reload();
 
-    await page.getByLabel('Use "scope" in this program').click();
-    await programSettingsPage.saveChanges();
-    await programSettingsPage.validateToastMessageAndClose(
-      'Basic information details saved successfully.',
-    );
-
+    // Assert
     // expect with a timeout because we might need to wait for the cache to invalidate
     await expect(async () => {
       const basicInformationData =
@@ -49,7 +50,11 @@ test('Toggle scope in program settings', async ({
   });
 
   await test.step('Validate that scope is disabled', async () => {
+    // Act
     await programSettingsPage.navigateToProgramPage('Registrations');
+    await page.reload();
+
+    // Assert
     await registrationsPage.checkColumnAvailability({
       column: 'Scope',
       shouldBeAvailable: false,
@@ -57,17 +62,12 @@ test('Toggle scope in program settings', async ({
   });
 
   await test.step('Enable scope again', async () => {
+    // Act
+    await patchProgram(programIdPV, { enableScope: true }, accessToken);
     await programSettingsPage.navigateToProgramPage('Settings');
-    await programSettingsPage.clickEditProgramInformationSectionByTitle(
-      'Basic information',
-    );
+    await page.reload();
 
-    await page.getByLabel('Use "scope" in this program').click();
-    await programSettingsPage.saveChanges();
-    await programSettingsPage.validateToastMessageAndClose(
-      'Basic information details saved successfully.',
-    );
-
+    // Assert
     // expect with a timeout because we might need to wait for the cache to invalidate
     await expect(async () => {
       const basicInformationData =
@@ -79,7 +79,11 @@ test('Toggle scope in program settings', async ({
   });
 
   await test.step('Validate that scope is enabled again', async () => {
+    // Act
     await programSettingsPage.navigateToProgramPage('Registrations');
+    await page.reload();
+
+    // Assert
     await registrationsPage.checkColumnAvailability({
       column: 'Scope',
       shouldBeAvailable: true,
