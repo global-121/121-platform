@@ -10,7 +10,7 @@ class LoginPage extends BasePage {
   readonly usernameInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
-  readonly loginWithPasswordButton: Locator;
+  readonly loginWithOneTimePasswordButton: Locator;
   readonly sendCodeButton: Locator;
   readonly oneTimePasswordInput: Locator;
 
@@ -23,8 +23,8 @@ class LoginPage extends BasePage {
       name: 'Log in',
       exact: true,
     });
-    this.loginWithPasswordButton = this.page.getByRole('button', {
-      name: 'Log in with password instead',
+    this.loginWithOneTimePasswordButton = this.page.getByRole('button', {
+      name: 'Log in with a one-time code instead',
     });
     this.sendCodeButton = this.page.getByRole('button', { name: 'Send code' });
     this.oneTimePasswordInput = this.page.locator('p-inputotp input').first();
@@ -67,9 +67,6 @@ class LoginPage extends BasePage {
     }
 
     await this.usernameInput.fill(username);
-    await this.loginWithPasswordButton.click();
-    await expect(this.passwordInput).toBeVisible();
-    await expect(this.usernameInput).toHaveValue(username);
     await this.passwordInput.fill(password);
     await this.loginButton.click();
 
@@ -93,6 +90,9 @@ class LoginPage extends BasePage {
   async requestOneTimePassword({ email }: { email: string }): Promise<void> {
     await super.goto('/login');
     await this.usernameInput.fill(email);
+    await this.loginWithOneTimePasswordButton.click();
+    await expect(this.sendCodeButton).toBeVisible();
+    await expect(this.usernameInput).toHaveValue(email);
     await this.sendCodeButton.click();
     await expect(this.oneTimePasswordInput).toBeVisible();
   }
