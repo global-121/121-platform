@@ -13,8 +13,8 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { SkeletonModule } from 'primeng/skeleton';
-import { TagModule } from 'primeng/tag';
+import { SkeletonModule } from '@openng/optimus-ui/skeleton';
+import { TagModule } from '@openng/optimus-ui/tag';
 
 import { getRandomInt } from '@121-service/src/utils/random-value.helper';
 
