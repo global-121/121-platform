@@ -41,7 +41,6 @@ type LoginFormSsoGroup =
     FormDefaultComponent,
   ],
   templateUrl: './msal-auth.login.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MsalAuthLoginComponent {

@@ -5,6 +5,7 @@ import {
   LessThan,
   LessThanOrEqual,
   MoreThan,
+  Not,
   Repository,
 } from 'typeorm';
 
@@ -67,6 +68,9 @@ export class UserOneTimePasswordRepository extends Repository<UserOneTimePasswor
               {
                 issuedAt: LessThan(previousIssuedBefore),
                 lockedUntil: LessThanOrEqual(issuedAt),
+              },
+              {
+                consumedAt: Not(IsNull()),
               },
             ],
           },

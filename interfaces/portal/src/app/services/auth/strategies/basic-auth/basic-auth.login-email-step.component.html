@@ -1,0 +1,36 @@
+<p
+  i18n
+  class="mbs-3 mbe-10"
+>
+  Enter your work email and we'll send you a one-time code.
+</p>
+<app-form-default
+  [formGroup]="formGroup"
+  submitButtonText="Send code"
+  i18n-submitButtonText
+  [mutation]="requestOneTimePasswordMutation"
+>
+  <app-form-field-wrapper
+    label="E-mail"
+    i18n-label
+    [errorMessage]="formFieldErrors()('email')"
+  >
+    <input
+      pInputText
+      type="email"
+      formControlName="email"
+      autocomplete="username"
+      placeholder="yourname@example.org"
+      i18n-placeholder
+      [pAutoFocus]="true"
+    />
+  </app-form-field-wrapper>
+</app-form-default>
+<p class="mbs-4">
+  <p-button
+    label="Log in with password instead"
+    i18n-label
+    [link]="true"
+    (click)="passwordInstead.emit({ email: formGroup.getRawValue().email })"
+  />
+</p>

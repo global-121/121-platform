@@ -23,6 +23,8 @@ interface PerformRequestParams {
   method: 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT';
   url: string;
   body?: unknown;
+  /** Set when the request or response body contains secrets (e.g. passwords, session tokens), to keep them out of the console logs. */
+  isSensitive?: boolean;
   responseAsBlob?: boolean;
   isUpload?: boolean;
   httpParams?: HttpParamsOptions['fromObject'];
@@ -156,11 +158,13 @@ export class HttpWrapperService {
     method,
     url,
     body,
+    isSensitive = false,
     responseAsBlob = false,
     isUpload = false,
     httpParams: params,
   }: PerformRequestParams): Promise<T> {
-    console.log(`HttpWrapperService ${method}: ${url}`, body ?? '');
+    const loggableBody = isSensitive && body ? '[redacted]' : body;
+    console.log(`HttpWrapperService ${method}: ${url}`, loggableBody ?? '');
 
     try {
       const response = await lastValueFrom<Error | HttpErrorResponse | T>(
@@ -177,9 +181,9 @@ export class HttpWrapperService {
               console.log(
                 `HttpWrapperService ${method}: ${url}${
                   params ? `\nParams ${JSON.stringify(params, null, 2)}` : ''
-                }${body ? `\nBody: ${JSON.stringify(body, null, 2)}` : ''}`,
+                }${loggableBody ? `\nBody: ${JSON.stringify(loggableBody, null, 2)}` : ''}`,
                 '\nResponse:',
-                response,
+                isSensitive ? '[redacted]' : response,
               );
             }),
             catchError((error: HttpErrorResponse) => this.handleError(error)),

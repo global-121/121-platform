@@ -3,7 +3,17 @@ import { EnvironmentProviders, Provider, Type } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { User } from '~/domains/user/user.model';
+import { LoginMethod } from '~/services/auth/login-method.enum';
 import { LocalStorageUser } from '~/utils/local-storage';
+
+export type LoginCredentials =
+  | {
+      method: LoginMethod.oneTimePassword;
+      username: string;
+      oneTimePassword: string;
+    }
+  | { method: LoginMethod.password; username: string; password: string }
+  | { username: string };
 
 export abstract class IAuthStrategy {
   public static readonly APP_PROVIDERS: (EnvironmentProviders | Provider)[];
@@ -12,10 +22,7 @@ export abstract class IAuthStrategy {
   ChangePasswordComponent: null | Type<unknown>;
 
   public abstract initializeSubscriptions(): Subscription[];
-  public abstract login(credentials: {
-    username: string;
-    password?: string;
-  }): Promise<null | User>;
+  public abstract login(credentials: LoginCredentials): Promise<null | User>;
   public abstract logout(user: LocalStorageUser | null): Promise<unknown>;
   public abstract changePassword(data: {
     user: LocalStorageUser | null;

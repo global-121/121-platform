@@ -10,13 +10,24 @@ class LoginPage extends BasePage {
   readonly usernameInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
+  readonly loginWithPasswordButton: Locator;
+  readonly sendCodeButton: Locator;
+  readonly oneTimePasswordInput: Locator;
 
   constructor(page: Page) {
     super(page);
     this.page = page;
     this.usernameInput = this.page.getByLabel('E-mail');
     this.passwordInput = this.page.getByLabel('Password');
-    this.loginButton = this.page.getByRole('button', { name: 'Log in' });
+    this.loginButton = this.page.getByRole('button', {
+      name: 'Log in',
+      exact: true,
+    });
+    this.loginWithPasswordButton = this.page.getByRole('button', {
+      name: 'Log in with password instead',
+    });
+    this.sendCodeButton = this.page.getByRole('button', { name: 'Send code' });
+    this.oneTimePasswordInput = this.page.locator('p-inputotp input').first();
   }
 
   async loginAsAdmin({
@@ -56,6 +67,9 @@ class LoginPage extends BasePage {
     }
 
     await this.usernameInput.fill(username);
+    await this.loginWithPasswordButton.click();
+    await expect(this.passwordInput).toBeVisible();
+    await expect(this.usernameInput).toHaveValue(username);
     await this.passwordInput.fill(password);
     await this.loginButton.click();
 
@@ -71,6 +85,26 @@ class LoginPage extends BasePage {
       return;
     }
 
+    await this.page.waitForURL((url) =>
+      url.pathname.startsWith('/en-GB/programs'),
+    );
+  }
+
+  async requestOneTimePassword({ email }: { email: string }): Promise<void> {
+    await super.goto('/login');
+    await this.usernameInput.fill(email);
+    await this.sendCodeButton.click();
+    await expect(this.oneTimePasswordInput).toBeVisible();
+  }
+
+  async loginWithOneTimePassword({
+    oneTimePassword,
+  }: {
+    oneTimePassword: string;
+  }): Promise<void> {
+    await this.oneTimePasswordInput.click();
+    await this.page.keyboard.type(oneTimePassword);
+    await this.loginButton.click();
     await this.page.waitForURL((url) =>
       url.pathname.startsWith('/en-GB/programs'),
     );

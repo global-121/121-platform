@@ -17,9 +17,6 @@
       <trans-unit id="1054469251797090110" datatype="html">
         <source>Add FSP(s) to your program to see all required data columns.</source>
       </trans-unit>
-      <trans-unit id="1061597182953948916" datatype="html">
-        <source>Use your work email to log in.</source>
-      </trans-unit>
       <trans-unit id="1070128073768279969" datatype="html">
         <source>Select a message from the template messages or write a custom message.</source>
       </trans-unit>
@@ -285,6 +282,9 @@
       <trans-unit id="2133394077130609617" datatype="html">
         <source>Select Many</source>
       </trans-unit>
+      <trans-unit id="2148561060695665765" datatype="html">
+        <source>We&apos;ve sent a <x equiv-text="{{ ONE_TIME_PASSWORD_LENGTH }}" id="INTERPOLATION"/>-character code to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ email() }}" id="INTERPOLATION_1"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
+      </trans-unit>
       <trans-unit id="2161871078253886554" datatype="html">
         <source>Unknown user</source>
       </trans-unit>
@@ -332,6 +332,9 @@
       </trans-unit>
       <trans-unit id="2276030451798485888" datatype="html">
         <source>Amount of money successfully transferred.</source>
+      </trans-unit>
+      <trans-unit id="2294259397734924635" datatype="html">
+        <source>Send code</source>
       </trans-unit>
       <trans-unit id="2300247576851644080" datatype="html">
         <source>File name</source>
@@ -516,6 +519,9 @@
       <trans-unit id="2948202815374708667" datatype="html">
         <source>General information</source>
       </trans-unit>
+      <trans-unit id="296525656256757496" datatype="html">
+        <source>Invalid or expired code. Check the code or request a new one.</source>
+      </trans-unit>
       <trans-unit id="2976767115406008475" datatype="html">
         <source>Registration out of scope or not found - please check URL or contact your supervisor</source>
       </trans-unit>
@@ -695,6 +701,9 @@
       </trans-unit>
       <trans-unit id="3698276378504762536" datatype="html">
         <source>This is a sensitive property, therefore its value needs to be re-entered upon reconfiguration.</source>
+      </trans-unit>
+      <trans-unit id="3699512628981388856" datatype="html">
+        <source>Log in with password instead</source>
       </trans-unit>
       <trans-unit id="3718000607419168275" datatype="html">
         <source>Click create payment, this will direct you to the payment page.</source>
@@ -896,6 +905,9 @@
       <trans-unit id="428968768517674095" datatype="html">
         <source>Would you like to proceed with <x equiv-text="{{ dryRunData?.applicableCount }}" id="INTERPOLATION"/> registration(s)?</source>
       </trans-unit>
+      <trans-unit id="4308640744493544474" datatype="html">
+        <source>Enter your code</source>
+      </trans-unit>
       <trans-unit id="4309697217076303455" datatype="html">
         <source><x equiv-text="paymentCount.toString()" id="count"/> (out of <x equiv-text="maxPayments.toString()" id="totalCount"/>)</source>
       </trans-unit>
@@ -962,6 +974,9 @@
       <trans-unit id="4548982880429289150" datatype="html">
         <source><x equiv-text="data.applicableCount" id="PH"/> transactions(s) are being retried. The status change can take up to a minute to process.</source>
       </trans-unit>
+      <trans-unit id="4553549638421008203" datatype="html">
+        <source>Request new code</source>
+      </trans-unit>
       <trans-unit id="4574346850927067014" datatype="html">
         <source>Status update</source>
       </trans-unit>
@@ -1015,6 +1030,9 @@
       </trans-unit>
       <trans-unit id="4746344653872488527" datatype="html">
         <source>Export payment list</source>
+      </trans-unit>
+      <trans-unit id="4759950923126857530" datatype="html">
+        <source>Use your work email to log in.</source>
       </trans-unit>
       <trans-unit id="4775550080689015987" datatype="html">
         <source>Reason</source>
@@ -1208,6 +1226,9 @@
       <trans-unit id="5438647545299330818" datatype="html">
         <source>Enter a valid scope. No spaces are allowed.</source>
       </trans-unit>
+      <trans-unit id="5445335908048448991" datatype="html">
+        <source>The code has expired. Request a new code to log in.</source>
+      </trans-unit>
       <trans-unit id="5452570589103987928" datatype="html">
         <source>Payment status chart.</source>
       </trans-unit>
@@ -1243,6 +1264,9 @@
       </trans-unit>
       <trans-unit id="5578681806481405422" datatype="html">
         <source>Select 1 or more users from your program team</source>
+      </trans-unit>
+      <trans-unit id="5580731565219588947" datatype="html">
+        <source>Enter your work email and we&apos;ll send you a one-time code.</source>
       </trans-unit>
       <trans-unit id="5587438863454126747" datatype="html">
         <source>New data</source>
@@ -1364,9 +1388,6 @@
       <trans-unit id="6169902268775373280" datatype="html">
         <source>Select users for this approval step</source>
       </trans-unit>
-      <trans-unit id="6186007479370342072" datatype="html">
-        <source>Request a password reset</source>
-      </trans-unit>
       <trans-unit id="6205851746813309628" datatype="html">
         <source>KoboToolbox account settings menu</source>
       </trans-unit>
@@ -1378,6 +1399,9 @@
       </trans-unit>
       <trans-unit id="6245136461829083125" datatype="html">
         <source>Import existing registrations</source>
+      </trans-unit>
+      <trans-unit id="6247764326594452669" datatype="html">
+        <source>Check your email. Might be in spam.</source>
       </trans-unit>
       <trans-unit id="6255566478374242100" datatype="html">
         <source>Firstname Lastname</source>
@@ -1506,11 +1530,17 @@
       <trans-unit id="6693349469471580292" datatype="html">
         <source>Delete file</source>
       </trans-unit>
+      <trans-unit id="6696721147897029589" datatype="html">
+        <source>We&apos;ve sent a new code to <x equiv-text="this.email()" id="PH"/>.</source>
+      </trans-unit>
       <trans-unit id="6704198793956298786" datatype="html">
         <source>Coopbank verification report</source>
       </trans-unit>
       <trans-unit id="6710855517991446782" datatype="html">
         <source>121 does not support this language currently.</source>
+      </trans-unit>
+      <trans-unit id="6712329368616435100" datatype="html">
+        <source>Go back to the previous page</source>
       </trans-unit>
       <trans-unit id="6722480348579256749" datatype="html">
         <source>Payment approved successfully.</source>
@@ -1565,6 +1595,9 @@
       </trans-unit>
       <trans-unit id="6967846885075875243" datatype="html">
         <source>Form requirements</source>
+      </trans-unit>
+      <trans-unit id="6982659930262986863" datatype="html">
+        <source>Log in with a one-time code instead</source>
       </trans-unit>
       <trans-unit id="6984090257911587817" datatype="html">
         <source>Select the fields to include in the payment report you send to your FSP.</source>
@@ -1974,6 +2007,9 @@
       <trans-unit id="8355761006232718301" datatype="html">
         <source>This field cannot be shorter than <x equiv-text="minlength" id="PH"/> characters.</source>
       </trans-unit>
+      <trans-unit id="836079390729993594" datatype="html">
+        <source>You can request a new code in <x equiv-text="{{ cooldownRemainingSeconds() }}" id="INTERPOLATION"/> seconds.</source>
+      </trans-unit>
       <trans-unit id="8384225360105280028" datatype="html">
         <source>Complete</source>
       </trans-unit>
@@ -2037,6 +2073,9 @@
       <trans-unit id="8640584034813421127" datatype="html">
         <source>Name fields</source>
       </trans-unit>
+      <trans-unit id="8645028158985898467" datatype="html">
+        <source>The code is valid for <x equiv-text="{{ oneTimePasswordRemainingMs() | date: &apos;m:ss&apos; : &apos;UTC&apos; }}" id="INTERPOLATION"/> minutes.</source>
+      </trans-unit>
       <trans-unit id="8670091824036050972" datatype="html">
         <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations.</source>
       </trans-unit>
@@ -2054,6 +2093,9 @@
       </trans-unit>
       <trans-unit id="8733206904097373941" datatype="html">
         <source>This will download an Excel file with all unused voucher(s).</source>
+      </trans-unit>
+      <trans-unit id="8734556310743051788" datatype="html">
+        <source>Request a password reset</source>
       </trans-unit>
       <trans-unit id="8747826357702572054" datatype="html">
         <source>Financial service providers:</source>
@@ -2165,6 +2207,9 @@
       </trans-unit>
       <trans-unit id="967085384644702996" datatype="html">
         <source>Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the program team&apos;s page. To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.</source>
+      </trans-unit>
+      <trans-unit id="975321147235562482" datatype="html">
+        <source>Wrong email?</source>
       </trans-unit>
       <trans-unit id="976904059902830801" datatype="html">
         <source>Change reason</source>
