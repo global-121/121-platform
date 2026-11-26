@@ -888,12 +888,14 @@ export async function seedPaidRegistrations({
   transferValue = 20,
   completeStatuses = [TransactionStatusEnum.success],
   name = 'Seed Payment',
+  maxWaitTimeMs,
 }: {
   registrations: any[];
   programId: number;
   transferValue?: number;
   completeStatuses?: TransactionStatusEnum[];
   name?: string;
+  maxWaitTimeMs?: number;
 }): Promise<number> {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrations, programId, accessToken);
@@ -906,6 +908,7 @@ export async function seedPaidRegistrations({
     accessToken,
     completeStatuses,
     name,
+    maxWaitTimeMs,
   });
 }
 
@@ -917,6 +920,7 @@ export async function doPaymentAndWaitForCompletion({
   completeStatuses = [TransactionStatusEnum.success],
   note,
   name = 'Test Payment',
+  maxWaitTimeMs = 30_000,
 }: {
   programId: number;
   referenceIds: string[];
@@ -925,6 +929,7 @@ export async function doPaymentAndWaitForCompletion({
   completeStatuses?: TransactionStatusEnum[];
   note?: string;
   name?: string;
+  maxWaitTimeMs?: number;
 }): Promise<number> {
   const doPaymentResponse = await doPayment({
     programId,
@@ -940,7 +945,7 @@ export async function doPaymentAndWaitForCompletion({
     programId,
     paymentReferenceIds: referenceIds,
     accessToken,
-    maxWaitTimeMs: 30_000,
+    maxWaitTimeMs,
     completeStatuses,
     paymentId,
   });
